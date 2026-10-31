@@ -14,3 +14,6 @@ add META_APP_SECRET ""
 grep -q '^WA_VERIFY_TOKEN=' .env || echo "WA_VERIFY_TOKEN=$(openssl rand -hex 16)" >> .env
 grep -q '^SECRET_KEY=' .env || echo "SECRET_KEY=$(openssl rand -base64 32 | tr '+/' '-_')" >> .env
 add APP_PUBLIC_URL https://app.oinanda.com.br
+# etapa 3 — Nanda (IA)
+add ANTHROPIC_API_KEY ""
+add AI_MODEL claude-haiku-5-5

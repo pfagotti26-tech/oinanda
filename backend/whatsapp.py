@@ -23,6 +23,8 @@ router = APIRouter()
 GRAPH = 'https://graph.facebook.com/' + os.environ.get('WA_API_VERSION', 'v21.0')
 PUBLIC_URL = os.environ.get('APP_PUBLIC_URL', 'https://app.oinanda.com.br').rstrip('/')
 WINDOW = timedelta(hours=24)
+ON_INBOUND = None  # a Nanda se pendura aqui (ai.py) para responder mensagens novas
+ON_HUMAN_SEND = None  # e aqui, para sair de cena quando alguém do time responde
 
 def _fernet():
     key = os.environ.get('SECRET_KEY', '')
@@ -137,8 +139,10 @@ async def ingest(value):
         if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir='in')
         if names.get(wa_id): upd['name'] = names[wa_id]
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd, '$inc': {'unread': 1}})
-        await db.messages.insert_one({'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
-                                      'text': text, 'wa_msg_id': m.get('id'), 'at': at})
+        mid = uid()
+        await db.messages.insert_one({'id': mid, 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
+                                      'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now()})
+        if ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
     for s in value.get('statuses') or []:
         upd = {'status': s.get('status')}
         if s.get('errors'): upd['error'] = (s['errors'][0].get('title') or s['errors'][0].get('message') or 'falhou')
@@ -199,24 +203,34 @@ async def conversation(contact_id: str, user=Depends(current_user)):
 class SendIn(BaseModel):
     text: str = Field(min_length=1, max_length=4096)
 
+async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
+    """Envia texto pelo WhatsApp da empresa e registra na conversa. Usado pelo time e pela Nanda."""
+    li = aware(contact.get('last_in_at'))
+    if not li or now() - li >= WINDOW:
+        raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')
+    number = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
+    if not number: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
+    res = await graph('POST', f'/{number["phone_number_id"]}/messages', decrypt(number['token_enc']),
+                      {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'text', 'text': {'body': text}})
+    msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'text', 'text': text,
+           'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
+    await db.messages.insert_one(msg.copy())
+    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out'}
+    if assign_to and not contact.get('assigned_to'): upd['assigned_to'] = assign_to
+    await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
+    msg.pop('_id', None)
+    return msg
+
+async def note(company_id, contact_id, text):
+    """Aviso do sistema dentro da conversa (não vai para o cliente)."""
+    await db.messages.insert_one({'id': uid(), 'company_id': company_id, 'contact_id': contact_id, 'dir': 'sys', 'type': 'note', 'text': text, 'at': now()})
+
 @router.post('/conversations/{contact_id}/send')
 async def send(contact_id: str, body: SendIn, request: Request, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
-    li = aware(c.get('last_in_at'))
-    if not li or now() - li >= WINDOW:
-        raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')
-    number = await db.wa_numbers.find_one({'company_id': user['company_id']}, {'_id': 0})
-    if not number: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
-    res = await graph('POST', f'/{number["phone_number_id"]}/messages', decrypt(number['token_enc']),
-                      {'messaging_product': 'whatsapp', 'to': c['wa_id'], 'type': 'text', 'text': {'body': body.text}})
-    msg = {'id': uid(), 'company_id': user['company_id'], 'contact_id': contact_id, 'dir': 'out', 'type': 'text', 'text': body.text,
-           'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': user['id'],
-           'by': user.get('impersonated_by') or user['name'], 'at': now()}
-    await db.messages.insert_one(msg.copy())
-    upd = {'last_at': msg['at'], 'last_text': body.text[:200], 'last_dir': 'out'}
-    if not c.get('assigned_to'): upd['assigned_to'] = user['id']  # quem responde primeiro assume
-    await db.contacts.update_one({'id': contact_id}, {'$set': upd})
-    msg.pop('_id', None)
+    msg = await deliver(user['company_id'], c, body.text, user['id'], user.get('impersonated_by') or user['name'], assign_to=user['id'])
+    if c.get('needs_human'): await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False}})
+    if ON_HUMAN_SEND: await ON_HUMAN_SEND(user, c)
     return msg
 
 class AssignIn(BaseModel):

@@ -12,7 +12,6 @@ async def fake_graph(method, path, token, payload=None, params=None):
     if path.endswith('/messages'): return {'messages': [{'id': 'wamid.OUT1'}]}
     if 'subscribed_apps' in path: return {'success': True}
     return {'display_phone_number': '+55 11 90000-0000', 'verified_name': 'Studio Teste', 'quality_rating': 'GREEN'}
-whatsapp.graph = fake_graph
 
 def signed(c, body):
     raw = json.dumps(body).encode()
@@ -24,7 +23,8 @@ def inbound(text, mid, ts=None):
         'contacts': [{'wa_id': '5511988887777', 'profile': {'name': 'Mariana'}}],
         'messages': [{'from': '5511988887777', 'id': mid, 'timestamp': str(ts or int(time.time())), 'type': 'text', 'text': {'body': text}}]}}]}]}
 
-def test_whatsapp_fluxo():
+def test_whatsapp_fluxo(monkeypatch):
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
     with TestClient(app, base_url='https://testserver') as c:
         assert c.get('/api/wa/webhook', params={'hub.mode': 'subscribe', 'hub.verify_token': 'verif', 'hub.challenge': '42'}).text == '42'
         assert c.get('/api/wa/webhook', params={'hub.mode': 'subscribe', 'hub.verify_token': 'x', 'hub.challenge': '42'}).status_code == 403
