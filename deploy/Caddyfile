@@ -1,0 +1,23 @@
+# SITE_HOSTS e ACME_EMAIL vêm do deploy/.env
+{
+	email {$ACME_EMAIL}
+}
+
+{$SITE_HOSTS} {
+	encode zstd gzip
+	root * /srv/site
+	@html path / /index.html /privacidade/ /termos/
+	header @html Cache-Control "no-cache"
+	file_server
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
+
+# www sempre vai para o endereço oficial
+{$WWW_HOST:http://www.invalid} {
+	redir https://oinanda.com.br{uri} permanent
+}

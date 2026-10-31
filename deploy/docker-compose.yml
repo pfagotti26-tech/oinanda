@@ -1,0 +1,23 @@
+# Oi Nanda no servidor próprio (Hetzner). Por enquanto: só o site, com HTTPS automático (Caddy).
+# O produto (API + banco) entra aqui depois, no mesmo padrão do Alta Pulse.
+# Tudo sobe com:  cd /opt/oinanda/deploy && docker compose up -d
+name: oinanda
+
+services:
+  web:
+    image: caddy:2
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../site:/srv/site:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:
