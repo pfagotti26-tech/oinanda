@@ -119,6 +119,8 @@ async def ingest(value):
     if not number:
         log.info('webhook de número desconhecido: %s', pnid); return
     cid = number['company_id']
+    if value.get('messages'):  # mensagem chegando = recebimento funcionando
+        await db.wa_numbers.update_one({'phone_number_id': pnid}, {'$set': {'webhook': 'ok', 'last_in_at': now()}})
     names = {c.get('wa_id'): (c.get('profile') or {}).get('name') for c in value.get('contacts') or []}
     for m in value.get('messages') or []:
         if await db.messages.find_one({'wa_msg_id': m.get('id')}): continue
