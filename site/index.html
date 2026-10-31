@@ -6,9 +6,9 @@
 <title>Oi Nanda — CRM e automação de vendas pelo WhatsApp com IA</title>
 <link rel="icon" href="/favicon.png">
 <meta property="og:title" content="Oi Nanda — a Nanda vende pelo seu WhatsApp">
-<meta property="og:description" content="CRM e automação de vendas pelo WhatsApp, com IA. Responde em segundos, marca horário, cobra por Pix e passa para o seu time quem está pronto. 7 dias grátis, sem cartão.">
+<meta property="og:description" content="CRM e automação de vendas pelo WhatsApp, com IA. Responde em segundos, marca horário, manda o seu link de pagamento e passa para o seu time quem está pronto. 7 dias grátis, sem cartão.">
 <meta property="og:image" content="/og.png">
-<meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp com IA: a Nanda responde 24h, agenda, cobra por Pix na conversa e passa para o seu time quem está pronto para fechar. Funil, automações e turnos inclusos. 7 dias grátis.">
+<meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp com IA: a Nanda responde 24h, agenda, leva o cliente até o pagamento e passa para o seu time quem está pronto para fechar. Funil, automações e turnos inclusos. 7 dias grátis.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -535,7 +535,7 @@ footer{padding:56px 0;color:var(--ink-3);font-size:13px;display:flex;justify-con
 
 <script>
 /* ===== CONFIGURAÇÃO: troque pelo número de WhatsApp da Oi Nanda (só dígitos, com 55 e DDD) ===== */
-const WA_NUMERO='5511940012030';
+const WA_NUMERO='5511975754765';
 
 /* ---------- content ---------- */
 const site={
@@ -543,8 +543,8 @@ const site={
   nav:'Início',
   tag:'Plataforma de vendas no WhatsApp · API Oficial da Meta',
   h1:'O CRM com IA que <em>atende, agenda e vende</em> pelo <span style="white-space:nowrap">seu <em class="wpp">WhatsApp</em>.</span>',
-  lead:'A Nanda trabalha <b>24 horas</b>: responde em segundos, marca o horário, manda o Pix e só chama seu time quando o cliente está pronto.',
-  chips:['Multiatendimento','Funil de vendas','Agenda e lembretes','Cobrança por Pix','Automações'],
+  lead:'A Nanda trabalha <b>24 horas</b>: responde em segundos, marca o horário, manda o seu link de pagamento e só chama seu time quando o cliente está pronto.',
+  chips:['Multiatendimento','Funil de vendas','Agenda e lembretes','Follow-up automático','Automações'],
   demo:[
    {in:'Oi! Quanto custa o trimestral?'},
    {out:'Oi, Mariana! O trimestral é R$ 790, ou R$ 711 no Pix à vista. Você já fez a aula experimental?',by:'Nanda'},
@@ -552,11 +552,11 @@ const site={
    {sys:'A Nanda passou para a Camila · cliente pronta para fechar'},
    {out:'Dá sim! 3x de R$ 263 no cartão, ou R$ 711 no Pix. Qual prefere?',by:'Camila'},
    {in:'Pix!'},
-   {pay:['R$ 711,00','Trimestral · Pix à vista']},
-   {sys:'Pago às 08:22 · nota fiscal enviada · negócio fechado'},
+   {out:'Perfeito! Nossa chave Pix é o CNPJ 12.345.678/0001-90. Me manda o comprovante que eu já confirmo sua matrícula 💜',by:'Camila'},
+   {sys:'Comprovante recebido · Camila moveu para Matriculou'},
   ],
   whoTitle:'Feita para quem precisa vender mais sem virar a noite no WhatsApp',
-  whoLead:'Cada segmento fecha de um jeito. A Nanda chega com funil, automações, cobrança e as mensagens certas para o seu, e você ajusta o que quiser.',
+  whoLead:'Cada segmento fecha de um jeito. A Nanda chega com funil, agenda, follow-up e as mensagens certas para o seu, e você ajusta o que quiser.',
   pains:null,
   compare:true,
  },
@@ -564,33 +564,33 @@ const site={
   nav:'Studios e academias',
   tag:'CRM de vendas pelo WhatsApp para studios e academias',
   h1:'Mais experimentais virando plano. <em>Mais planos renovando.</em>',
-  lead:['Marca a experimental e confirma na véspera','Retoma quem fez a aula e não fechou, com o Pix pronto','Chama para renovar antes do plano vencer','Seu time só entra para fechar'],
+  lead:['Marca a experimental e confirma na véspera','Retoma quem fez a aula e não fechou','Chama para renovar antes do plano vencer','Seu time só entra para fechar'],
   demo:[
    {in:'Vi no Instagram. Tem aula de manhã cedo?'},
    {out:'Tem sim, a primeira turma é às 6h. Quer fazer uma aula experimental grátis essa semana? Tenho quarta e quinta às 6h.',by:'Nanda'},
    {in:'Quinta pode ser'},
    {sys:'Experimental marcada: quinta, 6h · lembrete na véspera'},
    {in:'Fiz a aula, adorei! Quanto fica?'},
-   {out:'Que bom! O trimestral sai R$ 711 no Pix à vista. Quer que eu mande?',by:'Camila'},
-   {pay:['R$ 711,00','Trimestral · renova em 3 meses']},
-   {sys:'Pago · aluna ativa · renovação automática em 25/jan'},
+   {out:'Que bom! O trimestral sai R$ 711 no Pix à vista. Te mando a chave?',by:'Camila'},
+   {in:'Manda!'},
+   {sys:'Camila moveu para Matriculou · lembrete de renovação em 25/jan'},
   ],
   pains:[
-   ['Fez a experimental, disse que amou… e ninguém mais falou com ela. Essa é a maior perda do studio.','Dois dias depois eu pergunto como foi e ofereço o plano com Pix à vista. Quem responde cai no seu time para fechar. É onde mais aluno novo entra.'],
+   ['Fez a experimental, disse que amou… e ninguém mais falou com ela. Essa é a maior perda do studio.','Dois dias depois eu pergunto como foi e ofereço o plano. Quem responde cai no seu time para fechar. É onde mais aluno novo entra.'],
    ['Faltou na experimental e a vaga foi embora.','Confirmo na véspera com um botão. Se não der, já ofereço outro horário. Menos falta, mais aula cheia.'],
    ['Às 22h chega um “oi, tem vaga?” e fica no vácuo até de manhã. De manhã, já fechou com outro.','Respondo na hora, tiro dúvida e marco a aula. De manhã, o seu time encontra a conversa pronta para fechar.'],
-   ['O plano venceu e o aluno só não renovou porque ninguém lembrou.','Aos 25 dias eu puxo papo, pergunto como está indo e ofereço renovar ou subir para o trimestral, com o Pix pronto. Renovação é a venda mais barata que existe.'],
+   ['O plano venceu e o aluno só não renovou porque ninguém lembrou.','Aos 25 dias eu puxo papo, pergunto como está indo e ofereço renovar ou subir para o trimestral. Renovação é a venda mais barata que existe.'],
   ],
   autos:[
    ['Novo contato','na hora','IA manda o formulário de agendamento dentro do chat; a pessoa escolhe o horário sem sair do WhatsApp'],['Experimental','1 dia antes','IA confirma presença e reagenda se precisar'],
-   ['Experimental','2 dias sem Pix','IA pergunta como foi e oferece o plano'],
+   ['Fez a aula','2 dias sem fechar','IA pergunta como foi e oferece o plano'],
    ['Conversando','1 dia sem resposta','IA retoma com uma pergunta leve'],
-   ['Pix enviado','30 min sem pagar','reenvia o Pix; em 24 h avisa o vendedor'],
+   ['Negociando','1 dia sem resposta','IA retoma com uma pergunta leve; em 24 h avisa o vendedor'],
    ['Plano mensal','25 dias','IA oferece renovação ou trimestral'],
    ['Sumiu','60 dias','campanha de reativação com horário novo'],
   ],
   kpis:[['46%','das experimentais viram plano','g'],['R$ 48 mil','vendidos no mês','a'],['1 min','até a primeira resposta',''],['9','planos fechados só pela IA','']],
-  funil:[['Novo contato',100,100],['Respondeu',81,81],['Experimental',46,46],['Pix enviado',29,29],['Pago',22,22]],
+  funil:[['Novo contato',100,100],['Respondeu',81,81],['Experimental',46,46],['Negociando',29,29],['Matriculou',22,22]],
   faq:[
    ['Vou perder o meu WhatsApp Business?','Não. A Nanda entra junto com o app que você já usa. Você continua respondendo pelo celular quando quiser; ela cuida do resto e tudo fica no mesmo histórico.'],
    ['A Nanda vai inventar preço ou desconto?','Não. Ela só usa a tabela que você cadastra. Se perguntarem algo fora dela, chama uma pessoa.'],
@@ -602,7 +602,7 @@ const site={
   nav:'Clínicas de estética',
   tag:'CRM de vendas pelo WhatsApp para clínicas de estética e odonto',
   h1:'Menos falta. Mais orçamento fechado. <em>Paciente que volta.</em>',
-  lead:['Marca a avaliação na sua agenda e confirma na véspera','Retoma orçamento parado e recebe o sinal por Pix','Chama a paciente para o retorno no prazo certo','Passa para a recepção quem quer falar com gente'],
+  lead:['Marca a avaliação na sua agenda e confirma na véspera','Retoma orçamento parado até virar procedimento','Chama a paciente para o retorno no prazo certo','Passa para a recepção quem quer falar com gente'],
   demo:[
    {in:'Oi, quero avaliar harmonização'},
    {out:'Oi, Renata! A avaliação com a Dra. Paula é gratuita. Tenho terça às 14h ou quinta às 10h. Qual prefere?',by:'Nanda'},
@@ -611,28 +611,28 @@ const site={
    {out:'Lembrando sua avaliação amanhã, 10h. Confirma?  [Confirmo] [Remarcar]',by:'Nanda'},
    {in:'Confirmo'},
    {sys:'Compareceu · orçamento de R$ 2.400 enviado pela Dra. Paula'},
-   {pay:['R$ 480,00','Sinal 20% · restante em 4x']},
-   {sys:'Sinal pago · procedimento agendado · NF emitida'},
+   {out:'Renata, ficou alguma dúvida sobre o orçamento? Se quiser, já deixo seu horário reservado.',by:'Nanda'},
+   {sys:'Renata pediu para falar com a recepção · procedimento agendado'},
   ],
   pains:[
    ['Ela faltou, e o horário valia R$ 400. Não por descaso: ninguém lembrou dela direito.','Dois dias antes eu confirmo com um botão. No dia, lembro de novo quem não respondeu. Se faltou, já ofereço dois horários. A agenda para de vazar.'],
-   ['Recebeu o orçamento, ficou pensando e a clínica nunca mais falou com ela. Metade dos orçamentos morre assim.','Três dias depois eu volto: tiro a dúvida, ofereço o sinal por Pix e parcelar o resto. Ela se sente lembrada, não cobrada. E o orçamento fecha.'],
+   ['Recebeu o orçamento, ficou pensando e a clínica nunca mais falou com ela. Metade dos orçamentos morre assim.','Três dias depois eu volto: tiro a dúvida e ofereço reservar o horário. Ela se sente lembrada, não cobrada. E o orçamento fecha.'],
    ['A recepcionista saiu e levou a história de cada paciente na cabeça.','Comigo, tudo fica na clínica: conversa, orçamento, anotações, quem atendeu. A pessoa muda, a relação continua e a venda também.'],
    ['Fez o procedimento, adorou, e nunca mais apareceu.','No prazo certo eu chamo para o retorno, com horário livre e uma mensagem que parece da clínica, não de robô. Quem é lembrada, volta. E paciente que volta custa zero de anúncio.'],
   ],
   autos:[
    ['Novo contato','na hora','formulário de agendamento dentro do chat; a paciente escolhe dia e horário sem link'],['Avaliação','2 dias antes','confirmação com botão; lembrete no dia para quem não respondeu'],
    ['Procedimento','1 dia antes','orientações de preparo aprovadas pela clínica'],
-   ['Compareceu','na hora','orçamento vai como proposta no chat; a paciente aceita com um toque, o aceite fica registrado e o sinal por Pix sai junto'],['Orçamento enviado','3 dias sem resposta','IA retoma e oferece sinal por Pix'],
+   ['Compareceu','na hora','orçamento fica anotado na ficha da paciente'],['Orçamento enviado','3 dias sem resposta','IA retoma, tira a dúvida e oferece reservar o horário'],
    ['Compareceu','1 dia depois','pós-atendimento e pedido de avaliação'],
-   ['Pago','prazo do procedimento','aviso de retorno com horário livre'],
+   ['Fechou','prazo do procedimento','aviso de retorno com horário livre'],
    ['Faltou','na hora','IA oferece dois novos horários'],
   ],
   kpis:[['–38%','de faltas em avaliações','g'],['R$ 71 mil','em orçamentos fechados no mês','a'],['52%','dos orçamentos viram procedimento',''],['31','retornos agendados pela IA','']],
-  funil:[['Novo contato',100,100],['Avaliação marcada',64,64],['Compareceu',48,48],['Orçamento enviado',41,41],['Pago',27,27]],
+  funil:[['Novo contato',100,100],['Avaliação marcada',64,64],['Compareceu',48,48],['Orçamento enviado',41,41],['Fechou',27,27]],
   faq:[
    ['A Nanda dá orientação clínica?','Não. Ela confirma, remarca, manda o preparo que a clínica aprovou e tira dúvidas de preço e horário. Qualquer pergunta clínica vai para a equipe.'],
-   ['Posso cobrar sinal e o restante parcelado?','Sim. Sinal por Pix na conversa e o restante em link de cartão parcelado, com nota fiscal automática.'],
+   ['A Nanda cobra o sinal?','Ela manda a chave Pix ou o link de pagamento que a clínica já usa, quando a paciente quer fechar. O dinheiro vai direto para a sua conta; a recepção confere e move a paciente no funil.'],
    ['E a LGPD?','Dados hospedados no Brasil, acesso por pessoa e registro de quem viu o quê. A paciente sai da lista com uma mensagem, e você exporta tudo em 1 clique se sair.'],
    ['Integra com meu prontuário?','Na primeira versão, não. Agenda e histórico de conversa são do Oi Nanda; a integração com prontuário entra conforme os fundadores pedirem.'],
   ],
@@ -641,33 +641,32 @@ const site={
   nav:'Lançamentos e infoprodutos',
   tag:'CRM de vendas pelo WhatsApp para lançamentos e infoprodutos',
   h1:'Dois mil leads respondidos na hora. <em>Boleto recuperado antes de vencer.</em>',
-  lead:['Responde o carrinho inteiro na hora, pelo nome','Recupera boleto com Pix no mesmo valor','Passa pro closer só quem está pronto para comprar','Comissão calculada; Hotmart, Kiwify e Eduzz integrados'],
+  lead:['Responde o carrinho inteiro na hora, pelo nome','Retoma quem gerou boleto e não pagou','Passa pro closer só quem está pronto para comprar','Comissão calculada; Hotmart, Kiwify e Eduzz integrados'],
   demo:[
    {in:'Vi a aula 3. Esse curso serve pra quem tá começando?'},
    {out:'Serve, Bruno. O módulo 1 é do zero, e você tem 7 dias de garantia. O carrinho fecha hoje às 23h59. Quer o link?',by:'Nanda'},
    {in:'Gerei o boleto mas não paguei ainda'},
    {sys:'Boleto gerado às 14:10 · sem pagamento · IA retoma às 20h'},
-   {out:'Bruno, o boleto só compensa em 2 dias e o carrinho fecha hoje. Se quiser garantir agora, te mando o Pix com o mesmo valor.',by:'Nanda'},
-   {in:'Manda o Pix'},
-   {pay:['R$ 997,00','Curso completo · Pix']},
-   {sys:'Pago · acesso liberado pela Hotmart · comissão: Nina (IA)'},
+   {out:'Bruno, o boleto só compensa em 2 dias e o carrinho fecha hoje. Se preferir garantir agora, no checkout dá para pagar no Pix. Quer o link de novo?',by:'Nanda'},
+   {in:'Manda o link'},
+   {out:'Aqui: hotmart.com/seu-curso 🚀 Qualquer dúvida me chama.',by:'Nanda'},
   ],
   pains:[
    ['Carrinho abre, chegam 2 mil pessoas e o time responde 200.','Eu respondo as 2 mil, na hora, pelo nome. Quem está pronto ou travou vai para o SDR com a conversa inteira. Ninguém espera.'],
-   ['Gerou o boleto, ficou com dúvida, e ninguém perguntou se precisava de ajuda. É dinheiro na mesa.','Seis horas depois eu pergunto. Ofereço Pix no mesmo valor ou outro cartão. Boleto recuperado é gente atendida, e é a venda mais barata do lançamento.'],
+   ['Gerou o boleto, ficou com dúvida, e ninguém perguntou se precisava de ajuda. É dinheiro na mesa.','Seis horas depois eu pergunto se ficou dúvida e mando o link do checkout de novo. Boleto recuperado é gente atendida, e é a venda mais barata do lançamento.'],
    ['Dois vendedores falam com a mesma pessoa. Ela percebe.','Cada pessoa tem um dono, por turno e por rodízio. Quem assume vê tudo que eu já conversei. Para o cliente, é uma voz só.'],
    ['No fim do lançamento, a comissão vira briga de planilha.','Venda aprovada entra com quem fechou. Comissão por pessoa, por turno e por origem, pronta para pagar. Time bem tratado também vende mais.'],
   ],
   autos:[
    ['Lead novo','na hora','IA cumprimenta citando a aula que a pessoa viu'],
    ['Carrinho aberto','a cada 24 h','mensagem de template com o que falta para fechar'],
-   ['Boleto gerado','6 h sem pagar','IA oferece Pix no mesmo valor'],
-   ['Cartão recusado','na hora','link para tentar outro cartão ou Pix'],
+   ['Boleto gerado','6 h sem pagar','IA pergunta se ficou dúvida e reenvia o link do checkout'],
+   ['Carrinho abandonado','1 h depois','IA chama pelo nome e oferece ajuda'],
    ['Carrinho fecha','2 h antes','última chamada para quem conversou e não comprou'],
    ['Comprou','1 dia depois','boas-vindas e convite para a comunidade'],
   ],
   kpis:[['27%','dos boletos recuperados','g'],['R$ 312 mil','no lançamento','a'],['38 s','até a primeira resposta na abertura',''],['6','SDRs em 3 turnos, sem lead duplicado','']],
-  funil:[['Lead',100,100],['Conversou',72,72],['Carrinho aberto',31,31],['Boleto/Pix gerado',14,14],['Comprou',9,9]],
+  funil:[['Lead',100,100],['Conversou',72,72],['Carrinho aberto',31,31],['Boleto gerado',14,14],['Comprou',9,9]],
   faq:[
    ['Integra com qual plataforma?','Hotmart, Kiwify e Eduzz na primeira versão, por webhook oficial. Venda aprovada entra sozinha no funil com o vendedor certo.'],
    ['Aguenta o volume da abertura de carrinho?','O WhatsApp é pela API oficial da Meta, sem celular conectado e sem limite de atendentes. O limite diário de mensagens iniciadas por você aparece na tela.'],
@@ -679,33 +678,32 @@ const site={
 const owner={
  home:{t:'Imagina o seu dia com a Nanda',l:'Não é só o WhatsApp que muda. É a sua rotina, o seu fim de semana e o quanto você sabe do seu negócio.',i:[
   ['Você responde WhatsApp às 23h, no almoço e no fim de semana.','Você janta sem olhar o celular. De manhã, abre o painel e vê o que a Nanda agendou, cobrou e fechou enquanto você vivia.'],
-  ['Alguém chamou às 2h da manhã e fechou com o concorrente às 8h.','Ela foi respondida em 10 segundos, marcou o horário e acordou com o Pix pronto. Você só viu a venda entrar.'],
+  ['Alguém chamou às 2h da manhã e fechou com o concorrente às 8h.','Ela foi respondida em 10 segundos, marcou o horário e acordou com tudo pronto para o seu time. Você só viu a venda entrar.'],
   ['Seu negócio depende de uma pessoa que pode sair amanhã.','Cada conversa, histórico e cliente ficam no seu negócio. Quem entrar continua de onde a outra parou, sem perder ninguém.'],
   ['Você não sabe quanto vendeu, quem vendeu, nem onde perde.','Um painel que responde em 5 segundos: quanto entrou, por quem, por turno, e onde está vazando. Comissão calculada. Zero planilha.'],
  ]},
  studios:{t:'Imagina o seu studio com a Nanda',l:'Você abriu um studio para dar aula e cuidar de gente. Não para morar no WhatsApp.',i:[
   ['Dá aula às 6h e responde WhatsApp até meia-noite.','Você dá a aula das 6h e, enquanto isso, a Nanda já marcou três experimentais. À noite, o celular fica na gaveta.'],
-  ['Experimental grátis que não vira plano é hora sua jogada fora.','Cada experimental é retomada em 2 dias e levada até o Pix. Você vê a taxa de conversão subir no painel, semana a semana.'],
-  ['Fim do mês é correr atrás de renovação.','Aos 25 dias a Nanda já ofereceu renovar, com o Pix pronto. O dia 30 chega com a maioria renovada, sem você mandar uma mensagem.'],
+  ['Experimental grátis que não vira plano é hora sua jogada fora.','Cada experimental é retomada em 2 dias e levada até o fechamento. Você vê a taxa de conversão subir no painel, semana a semana.'],
+  ['Fim do mês é correr atrás de renovação.','Aos 25 dias a Nanda já ofereceu renovar. O dia 30 chega com a maioria renovada, sem você mandar uma mensagem.'],
  ]},
  clinicas:{t:'Imagina a sua clínica com a Nanda',l:'Você investe em anúncio para a agenda vazar na recepção. Agora imagina a agenda cheia e confirmada.',i:[
   ['Paga tráfego, lota a agenda e perde 30% em faltas.','Agenda confirmada em dois tempos, com botão. Quem não pode, remarca sozinha. A falta cai, e você vê quanto no painel.'],
-  ['Orçamento alto parado no WhatsApp da recepção.','Três dias depois a Nanda retoma, com sinal por Pix e parcelamento. Orçamento vira procedimento sem a recepção correr atrás.'],
+  ['Orçamento alto parado no WhatsApp da recepção.','Três dias depois a Nanda retoma e tira a dúvida. Orçamento vira procedimento sem a recepção correr atrás.'],
   ['Recepção muda, e o relacionamento com a paciente vai embora junto.','Cada paciente tem histórico na clínica. A recepção muda, a relação continua, e a paciente nem percebe.'],
  ]},
  lancamentos:{t:'Imagina o seu lançamento com a Nanda',l:'Carrinho aberto é a semana mais cara do seu ano. Imagina ela sem nenhum lead no vácuo.',i:[
   ['Contrata 10 SDRs para 5 dias e não sabe quem fez o quê.','Cada lead tem dono, por turno. A Nanda lê as conversas e te mostra quem fecha, quem perde e por quê. No fim, a comissão já está calculada. Sem planilha, sem briga.'],
-  ['Boleto gerado e não pago é 20% do faturamento sumindo.','Seis horas depois a Nanda ofereceu Pix no mesmo valor. Você acompanha a recuperação subindo em tempo real.'],
+  ['Boleto gerado e não pago é 20% do faturamento sumindo.','Seis horas depois a Nanda já perguntou e reenviou o link. Você acompanha a recuperação subindo em tempo real.'],
   ['IA que vende promessa que você não fez.','Ela só fala o que está na sua tabela e na sua garantia. Fora disso, chama o SDR. Você automatiza sem perder o controle do discurso.'],
  ]},
 };
-const steps=[['Conecte o WhatsApp','Pela API oficial da Meta, junto com o app que você já usa. Sem trocar número, sem perder nome, histórico nem nível de qualidade.'],['Conte do seu negócio','Escolha o segmento e a Nanda chega sabendo o jeito de falar, os preços e os horários. Você ajusta o que quiser.'],['Deixe a Nanda começar','Ela responde, agenda e lembra. Fechar e cobrar fica com o seu time até você liberar. Tudo com histórico.']];
+const steps=[['Conecte o WhatsApp','Pela API oficial da Meta, junto com o app que você já usa. Sem trocar número, sem perder nome, histórico nem nível de qualidade.'],['Conte do seu negócio','Escolha o segmento e a Nanda chega sabendo o jeito de falar, os preços e os horários. Você ajusta o que quiser.'],['Deixe a Nanda começar','Ela responde, agenda e lembra. Quem quer fechar vai para o seu time. Tudo com histórico.']];
 const compare=[
  ['Preço','R$ 297 por negócio, time ilimitado; R$ 147 na oferta do mês','R$ 1.500/mês, 1 licença, anual','R$ 149 por usuário','R$ 86 por usuário, 6 meses de fidelidade','R$ 198 por usuário'],
  ['Como começa','7 dias grátis, sem cartão','só por demonstração','teste','teste','teste'],
  ['IA inclusa','sim, com teto de gasto que você define','sim (agente Waz)','1 agente; o 2º custa R$ 149','não no plano básico','sim, com reajustes'],
- ['Cobrança na conversa','proposta com aceite, Pix, cartão, assinatura, NF','só no plano de R$ 7.500 (agente Fin)','não','não','não'],
- ['Follow-up por etapa do funil','pronto por segmento','genérico','parcial','parcial','não'],
+  ['Follow-up por etapa do funil','pronto por segmento','genérico','parcial','parcial','não'],
  ['Turnos e comissão','sim','não','não','não','não'],
  ['Coaching do time pela IA','lê as conversas e orienta por vendedor','sim','não','não','não'],
  ['Saúde do número visível','sim','não','não','não','não'],
@@ -728,21 +726,21 @@ function pains(p,seg){return `<section><div class="wrap"><div class="head"><h2>O
 const day={
  home:['Um dia com a Nanda no seu WhatsApp','Terça-feira comum. Você não mexeu no celular para vender nenhuma vez.',[
   ['06:10','Primeira mensagem do dia chega antes de você acordar. "Tem horário cedo?" A Nanda responde em 8 segundos e marca a experimental de quinta.','agendou'],
-  ['08:30','Você abre o painel com o café: 4 agendamentos, 2 Pix pagos de madrugada, 1 cliente pronto esperando o seu time.','R$ 1.422 já no caixa'],
-  ['15:00','O "vou pensar" das 11h recebe a retomada automática com uma pergunta leve. Responde em 3 minutos. Pix em 10.','R$ 711'],
+  ['08:30','Você abre o painel com o café: 4 agendamentos, 2 clientes que pediram o link de pagamento de madrugada, 1 pronto esperando o seu time.','2 vendas encaminhadas'],
+  ['15:00','O "vou pensar" das 11h recebe a retomada automática com uma pergunta leve. Responde em 3 minutos e pede a chave.','1 venda'],
   ['23:40','Alguém pergunta o preço. A Nanda responde, oferece a experimental e agenda para amanhã. Você já estava dormindo.','agendou'],
   ['Seg, 08:00','Comissão da semana calculada por pessoa. Coaching enviado para cada vendedor. Origem de cada venda no painel.','R$ 9.870 na semana']]],
  studios:['Um dia com a Nanda no seu studio','Quarta-feira. Você deu 5 aulas e não vendeu nenhuma pelo celular. Mesmo assim, vendeu.',[
   ['05:50','"Tem vaga às 6h amanhã?" A Nanda responde antes do primeiro aluno chegar e marca a experimental.','agendou'],
-  ['07:15','Você está em aula. Três experimentais de ontem recebem "como foi?" e duas pedem o plano.','2 Pix enviados'],
+  ['07:15','Você está em aula. Três experimentais de ontem recebem "como foi?" e duas pedem o plano.','2 prontas para fechar'],
   ['12:30','Almoço. A Nanda confirma as 8 experimentais de amanhã com botão. 7 confirmam, 1 remarca sozinha.','0 falta amanhã'],
   ['16:00','Aluna que sumiu há 60 dias recebe a campanha do horário novo. Responde: "que saudade". Volta.','R$ 290'],
-  ['19:30','Renovação: 6 planos vencendo em 5 dias recebem o Pix pronto. 4 pagam na hora.','R$ 2.844'],
+  ['19:30','Renovação: 6 planos vencendo em 5 dias recebem o convite para renovar. 4 respondem que sim.','4 renovações'],
   ['23:10','"Quanto é o trimestral?" Resposta em segundos, experimental marcada. Você dormindo.','agendou'],
   ['Seg, 08:00','Painel: 46% das experimentais viraram plano. Comissão da Camila pronta. Coaching enviado.','R$ 11.200 na semana']]],
  clinicas:['Um dia com a Nanda na sua clínica','Quinta-feira. A recepção atendeu quem estava na frente. A Nanda cuidou de quem estava no WhatsApp.',[
   ['07:00','Confirmação em dois tempos das 12 avaliações de hoje. 10 confirmam, 1 remarca, 1 não responde e recebe lembrete às 8h.','1 falta, não 4'],
-  ['09:40','Orçamento de R$ 2.400 parado há 3 dias recebe a retomada com sinal por Pix e 4x. Aceite registrado às 9:52.','R$ 480 de sinal'],
+  ['09:40','Orçamento de R$ 2.400 parado há 3 dias recebe a retomada. A paciente pede para agendar às 9:52.','1 procedimento'],
   ['13:15','Paciente que fez procedimento em abril é chamada para o retorno, com horário livre. Agenda.','retorno marcado'],
   ['17:30','Lead do anúncio "Harmonização" chega com a origem marcada. A Nanda abre falando do anúncio e marca avaliação.','agendou'],
   ['20:00','Preparo para o procedimento de amanhã enviado, no texto aprovado pela clínica.','0 dúvida amanhã'],
@@ -751,7 +749,7 @@ const day={
  lancamentos:['Um dia de carrinho aberto com a Nanda','Dia 2 do carrinho. 2.140 conversas. Nenhuma no vácuo.',[
   ['00:01','Carrinho abre. 380 mensagens na primeira hora. A Nanda responde todas pelo nome, com a oferta e a garantia.','0 sem resposta'],
   ['08:00','Turno da manhã entra. A fila mostra 42 leads prontos para fechar, cada um com dono. Nenhum duplicado.','42 na fila'],
-  ['10:30','Boletos gerados ontem e não pagos recebem Pix no mesmo valor. 31% pagam até o almoço.','R$ 18.900'],
+  ['10:30','Boletos gerados ontem e não pagos recebem uma retomada com o link do checkout. Os que respondem vão para o closer.','boletos retomados'],
   ['14:00','"Vou pensar" das 9h recebe retomada: "o que falta para decidir?". 1 em 5 compra.','R$ 7.970'],
   ['21:00','Última chamada automática para quem conversou e não comprou, 2 h antes de fechar.','R$ 23.400'],
   ['23:59','Carrinho fecha. Comissão de cada SDR calculada por venda e por origem. Sem planilha.','fechado'],
@@ -767,7 +765,7 @@ return `<section><div class="wrap"><div class="try"><div><h2>Veja a Nanda venden
 <div class="pf"><p class="fill">Meu negócio se chama <input id="pfN" value="${d[0]}" placeholder="nome do negócio" size="14">, eu vendo <input id="pfP" value="${d[1]}" placeholder="o que você vende" size="18"> por R$&nbsp;<input id="pfV" value="${d[2]}" inputmode="numeric" placeholder="preço" size="5">.</p><button class="btn primary lg" id="pfGo">Ver a Nanda vender isso</button></div>
 <div class="acts"><a class="btn wa-btn" href="#" data-wa>Prefiro conversar com ela no WhatsApp</a></div></div><div class="phone" style="padding:0;background:none" id="pfDemo"></div></div></div></section>`}
 function personalDemo(){const n=(document.getElementById('pfN').value||'seu negócio').trim(),p=(document.getElementById('pfP').value||'seu produto').trim(),v=parseInt((document.getElementById('pfV').value||'0').replace(/\D/g,''))||0;const pix=Math.round(v*0.9);const fmt=x=>'R$ '+x.toLocaleString('pt-BR');
- const ms=[{in:`Oi! Quanto custa ${p.replace(/^(o|a|os|as)\s/i,'')}?`},{out:`Oi! Aqui na ${n}, ${p} sai por ${fmt(v)}. No Pix à vista fica ${fmt(pix)}. Posso te perguntar uma coisa rápida para indicar o melhor para você?`,by:'Nanda'},{in:'pode'},{out:'Você já conhece a gente ou seria a primeira vez?',by:'Nanda'},{in:'primeira vez. vou pensar e te falo'},{out:`Claro! Só para você não perder: o valor no Pix vale até hoje, e eu já deixo reservado no seu nome. Quer que eu mande o Pix de ${fmt(pix)} agora ou prefere falar com alguém da ${n}?`,by:'Nanda'},{in:'manda o pix'},{pay:[fmt(pix)+',00',p]},{sys:`Pago · ${n} · nota fiscal enviada · cliente novo no funil`}];
+ const ms=[{in:`Oi! Quanto custa ${p.replace(/^(o|a|os|as)\s/i,'')}?`},{out:`Oi! Aqui na ${n}, ${p} sai por ${fmt(v)}. Posso te perguntar uma coisa rápida para indicar o melhor para você?`,by:'Nanda'},{in:'pode'},{out:'Você já conhece a gente ou seria a primeira vez?',by:'Nanda'},{in:'primeira vez. vou pensar e te falo'},{out:`Claro! Só para você não perder: o valor no Pix vale até hoje, e eu já deixo reservado no seu nome. Quer que eu mande o Pix de ${fmt(pix)} agora ou prefere falar com alguém da ${n}?`,by:'Nanda'},{in:'manda o pix'},{pay:[fmt(pix)+',00',p]},{sys:`Pago · ${n} · nota fiscal enviada · cliente novo no funil`}];
  const c=cur;cur='home';const el=document.getElementById('pfDemo');el.innerHTML=demo(ms).replace('Nanda · Studio Forma','Nanda · '+n);cur=c;const box=el.querySelector('[data-demo]');playDemo(box);el.querySelector('[data-replay]').onclick=()=>playDemo(box)}
 function cmp(){return `<section style="padding-top:0"><div class="wrap"><details class="cmpd"><summary><h2>Comparar com outras ferramentas</h2></summary><p class="sub" style="margin:10px 0 18px">O que você encontra ao pesquisar hoje, lado a lado. Preços públicos de outubro de 2026.</p><table class="cmp"><thead><tr><th></th><th class="us">Oi Nanda</th><th>Squad (Inner AI)</th><th>Clint</th><th>Kommo</th><th>Umbler Talk</th></tr></thead><tbody>${compare.map(r=>`<tr><td>${r[0]}</td><td class="us y">${r[1]}</td>${r.slice(2).map(c=>`<td class="${/^não/.test(c)?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></details></div></section>`}
 function segBar(){return `<div class="segbar"><span>Veja a Nanda no seu segmento</span><a href="#studios">Studios e academias</a><a href="#clinicas">Clínicas de estética</a><a href="#lancamentos">Lançamentos</a></div>`}
@@ -775,15 +773,15 @@ function calc(seg){const t={home:[20,290],studios:[10,290],clinicas:[10,900],lan
 <div class="ctr"><div><label>Contatos novos por dia <b id="cN">${t[0]}</b></label><input type="range" min="5" max="500" step="5" value="${t[0]}" data-c="n"></div><div><label>Ticket médio <b id="cT">R$ ${t[1]}</b></label><input type="range" min="50" max="3000" step="10" value="${t[1]}" data-c="t"></div><div><label>Contatos que ficam mais de 5 min sem resposta <b id="cP">35%</b></label><input type="range" min="5" max="90" step="5" value="35" data-c="p"></div><div class="out"><span>Venda perdida estimada</span><b id="cOut">R$ 0</b><small>por mês · <em id="cYear">R$ 0</em> por ano. A Nanda custa R$ 147.</small></div></div></div></div></section>`}
 function statusQuo(){return `<section style="padding-bottom:0"><div class="wrap"><div class="head"><h2>O que custa ficar como está</h2><p>Você já paga por isso. Só não aparece na fatura.</p></div><div class="sq">
 <div class="sqi"><span>Contratar alguém para a noite e o fim de semana</span><b>R$ 2.800+</b><p>por mês, com encargos, para responder o que chega fora do horário. E ainda dorme.</p></div>
-<div class="sqi"><span>Ferramenta que cobra por usuário</span><b>R$ 745</b><p>por mês para 5 pessoas no Kommo ou na Clint. Sem cobrança na conversa, sem turnos.</p></div>
-<div class="sqi us"><span>A Nanda, time inteiro incluso</span><b>R$ 147</b><p>por mês, para sempre, nas 20 vagas deste mês. Responde 24h, cobra por Pix e sabe quando chamar você.</p></div>
+<div class="sqi"><span>Ferramenta que cobra por usuário</span><b>R$ 745</b><p>por mês para 5 pessoas no Kommo ou na Clint. Sem turnos.</p></div>
+<div class="sqi us"><span>A Nanda, time inteiro incluso</span><b>R$ 147</b><p>por mês, para sempre, nas 20 vagas deste mês. Responde 24h, marca horário e sabe quando chamar você.</p></div>
 </div></div></section>`}
 function origin(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap orig"><div><h2>De onde a Nanda veio</h2><p>A Nanda não nasceu num laboratório. Nasceu dentro de uma operação que vende por conversa todos os dias, com time em turno, comissão por venda e meta mensal. Primeiro ela foi copiloto do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.</p><p>Por isso ela tem o que ferramenta de software não tem: regra de até onde ir sozinha, fila por turno, comissão calculada e cobrança dentro da conversa. Não é feature de roadmap. É o que uma operação real precisou para vender.</p></div><blockquote>Tudo que está nesta página foi usado para vender antes de virar produto. Se não fechasse venda, não estaria aqui.</blockquote></div></section>`}
 const tourItems=[
- ['inbox','Conversas','Todas as conversas, com a Nanda sugerindo a resposta e o funil do lado. Cobrar é um botão.','A tela onde o seu time passa o dia: fila por turno, IA copiloto, etapa do funil e Pix sem sair da conversa.'],
+ ['inbox','Conversas','Todas as conversas, com a Nanda sugerindo a resposta e o funil do lado. Agendar é um botão.','A tela onde o seu time passa o dia: fila por turno, IA copiloto, etapa do funil e agenda sem sair da conversa.'],
  ['funil','Funil','Quem está em cada etapa, quanto vale e há quanto tempo está parado.','Cada coluna mostra as automações ligadas. Clicou no cliente, abriu a conversa.'],
  ['autom','Automações','O que a Nanda faz sozinha quando alguém para no funil.','Regras por etapa e por prazo, em português. Ative, pause ou mude o texto.'],
- ['fluxos','Construtor de fluxos','Arraste blocos e monte o caminho do cliente: pergunta, agenda, Pix e passar pro time. Sem programar.','Do anúncio ao aluno ativo, num desenho só. Cada bloco mostra quantas pessoas passaram por ele hoje.'],
+ ['fluxos','Construtor de fluxos','Arraste blocos e monte o caminho do cliente: pergunta, agenda, follow-up e passar pro time. Sem programar.','Do anúncio ao aluno ativo, num desenho só. Cada bloco mostra quantas pessoas passaram por ele hoje.'],
  ['painel','Painel','Quanto vendeu, quem vendeu, quanto a Nanda fechou sozinha e onde o funil perde.','Um botão “Ativar” ao lado da maior perda do mês.'],
 ];
 function tour(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head"><span class="eyb">Por dentro do CRM</span><h2>Por dentro, é simples assim</h2><p>Cinco telas. Nenhum menu escondido. Quem já usa WhatsApp aprende numa tarde.</p></div><div class="tour"><div class="tabs">${tourItems.map((t,i)=>`<button class="tab ${i===0?'on':''}" data-tab="${i}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join('')}</div><div class="shotbox"><img id="tourImg" src="shots/${tourItems[0][0]}.jpg" alt="${tourItems[0][1]}" width="1200" height="750"><div class="cap" id="tourCap">${tourItems[0][3]}</div></div></div></div></section>`}
@@ -794,7 +792,7 @@ function whyNow(){return `<section><div class="wrap"><div class="head"><h2>Por q
 </div></div></section>`}
 function pricing(seg){const by={studios:'por unidade',clinicas:'por unidade',lancamentos:'por operação',home:'por negócio'}[seg];return `<section id="precos" style="background:#fff;border-top:1px solid var(--line)"><div class="wrap"><div class="head"><span class="eyb">Investimento</span><h2>Escolha o plano que cabe no seu momento. Ele cresce com você.</h2><p>Contratar alguém para cobrir a noite e o fim de semana custa mais de R$ 2.800 por mês. A Nanda começa em R$ 147, time inteiro incluso. Nada por usuário, nada de fidelidade. As mensagens da Meta você paga a preço de custo, e o valor aparece antes de enviar.</p></div><div class="price">
  <div class="plan hot"><span class="tag">Oferta do mês · 20 vagas</span><div><span class="was">R$ 297/mês</span><div class="amt">R$ 147<small>/mês ${by}, para sempre</small></div></div><ul><li>Tudo do plano Completo, por R$ 147 enquanto for cliente</li><li>Implantação assistida: a Nanda configurada com você na primeira semana</li><li>Plantão ao vivo de segunda a sexta: a gente monta suas automações junto com você</li><li>Suporte direto com o time, no WhatsApp</li><li>Cancela quando quiser, pelo sistema</li></ul><a class="btn primary lg" href="#" data-pre>Contratar a Nanda por R$ 147</a><div class="guar"><i>Garantia:</i><span>30 dias. Se a Nanda não responder, agendar e cobrar como está nesta página, você pede o dinheiro de volta no próprio WhatsApp e recebe em 48 h.</span></div></div>
- <div class="plan"><span class="tag" style="background:#EEF1F4;color:var(--ink-2)">Completo</span><div class="amt">R$ 297<small>/mês ${by}</small></div><ul><li>Usuários ilimitados</li><li>WhatsApp oficial + Instagram Direct</li><li>IA inclusa para cerca de 2 mil conversas por mês; acima disso, você define o teto</li><li>Funil, automações, construtor de fluxos e campanhas do seu segmento</li><li>Integra com Google Agenda e com os formulários de anúncio do Facebook (Lead Ads)</li><li>Proposta com aceite registrado, cobrança Pix, cartão e assinatura, com nota fiscal</li><li>Turnos, comissão, painel e coaching do time pela Nanda</li><li>Plantão ao vivo de segunda a sexta</li><li class="x">Unidade adicional: R$ 147/mês</li></ul><a class="btn lg" href="#" data-trial>Testar 7 dias grátis</a></div>
+ <div class="plan"><span class="tag" style="background:#EEF1F4;color:var(--ink-2)">Completo</span><div class="amt">R$ 297<small>/mês ${by}</small></div><ul><li>Usuários ilimitados</li><li>WhatsApp oficial + Instagram Direct</li><li>IA inclusa para cerca de 2 mil conversas por mês; acima disso, você define o teto</li><li>Funil, automações, construtor de fluxos e campanhas do seu segmento</li><li>Integra com Google Agenda e com os formulários de anúncio do Facebook (Lead Ads)</li><li>A Nanda envia a sua chave Pix ou link de pagamento; o dinheiro cai direto na sua conta</li><li>Turnos, comissão, painel e coaching do time pela Nanda</li><li>Plantão ao vivo de segunda a sexta</li><li class="x">Unidade adicional: R$ 147/mês</li></ul><a class="btn lg" href="#" data-trial>Testar 7 dias grátis</a></div>
  <div class="plan dark"><span class="tag">Rede e franquias · 3+ unidades</span><div class="amt">Sob consulta<small>por rede</small></div><ul><li>Cada unidade com número, equipe e tabela própria</li><li>Visão da matriz: vendas, falta e retorno por unidade</li><li>Nanda treinada no padrão da rede, ajustável por unidade</li><li>Gerente de conta e implantação assistida por unidade</li><li>Relatório consolidado toda segunda</li></ul><a class="btn lg white" href="#" data-wa>Falar com a gente</a><span class="foot">Resposta em até 1 dia útil, pelo WhatsApp.</span></div>
 </div><div class="meta-note">Custo da Meta, para referência: conversas que o cliente inicia não custam nada. Mensagens que você inicia (campanha, lembrete fora de 24 h) custam cerca de R$ 0,43 cada e aparecem antes de você enviar.</div></div></section>`}
 function faq(f){return `<section id="faq"><div class="wrap"><div class="head c"><h2>O que perguntam antes de começar</h2></div><div class="faq">${f.map(x=>`<details><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</div></div></section>`}
@@ -804,26 +802,26 @@ function manifesto(){return `<section style="padding:88px 0 40px"><div class="wr
 function beforeAfter(seg){
  const d={
   home:['Sua venda não devia depender de quem lembrou de responder.','Hoje o WhatsApp lota, o time responde o que dá, e o cliente que não teve resposta some sem avisar.',
-   ['Mensagem das 22h respondida às 9h, quando o cliente já fechou com outro','Cinco pessoas no mesmo número, ninguém sabe quem respondeu o quê','"Vou pensar" vira silêncio, porque ninguém volta nele','Horário marcado de boca; metade esquece e falta','Pix mandado por foto, conferido "no olho", anotado em planilha'],
-   ['A Nanda responde em segundos, 24h, pelo seu número oficial','Cada conversa tem dono; o time vê só a sua fila, o gestor vê tudo','Quem parou no funil é retomado no prazo certo, sem ninguém lembrar','Horário marcado e confirmado na conversa; lembrete na véspera','Pix, cartão ou proposta com aceite dentro da conversa, confirmação automática']],
+   ['Mensagem das 22h respondida às 9h, quando o cliente já fechou com outro','Cinco pessoas no mesmo número, ninguém sabe quem respondeu o quê','"Vou pensar" vira silêncio, porque ninguém volta nele','Horário marcado de boca; metade esquece e falta','Cliente perguntou o preço e ninguém voltou para saber se fechou'],
+   ['A Nanda responde em segundos, 24h, pelo seu número oficial','Cada conversa tem dono; o time vê só a sua fila, o gestor vê tudo','Quem parou no funil é retomado no prazo certo, sem ninguém lembrar','Horário marcado e confirmado na conversa; lembrete na véspera','Quem pede o link de pagamento recebe na hora, e o time vê no funil quem fechou']],
   studios:['Seu studio não devia perder aluno entre a experimental e o plano.','Hoje a experimental é marcada no improviso, ninguém confirma, quem faz a aula e some não é retomado, e a renovação depende de alguém lembrar.',
-   ['Experimental marcada por mensagem, sem confirmação; metade falta','Fez a aula, "amou", e ninguém mais falou com ela','Plano vence e o aluno só não renovou porque ninguém avisou','Horário das 6h perguntado às 23h, respondido no dia seguinte','Pix do plano mandado por foto e conferido no extrato'],
-   ['A Nanda marca a experimental com formulário no chat e confirma na véspera','Dois dias depois da aula, retoma e oferece o plano com Pix','Aos 25 dias, oferece renovar ou subir para o trimestral','Responde às 23h e marca a aula; o time encontra pronta de manhã','Pix cai, aluno vira ativo, renovação agendada sozinha']],
+   ['Experimental marcada por mensagem, sem confirmação; metade falta','Fez a aula, "amou", e ninguém mais falou com ela','Plano vence e o aluno só não renovou porque ninguém avisou','Horário das 6h perguntado às 23h, respondido no dia seguinte','Aluno pediu o valor do plano às 22h e ninguém respondeu'],
+   ['A Nanda marca a experimental com formulário no chat e confirma na véspera','Dois dias depois da aula, retoma e oferece o plano','Aos 25 dias, oferece renovar ou subir para o trimestral','Responde às 23h e marca a aula; o time encontra pronta de manhã','Responde o valor na hora e já manda a sua chave Pix ou link']],
   clinicas:['Sua agenda não devia vazar na recepção.','Hoje a recepção confirma quando dá, o orçamento fica parado no WhatsApp e a paciente que fez o procedimento não é chamada para voltar.',
    ['30% de falta em avaliações que custaram anúncio','Orçamento de R$ 2.400 enviado e nunca mais respondido','Recepcionista saiu e levou a história das pacientes','Paciente adorou o procedimento e nunca mais apareceu','Sinal cobrado "quando a paciente lembrar"'],
-   ['Confirmação em dois tempos, com botão; faltou, a Nanda reagenda','Orçamento vira proposta no chat, com aceite registrado e sinal por Pix','Tudo fica na clínica: conversa, orçamento, quem atendeu','No prazo do procedimento, a Nanda chama para o retorno','Sinal sai junto com o aceite; o restante parcelado no cartão']],
+   ['Confirmação em dois tempos, com botão; faltou, a Nanda reagenda','Orçamento parado é retomado no prazo, sem a recepção lembrar','Tudo fica na clínica: conversa, orçamento, quem atendeu','No prazo do procedimento, a Nanda chama para o retorno','Quem quer fechar vai direto para a recepção, com a conversa toda']],
   lancamentos:['Seu carrinho não devia ter lead no vácuo.','Hoje abrem 2 mil conversas, o time responde 200, o boleto não pago expira em silêncio e a comissão vira briga de planilha.',
    ['2 mil leads na abertura, 200 respondidos no dia','Boleto gerado e não pago: 20% do faturamento sumindo','Dois SDRs falando com o mesmo lead','"Vou pensar" sem retorno até o carrinho fechar','Comissão calculada à mão, com discussão'],
-   ['A Nanda responde os 2 mil na hora, pelo nome','Boleto sem pagamento em 6 h recebe Pix no mesmo valor','Cada lead tem dono, por turno e rodízio','Última chamada 2 h antes do carrinho fechar','Comissão por venda e por origem, pronta no fim']],
+   ['A Nanda responde os 2 mil na hora, pelo nome','Boleto sem pagamento em 6 h recebe uma retomada com o link','Cada lead tem dono, por turno e rodízio','Última chamada 2 h antes do carrinho fechar','Comissão por venda e por origem, pronta no fim']],
  }[seg]||null;
  if(!d)return '';
  return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head c"><span class="eyb">A virada</span><h2>${d[0]}</h2><p>${d[1]}</p></div><div class="ba"><div class="bac before"><span class="tag">Hoje, sem a Nanda</span><h3>O caos do dia a dia</h3><ul>${d[2].map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="bac after"><span class="tag">Com a Nanda</span><h3>Tudo no lugar, na hora certa</h3><ul>${d[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div></section>`}
 const caps=[
- ['chat','Atende e vende 24 horas, do seu jeito','A Nanda responde em segundos, com os seus preços e o seu tom, e sabe até onde ir sozinha: tira dúvida e agenda; fechar e cobrar fica com o time até você liberar. É como ter sua melhor vendedora acordada o tempo todo.'],
- ['pix','Cobra dentro da conversa, sem link solto','Proposta com aceite registrado, Pix à vista, cartão parcelado ou assinatura, tudo no chat. Pagou, confirma sozinho, emite a nota e move para "Pago". Ninguém mais confere comprovante no olho.'],
+ ['chat','Atende e vende 24 horas, do seu jeito','A Nanda responde em segundos, com os seus preços e o seu tom, e sabe até onde ir sozinha: tira dúvida, agenda e manda o seu link de pagamento; o que precisa de uma pessoa vai para o time. É como ter sua melhor vendedora acordada o tempo todo.'],
+ ['pix','Leva o cliente até o pagamento','Quando o cliente quer fechar, a Nanda manda a chave Pix ou o link de pagamento que você já usa, e o dinheiro cai direto na sua conta. Quem precisa de uma pessoa vai para o seu time, com a conversa inteira.'],
  ['funil','Funil que já vem pronto para o seu segmento','Etapas, prazos e automações montados para como a sua aluna, a sua paciente ou o seu lead decide. Você ajusta; não começa do zero. Um contato pode estar em mais de um funil.'],
- ['clock','Ninguém some sem a Nanda tentar','Quem parou no funil é retomado no prazo certo, com a mensagem certa: a experimental sem Pix, o orçamento parado, o boleto não pago, o plano vencendo. Você define a regra uma vez; ela roda todo dia.'],
- ['pin','Você sabe de onde veio cada venda','Anúncio, Instagram, indicação, Google ou QR code: a origem chega marcada e vai até o Pix. O painel mostra quanto cada canal vendeu e quanto custou. Realocar verba deixa de ser palpite.'],
+ ['clock','Ninguém some sem a Nanda tentar','Quem parou no funil é retomado no prazo certo, com a mensagem certa: a experimental que não virou plano, o orçamento parado, o boleto não pago, o plano vencendo. Você define a regra uma vez; ela roda todo dia.'],
+ ['pin','Você sabe de onde veio cada venda','Anúncio, Instagram, indicação, Google ou QR code: a origem chega marcada e vai até a venda. O painel mostra quanto cada canal vendeu e quanto custou. Realocar verba deixa de ser palpite.'],
  ['team','Time em turno, comissão calculada, coaching da Nanda','Cada conversa tem dono; cada turno tem fila. No fim do mês a comissão já está pronta, por pessoa e por origem. E a Nanda lê as conversas do time e aponta, para cada um, onde a venda escapou.'],
 ];
 const capIcon={chat:'<path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.8-4.6A8 8 0 1 1 21 12z"/>',pix:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="11" rx="1.5"/><rect x="16" y="4" width="5" height="7" rx="1.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'};
@@ -854,20 +852,22 @@ function spotlights(){return `<section>
 </section>
 <section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
  <div class="wrap">
-  <div class="head c"><span class="eyb">2 · Vende</span><h2>A venda inteira acontece dentro da conversa</h2><p>Do "quanto fica?" ao "pago", sem trocar de tela e sem planilha ao lado.</p></div>
+  <div class="head c"><span class="eyb">2 · Vende</span><h2>Do "quanto fica?" ao "fechado", na mesma conversa</h2><p>A Nanda responde, marca e leva o cliente até o pagamento. O dinheiro cai direto na sua conta, do jeito que você já recebe hoje.</p></div>
   <div class="flow4">
-   <div><i>1</i><b>Proposta no chat</b><span>A Nanda ou o vendedor manda a proposta com o valor e as condições. Sem PDF, sem link solto.</span></div>
-   <div><i>2</i><b>Aceite registrado</b><span>O cliente aceita com um toque. Fica gravado com data, hora e o que foi combinado.</span></div>
-   <div><i>3</i><b>Sinal por Pix</b><span>O Pix do sinal sai junto com o aceite. Pagou, confirma sozinho e emite a nota.</span></div>
-   <div><i>4</i><b>Restante parcelado</b><span>Cartão em até 12x ou assinatura que renova. Atrasou, a Nanda lembra sem constranger.</span></div>
+   <div><i>1</i><b>Responde o preço</b><span>Com os valores e condições que você ensinou. Ela nunca inventa preço nem promessa.</span></div>
+   <div><i>2</i><b>Marca o horário</b><span>Oferece só horários livres de verdade e confirma na hora. O agendamento vai para a sua agenda.</span></div>
+   <div><i>3</i><b>Manda o seu pagamento</b><span>Quando o cliente quer fechar, envia a sua chave Pix ou o link do seu checkout. Sem intermediário.</span></div>
+   <div><i>4</i><b>Passa para o seu time</b><span>Quem precisa de uma pessoa vai com a conversa inteira. O time confere e move o card para "Fechou".</span></div>
   </div>
   <div class="mock mock-pay">
    <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>Conversa · Renata · Clínica Viva</b></div>
    <div class="mk-chat">
-    <div class="mk-m out"><span class="by">Dra. Paula</span>Harmonização facial: R$ 2.400. Sinal de 20% no Pix e o restante em 4x. Fechado?</div>
-    <div class="mk-card"><div class="mk-ct">Proposta · Harmonização facial</div><div class="mk-row"><span>Total</span><b>R$ 2.400</b></div><div class="mk-row"><span>Sinal (Pix)</span><b>R$ 480</b></div><div class="mk-row"><span>Restante</span><b>4x R$ 480 no cartão</b></div><div class="mk-btn">Aceitar proposta</div></div>
-    <div class="mk-sys">Aceite registrado · 14/10 às 16:42 · Pix do sinal enviado</div>
-    <div class="mk-sys ok">Sinal pago · NF emitida · procedimento agendado para 22/10</div>
+    <div class="mk-m">Gostei do orçamento! Como faço para reservar?</div>
+    <div class="mk-m out"><span class="by">Nanda</span>Que ótimo, Renata! Tenho quinta às 10h ou sexta às 15h para o procedimento. Qual fica melhor?</div>
+    <div class="mk-m">Quinta às 10h</div>
+    <div class="mk-sys">Nanda agendou Harmonização facial para qui 22/10 às 10:00</div>
+    <div class="mk-m out"><span class="by">Nanda</span>Reservado! Para confirmar, o sinal pode ser no Pix da clínica: CNPJ 12.345.678/0001-90. Me manda o comprovante por aqui 😊</div>
+    <div class="mk-sys ok">Comprovante recebido · recepção moveu para Fechou</div>
    </div>
   </div>
  </div>
@@ -890,7 +890,7 @@ function spotlights(){return `<section>
     <div class="mk-m out"><span class="by">Nanda</span>Ótimo, Bruno! Vou te passar para a Camila, que cuida das matrículas. Ela já vê tudo o que a gente conversou.</div>
     <div class="mk-sys">A Nanda passou para a Camila · pronto para fechar</div>
     <div class="mk-card" style="align-self:center"><div class="mk-ct">Resumo para a Camila</div><div class="mk-row"><span>Quer</span><b>Plano semestral</b></div><div class="mk-row"><span>Dúvida</span><b>Vaga na turma das 6h</b></div><div class="mk-row"><span>Veio de</span><b>Anúncio "Aula grátis"</b></div></div>
-    <div class="mk-m out"><span class="by">Camila</span>Oi, Bruno! A turma das 6h tem 2 vagas. Te mando o Pix do semestral?</div>
+    <div class="mk-m out"><span class="by">Camila</span>Oi, Bruno! A turma das 6h tem 2 vagas. Quer que eu já reserve a sua vaga?</div>
    </div>
   </div>
  </div>
@@ -899,7 +899,7 @@ function gestao(){return `<section>
  <div class="wrap split">
   <div>
    <span class="eyb">Para quem tem time</span><h2>Você finalmente vai saber de onde veio cada venda</h2>
-   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">Chega de "acho que foi do anúncio". O cliente chega pelo anúncio, pelo Instagram, pela indicação ou pelo QR code já com a origem marcada, e ela segue até o Pix. O painel soma por canal: quanto vendeu, quanto custou, quantas vezes se pagou.</p>
+   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">Chega de "acho que foi do anúncio". O cliente chega pelo anúncio, pelo Instagram, pela indicação ou pelo QR code já com a origem marcada, e ela segue até a venda. O painel soma por canal: quanto vendeu, quanto custou, quantas vezes se pagou.</p>
    <ul class="ticks">
     <li><b>Anúncio Click-to-WhatsApp:</b> a Nanda sabe qual criativo trouxe a pessoa e já abre a conversa falando dele.</li>
     <li><b>Link e QR code próprios:</b> um para cada campanha, cartaz ou post. Sem configurar nada.</li>
@@ -926,7 +926,7 @@ function gestao(){return `<section>
   <div class="mock">
    <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>O que a Nanda viu nas conversas · semana 42</b></div>
    <div class="mk-coach">
-    <div class="mk-p"><span class="av" style="background:#E07A5F">CA</span><div><b>Camila <em>38% fecham</em></b><p>Fecha bem, mas em 6 conversas ofereceu desconto antes do cliente pedir. <u>Sugestão:</u> ancorar no Pix à vista primeiro.</p></div></div>
+    <div class="mk-p"><span class="av" style="background:#E07A5F">CA</span><div><b>Camila <em>38% fecham</em></b><p>Fecha bem, mas em 6 conversas ofereceu desconto antes do cliente pedir. <u>Sugestão:</u> apresentar o plano trimestral primeiro.</p></div></div>
     <div class="mk-p"><span class="av" style="background:#5B7DB1">RS</span><div><b>Rafael <em class="w">29% fecham</em></b><p>Perdeu 4 vendas no "vou pensar": respondeu "ok, fico no aguardo". <u>Sugestão:</u> perguntar o que falta para decidir.</p></div></div>
     <div class="mk-p"><span class="av" style="background:#8E6BBF">TL</span><div><b>Thais <em class="r">14% fecham</em></b><p>6 min para responder à noite; 3 clientes sumiram antes. <u>Sugestão:</u> deixar a Nanda abrir e assumir depois.</p></div></div>
    </div>
@@ -947,9 +947,9 @@ function gestao(){return `<section>
 function metaBand(){return `<section class="metab"><div class="wrap"><div class="mb"><div><span class="seal"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l2.4 2.1 3.2-.3.9 3.1 2.8 1.6-1 3 1 3-2.8 1.6-.9 3.1-3.2-.3L12 22l-2.4-2.1-3.2.3-.9-3.1-2.8-1.6 1-3-1-3 2.8-1.6.9-3.1 3.2.3z" fill="#1877F2"/><path d="M8 12.2l2.6 2.6L16 9.4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>Parceiro tecnológico da Meta</span><h3>Feita sobre a API Oficial do WhatsApp</h3></div><ul><li>Bem menos risco de bloqueio que ferramentas não oficiais</li><li>Conexão estável, autorizada pela própria Meta</li><li>Seu número e seu histórico continuam seus</li></ul></div></div></section>`}
 function segsGrid(){return `<section><div class="wrap"><div class="head"><h2>${site.home.whoTitle}</h2><p>${site.home.whoLead}</p></div><div class="segs">
  <a class="seg" href="#studios"><b>Studios e academias</b><p>Mais experimentais virando plano e mais renovações, sem ninguém correr atrás.</p><span>Ver página →</span></a>
- <a class="seg" href="#clinicas"><b>Clínicas de estética e odonto</b><p>Menos falta, mais orçamento fechado com sinal por Pix, paciente voltando no prazo.</p><span>Ver página →</span></a>
+ <a class="seg" href="#clinicas"><b>Clínicas de estética e odonto</b><p>Menos falta, mais orçamento fechado, paciente voltando no prazo.</p><span>Ver página →</span></a>
  <a class="seg" href="#lancamentos"><b>Lançamentos e infoprodutos</b><p>Carrinho inteiro respondido na hora, boleto recuperado e SDR só com quem está pronto.</p><span>Ver página →</span></a>
- <a class="seg" href="#" data-trial><b>Outro segmento</b><p>Funil de 4 etapas, Nanda respondendo dúvidas e cobrando por Pix. Você monta o resto em uma tarde.</p><span>Começar assim mesmo →</span></a>
+ <a class="seg" href="#" data-trial><b>Outro segmento</b><p>Funil de 4 etapas, Nanda respondendo dúvidas e marcando horário. Você monta o resto em uma tarde.</p><span>Começar assim mesmo →</span></a>
 </div></div></section>`}
 
 let cur='home';
