@@ -89,6 +89,42 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:50}
 .toast.show{opacity:1}
 .empty{color:var(--ink3);text-align:center;padding:26px}
+
+/* conversas */
+.page.wide{max-width:none;padding:0}
+.cv{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 40px);border-top:1px solid var(--line)}
+.cv-list{border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;min-height:0}
+.cv-list .hd{padding:16px 16px 10px}
+.cv-list .hd h1{font-size:22px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{padding:5px 11px;border-radius:999px;border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--ink2);background:#fff}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cv-items{overflow:auto;flex:1}
+.cv-it{display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;align-items:start;text-align:left;width:100%}
+.cv-it:hover{background:#FBF8F5}.cv-it.on{background:var(--tint);box-shadow:inset 3px 0 0 var(--c)}
+.cv-it .av{width:40px;height:40px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.cv-it b{display:block;font-size:14px}
+.cv-it .pv{color:var(--ink2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.cv-it .mt{text-align:right;font-size:11.5px;color:var(--ink3);display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.cv-it .un{background:var(--c);color:#fff;font-size:11px;font-weight:800;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+.cv-chat{display:flex;flex-direction:column;min-height:0;background:#EFE7DD;background-image:radial-gradient(rgba(0,0,0,.04) 1px,transparent 1px);background-size:14px 14px}
+.cv-chat .top{background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.cv-chat .top b{display:block;font-size:15px}.cv-chat .top span{font-size:12.5px;color:var(--ink2)}
+.cv-chat .top .act{margin-left:auto;display:flex;gap:8px;align-items:center}
+.msgs{flex:1;overflow:auto;padding:20px 26px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:68%;padding:8px 12px;border-radius:12px;font-size:14px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.06);white-space:pre-wrap;word-wrap:break-word}
+.m.in{align-self:flex-start;background:#fff;border-top-left-radius:3px}
+.m.out{align-self:flex-end;background:#DCF8C6;border-top-right-radius:3px}
+.m small{display:block;text-align:right;font-size:10.5px;color:var(--ink3);margin-top:3px}
+.m .by{display:block;font-size:11px;font-weight:800;color:var(--c2);margin-bottom:1px}
+.m .st.read{color:#34B7F1}.m .st.failed{color:var(--bad)}
+.comp{background:#fff;border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:10px;align-items:flex-end}
+.comp textarea{flex:1;resize:none;border:1px solid #DCD2C9;border-radius:14px;padding:10px 13px;min-height:44px;max-height:140px;outline:0;font:inherit}
+.comp textarea:focus{border-color:var(--c)}
+.closed{background:var(--warnsoft);color:var(--warn);font-size:13px;font-weight:600;padding:10px 18px;border-top:1px solid #EFD9A6}
+.cv-empty{flex:1;display:grid;place-items:center;color:var(--ink3);text-align:center;padding:30px}
+@media (max-width:860px){.cv{grid-template-columns:1fr;height:auto}.cv-chat{min-height:70vh}}
+
 @media (max-width:860px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.g4{grid-template-columns:1fr 1fr}.g2,.form2{grid-template-columns:1fr}.page{padding:20px 16px}}
 </style>
 </head>
@@ -147,7 +183,7 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas','etapa 2'],['funil','Funil','etapa 4'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['funil','Funil','etapa 4'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -168,17 +204,76 @@ function shell(){
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
   go(VIEW);
 }
-function go(v){VIEW=v;document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
+let POLL=null;
+function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
+async function renderWa(own){
+  const n=await api('/wa/number');const box=$('#wa');if(!box)return;
+  if(n){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
+    <p style="color:var(--ink2);font-size:13px;margin-top:6px">Qualidade: ${esc(n.quality||'—')} · conectado em ${day(n.connected_at)}</p>
+    ${n.webhook&&n.webhook!=='ok'?`<p class="note" style="margin-top:10px">Aviso: não foi possível inscrever o recebimento de mensagens (${esc(n.webhook)}). Fale com o suporte.</p>`:''}
+    ${own?'<button class="btn sm danger" id="waOff" style="margin-top:12px">Desconectar</button>':''}`;
+    if(own)$('#waOff').onclick=async()=>{if(!confirm('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});renderWa(own)};return}
+  box.innerHTML=`<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3>
+   <p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Em breve: botão "Entrar com a Meta" que faz tudo sozinho. Por enquanto, a conexão é feita com os dados do número na Meta (o suporte do Oi Nanda pode fazer por você).</p>
+   ${own?`<form id="waf" class="form2"><div class="field"><label>ID do número de telefone</label><input name="phone_number_id" required inputmode="numeric"></div>
+   <div class="field"><label>ID da conta do WhatsApp Business</label><input name="waba_id" required inputmode="numeric"></div>
+   <div class="field" style="grid-column:1/-1"><label>Token de acesso</label><input name="token" type="password" required autocomplete="off"></div>
+   <div><button class="btn p">Conectar</button></div><div class="err" id="wae" style="align-self:center"></div></form>`:'<p class="note">Só o dono da conta conecta o WhatsApp.</p>'}`;
+  if(own)$('#waf').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#wae').textContent='Conectando...';
+    try{await api('/wa/connect',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});toast('WhatsApp conectado.');renderWa(own)}catch(e){$('#wae').textContent=e.message;b.disabled=false}};
+}
+let CV={filter:'all',open:null,list:[]};
+const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
+async function cvList(){
+  CV.list=await api('/conversations?filter='+CV.filter);
+  const el=$('#cvItems');if(!el)return;
+  el.innerHTML=CV.list.length?CV.list.map(c=>`<button class="cv-it ${CV.open===c.id?'on':''}" data-c="${c.id}"><span class="av">${initials(c.name)}</span>
+    <span><b>${esc(c.name)}</b><span class="pv">${c.last_dir==='out'?'Você: ':''}${esc(c.last_text||'')}</span></span>
+    <span class="mt">${hm(c.last_at)}${c.unread?`<span class="un">${c.unread}</span>`:''}${c.assigned_name?`<span>${esc(c.assigned_name.split(' ')[0])}</span>`:''}</span></button>`).join('')
+    :'<div class="empty">Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.</div>';
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;cvList();cvChat(true)});
+}
+async function cvChat(scroll){
+  const box=$('#cvChat');if(!box||!CV.open)return;
+  const d=await api('/conversations/'+CV.open);const c=d.contact;const me=ME.user;
+  const team=CV.team||[];
+  const st=s=>s==='read'?'<span class="st read">✓✓</span>':s==='delivered'?'<span class="st">✓✓</span>':s==='failed'?'<span class="st failed">não entregue</span>':s==='sent'?'<span class="st">✓</span>':'';
+  const prevDraft=$('#cvText')?.value||'';
+  box.innerHTML=`<div class="top"><span class="av" style="width:38px;height:38px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800">${initials(c.name)}</span>
+    <div><b>${esc(c.name)}</b><span>+${esc(c.wa_id)}</span></div>
+    <div class="act">${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
+   <div class="msgs" id="cvMsgs">${d.messages.map(m=>`<div class="m ${m.dir}">${m.dir==='out'&&m.by?`<span class="by">${esc(m.by)}</span>`:''}${esc(m.text)}<small>${hm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`).join('')}</div>
+   ${c.window_open?`<form class="comp" id="cvF"><textarea id="cvText" rows="1" placeholder="Escreva para ${esc(c.name.split(' ')[0])}... (Enter envia, Shift+Enter quebra linha)"></textarea><button class="btn p">Enviar</button></form>`
+     :`<div class="closed">Passaram 24 horas desde a última mensagem de ${esc(c.name.split(' ')[0])}. Pela regra da Meta, só dá para chamar de volta com um modelo aprovado (chega na etapa de campanhas).</div>`}`;
+  const ta=$('#cvText');if(ta){ta.value=prevDraft;ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#cvF').requestSubmit()}};if(scroll)ta.focus()}
+  const ms=$('#cvMsgs');ms.scrollTop=ms.scrollHeight;
+  if($('#cvF'))$('#cvF').onsubmit=async ev=>{ev.preventDefault();const t=$('#cvText').value.trim();if(!t)return;$('#cvText').value='';
+    try{await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});await cvChat();cvList()}catch(e){toast(e.message);$('#cvText').value=t}};
+  if($('#cvAs'))$('#cvAs').onchange=async e=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Conversa passada.');cvList()};
+  if($('#cvMine'))$('#cvMine').onclick=async()=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:me.id}});cvChat();cvList()};
+}
 const VIEWS={
+ async conversas(){
+  const num=await api('/wa/number');CV.team=await api('/team');
+  $('#page').innerHTML=`<div class="cv"><div class="cv-list"><div class="hd"><h1>Conversas</h1>
+    ${num?'':`<p class="note" style="margin-top:8px">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
+    <div class="chips">${[['all','Todas'],['mine','Minhas'],['unassigned','Sem dono'],['waiting','Esperando resposta']].map(f=>`<button class="chip ${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('')}</div></div>
+    <div class="cv-items" id="cvItems"></div></div>
+    <div class="cv-chat" id="cvChat"><div class="cv-empty">Escolha uma conversa à esquerda.</div></div></div>`;
+  if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
+  document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));cvList()});
+  await cvList();if(CV.open)await cvChat(true);
+  POLL=setInterval(async()=>{if(VIEW!=='conversas'||document.hidden)return;try{const atBottom=(()=>{const m=$('#cvMsgs');return !m||m.scrollHeight-m.scrollTop-m.clientHeight<40})();await cvList();if(CV.open&&!($('#cvText')===document.activeElement&&$('#cvText').value))await cvChat(false);if(!atBottom){} }catch(e){}},4000);
+ },
  async inicio(){
-  const team=await api('/team');const u=ME.user;
+  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;
   $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p>
    <div class="card"><div class="steps">
     <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
     <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':'2'}</span><div><b>Convide seu time</b><p>Cada pessoa com seu acesso e sua fila de conversas.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
-    <div class="step"><span class="n">3</span><div><b>Conectar o WhatsApp</b><p>Pela API oficial da Meta, junto com o app que você já usa.</p></div><span class="pill grey">em breve</span></div>
+    <div class="step ${num?'done':''}"><span class="n">${num?'✓':'3'}</span><div><b>Conectar o WhatsApp</b><p>${num?'Conectado: '+esc(num.display_phone||''):'Pela API oficial da Meta, junto com o app que você já usa.'}</p></div>${num?'':'<button class="btn sm" data-to="empresa">Conectar</button>'}</div>
     <div class="step"><span class="n">4</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar.</p></div><span class="pill grey">em breve</span></div>
    </div></div>`;
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
@@ -215,7 +310,8 @@ const VIEWS={
     ${own?'<button class="btn p" style="align-self:flex-start">Salvar</button>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
    <div class="card"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
     ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}. A contratação do plano chega numa próxima etapa.</p>`:''}
-    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div>`;
+    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div>`;
+  renderWa(own);
   if(own)$('#co').onsubmit=async ev=>{ev.preventDefault();try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(ev.target))});await refresh();toast('Dados salvos.')}catch(e){toast(e.message)}};
  },
  async atividade(){

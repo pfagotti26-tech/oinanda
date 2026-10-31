@@ -9,3 +9,8 @@ add APP_HOSTS app.oinanda.com.br
 add APP_ORIGINS https://app.oinanda.com.br
 add ADMIN_EMAIL pfagotti26@gmail.com
 add NTFY_TOPIC ""
+# etapa 2 — WhatsApp
+add META_APP_SECRET ""
+grep -q '^WA_VERIFY_TOKEN=' .env || echo "WA_VERIFY_TOKEN=$(openssl rand -hex 16)" >> .env
+grep -q '^SECRET_KEY=' .env || echo "SECRET_KEY=$(openssl rand -base64 32 | tr '+/' '-_')" >> .env
+add APP_PUBLIC_URL https://app.oinanda.com.br
