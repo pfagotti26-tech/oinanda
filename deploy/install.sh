@@ -30,10 +30,10 @@ WWW_HOST=http://www.invalid
 ACME_EMAIL=pfagotti26@gmail.com
 ENV
 fi
-chmod +x update.sh go-live.sh
+bash ensure-env.sh; chmod +x *.sh
 
 echo "==> 4/4 Subindo o site"
-docker compose up -d
+bash update.sh
 echo
 echo "PRONTO. Endereço de teste: https://${TEST_HOST}"
 echo "(o certificado HTTPS pode levar 1 minuto na primeira vez)"

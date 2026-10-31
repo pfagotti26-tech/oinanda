@@ -1,20 +1,41 @@
-# SITE_HOSTS e ACME_EMAIL vêm do deploy/.env
+# SITE_HOSTS, APP_HOSTS, WWW_HOST e ACME_EMAIL vêm do deploy/.env
 {
 	email {$ACME_EMAIL}
 }
 
-{$SITE_HOSTS} {
-	encode zstd gzip
-	root * /srv/site
-	@html path / /index.html /privacidade/ /termos/
-	header @html Cache-Control "no-cache"
-	file_server
+(seguranca) {
 	header {
 		Strict-Transport-Security "max-age=31536000"
 		X-Content-Type-Options nosniff
 		Referrer-Policy strict-origin-when-cross-origin
 		-Server
 	}
+}
+
+# site (oinanda.com.br)
+{$SITE_HOSTS} {
+	encode zstd gzip
+	root * /srv/site
+	@html path / /index.html /privacidade/ /termos/
+	header @html Cache-Control "no-cache"
+	file_server
+	import seguranca
+}
+
+# sistema (app.oinanda.com.br): painel + API
+{$APP_HOSTS:http://app.invalid} {
+	encode zstd gzip
+	handle /api/* {
+		reverse_proxy api:8001
+	}
+	handle {
+		root * /srv/app
+		header Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+	import seguranca
+	header X-Frame-Options DENY
 }
 
 # www sempre vai para o endereço oficial

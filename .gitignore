@@ -1,1 +1,4 @@
 deploy/.env
+deploy/backups/
+__pycache__/
+.pytest_cache/

@@ -1,12 +1,42 @@
-# Oi Nanda no servidor próprio (Hetzner). Por enquanto: só o site, com HTTPS automático (Caddy).
-# O produto (API + banco) entra aqui depois, no mesmo padrão do Alta Pulse.
-# Tudo sobe com:  cd /opt/oinanda/deploy && docker compose up -d
+# Oi Nanda no servidor próprio (Hetzner): site, sistema (API + banco) e HTTPS automático (Caddy).
+# Tudo sobe com:  cd /opt/oinanda/deploy && docker compose up -d --build
 name: oinanda
 
+x-logs: &logs
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }   # logs guardados com rotação (até 100 MB por serviço)
+
 services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    <<: *logs
+    volumes:
+      - mongo-data:/data/db
+      - ./backups:/backups
+    # sem "ports": o banco só é acessível de dentro do servidor
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: { context: .., dockerfile: deploy/api.Dockerfile }
+    restart: unless-stopped
+    <<: *logs
+    env_file: .env
+    environment:
+      MONGO_URL: mongodb://mongo:27017
+      DB_NAME: oinanda
+    depends_on:
+      mongo: { condition: service_healthy }
+
   web:
     image: caddy:2
     restart: unless-stopped
+    <<: *logs
     env_file: .env
     ports:
       - "80:80"
@@ -15,9 +45,12 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ../site:/srv/site:ro
+      - ../app:/srv/app:ro
       - caddy-data:/data
       - caddy-config:/config
+    depends_on: [api]
 
 volumes:
+  mongo-data:
   caddy-data:
   caddy-config:

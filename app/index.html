@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oi Nanda</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--c:#E8603F;--c2:#C44A2C;--soft:#FBE6DE;--tint:#FEF5F1;--ink:#17212B;--ink2:#4B5968;--ink3:#8593A1;--line:#EEE4DC;--bg:#FBF8F5;--ok:#0A5C50;--oksoft:#DDF4EC;--warn:#7A5600;--warnsoft:#FBF0D6;--bad:#9E2B1E;--badsoft:#FBE6E3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:var(--c2)}
+.hide{display:none!important}
+.logo{display:inline-flex;flex-direction:column;align-items:flex-start;background:var(--c);border-radius:12px;padding:5px 11px 7px 10px;line-height:1}
+.logo i{font-style:normal;font-weight:800;font-size:10px;background:#fff;color:var(--c);border-radius:6px 6px 6px 2px;padding:1px 5px 2px;transform:rotate(-5deg);margin-bottom:2px}
+.logo b{color:#fff;font-size:20px;font-weight:800;letter-spacing:-.8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:999px;font-weight:800;font-size:14px;border:1px solid var(--line);background:#fff}
+.btn:hover{border-color:var(--ink3)}
+.btn.p{background:var(--c);border-color:var(--c);color:#fff}.btn.p:hover{background:var(--c2)}
+.btn.sm{padding:6px 12px;font-size:12.5px}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.55;cursor:default}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12.5px;font-weight:700;color:var(--ink2)}
+.field input,.field select{border:1px solid #DCD2C9;border-radius:12px;padding:11px 13px;background:#fff;outline:0}
+.field input:focus,.field select:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
+.err{color:var(--bad);font-size:13px;font-weight:600;min-height:18px}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:800;background:var(--soft);color:var(--c2)}
+.pill.ok{background:var(--oksoft);color:var(--ok)}.pill.warn{background:var(--warnsoft);color:var(--warn)}.pill.bad{background:var(--badsoft);color:var(--bad)}.pill.grey{background:#EEF1F4;color:var(--ink2)}
+/* auth */
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px}
+.auth .card{width:420px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:28px 28px 28px 8px;padding:32px;box-shadow:0 30px 60px -40px rgba(23,33,43,.4)}
+.auth h1{font-size:24px;letter-spacing:-.6px;margin:18px 0 4px}
+.auth p.l{color:var(--ink2);margin-bottom:20px}
+.auth form{display:flex;flex-direction:column;gap:12px}
+.auth .sw{margin-top:16px;font-size:13.5px;color:var(--ink2);text-align:center}
+.auth .sw a{font-weight:800;cursor:pointer}
+/* shell */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.side{background:var(--ink);color:#C9D2DA;padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.side .logo{margin:0 6px 18px;align-self:flex-start}
+.side .co{background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.side .co b{display:block;color:#fff;font-size:13.5px}
+.side .co span{font-size:12px;color:#9AA7B4}
+.side h6{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:#7C8995;margin:14px 10px 4px}
+.side button.nav{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:10px;font-weight:600;font-size:14px;color:#C9D2DA}
+.side button.nav:hover{background:rgba(255,255,255,.06);color:#fff}
+.side button.nav.on{background:rgba(255,255,255,.12);color:#fff}
+.side button.nav .soon{margin-left:auto;font-size:10px;font-weight:800;color:#7C8995}
+.side .sp{flex:1}
+.side .me{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.08);margin-top:8px}
+.side .me .av{width:32px;height:32px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.side .me b{display:block;color:#fff;font-size:13px;line-height:1.2}
+.side .me span{font-size:11.5px;color:#9AA7B4}
+.side .me button{margin-left:auto;color:#9AA7B4;font-size:12px;font-weight:700}
+main{min-width:0}
+.banner{padding:10px 28px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:12px}
+.banner.imp{background:#17212B;color:#FFB38A}
+.banner.trial{background:var(--warnsoft);color:var(--warn)}
+.banner .btn{margin-left:auto}
+.page{padding:28px 32px 60px;max-width:1080px}
+.page h1{font-size:26px;letter-spacing:-.7px}
+.page .sub{color:var(--ink2);margin:4px 0 22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 22px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:1fr 1fr}
+.stat span{font-size:12.5px;color:var(--ink2);font-weight:600}
+.stat b{display:block;font-size:30px;letter-spacing:-1px;line-height:1.15;font-variant-numeric:tabular-nums}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:16px}
+.step .n{width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--c2);display:grid;place-items:center;font-weight:800;flex:none}
+.step.done .n{background:var(--oksoft);color:var(--ok)}
+.step b{display:block}.step p{color:var(--ink2);font-size:13.5px}
+.step .btn,.step .pill{margin-left:auto;flex:none}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;color:var(--ink3);font-weight:700;padding:0 10px 9px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border:0}
+td small{display:block;color:var(--ink3);font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{background:var(--tint);border:1px solid var(--soft);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--ink2)}
+.temp{font-family:ui-monospace,Menlo,monospace;font-weight:800;font-size:16px;background:#fff;border:1px dashed var(--c);border-radius:10px;padding:8px 12px;display:inline-block;margin:6px 0}
+pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;overflow:auto;background:#F6F2EE;border-radius:10px;padding:8px;margin-top:6px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
+.empty{color:var(--ink3);text-align:center;padding:26px}
+@media (max-width:860px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.g4{grid-template-columns:1fr 1fr}.g2,.form2{grid-template-columns:1fr}.page{padding:20px 16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+<script>
+const SEG={studio:'Studio ou academia',clinica:'Clínica de estética ou odonto',lancamento:'Lançamento ou infoproduto',outro:'Outro segmento'};
+const PLAN={trial:'Teste grátis',oferta:'Oferta do mês',completo:'Completo',rede:'Rede'};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dt=v=>v?new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+const day=v=>v?new Date(v).toLocaleDateString('pt-BR'):'—';
+const initials=n=>(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
+async function api(path,opt={}){
+  const r=await fetch('/api'+path,{method:opt.method||'GET',headers:opt.body?{'Content-Type':'application/json'}:{},body:opt.body?JSON.stringify(opt.body):undefined,credentials:'same-origin'});
+  let data=null;try{data=await r.json()}catch(e){}
+  if(!r.ok){const d=data&&data.detail;const msg=Array.isArray(d)?'Confira os campos: '+d.map(x=>x.loc.slice(-1)[0]).join(', '):(d||'Erro '+r.status);const e=new Error(msg);e.status=r.status;throw e}
+  return data;
+}
+let ME=null,VIEW='inicio';
+
+/* ---------- autenticação ---------- */
+function authView(mode){
+  const signup=mode==='signup';
+  $('#root').innerHTML=`<div class="auth"><div class="card">
+   <span class="logo"><i>oi</i><b>Nanda</b></span>
+   <h1>${signup?'Crie sua conta':'Entrar'}</h1>
+   <p class="l">${signup?'7 dias grátis, sem cartão. Em seguida você conecta o WhatsApp.':'Acesse o painel da sua empresa.'}</p>
+   <form id="f">
+    ${signup?`<div class="field"><label>Seu nome</label><input name="name" required minlength="2" autocomplete="name"></div>
+    <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2"></div>
+    <div class="field"><label>Segmento</label><select name="segment">${Object.entries(SEG).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+    <div class="field"><label>WhatsApp do negócio</label><input name="phone" placeholder="(11) 99999-0000" autocomplete="tel"></div>`:''}
+    <div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email"></div>
+    <div class="field"><label>Senha ${signup?'(mínimo 8 caracteres)':''}</label><input name="password" type="password" required ${signup?'minlength="8" autocomplete="new-password"':'autocomplete="current-password"'}></div>
+    <div class="err" id="e"></div>
+    <button class="btn p" type="submit">${signup?'Criar conta e começar':'Entrar'}</button>
+   </form>
+   <div class="sw">${signup?'Já tem conta? <a data-go="login">Entrar</a>':'Ainda não tem conta? <a data-go="signup">Criar conta grátis</a>'}</div>
+   ${signup?'<div class="sw" style="font-size:12px">Ao criar a conta você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</div>':''}
+  </div></div>`;
+  document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{history.replaceState(null,'',a.dataset.go==='signup'?'/cadastro':'/');authView(a.dataset.go)});
+  $('#f').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#e').textContent='';
+    const body=Object.fromEntries(new FormData(ev.target));
+    try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});history.replaceState(null,'','/');await boot()}catch(e){$('#e').textContent=e.message;b.disabled=false}};
+}
+function passwordView(){
+  $('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span>
+   <h1>Crie sua senha pessoal</h1><p class="l">Você entrou com uma senha provisória. Escolha a sua para continuar.</p>
+   <form id="f"><div class="field"><label>Senha provisória</label><input name="current_password" type="password" required></div>
+   <div class="field"><label>Nova senha (mínimo 8 caracteres)</label><input name="new_password" type="password" minlength="8" required autocomplete="new-password"></div>
+   <div class="err" id="e"></div><button class="btn p">Salvar e entrar</button></form></div></div>`;
+  $('#f').onsubmit=async ev=>{ev.preventDefault();try{await api('/auth/password',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});await boot()}catch(e){$('#e').textContent=e.message}};
+}
+
+/* ---------- casca ---------- */
+const NAV=[['inicio','Início'],['conversas','Conversas','etapa 2'],['funil','Funil','etapa 4'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
+function shell(){
+  const u=ME.user,c=ME.company,adm=u.is_admin;
+  const canManage=['owner','manager'].includes(u.role);
+  $('#root').innerHTML=`<div class="app"><aside class="side">
+    <span class="logo"><i>oi</i><b>Nanda</b></span>
+    <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div>
+    ${NAV.filter(n=>canManage||n[0]!=='atividade').map(n=>`<button class="nav" data-v="${n[0]}" ${n[2]?'disabled':''}>${n[1]}${n[2]?`<span class="soon">${n[2]}</span>`:''}</button>`).join('')}
+    ${adm?`<h6>Admin Oi Nanda</h6>${ADMIN_NAV.map(n=>`<button class="nav" data-v="${n[0]}">${n[1]}</button>`).join('')}`:''}
+    <div class="sp"></div>
+    <div class="me"><div class="av">${initials(u.name)}</div><div><b>${esc(u.name)}</b><span>${esc(ME.roles[u.role]||u.role)}</span></div><button id="out">Sair</button></div>
+  </aside><main>
+    ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
+    ${ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.</div>`:''}
+    <div class="page" id="page"></div></main></div>`;
+  document.querySelectorAll('.side [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
+  $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;authView('login')};
+  if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
+  go(VIEW);
+}
+function go(v){VIEW=v;document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
+
+/* ---------- telas ---------- */
+const VIEWS={
+ async inicio(){
+  const team=await api('/team');const u=ME.user;
+  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p>
+   <div class="card"><div class="steps">
+    <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
+    <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':'2'}</span><div><b>Convide seu time</b><p>Cada pessoa com seu acesso e sua fila de conversas.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
+    <div class="step"><span class="n">3</span><div><b>Conectar o WhatsApp</b><p>Pela API oficial da Meta, junto com o app que você já usa.</p></div><span class="pill grey">em breve</span></div>
+    <div class="step"><span class="n">4</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar.</p></div><span class="pill grey">em breve</span></div>
+   </div></div>`;
+  document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+ },
+ async equipe(){
+  const team=await api('/team');const u=ME.user;const canManage=['owner','manager'].includes(u.role);
+  $('#page').innerHTML=`<h1>Equipe</h1><p class="sub">Quem tem acesso ao painel do ${esc(ME.company.name)}.</p>
+   ${canManage?`<div class="card" style="margin-bottom:14px"><form id="inv" class="row" style="align-items:flex-end">
+     <div class="field" style="flex:1;min-width:160px"><label>Nome</label><input name="name" required minlength="2"></div>
+     <div class="field" style="flex:1.3;min-width:200px"><label>E-mail</label><input name="email" type="email" required></div>
+     <div class="field"><label>Papel</label><select name="role"><option value="agent">Atendente</option><option value="manager">Gestor</option></select></div>
+     <button class="btn p">Convidar</button></form><div id="invOut"></div></div>`:''}
+   <div class="card"><table><thead><tr><th>Pessoa</th><th>Papel</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
+   ${team.map(m=>`<tr><td><b>${esc(m.name)}</b><small>${esc(m.email)}</small></td><td>${esc(ME.roles[m.role])}</td>
+     <td>${m.active?(m.must_change_password?'<span class="pill warn">aguardando 1º acesso</span>':'<span class="pill ok">ativo</span>'):'<span class="pill grey">desativado</span>'}</td>
+     <td>${dt(m.last_login_at)}</td>
+     <td style="text-align:right">${canManage&&m.role!=='owner'&&m.id!==u.id?`<button class="btn sm" data-reset="${m.id}">Nova senha</button> <button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:''}</td></tr>`).join('')}
+   </tbody></table></div>
+   <p class="note" style="margin-top:14px"><b>Dono</b> vê e configura tudo. <b>Gestor</b> convida e acompanha o time. <b>Atendente</b> atende as próprias conversas.</p>`;
+  const showTemp=(name,email,temp)=>{$('#invOut').innerHTML=`<div class="note" style="margin-top:14px">Envie para ${esc(name)}: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória<br><span class="temp">${esc(temp)}</span><br>No primeiro acesso a pessoa cria a senha dela. Esta senha não aparece de novo.</div>`};
+  if($('#inv'))$('#inv').onsubmit=async ev=>{ev.preventDefault();const body=Object.fromEntries(new FormData(ev.target));
+    try{const r=await api('/team',{method:'POST',body});await VIEWS.equipe();showTemp(r.member.name,r.member.email,r.temp_password)}catch(e){toast(e.message)}};
+  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{try{await api('/team/'+b.dataset.act,{method:'PATCH',body:{active:b.dataset.on==='1'}});VIEWS.equipe()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{const m=team.find(x=>x.id===b.dataset.reset);
+    try{const r=await api('/team/'+m.id+'/reset',{method:'POST'});await VIEWS.equipe();showTemp(m.name,m.email,r.temp_password)}catch(e){toast(e.message)}});
+ },
+ async empresa(){
+  const c=ME.company,own=ME.user.role==='owner';
+  $('#page').innerHTML=`<h1>Empresa</h1><p class="sub">Dados do negócio e do plano.</p>
+   <div class="grid g2"><div class="card"><form id="co" style="display:flex;flex-direction:column;gap:12px">
+    <div class="field"><label>Nome do negócio</label><input name="name" value="${esc(c.name)}" ${own?'':'disabled'}></div>
+    <div class="field"><label>Segmento</label><select name="segment" ${own?'':'disabled'}>${Object.entries(SEG).map(([k,v])=>`<option value="${k}" ${k===c.segment?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="field"><label>WhatsApp do negócio</label><input name="phone" value="${esc(c.phone)}" ${own?'':'disabled'}></div>
+    ${own?'<button class="btn p" style="align-self:flex-start">Salvar</button>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
+   <div class="card"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
+    ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}. A contratação do plano chega numa próxima etapa.</p>`:''}
+    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div>`;
+  if(own)$('#co').onsubmit=async ev=>{ev.preventDefault();try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(ev.target))});await refresh();toast('Dados salvos.')}catch(e){toast(e.message)}};
+ },
+ async atividade(){
+  const rows=await api('/audit');
+  $('#page').innerHTML=`<h1>Atividade</h1><p class="sub">Quem fez o quê na conta, nos últimos 180 dias.</p>
+   <div class="card">${rows.length?`<table><thead><tr><th>Quando</th><th>Quem</th><th>O quê</th><th>De onde</th></tr></thead><tbody>
+   ${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.actor)}${r.impersonated_by?'<small>suporte Oi Nanda</small>':''}</td><td>${esc(r.action)}${r.target?`<small>${esc(r.target)}</small>`:''}</td><td><small>${esc(r.ip||'')}</small></td></tr>`).join('')}
+   </tbody></table>`:'<div class="empty">Nada registrado ainda.</div>'}</div>`;
+ },
+ async 'a-visao'(){
+  const s=await api('/admin/stats');
+  const tile=(l,v)=>`<div class="card stat"><span>${l}</span><b>${v}</b></div>`;
+  $('#page').innerHTML=`<h1>Visão geral</h1><p class="sub">Todas as contas do Oi Nanda.</p>
+   <div class="grid g4">${tile('Empresas',s.companies)}${tile('Em teste',s.trial)}${tile('Pagantes',s.paying)}${tile('Novas na semana',s.new_week)}
+   ${tile('Ativas',s.active)}${tile('Suspensas',s.suspended)}${tile('Usuários',s.users)}${tile('Erros nas últimas 24 h',s.errors_day)}</div>`;
+ },
+ async 'a-clientes'(){
+  const list=await api('/admin/companies');
+  $('#page').innerHTML=`<h1>Clientes</h1><p class="sub">${list.length} ${list.length===1?'empresa':'empresas'}.</p>
+   <div class="card">${list.length?`<table><thead><tr><th>Empresa</th><th>Dono</th><th>Plano</th><th>Situação</th><th>Criada</th><th></th></tr></thead><tbody>
+   ${list.map(c=>`<tr><td><b>${esc(c.name)}</b><small>${esc(SEG[c.segment]||'')} · ${c.users} ${c.users===1?'usuário':'usuários'}</small></td>
+    <td>${esc(c.owner?.name||'—')}<small>${esc(c.owner?.email||'')} · último acesso ${dt(c.owner?.last_login_at)}</small></td>
+    <td><select data-plan="${c.id}" class="btn sm">${Object.entries(PLAN).map(([k,v])=>`<option value="${k}" ${k===c.plan?'selected':''}>${v}</option>`).join('')}</select>
+     ${c.plan==='trial'?`<small>até ${day(c.trial_ends_at)}</small>`:''}</td>
+    <td>${c.status==='active'?'<span class="pill ok">ativa</span>':'<span class="pill bad">suspensa</span>'}</td>
+    <td>${day(c.created_at)}</td>
+    <td style="text-align:right;white-space:nowrap">${c.plan==='trial'?`<button class="btn sm" data-ext="${c.id}">+7 dias</button> `:''}<button class="btn sm" data-enter="${c.id}">Entrar</button> <button class="btn sm ${c.status==='active'?'danger':''}" data-st="${c.id}" data-to="${c.status==='active'?'suspended':'active'}">${c.status==='active'?'Suspender':'Reativar'}</button></td></tr>`).join('')}
+   </tbody></table>`:'<div class="empty">Nenhuma empresa ainda.</div>'}</div>`;
+  document.querySelectorAll('[data-enter]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.enter+'/enter',{method:'POST'});VIEW='inicio';await boot()});
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=async()=>{if(b.dataset.to==='suspended'&&!confirm('Suspender esta conta? O time dela perde o acesso na hora.'))return;await api('/admin/companies/'+b.dataset.st,{method:'PATCH',body:{status:b.dataset.to}});VIEWS['a-clientes']()});
+  document.querySelectorAll('[data-ext]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.ext,{method:'PATCH',body:{extend_trial_days:7}});toast('Teste estendido em 7 dias.');VIEWS['a-clientes']()});
+  document.querySelectorAll('[data-plan]').forEach(s=>s.onchange=async()=>{await api('/admin/companies/'+s.dataset.plan,{method:'PATCH',body:{plan:s.value}});toast('Plano alterado.')});
+ },
+ async 'a-atividade'(){
+  const rows=await api('/admin/audit');
+  $('#page').innerHTML=`<h1>Atividade geral</h1><p class="sub">Últimos 300 registros de todas as contas.</p>
+   <div class="card"><table><thead><tr><th>Quando</th><th>Empresa</th><th>Quem</th><th>O quê</th><th>IP</th></tr></thead><tbody>
+   ${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.company)}</td><td>${esc(r.actor)}${r.impersonated_by?'<small>suporte</small>':''}</td><td>${esc(r.action)}${r.target?`<small>${esc(r.target)}</small>`:''}</td><td><small>${esc(r.ip||'')}</small></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Nada ainda.</td></tr>'}
+   </tbody></table></div>`;
+ },
+ async 'a-erros'(){
+  const rows=await api('/admin/errors');
+  $('#page').innerHTML=`<h1>Erros</h1><p class="sub">Falhas inesperadas da API nos últimos 30 dias.</p>
+   <div class="card">${rows.length?rows.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${esc(r.error)}</b><small style="display:block;color:var(--ink3)">${dt(r.at)} · ${esc(r.method)} ${esc(r.path)}</small><pre>${esc(r.trace)}</pre></div>`).join(''):'<div class="empty">Nenhum erro registrado.</div>'}</div>`;
+ }
+};
+async function refresh(){ME=await api('/auth/me')}
+async function boot(){
+  try{await refresh()}catch(e){
+    if(e.status===403&&/senha/.test(e.message))return passwordView();
+    if(e.status===403){$('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span><h1>Acesso bloqueado</h1><p class="l">${esc(e.message)}</p><button class="btn" id="o">Sair</button></div></div>`;$('#o').onclick=async()=>{await api('/auth/logout',{method:'POST'});authView('login')};return}
+    return authView(location.pathname.startsWith('/cadastro')?'signup':'login');
+  }
+  if(ME.user.must_change_password)return passwordView();
+  shell();
+}
+boot();
+</script>
+</body>
+</html>
