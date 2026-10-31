@@ -9,7 +9,7 @@
 
 .env: META_APP_SECRET, WA_VERIFY_TOKEN, SECRET_KEY (criptografia), APP_PUBLIC_URL (padrão https://app.oinanda.com.br).
 """
-import os, hmac, hashlib, json, logging
+import os, hmac, hashlib, json, logging, secrets
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 import httpx
@@ -38,7 +38,7 @@ def decrypt(v):
 async def graph(method, path, token, payload=None, params=None):
     """Chamada à API da Meta. Isolada aqui para os testes poderem substituir."""
     async with httpx.AsyncClient(timeout=20) as c:
-        r = await c.request(method, GRAPH + path, headers={'Authorization': 'Bearer ' + token}, json=payload, params=params)
+        r = await c.request(method, GRAPH + path, headers={'Authorization': 'Bearer ' + token} if token else {}, json=payload, params=params)
     try: data = r.json()
     except ValueError: data = {}
     if r.status_code >= 400:
@@ -58,30 +58,75 @@ class ConnectIn(BaseModel):
 
 def number_out(n):
     if not n: return None
-    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook')}
+    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync')}
 
 @router.get('/wa/number')
 async def get_number(user=Depends(current_user)):
     return number_out(await db.wa_numbers.find_one({'company_id': user['company_id']}, {'_id': 0}))
 
-@router.post('/wa/connect')
-async def connect(body: ConnectIn, request: Request, user=Depends(owners)):
-    other = await db.wa_numbers.find_one({'phone_number_id': body.phone_number_id})
+async def save_number(user, request, pnid, waba_id, token, extra=None):
+    other = await db.wa_numbers.find_one({'phone_number_id': pnid})
     if other and other['company_id'] != user['company_id']: raise HTTPException(409, 'Este número já está conectado em outra conta.')
-    info = await graph('GET', f'/{body.phone_number_id}', body.token, params={'fields': 'display_phone_number,verified_name,quality_rating'})
+    info = await graph('GET', f'/{pnid}', token, params={'fields': 'display_phone_number,verified_name,quality_rating'})
     webhook = 'ok'
     try:
-        await graph('POST', f'/{body.waba_id}/subscribed_apps', body.token,
+        await graph('POST', f'/{waba_id}/subscribed_apps', token,
                     {'override_callback_uri': PUBLIC_URL + '/api/wa/webhook', 'verify_token': os.environ.get('WA_VERIFY_TOKEN', '')})
     except HTTPException as e:
         webhook = e.detail  # número conecta mesmo assim; o aviso aparece no painel
-        log.warning('inscrição do webhook falhou para %s: %s', body.waba_id, e.detail)
-    doc = {'company_id': user['company_id'], 'phone_number_id': body.phone_number_id, 'waba_id': body.waba_id,
+        log.warning('inscrição do webhook falhou para %s: %s', waba_id, e.detail)
+    doc = {'company_id': user['company_id'], 'phone_number_id': pnid, 'waba_id': waba_id,
            'display_phone': info.get('display_phone_number'), 'verified_name': info.get('verified_name'),
-           'quality': info.get('quality_rating'), 'token_enc': encrypt(body.token), 'status': 'connected',
-           'webhook': webhook, 'connected_at': now()}
+           'quality': info.get('quality_rating'), 'token_enc': encrypt(token), 'status': 'connected',
+           'webhook': webhook, 'connected_at': now(), 'mode': 'cloud', **(extra or {})}
     await db.wa_numbers.update_one({'company_id': user['company_id']}, {'$set': doc}, upsert=True)
-    await audit(request, user, 'Conectou o WhatsApp', doc['display_phone'])
+    await audit(request, user, 'Conectou o WhatsApp' + (' (junto com o app do celular)' if doc.get('mode') == 'coexistence' else ''), doc['display_phone'])
+    return doc
+
+@router.post('/wa/connect')
+async def connect(body: ConnectIn, request: Request, user=Depends(owners)):
+    return number_out(await save_number(user, request, body.phone_number_id, body.waba_id, body.token))
+
+# ---------- "Entrar com a Meta" (Embedded Signup) ----------
+def es_config():
+    return {'app_id': os.environ.get('META_APP_ID', ''), 'config_id': os.environ.get('META_ES_CONFIG_ID', ''),
+            'enabled': bool(os.environ.get('META_APP_ID') and os.environ.get('META_ES_CONFIG_ID') and os.environ.get('META_APP_SECRET'))}
+
+@router.get('/wa/signup-config')
+async def signup_config(user=Depends(current_user)):
+    return es_config()
+
+class SignupIn(BaseModel):
+    code: str = Field(min_length=10, max_length=2000)
+    waba_id: str = Field(pattern=r'^\d{5,40}$')
+    phone_number_id: str = Field(pattern=r'^\d{5,40}$')
+    coexistence: bool = False  # número que continua no app WhatsApp Business do celular
+
+@router.post('/wa/signup')
+async def signup(body: SignupIn, request: Request, user=Depends(owners)):
+    cfg = es_config()
+    if not cfg['enabled']: raise HTTPException(400, 'O botão da Meta ainda não foi ativado no servidor.')
+    tok = await graph('GET', '/oauth/access_token', None, params={'client_id': cfg['app_id'], 'client_secret': os.environ['META_APP_SECRET'], 'code': body.code})
+    token = tok.get('access_token')
+    if not token: raise HTTPException(400, 'A Meta não devolveu o acesso. Tente de novo.')
+    extra = {'mode': 'coexistence' if body.coexistence else 'cloud', 'via': 'embedded_signup'}
+    if not body.coexistence:  # número novo na API: registra com um PIN de verificação em duas etapas
+        pin = f'{secrets.randbelow(10**6):06d}'
+        try:
+            await graph('POST', f'/{body.phone_number_id}/register', token, {'messaging_product': 'whatsapp', 'pin': pin})
+            extra['pin_enc'] = encrypt(pin)
+        except HTTPException as e:
+            extra['register_error'] = str(e.detail)[:200]
+    doc = await save_number(user, request, body.phone_number_id, body.waba_id, token, extra)
+    if body.coexistence:  # traz contatos e as conversas dos últimos 6 meses do app (só pode pedir uma vez, em até 24 h)
+        sync = {}
+        for kind in ('smb_app_state_sync', 'history'):
+            try:
+                await graph('POST', f'/{body.phone_number_id}/smb_app_data', token, {'messaging_product': 'whatsapp', 'sync_type': kind})
+                sync[kind] = 'pedido'
+            except HTTPException as e:
+                sync[kind] = str(e.detail)[:200]
+        await db.wa_numbers.update_one({'company_id': user['company_id']}, {'$set': {'sync': sync}})
     return number_out(doc)
 
 @router.delete('/wa/number')
@@ -149,6 +194,82 @@ async def ingest(value):
         if s.get('errors'): upd['error'] = (s['errors'][0].get('title') or s['errors'][0].get('message') or 'falhou')
         await db.messages.update_one({'wa_msg_id': s.get('id')}, {'$set': upd})
 
+# ---------- número que continua no app do celular (coexistência) ----------
+async def sample(field, value):
+    """Guarda os últimos avisos de cada tipo, para conferir o formato quando algo não aparece."""
+    await db.webhook_samples.insert_one({'field': field, 'value': json.dumps(value)[:20000], 'at': now()})
+    old = await db.webhook_samples.find({}, {'_id': 1}).sort('at', -1).skip(100).to_list(1000)
+    if old: await db.webhook_samples.delete_many({'_id': {'$in': [o['_id'] for o in old]}})
+
+async def company_of(value):
+    pnid = (value.get('metadata') or {}).get('phone_number_id')
+    n = await db.wa_numbers.find_one({'phone_number_id': pnid}, {'_id': 0, 'company_id': 1, 'display_phone': 1})
+    return n
+
+async def upsert_contact(cid, wa_id, name=None, source='whatsapp'):
+    c = await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+    if c:
+        if name and (not c.get('name') or c['name'] == wa_id): await db.contacts.update_one({'id': c['id']}, {'$set': {'name': name}}); c['name'] = name
+        return c
+    c = {'id': uid(), 'company_id': cid, 'wa_id': wa_id, 'name': name or wa_id, 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
+    try: await db.contacts.insert_one(c.copy())
+    except Exception: return await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+    return c
+
+async def store(cid, contact, m, direction, by=None, imported=False):
+    if m.get('id') and await db.messages.find_one({'wa_msg_id': m['id']}): return False
+    at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
+    text = text_of(m)
+    doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'dir': direction, 'type': m.get('type'), 'text': text,
+           'wa_msg_id': m.get('id'), 'at': at, 'received_at': now() if not imported else at}
+    if direction == 'out': doc.update(by=by, by_id=None, status='sent')
+    if imported: doc['imported'] = True
+    await db.messages.insert_one(doc)
+    upd = {}
+    if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir=direction)
+    if direction == 'in' and (not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at'))): upd['last_in_at'] = at
+    if upd:
+        await db.contacts.update_one({'id': contact['id']}, {'$set': upd}); contact.update(upd)
+    return True
+
+async def ingest_echoes(value):
+    """Mensagem que alguém mandou pelo app do celular: aparece na conversa e tira a Nanda do automático."""
+    n = await company_of(value)
+    if not n: return
+    for m in value.get('message_echoes') or []:
+        if not m.get('to'): continue
+        c = await upsert_contact(n['company_id'], m['to'])
+        if await store(n['company_id'], c, m, 'out', by='Celular') and ON_HUMAN_SEND:
+            await ON_HUMAN_SEND({'company_id': n['company_id'], 'name': 'Alguém pelo celular', 'id': None}, c)
+
+async def ingest_history(value):
+    """Conversas dos últimos 6 meses do app, enviadas pela Meta logo depois da conexão."""
+    n = await company_of(value)
+    if not n: return
+    biz = ''.join(ch for ch in (n.get('display_phone') or '') if ch.isdigit())
+    for chunk in value.get('history') or []:
+        for th in chunk.get('threads') or []:
+            wa_id = th.get('id')
+            if not wa_id: continue
+            c = await upsert_contact(n['company_id'], wa_id, source='historico')
+            for m in sorted(th.get('messages') or [], key=lambda x: int(x.get('timestamp', 0))):
+                outgoing = m.get('from') != wa_id or (biz and m.get('from') == biz)
+                await store(n['company_id'], c, m, 'out' if outgoing else 'in', by='Celular' if outgoing else None, imported=True)
+
+async def ingest_contacts(value):
+    n = await company_of(value)
+    if not n: return
+    for it in value.get('state_sync') or []:
+        ct = it.get('contact') or {}
+        phone = ''.join(ch for ch in (ct.get('phone_number') or '') if ch.isdigit())
+        if it.get('type') == 'contact' and phone and it.get('action', 'add') != 'remove':
+            await upsert_contact(n['company_id'], phone, ct.get('full_name') or ct.get('first_name'), source='agenda do celular')
+
+@router.get('/admin/webhook-samples')
+async def webhook_samples(user=Depends(current_user)):
+    if not user.get('is_admin'): raise HTTPException(403, 'Só o admin do Oi Nanda.')
+    return await db.webhook_samples.find({}, {'_id': 0}).sort('at', -1).to_list(30)
+
 @router.post('/wa/webhook')
 async def webhook(request: Request):
     raw = await request.body()
@@ -161,9 +282,14 @@ async def webhook(request: Request):
     except ValueError: return {'ok': True}
     for entry in body.get('entry') or []:
         for change in entry.get('changes') or []:
-            if change.get('field') == 'messages':
-                try: await ingest(change.get('value') or {})
-                except Exception: log.exception('falha ao processar webhook')
+            field, value = change.get('field'), change.get('value') or {}
+            try:
+                if field == 'messages': await ingest(value)
+                elif field == 'smb_message_echoes': await ingest_echoes(value)
+                elif field == 'history': await ingest_history(value)
+                elif field == 'smb_app_state_sync': await ingest_contacts(value)
+                if field != 'messages': await sample(field, value)
+            except Exception: log.exception('falha ao processar webhook (%s)', field)
     return {'ok': True}
 
 # ---------- conversas ----------

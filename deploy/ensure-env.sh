@@ -20,3 +20,6 @@ add AI_MODEL claude-haiku-5-5
 # etapa 5 — Google Agenda
 add GOOGLE_CLIENT_ID ""
 add GOOGLE_CLIENT_SECRET ""
+# botão "Entrar com a Meta" (Embedded Signup)
+add META_APP_ID 1164112056262465
+add META_ES_CONFIG_ID ""

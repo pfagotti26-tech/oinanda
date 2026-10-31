@@ -274,18 +274,42 @@ function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==
 async function renderWa(own){
   const n=await api('/wa/number');const box=$('#wa');if(!box)return;
   if(n){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
-    <p style="color:var(--ink2);font-size:13px;margin-top:6px">Qualidade: ${esc(n.quality||'—')} · conectado em ${day(n.connected_at)}</p>
+    <p style="color:var(--ink2);font-size:13px;margin-top:6px">Qualidade: ${esc(n.quality||'—')} · conectado em ${day(n.connected_at)}${n.mode==='coexistence'?' · continua funcionando no app do celular':''}</p>
+    ${n.register_error?`<p class="note" style="margin-top:10px">A Meta não ativou o número na API (${esc(n.register_error)}). Fale com o suporte.</p>`:''}
     ${n.webhook&&n.webhook!=='ok'?`<p class="note" style="margin-top:10px">Aviso: não foi possível inscrever o recebimento de mensagens (${esc(n.webhook)}). Fale com o suporte.</p>`:''}
     ${own?'<button class="btn sm danger" id="waOff" style="margin-top:12px">Desconectar</button>':''}`;
     if(own)$('#waOff').onclick=async()=>{if(!confirm('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});renderWa(own)};return}
+  const es=await api('/wa/signup-config').catch(()=>({enabled:false}));
   box.innerHTML=`<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3>
-   <p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Em breve: botão "Entrar com a Meta" que faz tudo sozinho. Por enquanto, a conexão é feita com os dados do número na Meta (o suporte do Oi Nanda pode fazer por você).</p>
+   ${es.enabled&&own?`<p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Entre com a sua conta do Facebook e escolha o número. <b>Já usa o WhatsApp Business no celular?</b> Escolha "conectar o app WhatsApp Business existente": o celular continua funcionando e as conversas dos últimos 6 meses vêm junto.</p>
+   <button class="btn p" id="esGo">Entrar com a Meta</button> <span class="err" id="esE" style="margin-left:8px"></span>
+   <details style="margin-top:16px"><summary style="cursor:pointer;font-size:13px;color:var(--ink2);font-weight:700">Conectar manualmente (avançado)</summary><div style="margin-top:12px">`
+    :`<p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">A conexão é feita com os dados do número na Meta (o suporte do Oi Nanda pode fazer por você).</p><div>`}
    ${own?`<form id="waf" class="form2"><div class="field"><label>ID do número de telefone</label><input name="phone_number_id" required inputmode="numeric"></div>
    <div class="field"><label>ID da conta do WhatsApp Business</label><input name="waba_id" required inputmode="numeric"></div>
    <div class="field" style="grid-column:1/-1"><label>Token de acesso</label><input name="token" type="password" required autocomplete="off"></div>
-   <div><button class="btn p">Conectar</button></div><div class="err" id="wae" style="align-self:center"></div></form>`:'<p class="note">Só o dono da conta conecta o WhatsApp.</p>'}`;
+   <div><button class="btn p">Conectar</button></div><div class="err" id="wae" style="align-self:center"></div></form>`:'<p class="note">Só o dono da conta conecta o WhatsApp.</p>'}</div>${es.enabled&&own?'</details>':''}`;
+  if($('#esGo'))$('#esGo').onclick=()=>metaSignup(es,own);
   if(own)$('#waf').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#wae').textContent='Conectando...';
     try{await api('/wa/connect',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});toast('WhatsApp conectado.');renderWa(own)}catch(e){$('#wae').textContent=e.message;b.disabled=false}};
+}
+function loadFB(appId){return new Promise((ok,bad)=>{if(window.FB)return ok();window.fbAsyncInit=()=>{FB.init({appId,autoLogAppEvents:true,xfbml:false,version:'v21.0'});ok()};
+  const sc=document.createElement('script');sc.src='https://connect.facebook.net/pt_BR/sdk.js';sc.async=true;sc.defer=true;sc.crossOrigin='anonymous';sc.onerror=()=>bad(new Error('Não deu para abrir a Meta. Desative o bloqueador de anúncios e tente de novo.'));document.body.appendChild(sc)})}
+async function metaSignup(es,own){
+  const e=$('#esE');e.textContent='Abrindo a Meta...';
+  try{await loadFB(es.app_id)}catch(x){e.textContent=x.message;return}
+  let info=null,code=null,done=false;
+  const finish=async()=>{if(done||!info||!code)return;done=true;e.textContent='Conectando...';
+    try{await api('/wa/signup',{method:'POST',body:{code,waba_id:info.waba_id,phone_number_id:info.phone_number_id,coexistence:info.coex}});toast(info.coex?'WhatsApp conectado. O celular continua funcionando e as conversas antigas estão chegando.':'WhatsApp conectado.');renderWa(own)}
+    catch(x){e.textContent=x.message}};
+  const onMsg=ev=>{if(!/facebook\.com$/.test(new URL(ev.origin).hostname))return;let d;try{d=JSON.parse(ev.data)}catch(_){return}
+    if(d.type!=='WA_EMBEDDED_SIGNUP')return;
+    if(String(d.event).startsWith('FINISH')){const x=d.data||{};info={waba_id:x.waba_id,phone_number_id:x.phone_number_id,coex:d.event==='FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'};
+      if(!info.phone_number_id){e.textContent='A Meta não devolveu o número. Se você escolheu só a conta, conecte de novo escolhendo o número.';done=true;return}finish()}
+    else if(d.event==='CANCEL'||d.event==='ERROR'){const x=d.data||{};e.textContent=x.error_message?('A Meta avisou: '+x.error_message):'Conexão cancelada antes do fim.';done=true}};
+  window.addEventListener('message',onMsg);
+  FB.login(r=>{if(r.authResponse&&r.authResponse.code){code=r.authResponse.code;finish()}else if(!done){e.textContent='Conexão cancelada.'}},
+    {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
 let CV={filter:'all',open:null,list:[]};
 const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
