@@ -64,3 +64,19 @@ def test_entrar_com_a_meta_numero_novo(monkeypatch):
         reg = [p for p in calls if p[0].endswith('/register')]
         assert reg and len(reg[0][1]['pin']) == 6
         assert not any('smb_app_data' in p[0] for p in calls)
+
+def test_troca_para_acesso_permanente(monkeypatch):
+    calls = []
+    async def fake_graph(method, path, token, payload=None, params=None):
+        calls.append((path, token, params))
+        if path == '/oauth/access_token': return {'access_token': 'EAAbiz' + 'z' * 30, 'expires_in': 5184000}
+        return {'success': True, 'display_phone_number': '+55 11 90000-2222'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    monkeypatch.setenv('META_APP_ID', '1'); monkeypatch.setenv('META_ES_CONFIG_ID', '2')
+    monkeypatch.setenv('META_SYSTEM_TOKEN', 'EAAsistema' + 'k' * 30); monkeypatch.setenv('META_SYSTEM_USER_ID', '61596234233958')
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Bia Dona', 'email': 'bia@y.com', 'password': 'senha-forte-1', 'company': 'Studio Y'})
+        r = c.post('/api/wa/signup', json={'code': 'codigo-da-meta-789', 'waba_id': '11112222', 'phone_number_id': '33334444', 'coexistence': True})
+        assert r.status_code == 200 and r.json()['token_kind'] == 'system'
+        assert any(p.endswith('/assigned_users') and pr['user'] == '61596234233958' for p, _, pr in calls)
+        assert calls[-1][1].startswith('EAAsistema')  # depois de trocar, o resto usa o acesso permanente

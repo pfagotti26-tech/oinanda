@@ -58,7 +58,7 @@ class ConnectIn(BaseModel):
 
 def number_out(n):
     if not n: return None
-    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync')}
+    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync', 'token_kind', 'token_expires_at')}
 
 @router.get('/wa/number')
 async def get_number(user=Depends(current_user)):
@@ -117,6 +117,21 @@ async def signup(body: SignupIn, request: Request, user=Depends(owners)):
             extra['pin_enc'] = encrypt(pin)
         except HTTPException as e:
             extra['register_error'] = str(e.detail)[:200]
+    # o acesso do cadastro vence em 60 dias: se houver um usuário do sistema do Oi Nanda (token permanente),
+    # ele ganha acesso à conta do cliente e passa a ser o acesso usado
+    sys_tok, sys_uid = os.environ.get('META_SYSTEM_TOKEN', ''), os.environ.get('META_SYSTEM_USER_ID', '')
+    if sys_tok and sys_uid:
+        try:
+            await graph('POST', f'/{body.waba_id}/assigned_users', token, params={'user': sys_uid, 'tasks': "['MANAGE']"})
+        except HTTPException as e:
+            log.warning('não deu para dar acesso ao usuário do sistema: %s', e.detail)
+        try:
+            await graph('GET', f'/{body.phone_number_id}', sys_tok, params={'fields': 'display_phone_number'})
+            token, extra['token_kind'] = sys_tok, 'system'
+        except HTTPException as e:
+            log.warning('usuário do sistema ainda sem acesso ao número: %s', e.detail)
+    if extra.get('token_kind') != 'system':
+        extra.update(token_kind='business', token_expires_at=now() + timedelta(days=int(tok.get('expires_in') or 0) // 86400 or 60))
     doc = await save_number(user, request, body.phone_number_id, body.waba_id, token, extra)
     if body.coexistence:  # traz contatos e as conversas dos últimos 6 meses do app (só pode pedir uma vez, em até 24 h)
         sync = {}

@@ -275,6 +275,7 @@ async function renderWa(own){
   const n=await api('/wa/number');const box=$('#wa');if(!box)return;
   if(n){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
     <p style="color:var(--ink2);font-size:13px;margin-top:6px">Qualidade: ${esc(n.quality||'—')} · conectado em ${day(n.connected_at)}${n.mode==='coexistence'?' · continua funcionando no app do celular':''}</p>
+    ${n.token_kind==='business'&&n.token_expires_at&&(new Date(n.token_expires_at)-Date.now())<10*864e5?`<p class="note" style="margin-top:10px">O acesso à Meta vence em ${day(n.token_expires_at)}. Clique em Desconectar e conecte de novo com "Entrar com a Meta".</p>`:''}
     ${n.register_error?`<p class="note" style="margin-top:10px">A Meta não ativou o número na API (${esc(n.register_error)}). Fale com o suporte.</p>`:''}
     ${n.webhook&&n.webhook!=='ok'?`<p class="note" style="margin-top:10px">Aviso: não foi possível inscrever o recebimento de mensagens (${esc(n.webhook)}). Fale com o suporte.</p>`:''}
     ${own?'<button class="btn sm danger" id="waOff" style="margin-top:12px">Desconectar</button>':''}`;
