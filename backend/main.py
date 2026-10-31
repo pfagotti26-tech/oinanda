@@ -8,6 +8,7 @@ from core import (db, client, now, iso, uid, digest, client_ip, hash_password, v
                   log_error, current_user, managers, owners, admin, ADMIN_EMAIL, ORIGINS, TRIAL_DAYS, COOKIE, ROLES)
 from whatsapp import router as wa_router
 from ai import router as ai_router
+from funnel import router as funnel_router
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -30,6 +31,7 @@ async def lifespan(app):
     await db.contacts.create_index([('company_id', 1), ('last_at', -1)])
     await db.messages.create_index([('contact_id', 1), ('at', -1)])
     await db.messages.create_index('wa_msg_id', sparse=True)
+    await db.contacts.create_index([('company_id', 1), ('stage', 1)])
     await db.ai_settings.create_index('company_id', unique=True)
     await db.ai_usage.create_index([('company_id', 1), ('month', 1)], unique=True)
     log.info('Oi Nanda API pronta. Admin: %s', ADMIN_EMAIL or '(ADMIN_EMAIL não definido)')
@@ -39,6 +41,7 @@ async def lifespan(app):
 app = FastAPI(title='Oi Nanda', lifespan=lifespan, docs_url=None, redoc_url=None)
 app.include_router(wa_router, prefix='/api')
 app.include_router(ai_router, prefix='/api')
+app.include_router(funnel_router, prefix='/api')
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

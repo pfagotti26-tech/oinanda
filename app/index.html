@@ -26,7 +26,7 @@ a{color:var(--c2)}
 .btn:disabled{opacity:.55;cursor:default}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:12.5px;font-weight:700;color:var(--ink2)}
-.field input,.field select{border:1px solid #DCD2C9;border-radius:12px;padding:11px 13px;background:#fff;outline:0}
+.field input,.field select{border:1px solid #DCD2C9;border-radius:12px;padding:11px 13px;background:#fff;outline:0;min-width:0;width:100%}
 .field input:focus,.field select:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
 .err{color:var(--bad);font-size:13px;font-weight:600;min-height:18px}
 .pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:800;background:var(--soft);color:var(--c2)}
@@ -142,6 +142,33 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .modes label{border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;font-size:12.5px;color:var(--ink2)}
 .modes label b{display:block;color:var(--ink);font-size:13.5px}
 .modes input{display:none}.modes label:has(input:checked){border-color:var(--c);background:var(--tint);box-shadow:0 0 0 2px var(--soft)}
+/* funil */
+.page.board{max-width:none}
+.fhd{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}.fhd .sub{margin:4px 0 0}
+.fhd .tools{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fhd input{border:1px solid #DCD2C9;border-radius:999px;padding:8px 14px;outline:0;min-width:200px}
+.kb{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;align-items:flex-start;min-height:calc(100vh - 220px)}
+.col{flex:0 0 272px;background:#F3EEE8;border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 200px)}
+.col.drop{background:var(--soft);outline:2px dashed var(--c)}
+.col .ch{padding:4px 6px 6px;display:flex;align-items:baseline;gap:8px}
+.col .ch b{font-size:13.5px}.col .ch .ct{font-size:12px;color:var(--ink3);font-weight:700}
+.col .ch .vl{margin-left:auto;font-size:12px;color:var(--ink2);font-weight:700}
+.col.won .ch b{color:var(--ok)}.col.lost .ch b{color:var(--ink3)}
+.col .cards{display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:40px}
+.kc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:grab;text-align:left;width:100%;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.kc:hover{border-color:#D9CBBF}.kc.drag{opacity:.4}
+.kc b{display:block;font-size:13.5px}.kc .pv{display:block;color:var(--ink2);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.kc .ft{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:11.5px;color:var(--ink3);flex-wrap:wrap}
+.kc .ft .money{color:var(--ok);font-weight:800}.kc .ft .who{margin-left:auto}
+.tag{background:#EEF1F4;color:var(--ink2);border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700}
+.ov{position:fixed;inset:0;background:rgba(23,33,43,.35);z-index:40;display:flex;justify-content:flex-end}
+.ov.center{justify-content:center;align-items:center;padding:20px}
+.drawer{width:400px;max-width:100%;background:#fff;height:100%;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:-20px 0 40px -30px rgba(0,0,0,.4)}
+.modal{width:480px;max-width:100%;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow:auto}
+.drawer .x,.modal .x{margin-left:auto;font-size:20px;color:var(--ink3);line-height:1}
+.srow{display:grid;grid-template-columns:1fr 130px 34px;gap:8px;align-items:center}
+.srow input,.srow select{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;outline:0;background:#fff}
+.stsel{font-size:12.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;max-width:190px}
 @media (max-width:860px){.cv{grid-template-columns:1fr;height:auto}.cv-chat{min-height:70vh}.ai-wrap,.modes{grid-template-columns:1fr}}
 
 @media (max-width:860px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.g4{grid-template-columns:1fr 1fr}.g2,.form2{grid-template-columns:1fr}.page{padding:20px 16px}}
@@ -202,7 +229,7 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil','etapa 4'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -224,7 +251,7 @@ function shell(){
   go(VIEW);
 }
 let POLL=null;
-function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
+function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
 async function renderWa(own){
@@ -268,7 +295,7 @@ async function cvChat(scroll){
   const prevDraft=$('#cvText')?.value||'';
   box.innerHTML=`<div class="top"><span class="av" style="width:38px;height:38px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800">${initials(c.name)}</span>
     <div><b>${esc(c.name)}</b><span>+${esc(c.wa_id)}</span></div>
-    <div class="act">${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
+    <div class="act">${STAGES?`<select class="stsel" id="cvSt" title="Etapa do funil">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="cvDet">Detalhes</button>${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
    ${c.needs_human?`<div class="human">🙋 ${esc(c.name.split(' ')[0])} precisa de alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}<button class="btn sm" id="cvRes">Resolvido</button></div>`:''}
    <div class="msgs" id="cvMsgs">${d.messages.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)} · ${hm(m.at)}</div>`:`<div class="m ${m.dir} ${m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||'')?'ai':''}">${m.dir==='out'&&m.by?`<span class="by">${esc(m.by)}</span>`:''}${esc(m.text)}<small>${hm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`).join('')}</div>
    ${c.window_open?`<form class="comp" id="cvF"><textarea id="cvText" rows="1" placeholder="Escreva para ${esc(c.name.split(' ')[0])}... (Enter envia, Shift+Enter quebra linha)"></textarea>${CV.ai?.key_configured?'<button type="button" class="btn sug" id="cvSug" title="A Nanda escreve uma sugestão, você revisa e envia">✨ Sugerir</button>':''}<button class="btn p">Enviar</button></form>`
@@ -278,15 +305,91 @@ async function cvChat(scroll){
   if($('#cvF'))$('#cvF').onsubmit=async ev=>{ev.preventDefault();const t=$('#cvText').value.trim();if(!t)return;$('#cvText').value='';
     try{await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});await cvChat();cvList()}catch(e){toast(e.message);$('#cvText').value=t}};
   if($('#cvAs'))$('#cvAs').onchange=async e=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Conversa passada.');cvList()};
+  if($('#cvSt'))$('#cvSt').onchange=async e=>{try{await api('/contacts/'+CV.open,{method:'PATCH',body:{stage:e.target.value}});toast('Etapa atualizada.');cvChat()}catch(x){toast(x.message)}};
+  $('#cvDet').onclick=()=>contactDrawer(CV.open,()=>{cvChat();cvList()});
   if($('#cvMode'))$('#cvMode').onchange=async e=>{try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:e.target.value||null}});cvChat();cvList()}catch(x){toast(x.message)}};
   if($('#cvRes'))$('#cvRes').onclick=async()=>{await api('/conversations/'+CV.open+'/resolved',{method:'POST'});cvChat();cvList()};
   if($('#cvSug'))$('#cvSug').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Pensando...';
     try{const r=await api('/conversations/'+CV.open+'/suggest',{method:'POST'});if(r.reply){$('#cvText').value=r.reply;$('#cvText').focus()}if(r.handoff)toast('A Nanda acha melhor alguém do time responder: '+(r.reason||''))}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨ Sugerir'};
   if($('#cvMine'))$('#cvMine').onclick=async()=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:me.id}});cvChat();cvList()};
 }
+let STAGES=null;
+const brl=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+function overlay(html,center){const o=document.createElement('div');o.className='ov'+(center?' center':'');o.innerHTML=html;o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o);o.querySelectorAll('.x').forEach(x=>x.onclick=()=>o.remove());return o}
+async function contactDrawer(id,after){
+  if(!STAGES)STAGES=await api('/funnel/stages');
+  const c=(await api('/conversations/'+id)).contact;
+  const o=overlay(`<form class="drawer" id="cdF"><div class="row"><h2 style="font-size:20px;letter-spacing:-.4px">${esc(c.name)}</h2><button type="button" class="x">×</button></div>
+    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">+${esc(c.wa_id)} · ${c.source==='manual'?'adicionado à mão':'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
+    <div class="field"><label>Nome</label><input name="name" value="${esc(c.name)}" required></div>
+    <div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div>
+     <div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(c.email||'')}"></div></div>
+    <div class="field"><label>Etiquetas</label><input name="tags" value="${esc((c.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div>
+    <div class="field"><label>Anotações</label><textarea name="notes" rows="6" placeholder="O que o time precisa saber sobre esse cliente">${esc(c.notes||'')}</textarea></div>
+    <div class="row"><button class="btn p">Salvar</button>${VIEW!=='conversas'?'<button type="button" class="btn" id="cdOpen">Abrir conversa</button>':''}<span class="err" id="cdE"></span></div></form>`);
+  if(o.querySelector('#cdOpen'))o.querySelector('#cdOpen').onclick=()=>{o.remove();CV.open=id;go('conversas')};
+  o.querySelector('#cdF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
+    const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
+    try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
+}
+let FN={mine:false,q:''};
+async function drawBoard(){
+  const d=await api('/funnel'+(FN.mine?'?mine=true':''));STAGES=d.stages;
+  const q=FN.q.trim().toLowerCase();
+  const cards=d.cards.filter(c=>!q||c.name.toLowerCase().includes(q)||(c.wa_id||'').includes(q.replace(/\D/g,'')||'§')||(c.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  const kb=$('#kb');if(!kb)return;
+  kb.innerHTML=d.stages.map(s=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.value||0),0);
+    return `<div class="col ${s.kind}" data-s="${s.id}"><div class="ch"><b>${esc(s.name)}</b><span class="ct">${cs.length}</span>${tot?`<span class="vl">${brl(tot)}</span>`:''}</div><div class="cards">
+    ${cs.map(c=>`<button class="kc" draggable="true" data-k="${c.id}"><b>${esc(c.name)}</b><span class="pv">${esc(c.last_text||'')}</span>
+      <span class="ft">${c.needs_human?'<span class="hn" style="background:var(--badsoft);color:var(--bad);border-radius:999px;padding:1px 7px;font-weight:800">pediu atendente</span>':''}${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}<span class="who">${c.assigned_name?esc(c.assigned_name.split(' ')[0])+' · ':''}${hm(c.last_at)}</span></span></button>`).join('')}
+    </div></div>`}).join('');
+  kb.querySelectorAll('.kc').forEach(k=>{k.onclick=()=>contactDrawer(k.dataset.k,drawBoard);
+    k.ondragstart=e=>{e.dataTransfer.setData('text/plain',k.dataset.k);k.classList.add('drag')};k.ondragend=()=>k.classList.remove('drag')});
+  kb.querySelectorAll('.col').forEach(col=>{col.ondragover=e=>{e.preventDefault();col.classList.add('drop')};col.ondragleave=()=>col.classList.remove('drop');
+    col.ondrop=async e=>{e.preventDefault();col.classList.remove('drop');const id=e.dataTransfer.getData('text/plain');const card=kb.querySelector(`[data-k="${id}"]`);
+      if(!card||card.closest('.col')===col)return;col.querySelector('.cards').prepend(card);
+      try{await api('/contacts/'+id,{method:'PATCH',body:{stage:col.dataset.s}})}catch(x){toast(x.message)}drawBoard()}});
+}
+function stagesEditor(){
+  const rows=STAGES.map(s=>({...s}));
+  const o=overlay(`<div class="modal"><div class="row"><h2 style="font-size:20px">Etapas do funil</h2><button class="x">×</button></div>
+    <p style="color:var(--ink2);font-size:13.5px">Se apagar uma etapa, os contatos dela voltam para a primeira.</p><div id="sr" class="grid" style="gap:8px"></div>
+    <button class="btn sm" id="srAdd" style="align-self:flex-start">+ Etapa</button><div class="row"><button class="btn p" id="srSave">Salvar</button><span class="err" id="srE"></span></div></div>`,true);
+  const draw=()=>{o.querySelector('#sr').innerHTML=rows.map((r,i)=>`<div class="srow"><input data-i="${i}" value="${esc(r.name)}" maxlength="40"><select data-k="${i}">${[['open','Em andamento'],['won','Ganhou'],['lost','Perdeu']].map(k=>`<option value="${k[0]}" ${r.kind===k[0]?'selected':''}>${k[1]}</option>`).join('')}</select><button class="btn sm" data-d="${i}" title="Apagar">×</button></div>`).join('');
+    o.querySelectorAll('[data-i]').forEach(x=>x.oninput=()=>rows[x.dataset.i].name=x.value);
+    o.querySelectorAll('[data-k]').forEach(x=>x.onchange=()=>rows[x.dataset.k].kind=x.value);
+    o.querySelectorAll('[data-d]').forEach(x=>x.onclick=()=>{rows.splice(x.dataset.d,1);draw()})};
+  draw();
+  o.querySelector('#srAdd').onclick=()=>{const w=rows.findIndex(r=>r.kind!=='open');rows.splice(w<0?rows.length:w,0,{name:'Nova etapa',kind:'open'});draw()};
+  o.querySelector('#srSave').onclick=async()=>{try{await api('/funnel/stages',{method:'PUT',body:{stages:rows.map(r=>({id:r.id,name:r.name,kind:r.kind}))}});o.remove();toast('Funil atualizado.');drawBoard()}catch(e){o.querySelector('#srE').textContent=e.message}};
+}
+function newContact(){
+  const o=overlay(`<form class="modal" id="ncF"><div class="row"><h2 style="font-size:20px">Novo contato</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Nome</label><input name="name" required></div>
+    <div class="field"><label>WhatsApp (com DDD)</label><input name="phone" required inputmode="tel" placeholder="(11) 98888-7777"></div>
+    <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+     <div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0"></div></div>
+    <div class="field"><label>Anotações</label><textarea name="notes" rows="3"></textarea></div>
+    <p class="note">Para mandar a primeira mensagem para quem ainda não falou com você, a Meta exige um modelo aprovado (chega na etapa de campanhas).</p>
+    <div class="row"><button class="btn p">Adicionar</button><span class="err" id="ncE"></span></div></form>`,true);
+  o.querySelector('#ncF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));if(f.value==='')delete f.value;else f.value=Number(f.value);
+    try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
+}
 const VIEWS={
+ async funil(){
+  const canManage=['owner','manager'].includes(ME.user.role);
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Arraste os cards entre as etapas. Clique para ver e anotar.</p></div>
+    <div class="tools"><input id="fnQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(FN.q)}"><button class="chip ${FN.mine?'on':''}" id="fnMine">Só os meus</button>
+    ${canManage?'<button class="btn sm" id="fnSt">Editar etapas</button>':''}<button class="btn sm p" id="fnNew">+ Contato</button></div></div><div class="kb" id="kb"></div>`;
+  $('#fnQ').oninput=e=>{FN.q=e.target.value;clearTimeout(FN.t);FN.t=setTimeout(drawBoard,200)};
+  $('#fnMine').onclick=e=>{FN.mine=!FN.mine;e.target.classList.toggle('on',FN.mine);drawBoard()};
+  if($('#fnSt'))$('#fnSt').onclick=stagesEditor;$('#fnNew').onclick=newContact;
+  await drawBoard();
+  POLL=setInterval(()=>{if(VIEW==='funil'&&!document.hidden&&!document.querySelector('.ov')&&!document.querySelector('.kc.drag'))drawBoard().catch(()=>{})},10000);
+ },
  async conversas(){
-  const num=await api('/wa/number');CV.team=await api('/team');CV.ai=await api('/ai/settings').catch(()=>null);
+  const num=await api('/wa/number');CV.team=await api('/team');STAGES=await api('/funnel/stages').catch(()=>null);CV.ai=await api('/ai/settings').catch(()=>null);
   $('#page').innerHTML=`<div class="cv"><div class="cv-list"><div class="hd"><h1>Conversas</h1>
     ${num?'':`<p class="note" style="margin-top:8px">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="chips">${[['all','Todas'],['mine','Minhas'],['unassigned','Sem dono'],['waiting','Esperando resposta']].map(f=>`<button class="chip ${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('')}</div></div>
@@ -332,8 +435,13 @@ const VIEWS={
     catch(e){hist.pop();hist.push({dir:'sys',text:e.message})}draw()};
  },
  async inicio(){
-  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);
+  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);
   $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p>
+   ${sm?`<div class="grid g4" style="margin-bottom:14px">
+    <button class="card stat" data-to="conversas" style="text-align:left"><span>Esperando resposta</span><b>${sm.waiting}</b></button>
+    <button class="card stat" data-to="conversas" style="text-align:left"><span>Pediram atendente</span><b style="color:${sm.needs_human?'var(--bad)':'inherit'}">${sm.needs_human}</b></button>
+    <button class="card stat" data-to="funil" style="text-align:left"><span>Contatos novos no mês</span><b>${sm.new_contacts}</b></button>
+    <button class="card stat" data-to="funil" style="text-align:left"><span>Vendas no mês</span><b>${sm.won}${sm.won_value?` <small style="font-size:14px;color:var(--ok)">${brl(sm.won_value)}</small>`:''}</b></button></div>`:''}
    <div class="card"><div class="steps">
     <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
     <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':'2'}</span><div><b>Convide seu time</b><p>Cada pessoa com seu acesso e sua fila de conversas.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>

@@ -128,6 +128,7 @@ async def ingest(value):
         if await db.messages.find_one({'wa_msg_id': m.get('id')}): continue
         wa_id = m.get('from')
         at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
+        if now() - at < timedelta(seconds=60): at = now()  # a Meta manda em segundos; a hora de chegada mantém a ordem certa
         text = text_of(m)
         contact = await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
         if not contact:
