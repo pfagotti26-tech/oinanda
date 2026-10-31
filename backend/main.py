@@ -9,6 +9,8 @@ from core import (db, client, now, iso, uid, digest, client_ip, hash_password, v
 from whatsapp import router as wa_router
 from ai import router as ai_router
 from funnel import router as funnel_router
+from agenda import router as agenda_router
+from gcal import router as gcal_router
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -32,6 +34,12 @@ async def lifespan(app):
     await db.messages.create_index([('contact_id', 1), ('at', -1)])
     await db.messages.create_index('wa_msg_id', sparse=True)
     await db.contacts.create_index([('company_id', 1), ('stage', 1)])
+    await db.appointments.create_index([('company_id', 1), ('start', 1)])
+    await db.appointments.create_index([('contact_id', 1), ('start', -1)])
+    await db.agenda_settings.create_index('company_id', unique=True)
+    await db.google_accounts.create_index('company_id', unique=True)
+    await db.oauth_states.create_index('state', unique=True)
+    await db.oauth_states.create_index('expires_at', expireAfterSeconds=0)
     await db.ai_settings.create_index('company_id', unique=True)
     await db.ai_usage.create_index([('company_id', 1), ('month', 1)], unique=True)
     log.info('Oi Nanda API pronta. Admin: %s', ADMIN_EMAIL or '(ADMIN_EMAIL não definido)')
@@ -42,6 +50,8 @@ app = FastAPI(title='Oi Nanda', lifespan=lifespan, docs_url=None, redoc_url=None
 app.include_router(wa_router, prefix='/api')
 app.include_router(ai_router, prefix='/api')
 app.include_router(funnel_router, prefix='/api')
+app.include_router(agenda_router, prefix='/api')
+app.include_router(gcal_router, prefix='/api')
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

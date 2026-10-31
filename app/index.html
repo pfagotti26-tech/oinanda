@@ -133,7 +133,7 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .mode.auto{background:var(--soft);border-color:var(--c);color:var(--c2)}
 .field textarea{border:1px solid #DCD2C9;border-radius:12px;padding:11px 13px;background:#fff;outline:0;font:inherit;resize:vertical;min-height:90px}
 .field textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
-.field .hint{font-size:12px;color:var(--ink3)}
+.hint,.field .hint{font-size:12px;color:var(--ink3)}
 .ai-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:start}
 .play{display:flex;flex-direction:column;height:560px;padding:0;overflow:hidden;background:#EFE7DD}
 .play .hd{background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
@@ -169,6 +169,23 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .srow{display:grid;grid-template-columns:1fr 130px 34px;gap:8px;align-items:center}
 .srow input,.srow select{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;outline:0;background:#fff}
 .stsel{font-size:12.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;max-width:190px}
+.wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.day{background:#F3EEE8;border-radius:16px;padding:8px;min-height:340px;display:flex;flex-direction:column;gap:6px}
+.day.today{background:var(--tint);box-shadow:inset 0 0 0 2px var(--soft)}.day.closed{opacity:.6}
+.day .dh{padding:4px 6px 6px;font-size:12px;color:var(--ink2);font-weight:700;display:flex;justify-content:space-between}
+.day .dh b{font-size:15px;color:var(--ink)}
+.ap{background:#fff;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:7px 9px;text-align:left;width:100%;font-size:12.5px}
+.ap b{display:block;font-size:13px}.ap span{color:var(--ink2);display:block}
+.ap.confirmed{border-left-color:#2F7DD1}.ap.done{border-left-color:var(--ok)}.ap.no_show{border-left-color:var(--bad)}.ap.canceled{border-left-color:#C5CDD5;opacity:.6;text-decoration:line-through}
+.tabs{display:flex;gap:6px;margin-bottom:16px}
+.hrs{display:grid;grid-template-columns:70px 1fr;gap:8px 12px;align-items:center}
+.hrs .rg{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hrs input[type=time]{border:1px solid #DCD2C9;border-radius:10px;padding:6px 8px}
+.svrow{display:grid;grid-template-columns:1fr 90px 80px 90px 34px;gap:8px;align-items:center}
+.svrow input{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;outline:0;min-width:0}
+.slots{display:flex;flex-wrap:wrap;gap:6px}.slots button{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;background:#fff}
+.slots button.on{background:var(--c);color:#fff;border-color:var(--c)}
+@media (max-width:860px){.wk{grid-template-columns:1fr}.day{min-height:0}.svrow{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.cv{grid-template-columns:1fr;height:auto}.cv-chat{min-height:70vh}.ai-wrap,.modes{grid-template-columns:1fr}}
 
 @media (max-width:860px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.g4{grid-template-columns:1fr 1fr}.g2,.form2{grid-template-columns:1fr}.page{padding:20px 16px}}
@@ -229,7 +246,7 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -251,7 +268,7 @@ function shell(){
   go(VIEW);
 }
 let POLL=null;
-function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
+function go(v){VIEW=v;clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
 async function renderWa(own){
@@ -295,7 +312,7 @@ async function cvChat(scroll){
   const prevDraft=$('#cvText')?.value||'';
   box.innerHTML=`<div class="top"><span class="av" style="width:38px;height:38px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800">${initials(c.name)}</span>
     <div><b>${esc(c.name)}</b><span>+${esc(c.wa_id)}</span></div>
-    <div class="act">${STAGES?`<select class="stsel" id="cvSt" title="Etapa do funil">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="cvDet">Detalhes</button>${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
+    <div class="act">${STAGES?`<select class="stsel" id="cvSt" title="Etapa do funil">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="cvBook">Agendar</button><button class="btn sm" id="cvDet">Detalhes</button>${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
    ${c.needs_human?`<div class="human">🙋 ${esc(c.name.split(' ')[0])} precisa de alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}<button class="btn sm" id="cvRes">Resolvido</button></div>`:''}
    <div class="msgs" id="cvMsgs">${d.messages.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)} · ${hm(m.at)}</div>`:`<div class="m ${m.dir} ${m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||'')?'ai':''}">${m.dir==='out'&&m.by?`<span class="by">${esc(m.by)}</span>`:''}${esc(m.text)}<small>${hm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`).join('')}</div>
    ${c.window_open?`<form class="comp" id="cvF"><textarea id="cvText" rows="1" placeholder="Escreva para ${esc(c.name.split(' ')[0])}... (Enter envia, Shift+Enter quebra linha)"></textarea>${CV.ai?.key_configured?'<button type="button" class="btn sug" id="cvSug" title="A Nanda escreve uma sugestão, você revisa e envia">✨ Sugerir</button>':''}<button class="btn p">Enviar</button></form>`
@@ -306,14 +323,104 @@ async function cvChat(scroll){
     try{await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});await cvChat();cvList()}catch(e){toast(e.message);$('#cvText').value=t}};
   if($('#cvAs'))$('#cvAs').onchange=async e=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Conversa passada.');cvList()};
   if($('#cvSt'))$('#cvSt').onchange=async e=>{try{await api('/contacts/'+CV.open,{method:'PATCH',body:{stage:e.target.value}});toast('Etapa atualizada.');cvChat()}catch(x){toast(x.message)}};
+  $('#cvBook').onclick=()=>bookModal({contact:{id:c.id,name:c.name}},()=>cvChat());
   $('#cvDet').onclick=()=>contactDrawer(CV.open,()=>{cvChat();cvList()});
   if($('#cvMode'))$('#cvMode').onchange=async e=>{try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:e.target.value||null}});cvChat();cvList()}catch(x){toast(x.message)}};
   if($('#cvRes'))$('#cvRes').onclick=async()=>{await api('/conversations/'+CV.open+'/resolved',{method:'POST'});cvChat();cvList()};
   if($('#cvSug'))$('#cvSug').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Pensando...';
-    try{const r=await api('/conversations/'+CV.open+'/suggest',{method:'POST'});if(r.reply){$('#cvText').value=r.reply;$('#cvText').focus()}if(r.handoff)toast('A Nanda acha melhor alguém do time responder: '+(r.reason||''))}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨ Sugerir'};
+    try{const r=await api('/conversations/'+CV.open+'/suggest',{method:'POST'});if(r.reply){$('#cvText').value=r.reply;$('#cvText').focus()}if(r.handoff)toast('A Nanda acha melhor alguém do time responder: '+(r.reason||''));if(r.book)toast('A Nanda sugere agendar '+(r.book_label||'')+'. Use o botão Agendar para confirmar.')}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨ Sugerir'};
   if($('#cvMine'))$('#cvMine').onclick=async()=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:me.id}});cvChat();cvList()};
 }
 let STAGES=null;
+const WEEKD=['seg','ter','qua','qui','sex','sáb','dom'];
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const monday=d=>{const x=new Date(d);x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+let AG={tab:'semana',week:null,cfg:null};
+async function agCfg(){AG.cfg=await api('/agenda/settings');return AG.cfg}
+async function bookModal(pre,after){
+  const cfg=AG.cfg||await agCfg();if(!cfg.services.length)return toast('Cadastre um serviço na aba Configurar.');
+  const canForce=['owner','manager'].includes(ME.user.role);
+  let contacts=[];if(!pre.contact){contacts=(await api('/funnel')).cards}
+  const o=overlay(`<form class="modal" id="bkF"><div class="row"><h2 style="font-size:20px">Agendar${pre.contact?' · '+esc(pre.contact.name):''}</h2><button type="button" class="x">×</button></div>
+   ${pre.contact?'':`<div class="field"><label>Cliente</label><select name="contact_id" required><option value="">Escolha...</option>${contacts.map(c=>`<option value="${c.id}">${esc(c.name)} · +${esc(c.wa_id)}</option>`).join('')}</select><span class="hint">Cliente novo? Adicione primeiro no Funil.</span></div>`}
+   <div class="form2"><div class="field"><label>Serviço</label><select name="service_id">${cfg.services.map(v=>`<option value="${v.id}">${esc(v.name)} (${v.duration} min)</option>`).join('')}</select></div>
+    <div class="field"><label>Dia</label><input type="date" name="date" value="${pre.date||ymd(new Date())}" required></div></div>
+   <div class="field"><label>Horários livres</label><div class="slots" id="bkS"></div></div>
+   ${canForce?'<div class="field"><label>Ou encaixe num horário específico</label><input type="time" name="ftime" style="max-width:150px"></div>':''}
+   <div class="field"><label>Observação</label><input name="notes" maxlength="300"></div>
+   <div class="row"><button class="btn p">Agendar</button><span class="err" id="bkE"></span></div></form>`,true);
+  const f=o.querySelector('#bkF');let pick=null;
+  const load=async()=>{pick=null;const box=o.querySelector('#bkS');box.innerHTML='<span class="hint">Carregando...</span>';
+    try{const sl=await api(`/agenda/slots?service_id=${f.service_id.value}&date=${f.date.value}`);
+      box.innerHTML=sl.length?sl.map(t=>`<button type="button" data-t="${t}">${t}</button>`).join(''):'<span class="hint">Nenhum horário livre nesse dia.</span>';
+      box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pick=b.dataset.t;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))})}catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
+  f.service_id.onchange=load;f.date.onchange=load;load();
+  f.onsubmit=async ev=>{ev.preventDefault();const ft=f.ftime?.value;const time=ft||pick;if(!time)return o.querySelector('#bkE').textContent='Escolha um horário.';
+    const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft};
+    try{await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after()}catch(e){o.querySelector('#bkE').textContent=e.message}};
+}
+function apptModal(a,after){
+  const st=[['scheduled','Agendado'],['confirmed','Confirmado'],['done','Compareceu'],['no_show','Faltou'],['canceled','Cancelado']];
+  const d=new Date(a.start);
+  const o=overlay(`<div class="modal"><div class="row"><h2 style="font-size:20px">${esc(a.contact_name)}</h2><button class="x">×</button></div>
+   <p style="color:var(--ink2);margin-top:-6px">${esc(a.service_name)} · ${WEEKD[(d.getDay()+6)%7]} ${d.toLocaleDateString('pt-BR')} às ${a.start.slice(11,16)} · agendado por ${esc(a.by||'')}</p>
+   <div class="field"><label>Situação</label><div class="chips">${st.map(x=>`<button class="chip ${a.status===x[0]?'on':''}" data-st="${x[0]}">${x[1]}</button>`).join('')}</div></div>
+   <div class="field"><label>Remarcar</label><div class="row"><input type="date" id="rmD" value="${a.start.slice(0,10)}" style="border:1px solid #DCD2C9;border-radius:10px;padding:8px"><input type="time" id="rmT" value="${a.start.slice(11,16)}" style="border:1px solid #DCD2C9;border-radius:10px;padding:8px"><button class="btn sm" id="rmGo">Remarcar</button></div></div>
+   <div class="field"><label>Observação</label><input id="apN" value="${esc(a.notes||'')}"></div>
+   <div class="row"><button class="btn p" id="apS">Salvar observação</button><button class="btn" id="apC">Abrir conversa</button><span class="err" id="apE"></span></div></div>`,true);
+  const go2=async body=>{try{await api('/appointments/'+a.id,{method:'PATCH',body});o.remove();toast('Atualizado.');after&&after()}catch(e){o.querySelector('#apE').textContent=e.message}};
+  o.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>go2({status:b.dataset.st}));
+  o.querySelector('#rmGo').onclick=()=>go2({date:o.querySelector('#rmD').value,time:o.querySelector('#rmT').value});
+  o.querySelector('#apS').onclick=()=>go2({notes:o.querySelector('#apN').value});
+  o.querySelector('#apC').onclick=()=>{o.remove();CV.open=a.contact_id;go('conversas')};
+}
+async function drawWeek(){
+  const box=$('#agBody');if(!box)return;const w=AG.week;const end=new Date(w);end.setDate(end.getDate()+6);
+  const [list,cfg]=await Promise.all([api(`/appointments?start=${ymd(w)}&end=${ymd(end)}`),AG.cfg?Promise.resolve(AG.cfg):agCfg()]);
+  $('#agRange').textContent=`${w.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${end.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}`;
+  const today=ymd(new Date());
+  box.innerHTML=`<div class="wk">${[0,1,2,3,4,5,6].map(i=>{const d=new Date(w);d.setDate(d.getDate()+i);const k=ymd(d);const items=list.filter(a=>a.start.slice(0,10)===k);const open=(cfg.hours[String(i)]||[]).length;
+    return `<div class="day ${k===today?'today':''} ${open?'':'closed'}"><div class="dh"><span>${WEEKD[i]}</span><b>${d.getDate()}</b></div>
+     ${items.map(a=>`<button class="ap ${a.status}" data-a="${a.id}"><b>${a.start.slice(11,16)} · ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${a.status!=='scheduled'?' · '+esc(a.status_label):''}</span></button>`).join('')}
+     ${open?`<button class="btn sm" data-new="${k}" style="margin-top:auto;opacity:.7">+</button>`:'<span class="hint" style="padding:0 6px">fechado</span>'}</div>`}).join('')}</div>`;
+  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>apptModal(list.find(a=>a.id===b.dataset.a),drawWeek));
+  box.querySelectorAll('[data-new]').forEach(b=>b.onclick=()=>bookModal({date:b.dataset.new},drawWeek));
+}
+async function drawAgCfg(){
+  const box=$('#agBody');const cfg=await agCfg();if(!STAGES)STAGES=await api('/funnel/stages');
+  const own=ME.user.role==='owner';const g=cfg.google;
+  const svcs=cfg.services.map(v=>({...v}));const hours=JSON.parse(JSON.stringify(cfg.hours));
+  box.innerHTML=`<div class="grid g2" style="align-items:start"><div class="grid">
+    <div class="card"><h3 style="margin-bottom:4px">Serviços</h3><p class="hint" style="margin-bottom:12px">O que dá para agendar. Vagas = quantas pessoas no mesmo horário (aula em grupo).</p>
+     <div class="svrow hint" style="margin-bottom:4px"><span>Nome</span><span>Minutos</span><span>Vagas</span><span>Preço (R$)</span><span></span></div><div id="svL" class="grid" style="gap:8px"></div>
+     <button class="btn sm" id="svAdd" style="margin-top:10px">+ Serviço</button></div>
+    <div class="card"><h3 style="margin-bottom:12px">A Nanda e a agenda</h3>
+     <label class="row" style="gap:8px;font-weight:600"><input type="checkbox" id="nb" ${cfg.nanda_books?'checked':''}> A Nanda oferece horários e agenda sozinha</label>
+     <p class="hint" style="margin:4px 0 12px">No modo copiloto ela só sugere; quem confirma é o time.</p>
+     <div class="form2"><div class="field"><label>Ao agendar, mover no funil para</label><select id="sob"><option value="">Não mover</option>${STAGES.map(x=>`<option value="${x.id}" ${cfg.stage_on_book===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
+      <div class="field"><label>Antecedência mínima (horas)</label><input type="number" id="mn" min="0" max="168" value="${cfg.min_notice_hours}"></div>
+      <div class="field"><label>Agenda aberta para os próximos (dias)</label><input type="number" id="da" min="1" max="90" value="${cfg.days_ahead}"></div>
+      <div class="field"><label>Intervalo entre horários (min)</label><input type="number" id="stp" min="5" max="240" value="${cfg.step}"></div></div></div></div>
+   <div class="grid"><div class="card"><h3 style="margin-bottom:12px">Horário de funcionamento</h3><div class="hrs" id="hrs"></div></div>
+    <div class="card"><h3 style="margin-bottom:8px">Google Agenda</h3>
+     ${g.connected?`<p><span class="pill ok">conectado</span> <b>${esc(g.email||'')}</b></p><p class="hint" style="margin-top:6px">Compromissos do Google bloqueiam a agenda, e cada agendamento aparece lá.</p>${g.error?`<p class="note" style="margin-top:8px">O Google parou de responder (${esc(g.error)}). Conecte de novo.</p>`:''}${own?'<button class="btn sm danger" id="gOff" style="margin-top:10px">Desconectar</button>':''}`
+      :g.configured?`<p class="hint" style="margin-bottom:10px">Os compromissos do seu Google bloqueiam horários aqui, e cada agendamento vira um evento lá.</p>${own?'<button class="btn" id="gOn">Conectar Google Agenda</button>':'<p class="note">Só o dono da conta conecta.</p>'}`
+      :'<p class="hint">A integração com o Google ainda está sendo ativada pelo Oi Nanda.</p>'}</div></div></div>
+   <div class="row" style="margin-top:14px"><button class="btn p" id="agSave">Salvar agenda</button><span class="err" id="agE"></span></div>`;
+  const drawS=()=>{$('#svL').innerHTML=svcs.map((v,i)=>`<div class="svrow"><input data-f="name" data-i="${i}" value="${esc(v.name)}"><input data-f="duration" data-i="${i}" type="number" min="10" value="${v.duration}"><input data-f="capacity" data-i="${i}" type="number" min="1" value="${v.capacity||1}"><input data-f="price" data-i="${i}" type="number" min="0" value="${v.price??''}"><button class="btn sm" data-del="${i}">×</button></div>`).join('');
+    $('#svL').querySelectorAll('[data-f]').forEach(x=>x.oninput=()=>{const v=svcs[x.dataset.i];v[x.dataset.f]=x.type==='number'?(x.value===''?null:Number(x.value)):x.value});
+    $('#svL').querySelectorAll('[data-del]').forEach(x=>x.onclick=()=>{svcs.splice(x.dataset.del,1);drawS()})};
+  const drawH=()=>{$('#hrs').innerHTML=WEEKD.map((d,i)=>{const r=hours[String(i)]||[];return `<b>${d}</b><div class="rg">${r.map((x,j)=>`<input type="time" data-h="${i}" data-j="${j}" data-k="0" value="${x[0]}"> às <input type="time" data-h="${i}" data-j="${j}" data-k="1" value="${x[1]}"><button class="btn sm" data-hx="${i}:${j}">×</button>`).join('')}${r.length?'':'<span class="hint">fechado</span>'}<button class="btn sm" data-ha="${i}">+</button></div>`}).join('');
+    $('#hrs').querySelectorAll('[data-h]').forEach(x=>x.onchange=()=>hours[x.dataset.h][x.dataset.j][x.dataset.k]=x.value);
+    $('#hrs').querySelectorAll('[data-hx]').forEach(x=>x.onclick=()=>{const [i,j]=x.dataset.hx.split(':');hours[i].splice(j,1);drawH()});
+    $('#hrs').querySelectorAll('[data-ha]').forEach(x=>x.onclick=()=>{const i=x.dataset.ha;(hours[i]=hours[i]||[]).push(hours[i].length?['14:00','18:00']:['09:00','18:00']);drawH()})};
+  drawS();drawH();
+  $('#svAdd').onclick=()=>{svcs.push({name:'Novo serviço',duration:60,capacity:1,price:null});drawS()};
+  $('#agSave').onclick=async()=>{try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,
+    nanda_books:$('#nb').checked,stage_on_book:$('#sob').value,min_notice_hours:Number($('#mn').value),days_ahead:Number($('#da').value),step:Number($('#stp').value)}});toast('Agenda salva.');$('#agE').textContent=''}catch(e){$('#agE').textContent=e.message}};
+  if($('#gOn'))$('#gOn').onclick=async()=>{try{location.href=(await api('/google/connect',{method:'POST'})).url}catch(e){toast(e.message)}};
+  if($('#gOff'))$('#gOff').onclick=async()=>{if(!confirm('Desconectar o Google Agenda?'))return;await api('/google',{method:'DELETE'});drawAgCfg()};
+}
 const brl=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 function overlay(html,center){const o=document.createElement('div');o.className='ov'+(center?' center':'');o.innerHTML=html;o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o);o.querySelectorAll('.x').forEach(x=>x.onclick=()=>o.remove());return o}
 async function contactDrawer(id,after){
@@ -377,6 +484,19 @@ function newContact(){
     try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
 }
 const VIEWS={
+ async agenda(){
+  if(!AG.week)AG.week=monday(new Date());const canManage=['owner','manager'].includes(ME.user.role);
+  if(!canManage)AG.tab='semana';
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Agenda</h1><p class="sub">Aulas, avaliações e conversas marcadas pelo time e pela Nanda.</p></div>
+   <div class="tools">${AG.tab==='semana'?'<button class="btn sm" id="agP">‹</button><b id="agRange" style="font-size:14px;min-width:170px;text-align:center"></b><button class="btn sm" id="agN">›</button><button class="btn sm" id="agT">Hoje</button><button class="btn sm p" id="agB">+ Agendar</button>':''}</div></div>
+   ${canManage?`<div class="tabs"><button class="chip ${AG.tab==='semana'?'on':''}" data-tab="semana">Semana</button><button class="chip ${AG.tab==='config'?'on':''}" data-tab="config">Configurar</button></div>`:''}<div id="agBody"></div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AG.tab=b.dataset.tab;VIEWS.agenda()});
+  if(AG.tab==='config')return drawAgCfg();
+  $('#agP').onclick=()=>{AG.week.setDate(AG.week.getDate()-7);drawWeek()};$('#agN').onclick=()=>{AG.week.setDate(AG.week.getDate()+7);drawWeek()};
+  $('#agT').onclick=()=>{AG.week=monday(new Date());drawWeek()};$('#agB').onclick=()=>bookModal({},drawWeek);
+  await drawWeek();
+  POLL=setInterval(()=>{if(VIEW==='agenda'&&AG.tab==='semana'&&!document.hidden&&!document.querySelector('.ov'))drawWeek().catch(()=>{})},15000);
+ },
  async funil(){
   const canManage=['owner','manager'].includes(ME.user.role);
   $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Arraste os cards entre as etapas. Clique para ver e anotar.</p></div>
@@ -431,7 +551,7 @@ const VIEWS={
   $('#plR').onclick=()=>{hist.length=0;draw()};
   $('#plT').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#plF').requestSubmit()}};
   $('#plF').onsubmit=async ev=>{ev.preventDefault();const t=$('#plT').value.trim();if(!t)return;$('#plT').value='';hist.push({dir:'in',text:t});hist.push({dir:'sys',text:'digitando...'});draw();
-    try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});hist.pop();if(r.reply)hist.push({dir:'out',text:r.reply});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o time · '+(r.reason||'')})}
+    try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});hist.pop();if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela agendaria '+(r.book_label||'')+' (no teste nada é agendado)'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o time · '+(r.reason||'')})}
     catch(e){hist.pop();hist.push({dir:'sys',text:e.message})}draw()};
  },
  async inicio(){
@@ -538,6 +658,8 @@ async function boot(){
     return authView(location.pathname.startsWith('/cadastro')?'signup':'login');
   }
   if(ME.user.must_change_password)return passwordView();
+  const gq=new URLSearchParams(location.search).get('google');
+  if(gq){history.replaceState(null,'','/');VIEW='agenda';AG.tab='config';shell();toast({ok:'Google Agenda conectado.',cancelado:'Conexão com o Google cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Google não completou a conexão. Tente de novo.'}[gq]||'');return}
   shell();
 }
 boot();

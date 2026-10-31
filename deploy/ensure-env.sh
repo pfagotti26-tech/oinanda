@@ -17,3 +17,6 @@ add APP_PUBLIC_URL https://app.oinanda.com.br
 # etapa 3 — Nanda (IA)
 add ANTHROPIC_API_KEY ""
 add AI_MODEL claude-haiku-5-5
+# etapa 5 — Google Agenda
+add GOOGLE_CLIENT_ID ""
+add GOOGLE_CLIENT_SECRET ""

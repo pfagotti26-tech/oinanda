@@ -15,6 +15,8 @@ from pydantic import BaseModel, Field
 from core import db, now, uid, audit, current_user, managers
 import whatsapp
 from whatsapp import get_contact, deliver, note
+from datetime import datetime
+import agenda
 
 log = logging.getLogger('oinanda.ai')
 router = APIRouter()
@@ -44,8 +46,22 @@ async def llm(system, messages, max_tokens=500):
     text = ''.join(b.get('text', '') for b in data.get('content', []) if b.get('type') == 'text')
     return text, data.get('usage') or {}
 
-def build_system(s, company, contact_name):
-    return f"""Você é {s['name']}, assistente de atendimento e vendas do negócio "{company['name']}" no WhatsApp.
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None):
+    tz = agenda.tz_of(company); t = now().astimezone(tz)
+    ag = ''
+    if agenda_text:
+        ag = f"""
+AGENDA (horários livres de verdade, já descontando o que está ocupado):
+{agenda_text}
+- Ofereça no máximo 3 opções por vez, perguntando antes qual dia ou período fica melhor.
+- Só agende quando o cliente escolher um serviço e um horário DESTA lista. Aí preencha "book" e confirme na reply (serviço, dia e hora).
+- Nunca ofereça horário fora da lista. Se nenhum servir, chame o time.
+- Para cancelar ou remarcar, chame o time.
+"""
+        if upcoming:
+            ag += 'Este cliente já tem agendado: ' + '; '.join(f"{a['service_name']} {agenda.WEEK[agenda.aware(a['start']).astimezone(tz).weekday()]} {agenda.aware(a['start']).astimezone(tz):%d/%m %H:%M}" for a in upcoming) + '\n'
+    return f"""Hoje é {agenda.WEEK[t.weekday()]} {t:%d/%m/%Y}, {t:%H:%M}.
+Você é {s['name']}, assistente de atendimento e vendas do negócio "{company['name']}" no WhatsApp.
 Fale em português do Brasil, num tom {TONES.get(s['tone'], TONES['proximo'])}. Mensagens curtas (até 3 frases), como no WhatsApp.
 O cliente se chama {contact_name or 'cliente'}; use o primeiro nome com naturalidade.
 
@@ -63,8 +79,9 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
+{ag}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff"}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
 
 def parse(text):
@@ -72,9 +89,10 @@ def parse(text):
     if m:
         try:
             d = json.loads(m.group(0))
-            return str(d.get('reply') or '').strip(), bool(d.get('handoff')), str(d.get('reason') or '')[:200]
+            b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
+            return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b}
         except ValueError: pass
-    return (text or '').strip(), False, ''
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None}
 
 async def history(contact_id, limit=20):
     rows = await db.messages.find({'contact_id': contact_id, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'dir': 1, 'text': 1}).sort('at', -1).to_list(limit)
@@ -91,13 +109,26 @@ async def track(company_id, usage, kind):
     await db.ai_usage.update_one({'company_id': company_id, 'month': month},
         {'$inc': {'input_tokens': usage.get('input_tokens', 0), 'output_tokens': usage.get('output_tokens', 0), kind: 1}}, upsert=True)
 
+async def system_for(s, company, contact=None):
+    try: agenda_text, _ = await agenda.nanda_context(company)
+    except Exception: log.exception('falha ao montar a agenda'); agenda_text = None
+    upcoming = await agenda.upcoming_for(company['id'], contact['id']) if contact and agenda_text else None
+    name = (contact.get('name') or '').split(' ')[0] if contact else 'Cliente'
+    return build_system(s, company, name, agenda_text, upcoming)
+
 async def think(company_id, contact):
     s = await settings_for(company_id)
     company = await db.companies.find_one({'id': company_id}, {'_id': 0})
     msgs = await history(contact['id'])
-    if not msgs: return '', False, '', {}
-    text, usage = await llm(build_system(s, company, (contact.get('name') or '').split(' ')[0]), msgs)
-    return (*parse(text), usage)
+    if not msgs: return parse(''), {}
+    text, usage = await llm(await system_for(s, company, contact), msgs)
+    return parse(text), usage
+
+def describe_book(company, b):
+    try:
+        t = datetime.fromisoformat(b['start'])
+        return f"{agenda.WEEK[t.weekday()]} {t:%d/%m às %H:%M}"
+    except Exception: return b.get('start')
 
 # ---------- resposta automática ----------
 async def handoff(company_id, contact, reason):
@@ -123,10 +154,16 @@ async def auto_reply(company_id, contact_id, msg_id):
         if asks_human:
             await deliver(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', None, s['name'] + ' (IA)')
             return await handoff(company_id, contact, 'cliente pediu uma pessoa')
-        reply, wants_human, reason, usage = await think(company_id, contact)
+        d, usage = await think(company_id, contact)
         await track(company_id, usage, 'replies')
-        if reply: await deliver(company_id, contact, reply, None, s['name'] + ' (IA)')
-        if wants_human: await handoff(company_id, contact, reason)
+        if d['book']:
+            company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+            try:
+                await agenda.book(company, contact, d['book']['service_id'], datetime.fromisoformat(d['book']['start']), None, s['name'] + ' (IA)')
+            except (HTTPException, ValueError):
+                d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
+        if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+        if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
         log.exception('falha na resposta automática')
         try: await note(company_id, contact_id, 'A Nanda não conseguiu responder agora. Alguém do time precisa assumir.')
@@ -185,18 +222,20 @@ async def test(body: TestIn, user=Depends(managers)):
         else: msgs.append({'role': role, 'content': t})
     while msgs and msgs[0]['role'] != 'user': msgs.pop(0)
     if not msgs: raise HTTPException(400, 'Escreva uma mensagem como cliente.')
-    text, usage = await llm(build_system(s, user['company'], 'Cliente'), msgs)
+    text, usage = await llm(await system_for(s, user['company']), msgs)
     await track(user['company_id'], usage, 'tests')
-    reply, wants_human, reason = parse(text)
-    return {'reply': reply, 'handoff': wants_human, 'reason': reason}
+    d = parse(text)
+    if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
+    return d
 
 # ---------- na conversa ----------
 @router.post('/conversations/{contact_id}/suggest')
 async def suggest(contact_id: str, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
-    reply, wants_human, reason, usage = await think(user['company_id'], c)
+    d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
-    return {'reply': reply, 'handoff': wants_human, 'reason': reason}
+    if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
+    return d
 
 class ModeIn(BaseModel):
     mode: Optional[Literal['auto', 'copilot', 'off']] = None
