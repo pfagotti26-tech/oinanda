@@ -80,7 +80,7 @@ async def signup(body: Signup, request: Request, response: Response):
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
                'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'created_at': now()}
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
-            'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now()}
+            'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
     await db.companies.insert_one(company.copy())
     await db.users.insert_one(user.copy())
     await strike(key, doc, minutes=60)

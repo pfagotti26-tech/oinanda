@@ -239,7 +239,7 @@ const VIEWS={
    ${list.map(c=>`<tr><td><b>${esc(c.name)}</b><small>${esc(SEG[c.segment]||'')} · ${c.users} ${c.users===1?'usuário':'usuários'}</small></td>
     <td>${esc(c.owner?.name||'—')}<small>${esc(c.owner?.email||'')} · último acesso ${dt(c.owner?.last_login_at)}</small></td>
     <td><select data-plan="${c.id}" class="btn sm">${Object.entries(PLAN).map(([k,v])=>`<option value="${k}" ${k===c.plan?'selected':''}>${v}</option>`).join('')}</select>
-     ${c.plan==='trial'?`<small>até ${day(c.trial_ends_at)}</small>`:''}</td>
+     ${c.plan==='trial'?`<small>teste até ${day(c.trial_ends_at)}</small>`:''}</td>
     <td>${c.status==='active'?'<span class="pill ok">ativa</span>':'<span class="pill bad">suspensa</span>'}</td>
     <td>${day(c.created_at)}</td>
     <td style="text-align:right;white-space:nowrap">${c.plan==='trial'?`<button class="btn sm" data-ext="${c.id}">+7 dias</button> `:''}<button class="btn sm" data-enter="${c.id}">Entrar</button> <button class="btn sm ${c.status==='active'?'danger':''}" data-st="${c.id}" data-to="${c.status==='active'?'suspended':'active'}">${c.status==='active'?'Suspender':'Reativar'}</button></td></tr>`).join('')}
@@ -247,7 +247,7 @@ const VIEWS={
   document.querySelectorAll('[data-enter]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.enter+'/enter',{method:'POST'});VIEW='inicio';await boot()});
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=async()=>{if(b.dataset.to==='suspended'&&!confirm('Suspender esta conta? O time dela perde o acesso na hora.'))return;await api('/admin/companies/'+b.dataset.st,{method:'PATCH',body:{status:b.dataset.to}});VIEWS['a-clientes']()});
   document.querySelectorAll('[data-ext]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.ext,{method:'PATCH',body:{extend_trial_days:7}});toast('Teste estendido em 7 dias.');VIEWS['a-clientes']()});
-  document.querySelectorAll('[data-plan]').forEach(s=>s.onchange=async()=>{await api('/admin/companies/'+s.dataset.plan,{method:'PATCH',body:{plan:s.value}});toast('Plano alterado.')});
+  document.querySelectorAll('[data-plan]').forEach(s=>s.onchange=async()=>{await api('/admin/companies/'+s.dataset.plan,{method:'PATCH',body:{plan:s.value}});toast('Plano alterado.');if(s.dataset.plan===ME.company.id){await refresh();shell()}else VIEWS['a-clientes']()});
  },
  async 'a-atividade'(){
   const rows=await api('/admin/audit');
