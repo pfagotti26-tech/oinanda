@@ -230,7 +230,7 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .ag-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:10px;margin-bottom:14px}
 .ag-sum .s{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 16px;font-size:12px;color:var(--ink2);font-weight:600;min-width:0}
 .ag-sum .s b{display:block;font-size:19px;color:var(--ink);font-weight:800;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ag-sum .s.warn b{color:var(--warn)}.ag-sum .s.bad b{color:var(--bad)}.ag-sum .s.nx b{font-size:15.5px;padding:2px 0 1px}
+.ag-sum .s i{font-style:normal}.ag-sum .s.warn b{color:var(--warn)}.ag-sum .s.bad b{color:var(--bad)}.ag-sum .s.nx b{font-size:15.5px;padding:2px 0 1px}
 .ag-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .ag-bar #agRange{font-size:15px;margin:0 6px}
 .ag-bar .nav{width:34px;height:34px;padding:0;font-size:16px}
@@ -279,8 +279,10 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .fab{display:none}.ag-bar .gear{display:none}
 @media (max-width:860px){
  .ag-hd:has(#agB){display:none}.ag-hd>div:first-child{display:none}.ag-hd .tools{margin-left:0}.ag-bar .gear{display:inline-flex;order:5}
- .ag-sum{display:flex;overflow-x:auto;gap:8px;margin:0 -16px 12px;padding:0 16px;scrollbar-width:none}.ag-sum::-webkit-scrollbar{display:none}
- .ag-sum .s{flex:0 0 auto;padding:7px 12px;border-radius:12px;font-size:11.5px}.ag-sum .s b{font-size:16px}.ag-sum .s.nx{max-width:250px}.ag-sum .s.nx b{font-size:14px}
+ .ag-sum{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+ .ag-sum .s{padding:9px 12px;border-radius:14px;font-size:12px;text-align:left}.ag-sum .s b{font-size:20px}.ag-sum .s i.lg{display:none}
+ .ag-sum .s.nx{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:10px 12px}.ag-sum .s.nx b{font-size:14.5px;padding:0;flex:none;max-width:55%}.ag-sum .s.nx .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .ag-bar .btn{height:38px}.ag-bar .nav{width:38px;height:38px}.ag-bar #agT{padding:0 14px}
  .ag-bar{gap:6px;margin-bottom:10px}.ag-bar .seg,.ag-leg{display:none}.ag-bar #agRange{font-size:14px;flex:1;margin:0 2px;order:2}.ag-bar #agP{order:1}.ag-bar #agN{order:3}.ag-bar #agT{order:4}
  .cal{border-radius:14px}.cal-sc{max-height:none;min-height:0;overflow:visible}
  .cal.one .ev{padding:6px 10px}
@@ -596,9 +598,9 @@ async function drawWeek(scroll){
   const toConfirm=list.filter(a=>a.status==='scheduled'&&new Date(a.start)>now).length;
   const ns=list.filter(a=>a.status==='no_show').length,dn=list.filter(a=>a.status==='done').length;
   if($('#agSum'))$('#agSum').innerHTML=`<div class="s"><b>${todays.length}</b>hoje</div>
-    <div class="s ${toConfirm?'warn':''}"><b>${toConfirm}</b>a confirmar na semana</div>
-    <div class="s ${ns?'bad':''}"><b>${ns}</b>faltas na semana${dn+ns?` · ${Math.round(100*dn/(dn+ns))}% vieram`:''}</div>
-    <div class="s nx">${next?`<b>${next.start.slice(11,16)} · ${esc(next.contact_name)}</b>próximo · ${WEEKD[(new Date(next.start).getDay()+6)%7]} ${next.start.slice(8,10)}/${next.start.slice(5,7)} · ${esc(next.service_name)}`:'<b>—</b>nenhum horário marcado pela frente'}</div>`;
+    <div class="s ${toConfirm?'warn':''}"><b>${toConfirm}</b>a confirmar<i class="lg"> na semana</i></div>
+    <div class="s ${ns?'bad':''}"><b>${ns}</b>${ns===1?'falta':'faltas'}<i class="lg"> na semana</i>${dn+ns?`<i class="lg"> · ${Math.round(100*dn/(dn+ns))}% vieram</i>`:''}</div>
+    <div class="s nx">${next?`<b>${next.start.slice(11,16)} · ${esc(next.contact_name)}</b><span class="t">próximo · ${WEEKD[(new Date(next.start).getDay()+6)%7]} ${next.start.slice(8,10)}/${next.start.slice(5,7)} · ${esc(next.service_name)}</span>`:'<b>—</b><span class="t">nenhum horário marcado pela frente</span>'}</div>`;
   // faixa de horas
   const shown=list.filter(a=>days.some(d=>ymd(d)===a.start.slice(0,10)));
   let lo=24*60,hi=0;days.forEach(d=>(cfg.hours[String((d.getDay()+6)%7)]||[]).forEach(([x,y])=>{lo=Math.min(lo,toMin(x));hi=Math.max(hi,toMin(y))}));
