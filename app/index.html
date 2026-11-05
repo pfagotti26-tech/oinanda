@@ -226,6 +226,49 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .ap b{display:block;font-size:13px}.ap span{color:var(--ink2);display:block}
 .ap.confirmed{border-left-color:#2F7DD1}.ap.done{border-left-color:var(--ok)}.ap.no_show{border-left-color:var(--bad)}.ap.canceled{border-left-color:#C5CDD5;opacity:.6;text-decoration:line-through}
 .tabs{display:flex;gap:6px;margin-bottom:16px}
+/* agenda */
+.ag-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:10px;margin-bottom:14px}
+.ag-sum .s{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 16px;font-size:12px;color:var(--ink2);font-weight:600;min-width:0}
+.ag-sum .s b{display:block;font-size:19px;color:var(--ink);font-weight:800;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ag-sum .s.warn b{color:var(--warn)}.ag-sum .s.bad b{color:var(--bad)}.ag-sum .s.nx b{font-size:15.5px;padding:2px 0 1px}
+.ag-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ag-bar #agRange{font-size:15px;margin:0 6px}
+.ag-bar .nav{width:34px;height:34px;padding:0;font-size:16px}
+.seg{display:inline-flex;background:#EFE8E1;border-radius:999px;padding:3px;margin-right:6px}
+.seg button{padding:6px 14px;border-radius:999px;font-weight:700;font-size:13px;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.15)}
+.ag-leg{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);font-weight:600}
+.ag-leg i{width:10px;height:10px;border-radius:3px;margin-left:8px;background:var(--c)}
+.ag-leg i.confirmed{background:#2F7DD1}.ag-leg i.done{background:var(--ok)}.ag-leg i.no_show{background:var(--bad)}
+.cal{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative}
+.cal-hd{display:grid;border-bottom:1px solid var(--line);background:#fff}
+.cal-hd .dh{padding:10px 6px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px;border-left:1px solid var(--line);min-width:0}
+.cal-hd .dh span{font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.cal-hd .dh b{font-size:20px;width:36px;height:36px;display:grid;place-items:center;border-radius:50%}
+.cal-hd .dh small{font-size:11px;color:var(--ink3);font-weight:600;white-space:nowrap}
+.cal-hd .dh.today b{background:var(--c);color:#fff}.cal-hd .dh.today span{color:var(--c2)}
+.cal-hd .dh.past{opacity:.55}.cal.cw .cal-hd .dh:hover{background:#FBF8F5}
+.cal-sc{max-height:calc(100vh - 360px);min-height:380px;overflow-y:auto;position:relative}
+.cal-gr{display:grid;position:relative}
+.tm{position:relative}.tm span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;color:var(--ink3);font-weight:600;font-variant-numeric:tabular-nums}.tm span:first-child{transform:none;top:2px!important}
+.dc{position:relative;border-left:1px solid var(--line);background:#F6F2EE repeating-linear-gradient(to bottom,transparent 0,transparent 51px,#ECE4DC 51px,#ECE4DC 52px);cursor:pointer;min-width:0}
+.dc .op{position:absolute;left:0;right:0;background:#fff repeating-linear-gradient(to bottom,transparent 0,transparent 25px,#F7F2EE 25px,#F7F2EE 26px,transparent 26px,transparent 51px,#EEE7E0 51px,#EEE7E0 52px)}
+.dc.past{filter:saturate(.6)}.dc.past .op{background-color:#FCFBFA}.dc.today .op{background-color:#FFFCFA}
+.dc.closed{cursor:default}
+.nowl{position:absolute;left:0;right:0;height:2px;background:#D93B2B;z-index:3}.nowl::before{content:'';position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:#D93B2B}
+.ghost{position:absolute;left:3px;right:3px;border:1.5px dashed var(--c);border-radius:8px;background:rgba(232,96,63,.06);color:var(--c2);font-size:11.5px;font-weight:800;padding:3px 7px;pointer-events:none;z-index:1}
+.ev{position:absolute;z-index:2;text-align:left;border-radius:8px;padding:4px 8px;background:var(--soft);border-left:4px solid var(--c);color:var(--ink);overflow:hidden;font-size:12px;line-height:1.3;box-shadow:0 1px 2px rgba(23,33,43,.08)}
+.ev:hover{box-shadow:0 6px 14px -6px rgba(23,33,43,.35);z-index:4}
+.ev b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev span{display:block;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev em{position:absolute;right:5px;top:4px;font-style:normal;font-size:9.5px;font-weight:800;background:#fff;color:var(--c2);border-radius:999px;padding:0 5px}
+.ev.sm{padding:2px 7px}.ev.sm span,.ev.sm em{display:none}
+.ev.confirmed{background:#E3EEFA;border-left-color:#2F7DD1}.ev.done{background:var(--oksoft);border-left-color:var(--ok)}
+.ev.no_show{background:var(--badsoft);border-left-color:var(--bad)}.ev.canceled{background:#F1F3F5;border-left-color:#C5CDD5;color:var(--ink3);text-decoration:line-through;opacity:.75}
+.cal.one .ev{font-size:13px}.cal.one .ev b{font-size:13.5px}
+.cal-empty{position:absolute;left:50%;top:120px;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 22px;text-align:center;max-width:380px;box-shadow:0 20px 40px -24px rgba(23,33,43,.35);z-index:5}
+.cal-empty p{font-size:13px;color:var(--ink2);margin:6px 0 12px}
+@media (max-width:860px){.ag-sum{grid-template-columns:1fr 1fr}.ag-sum .nx{grid-column:1/-1}.ag-leg{display:none}.cal-sc{max-height:calc(100vh - 300px)}.cal-empty{width:calc(100% - 80px)}}
 .hrs{display:grid;grid-template-columns:70px 1fr;gap:8px 12px;align-items:center}
 .hrs .rg{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .hrs input[type=time]{border:1px solid #DCD2C9;border-radius:10px;padding:6px 8px}
@@ -485,7 +528,8 @@ async function bookModal(pre,after){
     try{const sl=await api(`/agenda/slots?service_id=${f.service_id.value}&date=${f.date.value}`);
       box.innerHTML=sl.length?sl.map(t=>`<button type="button" data-t="${t}">${t}</button>`).join(''):'<span class="hint">Nenhum horário livre nesse dia.</span>';
       box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pick=b.dataset.t;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))})}catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
-  f.service_id.onchange=load;f.date.onchange=load;load();
+  f.service_id.onchange=load;f.date.onchange=load;await load();
+  if(pre.time){const b=o.querySelector(`#bkS [data-t="${pre.time}"]`);if(b)b.click();else if(f.ftime){f.ftime.value=pre.time;o.querySelector('#bkS').insertAdjacentHTML('afterbegin',`<span class="hint" style="width:100%">${pre.time} não está entre os horários livres. Dá para marcar como encaixe (campo abaixo) ou escolher outro.</span>`)}}
   f.onsubmit=async ev=>{ev.preventDefault();const ft=f.ftime?.value;const time=ft||pick;if(!time)return o.querySelector('#bkE').textContent='Escolha um horário.';
     const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft};
     try{await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after()}catch(e){o.querySelector('#bkE').textContent=e.message}};
@@ -505,17 +549,63 @@ function apptModal(a,after){
   o.querySelector('#apS').onclick=()=>go2({notes:o.querySelector('#apN').value});
   o.querySelector('#apC').onclick=()=>{o.remove();CV.open=a.contact_id;go('conversas')};
 }
-async function drawWeek(){
-  const box=$('#agBody');if(!box)return;const w=AG.week;const end=new Date(w);end.setDate(end.getDate()+6);
-  const [list,cfg]=await Promise.all([api(`/appointments?start=${ymd(w)}&end=${ymd(end)}`),AG.cfg?Promise.resolve(AG.cfg):agCfg()]);
-  $('#agRange').textContent=`${w.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${end.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}`;
-  const today=ymd(new Date());
-  box.innerHTML=`<div class="wk">${[0,1,2,3,4,5,6].map(i=>{const d=new Date(w);d.setDate(d.getDate()+i);const k=ymd(d);const items=list.filter(a=>a.start.slice(0,10)===k);const open=(cfg.hours[String(i)]||[]).length;
-    return `<div class="day ${k===today?'today':''} ${open?'':'closed'}"><div class="dh"><span>${WEEKD[i]}</span><b>${d.getDate()}</b></div>
-     ${items.map(a=>`<button class="ap ${a.status}" data-a="${a.id}"><b>${a.start.slice(11,16)} · ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${a.status!=='scheduled'?' · '+esc(a.status_label):''}</span></button>`).join('')}
-     ${open?`<button class="btn sm" data-new="${k}" style="margin-top:auto;opacity:.7">+</button>`:'<span class="hint" style="padding:0 6px">fechado</span>'}</div>`}).join('')}</div>`;
-  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>apptModal(list.find(a=>a.id===b.dataset.a),drawWeek));
-  box.querySelectorAll('[data-new]').forEach(b=>b.onclick=()=>bookModal({date:b.dataset.new},drawWeek));
+const HH=52;
+const toMin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+function lanes(items){const ev=items.map(a=>({a,s:toMin(a.start.slice(11,16)),e:toMin(a.end.slice(11,16))||1440})).sort((x,y)=>x.s-y.s);
+  let group=[],end=-1;const out=[];const flush=()=>{const cols=[];group.forEach(g=>{let i=cols.findIndex(c=>c<=g.s);if(i<0){i=cols.length;cols.push(0)}cols[i]=g.e;g.lane=i});group.forEach(g=>g.n=cols.length);out.push(...group);group=[]};
+  ev.forEach(x=>{if(x.s>=end&&group.length)flush();group.push(x);end=Math.max(end,x.e)});if(group.length)flush();return out}
+async function drawWeek(scroll){
+  const box=$('#agBody');if(!box)return;const cfg=AG.cfg||await agCfg();
+  const week=AG.view==='semana';const w=week?AG.week:new Date(AG.day);w.setHours(12,0,0,0);
+  const days=week?[0,1,2,3,4,5,6].map(i=>{const d=new Date(w);d.setDate(d.getDate()+i);return d}):[w];
+  const mon=monday(AG.day),sun=new Date(mon);sun.setDate(sun.getDate()+6);
+  const qa=week?w:mon,qb=week?days[6]:sun;
+  const list=await api(`/appointments?start=${ymd(qa)}&end=${ymd(qb)}`);
+  const todayK=ymd(new Date());
+  $('#agRange').textContent=week?`${days[0].toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${days[6].toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}`
+    :(t=>t[0].toUpperCase()+t.slice(1))(w.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}));
+  // resumo
+  const now=new Date(),active=['scheduled','confirmed'];
+  const todays=list.filter(a=>a.start.slice(0,10)===todayK&&a.status!=='canceled');
+  const next=list.filter(a=>active.includes(a.status)&&new Date(a.start)>now).sort((x,y)=>x.start<y.start?-1:1)[0];
+  const toConfirm=list.filter(a=>a.status==='scheduled'&&new Date(a.start)>now).length;
+  const ns=list.filter(a=>a.status==='no_show').length,dn=list.filter(a=>a.status==='done').length;
+  if($('#agSum'))$('#agSum').innerHTML=`<div class="s"><b>${todays.length}</b>hoje</div>
+    <div class="s ${toConfirm?'warn':''}"><b>${toConfirm}</b>a confirmar na semana</div>
+    <div class="s ${ns?'bad':''}"><b>${ns}</b>faltas na semana${dn+ns?` · ${Math.round(100*dn/(dn+ns))}% vieram`:''}</div>
+    <div class="s nx">${next?`<b>${next.start.slice(11,16)} · ${esc(next.contact_name)}</b>próximo · ${WEEKD[(new Date(next.start).getDay()+6)%7]} ${next.start.slice(8,10)}/${next.start.slice(5,7)} · ${esc(next.service_name)}`:'<b>—</b>nenhum horário marcado pela frente'}</div>`;
+  // faixa de horas
+  const shown=list.filter(a=>days.some(d=>ymd(d)===a.start.slice(0,10)));
+  let lo=24*60,hi=0;days.forEach(d=>(cfg.hours[String((d.getDay()+6)%7)]||[]).forEach(([x,y])=>{lo=Math.min(lo,toMin(x));hi=Math.max(hi,toMin(y))}));
+  shown.forEach(a=>{lo=Math.min(lo,toMin(a.start.slice(11,16)));hi=Math.max(hi,toMin(a.end.slice(11,16))||1440)});
+  if(lo>=hi){lo=8*60;hi=20*60}lo=Math.floor(lo/60)*60;hi=Math.min(24*60,Math.ceil(hi/60)*60);
+  const H=(hi-lo)/60*HH,px=m=>(m-lo)/60*HH;
+  const cols=days.map(d=>{const k=ymd(d),wd=(d.getDay()+6)%7,open=cfg.hours[String(wd)]||[];const items=shown.filter(a=>a.start.slice(0,10)===k);return {d,k,wd,open,items,closed:!open.length&&!items.length,past:k<todayK,today:k===todayK}});
+  const tmpl='56px '+cols.map(c=>c.closed&&week?'64px':'minmax(0,1fr)').join(' ');
+  const card=g=>{const a=g.a,top=px(g.s),h=Math.max(22,px(g.e)-top-2),w=100/g.n;
+    return `<button class="ev ${a.status} ${h<40?'sm':''}" data-a="${a.id}" style="top:${top}px;height:${h}px;left:calc(${g.lane*w}% + 3px);width:calc(${w}% - 6px)" title="${esc(a.start.slice(11,16)+' '+a.contact_name+' · '+a.service_name+' · '+a.status_label)}">
+      <b>${a.start.slice(11,16)} ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${!week&&a.contact_phone?' · +'+esc(a.contact_phone):''}</span>${!week&&a.notes?`<span>${esc(a.notes)}</span>`:''}${a.by&&/IA/.test(a.by)?'<em>Nanda</em>':''}</button>`};
+  box.innerHTML=`<div class="cal ${week?'cw':'one'}"><div class="cal-hd" style="grid-template-columns:${tmpl}"><span></span>${cols.map(c=>`<button class="dh ${c.today?'today':''} ${c.past?'past':''}" data-day="${c.k}" title="Ver o dia"><span>${WEEKD[c.wd]}</span><b>${c.d.getDate()}</b>${c.closed?'<small>fechado</small>':c.items.length?`<small>${(n=>n+(n===1?' marcado':' marcados'))(c.items.filter(a=>a.status!=='canceled').length)}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>
+   <div class="cal-sc" id="calSc"><div class="cal-gr" style="grid-template-columns:${tmpl};height:${H}px">
+    <div class="tm">${Array.from({length:(hi-lo)/60},(_,i)=>`<span style="top:${i*HH}px">${hhmm(lo+i*60)}</span>`).join('')}</div>
+    ${cols.map(c=>`<div class="dc ${c.past?'past':''} ${c.today?'today':''} ${c.closed?'closed':''}" data-k="${c.k}" data-wd="${c.wd}">
+      ${c.open.map(([x,y])=>`<div class="op" style="top:${px(toMin(x))}px;height:${px(toMin(y))-px(toMin(x))}px"></div>`).join('')}
+      ${c.today&&now.getHours()*60+now.getMinutes()>=lo&&now.getHours()*60+now.getMinutes()<=hi?`<div class="nowl" style="top:${px(now.getHours()*60+now.getMinutes())}px"></div>`:''}
+      ${lanes(c.items).map(card).join('')}<div class="ghost hide"></div></div>`).join('')}
+   </div>${!shown.length?`<div class="cal-empty"><b>${week?'Nenhum horário marcado nesta semana':'Nenhum horário marcado neste dia'}</b><p>Clique num horário livre para agendar. Com a Nanda ligada, ela oferece os horários e marca sozinha pelo WhatsApp.</p><button class="btn sm p" id="agE">+ Agendar</button></div>`:''}</div></div>`;
+  const sc=$('#calSc');
+  if(scroll){const first=shown.filter(a=>a.status!=='canceled').map(a=>toMin(a.start.slice(11,16))).sort((x,y)=>x-y)[0];const nm=now.getHours()*60+now.getMinutes();
+    const target=cols.some(c=>c.today)&&nm>lo&&nm<hi?nm-60:first!=null?first-30:lo;sc.scrollTop=Math.max(0,px(target))}
+  if($('#agE'))$('#agE').onclick=()=>bookModal({date:week?ymd(cols.find(c=>!c.past&&!c.closed)?.d||days[0]):ymd(w)},drawWeek);
+  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{e.stopPropagation();apptModal(list.find(a=>a.id===b.dataset.a),drawWeek)});
+  box.querySelectorAll('.dh[data-day]').forEach(b=>b.onclick=()=>{if(!week)return;AG.day=new Date(b.dataset.day+'T12:00');AG.view='dia';document.querySelectorAll('[data-vw]').forEach(x=>x.classList.toggle('on',x.dataset.vw==='dia'));drawWeek(true)});
+  const stepM=cfg.step||30;
+  box.querySelectorAll('.dc').forEach(dc=>{const gh=dc.querySelector('.ghost');
+    const at=e=>{const r=dc.getBoundingClientRect();return Math.max(lo,Math.min(hi-stepM,lo+Math.floor(((e.clientY-r.top)/HH*60)/stepM)*stepM))};
+    dc.onmousemove=e=>{if(e.target.closest('.ev')||dc.classList.contains('closed')){gh.classList.add('hide');return}const m=at(e);gh.classList.remove('hide');gh.style.top=px(m)+'px';gh.style.height=(stepM/60*HH-2)+'px';gh.textContent='+ '+hhmm(m)};
+    dc.onmouseleave=()=>gh.classList.add('hide');
+    dc.onclick=e=>{if(e.target.closest('.ev'))return;if(dc.classList.contains('closed'))return toast('Fechado nesse dia. Dá para mudar o horário em Configurar.');const m=at(e);if(dc.dataset.k<todayK)return toast('Esse dia já passou.');bookModal({date:dc.dataset.k,time:hhmm(m)},drawWeek)}});
 }
 async function drawAgCfg(){
   const box=$('#agBody');const cfg=await agCfg();if(!STAGES)STAGES=await api('/funnel/stages');
@@ -573,6 +663,57 @@ async function contactDrawer(id,after){
     try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
 }
 let FN={f:'all',q:'',showLost:false,data:null,sum:null};
+let AU={tab:'lista'},RP={days:30};
+const fmtMin=m=>m==null?'—':m<1?'menos de 1 min':m<60?Math.round(m)+' min':m<1440?String((m/60).toFixed(1)).replace('.',',')+' h':String((m/1440).toFixed(1)).replace('.',',')+' dias';
+const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':String(h).replace('.',',')+' horas');
+function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
+  return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
+    before_appt:`${t} antes do horário marcado`,appt_no_show:`${t} depois de uma falta`,appt_done:`${t} depois do atendimento`}[a.trigger]||a.trigger}
+const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',data:'dia do horário',hora:'hora do horário'};
+const hlv=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>`<b style="color:var(--c2)" title="${VARS_TXT[k]||''}">${VARS_TXT[k]?'['+VARS_TXT[k]+']':m}</b>`);
+function varChips(ta){return `<div class="vars">${Object.entries(VARS_TXT).map(([k,v])=>`<button type="button" data-var="${k}" title="${v}">{${k}}</button>`).join('')}</div>`}
+function bindVars(o,ta){o.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.var+'}';const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length})}
+function autoModal(a,d,tpls){
+  const x=a||{trigger:'no_reply',hours:24,message:'Oi, {primeiro_nome}! ',active:true};
+  const days=x.hours>=24&&x.hours%24===0;
+  const o=overlay(`<form class="modal" id="amF"><div class="row"><h2 style="font-size:20px">${a?'Editar automação':'Nova automação'}</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name||'')}" placeholder="Ex.: Retomar orçamento"></div>
+   <div class="field"><label>Quando enviar</label><select name="trigger">${Object.entries(d.triggers).map(([k,v])=>`<option value="${k}" ${x.trigger===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div class="form2"><div class="field"><label id="amHL">Quanto tempo</label><div class="row" style="flex-wrap:nowrap"><input name="n" type="number" min="0" step="0.5" value="${days?x.hours/24:x.hours}" style="max-width:110px"><select name="unit"><option value="h" ${days?'':'selected'}>horas</option><option value="d" ${days?'selected':''}>dias</option></select></div></div>
+    <div class="field" id="amSt"><label>Etapa</label><select name="stage_id"><option value="">Qualquer etapa em andamento</option>${d.stages.map(s=>`<option value="${s.id}" ${x.stage_id===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
+   <div class="field"><label>Mensagem</label><textarea name="message" rows="4" required minlength="5" maxlength="1000">${esc(x.message||'')}</textarea>${varChips()}<span class="hint">Clique numa variável para inserir. Para virar modelo da Meta, a mensagem não pode começar nem terminar com variável.</span></div>
+   <div class="form2"><div class="field"><label>Depois de enviar, mover para</label><select name="move_to"><option value="">Não mover</option>${d.stages.map(s=>`<option value="${s.id}" ${x.move_to===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Modelo para depois de 24 h</label><select name="template_id"><option value="">Nenhum</option>${tpls.filter(t=>t.status!=='REJECTED').map(t=>`<option value="${t.id}" ${x.template_id===t.id?'selected':''}>${esc(t.label)} (${esc(t.label_status)})</option>`).join('')}</select></div></div>
+   <div class="row"><button class="btn p">Salvar</button><span class="err" id="amE"></span></div></form>`,true);
+  const f=o.querySelector('#amF');bindVars(o,f.message);
+  const sync=()=>{const t=f.trigger.value;o.querySelector('#amSt').classList.toggle('hide',!['stage_enter','no_reply'].includes(t));
+    f.stage_id.options[0].textContent=t==='stage_enter'?'Escolha a etapa':'Qualquer etapa em andamento';
+    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois'}[t]};
+  f.trigger.onchange=sync;sync();
+  f.onsubmit=async ev=>{ev.preventDefault();const n=Number(f.n.value);
+    const body={name:f.name.value,trigger:f.trigger.value,hours:f.unit.value==='d'?n*24:n,stage_id:['stage_enter','no_reply'].includes(f.trigger.value)?(f.stage_id.value||null):null,message:f.message.value,move_to:f.move_to.value||null,template_id:f.template_id.value||null};
+    try{if(a)await api('/automations/'+a.id,{method:'PATCH',body});else await api('/automations',{method:'POST',body});o.remove();toast('Automação salva.');VIEWS.automacoes()}catch(e){o.querySelector('#amE').textContent=e.message}};
+}
+function drawTpls(tpls){
+  $('#auBody').innerHTML=`<p class="note" style="margin-bottom:14px">Modelos são mensagens aprovadas pela Meta. Servem para chamar quem não fala com você há mais de 24 h, ou quem ainda não mandou mensagem. <b>Utilidade</b>: lembretes e confirmações. <b>Marketing</b>: retomadas e ofertas. A Meta cobra por modelo enviado (marketing custa mais).</p>
+   <div class="card">${tpls.length?`<table><thead><tr><th>Modelo</th><th>Tipo</th><th>Situação</th><th></th></tr></thead><tbody>${tpls.map(t=>`<tr><td><b>${esc(t.label)}</b><small>${esc(t.body)}</small></td><td>${t.category==='UTILITY'?'Utilidade':t.category==='MARKETING'?'Marketing':esc(t.category||'')}</td>
+     <td><span class="pill ${t.status==='APPROVED'?'ok':t.status==='REJECTED'?'bad':'warn'}">${esc(t.label_status)}</span>${t.rejected_reason&&t.rejected_reason!=='NONE'?`<small>${esc(t.rejected_reason)}</small>`:''}</td>
+     <td style="text-align:right"><button class="btn sm danger" data-tdel="${t.id}">Apagar</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum modelo ainda. Crie um aqui ou peça a aprovação direto numa automação.</div>'}</div>`;
+  $('#tpSync').onclick=async e=>{e.target.disabled=true;try{const l=await api('/templates?sync=1');drawTpls(l);toast('Situação atualizada com a Meta.')}catch(x){toast(x.message)}e.target.disabled=false};
+  $('#tpNew').onclick=()=>{const o=overlay(`<form class="modal" id="tnF"><div class="row"><h2 style="font-size:20px">Novo modelo</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Nome interno</label><input name="label" required minlength="3" maxlength="60" placeholder="Ex.: Retomada de orçamento"></div>
+    <div class="field"><label>Tipo</label><select name="category"><option value="UTILITY">Utilidade (lembrete, confirmação)</option><option value="MARKETING">Marketing (retomada, oferta)</option></select></div>
+    <div class="field"><label>Mensagem</label><textarea name="body" rows="5" required minlength="10" maxlength="1000">Oi, {primeiro_nome}! </textarea>${varChips()}<span class="hint">Não comece nem termine com variável. A Meta costuma responder em minutos.</span></div>
+    <div class="row"><button class="btn p">Enviar para aprovação</button><span class="err" id="tnE"></span></div></form>`,true);
+    const f=o.querySelector('#tnF');bindVars(o,f.body);
+    f.onsubmit=async ev=>{ev.preventDefault();try{await api('/templates',{method:'POST',body:Object.fromEntries(new FormData(f))});o.remove();CV.tpls=null;toast('Enviado para a Meta.');VIEWS.automacoes()}catch(x){o.querySelector('#tnE').textContent=x.message}}};
+  document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar este modelo? Ele também sai da Meta.'))return;try{await api('/templates/'+b.dataset.tdel,{method:'DELETE'});CV.tpls=null;VIEWS.automacoes()}catch(e){toast(e.message)}});
+}
+async function drawRuns(){
+  const rows=await api('/automations/runs');
+  const lab={sent:['ok','enviada'],skipped:['grey','pulada'],error:['bad','erro'],sending:['warn','enviando']};
+  $('#auBody').innerHTML=`<div class="card">${rows.length?`<table><thead><tr><th>Quando</th><th>Automação</th><th>Cliente</th><th>Resultado</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.automation)}</td><td>${esc(r.contact_name||'')}</td><td><span class="pill ${(lab[r.status]||['grey'])[0]}">${(lab[r.status]||['',r.status])[1]}</span>${r.detail?`<small>${esc(r.detail)}</small>`:''}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum envio ainda.</div>'}</div>`;
+}
 const STAGE_COLORS=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#E8603F','#C2557A','#4F8A5B','#7A6A58'];
 const stColor=(s,i)=>s.kind==='won'?'#0A5C50':s.kind==='lost'?'#A7B1BB':STAGE_COLORS[i%STAGE_COLORS.length];
 const ago=v=>{if(!v)return'';const m=(Date.now()-new Date(v))/6e4;return m<1?'agora':m<60?Math.round(m)+' min':m<1440?Math.round(m/60)+' h':Math.round(m/1440)+' d'};
@@ -707,16 +848,21 @@ const VIEWS={
   $('#qRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Avaliando... (pode levar um minuto)';try{const x=await api('/quality-run',{method:'POST'});toast(x.scored?x.scored+' conversas avaliadas.':'Nenhuma conversa nova para avaliar.');VIEWS.relatorios()}catch(x){toast(x.message);b.disabled=false;b.textContent='Avaliar conversas da semana'}};
  },
  async agenda(){
-  if(!AG.week)AG.week=monday(new Date());const canManage=['owner','manager'].includes(ME.user.role);
-  if(!canManage)AG.tab='semana';
+  if(!AG.week)AG.week=monday(new Date());if(!AG.day)AG.day=new Date();if(!AG.view)AG.view=innerWidth<860?'dia':'semana';
+  const canManage=['owner','manager'].includes(ME.user.role);if(!canManage)AG.tab='semana';
   $('#page').innerHTML=`<div class="fhd"><div><h1>Agenda</h1><p class="sub">Aulas, avaliações e conversas marcadas pelo time e pela Nanda.</p></div>
-   <div class="tools">${AG.tab==='semana'?'<button class="btn sm" id="agP">‹</button><b id="agRange" style="font-size:14px;min-width:170px;text-align:center"></b><button class="btn sm" id="agN">›</button><button class="btn sm" id="agT">Hoje</button><button class="btn sm p" id="agB">+ Agendar</button>':''}</div></div>
-   ${canManage?`<div class="tabs"><button class="chip ${AG.tab==='semana'?'on':''}" data-tab="semana">Semana</button><button class="chip ${AG.tab==='config'?'on':''}" data-tab="config">Configurar</button></div>`:''}<div id="agBody"></div>`;
-  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AG.tab=b.dataset.tab;VIEWS.agenda()});
+   <div class="tools">${canManage?`<button class="btn sm" id="agCfgB">${AG.tab==='config'?'‹ Voltar para a agenda':'⚙ Configurar'}</button>`:''}${AG.tab==='semana'?'<button class="btn sm p" id="agB">+ Agendar</button>':''}</div></div>
+   ${AG.tab==='semana'?`<div class="ag-sum" id="agSum"></div>
+   <div class="ag-bar"><div class="seg"><button class="${AG.view==='dia'?'on':''}" data-vw="dia">Dia</button><button class="${AG.view==='semana'?'on':''}" data-vw="semana">Semana</button></div>
+    <button class="btn sm nav" id="agP" aria-label="Anterior">‹</button><button class="btn sm nav" id="agN" aria-label="Próximo">›</button><b id="agRange"></b><button class="btn sm" id="agT">Hoje</button>
+    <span class="ag-leg"><i class="scheduled"></i>agendado<i class="confirmed"></i>confirmado<i class="done"></i>compareceu<i class="no_show"></i>faltou</span></div>`:''}<div id="agBody"></div>`;
+  if($('#agCfgB'))$('#agCfgB').onclick=()=>{AG.tab=AG.tab==='config'?'semana':'config';VIEWS.agenda()};
   if(AG.tab==='config')return drawAgCfg();
-  $('#agP').onclick=()=>{AG.week.setDate(AG.week.getDate()-7);drawWeek()};$('#agN').onclick=()=>{AG.week.setDate(AG.week.getDate()+7);drawWeek()};
-  $('#agT').onclick=()=>{AG.week=monday(new Date());drawWeek()};$('#agB').onclick=()=>bookModal({},drawWeek);
-  await drawWeek();
+  const step=dir=>{if(AG.view==='dia'){AG.day.setDate(AG.day.getDate()+dir);AG.week=monday(AG.day)}else{AG.week.setDate(AG.week.getDate()+7*dir);AG.day=new Date(AG.week)}drawWeek(true)};
+  $('#agP').onclick=()=>step(-1);$('#agN').onclick=()=>step(1);
+  $('#agT').onclick=()=>{AG.day=new Date();AG.week=monday(AG.day);drawWeek(true)};$('#agB').onclick=()=>bookModal({},drawWeek);
+  document.querySelectorAll('[data-vw]').forEach(b=>b.onclick=()=>{AG.view=b.dataset.vw;if(AG.view==='semana')AG.week=monday(AG.day);else if(ymd(monday(AG.day))!==ymd(AG.week))AG.day=new Date(AG.week);document.querySelectorAll('[data-vw]').forEach(x=>x.classList.toggle('on',x===b));drawWeek(true)});
+  await drawWeek(true);
   POLL=setInterval(()=>{if(VIEW==='agenda'&&AG.tab==='semana'&&!document.hidden&&!document.querySelector('.ov'))drawWeek().catch(()=>{})},15000);
  },
  async funil(){
