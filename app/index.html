@@ -261,6 +261,8 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .nsw.auto{background:var(--tint);border-color:var(--soft)}.nsw.auto span{color:var(--c2)}.nsw.off{opacity:.7}
 .own{border:1px solid var(--line);border-radius:999px;height:34px;padding:0 8px;font-weight:700;font-size:12.5px;background:#fff;max-width:150px}
 @media (max-width:1400px){.cv:not(.nopanel) .own{max-width:120px}.cv:not(.nopanel) .nsw span{display:none}.cv:not(.nopanel) .nsw{padding-left:6px}}
+@media (max-width:1650px){.cv:not(.nopanel) .ch-top .nsw{display:none}.cv:not(.nopanel) .mn-n{display:flex}}
+.ch-top .act{min-width:0}
 .mnw{position:relative}.mn{position:absolute;right:0;top:40px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -20px rgba(23,33,43,.45);padding:6px;z-index:20;min-width:230px;display:flex;flex-direction:column}
 .mn button{text-align:left;padding:9px 12px;border-radius:9px;font-weight:600;font-size:13.5px}.mn button:hover{background:#F6F2EE}
 .cv-chat .msgs{padding:16px 6% 20px;gap:3px;background:#EFE7DD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23000' fill-opacity='.05'/%3E%3C/svg%3E")}
@@ -342,6 +344,25 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
  .ctabs{margin-bottom:6px}.sug{padding:8px 10px}.sug p{font-size:13px}
  .pn-h{height:58px}
 }
+
+
+/* equipes */
+.tm-c{background:#fff;border:1px solid var(--line);border-top:4px solid var(--tc);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.tm-c .hd{display:flex;align-items:center;gap:8px}.tm-c .hd b{font-size:15px}.tm-c .dot,.tsel .dot{width:10px;height:10px;border-radius:50%;background:var(--tc);flex:none}
+.tm-c .mem{display:flex;flex-wrap:wrap;gap:4px}.tm-c .mem .av,.chks .av{width:28px;height:28px;border-radius:50%;color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center}
+.tm-c .rl{padding-left:16px;font-size:12.5px;color:var(--ink2);display:flex;flex-direction:column;gap:3px}
+.tm-c .bt{display:flex;gap:6px;justify-content:flex-end;border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.chks{display:flex;flex-wrap:wrap;gap:6px}.chks label{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 6px;font-size:13px;font-weight:600;cursor:pointer;background:#fff}
+.chks label:has(input:checked){border-color:var(--c);background:var(--tint)}.chks input{display:none}.chks label:not(:has(.av)){padding-left:12px}
+.tsel{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tsel label{display:flex;flex-direction:column;gap:2px;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;position:relative}
+.tsel label .dot{position:absolute;right:12px;top:14px}.tsel b{font-size:14px}.tsel small{font-size:11.5px;color:var(--ink3)}
+.tsel input{display:none}.tsel label:has(input:checked){border-color:var(--tc);background:color-mix(in srgb,var(--tc) 8%,#fff);box-shadow:0 0 0 2px color-mix(in srgb,var(--tc) 25%,transparent)}
+.tmp{font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;color:var(--tc);background:color-mix(in srgb,var(--tc) 12%,#fff);white-space:nowrap}.tmp.lg{font-size:12.5px;padding:3px 10px}
+.bd2.tr{background:#E6EEF8;color:#2F6FB5}
+.pn-tr{background:#F2F6FC}.pn-tr p{font-size:13px;color:var(--ink);line-height:1.4}
+.side .nav .nb{margin-left:auto;background:var(--c);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 6px}
+.cvf.f5{grid-template-columns:repeat(5,minmax(0,1fr))}.cvf.f5 button{font-size:11px}
 
 /* agenda */
 .ag-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:10px;margin-bottom:14px}
@@ -584,6 +605,7 @@ function shell(){
     ${ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.</div>`:''}
     <div class="page" id="page"></div></main></div>`;
   document.querySelectorAll('.side [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
+  NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
@@ -667,9 +689,9 @@ const waitCls=c=>{if(!c.waiting)return'';const m=(Date.now()-new Date(c.last_in_
 const stageOf=id=>{const L=STAGES||[];let i=L.findIndex(s=>s.id===id);if(i<0)i=0;return L[i]?{s:L[i],i}:null};
 const fillVars=(t,c)=>String(t||'').replace(/\{(\w+)\}/g,(m,k)=>({primeiro_nome:(c.name||'').split(' ')[0],nome:c.name||'',empresa:ME.company.name}[k]??m));
 const MODES={auto:'Automática',copilot:'Copiloto',off:'Pausada'};
+const TMN=id=>(CV.teams||[]).find(t=>t.id===id);
 
-async function cvCounts(){try{CV.counts=await api('/inbox/counts')}catch(e){return}
-  document.querySelectorAll('[data-f]').forEach(b=>{const n=CV.counts[b.dataset.f];const i=b.querySelector('i');if(i)i.textContent=String(n||0)})}
+async function cvCounts(){return pollCounts()}
 async function cvList(){
   CV.list=await api('/conversations?filter='+CV.filter+(CV.q?'&q='+encodeURIComponent(CV.q):''));
   const el=$('#cvItems');if(!el)return;
@@ -678,7 +700,7 @@ async function cvList(){
     <span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
-     <span class="r3">${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w?`<span class="bd2 ${w}">esperando ${ago(c.last_in_at||c.last_at)}</span>`:''}
+     <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w?`<span class="bd2 ${w}">esperando ${ago(c.last_in_at||c.last_at)}</span>`:''}
       <span class="sp"></span>${un?`<span class="nb">${c.unread}</span>`:''}${c.assigned_name&&c.assigned_to!==ME.user.id?`<span class="ow" title="Responsável: ${esc(c.assigned_name)}">${initials(c.assigned_name)}</span>`:''}</span></span></button>`}).join('')
    :`<div class="empty">${CV.q?'Nenhuma conversa encontrada para essa busca.':CV.filter==='waiting'?'Ninguém esperando resposta agora.':CV.filter==='mine'?'Nenhuma conversa com você.':'Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.'}</div>`;
   el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openConv(b.dataset.c));
@@ -689,7 +711,8 @@ function openConv(id){CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts=
 function closeConv(){CV.open=null;syncUrl();$('.cv')?.classList.remove('chat');$('.cv')?.classList.remove('pn-open');cvEmpty();cvList()}
 function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
   b.innerHTML=`<div class="cv-empty"><div><div class="ei">${IC.chat}</div><b>Escolha uma conversa</b><p>${n.waiting?`${n.waiting} ${n.waiting===1?'cliente esperando':'clientes esperando'} resposta.`:'Tudo respondido por aqui.'}</p>
-    ${n.waiting?'<button class="btn sm p" id="cvGoW">Ver quem está esperando</button>':''}<p class="hint" style="margin-top:14px">Dica: digite <b>/</b> na caixa de mensagem para usar respostas rápidas.</p></div></div>`;
+    ${n.waiting?'<button class="btn sm p" id="cvGoW">Ver quem está esperando</button>':''}<p class="hint" style="margin-top:14px">Dica: digite <b>/</b> na caixa de mensagem para usar respostas rápidas.</p>${'Notification' in window&&Notification.permission==='default'?'<button class="btn sm" id="cvNt" style="margin-top:10px">🔔 Avisar no navegador quando me transferirem conversas</button>':''}</div></div>`;
+  if($('#cvNt'))$('#cvNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Avisos ligados.':'Avisos não autorizados no navegador.')}catch(e){}cvEmpty()};
   if($('#cvGoW'))$('#cvGoW').onclick=()=>{CV.filter='waiting';document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x.dataset.f==='waiting'));cvList()};
   const p=$('#cvPanel');if(p)p.innerHTML=''}
 
@@ -723,11 +746,12 @@ async function cvChat(full){
     <div class="who"><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}${c.ad?' · veio do anúncio':''}</span></div>
     <div class="act">
      <label class="nsw ${mode}" title="Como a Nanda atua nesta conversa"><span>Nanda</span><select id="cvMode"><option value="" ${!c.ai_mode?'selected':''}>${MODES[CV.ai?.default_mode||'copilot']}${innerWidth<860?'':' (padrão)'}</option>${Object.entries(MODES).map(([k,v])=>`<option value="${k}" ${c.ai_mode===k?'selected':''}>${v}</option>`).join('')}</select></label>
-     ${!mgr&&c.assigned_to!==me.id?'<button class="btn sm" id="cvMine">Assumir</button>':''}
+     ${!c.assigned_to?'<button class="btn sm p" id="cvMine" title="A conversa passa a ser sua">Pegar</button>':''}
+     <button class="ib" id="cvTr" title="Transferir para outra equipe ou pessoa" aria-label="Transferir">${svg('<path d="M7 7h11l-3-3M17 17H6l3 3"/>')}</button>
      <button class="ib hide-m" id="cvBook" title="Agendar horário" aria-label="Agendar horário">${IC.clock}</button>
      <button class="ib hide-m ${resolved?'on':''}" id="cvRes" title="${resolved?'Resolvida · clique para reabrir':'Marcar como resolvida'}" aria-label="${resolved?'Reabrir conversa':'Marcar como resolvida'}">${IC.check}</button>
      <div class="mnw"><button class="ib" id="cvMore" aria-label="Mais ações" aria-haspopup="true">⋯</button>
-      <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}</button>`).join('')}</div><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
+      <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}</button>`).join('')}</div><button data-mn="tr">Transferir</button><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
      <button class="ib pn-t ${CV.panel?'on':''}" id="cvPan" aria-label="Painel do cliente" title="Painel do cliente">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}</button>
     </div></div>
    ${c.needs_human?`<div class="human">🙋 ${first} quer falar com alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}</div>`:''}
@@ -740,7 +764,8 @@ async function cvChat(full){
   $('#cvBack').onclick=closeConv;
   $('#cvPan').onclick=()=>{if(innerWidth<1200){$('.cv').classList.toggle('pn-open');return}CV.panel=!CV.panel;try{localStorage.setItem('oinanda.cvPanel',CV.panel?'1':'0')}catch(e){}$('.cv').classList.toggle('nopanel',!CV.panel);$('#cvPan').classList.toggle('on',CV.panel)};
   if($('#cvMode'))$('#cvMode').onchange=async e=>{try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:e.target.value||null}});cvChat(true);cvList()}catch(x){toast(x.message)}};
-  if($('#cvMine'))$('#cvMine').onclick=async()=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:me.id}});cvChat(true);cvList()};
+  if($('#cvMine'))$('#cvMine').onclick=async()=>{try{await api('/conversations/'+CV.open+'/take',{method:'POST'});toast('A conversa agora é sua.');CV.pnFor=null;cvChat(true);cvList();cvCounts()}catch(x){toast(x.message);cvList()}};
+  $('#cvTr').onclick=()=>transferModal(c);
   const doRes=async()=>{await api('/conversations/'+CV.open+'/resolve',{method:'POST',body:{resolved:!resolved}});toast(resolved?'Conversa reaberta.':'Marcada como resolvida.');cvCounts();cvList();cvChat(true)};
   const doBook=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
   $('#cvRes').onclick=doRes;$('#cvBook').onclick=doBook;
@@ -748,7 +773,7 @@ async function cvChat(full){
   document.addEventListener('click',()=>mn.classList.add('hide'),{once:true});
   mn.querySelectorAll('[data-md]').forEach(b=>b.onclick=async()=>{mn.classList.add('hide');try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:b.dataset.md}});toast('Nanda '+MODES[b.dataset.md].toLowerCase()+' nesta conversa.');cvChat(true);cvList()}catch(x){toast(x.message)}});
   mn.querySelectorAll('[data-mn]').forEach(b=>b.onclick=async()=>{mn.classList.add('hide');const k=b.dataset.mn;
-    if(k==='book')doBook();if(k==='res')doRes();if(k==='det')contactDrawer(CV.open,()=>{CV.pnFor=null;cvChat(true);cvList()});
+    if(k==='tr')transferModal(c);if(k==='book')doBook();if(k==='res')doRes();if(k==='det')contactDrawer(CV.open,()=>{CV.pnFor=null;cvChat(true);cvList()});
     if(k==='q'){toast('Avaliando o atendimento...');try{qualityModal(await api('/quality/'+CV.open,{method:'POST'}))}catch(x){toast(x.message)}}});
   if(CV.pnFor!==c.id||full)cvPanel(c);
   maybeSuggest(c,d.messages,mode);
@@ -780,6 +805,35 @@ function drawComposer(c,w,draft){
   if($('#cvSugB'))$('#cvSugB').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='…';try{showSug(await api('/conversations/'+CV.open+'/suggest',{method:'POST'}),true)}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨'};
 }
 
+function transferModal(c){
+  const teams=CV.teams||[],people=(CV.team||[]).filter(p=>p.active&&p.id!==ME.user.id);const first=esc(c.name.split(' ')[0]);
+  const o=overlay(`<form class="modal" id="trF" style="width:520px"><div class="row"><h2 style="font-size:20px">Transferir ${first}</h2><button type="button" class="x">×</button></div>
+    <p class="hint" style="margin-top:-6px">Quem recebe é avisado e vê o motivo, para não começar do zero.</p>
+    ${teams.length?`<div class="field"><label>Para a equipe</label><div class="tsel">${teams.map(t=>`<label style="--tc:${t.color}"><input type="radio" name="team" value="${t.id}"><span class="dot"></span><b>${esc(t.name)}</b><small>${t.distribution==='roundrobin'?'rodízio':'fila'} · ${(t.member_ids||[]).length} ${(t.member_ids||[]).length===1?'pessoa':'pessoas'}</small></label>`).join('')}</div></div>`
+      :`<p class="note">Ainda não há equipes. ${['owner','manager'].includes(ME.user.role)?'Crie em Equipe para transferir para uma fila.':'Peça ao gestor para criar as equipes.'}</p>`}
+    <div class="field"><label>${teams.length?'Ou para uma pessoa (opcional)':'Para a pessoa'}</label><select name="user"><option value="">${teams.length?'Quem estiver livre na equipe':'Escolha...'}</option>${people.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Motivo</label><textarea name="reason" rows="3" required minlength="3" maxlength="500" placeholder="Ex.: quer fechar o plano anual, já tirou as dúvidas de preço e prefere pagar no cartão."></textarea></div>
+    <div class="field"><label>Mover no funil (opcional)</label><select name="stage"><option value="">Manter a etapa</option>${(STAGES||[]).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="row"><button class="btn p">Transferir</button><span class="err" id="trE"></span></div></form>`,true);
+  const f=o.querySelector('#trF');
+  const sync=()=>{const tid=f.querySelector('[name=team]:checked')?.value;const t=teams.find(x=>x.id===tid);const sel=f.user;const cur=sel.value;
+    sel.innerHTML=`<option value="">${t?(t.distribution==='roundrobin'?'Próxima pessoa do rodízio':'Fila da equipe (quem estiver livre pega)'):teams.length?'Escolha a equipe ou uma pessoa':'Escolha...'}</option>`+people.filter(p=>!t||(t.member_ids||[]).includes(p.id)).map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)}</option>`).join('')};
+  f.querySelectorAll('[name=team]').forEach(r=>r.onchange=sync);
+  f.onsubmit=async ev=>{ev.preventDefault();const tid=f.querySelector('[name=team]:checked')?.value||null;
+    if(!tid&&!f.user.value)return o.querySelector('#trE').textContent='Escolha a equipe ou a pessoa.';
+    try{const r=await api('/conversations/'+c.id+'/transfer',{method:'POST',body:{team_id:tid,user_id:f.user.value||null,reason:f.reason.value,stage_id:f.stage.value||null}});
+      o.remove();toast('Transferida para '+r.to+'.');if(r.assigned_to!==ME.user.id&&ME.user.role==='agent'){closeConv()}else{CV.pnFor=null;CV.sig='';cvChat(true)}cvList();cvCounts()}
+    catch(e){o.querySelector('#trE').textContent=e.message}};
+}
+let NOTIF={seen:null,t:null};
+async function pollCounts(){if(!ME)return;let n;try{n=await api('/inbox/counts')}catch(e){return}CV.counts=n;
+  const b=document.querySelector('.side [data-v=conversas]');if(b){let s=b.querySelector('.nb');const k=(n.transfers||[]).length+(n.human||0);if(!s){s=document.createElement('span');s.className='nb';b.appendChild(s)}s.textContent=k||'';s.classList.toggle('hide',!k)}
+  const ids=(n.transfers||[]).map(t=>t.id);
+  if(NOTIF.seen){for(const t of n.transfers||[])if(!NOTIF.seen.has(t.id)){const msg=`${(t.transfer_by||'Alguém').split(' ')[0]} transferiu ${t.name} para você${t.transfer_reason?': '+t.transfer_reason:''}`;toast(msg);
+      try{if('Notification' in window&&Notification.permission==='granted'){const nn=new Notification('Oi Nanda · conversa transferida',{body:msg,tag:t.id});nn.onclick=()=>{focus();CV.open=t.id;go('conversas')}}}catch(e){}}}
+  NOTIF.seen=new Set(ids);
+  document.querySelectorAll('[data-f]').forEach(x=>{const i=x.querySelector('i');if(i)i.textContent=String(n[x.dataset.f]||0)});
+  document.title=(ids.length?`(${ids.length}) `:'')+document.title.replace(/^\(\d+\) /,'')}
 async function qrLoad(){if(!CV.qr)CV.qr=await api('/quick-replies').catch(()=>[]);return CV.qr}
 async function qrOpen(term){const p=$('#cvQR');if(!p)return;const all=await qrLoad();const t=term.toLowerCase();
   const list=all.filter(r=>!t||r.shortcut.includes(t)||r.text.toLowerCase().includes(t)).slice(0,8);
@@ -822,7 +876,9 @@ async function cvPanel(c){
   p.innerHTML=`<div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Fechar painel">×</button></div>
    <div class="pn-hero"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}</span>
     <div class="pn-tags"><span class="bd2">${src}</span><span class="bd2">desde ${day(c.created_at)}</span>${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div>
-   <div class="pn-s"><label>Etapa do funil</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+   ${c.transfer_by&&c.transfer_reason?`<div class="pn-s pn-tr"><label>Transferida por ${esc(c.transfer_by)} · ${ago(c.transfer_at)}</label><p>${esc(c.transfer_reason)}</p></div>`:''}
+   <div class="pn-s"><label>Equipe</label><div class="pn-own">${c.team_id&&TMN(c.team_id)?`<span class="tmp lg" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:'<span class="hint">Nenhuma</span>'}<button class="lnk" id="pnTr">transferir</button></div>
+    <label>Etapa do funil</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
     <label>Responsável</label>${mgr?`<select id="pnAs" class="pn-as"><option value="">Sem responsável</option>${(CV.team||[]).filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`
       :`<div class="pn-own">${c.assigned_to===ME.user.id?'Você':esc(c.assigned_name||'Ninguém ainda')}${c.assigned_to!==ME.user.id?'<button class="lnk" id="pnMine">assumir</button>':''}</div>`}
     <label>Valor da venda</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div></div>
@@ -839,6 +895,7 @@ async function cvPanel(c){
   if($('#pnMine'))$('#pnMine').onclick=async()=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:ME.user.id}});CV.sig='';cvList();cvChat(true)};
   $('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:Number(e.target.value)},'Valor salvo.');
   $('#pnBook').onclick=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
+  $('#pnTr').onclick=()=>transferModal(c);
   $('#pnDet').onclick=()=>contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()});
   const tags=[...(c.tags||[])];
   p.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{c.tags=tags.filter(t=>t!==b.dataset.tx);patch({tags:c.tags});cvPanel(c)});
@@ -1251,6 +1308,7 @@ const VIEWS={
      <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span></div><div class="vv"><b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span></div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém atendeu no período.</div>'}</div></div>
     <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<div class="plist">${r.origin.map(o=>`<div class="pr"><span class="ico ${o.ad?'g1':'g2'}" style="width:34px;height:34px">${o.ad?IC.chat:IC.check}</span><div class="nm"><b>${esc(o.name)}</b><span>${o.contacts} ${o.contacts===1?'contato':'contatos'}</span></div><div class="vv"><b>${o.value?brl(o.value):o.won}</b><span>${o.won} ${o.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div>`:'<div class="empty">Sem contatos novos no período.</div>'}
      <p class="hint" style="margin-top:10px">Quem clica em anúncio de "Enviar mensagem" no Facebook ou Instagram aparece com o nome do anúncio.</p></div></div>
+   ${r.teams&&r.teams.length?`<div class="card" style="margin-bottom:14px"><h3 class="sec">Equipes</h3><div class="plist">${r.teams.map(t=>`<div class="pr"><span class="ico" style="width:34px;height:34px;background:${t.color}22;color:${t.color}">${IC.chat}</span><div class="nm"><b>${esc(t.name)}</b><span>${t.members} ${t.members===1?'pessoa':'pessoas'} · ${t.contacts} conversas · ${t.queue} na fila · ${t.waiting} esperando · resposta ${fmtMin(t.first_reply_min)}</span></div><div class="vv"><b>${t.value?brl(t.value):t.won}</b><span>${t.won} ${t.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div></div>`:''}
    <div class="kmini"><span>Mensagens da Nanda <b>${r.nanda.messages}</b></span><span>Horários marcados pela Nanda <b>${r.nanda.bookings}</b></span><span>Passou para o time <b>${r.nanda.handoffs}</b></span><span>Mensagens das automações <b>${r.automations.messages}</b></span></div>
    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Nota de atendimento</h3><button class="btn sm p" id="qRun" style="margin-left:auto">Avaliar conversas da semana</button></div>
     <p class="hint" style="margin:4px 0 6px">A IA lê as conversas com gente do time e dá nota de 0 a 10, com o que foi bem e o que melhorar. Toque numa avaliação para abrir a conversa.</p>
@@ -1298,10 +1356,10 @@ const VIEWS={
   POLL=setInterval(()=>{if(VIEW==='funil'&&!document.hidden&&!document.querySelector('.ov')&&!document.querySelector('.kc.drag'))drawBoard().catch(()=>{})},10000);
  },
  async conversas(){
-  const [num,team,st,ai]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null)]);CV.team=team;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
+  const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[])]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    </div><div class="cvf">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
+    </div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],...(tms.some(t=>t.mine)?[['team','Equipe']]:[]),['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside></div>`;
@@ -1400,7 +1458,10 @@ const VIEWS={
      <td>${dt(m.last_login_at)}</td>
      <td style="text-align:right">${canManage&&m.role!=='owner'&&m.id!==u.id?`<button class="btn sm" data-reset="${m.id}">Nova senha</button> <button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:''}</td></tr>`).join('')}
    </tbody></table></div>
-   <p class="note" style="margin-top:14px"><b>Dono</b> vê e configura tudo. <b>Gestor</b> convida e acompanha o time. <b>Atendente</b> atende as próprias conversas.</p>`;
+   <p class="note" style="margin-top:14px"><b>Dono</b> vê e configura tudo. <b>Gestor</b> convida e acompanha o time. <b>Atendente</b> atende as próprias conversas e transfere para outras equipes ou pessoas.</p>
+   <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
+   <div id="tmL"></div>`;
+  drawTeams(team,canManage);
   const showTemp=(name,email,temp)=>{$('#invOut').innerHTML=`<div class="note" style="margin-top:14px">Envie para ${esc(name)}: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória<br><span class="temp">${esc(temp)}</span><br>No primeiro acesso a pessoa cria a senha dela. Esta senha não aparece de novo.</div>`};
   if($('#inv'))$('#inv').onsubmit=async ev=>{ev.preventDefault();const body=Object.fromEntries(new FormData(ev.target));
     try{const r=await api('/team',{method:'POST',body});await VIEWS.equipe();showTemp(r.member.name,r.member.email,r.temp_password)}catch(e){toast(e.message)}};
@@ -1466,6 +1527,42 @@ const VIEWS={
    <div class="card">${rows.length?rows.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${esc(r.error)}</b><small style="display:block;color:var(--ink3)">${dt(r.at)} · ${esc(r.method)} ${esc(r.path)}</small><pre>${esc(r.trace)}</pre></div>`).join(''):'<div class="empty">Nenhum erro registrado.</div>'}</div>`;
  }
 };
+async function drawTeams(people,canManage){
+  const box=$('#tmL');if(!box)return;const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
+  const P=Object.fromEntries(people.map(p=>[p.id,p]));
+  if($('#tmNew'))$('#tmNew').onclick=()=>teamModal(null,people,stages);
+  if(!teams.length){box.innerHTML=`<div class="aempty"><div><b>Nenhuma equipe ainda</b><p>Com equipes, o pré-vendas passa o cliente para o vendedor com um motivo, o suporte tem a própria fila e a Nanda manda cada assunto para o lugar certo.</p></div>${canManage?'<button class="btn p" id="tmPack">Criar Pré-vendas, Vendas e Suporte</button>':''}</div>`;
+    if($('#tmPack'))$('#tmPack').onclick=async e=>{e.target.disabled=true;try{for(const [n,o] of [['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}],['Suporte',{topics:'cancelamento, reclamação, problema, troca'}]])await api('/teams',{method:'POST',body:{name:n,...o}});toast('Equipes criadas. Agora coloque as pessoas em cada uma.');VIEWS.equipe()}catch(x){toast(x.message);e.target.disabled=false}};return}
+  const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
+  box.innerHTML=`<div class="agrid">${teams.map(t=>`<div class="tm-c" style="--tc:${t.color}"><div class="hd"><span class="dot"></span><b>${esc(t.name)}</b>${t.mine?'<span class="pill ok">você</span>':''}<span class="hint" style="margin-left:auto">${t.queue} na fila</span></div>
+    <div class="mem">${(t.member_ids||[]).map(id=>P[id]?`<span class="av" title="${esc(P[id].name)}" style="background:${avc(P[id].name)}">${initials(P[id].name)}</span>`:'').join('')||'<span class="hint">Sem pessoas ainda</span>'}</div>
+    <ul class="rl"><li>${t.distribution==='roundrobin'?'<b>Rodízio:</b> cada conversa nova vai direto para a próxima pessoa':'<b>Fila:</b> quem estiver livre pega a conversa'}</li>
+     ${(t.stages||[]).length?`<li>Recebe quem entra em <b>${t.stages.map(x=>esc(SN[x]||'?')).join(', ')}</b></li>`:''}
+     ${t.topics?`<li>A Nanda manda para cá: <b>${esc(t.topics)}</b></li>`:''}${t.handoff_default?'<li>Recebe os demais repasses da Nanda</li>':''}
+     ${t.sla_minutes?`<li>Alerta se o cliente esperar mais de <b>${t.sla_minutes} min</b> na fila</li>`:''}</ul>
+    ${canManage?`<div class="bt"><button class="btn sm" data-te="${t.id}">Editar</button><button class="btn sm icn danger" data-td="${t.id}" title="Apagar" aria-label="Apagar">${IC.trash}</button></div>`:''}</div>`).join('')}</div>`;
+  box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
+  box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
+}
+function teamModal(t,people,stages){
+  const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null};
+  const o=overlay(`<form class="modal" id="tmF" style="width:560px"><div class="row"><h2 style="font-size:20px">${t?'Editar equipe':'Nova equipe'}</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="40" value="${esc(x.name)}" placeholder="Ex.: Vendas"></div>
+   <div class="field"><label>Pessoas</label><div class="chks">${people.filter(p=>p.active).map(p=>`<label><input type="checkbox" name="m" value="${p.id}" ${x.member_ids.includes(p.id)?'checked':''}><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</label>`).join('')}</div></div>
+   <div class="field"><label>Como as conversas chegam</label><div class="modes" style="grid-template-columns:1fr 1fr">
+     <label><input type="radio" name="distribution" value="queue" ${x.distribution!=='roundrobin'?'checked':''}><b>Fila</b>Ficam na fila da equipe e quem estiver livre pega.</label>
+     <label><input type="radio" name="distribution" value="roundrobin" ${x.distribution==='roundrobin'?'checked':''}><b>Rodízio</b>Cada conversa vai direto para a próxima pessoa.</label></div></div>
+   <details ${x.stages.length||x.topics||x.handoff_default||x.sla_minutes?'open':''}><summary style="cursor:pointer;font-weight:700;font-size:13.5px">Regras automáticas (opcional)</summary><div class="grid" style="gap:12px;margin-top:12px">
+    <div class="field"><label>Quando o contato entra nestas etapas do funil, vem para esta equipe</label><div class="chks">${stages.map(s=>`<label><input type="checkbox" name="st" value="${s.id}" ${x.stages.includes(s.id)?'checked':''}>${esc(s.name)}</label>`).join('')}</div></div>
+    <div class="field"><label>Assuntos que a Nanda manda para esta equipe</label><input name="topics" value="${esc(x.topics||'')}" placeholder="cancelamento, reclamação, troca" maxlength="300"><span class="hint">Separe por vírgula. Vale quando a Nanda passa a conversa para o time.</span></div>
+    <label class="row" style="gap:8px;font-weight:600;font-size:13.5px"><input type="checkbox" name="handoff_default" ${x.handoff_default?'checked':''}> Receber os demais repasses da Nanda</label>
+    <div class="field"><label>Avisar a gerência se o cliente esperar na fila mais de (minutos)</label><input name="sla_minutes" type="number" min="5" max="1440" value="${x.sla_minutes||''}" placeholder="ex.: 15" style="max-width:140px"></div></div></details>
+   <div class="row"><button class="btn p">Salvar</button><span class="err" id="tmE"></span></div></form>`,true);
+  o.querySelector('#tmF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+    const body={name:f.name.value,member_ids:[...f.querySelectorAll('[name=m]:checked')].map(i=>i.value),distribution:f.distribution.value,stages:[...f.querySelectorAll('[name=st]:checked')].map(i=>i.value),
+      topics:f.topics.value,handoff_default:f.handoff_default.checked,sla_minutes:f.sla_minutes.value?Number(f.sla_minutes.value):null};
+    try{await api('/teams'+(t?'/'+t.id:''),{method:t?'PUT':'POST',body});o.remove();toast('Equipe salva.');VIEWS.equipe()}catch(e){o.querySelector('#tmE').textContent=e.message}};
+}
 async function refresh(){ME=await api('/auth/me')}
 async function loadNiches(){try{const l=await api('/niches');SEG=Object.fromEntries(l.map(n=>[n.key,n.label]));SEGS=Object.fromEntries(l.map(n=>[n.key,n.short]))}catch(e){}}
 async function boot(){

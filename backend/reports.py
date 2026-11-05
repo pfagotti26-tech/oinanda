@@ -153,7 +153,20 @@ async def sales(days: int = 30, user=Depends(managers)):
         if worst['rate'] < 50:
             prv = funnel[funnel.index(worst) - 1]['name']
             alerts.append({'kind': 'info', 'text': f'Só {worst["rate"]}% de "{prv}" chegam em "{worst["name"]}": é onde mais se perde', 'to': 'funil'})
-    return {'prev': prev, 'series': series, 'bucket': bucket, 'alerts': alerts[:4],
+    # equipes
+    from teams import teams_of
+    from inbox import waiting as _waiting
+    team_rows = []
+    for tm in await teams_of(cid):
+        cs = await db.contacts.find({'company_id': cid, 'team_id': tm['id']}, {'_id': 0, 'id': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1}).to_list(5000)
+        tw = [c for c in won if c['id'] in {x['id'] for x in cs}]
+        tfr = [v[0] for k, v in fr.items() if k in {x['id'] for x in cs}]
+        team_rows.append({'id': tm['id'], 'name': tm['name'], 'color': tm.get('color'), 'members': len(tm.get('member_ids') or []), 'contacts': len(cs),
+                          'queue': sum(1 for c in cs if not c.get('assigned_to')), 'waiting': sum(1 for c in cs if _waiting(c)),
+                          'won': len(tw), 'value': sum(c.get('value') or 0 for c in tw), 'first_reply_min': median(tfr) if tfr else None})
+    late = await db.contacts.count_documents({'company_id': cid, 'sla_alert_at': {'$gte': now() - timedelta(hours=24)}, 'last_dir': 'in'})
+    if late: alerts.insert(0, {'kind': 'bad', 'text': f'{late} {"cliente passou" if late == 1 else "clientes passaram"} do tempo limite na fila de uma equipe', 'to': 'conversas', 'filter': 'waiting'})
+    return {'prev': prev, 'series': series, 'bucket': bucket, 'alerts': alerts[:4], 'teams': team_rows,
         'days': days,
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,

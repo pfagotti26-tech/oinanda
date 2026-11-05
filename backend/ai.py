@@ -145,6 +145,15 @@ def describe_book(company, b):
 async def handoff(company_id, contact, reason):
     await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'ai_mode': 'off', 'needs_human_at': now(), 'handoff_reason': reason}})
     await note(company_id, contact['id'], f'A Nanda passou a conversa para o time · {reason or "cliente quer falar com uma pessoa"}')
+    await route(company_id, contact, reason)
+
+async def route(company_id, contact, reason):
+    try:
+        from teams import route_handoff
+        company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+        fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
+        await route_handoff(company, fresh, reason, fresh.get('last_text') or '')
+    except Exception: log.exception('falha ao direcionar o repasse para uma equipe')
 
 async def auto_reply(company_id, contact_id, msg_id):
     await asyncio.sleep(debounce())
@@ -161,6 +170,7 @@ async def auto_reply(company_id, contact_id, msg_id):
         if mode != 'auto' or not key_ok():
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo
                 await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'cliente pediu uma pessoa'}})
+                await route(company_id, contact, 'cliente pediu uma pessoa')
             return
         if asks_human:
             await deliver(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', None, s['name'] + ' (IA)')

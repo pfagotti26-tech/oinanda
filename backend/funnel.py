@@ -20,7 +20,7 @@ def _st(*rows):
 def default_stages(segment):
     return _st(*niche(segment)['stages'])
 
-async def move_stage(company, contact, stage_id, by_name, stages=None):
+async def move_stage(company, contact, stage_id, by_name, stages=None, route=True):
     """Muda a etapa do contato, registra na conversa e no histórico de etapas (base dos relatórios)."""
     stages = stages or await stages_for(company)
     st = next((s for s in stages if s['id'] == stage_id), None)
@@ -34,6 +34,9 @@ async def move_stage(company, contact, stage_id, by_name, stages=None):
                                       'to': stage_id, 'kind': st['kind'], 'value': contact.get('value'), 'by': by_name, 'at': now()})
     await note(company['id'], contact['id'], f'{by_name} moveu para {st["name"]}')
     contact.update(upd)
+    if route:  # etapa ligada a uma equipe: a conversa vai para ela
+        from teams import route_by_stage
+        await route_by_stage(company, contact, stage_id)
     return True
 
 async def stages_for(company):

@@ -361,4 +361,8 @@ async def loop():
     while True:
         try: await run_once()
         except Exception: log.exception('falha no ciclo das automações')
+        try:
+            from teams import check_sla
+            await check_sla()
+        except Exception: log.exception('falha no alerta de fila das equipes')
         await asyncio.sleep(every)

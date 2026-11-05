@@ -26,8 +26,14 @@ def visible_q(user):
 
 @router.get('/inbox/counts')
 async def counts(user=Depends(current_user)):
-    rows = await db.contacts.find(visible_q(user), {'_id': 0, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1, 'needs_human': 1, 'unread': 1}).to_list(5000)
-    return {'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
+    from teams import my_team_ids
+    mine = set(await my_team_ids(user))
+    rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1, 'needs_human': 1,
+                                                    'unread': 1, 'team_id': 1, 'transfer_seen': 1, 'transfer_by': 1, 'transfer_reason': 1, 'transfer_at': 1}).to_list(5000)
+    pend = [{k: r.get(k) for k in ('id', 'name', 'transfer_by', 'transfer_reason', 'transfer_at')} for r in rows
+            if r.get('assigned_to') == user['id'] and r.get('transfer_seen') is False]
+    return {'team': sum(1 for r in rows if r.get('team_id') in mine), 'team_queue': sum(1 for r in rows if r.get('team_id') in mine and not r.get('assigned_to')),
+            'has_team': bool(mine), 'transfers': pend,'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
             'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)),
             'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread'))}
 

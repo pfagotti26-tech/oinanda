@@ -336,6 +336,9 @@ async def conversations(filter: str = 'all', q: str = '', user=Depends(current_u
     if filter == 'mine': qq['assigned_to'] = user['id']
     elif filter == 'unassigned': qq['assigned_to'] = None
     elif filter == 'waiting': qq['last_dir'] = 'in'
+    elif filter == 'team':
+        from teams import my_team_ids
+        qq['team_id'] = {'$in': await my_team_ids(user)}
     if user['role'] == 'agent' and filter not in ('mine', 'unassigned'):
         qq['assigned_to'] = {'$in': [None, user['id']]}
     term = q.strip()
@@ -359,6 +362,8 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
     msgs = await db.messages.find({'contact_id': contact_id, 'company_id': user['company_id']}, {'_id': 0}).sort('at', -1).to_list(200)
     if c.get('unread'): await db.contacts.update_one({'id': contact_id}, {'$set': {'unread': 0}})
+    if c.get('assigned_to') == user['id'] and c.get('transfer_seen') is False:  # quem recebeu a transferência abriu
+        await db.contacts.update_one({'id': contact_id}, {'$set': {'transfer_seen': True}})
     li = aware(c.get('last_in_at'))
     c['window_open'] = bool(li and now() - li < WINDOW)
     c['window_ends_at'] = (li + WINDOW) if li else None
