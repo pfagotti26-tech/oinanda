@@ -16,6 +16,7 @@ from automations import router as auto_router
 from reports import router as reports_router
 from inbox import router as inbox_router
 from teams import router as teams_router
+from notify import router as notify_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -79,6 +80,7 @@ app.include_router(auto_router, prefix='/api')
 app.include_router(reports_router, prefix='/api')
 app.include_router(inbox_router, prefix='/api')
 app.include_router(teams_router, prefix='/api')
+app.include_router(notify_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

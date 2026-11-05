@@ -26,6 +26,7 @@ def visible_q(user):
 
 @router.get('/inbox/counts')
 async def counts(user=Depends(current_user)):
+    await db.users.update_one({'id': user['id']}, {'$set': {'last_seen': now()}})  # quem está com o painel aberto recebe o aviso na tela
     from teams import my_team_ids
     mine = set(await my_team_ids(user))
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1, 'needs_human': 1,

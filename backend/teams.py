@@ -38,6 +38,7 @@ class TeamIn(BaseModel):
     topics: str = Field(default='', max_length=300)
     handoff_default: bool = False
     sla_minutes: Optional[int] = Field(default=None, ge=5, le=24 * 60)
+    max_open: Optional[int] = Field(default=None, ge=1, le=500)
     color: Optional[str] = Field(default=None, pattern=r'^#[0-9A-Fa-f]{6}$')
 
 async def check_team(user, body, skip_id=None):
@@ -93,30 +94,56 @@ async def del_team(tid: str, request: Request, user=Depends(managers)):
     return {'ok': True}
 
 # ---------- transferir ----------
-async def pick_member(team):
-    """Rodízio entre as pessoas ativas da equipe."""
+def is_open(c):
+    """Conversa em aberto: nunca foi resolvida ou o cliente voltou a escrever depois."""
+    r, li = aware(c.get('resolved_at')), aware(c.get('last_in_at'))
+    return not r or bool(li and li > r)
+
+async def open_load(company_id, user_ids):
+    rows = await db.contacts.find({'company_id': company_id, 'assigned_to': {'$in': list(user_ids)}}, {'_id': 0, 'assigned_to': 1, 'resolved_at': 1, 'last_in_at': 1}).to_list(20000)
+    load = {i: 0 for i in user_ids}
+    for c in rows:
+        if is_open(c): load[c['assigned_to']] = load.get(c['assigned_to'], 0) + 1
+    return load
+
+async def pick_member(team, exclude=None):
+    """Rodízio entre quem está ativo, disponível e abaixo do limite de conversas abertas. Ninguém livre: fica na fila."""
     ids = team.get('member_ids') or []
-    active = [u['id'] for u in await db.users.find({'id': {'$in': ids}, 'active': True}, {'_id': 0, 'id': 1}).to_list(200)]
-    active = [i for i in ids if i in active]
-    if not active: return None
-    i = (team.get('rr') or 0) % len(active)
-    await db.teams.update_one({'id': team['id']}, {'$set': {'rr': i + 1}})
-    return active[i]
+    ok = {u['id'] for u in await db.users.find({'id': {'$in': ids}, 'active': True, 'away': {'$ne': True}}, {'_id': 0, 'id': 1}).to_list(200)}
+    cand = [i for i in ids if i in ok and i != exclude]
+    if cand and team.get('max_open'):
+        load = await open_load(team['company_id'], cand)
+        cand = [i for i in cand if load.get(i, 0) < team['max_open']]
+    if not cand: return None
+    start = team.get('rr') or 0
+    order = ids[start % len(ids):] + ids[:start % len(ids)] if ids else []
+    pick = next(i for i in order if i in cand)
+    await db.teams.update_one({'id': team['id']}, {'$set': {'rr': ids.index(pick) + 1}})
+    return pick
 
 async def do_transfer(company, contact, by_name, by_id, team=None, to_user=None, reason='', auto=False):
     """Passa a conversa para uma equipe e/ou pessoa. Devolve a descrição de para onde foi."""
-    assignee = to_user['id'] if to_user else (await pick_member(team) if team and team.get('distribution') == 'roundrobin' else None)
+    assignee = to_user['id'] if to_user else (await pick_member(team, by_id) if team and team.get('distribution') == 'roundrobin' else None)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': company['id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     upd = {'team_id': team['id'] if team else contact.get('team_id'), 'assigned_to': assignee, 'transfer_by': by_name, 'transfer_by_id': by_id,
            'transfer_at': now(), 'transfer_reason': reason, 'transfer_seen': assignee is None}
     if team and not to_user: upd['team_id'] = team['id']
+    if by_id and not contact.get('origin_by_id'): upd['origin_by_id'] = by_id  # quem trouxe a oportunidade (crédito do pré-vendas)
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
+    await db.transfers.insert_one({'id': uid(), 'company_id': company['id'], 'contact_id': contact['id'], 'by_id': by_id, 'by': by_name,
+                                   'from_team': contact.get('team_id'), 'to_team': upd['team_id'], 'to_user': assignee, 'reason': reason, 'auto': auto, 'at': now()})
     contact.update(upd)
     where = (team['name'] if team else '') + ((' · ' if team else '') + names.get(assignee, '') if assignee else (' (fila)' if team else ''))
     await note(company['id'], contact['id'], f'{by_name} transferiu para {where}' + (f' · {reason}' if auto and reason else ''))
     if reason and not auto:
         await db.messages.insert_one({'id': uid(), 'company_id': company['id'], 'contact_id': contact['id'], 'dir': 'note', 'type': 'note',
                                       'text': f'Motivo da transferência: {reason}', 'by': by_name, 'by_id': by_id, 'at': now()})
+    if assignee and assignee != by_id:
+        try:
+            from notify import transfer_alert
+            await transfer_alert(company, assignee, contact, by_name, reason)
+        except Exception as e:  # aviso nunca trava a transferência
+            import logging; logging.getLogger('oinanda').warning('aviso de transferência falhou: %s', e)
     return where
 
 class TransferIn(BaseModel):
@@ -156,6 +183,15 @@ async def route_by_stage(company, contact, stage_id):
     team = await db.teams.find_one({'company_id': company['id'], 'stages': stage_id}, {'_id': 0})
     if team and contact.get('team_id') != team['id']:
         await do_transfer(company, contact, 'Regra da equipe', None, team, None, 'mudou de etapa', auto=True)
+
+# ---------- disponibilidade ----------
+class StatusIn(BaseModel):
+    away: bool
+
+@router.put('/me/status')
+async def my_status(body: StatusIn, user=Depends(current_user)):
+    await db.users.update_one({'id': user['id']}, {'$set': {'away': body.away, 'away_at': now() if body.away else None}})
+    return {'away': body.away}
 
 async def route_handoff(company, contact, reason, last_text=''):
     """Para onde vai a conversa que a Nanda passou para o time."""

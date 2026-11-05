@@ -99,13 +99,23 @@ async def sales(days: int = 30, user=Depends(managers)):
     scores = {}
     for q in await db.quality.find({'company_id': cid, 'at': {'$gte': since}}, {'_id': 0, 'agents': 1, 'score': 1}).to_list(5000):
         for a in q.get('agents') or []: scores.setdefault(a, []).append(q['score'])
+    # quem passou oportunidades adiante (pré-vendas) e quantas viraram venda
+    passed = {}
+    for t in await db.transfers.find({'company_id': cid, 'at': {'$gte': since}, 'by_id': {'$ne': None}, 'auto': {'$ne': True}}, {'_id': 0, 'by_id': 1, 'contact_id': 1}).to_list(50000):
+        passed.setdefault(t['by_id'], set()).add(t['contact_id'])
+    won_by_id = {c['id']: c for c in won}
+    origin_won = {}
+    for c in await db.contacts.find({'company_id': cid, 'id': {'$in': list(won_by_id)}, 'origin_by_id': {'$ne': None}}, {'_id': 0, 'id': 1, 'origin_by_id': 1}).to_list(10000):
+        if c['origin_by_id'] != won_by_id[c['id']].get('assigned_to'): origin_won.setdefault(c['origin_by_id'], []).append(won_by_id[c['id']])
     people = []
     for u in team:
         w = [c for c in won if c.get('assigned_to') == u['id']]
         mine = [v[0] for k, v in fr.items() if v[1] == u['id']]
         people.append({'id': u['id'], 'name': u['name'], 'active': u.get('active'), 'messages': sent.get(u['id'], 0), 'won': len(w),
                        'value': sum(c.get('value') or 0 for c in w), 'first_reply_min': median(mine) if mine else None,
-                       'score': round(sum(scores[u['id']]) / len(scores[u['id']]), 1) if scores.get(u['id']) else None, 'scored': len(scores.get(u['id']) or [])})
+                       'score': round(sum(scores[u['id']]) / len(scores[u['id']]), 1) if scores.get(u['id']) else None, 'scored': len(scores.get(u['id']) or []),
+                       'passed': len(passed.get(u['id'], ())), 'assisted': len(origin_won.get(u['id'], [])),
+                       'assisted_value': sum(c.get('value') or 0 for c in origin_won.get(u['id'], []))})
     people.sort(key=lambda p: (-p['value'], -p['won'], -p['messages']))
     month = now().strftime('%Y-%m')
     usage = await db.ai_usage.find_one({'company_id': cid, 'month': month}, {'_id': 0}) or {}

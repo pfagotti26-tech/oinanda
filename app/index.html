@@ -61,6 +61,17 @@ a{color:var(--c2)}
 .side .me b{display:block;color:#fff;font-size:13px;line-height:1.2}
 .side .me span{font-size:11.5px;color:#9AA7B4}
 .side .me button{margin-left:auto;color:#9AA7B4;font-size:12px;font-weight:700}
+.side .me .meb{display:flex;align-items:center;gap:10px;margin:0;text-align:left;color:inherit;min-width:0;border-radius:10px;padding:2px 6px 2px 0}
+.side .me .meb:hover{background:rgba(255,255,255,.06)}
+.side .me .avw{position:relative;flex:none}.side .me .avw i{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#2FB574;border:2px solid #17212B}
+.side .me .avw i.off{background:#8A96A3}
+.stt{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stt label{border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;font-size:12.5px;color:var(--ink2)}
+.stt label b{display:flex;align-items:center;gap:7px;color:var(--ink);font-size:13.5px}.stt label b i{width:9px;height:9px;border-radius:50%;background:#2FB574}.stt label.off b i{background:#8A96A3}
+.stt label:has(input:checked){border-color:var(--c);background:var(--soft)}.stt input{position:absolute;opacity:0}
+.tm-c .mem .av.away{opacity:.35}
+.ckl{display:flex!important;align-items:center;gap:9px;font-weight:600;font-size:13.5px;margin-bottom:8px;cursor:pointer}.ckl input{width:auto!important;margin:0;flex:none}
+.pr .nm .as.z{color:var(--ink3)}
+.pr .nm .as{display:block;color:var(--ok);font-weight:700;font-size:11.5px;margin-top:1px}
 main{min-width:0}
 .banner{padding:10px 28px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:12px}
 .banner.imp{background:#17212B;color:#FFB38A}
@@ -599,13 +610,14 @@ function shell(){
     ${NAV.filter(n=>canManage||!['atividade','nanda','automacoes','relatorios'].includes(n[0])).map(n=>`<button class="nav" data-v="${n[0]}" ${n[2]?'disabled':''}>${n[1]}${n[2]?`<span class="soon">${n[2]}</span>`:''}</button>`).join('')}
     ${adm?`<h6>Admin Oi Nanda</h6>${ADMIN_NAV.map(n=>`<button class="nav" data-v="${n[0]}">${n[1]}</button>`).join('')}`:''}
     <div class="sp"></div>
-    <div class="me"><div class="av">${initials(u.name)}</div><div><b>${esc(u.name)}</b><span>${esc(ME.roles[u.role]||u.role)}</span></div><button id="out">Sair</button></div>
+    <div class="me"><button class="meb" id="meB" title="Seu status e avisos"><span class="avw"><span class="av">${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span style="min-width:0"><b>${esc(u.name)}</b><span id="meSt">${esc(ME.roles[u.role]||u.role)} · ${u.away?'ausente':'disponível'}</span></span></button><button id="out">Sair</button></div>
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.</div>`:''}
     <div class="page" id="page"></div></main></div>`;
   document.querySelectorAll('.side [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
+  $('#meB').onclick=meModal;
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
@@ -817,7 +829,7 @@ function transferModal(c){
     <div class="row"><button class="btn p">Transferir</button><span class="err" id="trE"></span></div></form>`,true);
   const f=o.querySelector('#trF');
   const sync=()=>{const tid=f.querySelector('[name=team]:checked')?.value;const t=teams.find(x=>x.id===tid);const sel=f.user;const cur=sel.value;
-    sel.innerHTML=`<option value="">${t?(t.distribution==='roundrobin'?'Próxima pessoa do rodízio':'Fila da equipe (quem estiver livre pega)'):teams.length?'Escolha a equipe ou uma pessoa':'Escolha...'}</option>`+people.filter(p=>!t||(t.member_ids||[]).includes(p.id)).map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)}</option>`).join('')};
+    sel.innerHTML=`<option value="">${t?(t.distribution==='roundrobin'?'Próxima pessoa do rodízio':'Fila da equipe (quem estiver livre pega)'):teams.length?'Escolha a equipe ou uma pessoa':'Escolha...'}</option>`+people.filter(p=>!t||(t.member_ids||[]).includes(p.id)).map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)}${p.away?' (ausente)':''}</option>`).join('')};
   f.querySelectorAll('[name=team]').forEach(r=>r.onchange=sync);
   f.onsubmit=async ev=>{ev.preventDefault();const tid=f.querySelector('[name=team]:checked')?.value||null;
     if(!tid&&!f.user.value)return o.querySelector('#trE').textContent='Escolha a equipe ou a pessoa.';
@@ -1289,7 +1301,7 @@ const VIEWS={
   const top=Math.max(1,...r.funnel.map(f=>f.count));
   const worst=r.funnel.slice(1).filter((f,i)=>f.rate!=null&&r.funnel[i].count>=5).sort((x,y)=>x.rate-y.rate)[0];
   const sortBy=(arr,k)=>[...arr].sort((x,y)=>(y[k]??-1)-(x[k]??-1));
-  const people=sortBy(r.people.filter(p=>p.active||p.messages||p.won),RP.sort||'value');
+  const people=sortBy(r.people.filter(p=>p.active||p.messages||p.won||p.passed),RP.sort||'value');
   const AL={bad:'red',warn:'amber',info:'blue'};
   $('#rpBody').innerHTML=`
    ${r.alerts&&r.alerts.length?`<div class="alerts"><b class="at">O que fazer agora</b>${r.alerts.map((a,i)=>`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span>${esc(a.text)}<span class="go">›</span></button>`).join('')}</div>`:''}
@@ -1305,7 +1317,7 @@ const VIEWS={
      ${r.funnel.map((f,i)=>`<div class="fbar ${f.kind} ${worst&&worst.id===f.id&&worst.rate<50?'worst':''}"><span>${esc(f.name)}${i&&f.rate!=null?`<em>${f.rate}%</em>`:''}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}
      ${worst&&worst.rate<50?`<p class="note" style="margin-top:10px">Maior perda: só ${worst.rate}% de quem chega na etapa anterior vai para "${esc(worst.name)}".</p>`:''}</div></div>
    <div class="grid g2 rp2"><div class="card"><div class="row"><h3 class="sec" style="margin:0">Time</h3><span class="hint" style="margin-left:auto">ordenar:</span>${[['value','valor'],['won','vendas'],['messages','mensagens']].map(o=>`<button class="chip sm ${(RP.sort||'value')===o[0]?'on':''}" data-so="${o[0]}">${o[1]}</button>`).join('')}</div>
-     <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span></div><div class="vv"><b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span></div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém atendeu no período.</div>'}</div></div>
+     <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span>${p.passed?`<span class="as ${p.assisted?'':'z'}">passou ${p.passed} ${p.passed===1?'oportunidade':'oportunidades'} · ${p.assisted} ${p.assisted===1?'virou venda':'viraram venda'}${p.assisted_value?' ('+brl(p.assisted_value)+')':''}</span>`:''}</div><div class="vv"><b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span></div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém atendeu no período.</div>'}</div></div>
     <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<div class="plist">${r.origin.map(o=>`<div class="pr"><span class="ico ${o.ad?'g1':'g2'}" style="width:34px;height:34px">${o.ad?IC.chat:IC.check}</span><div class="nm"><b>${esc(o.name)}</b><span>${o.contacts} ${o.contacts===1?'contato':'contatos'}</span></div><div class="vv"><b>${o.value?brl(o.value):o.won}</b><span>${o.won} ${o.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div>`:'<div class="empty">Sem contatos novos no período.</div>'}
      <p class="hint" style="margin-top:10px">Quem clica em anúncio de "Enviar mensagem" no Facebook ou Instagram aparece com o nome do anúncio.</p></div></div>
    ${r.teams&&r.teams.length?`<div class="card" style="margin-bottom:14px"><h3 class="sec">Equipes</h3><div class="plist">${r.teams.map(t=>`<div class="pr"><span class="ico" style="width:34px;height:34px;background:${t.color}22;color:${t.color}">${IC.chat}</span><div class="nm"><b>${esc(t.name)}</b><span>${t.members} ${t.members===1?'pessoa':'pessoas'} · ${t.contacts} conversas · ${t.queue} na fila · ${t.waiting} esperando · resposta ${fmtMin(t.first_reply_min)}</span></div><div class="vv"><b>${t.value?brl(t.value):t.won}</b><span>${t.won} ${t.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div></div>`:''}
@@ -1535,8 +1547,8 @@ async function drawTeams(people,canManage){
     if($('#tmPack'))$('#tmPack').onclick=async e=>{e.target.disabled=true;try{for(const [n,o] of [['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}],['Suporte',{topics:'cancelamento, reclamação, problema, troca'}]])await api('/teams',{method:'POST',body:{name:n,...o}});toast('Equipes criadas. Agora coloque as pessoas em cada uma.');VIEWS.equipe()}catch(x){toast(x.message);e.target.disabled=false}};return}
   const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
   box.innerHTML=`<div class="agrid">${teams.map(t=>`<div class="tm-c" style="--tc:${t.color}"><div class="hd"><span class="dot"></span><b>${esc(t.name)}</b>${t.mine?'<span class="pill ok">você</span>':''}<span class="hint" style="margin-left:auto">${t.queue} na fila</span></div>
-    <div class="mem">${(t.member_ids||[]).map(id=>P[id]?`<span class="av" title="${esc(P[id].name)}" style="background:${avc(P[id].name)}">${initials(P[id].name)}</span>`:'').join('')||'<span class="hint">Sem pessoas ainda</span>'}</div>
-    <ul class="rl"><li>${t.distribution==='roundrobin'?'<b>Rodízio:</b> cada conversa nova vai direto para a próxima pessoa':'<b>Fila:</b> quem estiver livre pega a conversa'}</li>
+    <div class="mem">${(t.member_ids||[]).map(id=>P[id]?`<span class="av ${P[id].away?'away':''}" title="${esc(P[id].name)}${P[id].away?' · ausente':''}" style="background:${avc(P[id].name)}">${initials(P[id].name)}</span>`:'').join('')||'<span class="hint">Sem pessoas ainda</span>'}</div>
+    <ul class="rl"><li>${t.distribution==='roundrobin'?`<b>Rodízio:</b> cada conversa nova vai direto para a próxima pessoa disponível${t.max_open?`, até <b>${t.max_open}</b> abertas por pessoa`:''}`:'<b>Fila:</b> quem estiver livre pega a conversa'}</li>
      ${(t.stages||[]).length?`<li>Recebe quem entra em <b>${t.stages.map(x=>esc(SN[x]||'?')).join(', ')}</b></li>`:''}
      ${t.topics?`<li>A Nanda manda para cá: <b>${esc(t.topics)}</b></li>`:''}${t.handoff_default?'<li>Recebe os demais repasses da Nanda</li>':''}
      ${t.sla_minutes?`<li>Alerta se o cliente esperar mais de <b>${t.sla_minutes} min</b> na fila</li>`:''}</ul>
@@ -1544,23 +1556,54 @@ async function drawTeams(people,canManage){
   box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
   box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
 }
+async function meModal(){
+  const u=ME.user,canManage=['owner','manager'].includes(u.role);
+  const o=overlay(`<form class="modal" id="meF" style="width:500px"><div class="row"><h2 style="font-size:20px">Seu status e avisos</h2><button type="button" class="x">×</button></div><div id="meBody"><div class="empty">Carregando…</div></div></form>`,true);
+  let n;try{n=await api('/notify')}catch(e){$('#meBody').innerHTML=`<p class="err">${esc(e.message)}</p>`;return}
+  const me=n.me||{},tpl=n.template&&n.template.status;
+  const nt='Notification' in window?Notification.permission:'na';
+  $('#meBody').innerHTML=`<div class="field"><label>Status</label><div class="stt">
+     <label><input type="radio" name="away" value="0" ${!me.away?'checked':''}><b><i></i>Disponível</b>Recebo conversas do rodízio.</label>
+     <label class="off"><input type="radio" name="away" value="1" ${me.away?'checked':''}><b><i></i>Ausente</b>O rodízio pula você. As suas conversas continuam com você.</label></div></div>
+    <div class="field" style="margin-top:16px"><label>Quando me transferirem uma conversa</label>
+     <p class="hint" style="margin:0 0 8px">Com o painel aberto, o aviso aparece na tela.${nt==='granted'?' Notificação do navegador: <b>ligada</b>.':nt==='default'?' <button type="button" class="btn sm" id="meNt">🔔 Ligar notificação do navegador</button>':''}</p>
+     <label class="ckl"><input type="checkbox" name="wa_notify" ${me.wa_notify?'checked':''}> Avisar no meu WhatsApp quando eu estiver fora do painel</label>
+     <input name="wa_phone" inputmode="tel" placeholder="Seu celular com DDD, ex.: (11) 91234-5678" value="${me.wa_phone?esc(fmtPhone(me.wa_phone)):''}" maxlength="30">
+     <div id="meTpl" style="margin-top:8px">${!n.connected?'<p class="hint">O aviso sai pelo WhatsApp da empresa, que ainda não está conectado.</p>'
+       :tpl==='APPROVED'?'<p class="hint"><span class="pill ok">pronto</span> O aviso sai pelo WhatsApp da empresa, por um modelo aprovado pela Meta (cobrado como mensagem de utilidade).</p>'
+       :tpl==='PENDING'?'<p class="hint"><span class="pill warn">em análise na Meta</span> O modelo de aviso costuma ser aprovado em minutos. Depois disso os avisos começam a sair.</p>'
+       :canManage?`<p class="hint">Para avisar fora da janela de 24 h, a Meta exige um modelo aprovado. Crie uma vez para todo o time (categoria utilidade, cobrado por envio).</p><button type="button" class="btn sm" id="meMk" style="margin-top:6px">Criar modelo de aviso</button>`
+       :'<p class="hint">Falta o gestor ativar o modelo de aviso na Meta. Até lá, o aviso só sai se você tiver mandado mensagem para o número da empresa nas últimas 24 h.</p>'}</div></div>
+    <div class="row"><button class="btn p">Salvar</button><span class="err" id="meE"></span></div>`;
+  if($('#meNt'))$('#meNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Notificação ligada.':'O navegador não autorizou.')}catch(e){}o.remove();meModal()};
+  if($('#meMk'))$('#meMk').onclick=async e=>{e.target.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta.');o.remove();meModal()}catch(x){$('#meE').textContent=x.message;e.target.disabled=false}};
+  $('#meF').onsubmit=async e=>{e.preventDefault();const f=e.target;$('#meE').textContent='';
+    try{const away=f.away.value==='1';
+      await api('/me/notify',{method:'PUT',body:{wa_phone:f.wa_phone.value.trim()||null,wa_notify:f.wa_notify.checked}});
+      if(away!==!!u.away){await api('/me/status',{method:'PUT',body:{away}});u.away=away}
+      $('#meDot').classList.toggle('off',!!u.away);$('#meSt').textContent=(ME.roles[u.role]||u.role)+' · '+(u.away?'ausente':'disponível');
+      o.remove();toast(u.away?'Você está ausente. O rodízio vai pular você.':'Salvo.');if(VIEW==='equipe')VIEWS.equipe()}catch(x){$('#meE').textContent=x.message}};
+}
 function teamModal(t,people,stages){
-  const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null};
+  const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null,max_open:null};
   const o=overlay(`<form class="modal" id="tmF" style="width:560px"><div class="row"><h2 style="font-size:20px">${t?'Editar equipe':'Nova equipe'}</h2><button type="button" class="x">×</button></div>
    <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="40" value="${esc(x.name)}" placeholder="Ex.: Vendas"></div>
    <div class="field"><label>Pessoas</label><div class="chks">${people.filter(p=>p.active).map(p=>`<label><input type="checkbox" name="m" value="${p.id}" ${x.member_ids.includes(p.id)?'checked':''}><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</label>`).join('')}</div></div>
    <div class="field"><label>Como as conversas chegam</label><div class="modes" style="grid-template-columns:1fr 1fr">
      <label><input type="radio" name="distribution" value="queue" ${x.distribution!=='roundrobin'?'checked':''}><b>Fila</b>Ficam na fila da equipe e quem estiver livre pega.</label>
-     <label><input type="radio" name="distribution" value="roundrobin" ${x.distribution==='roundrobin'?'checked':''}><b>Rodízio</b>Cada conversa vai direto para a próxima pessoa.</label></div></div>
+     <label><input type="radio" name="distribution" value="roundrobin" ${x.distribution==='roundrobin'?'checked':''}><b>Rodízio</b>Cada conversa vai direto para a próxima pessoa.</label></div>
+     <div class="row" id="tmMx" style="gap:8px;margin-top:10px;font-size:13px;${x.distribution==='roundrobin'?'':'display:none'}">No rodízio, até <input name="max_open" type="number" min="1" max="500" value="${x.max_open||''}" placeholder="—" style="width:76px;padding:8px 10px"> conversas abertas por pessoa <span class="hint">(vazio = sem limite)</span></div>
+     <p class="hint" style="margin-top:6px">Quem marcar "ausente" no próprio nome fica fora do rodízio. Se ninguém puder receber, a conversa espera na fila.</p></div>
    <details ${x.stages.length||x.topics||x.handoff_default||x.sla_minutes?'open':''}><summary style="cursor:pointer;font-weight:700;font-size:13.5px">Regras automáticas (opcional)</summary><div class="grid" style="gap:12px;margin-top:12px">
     <div class="field"><label>Quando o contato entra nestas etapas do funil, vem para esta equipe</label><div class="chks">${stages.map(s=>`<label><input type="checkbox" name="st" value="${s.id}" ${x.stages.includes(s.id)?'checked':''}>${esc(s.name)}</label>`).join('')}</div></div>
     <div class="field"><label>Assuntos que a Nanda manda para esta equipe</label><input name="topics" value="${esc(x.topics||'')}" placeholder="cancelamento, reclamação, troca" maxlength="300"><span class="hint">Separe por vírgula. Vale quando a Nanda passa a conversa para o time.</span></div>
-    <label class="row" style="gap:8px;font-weight:600;font-size:13.5px"><input type="checkbox" name="handoff_default" ${x.handoff_default?'checked':''}> Receber os demais repasses da Nanda</label>
+    <label class="ckl"><input type="checkbox" name="handoff_default" ${x.handoff_default?'checked':''}> Receber os demais repasses da Nanda</label>
     <div class="field"><label>Avisar a gerência se o cliente esperar na fila mais de (minutos)</label><input name="sla_minutes" type="number" min="5" max="1440" value="${x.sla_minutes||''}" placeholder="ex.: 15" style="max-width:140px"></div></div></details>
    <div class="row"><button class="btn p">Salvar</button><span class="err" id="tmE"></span></div></form>`,true);
+  o.querySelectorAll('[name=distribution]').forEach(r=>r.onchange=()=>{o.querySelector('#tmMx').style.display=o.querySelector('#tmF').distribution.value==='roundrobin'?'':'none'});
   o.querySelector('#tmF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
     const body={name:f.name.value,member_ids:[...f.querySelectorAll('[name=m]:checked')].map(i=>i.value),distribution:f.distribution.value,stages:[...f.querySelectorAll('[name=st]:checked')].map(i=>i.value),
-      topics:f.topics.value,handoff_default:f.handoff_default.checked,sla_minutes:f.sla_minutes.value?Number(f.sla_minutes.value):null};
+      topics:f.topics.value,handoff_default:f.handoff_default.checked,sla_minutes:f.sla_minutes.value?Number(f.sla_minutes.value):null,max_open:f.distribution.value==='roundrobin'&&f.max_open.value?Number(f.max_open.value):null};
     try{await api('/teams'+(t?'/'+t.id:''),{method:t?'PUT':'POST',body});o.remove();toast('Equipe salva.');VIEWS.equipe()}catch(e){o.querySelector('#tmE').textContent=e.message}};
 }
 async function refresh(){ME=await api('/auth/me')}
