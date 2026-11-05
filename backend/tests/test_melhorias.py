@@ -156,5 +156,8 @@ def test_nanda_blocos_testes_e_relatorios(monkeypatch):
         me = next(p for p in rep['people'] if p['name'] == 'Dona Teste')
         assert me['won'] == 1 and me['value'] == 75 and me['score'] == 7.5
         assert rep['origin'][0]['name'] == 'Chamou no WhatsApp' and rep['origin'][0]['won'] == 1
+        assert len(rep['series']) == 30 and sum(x['new'] for x in rep['series']) == 1 and sum(x['value'] for x in rep['series']) == 75
+        assert rep['prev']['new_contacts'] == 0 and rep['funnel'][1]['rate'] == 100 and isinstance(rep['alerts'], list)
+        assert len(c.get('/api/reports/sales?days=90').json()['series']) == 13
         ql = c.get('/api/quality').json(); assert ql['avg'] == 7.5 and ql['lost'] == 1
         assert c.post('/api/quality-run').json()['scored'] == 0  # já avaliada e sem mensagem nova

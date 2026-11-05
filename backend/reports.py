@@ -32,6 +32,17 @@ async def first_reply_minutes(company_id, contact_ids):
         if rep: out[cid] = (mins(aware(rep['at']) - aware(first_in['at'])), rep.get('by_id'), '(IA)' in (rep.get('by') or ''))
     return out
 
+async def period_totals(cid, kinds, won_ids, start, end):
+    """Números de um período fechado, para comparar com o atual."""
+    new = await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular']}},
+                                 {'_id': 0, 'id': 1, 'stage': 1}).to_list(10000)
+    won = await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'value': 1}).to_list(10000)
+    fr = await first_reply_minutes(cid, [c['id'] for c in new])
+    vals = [v[0] for v in fr.values()]
+    conv = sum(1 for c in new if kinds.get(c.get('stage')) == 'won')
+    return {'new_contacts': len(new), 'won': len(won), 'won_value': sum(c.get('value') or 0 for c in won),
+            'conversion': round(100 * conv / len(new), 1) if new else None, 'first_reply_min': median(vals) if vals else None}
+
 @router.get('/reports/sales')
 async def sales(days: int = 30, user=Depends(managers)):
     days = max(1, min(days, 365))
@@ -102,7 +113,47 @@ async def sales(days: int = 30, user=Depends(managers)):
     handoffs = await db.messages.count_documents({'company_id': cid, 'dir': 'sys', 'at': {'$gte': since}, 'text': {'$regex': '^A Nanda passou a conversa'}})
     autos = await db.automation_runs.count_documents({'company_id': cid, 'at': {'$gte': since}, 'status': 'sent'})
     all_fr = [v[0] for v in fr.values()]
-    return {
+    prev = await period_totals(cid, kinds, won_ids, since - timedelta(days=days), since)
+    # série por dia (ou por semana em períodos longos), no fuso da empresa
+    import agenda as _ag
+    tz = _ag.tz_of(user['company']); bucket = 7 if days > 45 else 1
+    start_local = (now() - timedelta(days=days - 1)).astimezone(tz).date()
+    nb = (days + bucket - 1) // bucket
+    series = [{'date': str(start_local + timedelta(days=i * bucket)), 'new': 0, 'won': 0, 'value': 0} for i in range(nb)]
+    def idx(dt):
+        d = aware(dt).astimezone(tz).date(); i = (d - start_local).days // bucket
+        return i if 0 <= i < nb else None
+    for c in new:
+        i = idx(c['created_at'])
+        if i is not None: series[i]['new'] += 1
+    for c in won:
+        i = idx(c['won_at'])
+        if i is not None: series[i]['won'] += 1; series[i]['value'] += c.get('value') or 0
+    # taxa de passagem entre etapas
+    for i, f in enumerate(funnel):
+        f['rate'] = round(100 * f['count'] / funnel[i - 1]['count']) if i and funnel[i - 1]['count'] else None
+    # o que fazer agora
+    alerts = []
+    hour_ago = now() - timedelta(hours=1)
+    waiting = await db.contacts.count_documents({'company_id': cid, 'last_dir': 'in', 'last_in_at': {'$lte': hour_ago}, 'needs_human': {'$ne': True}})
+    human = await db.contacts.count_documents({'company_id': cid, 'needs_human': True})
+    open_ids = [s['id'] for s in stages if s['kind'] == 'open']
+    stale = await db.contacts.count_documents({'company_id': cid, 'stage': {'$in': open_ids + [None]}, 'last_at': {'$lte': now() - timedelta(days=3)}})
+    if human: alerts.append({'kind': 'bad', 'text': f'{human} {"cliente pediu" if human == 1 else "clientes pediram"} para falar com alguém do time', 'to': 'conversas', 'filter': 'waiting'})
+    if waiting: alerts.append({'kind': 'warn', 'text': f'{waiting} {"cliente esperando" if waiting == 1 else "clientes esperando"} resposta há mais de 1 hora', 'to': 'conversas', 'filter': 'waiting'})
+    if stale: alerts.append({'kind': 'warn', 'text': f'{stale} {"negociação parada" if stale == 1 else "negociações paradas"} há 3 dias ou mais', 'to': 'funil', 'filter': 'stale'})
+    timed = [p for p in people if p['first_reply_min'] is not None]
+    if len(timed) >= 2:
+        fast, slow = min(timed, key=lambda p: p['first_reply_min']), max(timed, key=lambda p: p['first_reply_min'])
+        if slow['first_reply_min'] >= max(10, 3 * fast['first_reply_min']):
+            alerts.append({'kind': 'info', 'text': f'{fast["name"].split(" ")[0]} responde em {fast["first_reply_min"]:.0f} min; {slow["name"].split(" ")[0]} em {slow["first_reply_min"]:.0f} min', 'to': 'relatorios'})
+    drops = [f for f in funnel[1:] if f.get('rate') is not None and funnel[funnel.index(f) - 1]['count'] >= 5]
+    if drops:
+        worst = min(drops, key=lambda f: f['rate'])
+        if worst['rate'] < 50:
+            prv = funnel[funnel.index(worst) - 1]['name']
+            alerts.append({'kind': 'info', 'text': f'Só {worst["rate"]}% de "{prv}" chegam em "{worst["name"]}": é onde mais se perde', 'to': 'funil'})
+    return {'prev': prev, 'series': series, 'bucket': bucket, 'alerts': alerts[:4],
         'days': days,
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,

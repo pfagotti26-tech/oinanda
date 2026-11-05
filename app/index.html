@@ -324,6 +324,38 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .btn.add{margin-top:auto;justify-content:center;background:var(--tint);border-color:var(--soft);color:var(--c2)}.btn.add:hover{background:var(--c);border-color:var(--c);color:#fff}
 .note.warnb{border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)}
 @media (max-width:860px){.rules{grid-template-columns:1fr;gap:8px}.rules>div{padding:10px 12px}.agrid{grid-template-columns:1fr}.aempty .btn{width:100%;justify-content:center}.tabs{overflow-x:auto;flex-wrap:nowrap}.tabs .chip{white-space:nowrap}.wab{margin-left:8px}}
+.alerts{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:14px}
+.alerts .at{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin:0 2px 2px}
+.al{display:flex;align-items:center;gap:10px;text-align:left;padding:9px 12px;border-radius:12px;font-weight:700;font-size:13.5px;background:#FBF8F5}
+.al:hover{background:var(--tint)}.al .dot{width:9px;height:9px;border-radius:50%;background:#2F6FB5;flex:none}.al.red .dot{background:var(--bad)}.al.amber .dot{background:#E0A82E}
+.al .go{margin-left:auto;color:var(--ink3);font-size:18px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;min-width:0}
+.kpi .l{font-size:12.5px;font-weight:700;color:var(--ink2)}
+.kpi b{display:block;font-size:30px;letter-spacing:-1px;line-height:1.15;margin:4px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.kpi .s{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink3);font-weight:600;min-height:20px}
+.kpi .eh{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.35}
+.dl{font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 8px}.dl.up{background:var(--oksoft);color:var(--ok)}.dl.down{background:var(--badsoft);color:var(--bad)}.dl.eq{background:#EEF1F4;color:var(--ink2)}
+.kmini{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:14px;font-size:12.5px;color:var(--ink2);font-weight:600}
+.kmini b{color:var(--ink);margin-left:4px}.kmini .hint{margin-left:auto}
+.rp2{margin-bottom:14px;align-items:start}
+.chart .bars{display:flex;align-items:flex-end;gap:3px;height:170px;padding-bottom:20px;border-bottom:1px solid var(--line);position:relative}
+.chart .bc{flex:1;height:100%;position:relative;display:flex;align-items:flex-end;justify-content:center;gap:1px;min-width:0}
+.chart .bc i{display:block;width:45%;max-width:14px;border-radius:4px 4px 0 0;min-height:0}
+.chart .bc i.n{background:#F4B29F}.chart .bc i.w{background:var(--ok)}
+.chart .bc:hover i.n{background:var(--c)}
+.chart .bc span{position:absolute;bottom:-19px;font-size:10.5px;color:var(--ink3);white-space:nowrap}
+.chart .lg{display:flex;gap:14px;margin-top:26px;font-size:12px;color:var(--ink2);font-weight:600;flex-wrap:wrap}.chart .lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}.chart .lg i.n{background:#F4B29F}.chart .lg i.w{background:var(--ok)}.chart .lg .hint{margin-left:auto}
+.fbar em{font-style:normal;font-size:11px;font-weight:800;color:var(--ink3);margin-left:6px}.fbar.worst em{color:var(--bad)}
+.plist{display:flex;flex-direction:column;margin-top:8px}
+.pr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.pr:last-child{border:0}
+.pr .av{width:34px;height:34px;border-radius:50%;background:#5B7DB1;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;flex:none}
+.pr .nm{flex:1;min-width:0}.pr .nm b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pr .nm span{font-size:12px;color:var(--ink3);font-weight:600}
+.pr .vv{text-align:right}.pr .vv b{display:block;font-size:14.5px;color:var(--ok)}.pr .vv span{font-size:11.5px;color:var(--ink3);font-weight:600}
+.chip.sm{padding:3px 9px;font-size:11.5px}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.rp-hd>div:first-child{display:none}.rp-hd .tools{margin-left:0;width:100%}.rp-hd .seg{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+ .kpis{gap:8px}.kpi{padding:12px 14px;border-radius:14px}.kpi b{font-size:22px}.kmini{gap:6px 14px}.kmini .hint{margin-left:0;width:100%}.chart .bars{height:130px}}
 .alist{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 .au{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:start;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff}
 .au.off{opacity:.62}.au b{font-size:14.5px}.au .tr{font-size:12.5px;color:var(--ink2);font-weight:600}
@@ -406,7 +438,7 @@ function authView(mode){
   document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{history.replaceState(null,'',a.dataset.go==='signup'?'/cadastro':'/');authView(a.dataset.go)});
   $('#f').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#e').textContent='';
     const body=Object.fromEntries(new FormData(ev.target));
-    try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});history.replaceState(null,'','/');await boot()}catch(e){$('#e').textContent=e.message;b.disabled=false}};
+    try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});if(signup||location.pathname.startsWith('/cadastro')){history.replaceState(null,'','/');VIEW='inicio'}else VIEW=readPath();await boot()}catch(e){$('#e').textContent=e.message;b.disabled=false}};
 }
 function passwordView(){
   $('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span>
@@ -436,12 +468,33 @@ function shell(){
     <div class="page" id="page"></div></main></div>`;
   document.querySelectorAll('.side [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
-  $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;authView('login')};
+  $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
   go(VIEW);
 }
 let POLL=null;
-function go(v){VIEW=v;const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
+function pathFor(v){
+  if(v==='inicio')return '/';if(v.startsWith('a-'))return '/admin/'+v.slice(2);
+  let p='/'+v;
+  if(v==='conversas'&&CV.open)p+='/'+CV.open;
+  if(v==='agenda'&&AG.tab==='config')p+='/configurar';
+  if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
+  return p}
+function readPath(){
+  const parts=location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
+  if(!parts.length)return 'inicio';
+  if(parts[0]==='admin')return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao';
+  const v=parts[0];
+  if(v==='conversas')CV.open=parts[1]||null;
+  if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
+  if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
+  return VIEWS[v]?v:'inicio'}
+function syncUrl(replace){
+  if(!ME)return;const p=pathFor(VIEW);
+  if(location.pathname!==p)history[replace?'replaceState':'pushState'](null,'',p);
+  const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===VIEW);document.title=(n&&VIEW!=='inicio'?n[1]+' · ':'')+'Oi Nanda'}
+addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
+function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios'].includes(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
 async function renderWa(own){
@@ -494,7 +547,7 @@ async function cvList(){
     <span><b>${esc(c.name)}</b><span class="pv">${c.last_dir==='out'?'↪ ':''}${esc(c.last_text||'')}</span></span>
     <span class="mt">${hm(c.last_at)}${c.needs_human?'<span class="hn">pediu atendente</span>':''}${c.unread?`<span class="un">${c.unread}</span>`:''}${c.assigned_name?`<span>${esc(c.assigned_name.split(' ')[0])}</span>`:''}</span></button>`).join('')
     :'<div class="empty">Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.</div>';
-  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;cvList();cvChat(true)});
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;syncUrl();cvList();cvChat(true)});
 }
 const MODES={auto:'Nanda automática',copilot:'Nanda copiloto',off:'Nanda pausada'};
 function modeSel(c){
@@ -722,7 +775,7 @@ const svg=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const IC={clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),check:svg('<path d="M20 6 9 17l-5-5"/>'),back:svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
   chat:svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'),shield:svg('<path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/>'),moon:svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
   trash:svg('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')};
-const fmtMin=m=>m==null?'—':m<1?'menos de 1 min':m<60?Math.round(m)+' min':m<1440?String((m/60).toFixed(1)).replace('.',',')+' h':String((m/1440).toFixed(1)).replace('.',',')+' dias';
+const fmtMin=m=>m==null?'—':m<1?'< 1 min':m<60?Math.round(m)+' min':m<1440?String((m/60).toFixed(1)).replace('.',',')+' h':String((m/1440).toFixed(1)).replace('.',',')+' dias';
 const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':String(h).replace('.',',')+' horas');
 function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
   return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
@@ -856,7 +909,7 @@ const VIEWS={
   $('#page').innerHTML=`<div class="fhd"><div><h1>Automações</h1><p class="sub">Mensagens que saem sozinhas na hora certa: lembretes, retomadas e pós-atendimento.</p></div>
    <div class="tools">${AU.tab==='lista'?'<button class="btn sm p" id="auNew">+ Criar automação</button>':AU.tab==='modelos'?'<button class="btn sm" id="tpSync">Atualizar com a Meta</button><button class="btn sm p" id="tpNew">+ Novo modelo</button>':''}</div></div>
    <div class="tabs">${[['lista','Automações'],['modelos','Modelos da Meta'],['hist','Histórico']].map(t=>`<button class="chip ${AU.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div><div id="auBody"></div>`;
-  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AU.tab=b.dataset.tab;VIEWS.automacoes()});
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AU.tab=b.dataset.tab;syncUrl();VIEWS.automacoes()});
   if(AU.tab==='modelos')return drawTpls(tpls);
   if(AU.tab==='hist')return drawRuns();
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
@@ -896,25 +949,49 @@ const VIEWS={
   document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{const t=b.textContent;b.disabled=true;b.textContent='enviando...';try{await api('/automations/'+b.dataset.ask+'/template',{method:'POST'});toast('Enviado para a Meta. A aprovação costuma sair em minutos ou poucas horas.');reload()}catch(e){toast(e.message);b.disabled=false;b.textContent=t}});
  },
  async relatorios(){
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Relatórios</h1><p class="sub">Como estão as vendas e o atendimento do ${esc(ME.company.name)}.</p></div>
-   <div class="tools">${[7,30,90].map(n=>`<button class="chip ${RP.days===n?'on':''}" data-d="${n}">${n} dias</button>`).join('')}</div></div><div id="rpBody"><div class="empty">Carregando...</div></div>`;
+  $('#page').innerHTML=`<div class="fhd rp-hd"><div><h1>Relatórios</h1><p class="sub">Como estão as vendas e o atendimento do ${esc(ME.company.name)}.</p></div>
+   <div class="tools"><div class="seg">${[7,30,90].map(n=>`<button class="${RP.days===n?'on':''}" data-d="${n}">${n} dias</button>`).join('')}</div></div></div><div id="rpBody"><div class="empty">Carregando...</div></div>`;
   document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{RP.days=Number(b.dataset.d);VIEWS.relatorios()});
-  const [r,q]=await Promise.all([api('/reports/sales?days='+RP.days),api('/quality?days='+RP.days)]);const t=r.totals;
-  const tile=(l,v,sub)=>`<div class="card stat"><span>${l}</span><b>${v}</b>${sub?`<span>${sub}</span>`:''}</div>`;
+  const [r,q]=await Promise.all([api('/reports/sales?days='+RP.days),api('/quality?days='+RP.days)]);const t=r.totals,pv=r.prev||{};
+  const pct=v=>String(v).replace('.',',');
+  const delta=(cur,prev,lowBetter,pp)=>{if(cur==null||prev==null)return '';if(prev===0&&!pp)return cur>0?'<span class="dl up">novo</span>':'';
+    const d=pp?Math.round((cur-prev)*10)/10:Math.round(100*(cur-prev)/prev);if(!d)return '<span class="dl eq">= anterior</span>';
+    const good=lowBetter?d<0:d>0;return `<span class="dl ${good?'up':'down'}">${d>0?'↑':'↓'} ${pct(Math.abs(d))}${pp?' p.p.':'%'}</span>`};
+  const kpi=(l,v,sub,dl,empty)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s">${dl||''}${sub?`<span>${sub}</span>`:''}</div>${empty?`<p class="eh">${empty}</p>`:''}</div>`;
+  const ser=r.series||[];const mx=Math.max(1,...ser.map(x=>x.new));
+  const lab=d=>{const x=new Date(d+'T12:00');return `${x.getDate()}/${x.getMonth()+1}`};
+  const every=Math.ceil(ser.length/8);
+  const chart=ser.length?`<div class="chart"><div class="bars">${ser.map((x,i)=>`<div class="bc" title="${r.bucket>1?'Semana de ':''}${lab(x.date)}: ${x.new} ${x.new===1?'contato novo':'contatos novos'}, ${x.won} ${x.won===1?'venda':'vendas'}${x.value?' ('+brl(x.value)+')':''}">
+      <i class="n" style="height:${Math.round(100*x.new/mx)}%"></i><i class="w" style="height:${Math.round(100*x.won/mx)}%"></i><span>${i%every===0?lab(x.date):''}</span></div>`).join('')}</div>
+      <div class="lg"><span><i class="n"></i>contatos novos</span><span><i class="w"></i>vendas</span>${r.bucket>1?'<span class="hint">por semana</span>':'<span class="hint">por dia</span>'}</div></div>`:'';
   const top=Math.max(1,...r.funnel.map(f=>f.count));
-  $('#rpBody').innerHTML=`<div class="grid g4" style="margin-bottom:14px">
-    ${tile('Contatos novos',t.new_contacts)}${tile('Vendas',t.won,t.won_value?brl(t.won_value):'')}${tile('Ticket médio',t.ticket!=null?brl(t.ticket):'—')}${tile('Conversão',t.conversion!=null?String(t.conversion).replace('.',',')+'%':'—','dos contatos novos')}
-    ${tile('Ciclo de venda',t.cycle_days!=null?String(t.cycle_days).replace('.',',')+' dias':'—','do 1º contato à venda')}${tile('Primeira resposta',fmtMin(t.first_reply_min),'tempo típico')}${tile('Perdidos',t.lost)}${tile('Nota do atendimento',q.avg!=null?String(q.avg).replace('.',','):'—',q.items.length?q.items.length+(q.items.length===1?' conversa avaliada':' conversas avaliadas'):'')}</div>
-   <div class="grid g2" style="margin-bottom:14px;align-items:start"><div class="card"><h3 class="sec">Funil dos contatos novos</h3><p class="hint" style="margin:-6px 0 12px">Quantos chegaram em cada etapa.</p>
-     ${r.funnel.map(f=>`<div class="fbar ${f.kind}"><span>${esc(f.name)}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}</div>
-    <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<table><thead><tr><th>Origem</th><th>Contatos</th><th>Vendas</th><th>Valor</th></tr></thead><tbody>${r.origin.map(o=>`<tr><td>${esc(o.name)}</td><td>${o.contacts}</td><td>${o.won}</td><td>${o.value?brl(o.value):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sem contatos novos no período.</div>'}
+  const worst=r.funnel.slice(1).filter((f,i)=>f.rate!=null&&r.funnel[i].count>=5).sort((x,y)=>x.rate-y.rate)[0];
+  const sortBy=(arr,k)=>[...arr].sort((x,y)=>(y[k]??-1)-(x[k]??-1));
+  const people=sortBy(r.people.filter(p=>p.active||p.messages||p.won),RP.sort||'value');
+  const AL={bad:'red',warn:'amber',info:'blue'};
+  $('#rpBody').innerHTML=`
+   ${r.alerts&&r.alerts.length?`<div class="alerts"><b class="at">O que fazer agora</b>${r.alerts.map((a,i)=>`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span>${esc(a.text)}<span class="go">›</span></button>`).join('')}</div>`:''}
+   <div class="kpis">
+    ${kpi('Vendas',t.won_value?brl(t.won_value):String(t.won),t.won_value?`${t.won} ${t.won===1?'venda':'vendas'}`:'',delta(t.won_value||t.won,pv.won_value||pv.won),!t.won?'Mova o card para a etapa de venda e informe o valor.':'')}
+    ${kpi('Conversão',t.conversion!=null?pct(t.conversion)+'%':'—','dos contatos novos',delta(t.conversion,pv.conversion,false,true),t.conversion==null?'Aparece quando chegarem contatos novos.':'')}
+    ${kpi('Contatos novos',t.new_contacts,'',delta(t.new_contacts,pv.new_contacts),!t.new_contacts?'Aparecem quando alguém chamar no WhatsApp.':'')}
+    ${kpi('Primeira resposta',fmtMin(t.first_reply_min),'tempo típico',delta(t.first_reply_min,pv.first_reply_min,true),t.first_reply_min==null?'Aparece quando o time responder um contato novo.':'')}
+   </div>
+   <div class="kmini"><span>Ticket médio <b>${t.ticket!=null?brl(t.ticket):'—'}</b></span><span>Ciclo de venda <b>${t.cycle_days!=null?pct(t.cycle_days)+' dias':'—'}</b></span><span>Perdidos <b>${t.lost}</b></span><span>Nota do atendimento <b>${q.avg!=null?pct(q.avg):'—'}</b></span><span class="hint">Comparação com os ${RP.days} dias anteriores</span></div>
+   <div class="grid g2 rp2"><div class="card"><h3 class="sec">Contatos e vendas</h3>${t.new_contacts||t.won?chart:'<div class="empty">Sem movimento no período.</div>'}</div>
+    <div class="card"><h3 class="sec">Funil dos contatos novos</h3><p class="hint" style="margin:-6px 0 12px">Quantos chegaram em cada etapa e quantos passaram da anterior.</p>
+     ${r.funnel.map((f,i)=>`<div class="fbar ${f.kind} ${worst&&worst.id===f.id&&worst.rate<50?'worst':''}"><span>${esc(f.name)}${i&&f.rate!=null?`<em>${f.rate}%</em>`:''}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}
+     ${worst&&worst.rate<50?`<p class="note" style="margin-top:10px">Maior perda: só ${worst.rate}% de quem chega na etapa anterior vai para "${esc(worst.name)}".</p>`:''}</div></div>
+   <div class="grid g2 rp2"><div class="card"><div class="row"><h3 class="sec" style="margin:0">Time</h3><span class="hint" style="margin-left:auto">ordenar:</span>${[['value','valor'],['won','vendas'],['messages','mensagens']].map(o=>`<button class="chip sm ${(RP.sort||'value')===o[0]?'on':''}" data-so="${o[0]}">${o[1]}</button>`).join('')}</div>
+     <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span></div><div class="vv"><b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span></div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém atendeu no período.</div>'}</div></div>
+    <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<div class="plist">${r.origin.map(o=>`<div class="pr"><span class="ico ${o.ad?'g1':'g2'}" style="width:34px;height:34px">${o.ad?IC.chat:IC.check}</span><div class="nm"><b>${esc(o.name)}</b><span>${o.contacts} ${o.contacts===1?'contato':'contatos'}</span></div><div class="vv"><b>${o.value?brl(o.value):o.won}</b><span>${o.won} ${o.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div>`:'<div class="empty">Sem contatos novos no período.</div>'}
      <p class="hint" style="margin-top:10px">Quem clica em anúncio de "Enviar mensagem" no Facebook ou Instagram aparece com o nome do anúncio.</p></div></div>
-   <div class="card" style="margin-bottom:14px"><h3 class="sec">Time</h3><table><thead><tr><th>Pessoa</th><th>Mensagens</th><th>Primeira resposta</th><th>Vendas</th><th>Valor</th><th>Nota</th></tr></thead><tbody>
-    ${r.people.map(p=>`<tr><td><b>${esc(p.name)}</b>${p.active?'':'<small>desativado</small>'}</td><td>${p.messages}</td><td>${fmtMin(p.first_reply_min)}</td><td>${p.won}</td><td>${p.value?brl(p.value):'—'}</td><td>${p.score!=null?`<span class="sc ${scc(p.score)}">${String(p.score).replace('.',',')}</span>`:'—'}</td></tr>`).join('')}</tbody></table></div>
-   <div class="grid g3" style="margin-bottom:14px">${tile('Mensagens da Nanda',r.nanda.messages)}${tile('Horários marcados pela Nanda',r.nanda.bookings)}${tile('Mensagens das automações',r.automations.messages)}</div>
+   <div class="kmini"><span>Mensagens da Nanda <b>${r.nanda.messages}</b></span><span>Horários marcados pela Nanda <b>${r.nanda.bookings}</b></span><span>Passou para o time <b>${r.nanda.handoffs}</b></span><span>Mensagens das automações <b>${r.automations.messages}</b></span></div>
    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Nota de atendimento</h3><button class="btn sm p" id="qRun" style="margin-left:auto">Avaliar conversas da semana</button></div>
-    <p class="hint" style="margin:4px 0 6px">A IA lê as conversas com gente do time e dá nota de 0 a 10, com o que foi bem e o que melhorar. Clique numa avaliação para abrir a conversa.</p>
-    <div id="qL">${q.items.length?q.items.map(x=>`<button class="qi" data-c="${x.contact_id}"><span class="sc ${scc(x.score)}">${String(x.score).replace('.',',')}</span><span><b>${esc(x.contact_name||'')}</b> <small style="color:var(--ink3)">${esc((x.agent_names||[]).join(', '))} · ${dt(x.at)}</small>${x.lost_opportunity?' <span class="pill bad">venda pode ter escapado</span>':''}<p>${esc(x.summary)}</p>${x.improve&&x.improve.length?`<p><b>Melhorar:</b> ${esc(x.improve.join(' · '))}</p>`:''}</span></button>`).join(''):'<div class="empty">Nenhuma conversa avaliada no período.</div>'}</div></div>`;
+    <p class="hint" style="margin:4px 0 6px">A IA lê as conversas com gente do time e dá nota de 0 a 10, com o que foi bem e o que melhorar. Toque numa avaliação para abrir a conversa.</p>
+    <div id="qL">${q.items.length?q.items.map(x=>`<button class="qi" data-c="${x.contact_id}"><span class="sc ${scc(x.score)}">${pct(x.score)}</span><span><b>${esc(x.contact_name||'')}</b> <small style="color:var(--ink3)">${esc((x.agent_names||[]).join(', '))} · ${dt(x.at)}</small>${x.lost_opportunity?' <span class="pill bad">venda pode ter escapado</span>':''}<p>${esc(x.summary)}</p>${x.improve&&x.improve.length?`<p><b>Melhorar:</b> ${esc(x.improve.join(' · '))}</p>`:''}</span></button>`).join(''):'<div class="empty">Nenhuma conversa avaliada no período.</div>'}</div></div>`;
+  document.querySelectorAll('[data-so]').forEach(b=>b.onclick=()=>{RP.sort=b.dataset.so;VIEWS.relatorios()});
+  document.querySelectorAll('[data-al]').forEach(b=>b.onclick=()=>{const a=r.alerts[b.dataset.al];if(a.to==='conversas')CV.filter=a.filter||'all';if(a.to==='funil')FN.f=a.filter||'all';if(a.to!=='relatorios')go(a.to)});
   document.querySelectorAll('.qi').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;go('conversas')});
   $('#qRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Avaliando... (pode levar um minuto)';try{const x=await api('/quality-run',{method:'POST'});toast(x.scored?x.scored+' conversas avaliadas.':'Nenhuma conversa nova para avaliar.');VIEWS.relatorios()}catch(x){toast(x.message);b.disabled=false;b.textContent='Avaliar conversas da semana'}};
  },
@@ -930,8 +1007,8 @@ const VIEWS={
     <span class="ag-leg"><i class="scheduled"></i>agendado<i class="confirmed"></i>confirmado<i class="done"></i>compareceu<i class="no_show"></i>faltou</span></div>
    <div class="wstrip" id="wstrip"></div>`:''}<div id="agBody"></div>${AG.tab==='semana'?'<button class="fab" id="agFab" aria-label="Agendar">+</button>':''}`;
   if($('#agFab'))$('#agFab').onclick=()=>bookModal({date:ymd(AG.view==='dia'?AG.day:new Date())},drawWeek);
-  if($('#agCfgB'))$('#agCfgB').onclick=()=>{AG.tab=AG.tab==='config'?'semana':'config';VIEWS.agenda()};
-  if($('#agG'))$('#agG').onclick=()=>{AG.tab='config';VIEWS.agenda()};
+  if($('#agCfgB'))$('#agCfgB').onclick=()=>{AG.tab=AG.tab==='config'?'semana':'config';syncUrl();VIEWS.agenda()};
+  if($('#agG'))$('#agG').onclick=()=>{AG.tab='config';syncUrl();VIEWS.agenda()};
   if(AG.tab==='config')return drawAgCfg();
   const step=dir=>{if(AG.view==='dia'){AG.day.setDate(AG.day.getDate()+dir);AG.week=monday(AG.day)}else{AG.week.setDate(AG.week.getDate()+7*dir);AG.day=new Date(AG.week)}drawWeek(true)};
   $('#agP').onclick=()=>step(-1);$('#agN').onclick=()=>step(1);
@@ -1134,7 +1211,7 @@ async function boot(){
   if(gq){history.replaceState(null,'','/');VIEW='agenda';AG.tab='config';shell();toast({ok:'Google Agenda conectado.',cancelado:'Conexão com o Google cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Google não completou a conexão. Tente de novo.'}[gq]||'');return}
   shell();
 }
-boot();
+VIEW=readPath();boot();
 </script>
 </body>
 </html>
