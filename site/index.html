@@ -42,7 +42,8 @@ nav .wrap{height:72px;display:flex;align-items:center;gap:32px}
 nav .links{display:flex;gap:4px;flex:1}
 nav .links a{padding:8px 12px;border-radius:8px;font-weight:600;font-size:14.5px;color:var(--ink-2)}
 nav .links a:hover,nav .links a.on{background:#EEF1F4;color:var(--ink)}
-nav .cta{display:flex;gap:8px}
+nav .cta{display:flex;gap:8px;align-items:center}
+nav .cta .btn.in{border-color:transparent;background:transparent;color:var(--ink);font-weight:700}nav .cta .btn.in:hover{color:#C44A2C}
 .segtag{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-weight:800;font-size:15.5px;margin-bottom:22px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px 9px 10px;box-shadow:0 6px 20px -14px rgba(23,33,43,.4)}
 .segtag>i{width:26px;height:26px;border-radius:50%;background:#25D366;display:grid;place-items:center;flex:none;font-style:normal}
 .segtag>i svg{width:15px;height:15px;fill:#fff;display:block}
@@ -142,7 +143,7 @@ nav .cta{display:flex;gap:8px}
 .shotbox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:10px;box-shadow:0 30px 60px -36px rgba(23,33,43,.35)}
 .shotbox img{width:100%;height:auto;border-radius:12px;display:block}
 .shotbox .cap{padding:12px 8px 4px;font-size:14px;color:var(--ink-2)}
-@media (max-width:900px){.tour{grid-template-columns:1fr}.tabs{flex-direction:row;overflow:auto}.tab{min-width:220px}}
+@media (max-width:900px){.tour{grid-template-columns:minmax(0,1fr)}.tour>*{min-width:0}.tabs{flex-direction:row;overflow:auto}.tab{min-width:220px}}
 /* personal demo */
 .pf{margin-top:26px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
 .fill{font-size:clamp(19px,2vw,24px);line-height:1.8;font-weight:700;letter-spacing:-.3px;color:#fff;max-width:520px}
@@ -466,15 +467,18 @@ footer{padding:56px 0;color:var(--ink-3);font-size:13px;display:flex;justify-con
 .cel .demo .ms{height:auto;flex:1;min-height:0}
 .cel .demo .foot{padding:8px 10px 22px}
 .cel .demo .replay{bottom:76px}
-@media (max-width:900px){.stage{height:640px;margin-bottom:10px}.desk{display:none}.cel{left:50%;transform:translateX(-50%);width:300px;height:620px}nav .cta .btn:not(.primary){display:none}.herob .hero{padding-top:36px}}
+@media (max-width:900px){.stage{height:640px;margin-bottom:10px}.desk{display:none}.cel{left:50%;transform:translateX(-50%);width:300px;height:620px}nav .cta .btn:not(.primary):not(.in){display:none}.herob .hero{padding-top:36px}}
 .cel .demo .bar .md{display:none}
 .herob .demo{color:#17212B}
 .btn{white-space:nowrap}
 @media (max-width:900px){.herob{border-radius:0 0 28px 28px}.herob::before{width:300px;height:180px}}
 
+@media (max-width:380px){nav .cta .btn.primary{padding:10px 12px;font-size:13px}nav .brand .lg8{transform:scale(.9);transform-origin:left center}}
+@media (max-width:560px){.price,.try,.final{grid-template-columns:minmax(0,1fr)!important}.price>*,.try>*,.final>*,.try form>*{min-width:0}.try input,.try select,.try button{min-width:0;max-width:100%}}
 @media (max-width:560px){
  .herob .segtag,.herob .chips,.herob::before{display:none}
  nav .cta .btn{padding:10px 16px;font-size:14px}
+ nav .cta{gap:2px}nav .cta .btn.in{padding:10px 8px}
  .herob .hero{padding-top:28px}
  .herob h1{font-size:40px;letter-spacing:-1.6px}
  .herob .lead{font-size:17px;margin-top:14px!important}
@@ -526,7 +530,7 @@ footer{padding:56px 0;color:var(--ink-3);font-size:13px;display:flex;justify-con
       </div></div>
     <a href="#como">Como funciona</a><a href="#precos">Preço</a><a href="#faq">Perguntas</a>
   </div>
-  <div class="cta"><a class="btn ghost" href="#" data-wa>Falar no WhatsApp</a><a class="btn primary" href="#" data-trial>Testar 7 dias grátis</a></div>
+  <div class="cta"><a class="btn in" href="https://app.oinanda.com.br/">Entrar</a><a class="btn ghost" href="#" data-wa>Falar no WhatsApp</a><a class="btn primary" href="#" data-trial>Testar 7 dias grátis</a></div>
 </div></nav>
 
 <main id="root"></main>
