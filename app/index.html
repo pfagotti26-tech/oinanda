@@ -296,6 +296,34 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .svrow input{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;outline:0;min-width:0}
 .slots{display:flex;flex-wrap:wrap;gap:6px}.slots button{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;background:#fff}
 .slots button.on{background:var(--c);color:#fff;border-color:var(--c)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:22px}
+.rules>div{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:12.5px;color:var(--ink2);line-height:1.4}
+.rules i{width:30px;height:30px;border-radius:9px;background:var(--tint);color:var(--c2);display:grid;place-items:center;flex:none}.rules svg{width:17px;height:17px}
+.rules b{display:block;color:var(--ink);font-size:13px}
+.sech{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0 12px}.sech h3.sec{margin:0}.sech .ct{font-size:12px;font-weight:700;color:var(--ink3);margin-left:6px}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:24px}
+.au2,.rc2{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:11px;transition:box-shadow .15s}
+.au2:hover,.rc2:hover{box-shadow:0 10px 24px -16px rgba(23,33,43,.35)}
+.au2.off{background:#FBF9F7}.au2.off .wab,.au2.off .hd .tt{opacity:.55}
+.au2 .hd{display:flex;gap:10px;align-items:center}.au2 .tt{flex:1;min-width:0}.au2 .tt b{display:block;font-size:14.5px}.au2 .tt span{display:block;font-size:12px;color:var(--ink2);font-weight:600}
+.ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}.ico svg{width:18px;height:18px}
+.ico.g1{background:#E6EEF8;color:#2F6FB5}.ico.g2{background:var(--oksoft);color:var(--ok)}.ico.g3{background:var(--warnsoft);color:var(--warn)}
+.wab{position:relative;background:#E7F6DE;border-radius:14px 14px 4px 14px;padding:22px 12px 18px;font-size:13px;line-height:1.45;color:#1E2A22;margin-left:14px;white-space:pre-wrap}
+.wab b{font-weight:800}.wab .wl{position:absolute;top:6px;left:12px;font-size:10px;font-weight:800;color:#5B7A5E;text-transform:uppercase;letter-spacing:.4px}
+.wab small{position:absolute;right:10px;bottom:4px;font-size:10px;color:#6E8B70}
+.au2 .ft{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+.lnk{color:var(--c2);font-weight:700;font-size:12px;text-decoration:underline;text-underline-offset:2px}
+.au2 .bt{display:flex;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:10px;margin-top:auto}.au2 .bt .st{flex:1;font-size:12px;color:var(--ink3);font-weight:600}
+.btn.icn{width:32px;height:32px;padding:0}.btn.icn svg{width:16px;height:16px}
+.aempty{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(135deg,#FFF5F0,#FFFFFF);border:1px solid var(--soft);border-radius:18px;padding:18px 20px;margin-bottom:26px}
+.aempty b{font-size:16px}.aempty p{color:var(--ink2);font-size:13.5px;margin-top:4px;max-width:560px}
+.grp{margin-bottom:6px}.grp .gh{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}.grp .gh .ico{width:28px;height:28px;border-radius:8px}.grp .gh .ico svg{width:15px;height:15px}.grp .gh b{font-size:14px}
+.gtag{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px 3px 7px}.gtag svg{width:13px;height:13px}
+.gtag.g1{background:#E6EEF8;color:#2F6FB5}.gtag.g2{background:var(--oksoft);color:var(--ok)}.gtag.g3{background:var(--warnsoft);color:var(--warn)}
+.rc2{border-style:dashed;border-color:#E6D6CA}.rc2 b{font-size:14.5px}.rc2 p{font-size:12.5px;color:var(--ink2);margin-top:-6px}.rc2 .gtag+b{margin-top:-2px}
+.btn.add{margin-top:auto;justify-content:center;background:var(--tint);border-color:var(--soft);color:var(--c2)}.btn.add:hover{background:var(--c);border-color:var(--c);color:#fff}
+.note.warnb{border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)}
+@media (max-width:860px){.rules{grid-template-columns:1fr;gap:8px}.rules>div{padding:10px 12px}.agrid{grid-template-columns:1fr}.aempty .btn{width:100%;justify-content:center}.tabs{overflow-x:auto;flex-wrap:nowrap}.tabs .chip{white-space:nowrap}.wab{margin-left:8px}}
 .alist{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 .au{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:start;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff}
 .au.off{opacity:.62}.au b{font-size:14.5px}.au .tr{font-size:12.5px;color:var(--ink2);font-weight:600}
@@ -690,6 +718,10 @@ async function contactDrawer(id,after){
 }
 let FN={f:'all',q:'',showLost:false,data:null,sum:null};
 let AU={tab:'lista'},RP={days:30};
+const svg=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const IC={clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),check:svg('<path d="M20 6 9 17l-5-5"/>'),back:svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
+  chat:svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'),shield:svg('<path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/>'),moon:svg('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
+  trash:svg('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')};
 const fmtMin=m=>m==null?'—':m<1?'menos de 1 min':m<60?Math.round(m)+' min':m<1440?String((m/60).toFixed(1)).replace('.',',')+' h':String((m/1440).toFixed(1)).replace('.',',')+' dias';
 const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':String(h).replace('.',',')+' horas');
 function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
@@ -829,26 +861,39 @@ const VIEWS={
   if(AU.tab==='hist')return drawRuns();
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
   const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
-  const badge=a=>{const t=T[a.template_id];
-    if(t&&t.status==='APPROVED')return '<span class="pill ok">modelo aprovado: também envia depois de 24 h</span>';
-    if(t&&t.status==='REJECTED')return `<span class="pill bad">modelo recusado pela Meta</span>${t.rejected_reason&&t.rejected_reason!=='NONE'?' '+esc(t.rejected_reason):''} <button class="btn sm" data-ask="${a.id}">Pedir de novo</button>`;
+  const cfgA=AG.cfg||await api('/agenda/settings').catch(()=>null);const tm=new Date();tm.setDate(tm.getDate()+1);
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00'};
+  const prev=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b title="${esc(VARS_TXT[k]||k)}">${esc(sample[k])}</b>`:m);
+  const bubble=t=>`<div class="wab"><span class="wl">Como a cliente recebe</span>${prev(t)}<small>09:00 ✓✓</small></div>`;
+  const GRP={before_appt:['g1','Antes do horário','Lembretes que reduzem falta.',IC.clock],appt_no_show:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],appt_done:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],no_reply:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back],stage_enter:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back]};
+  const tbadge=a=>{const t=T[a.template_id];
+    if(t&&t.status==='APPROVED')return '<span class="pill ok">✓ envia a qualquer hora</span>';
+    if(t&&t.status==='REJECTED')return `<span class="pill bad">modelo recusado</span><button class="lnk" data-ask="${a.id}">pedir de novo</button>`;
     if(t)return '<span class="pill warn">modelo em análise na Meta</span>';
-    return `<span class="pill grey">sem modelo: só envia para quem falou nas últimas 24 h</span> <button class="btn sm" data-ask="${a.id}">Pedir aprovação do modelo</button>`};
-  $('#auBody').innerHTML=`${d.whatsapp?'':'<div class="note" style="margin-bottom:12px"><b>WhatsApp não conectado.</b> As automações começam a enviar quando o número estiver conectado em Empresa.</div>'}
-   <p class="note" style="margin-bottom:18px">Se o cliente falou com você nas últimas 24 h, a mensagem sai normalmente. Depois disso a Meta só aceita <b>modelo aprovado</b>: em cada automação, clique uma vez em "Pedir aprovação do modelo". Envios só das 8h às 21h, e quem responder "parar" não recebe mais nada automático.</p>
-   <h3 class="sec">Ligadas na sua conta</h3>
-   <div class="alist">${d.items.length?d.items.map(a=>`<div class="au ${a.active?'':'off'}"><div><b>${esc(a.name)}</b><div class="tr">${esc(trigTxt(a,d.stages))}</div></div>
-     <div class="acts"><button class="tg ${a.active?'on':''}" data-tg="${a.id}" title="${a.active?'Desligar':'Ligar'}"></button><button class="btn sm" data-ed="${a.id}">Editar</button><button class="btn sm danger" data-del="${a.id}" title="Apagar">×</button></div>
-     <div class="msg">${hlv(a.message)}</div>
-     <div class="ft">${badge(a)}${a.move_to?` · depois move para "${esc((d.stages.find(s=>s.id===a.move_to)||{}).name||'')}"`:''}${!a.active&&a.trigger==='stage_enter'&&!a.stage_id?' · escolha a etapa em Editar':''}<span style="margin-left:auto">${a.sent||0} enviadas · ${a.skipped||0} puladas</span></div></div>`).join('')
-     :'<div class="empty card">Nenhuma automação ainda. Comece pelas sugestões abaixo.</div>'}</div>
-   ${recs.length?`<h3 class="sec">Sugestões para ${esc(SEGS[ME.company.segment]||'o seu negócio')}</h3><div class="rec">${recs.map(r=>`<div class="rc"><b>${esc(r.name)}</b><p>${esc(r.why)}</p><div class="msg">${hlv(r.message)}</div>${r.stage&&!r.stage_id?'<p class="hint">Não achei a etapa certa no seu funil: depois de adicionar, escolha em Editar.</p>':''}<button class="btn sm" data-add="${r.key}">Adicionar</button></div>`).join('')}</div>`:''}`;
+    return `<span class="pill grey">só para quem falou nas últimas 24 h</span><button class="lnk" data-ask="${a.id}">pedir aprovação do modelo</button>`};
+  const pack=['lembrete_24h','faltou','esfriou_1'].filter(k=>recs.some(r=>r.key===k));
+  const groups=[];recs.forEach(r=>{const g=GRP[r.trigger]||GRP.no_reply;let x=groups.find(y=>y.id===g[0]);if(!x){x={id:g[0],name:g[1],desc:g[2],ic:g[3],items:[]};groups.push(x)}x.items.push(r)});
+  groups.sort((x,y)=>x.id<y.id?-1:1);
+  $('#auBody').innerHTML=`${d.whatsapp?'':'<div class="note warnb" style="margin-bottom:14px"><b>WhatsApp não conectado.</b> As automações começam a enviar quando o número estiver conectado em Empresa.</div>'}
+   <div class="rules"><div><i>${IC.chat}</i><span><b>Nas primeiras 24 h</b>depois da última mensagem da cliente, sai como mensagem normal.</span></div>
+    <div><i>${IC.shield}</i><span><b>Depois de 24 h</b>a Meta exige modelo aprovado. Peça uma vez em cada automação.</span></div>
+    <div><i>${IC.moon}</i><span><b>Só das 8h às 21h</b>e quem responder "parar" não recebe mais.</span></div></div>
+   <div class="sech"><h3 class="sec">Ligadas na sua conta${d.items.length?` <span class="ct">${d.items.filter(a=>a.active).length} de ${d.items.length} ativas</span>`:''}</h3></div>
+   ${d.items.length?`<div class="agrid">${d.items.map(a=>{const g=GRP[a.trigger]||GRP.no_reply;return `<div class="au2 ${a.active?'':'off'}">
+     <div class="hd"><span class="ico ${g[0]}">${g[3]}</span><div class="tt"><b>${esc(a.name)}</b><span>${esc(trigTxt(a,d.stages))}</span></div><button class="tg ${a.active?'on':''}" data-tg="${a.id}" role="switch" aria-checked="${a.active}" aria-label="${a.active?'Desligar':'Ligar'} ${esc(a.name)}"></button></div>
+     ${bubble(a.message)}
+     <div class="ft">${tbadge(a)}${a.move_to?`<span class="hint">depois move para "${esc((d.stages.find(s=>s.id===a.move_to)||{}).name||'')}"</span>`:''}${!a.active&&a.trigger==='stage_enter'&&!a.stage_id?'<span class="pill warn">escolha a etapa em Editar</span>':''}</div>
+     <div class="bt"><span class="st">${a.sent||0} enviadas · ${a.skipped||0} puladas</span><button class="btn sm" data-ed="${a.id}">Editar</button><button class="btn sm icn danger" data-del="${a.id}" aria-label="Apagar" title="Apagar">${IC.trash}</button></div></div>`}).join('')}</div>`
+    :`<div class="aempty"><div><b>Nenhuma automação ligada ainda</b><p>Comece pelo pacote que mais dá resultado: lembrete 1 dia antes, remarcar quem faltou e retomar quem parou de responder.</p></div>${pack.length?'<button class="btn p" id="auPack">Ligar o pacote recomendado</button>':''}</div>`}
+   ${groups.length?`<div class="sech"><h3 class="sec">Sugestões para ${esc((SEGS[ME.company.segment]||'o seu negócio').toLowerCase())}</h3><span class="hint">Prontas para usar. Dá para editar o texto depois.</span></div>
+    <div class="agrid">${groups.flatMap(g=>g.items.map(r=>`<div class="rc2"><span class="gtag ${g.id}">${g.ic}${g.name}</span><b>${esc(r.name)}</b><p>${esc(r.why)}</p>${bubble(r.message)}${r.stage&&!r.stage_id?'<p class="hint">Depois de adicionar, escolha a etapa em Editar.</p>':''}<button class="btn add" data-add="${r.key}">+ Adicionar</button></div>`)).join('')}</div>`:''}`;
   const reload=()=>VIEWS.automacoes();
-  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{try{await api('/automations',{method:'POST',body:{recipe:b.dataset.add}});toast('Automação adicionada.');reload()}catch(e){toast(e.message)}});
-  document.querySelectorAll('[data-tg]').forEach(b=>b.onclick=async()=>{const a=d.items.find(x=>x.id===b.dataset.tg);try{await api('/automations/'+a.id,{method:'PATCH',body:{active:!a.active}});reload()}catch(e){toast(e.message)}});
+  if($('#auPack'))$('#auPack').onclick=async e=>{e.target.disabled=true;try{for(const k of pack)await api('/automations',{method:'POST',body:{recipe:k}});toast(pack.length+' automações ligadas.');reload()}catch(x){toast(x.message);e.target.disabled=false}};
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await api('/automations',{method:'POST',body:{recipe:b.dataset.add}});toast('Automação adicionada e ligada.');reload()}catch(e){toast(e.message);b.disabled=false}});
+  document.querySelectorAll('[data-tg]').forEach(b=>b.onclick=async()=>{const a=d.items.find(x=>x.id===b.dataset.tg);try{await api('/automations/'+a.id,{method:'PATCH',body:{active:!a.active}});toast(a.active?'Automação desligada.':'Automação ligada.');reload()}catch(e){toast(e.message)}});
   document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>autoModal(d.items.find(x=>x.id===b.dataset.ed),d,tpls));
   document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta automação?'))return;await api('/automations/'+b.dataset.del,{method:'DELETE'});reload()});
-  document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{b.disabled=true;b.textContent='Enviando...';try{await api('/automations/'+b.dataset.ask+'/template',{method:'POST'});toast('Enviado para a Meta. A aprovação costuma sair em minutos ou poucas horas.');reload()}catch(e){toast(e.message);b.disabled=false;b.textContent='Pedir aprovação do modelo'}});
+  document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{const t=b.textContent;b.disabled=true;b.textContent='enviando...';try{await api('/automations/'+b.dataset.ask+'/template',{method:'POST'});toast('Enviado para a Meta. A aprovação costuma sair em minutos ou poucas horas.');reload()}catch(e){toast(e.message);b.disabled=false;b.textContent=t}});
  },
  async relatorios(){
   $('#page').innerHTML=`<div class="fhd"><div><h1>Relatórios</h1><p class="sub">Como estão as vendas e o atendimento do ${esc(ME.company.name)}.</p></div>
