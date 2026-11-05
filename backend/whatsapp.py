@@ -330,14 +330,23 @@ async def get_contact(user, contact_id):
     return c
 
 @router.get('/conversations')
-async def conversations(filter: str = 'all', user=Depends(current_user)):
-    q = {'company_id': user['company_id']}
-    if filter == 'mine': q['assigned_to'] = user['id']
-    elif filter == 'unassigned': q['assigned_to'] = None
-    elif filter == 'waiting': q['last_dir'] = 'in'
+async def conversations(filter: str = 'all', q: str = '', user=Depends(current_user)):
+    from inbox import waiting
+    qq = {'company_id': user['company_id']}
+    if filter == 'mine': qq['assigned_to'] = user['id']
+    elif filter == 'unassigned': qq['assigned_to'] = None
+    elif filter == 'waiting': qq['last_dir'] = 'in'
     if user['role'] == 'agent' and filter not in ('mine', 'unassigned'):
-        q['assigned_to'] = {'$in': [None, user['id']]}
-    rows = await db.contacts.find(q, {'_id': 0}).sort('last_at', -1).to_list(300)
+        qq['assigned_to'] = {'$in': [None, user['id']]}
+    term = q.strip()
+    if term:
+        digits = re.sub(r'\D', '', term)
+        ors = [{'name': {'$regex': re.escape(term), '$options': 'i'}}, {'tags': {'$regex': re.escape(term), '$options': 'i'}}]
+        if len(digits) >= 3: ors.append({'wa_id': {'$regex': digits}})
+        qq['$or'] = ors
+    rows = await db.contacts.find(qq, {'_id': 0}).sort('last_at', -1).to_list(300)
+    if filter == 'waiting': rows = [r for r in rows if waiting(r)]
+    for r in rows: r['waiting'] = waiting(r)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     for r in rows:
         r['assigned_name'] = names.get(r.get('assigned_to'))

@@ -257,10 +257,15 @@ async def test(body: TestIn, user=Depends(managers)):
 
 # ---------- na conversa ----------
 @router.post('/conversations/{contact_id}/suggest')
-async def suggest(contact_id: str, user=Depends(current_user)):
+async def suggest(contact_id: str, cached: bool = False, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
+    last = (await db.messages.find({'contact_id': c['id'], 'dir': 'in'}, {'_id': 0, 'id': 1}).sort('at', -1).to_list(1) or [{}])[0].get('id')
+    if cached:  # sugestão automática ao abrir a conversa: uma por mensagem do cliente
+        if c.get('sug_for') == last and c.get('sug'): return c['sug']
+        if not key_ok(): return {'reply': '', 'handoff': False, 'reason': '', 'book': None}
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
+    if last: await db.contacts.update_one({'id': c['id']}, {'$set': {'sug_for': last, 'sug': {k: d.get(k) for k in ('reply', 'handoff', 'reason', 'book')}}})
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
 

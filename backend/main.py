@@ -14,6 +14,7 @@ from gcal import router as gcal_router
 from niches import router as niches_router
 from automations import router as auto_router
 from reports import router as reports_router
+from inbox import router as inbox_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -53,6 +54,7 @@ async def lifespan(app):
     await db.automation_runs.create_index([('company_id', 1), ('at', -1)])
     await db.automation_runs.create_index('expires_at', expireAfterSeconds=0)
     await db.ai_tests.create_index('company_id')
+    await db.quick_replies.create_index([('company_id', 1), ('shortcut', 1)])
     await db.quality.create_index([('company_id', 1), ('at', -1)])
     await db.quality.create_index('contact_id')
     worker = None
@@ -72,6 +74,7 @@ app.include_router(gcal_router, prefix='/api')
 app.include_router(niches_router, prefix='/api')
 app.include_router(auto_router, prefix='/api')
 app.include_router(reports_router, prefix='/api')
+app.include_router(inbox_router, prefix='/api')
 
 @app.middleware('http')
 async def guard(request: Request, call_next):
