@@ -268,7 +268,25 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .cal.one .ev{font-size:13px}.cal.one .ev b{font-size:13.5px}
 .cal-empty{position:absolute;left:50%;top:120px;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 22px;text-align:center;max-width:380px;box-shadow:0 20px 40px -24px rgba(23,33,43,.35);z-index:5}
 .cal-empty p{font-size:13px;color:var(--ink2);margin:6px 0 12px}
-@media (max-width:860px){.ag-sum{grid-template-columns:1fr 1fr}.ag-sum .nx{grid-column:1/-1}.ag-leg{display:none}.cal-sc{max-height:calc(100vh - 300px)}.cal-empty{width:calc(100% - 80px)}}
+.wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
+.wstrip button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0 5px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.wstrip span{font-size:10.5px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.3px}
+.wstrip b{font-size:17px}.wstrip i{font-style:normal;color:var(--c);font-size:14px;line-height:10px;height:10px;letter-spacing:1px}
+.wstrip button.today span,.wstrip button.today b{color:var(--c2)}
+.wstrip button.on{background:var(--c);border-color:var(--c)}.wstrip button.on span,.wstrip button.on b,.wstrip button.on i{color:#fff}
+.wstrip button.closed:not(.on){opacity:.5}
+.cal.one .cal-hd{display:none}
+.fab{display:none}.ag-bar .gear{display:none}
+@media (max-width:860px){
+ .ag-hd:has(#agB){display:none}.ag-hd>div:first-child{display:none}.ag-hd .tools{margin-left:0}.ag-bar .gear{display:inline-flex;order:5}
+ .ag-sum{display:flex;overflow-x:auto;gap:8px;margin:0 -16px 12px;padding:0 16px;scrollbar-width:none}.ag-sum::-webkit-scrollbar{display:none}
+ .ag-sum .s{flex:0 0 auto;padding:7px 12px;border-radius:12px;font-size:11.5px}.ag-sum .s b{font-size:16px}.ag-sum .s.nx{max-width:250px}.ag-sum .s.nx b{font-size:14px}
+ .ag-bar{gap:6px;margin-bottom:10px}.ag-bar .seg,.ag-leg{display:none}.ag-bar #agRange{font-size:14px;flex:1;margin:0 2px;order:2}.ag-bar #agP{order:1}.ag-bar #agN{order:3}.ag-bar #agT{order:4}
+ .cal{border-radius:14px}.cal-sc{max-height:none;min-height:0;overflow:visible}
+ .cal.one .ev{padding:6px 10px}
+ .cal,.cal-sc{display:flex;flex-direction:column}.cal-empty{position:static;transform:none;margin:12px;width:auto;max-width:none;box-shadow:none;order:-1}
+ .fab{display:grid;place-items:center;position:fixed;right:18px;bottom:22px;width:58px;height:58px;border-radius:50%;background:var(--c);color:#fff;font-size:30px;font-weight:400;line-height:1;box-shadow:0 12px 28px -10px rgba(196,74,44,.7);z-index:30}
+}
 .hrs{display:grid;grid-template-columns:70px 1fr;gap:8px 12px;align-items:center}
 .hrs .rg{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .hrs input[type=time]{border:1px solid #DCD2C9;border-radius:10px;padding:6px 8px}
@@ -550,6 +568,7 @@ function apptModal(a,after){
   o.querySelector('#apC').onclick=()=>{o.remove();CV.open=a.contact_id;go('conversas')};
 }
 const HH=52;
+const fmtPhone=p=>{const d=String(p||'').replace(/\D/g,'');const n=d.startsWith('55')&&d.length>=12?d.slice(2):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:'+'+d};
 const toMin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
 const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 function lanes(items){const ev=items.map(a=>({a,s:toMin(a.start.slice(11,16)),e:toMin(a.end.slice(11,16))||1440})).sort((x,y)=>x.s-y.s);
@@ -563,8 +582,13 @@ async function drawWeek(scroll){
   const qa=week?w:mon,qb=week?days[6]:sun;
   const list=await api(`/appointments?start=${ymd(qa)}&end=${ymd(qb)}`);
   const todayK=ymd(new Date());
+  const ws=$('#wstrip');
+  if(ws){ws.classList.toggle('hide',week);if(!week){const wd=[0,1,2,3,4,5,6].map(i=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d});
+    ws.innerHTML=wd.map((d,i)=>{const k=ymd(d),n=list.filter(a=>a.start.slice(0,10)===k&&a.status!=='canceled').length,closed=!(cfg.hours[String(i)]||[]).length;
+      return `<button class="${k===ymd(w)?'on':''} ${k===todayK?'today':''} ${closed?'closed':''}" data-sd="${k}"><span>${WEEKD[i]}</span><b>${d.getDate()}</b><i>${n?'•'.repeat(Math.min(n,3)):''}</i></button>`}).join('');
+    ws.querySelectorAll('[data-sd]').forEach(b=>b.onclick=()=>{AG.day=new Date(b.dataset.sd+'T12:00');drawWeek(true)})}}
   $('#agRange').textContent=week?`${days[0].toLocaleDateString('pt-BR',{day:'numeric',month:'short'})} – ${days[6].toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}`
-    :(t=>t[0].toUpperCase()+t.slice(1))(w.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}));
+    :(t=>t[0].toUpperCase()+t.slice(1))(w.toLocaleDateString('pt-BR',innerWidth<860?{weekday:'short',day:'numeric',month:'short'}:{weekday:'long',day:'numeric',month:'long'}));
   // resumo
   const now=new Date(),active=['scheduled','confirmed'];
   const todays=list.filter(a=>a.start.slice(0,10)===todayK&&a.status!=='canceled');
@@ -585,7 +609,7 @@ async function drawWeek(scroll){
   const tmpl='56px '+cols.map(c=>c.closed&&week?'64px':'minmax(0,1fr)').join(' ');
   const card=g=>{const a=g.a,top=px(g.s),h=Math.max(22,px(g.e)-top-2),w=100/g.n;
     return `<button class="ev ${a.status} ${h<40?'sm':''}" data-a="${a.id}" style="top:${top}px;height:${h}px;left:calc(${g.lane*w}% + 3px);width:calc(${w}% - 6px)" title="${esc(a.start.slice(11,16)+' '+a.contact_name+' · '+a.service_name+' · '+a.status_label)}">
-      <b>${a.start.slice(11,16)} ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${!week&&a.contact_phone?' · +'+esc(a.contact_phone):''}</span>${!week&&a.notes?`<span>${esc(a.notes)}</span>`:''}${a.by&&/IA/.test(a.by)?'<em>Nanda</em>':''}</button>`};
+      <b>${a.start.slice(11,16)} ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${!week?' · '+esc(a.status_label||'')+(a.contact_phone?' · '+esc(fmtPhone(a.contact_phone)):''):''}</span>${!week&&a.notes?`<span>${esc(a.notes)}</span>`:''}${a.by&&/IA/.test(a.by)?'<em>Nanda</em>':''}</button>`};
   box.innerHTML=`<div class="cal ${week?'cw':'one'}"><div class="cal-hd" style="grid-template-columns:${tmpl}"><span></span>${cols.map(c=>`<button class="dh ${c.today?'today':''} ${c.past?'past':''}" data-day="${c.k}" title="Ver o dia"><span>${WEEKD[c.wd]}</span><b>${c.d.getDate()}</b>${c.closed?'<small>fechado</small>':c.items.length?`<small>${(n=>n+(n===1?' marcado':' marcados'))(c.items.filter(a=>a.status!=='canceled').length)}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>
    <div class="cal-sc" id="calSc"><div class="cal-gr" style="grid-template-columns:${tmpl};height:${H}px">
     <div class="tm">${Array.from({length:(hi-lo)/60},(_,i)=>`<span style="top:${i*HH}px">${hhmm(lo+i*60)}</span>`).join('')}</div>
@@ -593,7 +617,7 @@ async function drawWeek(scroll){
       ${c.open.map(([x,y])=>`<div class="op" style="top:${px(toMin(x))}px;height:${px(toMin(y))-px(toMin(x))}px"></div>`).join('')}
       ${c.today&&now.getHours()*60+now.getMinutes()>=lo&&now.getHours()*60+now.getMinutes()<=hi?`<div class="nowl" style="top:${px(now.getHours()*60+now.getMinutes())}px"></div>`:''}
       ${lanes(c.items).map(card).join('')}<div class="ghost hide"></div></div>`).join('')}
-   </div>${!shown.length?`<div class="cal-empty"><b>${week?'Nenhum horário marcado nesta semana':'Nenhum horário marcado neste dia'}</b><p>Clique num horário livre para agendar. Com a Nanda ligada, ela oferece os horários e marca sozinha pelo WhatsApp.</p><button class="btn sm p" id="agE">+ Agendar</button></div>`:''}</div></div>`;
+   </div>${!shown.length?`<div class="cal-empty"><b>${week?'Nenhum horário marcado nesta semana':'Nenhum horário marcado neste dia'}</b><p>${innerWidth<860?'Toque no + ou num horário livre':'Clique num horário livre'} para agendar. Com a Nanda ligada, ela oferece os horários e marca sozinha pelo WhatsApp.</p><button class="btn sm p" id="agE">+ Agendar</button></div>`:''}</div></div>`;
   const sc=$('#calSc');
   if(scroll){const first=shown.filter(a=>a.status!=='canceled').map(a=>toMin(a.start.slice(11,16))).sort((x,y)=>x-y)[0];const nm=now.getHours()*60+now.getMinutes();
     const target=cols.some(c=>c.today)&&nm>lo&&nm<hi?nm-60:first!=null?first-30:lo;sc.scrollTop=Math.max(0,px(target))}
@@ -850,13 +874,17 @@ const VIEWS={
  async agenda(){
   if(!AG.week)AG.week=monday(new Date());if(!AG.day)AG.day=new Date();if(!AG.view)AG.view=innerWidth<860?'dia':'semana';
   const canManage=['owner','manager'].includes(ME.user.role);if(!canManage)AG.tab='semana';
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Agenda</h1><p class="sub">Aulas, avaliações e conversas marcadas pelo time e pela Nanda.</p></div>
+  const mob=innerWidth<860;if(mob)AG.view='dia';
+  $('#page').innerHTML=`<div class="fhd ag-hd"><div><h1>Agenda</h1><p class="sub">Aulas, avaliações e conversas marcadas pelo time e pela Nanda.</p></div>
    <div class="tools">${canManage?`<button class="btn sm" id="agCfgB">${AG.tab==='config'?'‹ Voltar para a agenda':'⚙ Configurar'}</button>`:''}${AG.tab==='semana'?'<button class="btn sm p" id="agB">+ Agendar</button>':''}</div></div>
    ${AG.tab==='semana'?`<div class="ag-sum" id="agSum"></div>
    <div class="ag-bar"><div class="seg"><button class="${AG.view==='dia'?'on':''}" data-vw="dia">Dia</button><button class="${AG.view==='semana'?'on':''}" data-vw="semana">Semana</button></div>
-    <button class="btn sm nav" id="agP" aria-label="Anterior">‹</button><button class="btn sm nav" id="agN" aria-label="Próximo">›</button><b id="agRange"></b><button class="btn sm" id="agT">Hoje</button>
-    <span class="ag-leg"><i class="scheduled"></i>agendado<i class="confirmed"></i>confirmado<i class="done"></i>compareceu<i class="no_show"></i>faltou</span></div>`:''}<div id="agBody"></div>`;
+    <button class="btn sm nav" id="agP" aria-label="Anterior">‹</button><button class="btn sm nav" id="agN" aria-label="Próximo">›</button><b id="agRange"></b><button class="btn sm" id="agT">Hoje</button>${canManage?'<button class="btn sm nav gear" id="agG" aria-label="Configurar agenda" title="Configurar">⚙</button>':''}
+    <span class="ag-leg"><i class="scheduled"></i>agendado<i class="confirmed"></i>confirmado<i class="done"></i>compareceu<i class="no_show"></i>faltou</span></div>
+   <div class="wstrip" id="wstrip"></div>`:''}<div id="agBody"></div>${AG.tab==='semana'?'<button class="fab" id="agFab" aria-label="Agendar">+</button>':''}`;
+  if($('#agFab'))$('#agFab').onclick=()=>bookModal({date:ymd(AG.view==='dia'?AG.day:new Date())},drawWeek);
   if($('#agCfgB'))$('#agCfgB').onclick=()=>{AG.tab=AG.tab==='config'?'semana':'config';VIEWS.agenda()};
+  if($('#agG'))$('#agG').onclick=()=>{AG.tab='config';VIEWS.agenda()};
   if(AG.tab==='config')return drawAgCfg();
   const step=dir=>{if(AG.view==='dia'){AG.day.setDate(AG.day.getDate()+dir);AG.week=monday(AG.day)}else{AG.week.setDate(AG.week.getDate()+7*dir);AG.day=new Date(AG.week)}drawWeek(true)};
   $('#agP').onclick=()=>step(-1);$('#agN').onclick=()=>step(1);
