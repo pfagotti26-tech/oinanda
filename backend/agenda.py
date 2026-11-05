@@ -20,7 +20,8 @@ STATUS = {'scheduled': 'Agendado', 'confirmed': 'Confirmado', 'done': 'Comparece
 ACTIVE = ['scheduled', 'confirmed']
 
 def default_settings(segment):
-    svc = {'studio': ('Aula experimental', 60, 3), 'clinica': ('Avaliação', 30, 1), 'lancamento': ('Conversa de apresentação', 30, 1)}.get(segment, ('Atendimento', 60, 1))
+    from niches import niche
+    svc = niche(segment)['service']
     week = [['09:00', '18:00']]
     return {'services': [{'id': uid()[:8], 'name': svc[0], 'duration': svc[1], 'capacity': svc[2], 'price': None}],
             'hours': {'0': week, '1': week, '2': week, '3': week, '4': week, '5': [['09:00', '13:00']], '6': []},
@@ -101,11 +102,10 @@ async def book(company, contact, service_id, start_local, by_id, by_name, notes=
     when = start.astimezone(tz)
     await note(company['id'], contact['id'], f'{by_name} agendou {sv["name"]} para {WEEK[when.weekday()]} {when:%d/%m às %H:%M}')
     if s.get('stage_on_book'):
-        stages = company.get('stages') or []
-        st = next((x for x in stages if x['id'] == s['stage_on_book']), None)
-        if st and contact.get('stage') != st['id']:
-            await db.contacts.update_one({'id': contact['id']}, {'$set': {'stage': st['id'], 'stage_at': now()}})
-            await note(company['id'], contact['id'], f'Contato foi para {st["name"]}')
+        from funnel import stages_for, move_stage
+        stages = await stages_for(company)
+        if any(x['id'] == s['stage_on_book'] for x in stages):
+            await move_stage(company, contact, s['stage_on_book'], by_name, stages)
     await gcal.sync_event(a)
     return a
 

@@ -1,7 +1,8 @@
 from typing import Literal, Optional
 from pydantic import BaseModel, EmailStr, Field
+from niches import ORDER
 
-Segment = Literal['studio', 'clinica', 'lancamento', 'outro']
+Segment = Literal[tuple(ORDER)]
 class Signup(BaseModel):
     name: str = Field(min_length=2, max_length=80)
     email: EmailStr

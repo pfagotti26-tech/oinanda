@@ -9,7 +9,7 @@
 
 .env: META_APP_SECRET, WA_VERIFY_TOKEN, SECRET_KEY (criptografia), APP_PUBLIC_URL (padrão https://app.oinanda.com.br).
 """
-import os, hmac, hashlib, json, logging, secrets
+import os, re, hmac, hashlib, json, logging, secrets
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 import httpx
@@ -25,6 +25,13 @@ PUBLIC_URL = os.environ.get('APP_PUBLIC_URL', 'https://app.oinanda.com.br').rstr
 WINDOW = timedelta(hours=24)
 ON_INBOUND = None  # a Nanda se pendura aqui (ai.py) para responder mensagens novas
 ON_HUMAN_SEND = None  # e aqui, para sair de cena quando alguém do time responde
+STOP = re.compile(r'^\s*(parar|pare|sair|stop|descadastrar|n[aã]o quero (mais )?receber( mensagens?)?)\s*[.!]*\s*$', re.I)
+
+def ad_of(m):
+    """Clique em anúncio de 'mandar mensagem': a Meta manda junto de qual anúncio veio."""
+    r = m.get('referral') or {}
+    if not r: return None
+    return {k: r.get(k) for k in ('source_type', 'source_id', 'source_url', 'headline', 'body', 'ctwa_clid') if r.get(k)} | {'at': now()}
 
 def _fernet():
     key = os.environ.get('SECRET_KEY', '')
@@ -191,11 +198,17 @@ async def ingest(value):
         if now() - at < timedelta(seconds=60): at = now()  # a Meta manda em segundos; a hora de chegada mantém a ordem certa
         text = text_of(m)
         contact = await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+        ad = ad_of(m)
         if not contact:
             contact = {'id': uid(), 'company_id': cid, 'wa_id': wa_id, 'name': names.get(wa_id) or wa_id, 'assigned_to': None,
-                       'unread': 0, 'created_at': at, 'source': 'whatsapp'}
+                       'unread': 0, 'created_at': at, 'source': 'anuncio' if ad else 'whatsapp'}
+            if ad: contact['ad'] = ad
             await db.contacts.insert_one(contact.copy())
         upd = {}
+        if ad and not contact.get('ad'): upd['ad'] = ad
+        if STOP.match(text or '') and not contact.get('opt_out'):
+            upd['opt_out'] = True
+            await note(cid, contact['id'], 'O cliente pediu para não receber mensagens automáticas. Automações e modelos ficam desligados para ele.')
         if not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at')): upd['last_in_at'] = at
         if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir='in')
         if names.get(wa_id): upd['name'] = names[wa_id]

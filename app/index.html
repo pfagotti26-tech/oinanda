@@ -110,7 +110,8 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .cv-chat{display:flex;flex-direction:column;min-height:0;background:#EFE7DD;background-image:radial-gradient(rgba(0,0,0,.04) 1px,transparent 1px);background-size:14px 14px}
 .cv-chat .top{background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:12px}
 .cv-chat .top b{display:block;font-size:15px}.cv-chat .top span{font-size:12.5px;color:var(--ink2)}
-.cv-chat .top .act{margin-left:auto;display:flex;gap:8px;align-items:center}
+.cv-chat .top .act{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.cv-chat{min-width:0}.cv-chat .top>div:nth-child(2){min-width:120px}
 .msgs{flex:1;overflow:auto;padding:20px 26px;display:flex;flex-direction:column;gap:6px}
 .m{max-width:68%;padding:8px 12px;border-radius:12px;font-size:14px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.06);white-space:pre-wrap;word-wrap:break-word}
 .m.in{align-self:flex-start;background:#fff;border-top-left-radius:3px}
@@ -185,6 +186,32 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .svrow input{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;outline:0;min-width:0}
 .slots{display:flex;flex-wrap:wrap;gap:6px}.slots button{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;background:#fff}
 .slots button.on{background:var(--c);color:#fff;border-color:var(--c)}
+.alist{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.au{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:start;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.au.off{opacity:.62}.au b{font-size:14.5px}.au .tr{font-size:12.5px;color:var(--ink2);font-weight:600}
+.au .msg,.rc .msg{grid-column:1/-1;background:#F6F2EE;border-radius:12px;padding:8px 12px;font-size:13px;color:var(--ink2);white-space:pre-wrap}
+.au .ft{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink3)}
+.au .acts{display:flex;gap:6px;align-items:center}
+.tg{position:relative;width:40px;height:23px;border-radius:999px;background:#D5DCE2;flex:none;transition:.15s}.tg::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:.15s}.tg.on{background:var(--c)}.tg.on::after{left:20px}
+.rec{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.rc{border:1px dashed #E2CFC3;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:7px;background:#fff}
+.rc p{font-size:12.5px;color:var(--ink2)}.rc .btn{align-self:flex-start}
+.vars{display:flex;gap:6px;flex-wrap:wrap}.vars button{font-size:11.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:3px 9px;background:#fff;color:var(--ink2)}
+h3.sec{font-size:15px;margin:4px 0 10px}
+.fbar{display:grid;grid-template-columns:170px 1fr 56px;gap:10px;align-items:center;font-size:13px;margin-bottom:8px}
+.fbar .b{height:22px;border-radius:8px;background:#F3EEE8;position:relative;overflow:hidden}.fbar .b i{position:absolute;inset:0 auto 0 0;background:var(--c);border-radius:8px}
+.fbar.won .b i{background:var(--ok)}.fbar span:last-child{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.sc{display:inline-grid;place-items:center;min-width:40px;height:26px;padding:0 8px;border-radius:999px;font-weight:800;font-size:13px;flex:none}
+.sc.g{background:var(--oksoft);color:var(--ok)}.sc.m{background:var(--warnsoft);color:var(--warn)}.sc.b{background:var(--badsoft);color:var(--bad)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card:has(>table){overflow-x:auto}#rpBody .card{min-width:0}
+.closed .row{margin-top:8px}.closed select,.closed input{border:1px solid #E6CF95;border-radius:10px;padding:7px 10px;background:#fff;font-size:13px;max-width:100%}
+.tst{border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:13px}
+.tst small{grid-column:1/-1;color:var(--ink2)}
+.qi{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;width:100%}
+.qi:last-child{border:0}.qi p{color:var(--ink2);font-size:13px}
+ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
+@media (max-width:860px){.g3{grid-template-columns:1fr}.fbar{grid-template-columns:110px 1fr 40px}}
 @media (max-width:860px){.wk{grid-template-columns:1fr}.day{min-height:0}.svrow{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.cv{grid-template-columns:1fr;height:auto}.cv-chat{min-height:70vh}.ai-wrap,.modes{grid-template-columns:1fr}}
 
@@ -195,7 +222,8 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
-const SEG={studio:'Studio ou academia',clinica:'Clínica de estética ou odonto',lancamento:'Lançamento ou infoproduto',outro:'Outro segmento'};
+let SEG={studio:'Studio, academia ou box',clinica:'Clínica de estética, odonto ou saúde',salao:'Salão, barbearia ou beleza',imobiliaria:'Imobiliária ou corretor',escola:'Escola, idiomas ou cursos presenciais',loja:'Loja ou e-commerce',servicos:'Serviços profissionais (contabilidade, advocacia, consultoria)',restaurante:'Restaurante, delivery ou confeitaria',lancamento:'Infoproduto, curso online ou mentoria',outro:'Outro tipo de negócio'};
+let SEGS={};
 const PLAN={trial:'Teste grátis',oferta:'Oferta do mês',completo:'Completo',rede:'Rede'};
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -246,7 +274,7 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -254,7 +282,7 @@ function shell(){
   $('#root').innerHTML=`<div class="app"><aside class="side">
     <span class="logo"><i>oi</i><b>Nanda</b></span>
     <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div>
-    ${NAV.filter(n=>canManage||!['atividade','nanda'].includes(n[0])).map(n=>`<button class="nav" data-v="${n[0]}" ${n[2]?'disabled':''}>${n[1]}${n[2]?`<span class="soon">${n[2]}</span>`:''}</button>`).join('')}
+    ${NAV.filter(n=>canManage||!['atividade','nanda','automacoes','relatorios'].includes(n[0])).map(n=>`<button class="nav" data-v="${n[0]}" ${n[2]?'disabled':''}>${n[1]}${n[2]?`<span class="soon">${n[2]}</span>`:''}</button>`).join('')}
     ${adm?`<h6>Admin Oi Nanda</h6>${ADMIN_NAV.map(n=>`<button class="nav" data-v="${n[0]}">${n[1]}</button>`).join('')}`:''}
     <div class="sp"></div>
     <div class="me"><div class="av">${initials(u.name)}</div><div><b>${esc(u.name)}</b><span>${esc(ME.roles[u.role]||u.role)}</span></div><button id="out">Sair</button></div>
@@ -337,11 +365,11 @@ async function cvChat(scroll){
   const prevDraft=$('#cvText')?.value||'';
   box.innerHTML=`<div class="top"><span class="av" style="width:38px;height:38px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800">${initials(c.name)}</span>
     <div><b>${esc(c.name)}</b><span>+${esc(c.wa_id)}</span></div>
-    <div class="act">${STAGES?`<select class="stsel" id="cvSt" title="Etapa do funil">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="cvBook">Agendar</button><button class="btn sm" id="cvDet">Detalhes</button>${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
+    <div class="act">${STAGES?`<select class="stsel" id="cvSt" title="Etapa do funil">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="cvBook">Agendar</button><button class="btn sm" id="cvDet">Detalhes</button>${['owner','manager'].includes(me.role)?'<button class="btn sm" id="cvQ" title="A IA avalia o atendimento desta conversa">Nota</button>':''}${modeSel(c)}${['owner','manager'].includes(me.role)?`<select class="btn sm" id="cvAs"><option value="">Sem dono</option>${team.filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`:(c.assigned_to===me.id?'<span class="pill ok">sua</span>':`<button class="btn sm" id="cvMine">Assumir</button>`)}</div></div>
    ${c.needs_human?`<div class="human">🙋 ${esc(c.name.split(' ')[0])} precisa de alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}<button class="btn sm" id="cvRes">Resolvido</button></div>`:''}
    <div class="msgs" id="cvMsgs">${d.messages.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)} · ${hm(m.at)}</div>`:`<div class="m ${m.dir} ${m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||'')?'ai':''}">${m.dir==='out'&&m.by?`<span class="by">${esc(m.by)}</span>`:''}${esc(m.text)}<small>${hm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`).join('')}</div>
    ${c.window_open?`<form class="comp" id="cvF"><textarea id="cvText" rows="1" placeholder="Escreva para ${esc(c.name.split(' ')[0])}... (Enter envia, Shift+Enter quebra linha)"></textarea>${CV.ai?.key_configured?'<button type="button" class="btn sug" id="cvSug" title="A Nanda escreve uma sugestão, você revisa e envia">✨ Sugerir</button>':''}<button class="btn p">Enviar</button></form>`
-     :`<div class="closed">Passaram 24 horas desde a última mensagem de ${esc(c.name.split(' ')[0])}. Pela regra da Meta, só dá para chamar de volta com um modelo aprovado (chega na etapa de campanhas).</div>`}`;
+     :`<div class="closed">${c.opt_out?`${esc(c.name.split(' ')[0])} pediu para não receber mensagens. Espere ${esc(c.name.split(' ')[0])} chamar de novo.`:`${c.last_in_at?`Passaram 24 horas desde a última mensagem de ${esc(c.name.split(' ')[0])}.`:`${esc(c.name.split(' ')[0])} ainda não mandou mensagem.`} Pela regra da Meta, só dá para chamar com um modelo aprovado.<div id="cvTpl"></div>`}</div>`}`;
   const ta=$('#cvText');if(ta){ta.value=prevDraft;ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#cvF').requestSubmit()}};if(scroll)ta.focus()}
   const ms=$('#cvMsgs');ms.scrollTop=ms.scrollHeight;
   if($('#cvF'))$('#cvF').onsubmit=async ev=>{ev.preventDefault();const t=$('#cvText').value.trim();if(!t)return;$('#cvText').value='';
@@ -355,6 +383,30 @@ async function cvChat(scroll){
   if($('#cvSug'))$('#cvSug').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Pensando...';
     try{const r=await api('/conversations/'+CV.open+'/suggest',{method:'POST'});if(r.reply){$('#cvText').value=r.reply;$('#cvText').focus()}if(r.handoff)toast('A Nanda acha melhor alguém do time responder: '+(r.reason||''));if(r.book)toast('A Nanda sugere agendar '+(r.book_label||'')+'. Use o botão Agendar para confirmar.')}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨ Sugerir'};
   if($('#cvMine'))$('#cvMine').onclick=async()=>{await api('/conversations/'+CV.open+'/assign',{method:'POST',body:{user_id:me.id}});cvChat();cvList()};
+  if($('#cvQ'))$('#cvQ').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Avaliando...';try{qualityModal(await api('/quality/'+CV.open,{method:'POST'}))}catch(x){toast(x.message)}b.disabled=false;b.textContent='Nota'};
+  if($('#cvTpl'))tplPicker(c);
+}
+async function tplPicker(c){
+  const box=$('#cvTpl');if(!CV.tpls)CV.tpls=await api('/templates').catch(()=>[]);
+  const ok=CV.tpls.filter(t=>t.status==='APPROVED');const canManage=['owner','manager'].includes(ME.user.role);
+  if(!ok.length){box.innerHTML=`<div class="row">Nenhum modelo aprovado ainda.${canManage?' <a href="#" id="toTpl">Criar modelo</a>':' Peça para o dono ou gestor criar.'}</div>`;
+    if($('#toTpl'))$('#toTpl').onclick=ev=>{ev.preventDefault();AU.tab='modelos';go('automacoes')};return}
+  box.innerHTML=`<div class="row"><select id="tpS">${ok.map(t=>`<option value="${t.id}">${esc(t.label)}</option>`).join('')}</select><span id="tpV" class="row"></span><button class="btn sm p" id="tpGo">Enviar modelo</button></div><div class="hint" id="tpP" style="margin-top:6px;color:var(--warn)"></div>`;
+  const draw=()=>{const t=ok.find(x=>x.id===$('#tpS').value);const ext=(t.params||[]).filter(p=>/^\d+$/.test(p));
+    $('#tpV').innerHTML=ext.map((p,i)=>`<input data-v="${i}" placeholder="{${p}}" style="width:120px">`).join('');$('#tpP').textContent='Prévia: '+t.body};
+  $('#tpS').onchange=draw;draw();
+  $('#tpGo').onclick=async e=>{const t=ok.find(x=>x.id===$('#tpS').value);const vals=[...document.querySelectorAll('#tpV [data-v]')].map(i=>i.value.trim());
+    if(vals.some(v=>!v))return toast('Preencha os campos do modelo.');e.target.disabled=true;
+    try{await api('/conversations/'+c.id+'/template',{method:'POST',body:{template_id:t.id,values:vals.length?vals:null}});toast('Modelo enviado.');await cvChat();cvList()}catch(x){toast(x.message);e.target.disabled=false}};
+}
+const scc=v=>v>=8?'g':v>=6?'m':'b';
+function qualityModal(q){
+  overlay(`<div class="modal"><div class="row"><h2 style="font-size:20px">Nota do atendimento</h2><button class="x">×</button></div>
+   <div class="row" style="align-items:flex-start;flex-wrap:nowrap"><span class="sc ${scc(q.score)}" style="font-size:17px;height:34px;min-width:52px">${String(q.score).replace('.',',')}</span><p style="margin-top:5px">${esc(q.summary)}</p></div>
+   ${q.good&&q.good.length?`<div><b>O que foi bem</b><ul class="li">${q.good.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+   ${q.improve&&q.improve.length?`<div><b>O que melhorar</b><ul class="li">${q.improve.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+   ${q.lost_opportunity?'<p class="note">Pela leitura da IA, uma venda pode ter escapado nesta conversa.</p>':''}
+   <p class="hint">Avaliação feita pela IA. Use como referência para conversar com o time.</p></div>`,true);
 }
 let STAGES=null;
 const WEEKD=['seg','ter','qua','qui','sex','sáb','dom'];
@@ -452,20 +504,72 @@ async function contactDrawer(id,after){
   if(!STAGES)STAGES=await api('/funnel/stages');
   const c=(await api('/conversations/'+id)).contact;
   const o=overlay(`<form class="drawer" id="cdF"><div class="row"><h2 style="font-size:20px;letter-spacing:-.4px">${esc(c.name)}</h2><button type="button" class="x">×</button></div>
-    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">+${esc(c.wa_id)} · ${c.source==='manual'?'adicionado à mão':'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
+    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">+${esc(c.wa_id)} · ${c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
     <div class="field"><label>Nome</label><input name="name" value="${esc(c.name)}" required></div>
     <div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
     <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div>
      <div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(c.email||'')}"></div></div>
     <div class="field"><label>Etiquetas</label><input name="tags" value="${esc((c.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div>
     <div class="field"><label>Anotações</label><textarea name="notes" rows="6" placeholder="O que o time precisa saber sobre esse cliente">${esc(c.notes||'')}</textarea></div>
+    <label class="row" style="gap:8px;font-size:13.5px;font-weight:600"><input type="checkbox" name="opt_out" ${c.opt_out?'checked':''}> Não quer receber mensagens automáticas</label>
     <div class="row"><button class="btn p">Salvar</button>${VIEW!=='conversas'?'<button type="button" class="btn" id="cdOpen">Abrir conversa</button>':''}<span class="err" id="cdE"></span></div></form>`);
   if(o.querySelector('#cdOpen'))o.querySelector('#cdOpen').onclick=()=>{o.remove();CV.open=id;go('conversas')};
   o.querySelector('#cdF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
-    const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
+    const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,opt_out:!!f.opt_out,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
     try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
 }
 let FN={mine:false,q:''};
+let AU={tab:'lista'},RP={days:30};
+const fmtMin=m=>m==null?'—':m<1?'menos de 1 min':m<60?Math.round(m)+' min':m<1440?String((m/60).toFixed(1)).replace('.',',')+' h':String((m/1440).toFixed(1)).replace('.',',')+' dias';
+const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':String(h).replace('.',',')+' horas');
+function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
+  return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
+    before_appt:`${t} antes do horário marcado`,appt_no_show:`${t} depois de uma falta`,appt_done:`${t} depois do atendimento`}[a.trigger]||a.trigger}
+const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',data:'dia do horário',hora:'hora do horário'};
+const hlv=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>`<b style="color:var(--c2)" title="${VARS_TXT[k]||''}">${VARS_TXT[k]?'['+VARS_TXT[k]+']':m}</b>`);
+function varChips(ta){return `<div class="vars">${Object.entries(VARS_TXT).map(([k,v])=>`<button type="button" data-var="${k}" title="${v}">{${k}}</button>`).join('')}</div>`}
+function bindVars(o,ta){o.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.var+'}';const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length})}
+function autoModal(a,d,tpls){
+  const x=a||{trigger:'no_reply',hours:24,message:'Oi, {primeiro_nome}! ',active:true};
+  const days=x.hours>=24&&x.hours%24===0;
+  const o=overlay(`<form class="modal" id="amF"><div class="row"><h2 style="font-size:20px">${a?'Editar automação':'Nova automação'}</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name||'')}" placeholder="Ex.: Retomar orçamento"></div>
+   <div class="field"><label>Quando enviar</label><select name="trigger">${Object.entries(d.triggers).map(([k,v])=>`<option value="${k}" ${x.trigger===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div class="form2"><div class="field"><label id="amHL">Quanto tempo</label><div class="row" style="flex-wrap:nowrap"><input name="n" type="number" min="0" step="0.5" value="${days?x.hours/24:x.hours}" style="max-width:110px"><select name="unit"><option value="h" ${days?'':'selected'}>horas</option><option value="d" ${days?'selected':''}>dias</option></select></div></div>
+    <div class="field" id="amSt"><label>Etapa</label><select name="stage_id"><option value="">Qualquer etapa em andamento</option>${d.stages.map(s=>`<option value="${s.id}" ${x.stage_id===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
+   <div class="field"><label>Mensagem</label><textarea name="message" rows="4" required minlength="5" maxlength="1000">${esc(x.message||'')}</textarea>${varChips()}<span class="hint">Clique numa variável para inserir. Para virar modelo da Meta, a mensagem não pode começar nem terminar com variável.</span></div>
+   <div class="form2"><div class="field"><label>Depois de enviar, mover para</label><select name="move_to"><option value="">Não mover</option>${d.stages.map(s=>`<option value="${s.id}" ${x.move_to===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Modelo para depois de 24 h</label><select name="template_id"><option value="">Nenhum</option>${tpls.filter(t=>t.status!=='REJECTED').map(t=>`<option value="${t.id}" ${x.template_id===t.id?'selected':''}>${esc(t.label)} (${esc(t.label_status)})</option>`).join('')}</select></div></div>
+   <div class="row"><button class="btn p">Salvar</button><span class="err" id="amE"></span></div></form>`,true);
+  const f=o.querySelector('#amF');bindVars(o,f.message);
+  const sync=()=>{const t=f.trigger.value;o.querySelector('#amSt').classList.toggle('hide',!['stage_enter','no_reply'].includes(t));
+    f.stage_id.options[0].textContent=t==='stage_enter'?'Escolha a etapa':'Qualquer etapa em andamento';
+    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois'}[t]};
+  f.trigger.onchange=sync;sync();
+  f.onsubmit=async ev=>{ev.preventDefault();const n=Number(f.n.value);
+    const body={name:f.name.value,trigger:f.trigger.value,hours:f.unit.value==='d'?n*24:n,stage_id:['stage_enter','no_reply'].includes(f.trigger.value)?(f.stage_id.value||null):null,message:f.message.value,move_to:f.move_to.value||null,template_id:f.template_id.value||null};
+    try{if(a)await api('/automations/'+a.id,{method:'PATCH',body});else await api('/automations',{method:'POST',body});o.remove();toast('Automação salva.');VIEWS.automacoes()}catch(e){o.querySelector('#amE').textContent=e.message}};
+}
+function drawTpls(tpls){
+  $('#auBody').innerHTML=`<p class="note" style="margin-bottom:14px">Modelos são mensagens aprovadas pela Meta. Servem para chamar quem não fala com você há mais de 24 h, ou quem ainda não mandou mensagem. <b>Utilidade</b>: lembretes e confirmações. <b>Marketing</b>: retomadas e ofertas. A Meta cobra por modelo enviado (marketing custa mais).</p>
+   <div class="card">${tpls.length?`<table><thead><tr><th>Modelo</th><th>Tipo</th><th>Situação</th><th></th></tr></thead><tbody>${tpls.map(t=>`<tr><td><b>${esc(t.label)}</b><small>${esc(t.body)}</small></td><td>${t.category==='UTILITY'?'Utilidade':t.category==='MARKETING'?'Marketing':esc(t.category||'')}</td>
+     <td><span class="pill ${t.status==='APPROVED'?'ok':t.status==='REJECTED'?'bad':'warn'}">${esc(t.label_status)}</span>${t.rejected_reason&&t.rejected_reason!=='NONE'?`<small>${esc(t.rejected_reason)}</small>`:''}</td>
+     <td style="text-align:right"><button class="btn sm danger" data-tdel="${t.id}">Apagar</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum modelo ainda. Crie um aqui ou peça a aprovação direto numa automação.</div>'}</div>`;
+  $('#tpSync').onclick=async e=>{e.target.disabled=true;try{const l=await api('/templates?sync=1');drawTpls(l);toast('Situação atualizada com a Meta.')}catch(x){toast(x.message)}e.target.disabled=false};
+  $('#tpNew').onclick=()=>{const o=overlay(`<form class="modal" id="tnF"><div class="row"><h2 style="font-size:20px">Novo modelo</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Nome interno</label><input name="label" required minlength="3" maxlength="60" placeholder="Ex.: Retomada de orçamento"></div>
+    <div class="field"><label>Tipo</label><select name="category"><option value="UTILITY">Utilidade (lembrete, confirmação)</option><option value="MARKETING">Marketing (retomada, oferta)</option></select></div>
+    <div class="field"><label>Mensagem</label><textarea name="body" rows="5" required minlength="10" maxlength="1000">Oi, {primeiro_nome}! </textarea>${varChips()}<span class="hint">Não comece nem termine com variável. A Meta costuma responder em minutos.</span></div>
+    <div class="row"><button class="btn p">Enviar para aprovação</button><span class="err" id="tnE"></span></div></form>`,true);
+    const f=o.querySelector('#tnF');bindVars(o,f.body);
+    f.onsubmit=async ev=>{ev.preventDefault();try{await api('/templates',{method:'POST',body:Object.fromEntries(new FormData(f))});o.remove();CV.tpls=null;toast('Enviado para a Meta.');VIEWS.automacoes()}catch(x){o.querySelector('#tnE').textContent=x.message}}};
+  document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar este modelo? Ele também sai da Meta.'))return;try{await api('/templates/'+b.dataset.tdel,{method:'DELETE'});CV.tpls=null;VIEWS.automacoes()}catch(e){toast(e.message)}});
+}
+async function drawRuns(){
+  const rows=await api('/automations/runs');
+  const lab={sent:['ok','enviada'],skipped:['grey','pulada'],error:['bad','erro'],sending:['warn','enviando']};
+  $('#auBody').innerHTML=`<div class="card">${rows.length?`<table><thead><tr><th>Quando</th><th>Automação</th><th>Cliente</th><th>Resultado</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.automation)}</td><td>${esc(r.contact_name||'')}</td><td><span class="pill ${(lab[r.status]||['grey'])[0]}">${(lab[r.status]||['',r.status])[1]}</span>${r.detail?`<small>${esc(r.detail)}</small>`:''}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum envio ainda.</div>'}</div>`;
+}
 async function drawBoard(){
   const d=await api('/funnel'+(FN.mine?'?mine=true':''));STAGES=d.stages;
   const q=FN.q.trim().toLowerCase();
@@ -503,12 +607,66 @@ function newContact(){
     <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
      <div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0"></div></div>
     <div class="field"><label>Anotações</label><textarea name="notes" rows="3"></textarea></div>
-    <p class="note">Para mandar a primeira mensagem para quem ainda não falou com você, a Meta exige um modelo aprovado (chega na etapa de campanhas).</p>
+    <p class="note">Para mandar a primeira mensagem para quem ainda não falou com você, a Meta exige um modelo aprovado. Depois de adicionar, abra a conversa e escolha o modelo.</p>
     <div class="row"><button class="btn p">Adicionar</button><span class="err" id="ncE"></span></div></form>`,true);
   o.querySelector('#ncF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));if(f.value==='')delete f.value;else f.value=Number(f.value);
     try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
 }
 const VIEWS={
+ async automacoes(){
+  const [d,tpls]=await Promise.all([api('/automations'),api('/templates')]);
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Automações</h1><p class="sub">Mensagens que saem sozinhas na hora certa: lembretes, retomadas e pós-atendimento.</p></div>
+   <div class="tools">${AU.tab==='lista'?'<button class="btn sm p" id="auNew">+ Criar automação</button>':AU.tab==='modelos'?'<button class="btn sm" id="tpSync">Atualizar com a Meta</button><button class="btn sm p" id="tpNew">+ Novo modelo</button>':''}</div></div>
+   <div class="tabs">${[['lista','Automações'],['modelos','Modelos da Meta'],['hist','Histórico']].map(t=>`<button class="chip ${AU.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div><div id="auBody"></div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AU.tab=b.dataset.tab;VIEWS.automacoes()});
+  if(AU.tab==='modelos')return drawTpls(tpls);
+  if(AU.tab==='hist')return drawRuns();
+  $('#auNew').onclick=()=>autoModal(null,d,tpls);
+  const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
+  const badge=a=>{const t=T[a.template_id];
+    if(t&&t.status==='APPROVED')return '<span class="pill ok">modelo aprovado: também envia depois de 24 h</span>';
+    if(t&&t.status==='REJECTED')return `<span class="pill bad">modelo recusado pela Meta</span>${t.rejected_reason&&t.rejected_reason!=='NONE'?' '+esc(t.rejected_reason):''} <button class="btn sm" data-ask="${a.id}">Pedir de novo</button>`;
+    if(t)return '<span class="pill warn">modelo em análise na Meta</span>';
+    return `<span class="pill grey">sem modelo: só envia para quem falou nas últimas 24 h</span> <button class="btn sm" data-ask="${a.id}">Pedir aprovação do modelo</button>`};
+  $('#auBody').innerHTML=`${d.whatsapp?'':'<div class="note" style="margin-bottom:12px"><b>WhatsApp não conectado.</b> As automações começam a enviar quando o número estiver conectado em Empresa.</div>'}
+   <p class="note" style="margin-bottom:18px">Se o cliente falou com você nas últimas 24 h, a mensagem sai normalmente. Depois disso a Meta só aceita <b>modelo aprovado</b>: em cada automação, clique uma vez em "Pedir aprovação do modelo". Envios só das 8h às 21h, e quem responder "parar" não recebe mais nada automático.</p>
+   <h3 class="sec">Ligadas na sua conta</h3>
+   <div class="alist">${d.items.length?d.items.map(a=>`<div class="au ${a.active?'':'off'}"><div><b>${esc(a.name)}</b><div class="tr">${esc(trigTxt(a,d.stages))}</div></div>
+     <div class="acts"><button class="tg ${a.active?'on':''}" data-tg="${a.id}" title="${a.active?'Desligar':'Ligar'}"></button><button class="btn sm" data-ed="${a.id}">Editar</button><button class="btn sm danger" data-del="${a.id}" title="Apagar">×</button></div>
+     <div class="msg">${hlv(a.message)}</div>
+     <div class="ft">${badge(a)}${a.move_to?` · depois move para "${esc((d.stages.find(s=>s.id===a.move_to)||{}).name||'')}"`:''}${!a.active&&a.trigger==='stage_enter'&&!a.stage_id?' · escolha a etapa em Editar':''}<span style="margin-left:auto">${a.sent||0} enviadas · ${a.skipped||0} puladas</span></div></div>`).join('')
+     :'<div class="empty card">Nenhuma automação ainda. Comece pelas sugestões abaixo.</div>'}</div>
+   ${recs.length?`<h3 class="sec">Sugestões para ${esc(SEGS[ME.company.segment]||'o seu negócio')}</h3><div class="rec">${recs.map(r=>`<div class="rc"><b>${esc(r.name)}</b><p>${esc(r.why)}</p><div class="msg">${hlv(r.message)}</div>${r.stage&&!r.stage_id?'<p class="hint">Não achei a etapa certa no seu funil: depois de adicionar, escolha em Editar.</p>':''}<button class="btn sm" data-add="${r.key}">Adicionar</button></div>`).join('')}</div>`:''}`;
+  const reload=()=>VIEWS.automacoes();
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{try{await api('/automations',{method:'POST',body:{recipe:b.dataset.add}});toast('Automação adicionada.');reload()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-tg]').forEach(b=>b.onclick=async()=>{const a=d.items.find(x=>x.id===b.dataset.tg);try{await api('/automations/'+a.id,{method:'PATCH',body:{active:!a.active}});reload()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>autoModal(d.items.find(x=>x.id===b.dataset.ed),d,tpls));
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta automação?'))return;await api('/automations/'+b.dataset.del,{method:'DELETE'});reload()});
+  document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{b.disabled=true;b.textContent='Enviando...';try{await api('/automations/'+b.dataset.ask+'/template',{method:'POST'});toast('Enviado para a Meta. A aprovação costuma sair em minutos ou poucas horas.');reload()}catch(e){toast(e.message);b.disabled=false;b.textContent='Pedir aprovação do modelo'}});
+ },
+ async relatorios(){
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Relatórios</h1><p class="sub">Como estão as vendas e o atendimento do ${esc(ME.company.name)}.</p></div>
+   <div class="tools">${[7,30,90].map(n=>`<button class="chip ${RP.days===n?'on':''}" data-d="${n}">${n} dias</button>`).join('')}</div></div><div id="rpBody"><div class="empty">Carregando...</div></div>`;
+  document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{RP.days=Number(b.dataset.d);VIEWS.relatorios()});
+  const [r,q]=await Promise.all([api('/reports/sales?days='+RP.days),api('/quality?days='+RP.days)]);const t=r.totals;
+  const tile=(l,v,sub)=>`<div class="card stat"><span>${l}</span><b>${v}</b>${sub?`<span>${sub}</span>`:''}</div>`;
+  const top=Math.max(1,...r.funnel.map(f=>f.count));
+  $('#rpBody').innerHTML=`<div class="grid g4" style="margin-bottom:14px">
+    ${tile('Contatos novos',t.new_contacts)}${tile('Vendas',t.won,t.won_value?brl(t.won_value):'')}${tile('Ticket médio',t.ticket!=null?brl(t.ticket):'—')}${tile('Conversão',t.conversion!=null?String(t.conversion).replace('.',',')+'%':'—','dos contatos novos')}
+    ${tile('Ciclo de venda',t.cycle_days!=null?String(t.cycle_days).replace('.',',')+' dias':'—','do 1º contato à venda')}${tile('Primeira resposta',fmtMin(t.first_reply_min),'tempo típico')}${tile('Perdidos',t.lost)}${tile('Nota do atendimento',q.avg!=null?String(q.avg).replace('.',','):'—',q.items.length?q.items.length+(q.items.length===1?' conversa avaliada':' conversas avaliadas'):'')}</div>
+   <div class="grid g2" style="margin-bottom:14px;align-items:start"><div class="card"><h3 class="sec">Funil dos contatos novos</h3><p class="hint" style="margin:-6px 0 12px">Quantos chegaram em cada etapa.</p>
+     ${r.funnel.map(f=>`<div class="fbar ${f.kind}"><span>${esc(f.name)}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}</div>
+    <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<table><thead><tr><th>Origem</th><th>Contatos</th><th>Vendas</th><th>Valor</th></tr></thead><tbody>${r.origin.map(o=>`<tr><td>${esc(o.name)}</td><td>${o.contacts}</td><td>${o.won}</td><td>${o.value?brl(o.value):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sem contatos novos no período.</div>'}
+     <p class="hint" style="margin-top:10px">Quem clica em anúncio de "Enviar mensagem" no Facebook ou Instagram aparece com o nome do anúncio.</p></div></div>
+   <div class="card" style="margin-bottom:14px"><h3 class="sec">Time</h3><table><thead><tr><th>Pessoa</th><th>Mensagens</th><th>Primeira resposta</th><th>Vendas</th><th>Valor</th><th>Nota</th></tr></thead><tbody>
+    ${r.people.map(p=>`<tr><td><b>${esc(p.name)}</b>${p.active?'':'<small>desativado</small>'}</td><td>${p.messages}</td><td>${fmtMin(p.first_reply_min)}</td><td>${p.won}</td><td>${p.value?brl(p.value):'—'}</td><td>${p.score!=null?`<span class="sc ${scc(p.score)}">${String(p.score).replace('.',',')}</span>`:'—'}</td></tr>`).join('')}</tbody></table></div>
+   <div class="grid g3" style="margin-bottom:14px">${tile('Mensagens da Nanda',r.nanda.messages)}${tile('Horários marcados pela Nanda',r.nanda.bookings)}${tile('Mensagens das automações',r.automations.messages)}</div>
+   <div class="card"><div class="row"><h3 class="sec" style="margin:0">Nota de atendimento</h3><button class="btn sm p" id="qRun" style="margin-left:auto">Avaliar conversas da semana</button></div>
+    <p class="hint" style="margin:4px 0 6px">A IA lê as conversas com gente do time e dá nota de 0 a 10, com o que foi bem e o que melhorar. Clique numa avaliação para abrir a conversa.</p>
+    <div id="qL">${q.items.length?q.items.map(x=>`<button class="qi" data-c="${x.contact_id}"><span class="sc ${scc(x.score)}">${String(x.score).replace('.',',')}</span><span><b>${esc(x.contact_name||'')}</b> <small style="color:var(--ink3)">${esc((x.agent_names||[]).join(', '))} · ${dt(x.at)}</small>${x.lost_opportunity?' <span class="pill bad">venda pode ter escapado</span>':''}<p>${esc(x.summary)}</p>${x.improve&&x.improve.length?`<p><b>Melhorar:</b> ${esc(x.improve.join(' · '))}</p>`:''}</span></button>`).join(''):'<div class="empty">Nenhuma conversa avaliada no período.</div>'}</div></div>`;
+  document.querySelectorAll('.qi').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;go('conversas')});
+  $('#qRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Avaliando... (pode levar um minuto)';try{const x=await api('/quality-run',{method:'POST'});toast(x.scored?x.scored+' conversas avaliadas.':'Nenhuma conversa nova para avaliar.');VIEWS.relatorios()}catch(x){toast(x.message);b.disabled=false;b.textContent='Avaliar conversas da semana'}};
+ },
  async agenda(){
   if(!AG.week)AG.week=monday(new Date());const canManage=['owner','manager'].includes(ME.user.role);
   if(!canManage)AG.tab='semana';
@@ -534,7 +692,7 @@ const VIEWS={
   POLL=setInterval(()=>{if(VIEW==='funil'&&!document.hidden&&!document.querySelector('.ov')&&!document.querySelector('.kc.drag'))drawBoard().catch(()=>{})},10000);
  },
  async conversas(){
-  const num=await api('/wa/number');CV.team=await api('/team');STAGES=await api('/funnel/stages').catch(()=>null);CV.ai=await api('/ai/settings').catch(()=>null);
+  const num=await api('/wa/number');CV.team=await api('/team');STAGES=await api('/funnel/stages').catch(()=>null);CV.ai=await api('/ai/settings').catch(()=>null);CV.tpls=null;
   $('#page').innerHTML=`<div class="cv"><div class="cv-list"><div class="hd"><h1>Conversas</h1>
     ${num?'':`<p class="note" style="margin-top:8px">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="chips">${[['all','Todas'],['mine','Minhas'],['unassigned','Sem dono'],['waiting','Esperando resposta']].map(f=>`<button class="chip ${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('')}</div></div>
@@ -546,11 +704,12 @@ const VIEWS={
   POLL=setInterval(async()=>{if(VIEW!=='conversas'||document.hidden)return;try{const atBottom=(()=>{const m=$('#cvMsgs');return !m||m.scrollHeight-m.scrollTop-m.clientHeight<40})();await cvList();if(CV.open&&!($('#cvText')===document.activeElement&&$('#cvText').value))await cvChat(false);if(!atBottom){} }catch(e){}},4000);
  },
  async nanda(){
-  const s=await api('/ai/settings');const u=s.usage||{};
-  const ex={studio:'Plano mensal: R$ 289. Trimestral: R$ 790 (R$ 263/mês). Aula experimental grátis, agendada pelo WhatsApp.\nHorários: seg a sex 6h às 22h, sáb 8h às 14h.\nEndereço: Rua ..., 123 — estacionamento conveniado.\nPagamento: Pix, cartão em até 3x.',
-    clinica:'Limpeza de pele: R$ 180 (1h). Avaliação gratuita para harmonização.\nAtendemos seg a sáb, 9h às 19h.\nNão passamos preço de procedimentos injetáveis pelo WhatsApp: oferecer avaliação.\nPagamento: Pix ou cartão em até 6x.',
-    lancamento:'Curso X: R$ 997 à vista ou 12x de R$ 97. Garantia de 7 dias.\nAcesso por 1 ano, aulas gravadas + encontro ao vivo toda quinta.\nLink de compra: (enviar quando o cliente pedir)',
-    outro:'O que vendemos, preços, horários, endereço, formas de pagamento e as dúvidas mais comuns.'}[ME.company.segment]||'';
+  const [s,tests,ex]=await Promise.all([api('/ai/settings'),api('/ai/tests').catch(()=>[]),api('/ai/example').catch(()=>({}))]);const u=s.usage||{};
+  const F=[['about','Sobre o negócio','O que é, onde fica, para quem atende.',3],['offer','O que vende e quanto custa','Serviços, planos, preços e condições. Ela só fala preço que estiver aqui.',5],
+    ['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','Perguntas para entender o cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3],
+    ['rules','Regras do negócio','O que ela nunca deve fazer ou prometer.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam para o time sozinhos.',2]];
+  if(s.knowledge)F.push(['knowledge','Outras informações','O texto que você já tinha ensinado. Pode ir distribuindo nos campos acima.',6]);
+  const fld=([k,l,h,r])=>`<div class="field"><label>${l}</label><textarea name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(s[k]||'')}</textarea><span class="hint">${h}</span></div>`;
   $('#page').innerHTML=`<h1>Nanda (IA)</h1><p class="sub">O que a Nanda sabe sobre o ${esc(ME.company.name)}, como ela fala e quando chama o time.</p>
    ${s.key_configured?'':'<div class="note" style="margin-bottom:14px;border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)"><b>A IA ainda não foi ativada no servidor.</b> Dá para preencher tudo agora; ela começa a responder assim que a ativação for feita.</div>'}
    <div class="ai-wrap"><form class="card grid" id="aiF" style="gap:16px">
@@ -559,28 +718,49 @@ const VIEWS={
     </div><span class="hint">Dá para mudar conversa por conversa. Quando alguém do time responde, a Nanda sai de cena naquela conversa.</span></div>
     <div class="form2"><div class="field"><label>Nome da assistente</label><input name="name" value="${esc(s.name)}" minlength="2" maxlength="30"></div>
      <div class="field"><label>Jeito de falar</label><select name="tone">${[['proximo','Próximo e direto'],['descontraido','Descontraído'],['formal','Mais formal']].map(t=>`<option value="${t[0]}" ${s.tone===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select></div></div>
-    <div class="field"><label>O que ela sabe sobre o negócio</label><textarea name="knowledge" rows="10" maxlength="12000" placeholder="${esc(ex)}">${esc(s.knowledge)}</textarea>
-     <span class="hint">Preços, planos, horários, endereço, formas de pagamento, dúvidas comuns. Ela só responde o que estiver aqui; o resto passa para o time.</span></div>
-    <div class="field"><label>Quando chamar alguém do time</label><textarea name="handoff" rows="3" maxlength="3000" placeholder="Ex.: quando o cliente quiser fechar o plano anual, pedir desconto, ou falar de cancelamento.">${esc(s.handoff)}</textarea>
-     <span class="hint">Pedido de atendente, reclamação e assunto fora do que ela sabe já passam para o time automaticamente.</span></div>
+    <div class="row"><h3 class="sec" style="margin:0">O que ela precisa saber</h3><button type="button" class="btn sm" id="aiEx" style="margin-left:auto">Preencher com exemplo de ${esc((SEGS[ME.company.segment]||'negócio').toLowerCase())}</button></div>
+    <div class="field"><label>Objetivo da conversa</label><input name="goal" value="${esc(s.goal||'')}" maxlength="1000" placeholder="${esc(ex.goal||'')}"><span class="hint">O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra...</span></div>
+    ${F.map(fld).join('')}
     <div class="row"><button class="btn p">Salvar</button><span class="err" id="aiE"></span>
      <span style="margin-left:auto;font-size:12.5px;color:var(--ink3)">Este mês: ${u.replies||0} respostas · ${u.suggestions||0} sugestões · ${u.tests||0} testes</span></div>
    </form>
-   <div class="card play"><div class="hd"><b>Teste a ${esc(s.name)}</b><span class="pill grey">não envia nada</span><button class="btn sm" id="plR" style="margin-left:auto">Limpar</button></div>
-    <div class="msgs" id="plM"><div class="m sys">Escreva como se fosse um cliente. Salve antes para ela usar o que você ensinou.</div></div>
-    <form class="comp" id="plF"><textarea id="plT" rows="1" placeholder="Oi, quanto custa?"></textarea><button class="btn p">Enviar</button></form></div></div>`;
+   <div class="grid" style="gap:14px;align-content:start"><div class="card play"><div class="hd"><b>Teste a ${esc(s.name)}</b><span class="pill grey">não envia nada</span><button class="btn sm" id="plS" style="margin-left:auto" title="Guarda esta situação para conferir sempre">Salvar teste</button><button class="btn sm" id="plR">Limpar</button></div>
+    <div class="msgs" id="plM"></div>
+    <form class="comp" id="plF"><textarea id="plT" rows="1" placeholder="Oi, quanto custa?"></textarea><button class="btn p">Enviar</button></form></div>
+    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Testes salvos</h3><button class="btn sm p" id="tsRun" style="margin-left:auto">Rodar todos</button></div>
+     <p class="hint" style="margin:4px 0 10px">Situações que a Nanda precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><div id="tsL" class="grid" style="gap:8px"></div></div></div></div>`;
   $('#aiF').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('.btn.p');b.disabled=true;$('#aiE').textContent='';
     try{await api('/ai/settings',{method:'PUT',body:Object.fromEntries(new FormData(ev.target))});toast('Nanda atualizada.')}catch(e){$('#aiE').textContent=e.message}b.disabled=false};
+  $('#aiEx').onclick=()=>{let n=0;['goal',...F.map(f=>f[0])].forEach(k=>{const el=$('#aiF')[k];if(el&&!el.value.trim()&&ex[k]){el.value=ex[k];n++}});toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+  const EXP={reply:'Responder sozinha',handoff:'Chamar o time',book:'Agendar'};
+  const drawTests=list=>{$('#tsL').innerHTML=list.length?list.map(t=>`<div class="tst"><span><b>${esc(t.name)}</b> <span class="hint">· esperado: ${EXP[t.expect]}${t.contains?' · citar "'+esc(t.contains)+'"':''}${t.not_contains?' · sem "'+esc(t.not_contains)+'"':''}</span></span>
+     <span class="row" style="gap:6px">${t.last?`<span class="pill ${t.last.ok?'ok':'bad'}">${t.last.ok?'passou':'falhou'}</span>`:'<span class="pill grey">não rodado</span>'}<button class="btn sm" data-tdel="${t.id}" title="Apagar">×</button></span>
+     ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="hint">Converse no teste acima e clique em "Salvar teste" para guardar a situação.</div>';
+    document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});drawTests(await api('/ai/tests'))})};
+  drawTests(tests);
+  $('#tsRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{const r=await api('/ai/tests/run',{method:'POST'});drawTests(r.tests);toast(`${r.passed} de ${r.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'};
   const hist=[];const box=$('#plM');
   const draw=()=>{box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)}</div>`:`<div class="m ${m.dir==='in'?'in':'out ai'}">${esc(m.text)}</div>`).join(''):'<div class="m sys">Escreva como se fosse um cliente. Salve antes para ela usar o que você ensinou.</div>';box.scrollTop=box.scrollHeight};
+  draw();
   $('#plR').onclick=()=>{hist.length=0;draw()};
+  $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
+    if(last<0)return toast('Escreva pelo menos uma mensagem como cliente.');const msgs=real.slice(0,last+1);
+    const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar teste</h2><button type="button" class="x">×</button></div>
+     <p class="hint">A última mensagem do cliente: "${esc(msgs[msgs.length-1].text)}"</p>
+     <div class="field"><label>Nome do teste</label><input name="name" required minlength="2" maxlength="80" value="${esc(msgs[msgs.length-1].text.slice(0,60))}"></div>
+     <div class="field"><label>O que a Nanda deve fazer</label><div class="chips">${Object.entries(EXP).map(([k,v],i)=>`<label class="chip"><input type="radio" name="expect" value="${k}" ${i===0?'checked':''}> ${v}</label>`).join('')}</div></div>
+     <div class="form2"><div class="field"><label>A resposta deve citar</label><input name="contains" maxlength="300" placeholder="R$ 289"><span class="hint">Separe com ponto e vírgula.</span></div>
+      <div class="field"><label>Não pode citar</label><input name="not_contains" maxlength="300" placeholder="desconto"></div></div>
+     <div class="row"><button class="btn p">Salvar</button><span class="err" id="tsE"></span></div></form>`,true);
+    o.querySelector('#tsF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
+      try{await api('/ai/tests',{method:'POST',body:{...f,messages:msgs.map(m=>({dir:m.dir,text:m.text}))}});o.remove();toast('Teste salvo.');drawTests(await api('/ai/tests'))}catch(x){o.querySelector('#tsE').textContent=x.message}}};
   $('#plT').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#plF').requestSubmit()}};
   $('#plF').onsubmit=async ev=>{ev.preventDefault();const t=$('#plT').value.trim();if(!t)return;$('#plT').value='';hist.push({dir:'in',text:t});hist.push({dir:'sys',text:'digitando...'});draw();
     try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});hist.pop();if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela agendaria '+(r.book_label||'')+' (no teste nada é agendado)'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o time · '+(r.reason||'')})}
     catch(e){hist.pop();hist.push({dir:'sys',text:e.message})}draw()};
  },
  async inicio(){
-  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);
+  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);const au=['owner','manager'].includes(u.role)?await api('/automations').catch(()=>null):null;
   $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p>
    ${sm?`<div class="grid g4" style="margin-bottom:14px">
     <button class="card stat" data-to="conversas" style="text-align:left"><span>Esperando resposta</span><b>${sm.waiting}</b></button>
@@ -591,7 +771,8 @@ const VIEWS={
     <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
     <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':'2'}</span><div><b>Convide seu time</b><p>Cada pessoa com seu acesso e sua fila de conversas.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
     <div class="step ${num?'done':''}"><span class="n">${num?'✓':'3'}</span><div><b>Conectar o WhatsApp</b><p>${num?'Conectado: '+esc(num.display_phone||''):'Pela API oficial da Meta, junto com o app que você já usa.'}</p></div>${num?'':'<button class="btn sm" data-to="empresa">Conectar</button>'}</div>
-    <div class="step ${ai&&ai.knowledge?'done':''}"><span class="n">${ai&&ai.knowledge?'✓':'4'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.knowledge?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
+    <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'4'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
+    ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'5'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
    </div></div>`;
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
  },
@@ -676,7 +857,9 @@ const VIEWS={
  }
 };
 async function refresh(){ME=await api('/auth/me')}
+async function loadNiches(){try{const l=await api('/niches');SEG=Object.fromEntries(l.map(n=>[n.key,n.label]));SEGS=Object.fromEntries(l.map(n=>[n.key,n.short]))}catch(e){}}
 async function boot(){
+  if(!Object.keys(SEGS).length)await loadNiches();
   try{await refresh()}catch(e){
     if(e.status===403&&/senha/.test(e.message))return passwordView();
     if(e.status===403){$('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span><h1>Acesso bloqueado</h1><p class="l">${esc(e.message)}</p><button class="btn" id="o">Sair</button></div></div>`;$('#o').onclick=async()=>{await api('/auth/logout',{method:'POST'});authView('login')};return}

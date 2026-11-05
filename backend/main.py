@@ -11,6 +11,10 @@ from ai import router as ai_router
 from funnel import router as funnel_router
 from agenda import router as agenda_router
 from gcal import router as gcal_router
+from niches import router as niches_router
+from automations import router as auto_router
+from reports import router as reports_router
+import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -42,8 +46,21 @@ async def lifespan(app):
     await db.oauth_states.create_index('expires_at', expireAfterSeconds=0)
     await db.ai_settings.create_index('company_id', unique=True)
     await db.ai_usage.create_index([('company_id', 1), ('month', 1)], unique=True)
+    await db.stage_events.create_index([('company_id', 1), ('at', -1)])
+    await db.templates.create_index([('company_id', 1), ('name', 1)])
+    await db.automations.create_index('company_id')
+    await db.automation_runs.create_index('key', unique=True)
+    await db.automation_runs.create_index([('company_id', 1), ('at', -1)])
+    await db.automation_runs.create_index('expires_at', expireAfterSeconds=0)
+    await db.ai_tests.create_index('company_id')
+    await db.quality.create_index([('company_id', 1), ('at', -1)])
+    await db.quality.create_index('contact_id')
+    worker = None
+    if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
+        worker = asyncio.create_task(automations.loop())
     log.info('Oi Nanda API pronta. Admin: %s', ADMIN_EMAIL or '(ADMIN_EMAIL não definido)')
     yield
+    if worker: worker.cancel()
     client.close()
 
 app = FastAPI(title='Oi Nanda', lifespan=lifespan, docs_url=None, redoc_url=None)
@@ -52,6 +69,9 @@ app.include_router(ai_router, prefix='/api')
 app.include_router(funnel_router, prefix='/api')
 app.include_router(agenda_router, prefix='/api')
 app.include_router(gcal_router, prefix='/api')
+app.include_router(niches_router, prefix='/api')
+app.include_router(auto_router, prefix='/api')
+app.include_router(reports_router, prefix='/api')
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

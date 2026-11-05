@@ -10,6 +10,7 @@ from fastapi import APIRouter, Request, Depends, HTTPException
 from pydantic import BaseModel, Field
 from core import db, now, uid, audit, current_user, managers
 from whatsapp import get_contact, note, can_see, aware, WINDOW
+from niches import niche
 
 router = APIRouter()
 
@@ -17,11 +18,23 @@ def _st(*rows):
     return [{'id': uid()[:8], 'name': n, 'kind': k} for n, k in rows]
 
 def default_stages(segment):
-    return {
-        'studio': _st(('Novo contato', 'open'), ('Aula experimental marcada', 'open'), ('Fez a aula', 'open'), ('Negociando', 'open'), ('Matriculou', 'won'), ('Perdido', 'lost')),
-        'clinica': _st(('Novo contato', 'open'), ('Avaliação marcada', 'open'), ('Avaliou', 'open'), ('Orçamento enviado', 'open'), ('Fechou', 'won'), ('Perdido', 'lost')),
-        'lancamento': _st(('Novo lead', 'open'), ('Interessado', 'open'), ('Link enviado', 'open'), ('Comprou', 'won'), ('Perdido', 'lost')),
-    }.get(segment) or _st(('Novo contato', 'open'), ('Em conversa', 'open'), ('Proposta enviada', 'open'), ('Fechou', 'won'), ('Perdido', 'lost'))
+    return _st(*niche(segment)['stages'])
+
+async def move_stage(company, contact, stage_id, by_name, stages=None):
+    """Muda a etapa do contato, registra na conversa e no histórico de etapas (base dos relatórios)."""
+    stages = stages or await stages_for(company)
+    st = next((s for s in stages if s['id'] == stage_id), None)
+    if not st: raise HTTPException(400, 'Etapa não existe.')
+    if contact.get('stage') == stage_id: return False
+    upd = {'stage': stage_id, 'stage_at': now()}
+    if st['kind'] == 'won': upd['won_at'] = now()
+    if st['kind'] == 'lost': upd['lost_at'] = now()
+    await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
+    await db.stage_events.insert_one({'id': uid(), 'company_id': company['id'], 'contact_id': contact['id'], 'from': contact.get('stage'),
+                                      'to': stage_id, 'kind': st['kind'], 'value': contact.get('value'), 'by': by_name, 'at': now()})
+    await note(company['id'], contact['id'], f'{by_name} moveu para {st["name"]}')
+    contact.update(upd)
+    return True
 
 async def stages_for(company):
     if company.get('stages'): return company['stages']
@@ -31,7 +44,7 @@ async def stages_for(company):
     return fresh.get('stages') or st
 
 CARD_FIELDS = {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'value': 1, 'tags': 1, 'assigned_to': 1, 'last_at': 1, 'last_text': 1,
-               'last_dir': 1, 'needs_human': 1, 'unread': 1, 'stage_at': 1, 'created_at': 1, 'source': 1, 'last_in_at': 1}
+               'last_dir': 1, 'needs_human': 1, 'unread': 1, 'stage_at': 1, 'created_at': 1, 'source': 1, 'last_in_at': 1, 'ad': 1}
 
 @router.get('/funnel')
 async def funnel(mine: bool = False, user=Depends(current_user)):
@@ -80,6 +93,7 @@ class ContactPatch(BaseModel):
     notes: Optional[str] = Field(default=None, max_length=5000)
     tags: Optional[List[str]] = Field(default=None, max_length=12)
     email: Optional[str] = Field(default=None, max_length=120)
+    opt_out: Optional[bool] = None
 
 @router.patch('/contacts/{contact_id}')
 async def patch_contact(contact_id: str, body: ContactPatch, request: Request, user=Depends(current_user)):
@@ -87,14 +101,8 @@ async def patch_contact(contact_id: str, body: ContactPatch, request: Request, u
     upd = body.model_dump(exclude_none=True)
     if 'tags' in upd: upd['tags'] = sorted({t.strip()[:24] for t in upd['tags'] if t.strip()})
     if 'stage' in upd:
-        stages = await stages_for(user['company'])
-        st = next((s for s in stages if s['id'] == upd['stage']), None)
-        if not st: raise HTTPException(400, 'Etapa não existe.')
-        if upd['stage'] != c.get('stage'):
-            upd['stage_at'] = now()
-            if st['kind'] == 'won': upd['won_at'] = now()
-            await note(user['company_id'], contact_id, f'{user.get("impersonated_by") or user["name"]} moveu para {st["name"]}')
-        else: upd.pop('stage')
+        if 'value' in upd: c['value'] = upd['value']
+        await move_stage(user['company'], c, upd.pop('stage'), user.get('impersonated_by') or user['name'])
     if upd: await db.contacts.update_one({'id': contact_id}, {'$set': upd})
     return await db.contacts.find_one({'id': contact_id}, {'_id': 0})
 

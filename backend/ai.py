@@ -23,13 +23,16 @@ router = APIRouter()
 def debounce(): return float(os.environ.get('AI_DEBOUNCE', '4'))  # espera o cliente terminar de digitar (várias mensagens seguidas)
 HUMAN_WORDS = re.compile(r'\b(atendente|humano|humana|pessoa de verdade|falar com (alg[uú]em|uma pessoa|o dono|a dona|gerente)|reclama|procon|absurdo)\b', re.I)
 
-DEFAULTS = {'name': 'Nanda', 'tone': 'proximo', 'knowledge': '', 'handoff': '', 'default_mode': 'copilot', 'signature': True}
+BLOCKS = ['about', 'offer', 'goal', 'qualify', 'rules', 'faq', 'knowledge', 'handoff']
+DEFAULTS = {'name': 'Nanda', 'tone': 'proximo', 'default_mode': 'copilot', 'signature': True, **{b: '' for b in BLOCKS}}
 TONES = {'proximo': 'próximo, simpático e direto, como uma boa atendente de WhatsApp', 'formal': 'educado e mais formal',
          'descontraido': 'descontraído e animado, com no máximo um emoji por mensagem'}
 
 async def settings_for(company_id):
     s = await db.ai_settings.find_one({'company_id': company_id}, {'_id': 0}) or {}
-    return {**DEFAULTS, **s, 'company_id': company_id}
+    s = {**DEFAULTS, **s, 'company_id': company_id}
+    s['taught'] = bool((s['about'] or s['offer'] or s['knowledge']).strip())
+    return s
 
 def key_ok(): return bool(os.environ.get('ANTHROPIC_API_KEY'))
 
@@ -45,6 +48,11 @@ async def llm(system, messages, max_tokens=500):
         raise HTTPException(502, 'A IA recusou: ' + ((data.get('error') or {}).get('message') or f'erro {r.status_code}'))
     text = ''.join(b.get('text', '') for b in data.get('content', []) if b.get('type') == 'text')
     return text, data.get('usage') or {}
+
+def knowledge_block(s):
+    parts = [('Sobre o negócio', s.get('about')), ('O que vende e preços', s.get('offer')), ('Perguntas frequentes', s.get('faq')), ('Outras informações', s.get('knowledge'))]
+    text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
+    return text or '(o dono ainda não preencheu)'
 
 def build_system(s, company, contact_name, agenda_text=None, upcoming=None):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
@@ -67,11 +75,14 @@ O cliente se chama {contact_name or 'cliente'}; use o primeiro nome com naturali
 
 O QUE VOCÊ SABE SOBRE O NEGÓCIO (única fonte de verdade):
 <conhecimento>
-{s['knowledge'].strip() or '(o dono ainda não preencheu)'}
+{knowledge_block(s)}
 </conhecimento>
+{('SEU OBJETIVO NA CONVERSA: ' + s['goal'].strip()) if s['goal'].strip() else 'SEU OBJETIVO NA CONVERSA: tirar as dúvidas e levar o cliente ao próximo passo.'}
+{('PARA ENTENDER O CLIENTE (pergunte uma coisa de cada vez, só o que ainda não sabe, sem parecer formulário):' + chr(10) + s['qualify'].strip()) if s['qualify'].strip() else ''}
 
 QUANDO CHAMAR O TIME:
 {s['handoff'].strip() or 'Quando o cliente pedir para falar com uma pessoa, reclamar, ou quando a resposta não estiver no conhecimento.'}
+{('REGRAS DESTE NEGÓCIO:' + chr(10) + s['rules'].strip()) if s['rules'].strip() else ''}
 
 REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Nunca invente preço, horário, condição ou promessa que não esteja no conhecimento. Se não souber, chame o time.
@@ -189,6 +200,12 @@ class SettingsIn(BaseModel):
     tone: Optional[Literal['proximo', 'formal', 'descontraido']] = None
     knowledge: Optional[str] = Field(default=None, max_length=12000)
     handoff: Optional[str] = Field(default=None, max_length=3000)
+    about: Optional[str] = Field(default=None, max_length=3000)
+    offer: Optional[str] = Field(default=None, max_length=8000)
+    goal: Optional[str] = Field(default=None, max_length=1000)
+    qualify: Optional[str] = Field(default=None, max_length=2000)
+    rules: Optional[str] = Field(default=None, max_length=3000)
+    faq: Optional[str] = Field(default=None, max_length=8000)
     default_mode: Optional[Literal['auto', 'copilot', 'off']] = None
 
 @router.get('/ai/settings')
@@ -210,17 +227,27 @@ async def put_settings(body: SettingsIn, request: Request, user=Depends(managers
 class TestIn(BaseModel):
     messages: List[dict] = Field(min_length=1, max_length=30)
 
-@router.post('/ai/test')
-async def test(body: TestIn, user=Depends(managers)):
-    """Conversa de teste no painel: nada vai para o WhatsApp."""
-    s = await settings_for(user['company_id'])
+def to_llm(messages):
     msgs = []
-    for m in body.messages:
+    for m in messages:
         role = 'user' if m.get('dir') == 'in' else 'assistant'
         t = str(m.get('text') or '')[:2000]
         if msgs and msgs[-1]['role'] == role: msgs[-1]['content'] += '\n' + t
         else: msgs.append({'role': role, 'content': t})
     while msgs and msgs[0]['role'] != 'user': msgs.pop(0)
+    return msgs
+
+@router.get('/ai/example')
+async def example(user=Depends(current_user)):
+    """Exemplo preenchido do nicho da empresa, para o dono adaptar."""
+    from niches import niche
+    return niche(user['company'].get('segment'))['ai']
+
+@router.post('/ai/test')
+async def test(body: TestIn, user=Depends(managers)):
+    """Conversa de teste no painel: nada vai para o WhatsApp."""
+    s = await settings_for(user['company_id'])
+    msgs = to_llm(body.messages)
     if not msgs: raise HTTPException(400, 'Escreva uma mensagem como cliente.')
     text, usage = await llm(await system_for(s, user['company']), msgs)
     await track(user['company_id'], usage, 'tests')
@@ -255,3 +282,65 @@ async def resolved(contact_id: str, user=Depends(current_user)):
     await get_contact(user, contact_id)
     await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False}})
     return {'ok': True}
+
+# ---------- testes salvos ----------
+class CaseIn(BaseModel):
+    name: str = Field(min_length=2, max_length=80)
+    messages: List[dict] = Field(min_length=1, max_length=20)
+    expect: Literal['reply', 'handoff', 'book'] = 'reply'
+    contains: str = Field(default='', max_length=300)
+    not_contains: str = Field(default='', max_length=300)
+
+def terms(v): return [t.strip().lower() for t in re.split(r'[;\n]', v or '') if t.strip()]
+
+def judge(case, d):
+    """Confere a resposta com o que o dono espera. Devolve (passou, motivo)."""
+    reply = (d.get('reply') or '').lower()
+    if case['expect'] == 'handoff' and not d['handoff']: return False, 'Era para chamar o time e ela respondeu sozinha.'
+    if case['expect'] == 'book' and not d['book']: return False, 'Era para agendar e ela não agendou.'
+    if case['expect'] == 'reply' and d['handoff']: return False, 'Era para responder e ela chamou o time (' + (d.get('reason') or '') + ').'
+    miss = [t for t in terms(case.get('contains')) if t not in reply]
+    if miss: return False, 'Faltou mencionar: ' + ', '.join(miss)
+    bad = [t for t in terms(case.get('not_contains')) if t in reply]
+    if bad: return False, 'Falou o que não devia: ' + ', '.join(bad)
+    return True, 'ok'
+
+@router.get('/ai/tests')
+async def list_tests(user=Depends(managers)):
+    return await db.ai_tests.find({'company_id': user['company_id']}, {'_id': 0}).sort('created_at', 1).to_list(50)
+
+@router.post('/ai/tests')
+async def add_test(body: CaseIn, user=Depends(managers)):
+    if await db.ai_tests.count_documents({'company_id': user['company_id']}) >= 30: raise HTTPException(400, 'Limite de 30 testes.')
+    if not to_llm(body.messages): raise HTTPException(400, 'O teste precisa de pelo menos uma mensagem do cliente.')
+    t = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'created_at': now(), 'last': None}
+    await db.ai_tests.insert_one(t.copy())
+    t.pop('_id', None)
+    return t
+
+@router.delete('/ai/tests/{tid}')
+async def del_test(tid: str, user=Depends(managers)):
+    await db.ai_tests.delete_one({'id': tid, 'company_id': user['company_id']})
+    return {'ok': True}
+
+@router.post('/ai/tests/run')
+async def run_tests(user=Depends(managers)):
+    """Roda todos os testes salvos com o que a Nanda sabe agora. Nada vai para o WhatsApp."""
+    cases = await db.ai_tests.find({'company_id': user['company_id']}, {'_id': 0}).to_list(30)
+    if not cases: raise HTTPException(400, 'Salve pelo menos um teste antes.')
+    s = await settings_for(user['company_id'])
+    system = await system_for(s, user['company'])
+    sem = asyncio.Semaphore(4)
+    async def one(case):
+        async with sem:
+            try:
+                text, usage = await llm(system, to_llm(case['messages']))
+                await track(user['company_id'], usage, 'tests')
+                d = parse(text); ok, why = judge(case, d)
+                res = {'ok': ok, 'why': why, 'reply': d['reply'], 'handoff': d['handoff'], 'book': bool(d['book']), 'at': now()}
+            except HTTPException as e:
+                res = {'ok': False, 'why': str(e.detail), 'reply': '', 'at': now()}
+            await db.ai_tests.update_one({'id': case['id']}, {'$set': {'last': res}})
+            return {**case, 'last': res}
+    out = await asyncio.gather(*[one(c) for c in cases])
+    return {'passed': sum(1 for c in out if c['last']['ok']), 'total': len(out), 'tests': out}
