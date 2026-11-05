@@ -371,6 +371,22 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .tsel input{display:none}.tsel label:has(input:checked){border-color:var(--tc);background:color-mix(in srgb,var(--tc) 8%,#fff);box-shadow:0 0 0 2px color-mix(in srgb,var(--tc) 25%,transparent)}
 .tmp{font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;color:var(--tc);background:color-mix(in srgb,var(--tc) 12%,#fff);white-space:nowrap}.tmp.lg{font-size:12.5px;padding:3px 10px}
 .bd2.tr{background:#E6EEF8;color:#2F6FB5}
+@media (min-width:1201px){
+ .cv{grid-template-columns:var(--lw,340px) minmax(0,1fr) var(--pw,320px)}.cv.nopanel{grid-template-columns:var(--lw,340px) minmax(0,1fr)}
+ .rsz{position:absolute;top:0;bottom:0;width:9px;cursor:col-resize;z-index:6}.rsz:hover::after,.rsz.on::after{content:'';position:absolute;left:3px;top:0;bottom:0;width:3px;background:var(--c);opacity:.5}
+ .rsz.l{left:calc(var(--lw,340px) - 5px)}.rsz.r{right:calc(var(--pw,320px) - 5px)}.cv.nopanel .rsz.r,.cv.lmin .rsz.l{display:none}
+ .cv.lmin{--lw:72px!important}.cv.lmin .cv-list .srch,.cv.lmin .cvf,.cv.lmin .ci .cb,.cv.lmin .cvn{display:none}
+ .cv.lmin .cv-list .hd{justify-content:center;padding:0}.cv.lmin .ci{justify-content:center;padding:10px 0;position:relative}
+ .cv.lmin .ci.un::after{content:'';position:absolute;top:9px;right:13px;width:11px;height:11px;border-radius:50%;background:var(--c);border:2px solid #fff}
+ .cv.resizing{user-select:none}.cv.resizing *{cursor:col-resize!important}
+}
+.lmn{flex:none;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--ink3);margin-left:6px}.lmn:hover{background:#F3EEE9;color:var(--ink)}
+@media (max-width:1200px){.lmn,.rsz{display:none}}
+.pn-hero.cp{flex-direction:row;text-align:left;align-items:center;gap:12px;padding:14px 16px}.pn-hero.cp .av{width:46px;height:46px;font-size:15px;margin:0}
+.pn-hero.cp .tx{min-width:0;display:flex;flex-direction:column}.pn-hero.cp .tx b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pn-hero.cp .tx>span{font-size:13px;color:var(--ink2)}.pn-hero.cp .pn-tags{justify-content:flex-start;margin-top:5px}
+.pn-kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center}
+.pn-kv>label{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.pn-kv select{padding:7px 9px;font-size:13.5px;min-width:0;width:100%}.pn-kv .pn-val input{padding:7px 9px 7px 0}.pn-kv .pn-own{font-size:13.5px;gap:8px}
 .pn-tr{background:#F2F6FC}.pn-tr p{font-size:13px;color:var(--ink);line-height:1.4}
 .side .nav .nb{margin-left:auto;background:var(--c);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 6px}
 .cvf.f5{grid-template-columns:repeat(5,minmax(0,1fr))}.cvf.f5 button{font-size:11px}
@@ -708,7 +724,7 @@ async function cvList(){
   CV.list=await api('/conversations?filter='+CV.filter+(CV.q?'&q='+encodeURIComponent(CV.q):''));
   const el=$('#cvItems');if(!el)return;
   el.innerHTML=CV.list.length?CV.list.map(c=>{const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in';
-   return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}">
+   return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}">
     <span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
@@ -717,8 +733,24 @@ async function cvList(){
    :`<div class="empty">${CV.q?'Nenhuma conversa encontrada para essa busca.':CV.filter==='waiting'?'Ninguém esperando resposta agora.':CV.filter==='mine'?'Nenhuma conversa com você.':'Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.'}</div>`;
   el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openConv(b.dataset.c));
 }
+const CVW=(()=>{try{return JSON.parse(localStorage.getItem('cvw'))||{}}catch(e){return {}}})();
+function cvSizes(){const cv=$('.cv');if(!cv)return;
+  const save=()=>{try{localStorage.setItem('cvw',JSON.stringify(CVW))}catch(e){}};
+  const apply=()=>{const W=cv.clientWidth,pn=!cv.classList.contains('nopanel');let lw=CVW.lmin?72:(CVW.lw||340),pw=CVW.pw||320;
+    let over=lw+(pn?pw:0)+520-W;  // a conversa no meio nunca fica com menos de 520px
+    if(over>0&&pn){const d=Math.min(over,pw-260);pw-=d;over-=d}if(over>0&&!CVW.lmin)lw=Math.max(260,lw-over);
+    cv.style.setProperty('--lw',lw+'px');cv.style.setProperty('--pw',pw+'px');cv.classList.toggle('lmin',!!CVW.lmin);
+    const b=$('#cvLmin');if(b){b.innerHTML=svg(CVW.lmin?'<path d="m9 6 6 6-6 6"/>':'<path d="m15 6-6 6 6 6"/>');b.title=b.ariaLabel=CVW.lmin?'Abrir lista':'Recolher lista'}};
+  apply();CV.fitW=apply;
+  $('#cvLmin').onclick=()=>{CVW.lmin=!CVW.lmin;save();apply()};
+  const LIM={lw:[260,520,340],pw:[260,460,320]};
+  cv.querySelectorAll('[data-rz]').forEach(h=>{const k=h.dataset.rz;
+    h.ondblclick=()=>{delete CVW[k];save();apply()};
+    h.onpointerdown=e=>{e.preventDefault();h.setPointerCapture(e.pointerId);h.classList.add('on');cv.classList.add('resizing');const r=cv.getBoundingClientRect();
+      h.onpointermove=ev=>{const v=k==='lw'?ev.clientX-r.left:r.right-ev.clientX;CVW[k]=Math.round(Math.min(LIM[k][1],Math.max(LIM[k][0],v)));apply()};
+      h.onpointerup=()=>{h.onpointermove=null;h.classList.remove('on');cv.classList.remove('resizing');save()}}})}
 function fitCv(){const cv=$('.cv');if(!cv)return;const top=cv.getBoundingClientRect().top+scrollY;cv.style.height=Math.max(420,innerHeight-top)+'px'}
-addEventListener('resize',()=>{if(VIEW==='conversas')fitCv()});
+addEventListener('resize',()=>{if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}});
 function openConv(id){CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts={};syncUrl();$('.cv')?.classList.add('chat');document.querySelectorAll('.ci').forEach(x=>x.classList.toggle('on',x.dataset.c===id));cvChat(true)}
 function closeConv(){CV.open=null;syncUrl();$('.cv')?.classList.remove('chat');$('.cv')?.classList.remove('pn-open');cvEmpty();cvList()}
 function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
@@ -774,7 +806,7 @@ async function cvChat(full){
   const t2=$('#cvText');if(t2&&(hadFocus||full)){if(full&&innerWidth<860){}else{t2.focus();try{t2.selectionStart=t2.selectionEnd=caret||t2.value.length}catch(e){}}}
   // ações
   $('#cvBack').onclick=closeConv;
-  $('#cvPan').onclick=()=>{if(innerWidth<1200){$('.cv').classList.toggle('pn-open');return}CV.panel=!CV.panel;try{localStorage.setItem('oinanda.cvPanel',CV.panel?'1':'0')}catch(e){}$('.cv').classList.toggle('nopanel',!CV.panel);$('#cvPan').classList.toggle('on',CV.panel)};
+  $('#cvPan').onclick=()=>{if(innerWidth<1200){$('.cv').classList.toggle('pn-open');return}CV.panel=!CV.panel;try{localStorage.setItem('oinanda.cvPanel',CV.panel?'1':'0')}catch(e){}CV.fitW&&setTimeout(CV.fitW);$('.cv').classList.toggle('nopanel',!CV.panel);$('#cvPan').classList.toggle('on',CV.panel)};
   if($('#cvMode'))$('#cvMode').onchange=async e=>{try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:e.target.value||null}});cvChat(true);cvList()}catch(x){toast(x.message)}};
   if($('#cvMine'))$('#cvMine').onclick=async()=>{try{await api('/conversations/'+CV.open+'/take',{method:'POST'});toast('A conversa agora é sua.');CV.pnFor=null;cvChat(true);cvList();cvCounts()}catch(x){toast(x.message);cvList()}};
   $('#cvTr').onclick=()=>transferModal(c);
@@ -886,14 +918,14 @@ async function cvPanel(c){
   const src=c.ad?`Anúncio "${esc(c.ad.headline||c.ad.source_id||'')}"`:{manual:'Cadastro manual',historico:'Conversa antiga do celular','agenda do celular':'Agenda do celular'}[c.source]||'Chamou no WhatsApp';
   const sx=stageOf(c.stage);
   p.innerHTML=`<div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Fechar painel">×</button></div>
-   <div class="pn-hero"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}</span>
-    <div class="pn-tags"><span class="bd2">${src}</span><span class="bd2">desde ${day(c.created_at)}</span>${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div>
+   <div class="pn-hero cp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><div class="tx"><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}</span>
+    <div class="pn-tags"><span class="bd2">${src}</span><span class="bd2">desde ${day(c.created_at)}</span>${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div></div>
    ${c.transfer_by&&c.transfer_reason?`<div class="pn-s pn-tr"><label>Transferida por ${esc(c.transfer_by)} · ${ago(c.transfer_at)}</label><p>${esc(c.transfer_reason)}</p></div>`:''}
-   <div class="pn-s"><label>Equipe</label><div class="pn-own">${c.team_id&&TMN(c.team_id)?`<span class="tmp lg" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:'<span class="hint">Nenhuma</span>'}<button class="lnk" id="pnTr">transferir</button></div>
-    <label>Etapa do funil</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+   <div class="pn-s"><div class="pn-kv"><label>Equipe</label><div class="pn-own">${c.team_id&&TMN(c.team_id)?`<span class="tmp lg" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:'<span class="hint">Nenhuma</span>'}<button class="lnk" id="pnTr">transferir</button></div>
+    <label>Etapa</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
     <label>Responsável</label>${mgr?`<select id="pnAs" class="pn-as"><option value="">Sem responsável</option>${(CV.team||[]).filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`
       :`<div class="pn-own">${c.assigned_to===ME.user.id?'Você':esc(c.assigned_name||'Ninguém ainda')}${c.assigned_to!==ME.user.id?'<button class="lnk" id="pnMine">assumir</button>':''}</div>`}
-    <label>Valor da venda</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div></div>
+    <label>Valor</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div></div></div>
    <div class="pn-s"><div class="pn-sh"><label>Próximos horários</label><button class="lnk" id="pnBook">+ agendar</button></div>
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</div>
    <div class="pn-s"><label>Etiquetas</label><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></div>
@@ -1371,10 +1403,11 @@ const VIEWS={
   const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[])]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    </div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],...(tms.some(t=>t.mine)?[['team','Equipe']]:[]),['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
+    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],...(tms.some(t=>t.mine)?[['team','Equipe']]:[]),['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
-    <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside></div>`;
+    <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
+  cvSizes();
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
   fitCv();
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));cvList()});
