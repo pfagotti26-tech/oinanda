@@ -318,6 +318,31 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
  .ch-top .act .hide-m,.ch-top .act .own,.ch-top .act .pill,.ch-top .act #cvMine{display:none}.nsw span{display:none}.nsw{padding-left:6px}.nsw select{max-width:110px}
  .cv-chat .msgs{padding:12px 10px}.m,.m.note{max-width:85%}.cv-pn{width:100%}.cmp{padding:6px 10px 10px}.ctabs .win{display:none}}
 
+
+/* conversas: encaixe */
+.cv-list .hd{padding:0 12px;border-bottom:1px solid var(--line);height:64px;display:flex;align-items:center}
+.cv-list .hd .srch{margin:0;width:100%;flex:1}
+.cvf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:8px 10px;border-bottom:1px solid var(--line);background:#fff}
+.cvf button{display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 2px;border-radius:10px;font-size:12px;font-weight:700;color:var(--ink2);line-height:1.2;white-space:nowrap}
+.cvf button i{font-style:normal;font-size:15px;font-weight:800;color:var(--ink);min-height:18px}
+.cvf button:hover{background:#F6F2EE}.cvf button.on{background:var(--ink);color:#C9D2DA}.cvf button.on i{color:#fff}
+.cvf button[data-f=waiting] i:not(:empty){color:var(--c2)}.cvf button.on[data-f=waiting] i{color:#FFB38A}
+.cvn{margin:8px 10px;font-size:12.5px}
+.ch-top{height:64px;min-height:64px}.pn-h{height:64px;padding:0 14px;border-bottom:1px solid var(--line)}
+.pn-hero{padding-top:16px}
+.stg{max-width:170px}
+.ci .ow{background:#fff;color:var(--ink2);border:1.5px solid #D8DEE4}
+.mn-n{display:none;flex-direction:column;border-bottom:1px solid var(--line);margin-bottom:4px;padding-bottom:4px}.mn-n button.on{color:var(--c2);font-weight:800}.mn-n button.on::after{content:' ✓'}
+.btn.snd svg{display:none;width:18px;height:18px}
+@media (max-width:860px){
+ .cv-list .hd{height:60px}.cvf{padding:6px 8px}.cvf button{font-size:11.5px}
+ .ch-top{height:58px;min-height:58px}.ch-top .nsw{display:none}.mn-n{display:flex}
+ .cbox{gap:2px}.cbox .ib{width:34px;height:40px}.btn.snd{width:44px;height:44px;padding:0;border-radius:50%;flex:none}.btn.snd span{display:none}.btn.snd svg{display:block}
+ .cbox textarea{min-height:44px;border-radius:22px;padding:11px 14px}
+ .ctabs{margin-bottom:6px}.sug{padding:8px 10px}.sug p{font-size:13px}
+ .pn-h{height:58px}
+}
+
 /* agenda */
 .ag-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:10px;margin-bottom:14px}
 .ag-sum .s{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 16px;font-size:12px;color:var(--ink2);font-weight:600;min-width:0}
@@ -644,7 +669,7 @@ const fillVars=(t,c)=>String(t||'').replace(/\{(\w+)\}/g,(m,k)=>({primeiro_nome:
 const MODES={auto:'Automática',copilot:'Copiloto',off:'Pausada'};
 
 async function cvCounts(){try{CV.counts=await api('/inbox/counts')}catch(e){return}
-  document.querySelectorAll('[data-f]').forEach(b=>{const n=CV.counts[b.dataset.f];const i=b.querySelector('i');if(i)i.textContent=n?n:''})}
+  document.querySelectorAll('[data-f]').forEach(b=>{const n=CV.counts[b.dataset.f];const i=b.querySelector('i');if(i)i.textContent=String(n||0)})}
 async function cvList(){
   CV.list=await api('/conversations?filter='+CV.filter+(CV.q?'&q='+encodeURIComponent(CV.q):''));
   const el=$('#cvItems');if(!el)return;
@@ -654,10 +679,12 @@ async function cvList(){
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
      <span class="r3">${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w?`<span class="bd2 ${w}">esperando ${ago(c.last_in_at||c.last_at)}</span>`:''}
-      <span class="sp"></span>${un?`<span class="nb">${c.unread}</span>`:''}${c.assigned_name?`<span class="ow" title="Responsável: ${esc(c.assigned_name)}">${initials(c.assigned_name)}</span>`:''}</span></span></button>`}).join('')
+      <span class="sp"></span>${un?`<span class="nb">${c.unread}</span>`:''}${c.assigned_name&&c.assigned_to!==ME.user.id?`<span class="ow" title="Responsável: ${esc(c.assigned_name)}">${initials(c.assigned_name)}</span>`:''}</span></span></button>`}).join('')
    :`<div class="empty">${CV.q?'Nenhuma conversa encontrada para essa busca.':CV.filter==='waiting'?'Ninguém esperando resposta agora.':CV.filter==='mine'?'Nenhuma conversa com você.':'Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.'}</div>`;
   el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openConv(b.dataset.c));
 }
+function fitCv(){const cv=$('.cv');if(!cv)return;const top=cv.getBoundingClientRect().top+scrollY;cv.style.height=Math.max(420,innerHeight-top)+'px'}
+addEventListener('resize',()=>{if(VIEW==='conversas')fitCv()});
 function openConv(id){CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts={};syncUrl();$('.cv')?.classList.add('chat');document.querySelectorAll('.ci').forEach(x=>x.classList.toggle('on',x.dataset.c===id));cvChat(true)}
 function closeConv(){CV.open=null;syncUrl();$('.cv')?.classList.remove('chat');$('.cv')?.classList.remove('pn-open');cvEmpty();cvList()}
 function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
@@ -700,7 +727,7 @@ async function cvChat(full){
      <button class="ib hide-m" id="cvBook" title="Agendar horário" aria-label="Agendar horário">${IC.clock}</button>
      <button class="ib hide-m ${resolved?'on':''}" id="cvRes" title="${resolved?'Resolvida · clique para reabrir':'Marcar como resolvida'}" aria-label="${resolved?'Reabrir conversa':'Marcar como resolvida'}">${IC.check}</button>
      <div class="mnw"><button class="ib" id="cvMore" aria-label="Mais ações" aria-haspopup="true">⋯</button>
-      <div class="mn hide" id="cvMn"><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
+      <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}</button>`).join('')}</div><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
      <button class="ib pn-t ${CV.panel?'on':''}" id="cvPan" aria-label="Painel do cliente" title="Painel do cliente">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}</button>
     </div></div>
    ${c.needs_human?`<div class="human">🙋 ${first} quer falar com alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}</div>`:''}
@@ -719,6 +746,7 @@ async function cvChat(full){
   $('#cvRes').onclick=doRes;$('#cvBook').onclick=doBook;
   const mn=$('#cvMn');$('#cvMore').onclick=e=>{e.stopPropagation();mn.classList.toggle('hide')};
   document.addEventListener('click',()=>mn.classList.add('hide'),{once:true});
+  mn.querySelectorAll('[data-md]').forEach(b=>b.onclick=async()=>{mn.classList.add('hide');try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:b.dataset.md}});toast('Nanda '+MODES[b.dataset.md].toLowerCase()+' nesta conversa.');cvChat(true);cvList()}catch(x){toast(x.message)}});
   mn.querySelectorAll('[data-mn]').forEach(b=>b.onclick=async()=>{mn.classList.add('hide');const k=b.dataset.mn;
     if(k==='book')doBook();if(k==='res')doRes();if(k==='det')contactDrawer(CV.open,()=>{CV.pnFor=null;cvChat(true);cvList()});
     if(k==='q'){toast('Avaliando o atendimento...');try{qualityModal(await api('/quality/'+CV.open,{method:'POST'}))}catch(x){toast(x.message)}}});
@@ -733,9 +761,9 @@ function drawComposer(c,w,draft){
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
      `<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
-  else{box.innerHTML=tabs+`<div id="cvSug"></div><form class="cbox" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first+' (/ respostas)':'Escreva para '+first+'... (Enter envia · Shift+Enter quebra linha · / respostas rápidas)'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+  else{box.innerHTML=tabs+`<div id="cvSug"></div><form class="cbox" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+'... (Enter envia · Shift+Enter quebra linha · / respostas rápidas)'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
      <button type="button" class="ib" id="cvQRb" title="Respostas rápidas" aria-label="Respostas rápidas">${svg('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>')}</button>
-     ${CV.ai?.key_configured?`<button type="button" class="ib" id="cvSugB" title="A Nanda escreve uma sugestão" aria-label="Sugestão da Nanda">✨</button>`:''}<button class="btn p">Enviar</button></form>`}
+     ${CV.ai?.key_configured?`<button type="button" class="ib" id="cvSugB" title="A Nanda escreve uma sugestão" aria-label="Sugestão da Nanda">✨</button>`:''}<button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></form>`}
   box.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{CV.drafts=CV.drafts||{};CV.drafts[CV.tab]=$('#cvText')?.value||'';CV.tab=b.dataset.ct;drawComposer(c,w,CV.drafts[CV.tab]||'');$('#cvText')?.focus()});
   const ta=$('#cvText');if(!ta)return;ta.value=draft||'';
   const grow=()=>{ta.style.height='auto';ta.style.height=Math.min(160,ta.scrollHeight)+'px'};grow();
@@ -1271,13 +1299,14 @@ const VIEWS={
  },
  async conversas(){
   const [num,team,st,ai]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null)]);CV.team=team;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
-  $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd"><h1>Conversas</h1>
-    ${num?'':`<p class="note" style="margin-top:8px">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
+  $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    <div class="chips cvf">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],['unassigned','Sem dono']].map(f=>`<button class="chip ${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div></div>
+    </div><div class="cvf">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
+    ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside></div>`;
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
+  fitCv();
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));cvList()});
   $('#cvQ').oninput=e=>{CV.q=e.target.value;$('#cvQX').classList.toggle('hide',!CV.q);clearTimeout(CV.qt);CV.qt=setTimeout(cvList,200)};
   $('#cvQX').onclick=()=>{CV.q='';$('#cvQ').value='';$('#cvQX').classList.add('hide');cvList()};
