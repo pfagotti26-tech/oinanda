@@ -36,7 +36,8 @@ async def counts(user=Depends(current_user)):
     return {'team': sum(1 for r in rows if r.get('team_id') in mine), 'team_queue': sum(1 for r in rows if r.get('team_id') in mine and not r.get('assigned_to')),
             'has_team': bool(mine), 'transfers': pend,'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
             'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)),
-            'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread'))}
+            'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread')),
+            'sales_pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending'}) if user['role'] in ('owner', 'manager') else 0}
 
 # ---------- respostas rápidas ----------
 class QuickIn(BaseModel):
