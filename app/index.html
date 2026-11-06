@@ -508,6 +508,30 @@ td>.sure,tr+.sure{margin:4px}
 .pn-buys{display:flex;flex-direction:column;gap:6px}.pn-buy{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}.pn-buy:hover{background:#FBF8F5}
 .pn-buy span{display:flex;justify-content:space-between;align-items:baseline}.pn-buy b{font-size:13.5px}.pn-buy small{font-size:11.5px;color:var(--ink3)}.pn-buy em{font-style:normal;font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lnk.sm2l{font-size:11.5px;margin-left:6px;opacity:.8}
+
+.pn-wal{display:flex;flex-direction:column;gap:10px}.wl-has{display:flex;flex-direction:column;gap:6px}
+.wl-i,.wl-o{display:flex;align-items:center;gap:8px}.wl-i span:first-child,.wl-o span:first-child{flex:1;min-width:0;display:flex;flex-direction:column}
+.wl-i b,.wl-o b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wl-i small,.wl-o small{font-size:11.5px;color:var(--ink3)}
+.wl-off{display:flex;flex-direction:column;gap:6px;background:var(--soft);border-radius:12px;padding:10px}.wl-t{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--c2)}
+.wl-o .lnk{font-size:12.5px}.pn-hist summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ink2);margin-top:4px}.pn-hist .pn-buys{margin-top:8px}
+
+/* clientes */
+.cl-g{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;align-items:start}
+.cl-side{display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}.cl-box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.cl-box h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin:2px 4px 6px;font-weight:800}
+.cl-seg{display:flex;align-items:center;gap:4px;border-radius:10px}.cl-seg.on{background:var(--soft)}.cl-seg>button:first-child{flex:1;display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:10px;text-align:left;min-width:0}
+.cl-seg>button:first-child:hover{background:#FBF8F5}.cl-seg b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cl-seg span{font-size:12px;font-weight:800;color:var(--ink2)}
+.cl-tp{display:flex;flex-direction:column;text-align:left;padding:8px;border-radius:10px}.cl-tp:hover{background:#FBF8F5}.cl-tp b{font-size:13.5px}.cl-tp span{font-size:12px;color:var(--ink3)}
+.cl-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cl-rules{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.cl-rule{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#FBF8F5;border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 12px;font-size:13.5px}
+.cl-rule b{font-weight:700}.cl-rule .cl-e{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--c2);background:var(--soft);border-radius:999px;padding:2px 8px}
+.cl-rule select,.cl-rule input{border:1px solid #DCD2C9;border-radius:9px;padding:6px 8px;font:inherit;font-size:13.5px;background:#fff;max-width:220px}.cl-rule input[type=number]{width:90px}.cl-rule .sm-x{margin-left:auto}
+.cl-add{align-self:flex-start}
+.cl-sum{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px}.cl-sum>div:first-child{font-size:14px}.cl-sum>div:first-child b{font-size:22px;letter-spacing:-.5px}
+.cl-act{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.vtb td small{display:block}.sx.ok{background:var(--oksoft);color:var(--ok)}.sx.warn{background:var(--warnsoft);color:var(--warn)}.sx.bad{background:var(--badsoft);color:var(--bad)}
+@media (max-width:960px){.cl-g{grid-template-columns:1fr}.cl-side{position:static;order:2}.cl-act{margin-left:0;width:100%}.cl-act .btn{flex:1;justify-content:center}}
 /* vendas v2 */
 .vd-hd{margin-bottom:6px}.vd-hd .btn svg{width:15px;height:15px;margin-right:4px;vertical-align:-3px}
 .utabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto;scrollbar-width:none}.utabs::-webkit-scrollbar{display:none}
@@ -793,19 +817,19 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversas:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
   nanda:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
   funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',
   agenda:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',vendas:'<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
-  automacoes:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',relatorios:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  automacoes:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',clientes:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17a3.5 3.5 0 0 1 7 0M15 10h3M15 14h3"/>',relatorios:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   equipe:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',
   empresa:'<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/>',
   atividade:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
   'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
-const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','automacoes','relatorios']],['Configurar',['nanda','equipe','empresa','atividade']]];
+const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','automacoes','relatorios']],['Configurar',['nanda','equipe','empresa','atividade']]];
 const NAVMINI={get(){try{return localStorage.getItem('navmini')==='1'}catch(e){return false}},set(v){try{localStorage.setItem('navmini',v?'1':'0')}catch(e){}}};
 const nrm=t=>(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
@@ -815,6 +839,9 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Criar cupom','vendas',()=>{VD.tab='promocoes';return go('vendas')},m],
   ['Novo link rastreável / QR Code','vendas',()=>{VD.tab='origens';return go('vendas').then(async()=>linkModal(null,await orgLoad()))},m],
   ['Catálogo de produtos e serviços','vendas',()=>{VD.tab='produtos';return go('vendas')}],
+  ['Quem vence nos próximos 15 dias','clientes',()=>{CL.rules=[{field:'expires_in',op:'is',value:15}];CL.seg=null;return go('clientes')}],
+  ['Quem venceu e não renovou','clientes',()=>{CL.rules=[{field:'expired_within',op:'is',value:30}];CL.seg=null;return go('clientes')}],
+  ['Montar segmento de clientes','clientes',()=>go('clientes')],
   ['Agendar horário','agenda',()=>go('agenda').then(()=>bookModal({},()=>VIEWS.agenda()))],
   ['Conversas esperando resposta','conversas',()=>{CV.filter='waiting';CV.open=null;return go('conversas')}],
   ['Ver clientes (já compraram)','conversas',()=>{CV.kind='cliente';CV.origin='';CV.open=null;CV.filter='all';return go('conversas')}],
@@ -1170,7 +1197,8 @@ async function cvPanel(c){
     <label>Situação</label><div class="pn-own"><span><span class="ks ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>${c.sales_count?` <span class="hint">${c.sales_count} ${c.sales_count===1?'compra':'compras'} · ${brl(c.value)}</span>`:''}</span><button class="lnk" id="pnSale" ${c.sales_count?'hidden':''}>+ venda</button></div>
     ${c.sales_count?'':`<label>Previsto</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="valor em negociação"></div>`}
     <label>Origem</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda perguntou',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div></div></div>
-   ${c.sales_count?`<div class="pn-s"><div class="pn-sh"><label>Compras</label><button class="lnk" id="pnSale2">+ venda</button></div><div id="pnBuys" class="pn-buys"><span class="hint">Carregando...</span></div></div>`:''}
+   ${c.sales_count?`<div class="pn-s"><div class="pn-sh"><label>Carteira</label><button class="lnk" id="pnSale2">+ venda</button></div><div id="pnWal" class="pn-wal"><span class="hint">Carregando...</span></div>
+     <details class="pn-hist"><summary>Histórico de compras (${c.sales_count})</summary><div id="pnBuys" class="pn-buys"></div></details></div>`:''}
    <div class="pn-s"><div class="pn-sh"><label>Próximos horários</label><button class="lnk" id="pnBook">+ agendar</button></div>
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</div>
    <div class="pn-s"><label>Etiquetas</label><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></div>
@@ -1183,6 +1211,14 @@ async function cvPanel(c){
   if($('#pnAs'))$('#pnAs').onchange=async e=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Responsável atualizado.');CV.sig='';cvList();cvChat(true)};
   if($('#pnMine'))$('#pnMine').onclick=async()=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:ME.user.id}});CV.sig='';cvList();cvChat(true)};
   if($('#pnVal'))$('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:Number(e.target.value)},'Valor salvo.');
+  if(c.sales_count)api('/contacts/'+c.id+'/wallet').then(w=>{const box=$('#pnWal');if(!box)return;
+    const ST={ativo:['ativo','ok'],vence_logo:['vence logo','warn'],vencido:['venceu','bad']};
+    box.innerHTML=(w.items.length?`<div class="wl-has">${w.items.map(x=>`<div class="wl-i"><span><b>${esc(x.name)}</b><small>${x.expires_at?(x.state==='vencido'?'venceu em ':'até ')+fmtD(ymd(new Date(x.expires_at))):x.count>1?x.count+' compras':'comprou em '+fmtD(ymd(new Date(x.last_at)))}</small></span><span class="pill ${ST[x.state][1]}">${ST[x.state][0]}</span></div>`).join('')}</div>`:'')
+      +(w.offers.length?`<div class="wl-off"><span class="wl-t">Pode comprar</span>${w.offers.map((o,i)=>`<div class="wl-o"><span><b>${esc(o.name)}</b><small>${o.why==='renovar'?'renovação':o.why==='voltar'?'voltar a ter':'próximo passo depois de '+esc(o.from)}${o.price!=null?' · '+brl(o.price):''}</small></span><button class="lnk" data-of="${i}">oferecer</button><button class="lnk" data-ov="${i}">vender</button></div>`).join('')}</div>`:'');
+    box.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const o=w.offers[+b.dataset.of],t=$('#cvText'),first=c.name.split(' ')[0];if(!t)return;
+      t.value=o.why==='renovar'?`Oi, ${first}! Seu ${o.name} vence em breve. Quer que eu já deixe a renovação garantida pra você?`:o.why==='voltar'?`Oi, ${first}! Sentimos sua falta. Quer voltar com o ${o.name}? Posso te passar as condições de agora.`:`Oi, ${first}! Como você já fez o ${o.from}, o próximo passo natural é o ${o.name}. Quer que eu te conte como funciona?`;
+      t.dispatchEvent(new Event('input'));t.focus();toast('Mensagem pronta na caixa. Ajuste e envie.')});
+    box.querySelectorAll('[data-ov]').forEach(b=>b.onclick=()=>{const o=w.offers[+b.dataset.ov];saleModal({contact:{id:c.id,name:c.name},items:[{product_id:o.product_id,name:o.name,price:o.price}],onDone:()=>{CV.pnFor=null;cvChat(true)}})})}).catch(()=>{});
   if(c.sales_count)api('/contacts/'+c.id+'/sales').then(rs=>{const box=$('#pnBuys');if(!box)return;const ok=rs.filter(r=>r.status!=='cancelled');
     box.innerHTML=ok.slice(0,5).map(r=>`<button class="pn-buy" data-sb="${r.id}"><span><b>${brl2(r.total)}</b><small>${fmtD(ymd(new Date(r.date)))}${r.status==='pending'?' · aguardando aprovação':''}</small></span><em>${esc(r.items.map(i=>i.name).join(', '))}</em></button>`).join('')+(ok.length>5?`<span class="hint">+ ${ok.length-5} compras</span>`:'');
     box.querySelectorAll('[data-sb]').forEach(b=>b.onclick=()=>saleModal({sale:rs.find(x=>x.id===b.dataset.sb),onDone:()=>{CV.pnFor=null;cvChat(true)}}))}).catch(()=>{});
@@ -1711,26 +1747,33 @@ async function vdList(){
 async function vdProducts(){
   const mgr=isMgr();const ps=await api('/products');
   $('#vdBody').innerHTML=`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?'<button class="btn sm p" id="pdNew">+ Novo item</button>':''}</div>
-   ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Tipo</th><th class="n">Preço</th><th></th></tr></thead><tbody>
-   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}</td><td>${esc(p.category||'—')}</td><td class="hm">${p.kind==='produto'?'Produto':'Serviço'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">livre</span>'}</td><td class="n">${p.active?'':'<span class="hint">inativo</span>'}</td></tr>`).join('')}</tbody></table></div>`
+   ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Validade</th><th class="hm">Oferecer depois</th><th class="n">Preço</th><th></th></tr></thead><tbody>
+   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}</td><td>${esc(p.category||'—')}</td><td class="hm">${durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">livre</span>'}</td><td class="n">${p.active?'':'<span class="hint">inativo</span>'}</td></tr>`).join('')}</tbody></table></div>`
    :'<div class="empty">Nenhum item ainda.</div>'}</div>`;
   if(!mgr)return;
   $('#pdNew').onclick=()=>productModal(null,ps);
   document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>productModal(ps.find(p=>p.id===b.dataset.p),ps));
 }
+const durTxt=d=>!d?'<span class="hint">não vence</span>':d%365===0?`${d/365} ${d===365?'ano':'anos'}`:d%30===0?`${d/30} ${d===30?'mês':'meses'}`:`${d} dias`;
 function productModal(p,ps){
-  const x=p||{name:'',category:'',price:null,kind:'servico',active:true};const cats=[...new Set(ps.map(y=>y.category).filter(Boolean))];
+  const x=p||{name:'',category:'',price:null,kind:'servico',active:true,duration_days:null,next_ids:[]};const cats=[...new Set(ps.map(y=>y.category).filter(Boolean))];
+  const d=x.duration_days,du=!d?['','m']:d%365===0?[d/365,'a']:d%30===0?[d/30,'m']:[d,'d'];
   const o=overlay(`<form class="modal" id="pdF" style="width:460px"><div class="row"><h2 style="font-size:19px">${p?'Editar item':'Novo item'}</h2><button type="button" class="x">×</button></div>
     <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="80" value="${esc(x.name)}" ${x.service_id?'readonly title="Muda na Agenda"':''} placeholder="Ex.: Plano trimestral"></div>
     <div class="form2"><div class="field"><label>Categoria</label><input name="category" list="pdCats" maxlength="40" value="${esc(x.category||'')}" placeholder="Ex.: Planos"><datalist id="pdCats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
      <div class="field"><label>Preço (R$)</label><input name="price" type="number" min="0" step="0.01" value="${x.price??''}" placeholder="livre"></div></div>
     <div class="field"><label>Tipo</label><div class="seg"><label style="display:contents"><input type="radio" name="kind" value="servico" ${x.kind!=='produto'?'checked':''} hidden><button type="button" data-kd="servico" class="${x.kind!=='produto'?'on':''}">Serviço</button></label><label style="display:contents"><input type="radio" name="kind" value="produto" ${x.kind==='produto'?'checked':''} hidden><button type="button" data-kd="produto" class="${x.kind==='produto'?'on':''}">Produto</button></label></div></div>
+    <div class="field"><label>Validade <span class="hint">(planos, módulos, assinaturas)</span></label><div class="row pf-v"><input type="number" name="dur" min="1" max="3650" value="${du[0]}" placeholder="sem"><select name="du" style="border:1px solid #DCD2C9;border-radius:10px;padding:7px 9px;font:inherit;width:auto">${[['d','dias'],['m','meses'],['a','anos']].map(o=>`<option value="${o[0]}" ${du[1]===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
+     <span class="hint">Com validade, o sistema avisa quando vai vencer e mostra quem precisa renovar. Vazio = não vence.</span></div>
+    <div class="field"><label>Depois de comprar este, oferecer</label><div class="chks">${ps.filter(y=>y.id!==(p&&p.id)&&y.active).map(y=>`<label><input type="checkbox" name="nx" value="${y.id}" ${(x.next_ids||[]).includes(y.id)?'checked':''}>${esc(y.name)}</label>`).join('')||'<span class="hint">Cadastre outros itens para sugerir.</span>'}</div>
+     <span class="hint">Aparece como próxima oferta na carteira de quem comprou. Ex.: Módulo 1 → Módulo 2.</span></div>
     <label class="ckl"><input type="checkbox" name="active" ${x.active?'checked':''}> Ativo (aparece na hora de vender)</label>
     <div class="row"><button class="btn p">Salvar</button>${p&&!p.service_id?'<button type="button" class="btn sm danger" id="pdDel" style="margin-left:auto">Apagar</button>':''}<span class="err" id="pdE"></span></div></form>`,true);
   const f=o.querySelector('#pdF');
   o.querySelectorAll('[data-kd]').forEach(b=>b.onclick=()=>{f.querySelector(`[name=kind][value=${b.dataset.kd}]`).checked=true;o.querySelectorAll('[data-kd]').forEach(y=>y.classList.toggle('on',y===b))});
   if($('#pdDel'))$('#pdDel').onclick=async()=>{if(!await sure('Apagar este item? Se já foi vendido, ele só fica inativo.'))return;const r=await api('/products/'+p.id,{method:'DELETE'});o.remove();toast(r.deactivated?'Já foi vendido: ficou inativo.':'Item apagado.');vdProducts()};
-  f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,category:f.category.value,price:f.price.value===''?null:Number(f.price.value),kind:f.kind.value,active:f.active.checked};
+  f.onsubmit=async ev=>{ev.preventDefault();const n=Number(f.dur.value)||0;const body={name:f.name.value,category:f.category.value,price:f.price.value===''?null:Number(f.price.value),kind:f.kind.value,active:f.active.checked,
+      duration_days:n?n*({d:1,m:30,a:365}[f.du.value]):null,next_ids:[...f.querySelectorAll('[name=nx]:checked')].map(i=>i.value)};
     try{await api(p?'/products/'+p.id:'/products',{method:p?'PUT':'POST',body});o.remove();toast('Item salvo.');vdProducts()}catch(x){$('#pdE').textContent=x.message}};
 }
 
@@ -1739,7 +1782,7 @@ async function saleModal(opt){
   const [ps,team]=await Promise.all([api('/products'),CV.team&&CV.team.length?CV.team:api('/team')]);
   const active=ps.filter(p=>p.active);const users=team.filter(u=>u.active||(sale&&(sale.sellers||[]).some(s=>s.user_id===u.id)));
   const ro=sale&&(sale.status==='cancelled'||sale.can_edit===false);
-  let items=sale?sale.items.map(i=>({...i})):[{product_id:null,name:'',category:'',qty:1,price:'',discount:0}];
+  let items=sale?sale.items.map(i=>({...i})):opt.items&&opt.items.length?opt.items.map(i=>({product_id:i.product_id||null,name:i.name,category:i.category||'',qty:1,price:i.price??'',discount:0})):[{product_id:null,name:'',category:'',qty:1,price:'',discount:0}];
   let sellers=sale?(sale.sellers||[]).map(s=>({user_id:s.user_id,pct:s.pct})):[{user_id:ME.user.id,pct:100}];
   const ctCard=c=>`<div class="sm-ct"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><b>${esc(c.name)}</b>${VIEW!=='conversas'?`<button type="button" class="lnk" data-oc="${c.id}" style="margin-left:auto">abrir conversa</button>`:''}</div>`;
   const st=sale?(sale.status==='pending'?'<span class="pill warn">aguardando aprovação</span>':sale.status==='cancelled'?'<span class="pill grey">cancelada</span>':''):'';
@@ -1953,6 +1996,87 @@ async function couponsModal(p){
     try{const r=await api('/promos/'+p.id+'/coupons',{method:'POST',body});toast(r.length===1?'Cupom '+r[0].code+' criado.':r.length+' cupons criados.');drawF();load();if(VD.tab==='promocoes')vdPromos()}catch(e){$('#cpE').textContent=e.message}};
 }
 
+/* clientes: carteira e segmentos */
+const CL={rules:[],seg:null,data:null,t:null,n:0};
+const CLF=[['product','Tem / já teve um item'],['category','Tem / já teve uma categoria'],['expires_in','Vence nos próximos dias'],['expired_within','Venceu e não renovou'],
+  ['last_purchase','Última compra'],['purchases','Número de compras'],['spent','Total gasto'],['kind','Situação'],['origin','Origem'],['stage','Etapa do funil'],
+  ['tag','Etiqueta'],['team','Equipe'],['owner','Responsável'],['promo','Usou promoção'],['created','Chegou há']];
+const CLOPS={product:[['active','tem ativo'],['ever','já comprou'],['never','nunca comprou'],['expired','teve e venceu']],category:[['active','tem ativo'],['ever','já comprou'],['never','nunca comprou']],
+  last_purchase:[['more','há mais de'],['less','nos últimos']],created:[['more','há mais de'],['less','nos últimos']],purchases:[['gte','pelo menos'],['lte','no máximo']],spent:[['gte','pelo menos R$'],['lte','no máximo R$']],
+  kind:[['is','é'],['not','não é']],origin:[['is','é'],['not','não é']],stage:[['is','está em'],['not','não está em']],tag:[['is','tem'],['not','não tem']],team:[['is','é'],['not','não é']],owner:[['is','é'],['not','não é']],promo:[['is','usou'],['not','não usou']]};
+function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).length);const t=[];
+  if(withNext)t.push(['Pode comprar o próximo item',`Tem ${withNext.name} e ainda não tem ${(D.products.find(p=>p.id===withNext.next_ids[0])||{}).name}`,[{field:'product',op:'active',value:withNext.id},{field:'product',op:'never',value:withNext.next_ids[0]}]]);
+  t.push(['Vence nos próximos 15 dias','Hora de oferecer a renovação',[{field:'expires_in',op:'is',value:15}]],['Venceu e não renovou','Nos últimos 30 dias',[{field:'expired_within',op:'is',value:30}]],
+    ['Sem comprar há 90 dias','Clientes para reativar',[{field:'kind',op:'is',value:'cliente'},{field:'last_purchase',op:'more',value:90}]],['Melhores clientes','Gastaram R$ 1.000 ou mais',[{field:'spent',op:'gte',value:1000}]],
+    ['Compraram só uma vez','Bom público para a segunda compra',[{field:'kind',op:'is',value:'cliente'},{field:'purchases',op:'lte',value:1}]],['Prospects parados','Chegaram há mais de 7 dias e não compraram',[{field:'kind',op:'is',value:'prospect'},{field:'created',op:'more',value:7}]]);return t}
+async function clView(){
+  const [ps,org,st,tms,team,pr,segs]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[])]);
+  const D=CL.data={products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
+  const tpl=clTemplates(D);
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Clientes</h1><p class="sub">Monte públicos da sua base: quem tem o quê, quem vai vencer e quem pode comprar mais.</p></div></div>
+   <div class="cl-g"><aside class="cl-side">
+     <div class="cl-box"><h3>Seus segmentos</h3>${segs.length?segs.map(x=>`<div class="cl-seg ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}"><b>${esc(x.name)}</b><span>${x.count??'—'}</span></button><button class="sm-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}">×</button></div>`).join(''):'<p class="hint">Nenhum salvo ainda. Monte um ao lado e salve.</p>'}</div>
+     <div class="cl-box"><h3>Modelos prontos</h3>${tpl.map((x,i)=>`<button class="cl-tp" data-tp="${i}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></button>`).join('')}</div>
+   </aside><section class="cl-main">
+     <div class="vd-c"><div class="hd"><h3>${CL.seg?esc((segs.find(x=>x.id===CL.seg)||{}).name||'Segmento'):'Quem entra'}</h3><span class="hint">todas as condições precisam valer</span><span class="sp"></span>${CL.rules.length?'<button class="lnk" id="clClr">começar de novo</button>':''}</div>
+      <div id="clR" class="cl-rules"></div>
+      <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">Adicionar condição</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
+     <div id="clRes"></div></section></div>`;
+  document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>{CL.rules=JSON.parse(JSON.stringify(tpl[+b.dataset.tp][2]));CL.seg=null;clView()});
+  document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>{const x=segs.find(y=>y.id===b.dataset.sg);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()});
+  document.querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este segmento? Os clientes não são afetados.'))return;await api('/segments/'+b.dataset.sd,{method:'DELETE'});if(CL.seg===b.dataset.sd)CL.seg=null;clView()});
+  if($('#clClr'))$('#clClr').onclick=()=>{CL.rules=[];CL.seg=null;clView()};
+  $('#clAdd').onchange=e=>{const f=e.target.value;if(!f)return;const op=(CLOPS[f]||[['is']])[0][0];
+    const v={product:D.products[0]?.id,category:D.categories[0],expires_in:15,expired_within:30,last_purchase:30,created:7,purchases:2,spent:500,kind:'cliente',origin:D.origins[0]?.id,stage:D.stages[0]?.id,tag:'',team:D.teams[0]?.id,owner:D.users[0]?.id,promo:D.promos[0]?.id}[f];
+    CL.rules.push({field:f,op,value:v});e.target.value='';clRules();clRun()};
+  clRules();clRun();
+}
+function clRules(){const D=CL.data;const sel=(k,list,v,extra)=>`<select data-k="${k}">${extra||''}${list.map(o=>`<option value="${esc(o.id)}" ${String(o.id)===String(v)?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
+  const P=D.products.map(p=>({id:p.id,name:p.name}));
+  $('#clR').innerHTML=CL.rules.map((r,i)=>{const f=CLF.find(x=>x[0]===r.field);let ctl='';
+    const ops=CLOPS[r.field]?`<select data-k="op">${CLOPS[r.field].map(o=>`<option value="${o[0]}" ${r.op===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`:'';
+    const days=typeof r.value==='object'&&r.value?r.value.days:r.value,prod=typeof r.value==='object'&&r.value?r.value.product:'';
+    switch(r.field){
+      case 'product':ctl=ops+sel('value',P,r.value);break;
+      case 'category':ctl=ops+sel('value',D.categories.map(c=>({id:c,name:c})),r.value);break;
+      case 'expires_in':case 'expired_within':ctl=`<span>${r.field==='expires_in'?'nos próximos':'nos últimos'}</span><input type="number" data-k="days" min="1" max="3650" value="${days||15}"><span>dias,</span>${sel('product',P,prod,'<option value="">qualquer item</option>')}`;break;
+      case 'last_purchase':case 'created':ctl=ops+`<input type="number" data-k="value" min="0" value="${r.value}"><span>dias</span>`;break;
+      case 'purchases':case 'spent':ctl=ops+`<input type="number" data-k="value" min="0" value="${r.value}">`;break;
+      case 'kind':ctl=ops+sel('value',[{id:'prospect',name:'Prospect'},{id:'cliente',name:'Cliente'},{id:'inativo',name:'Cliente inativo'}],r.value);break;
+      case 'origin':ctl=ops+sel('value',D.origins,r.value);break;
+      case 'stage':ctl=ops+sel('value',D.stages,r.value);break;
+      case 'tag':ctl=ops+`<input data-k="value" value="${esc(r.value||'')}" placeholder="nome da etiqueta">`;break;
+      case 'team':ctl=ops+sel('value',D.teams,r.value,'<option value="">sem equipe</option>');break;
+      case 'owner':ctl=ops+sel('value',D.users,r.value,'<option value="">sem responsável</option>');break;
+      case 'promo':ctl=ops+sel('value',D.promos,r.value);break}
+    return `<div class="cl-rule" data-i="${i}">${i?'<span class="cl-e">e</span>':''}<b>${f[1]}</b>${ctl}<button class="sm-x" data-rx="${i}" aria-label="Tirar condição">×</button></div>`}).join('')||'<p class="hint" style="margin:4px 0 10px">Sem condições: mostrando toda a base. Escolha um modelo ou adicione uma condição.</p>';
+  $('#clR').querySelectorAll('.cl-rule').forEach(row=>{const r=CL.rules[+row.dataset.i];
+    row.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{const k=el.dataset.k;
+      if(k==='op')r.op=el.value;else if(k==='days'||k==='product'){const o=typeof r.value==='object'&&r.value?r.value:{days:r.value};o[k]=k==='days'?Number(el.value):el.value;r.value=o}
+      else r.value=el.type==='number'?Number(el.value):el.value;clearTimeout(CL.t);CL.t=setTimeout(clRun,350)})});
+  $('#clR').querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{CL.rules.splice(+b.dataset.rx,1);clRules();clRun()})}
+async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;box.innerHTML='<div class="empty">Contando...</div>';
+  let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;
+  const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr();
+  box.innerHTML=`<div class="cl-sum"><div><b>${num(r.count)}</b> ${r.count===1?'cliente':'clientes'}${r.spent?` · ${brl(r.spent)} já gastos`:''}<span class="hint"> · ${num(r.reachable)} podem receber mensagem</span></div>
+     <div class="cl-act"><button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button>':''}<button class="btn sm p" id="clSave">${CL.seg?'Salvar alterações':'Salvar segmento'}</button></div></div>
+   ${r.items.length?`<div class="vd-c ls-t"><table class="vtb"><thead><tr><th>Cliente</th><th>Tem</th><th>Próximo vencimento</th><th class="n">Compras</th><th class="n">Gasto</th><th>Responsável</th></tr></thead><tbody>
+     ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><b>${esc(c.name)}</b>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}<small>${esc(fmtPhone(c.wa_id))}</small></td>
+       <td>${c.has.map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td>${c.next_expiry?fmtD(ymd(new Date(c.next_expiry))):'<span class="hint">—</span>'}</td>
+       <td class="n">${c.purchases}</td><td class="n">${c.spent?brl(c.spent):'—'}</td><td>${esc(c.owner||'—')}</td></tr>`).join('')}</tbody></table></div>
+     <div class="ls-cards">${r.items.map(c=>`<button class="ls-card" data-oc="${c.id}"><span class="t"><b>${esc(c.name)}</b><b>${c.spent?brl(c.spent):''}</b></span><span class="i">${c.has.map(h=>esc(h.name)).join(', ')||'Sem compras'}</span><span class="m">${c.next_expiry?'vence '+fmtD(ymd(new Date(c.next_expiry)))+' · ':''}${c.purchases} ${c.purchases===1?'compra':'compras'}${c.owner?' · '+esc(c.owner):''}</span></button>`).join('')}</div>
+     ${r.count>r.items.length?`<p class="hint" style="margin-top:8px">Mostrando ${r.items.length} de ${num(r.count)}. Exporte para ver todos.</p>`:''}`
+   :'<div class="aempty"><div><b>Ninguém se encaixa</b><p>Afrouxe alguma condição ou mude o período.</p></div></div>'}`;
+  box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>{CV.open=b.dataset.oc;CV.filter='all';go('conversas')};b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+  $('#clSave').onclick=async()=>{const cur=CL.seg&&CL.data.segs.find(x=>x.id===CL.seg);
+    const name=await sure(cur?'Nome do segmento:':'Dê um nome para este segmento. Ele se atualiza sozinho.',{input:true,value:cur?cur.name:'',placeholder:'Ex.: Renovação de novembro',ok:'Salvar',el:$('#clSave')});if(!name)return;
+    try{const x=await api(cur?'/segments/'+cur.id:'/segments',{method:cur?'PUT':'POST',body:{name,rules:CL.rules}});CL.seg=x.id;toast('Segmento salvo.');clView()}catch(e){toast(e.message)}};
+  $('#clTag').onclick=async()=>{const tag=await sure(`Colocar uma etiqueta nos ${num(r.count)} clientes deste público:`,{input:true,placeholder:'Ex.: renovacao-nov',ok:'Etiquetar',el:$('#clTag')});if(!tag)return;
+    try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} clientes.`)}catch(e){toast(e.message)}};
+  if($('#clExp'))$('#clExp').onclick=async()=>{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(await res.blob());a.download='clientes.csv';a.click()};
+}
+
 /* origens e links */
 let ORG=null;
 async function orgLoad(force){if(!ORG||force)ORG=await api('/origins');return ORG}
@@ -2034,6 +2158,7 @@ async function originEdit(c,after){
 
 const VIEWS={
  vendas:()=>vdView(),
+ clientes:()=>clView(),
  async automacoes(){
   const [d,tpls]=await Promise.all([api('/automations'),api('/templates')]);
   $('#page').innerHTML=`<div class="fhd"><div><h1>Automações</h1><p class="sub">Mensagens que saem sozinhas na hora certa: lembretes, retomadas e pós-atendimento.</p></div>
