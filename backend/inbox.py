@@ -15,10 +15,41 @@ from whatsapp import get_contact, aware, note
 router = APIRouter()
 
 def waiting(c):
-    """Cliente falou por último e ninguém marcou como resolvido depois disso."""
+    """Cliente falou por último e ninguém respondeu nem marcou como resolvido ou "não precisa responder" depois disso."""
     if c.get('last_dir') != 'in': return False
-    r, li = aware(c.get('resolved_at')), aware(c.get('last_in_at'))
-    return not (r and li and r >= li)
+    li = aware(c.get('last_in_at'))
+    for k in ('resolved_at', 'noreply_at'):
+        r = aware(c.get(k))
+        if r and li and r >= li: return False
+    return True
+
+LATE_DEFAULT = 15  # minutos: depois disso fica vermelho
+
+def wait_from(li, hours, tz):
+    """Quando a espera começa a contar: na hora da mensagem, ou na abertura seguinte se chegou fora do horário."""
+    if not li or not hours or not any(hours.values()): return li
+    from datetime import datetime, time
+    t = li.astimezone(tz)
+    for d in range(8):
+        day = (t + timedelta(days=d)).date()
+        for a, b in sorted(hours.get(str(day.weekday())) or []):
+            o = datetime.combine(day, time.fromisoformat(a), tz); e = datetime.combine(day, time.fromisoformat(b), tz)
+            if t < e: return max(t, o)
+    return li
+
+async def wait_ctx(company):
+    """Horário de atendimento (o da agenda) e limite de cada equipe."""
+    import agenda
+    try: hours = (await agenda.settings_for(company)).get('hours')
+    except Exception: hours = None
+    slas = {t['id']: t.get('sla_minutes') for t in await db.teams.find({'company_id': company['id']}, {'_id': 0, 'id': 1, 'sla_minutes': 1}).to_list(200)}
+    return {'hours': hours, 'tz': agenda.tz_of(company), 'slas': slas}
+
+def wait_info(c, ctx):
+    """Para a tela: desde quando espera (contando horário de atendimento) e o limite para ficar vermelho."""
+    if not waiting(c): return None, None
+    wf = wait_from(aware(c.get('last_in_at')), ctx['hours'], ctx['tz'])
+    return wf, ctx['slas'].get(c.get('team_id')) or LATE_DEFAULT
 
 def visible_q(user):
     q = {'company_id': user['company_id']}
@@ -31,12 +62,16 @@ async def counts(user=Depends(current_user)):
     from teams import my_team_ids
     mine = set(await my_team_ids(user))
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1, 'needs_human': 1,
-                                                    'unread': 1, 'team_id': 1, 'transfer_seen': 1, 'transfer_by': 1, 'transfer_reason': 1, 'transfer_at': 1}).to_list(5000)
+                                                    'unread': 1, 'team_id': 1, 'noreply_at': 1, 'transfer_seen': 1, 'transfer_by': 1, 'transfer_reason': 1, 'transfer_at': 1}).to_list(5000)
+    ctx = await wait_ctx(user['company']); late = 0
+    for r in rows:
+        wf, lim = wait_info(r, ctx)
+        if wf and now() - wf > timedelta(minutes=lim): late += 1
     pend = [{k: r.get(k) for k in ('id', 'name', 'transfer_by', 'transfer_reason', 'transfer_at')} for r in rows
             if r.get('assigned_to') == user['id'] and r.get('transfer_seen') is False]
     return {'team': sum(1 for r in rows if r.get('team_id') in mine), 'team_queue': sum(1 for r in rows if r.get('team_id') in mine and not r.get('assigned_to')),
             'has_team': bool(mine), 'transfers': pend,'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
-            'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)),
+            'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)), 'late': late,
             'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread')),
             'sales_pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending'}) if user['role'] in ('owner', 'manager') else 0,
             'celebrations': [{'key': h['key'], 'text': (f"{h.get('owner_name') or 'A empresa'} {'venceu' if 'lugar' in h['level'] else 'bateu'} "
@@ -85,6 +120,14 @@ async def del_quick(rid: str, user=Depends(current_user)):
     if not r: raise HTTPException(404, 'Resposta não encontrada.')
     if user['role'] == 'agent' and r.get('by_id') != user['id']: raise HTTPException(403, 'Só quem criou, o dono ou o gestor apagam.')
     await db.quick_replies.delete_one({'id': rid})
+    return {'ok': True}
+
+@router.post('/conversations/{contact_id}/no-reply')
+async def no_reply(contact_id: str, user=Depends(current_user)):
+    """Cliente mandou só "ok", "obrigado"...: sai da fila sem marcar como resolvida."""
+    c = await get_contact(user, contact_id)
+    await db.contacts.update_one({'id': c['id']}, {'$set': {'noreply_at': now(), 'unread': 0, 'needs_human': False}})
+    await note(user['company_id'], c['id'], f'{user.get("impersonated_by") or user["name"]} marcou que não precisa responder')
     return {'ok': True}
 
 # ---------- nota interna e resolvido ----------

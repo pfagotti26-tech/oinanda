@@ -818,6 +818,20 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .cv.nopanel{grid-template-columns:var(--lw,340px) minmax(0,1fr) 56px}.cv.nopanel .cv-pn{display:block}.cv.nopanel .cv-pn>:not(.pn-rail){display:none}
  .cv.nopanel .pn-rail{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0}.pn-rail .av{width:36px;height:36px;font-size:12.5px;margin:6px 0 8px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;flex:none}
  .pn-rail .ib{width:38px;height:38px;color:var(--ink3)}.pn-rail .ib:hover{color:var(--ink);background:#F3EEE8}.pn-rail .ib svg{width:19px;height:19px}}
+/* espera por resposta */
+.avw{position:relative;flex:none;display:grid;place-items:center;border-radius:50%}
+.avw.w-ok{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ok)}.avw.w-amber{box-shadow:0 0 0 2px #fff,0 0 0 4px #E0A82E}.avw.w-red{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--bad)}
+.ci.on .avw.w-ok,.ci.on .avw.w-amber,.ci.on .avw.w-red{box-shadow:0 0 0 2px #FDF3EE,0 0 0 4px currentColor}
+.ci.on .avw.w-ok{color:var(--ok)}.ci.on .avw.w-amber{color:#E0A82E}.ci.on .avw.w-red{color:var(--bad)}
+.wtm{display:none;position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;font-weight:700;color:#fff;border-radius:999px;padding:1px 5px;line-height:1.3;white-space:nowrap;border:1.5px solid #fff}
+.w-ok .wtm{background:var(--ok)}.w-amber .wtm{background:#E0A82E}.w-red .wtm{background:var(--bad)}
+.cv.lmin .wtm{display:block}.cv.lmin .ci{padding:12px 0 14px}
+.bd2.grey{background:#EEF1F4;color:var(--ink3)}
+.side .nav .nb.calm,.bnav .nb.calm{background:#E0A82E}
+.wbar{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:7px 10px;border-radius:10px;margin-bottom:8px;background:var(--oksoft);color:var(--ok)}
+.wbar i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}.wbar span{flex:1;color:var(--ink2)}.wbar b{color:inherit}
+.wbar.amber{background:var(--warnsoft);color:var(--warn)}.wbar.red{background:var(--badsoft);color:var(--bad)}.wbar.off{background:#EEF1F4;color:var(--ink3)}
+.wbar.red span b,.wbar.amber span b{color:inherit}.wbar .lnk{font-size:12px;white-space:nowrap}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -1111,7 +1125,7 @@ function readPath(){
 function syncUrl(replace){
   if(!ME)return;const p=pathFor(VIEW);
   if(location.pathname!==p)history[replace?'replaceState':'pushState'](null,'',p);
-  const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===VIEW);document.title=(n&&VIEW!=='inicio'?n[1]+' · ':'')+'Oi Nanda'}
+  const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===VIEW);const k=CV.counts?(CV.counts.waiting||0)+(CV.counts.human||0)+(CV.counts.transfers||[]).length:0;document.title=(k?`(${k}) `:'')+(n&&VIEW!=='inicio'?n[1]+' · ':'')+'Oi Nanda'}
 addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
 function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada'].includes(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));return (VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
@@ -1165,7 +1179,10 @@ const avc=n=>{let h=0;for(const ch of String(n||''))h=(h*31+ch.charCodeAt(0))%99
 const tm=v=>v?new Date(v).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
 const dayLabel=v=>{const x=new Date(v),t=new Date(),y=new Date();y.setDate(t.getDate()-1);if(x.toDateString()===t.toDateString())return'Hoje';if(x.toDateString()===y.toDateString())return'Ontem';
   const s=x.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});return s[0].toUpperCase()+s.slice(1)};
-const waitCls=c=>{if(!c.waiting)return'';const m=(Date.now()-new Date(c.last_in_at||c.last_at))/6e4;return m>=60?'red':m>=15?'amber':'ok'};
+const waitMin=c=>c.wait_from?(Date.now()-new Date(c.wait_from))/6e4:null;
+const waitCls=c=>{if(!c.waiting||!c.wait_from)return'';const m=waitMin(c);if(m<0)return'off';return m>=(c.wait_limit||15)?'red':m>=5?'amber':'ok'};
+const waitTxt=c=>{const m=waitMin(c);if(m==null)return'';if(m<0)return'fora do horário';if(m<1)return'agora';if(m<60)return Math.floor(m)+' min';if(m<1440)return Math.floor(m/60)+' h';return Math.floor(m/1440)+(m<2880?' dia':' dias')};
+const waitShort=c=>{const m=waitMin(c);if(m==null||m<0)return'';if(m<1)return'1m';if(m<60)return Math.floor(m)+'m';if(m<1440)return Math.floor(m/60)+'h';return Math.floor(m/1440)+'d'};
 const stageOf=id=>{const L=STAGES||[];let i=L.findIndex(s=>s.id===id);if(i<0)i=0;return L[i]?{s:L[i],i}:null};
 const fillVars=(t,c)=>String(t||'').replace(/\{(\w+)\}/g,(m,k)=>({primeiro_nome:(c.name||'').split(' ')[0],nome:c.name||'',empresa:ME.company.name}[k]??m));
 const MODES={auto:'Automática',copilot:'Copiloto',off:'Pausada'};
@@ -1175,12 +1192,13 @@ async function cvCounts(){return pollCounts()}
 async function cvList(){
   CV.list=await api('/conversations?filter='+CV.filter+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
   const el=$('#cvItems');if(!el)return;
+  if(CV.filter==='waiting')CV.list.sort((a,b)=>(a.wait_from||'9')<(b.wait_from||'9')?-1:1);  // quem espera há mais tempo primeiro
   el.innerHTML=CV.list.length?CV.list.map(c=>{const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in';
-   return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}">
-    <span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>
+   return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
+    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
-     <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w?`<span class="bd2 ${w}">esperando ${ago(c.last_in_at||c.last_at)}</span>`:''}
+     <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w==='off'?'<span class="bd2 grey">chegou fora do horário</span>':w?`<span class="bd2 ${w}">esperando ${waitTxt(c)}</span>`:''}
       <span class="sp"></span>${un?`<span class="nb">${c.unread}</span>`:''}${c.assigned_name&&c.assigned_to!==ME.user.id?`<span class="ow" title="Responsável: ${esc(c.assigned_name)}">${initials(c.assigned_name)}</span>`:''}</span></span></button>`}).join('')
    :`<div class="empty">${CV.q?'Nenhuma conversa encontrada para essa busca.':CV.filter==='waiting'?'Ninguém esperando resposta agora.':CV.filter==='mine'?'Nenhuma conversa com você.':'Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.'}</div>`;
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
@@ -1264,6 +1282,8 @@ async function cvChat(full){
    <div class="msgs" id="cvMsgs">${msgsHtml(d.messages)}</div>
    <div class="cmp" id="cvCmp"></div>`;
   drawComposer(c,w,draft);
+  const wc=waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){$('#cvCmp').insertAdjacentHTML('afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`:`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR">Não precisa responder</button></div>`);
+    $('#cvNoR').onclick=async()=>{try{await api('/conversations/'+c.id+'/no-reply',{method:'POST'});toast('Saiu da fila de espera.');CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}}}
   const nm=$('#cvMsgs');if(full||atBottom)nm.scrollTop=nm.scrollHeight;
   nm._stuck=full||atBottom;nm.addEventListener('scroll',()=>{nm._stuck=nm.scrollHeight-nm.scrollTop-nm.clientHeight<80},{passive:true});
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(nm._stuck)nm.scrollTop=nm.scrollHeight});ro.observe(nm);nm.querySelectorAll('.m').forEach(x=>{if(x.querySelector('img,video'))ro.observe(x)})}  // foto carregando ou caixa de baixo crescendo: continua no fim
@@ -1373,14 +1393,20 @@ function transferModal(c){
 let NOTIF={seen:null,t:null};
 async function pollCounts(){if(!ME)return;let n;try{n=await api('/inbox/counts')}catch(e){return}CV.counts=n;
   const badge=(v,k,t)=>document.querySelectorAll(`.side [data-v=${v}],.bnav [data-v=${v}]`).forEach(b=>{let s=b.querySelector('.nb');if(!s){s=document.createElement('span');s.className='nb';b.appendChild(s)}s.textContent=k>99?'99+':k||'';s.title=t||'';s.classList.toggle('hide',!k)});
-  badge('conversas',(n.transfers||[]).length+(n.human||0)+(n.waiting||0),'esperando resposta, pediram atendente ou transferidas para você');badge('vendas',n.sales_pending||0,'vendas aguardando aprovação');
+  badge('conversas',(n.transfers||[]).length+(n.human||0)+(n.waiting||0),'esperando resposta, pediram atendente ou transferidas para você');
+  document.querySelectorAll('.side [data-v=conversas] .nb,.bnav [data-v=conversas] .nb').forEach(b=>{b.classList.toggle('calm',!n.late);b.title=(n.late?n.late+(n.late===1?' passou':' passaram')+' do tempo de resposta · ':'')+b.title});
+  if(NOTIF.unread!=null&&(n.unread||0)>NOTIF.unread&&soundOn())beep();NOTIF.unread=n.unread||0;
+  NOTIF.waiting=n.waiting||0;badge('vendas',n.sales_pending||0,'vendas aguardando aprovação');
   const ids=(n.transfers||[]).map(t=>t.id);
   if(NOTIF.seen){for(const t of n.transfers||[])if(!NOTIF.seen.has(t.id)){const msg=`${(t.transfer_by||'Alguém').split(' ')[0]} transferiu ${t.name} para você${t.transfer_reason?': '+t.transfer_reason:''}`;toast(msg);
       try{if('Notification' in window&&Notification.permission==='granted'){const nn=new Notification('Oi Nanda · conversa transferida',{body:msg,tag:t.id});nn.onclick=()=>{focus();CV.open=t.id;go('conversas')}}}catch(e){}}}
   NOTIF.seen=new Set(ids);
   const cel=n.celebrations||[];if(NOTIF.cel){for(const c of cel)if(!NOTIF.cel.has(c.key))celebrate(c.text)}NOTIF.cel=new Set(cel.map(c=>c.key));
   document.querySelectorAll('[data-f]').forEach(x=>{const i=x.querySelector('i');if(i)i.textContent=String(n[x.dataset.f]||0)});
-  document.title=(ids.length?`(${ids.length}) `:'')+document.title.replace(/^\(\d+\) /,'')}
+  const tn=(n.waiting||0)+(n.human||0)+ids.length;document.title=(tn?`(${tn}) `:'')+document.title.replace(/^\(\d+\) /,'')}
+const soundOn=()=>{try{return localStorage.getItem('oinanda.sound')==='1'}catch(e){return false}};
+function beep(){try{const A=window.AudioContext||window.webkitAudioContext;const a=beep.ctx||(beep.ctx=new A());const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.setValueAtTime(880,a.currentTime);o.frequency.setValueAtTime(1175,a.currentTime+.09);
+  g.gain.setValueAtTime(.0001,a.currentTime);g.gain.exponentialRampToValueAtTime(.18,a.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.28);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.3)}catch(e){}}
 function celebrate(text){toast('🎉 '+text);const d=document.createElement('div');d.className='confetti';d.innerHTML=Array.from({length:40},(_,i)=>`<i style="left:${Math.random()*100}%;animation-delay:${Math.random()*.6}s;background:${['#E8603F','#2F9AA0','#D99A1E','#8E6CC9','#4F8A5B'][i%5]}"></i>`).join('');document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
 async function qrLoad(){if(!CV.qr)CV.qr=await api('/quick-replies').catch(()=>[]);return CV.qr}
 async function qrOpen(term){const p=$('#cvQR');if(!p)return;const all=await qrLoad();const t=term.toLowerCase();
@@ -3063,6 +3089,7 @@ async function meModal(){
      <label class="off"><input type="radio" name="away" value="1" ${me.away?'checked':''}><b><i></i>Ausente</b>O rodízio pula você. As suas conversas continuam com você.</label></div></div>
     <div class="field" style="margin-top:16px"><label>Quando me transferirem uma conversa</label>
      <p class="hint" style="margin:0 0 8px">Com o painel aberto, o aviso aparece na tela.${nt==='granted'?' Notificação do navegador: <b>ligada</b>.':nt==='default'?' <button type="button" class="btn sm" id="meNt">🔔 Ligar notificação do navegador</button>':''}</p>
+     <label class="ckl"><input type="checkbox" id="meSnd" ${soundOn()?'checked':''}> Tocar um som quando chegar mensagem nova (neste navegador)</label>
      <label class="ckl"><input type="checkbox" name="wa_notify" ${me.wa_notify?'checked':''}> Avisar no meu WhatsApp quando eu estiver fora do painel</label>
      <input name="wa_phone" inputmode="tel" placeholder="Seu celular com DDD, ex.: (11) 91234-5678" value="${me.wa_phone?esc(fmtPhone(me.wa_phone)):''}" maxlength="30">
      <div id="meTpl" style="margin-top:8px">${!n.connected?'<p class="hint">O aviso sai pelo WhatsApp da empresa, que ainda não está conectado.</p>'
@@ -3071,6 +3098,7 @@ async function meModal(){
        :canManage?`<p class="hint">Para avisar fora da janela de 24 h, a Meta exige um modelo aprovado. Crie uma vez para todo o time (categoria utilidade, cobrado por envio).</p><button type="button" class="btn sm" id="meMk" style="margin-top:6px">Criar modelo de aviso</button>`
        :'<p class="hint">Falta o gestor ativar o modelo de aviso na Meta. Até lá, o aviso só sai se você tiver mandado mensagem para o número da empresa nas últimas 24 h.</p>'}</div></div>
     <div class="row"><button class="btn p">Salvar</button><span class="err" id="meE"></span></div>`;
+  $('#meSnd').onchange=e=>{try{localStorage.setItem('oinanda.sound',e.target.checked?'1':'0')}catch(x){}if(e.target.checked)beep()};
   if($('#meNt'))$('#meNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Notificação ligada.':'O navegador não autorizou.')}catch(e){}o.remove();meModal()};
   if($('#meMk'))$('#meMk').onclick=async e=>{e.target.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta.');o.remove();meModal()}catch(x){$('#meE').textContent=x.message;e.target.disabled=false}};
   $('#meF').onsubmit=async e=>{e.preventDefault();const f=e.target;$('#meE').textContent='';

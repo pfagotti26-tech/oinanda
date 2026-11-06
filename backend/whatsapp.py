@@ -365,7 +365,12 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         days = user['company'].get('inactive_days')
         rows = [r for r in rows if status_of(r, days) == kind]
     if filter == 'waiting': rows = [r for r in rows if waiting(r)]
-    for r in rows: r['waiting'] = waiting(r)
+    from inbox import wait_ctx, wait_info
+    wctx = await wait_ctx(user['company'])
+    for r in rows:
+        r['waiting'] = waiting(r)
+        wf, lim = wait_info(r, wctx)
+        r['wait_from'], r['wait_limit'] = (wf.isoformat() if wf else None), lim
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     for r in rows:
         r['assigned_name'] = names.get(r.get('assigned_to'))
@@ -383,6 +388,10 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     li = aware(c.get('last_in_at'))
     c['window_open'] = bool(li and now() - li < WINDOW)
     c['window_ends_at'] = (li + WINDOW) if li else None
+    from inbox import wait_ctx, wait_info, waiting as is_waiting
+    c['waiting'] = is_waiting(c)
+    wf, lim = wait_info(c, await wait_ctx(user['company']))
+    c['wait_from'], c['wait_limit'] = (wf.isoformat() if wf else None), lim
     return {'contact': c, 'messages': list(reversed(msgs))}
 
 class SendIn(BaseModel):
