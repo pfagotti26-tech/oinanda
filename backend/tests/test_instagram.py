@@ -103,3 +103,29 @@ def test_direct(monkeypatch):
         cm2 = json.loads(json.dumps(cm)); cm2['entry'][0]['changes'][0]['value'].update(id='c2', text='que lindo')
         post(c, cm2)
         assert len([p for m, pth, _, p in calls if pth.endswith('/messages') and p and 'comment_id' in p['recipient']]) == 1
+
+def test_meta_demora_a_liberar_a_conta(monkeypatch):
+    """A Meta autoriza, mas só libera a conta depois: o Oi Nanda guarda e conecta sozinho na próxima tentativa."""
+    state = {'liberada': False}
+    async def fake_ig(method, path, token=None, params=None, data=None, payload=None, base=None):
+        if path == '/oauth/access_token': return {'access_token': 'suat2'}
+        if path == '/me': return {'client_business_id': '777'}
+        if path == '/me/assigned_instagram_accounts': return {'data': [{'id': '17841400000000077', 'username': 'cliente.lenta'}] if state['liberada'] else []}
+        if path == '/debug_token': return {'data': {'type': 'SYSTEM_USER', 'granular_scopes': [{'scope': 'instagram_basic'}]}}
+        if path.startswith('/777/'): raise instagram.HTTPException(400, 'O Instagram recusou: (#200) Requires business_management')
+        return {'success': True}
+    monkeypatch.setattr(instagram, 'ig', fake_ig)
+    async def no_retry(cid): return None
+    monkeypatch.setattr(instagram, 'retry_pending', no_retry)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona L', 'email': 'dl@x.com', 'password': 'senha-forte-1', 'company': 'Studio L', 'segment': 'studio'})
+        url = c.get('/api/ig/connect').json()['url']
+        state_q = url.split('state=')[1].split('&')[0]
+        r = c.get(f'/api/ig/callback?code=abc&state={state_q}', follow_redirects=False)
+        assert r.headers['location'].endswith('/empresa?ig=aguardando')
+        s = c.get('/api/ig/status').json()
+        assert s['account'] is None and s['pending'] == {'gave_up': False, 'reason': None}
+        state['liberada'] = True
+        c.portal.call(instagram.refresh_tokens)
+        s = c.get('/api/ig/status').json()
+        assert s['account']['username'] == 'cliente.lenta' and s['pending'] is None

@@ -60,7 +60,9 @@ async def account_of(company_id): return await db.ig_accounts.find_one({'company
 @router.get('/ig/status')
 async def status(user=Depends(current_user)):
     a = await account_of(user['company_id'])
+    pend = None if a else await db.ig_pending.find_one({'company_id': user['company_id']}, {'_id': 0, 'gave_up': 1, 'reason': 1, 'created_at': 1})
     return {'ready': ready(), 'account': {k: a.get(k) for k in ('username', 'name', 'picture', 'connected_at', 'expires_at', 'comment_words', 'comment_dm', 'comment_reply', 'status')} if a else None,
+            'pending': ({'gave_up': bool(pend.get('gave_up')), 'reason': pend.get('reason')} if pend else None),
             'redirect_uri': redirect_uri(), 'webhook': app_url() + '/api/ig/webhook'}
 
 @router.get('/ig/connect')
@@ -84,26 +86,60 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
         tok = t['access_token']
         me = await ig('GET', '/me', tok, {'fields': 'client_business_id'})
         biz = str(me.get('client_business_id') or '')
-        accs = await ig_accounts(tok, biz)
-        log.info('instagram: conexão da empresa %s, portfólio %s, %d conta(s)', st['company_id'], biz or '-', len(accs))
-        if not accs: return RedirectResponse(back + '?ig=sem_conta')
-        acc = accs[0]  # o Oi Nanda trabalha com uma conta por empresa
-        other = await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': st['company_id']}})
-        if other:
-            log.info('instagram: @%s já está em outra empresa', acc.get('username'))
-            return RedirectResponse(back + '?ig=outra_empresa')
-        await ig('POST', f'/{acc["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
         exp = now() + timedelta(seconds=int(t['expires_in'])) if t.get('expires_in') else None
-        await db.ig_accounts.update_one({'company_id': st['company_id']}, {'$set': {
-            'company_id': st['company_id'], 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name'), 'picture': acc.get('profile_picture_url'),
-            'business_id': biz, 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
-            'connected_at': now(), 'connected_by': st['user_id'], 'status': 'connected'}}, upsert=True)
-        await db.audit.insert_one({'id': uid(), 'company_id': st['company_id'], 'actor_id': st['user_id'], 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
-                                   'at': now(), 'expires_at': now() + timedelta(days=180)})
-        return RedirectResponse(back + '?ig=ok')
+        r = await finish(st['company_id'], st['user_id'], tok, biz, exp)
+        if r == 'vazio':
+            # a Meta às vezes leva um tempo para delegar a conta: guarda a autorização e tenta de novo por alguns minutos
+            await db.ig_pending.update_one({'company_id': st['company_id']}, {'$set': {'company_id': st['company_id'], 'user_id': st['user_id'], 'token_enc': encrypt(tok),
+                                            'business_id': biz, 'expires_at': exp, 'tries': 0, 'created_at': now()}}, upsert=True)
+            from push import later
+            later(retry_pending(st['company_id']))
+            return RedirectResponse(back + '?ig=aguardando')
+        return RedirectResponse(back + '?ig=' + r)
     except HTTPException as e:
         log.warning('falha ao conectar instagram: %s', e.detail)
         return RedirectResponse(back + '?ig=erro')
+
+async def finish(company_id, user_id, tok, biz, exp):
+    """Acha a conta compartilhada, assina os avisos e grava. Devolve 'ok', 'outra_empresa' ou 'vazio'."""
+    accs = await ig_accounts(tok, biz)
+    log.info('instagram: conexão da empresa %s, portfólio %s, %d conta(s)', company_id, biz or '-', len(accs))
+    if not accs: return 'vazio'
+    acc = accs[0]  # o Oi Nanda trabalha com uma conta por empresa
+    if await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': company_id}}):
+        log.info('instagram: @%s já está em outra empresa', acc.get('username'))
+        return 'outra_empresa'
+    await ig('POST', f'/{acc["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
+    await db.ig_accounts.update_one({'company_id': company_id}, {'$set': {
+        'company_id': company_id, 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name'), 'picture': acc.get('profile_picture_url'),
+        'business_id': biz, 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
+        'connected_at': now(), 'connected_by': user_id, 'status': 'connected'}}, upsert=True)
+    await db.ig_pending.delete_one({'company_id': company_id})
+    await db.audit.insert_one({'id': uid(), 'company_id': company_id, 'actor_id': user_id, 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
+                               'at': now(), 'expires_at': now() + timedelta(days=180)})
+    return 'ok'
+
+PENDING_TRIES = 20  # ~10 min: 6 tentativas rápidas aqui, o resto a cada volta do relógio das automações
+
+async def pending_try(p):
+    try: r = await finish(p['company_id'], p['user_id'], decrypt(p['token_enc']), p.get('business_id') or '', p.get('expires_at'))
+    except HTTPException as e:
+        log.info('instagram: nova tentativa recusada: %s', e.detail); r = 'vazio'
+    if r == 'vazio':
+        n = (p.get('tries') or 0) + 1
+        if n >= PENDING_TRIES:
+            await db.ig_pending.update_one({'company_id': p['company_id']}, {'$set': {'tries': n, 'gave_up': True}})
+            log.info('instagram: a Meta não liberou nenhuma conta para a empresa %s depois de %d tentativas', p['company_id'], n)
+        else: await db.ig_pending.update_one({'company_id': p['company_id']}, {'$set': {'tries': n}})
+    elif r == 'outra_empresa': await db.ig_pending.update_one({'company_id': p['company_id']}, {'$set': {'gave_up': True, 'reason': r}})
+    return r
+
+async def retry_pending(company_id):
+    import asyncio
+    for wait in (10, 20, 30, 45, 60, 90):
+        await asyncio.sleep(wait)
+        p = await db.ig_pending.find_one({'company_id': company_id, 'gave_up': {'$ne': True}}, {'_id': 0})
+        if not p or await pending_try(p) != 'vazio': return
 
 async def ig_accounts(tok, biz):
     """Contas do Instagram que o cliente compartilhou. O caminho oficial é /me/assigned_instagram_accounts; se ele
@@ -142,6 +178,7 @@ async def enrich(tok, data):
 @router.delete('/ig/account')
 async def disconnect(request: Request, user=Depends(owners)):
     a = await account_of(user['company_id'])
+    await db.ig_pending.delete_one({'company_id': user['company_id']})
     if a:
         await db.ig_accounts.delete_one({'company_id': user['company_id']})
         await audit(request, user, 'Desconectou o Instagram', '@' + str(a.get('username')))
@@ -163,7 +200,10 @@ async def settings(body: IgSettings, request: Request, user=Depends(managers)):
 
 async def refresh_tokens():
     """O token do login unificado é do portfólio do cliente e, na configuração do Oi Nanda, não vence.
-    Se um dia a configuração tiver validade, marca a conta como vencida para o dono reconectar."""
+    Se um dia a configuração tiver validade, marca a conta como vencida para o dono reconectar.
+    Aproveita a volta para tentar de novo as conexões em que a Meta ainda não tinha liberado a conta."""
+    for p in await db.ig_pending.find({'gave_up': {'$ne': True}, 'created_at': {'$gt': now() - timedelta(minutes=30)}}, {'_id': 0}).to_list(100):
+        await pending_try(p)
     await db.ig_accounts.update_many({'status': 'connected', 'expires_at': {'$ne': None, '$lt': now()}}, {'$set': {'status': 'expired'}})
 
 async def revoked(a, e):
