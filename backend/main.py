@@ -26,6 +26,7 @@ from opps import router as opps_router
 from goals import router as goals_router
 from journey import router as journey_router
 from media import router as media_router
+from push import router as push_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -83,6 +84,8 @@ async def lifespan(app):
     await db.goal_hits.create_index('key', unique=True)
     await db.goals.create_index('company_id')
     await db.journey.create_index([('company_id', 1), ('contact_id', 1)])
+    await db.push_subs.create_index('endpoint', unique=True)
+    await db.push_subs.create_index('user_id')
     await db.contacts.create_index([('company_id', 1), ('next_expiry', 1)])
     worker = None
     if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
@@ -113,6 +116,7 @@ app.include_router(opps_router, prefix="/api")
 app.include_router(goals_router, prefix="/api")
 app.include_router(journey_router, prefix="/api")
 app.include_router(media_router, prefix="/api")
+app.include_router(push_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

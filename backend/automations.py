@@ -439,4 +439,8 @@ async def loop():
             from goals import tick as goals_tick
             await goals_tick()
         except Exception: log.exception('falha nas metas')
+        try:
+            from push import late_tick
+            await late_tick()
+        except Exception: log.exception('falha no aviso de espera')
         await asyncio.sleep(every)

@@ -209,6 +209,11 @@ async def handoff(company_id, contact, reason):
     await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'ai_mode': 'off', 'needs_human_at': now(), 'handoff_reason': reason}})
     await note(company_id, contact['id'], f'A Nanda passou a conversa para o time · {reason or "cliente quer falar com uma pessoa"}')
     await route(company_id, contact, reason)
+    try:
+        from push import later, on_handoff
+        fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
+        later(on_handoff(company_id, fresh, reason))
+    except Exception: log.exception('falha no aviso de repasse')
 
 async def route(company_id, contact, reason):
     try:

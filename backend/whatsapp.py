@@ -225,6 +225,9 @@ async def ingest(value):
                                       'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now(), **mm, **({'pending': True} if mm else {})})
         if mm: schedule(mid)  # baixa (e transcreve o áudio) antes de chamar a Nanda
         elif ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
+        if now() - at < timedelta(minutes=10):
+            from push import later, on_inbound as push_inbound
+            later(push_inbound(cid, contact['id'], text))
     for s in value.get('statuses') or []:
         upd = {'status': s.get('status')}
         if s.get('errors'): upd['error'] = (s['errors'][0].get('title') or s['errors'][0].get('message') or 'falhou')

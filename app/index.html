@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oi Nanda</title>
 <link rel="icon" href="/favicon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#E8603F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Oi Nanda">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -832,6 +838,10 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .wbar i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}.wbar span{flex:1;color:var(--ink2)}.wbar b{color:inherit}
 .wbar.amber{background:var(--warnsoft);color:var(--warn)}.wbar.red{background:var(--badsoft);color:var(--bad)}.wbar.off{background:#EEF1F4;color:var(--ink3)}
 .wbar.red span b,.wbar.amber span b{color:inherit}.wbar .lnk{font-size:12px;white-space:nowrap}
+.pushb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:#FAF7F4;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink2)}
+.pushb>span:not(.pill):not(.b){flex:1 1 260px}.pushb .b{display:flex;gap:6px}
+.pnudge{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--soft);border-radius:16px;padding:12px 14px;margin:0 0 14px}
+.pnudge>svg{width:22px;height:22px;color:var(--c);flex:none}.pnudge span{display:flex;flex-direction:column;flex:1;min-width:0}.pnudge b{font-size:14px}.pnudge small{font-size:12.5px;color:var(--ink3)}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -2962,7 +2972,7 @@ const VIEWS={
  },
  async inicio(){
   const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);const au=['owner','manager'].includes(u.role)?await api('/automations').catch(()=>null):null;
-  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p><div id="inMeta"></div>
+  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p><div id="inPush"></div><div id="inMeta"></div>
    ${sm?`<div class="grid g4" style="margin-bottom:14px">
     <button class="card stat" data-to="conversas" style="text-align:left"><span>Esperando resposta</span><b>${sm.waiting}</b></button>
     <button class="card stat" data-to="conversas" style="text-align:left"><span>Pediram atendente</span><b style="color:${sm.needs_human?'var(--bad)':'inherit'}">${sm.needs_human}</b></button>
@@ -2975,7 +2985,7 @@ const VIEWS={
     <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'4'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
     ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'5'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
    </div></div>`;
-  inicioMeta();
+  inicioMeta();pushNudge();
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
  },
  async equipe(){
@@ -3087,7 +3097,8 @@ async function meModal(){
   $('#meBody').innerHTML=`<div class="field"><label>Status</label><div class="stt">
      <label><input type="radio" name="away" value="0" ${!me.away?'checked':''}><b><i></i>Disponível</b>Recebo conversas do rodízio.</label>
      <label class="off"><input type="radio" name="away" value="1" ${me.away?'checked':''}><b><i></i>Ausente</b>O rodízio pula você. As suas conversas continuam com você.</label></div></div>
-    <div class="field" style="margin-top:16px"><label>Quando me transferirem uma conversa</label>
+    <div class="field" style="margin-top:16px"><label>Avisos neste aparelho</label><div id="mePush" class="pushb"><span class="hint">Verificando…</span></div></div>
+    <div class="field" style="margin-top:16px"><label>Outros avisos</label>
      <p class="hint" style="margin:0 0 8px">Com o painel aberto, o aviso aparece na tela.${nt==='granted'?' Notificação do navegador: <b>ligada</b>.':nt==='default'?' <button type="button" class="btn sm" id="meNt">🔔 Ligar notificação do navegador</button>':''}</p>
      <label class="ckl"><input type="checkbox" id="meSnd" ${soundOn()?'checked':''}> Tocar um som quando chegar mensagem nova (neste navegador)</label>
      <label class="ckl"><input type="checkbox" name="wa_notify" ${me.wa_notify?'checked':''}> Avisar no meu WhatsApp quando eu estiver fora do painel</label>
@@ -3098,6 +3109,7 @@ async function meModal(){
        :canManage?`<p class="hint">Para avisar fora da janela de 24 h, a Meta exige um modelo aprovado. Crie uma vez para todo o time (categoria utilidade, cobrado por envio).</p><button type="button" class="btn sm" id="meMk" style="margin-top:6px">Criar modelo de aviso</button>`
        :'<p class="hint">Falta o gestor ativar o modelo de aviso na Meta. Até lá, o aviso só sai se você tiver mandado mensagem para o número da empresa nas últimas 24 h.</p>'}</div></div>
     <div class="row"><button class="btn p">Salvar</button><span class="err" id="meE"></span></div>`;
+  pushBox($('#mePush'));
   $('#meSnd').onchange=e=>{try{localStorage.setItem('oinanda.sound',e.target.checked?'1':'0')}catch(x){}if(e.target.checked)beep()};
   if($('#meNt'))$('#meNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Notificação ligada.':'O navegador não autorizou.')}catch(e){}o.remove();meModal()};
   if($('#meMk'))$('#meMk').onclick=async e=>{e.target.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta.');o.remove();meModal()}catch(x){$('#meE').textContent=x.message;e.target.disabled=false}};
@@ -3247,6 +3259,35 @@ async function rpJourney(){const box=$('#rpBody');
    <div class="jr-act">${r.activity.map(a=>`<div class="${a.count?'':'z'}"><i>${esc(a.icon)}</i><span>${esc(a.name)}</span><b>${a.count}</b></div>`).join('')}</div>
    <div class="sech"><h3 class="sec">Por origem</h3></div>${tbl(r.by_origin,'Origem')}
    <div class="sech"><h3 class="sec">Por responsável</h3></div>${tbl(r.by_owner,'Responsável')}`}
+/* notificação no celular e no computador (Web Push) */
+const isIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent);
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function swInit(){if(!('serviceWorker' in navigator))return;navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('message',e=>{const d=e.data||{};if(d.open){const m=String(d.open).match(/^\/conversas\/([\w-]+)/);if(m)CV.open=m[1];go('conversas')}
+    if(d.push&&VIEW!=='conversas')toast((d.push.title||'')+(d.push.body?': '+d.push.body:''))})}
+async function pushState(){if(isIOS()&&!isStandalone())return 'ios';if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return 'na';
+  if(Notification.permission==='denied')return 'denied';const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();return sub&&Notification.permission==='granted'?'on':'off'}
+const u8=b=>{const p='='.repeat((4-b.length%4)%4);const r=atob((b+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))};
+const devName=()=>{const u=navigator.userAgent;return (/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Celular Android':/Mac/.test(u)?'Mac':/Windows/.test(u)?'Computador Windows':'Navegador')+(/Edg\//.test(u)?' · Edge':/Chrome\//.test(u)?' · Chrome':/Firefox\//.test(u)?' · Firefox':/Safari\//.test(u)?' · Safari':'')};
+async function pushOn(){const perm=await Notification.requestPermission();if(perm!=='granted')throw new Error('O navegador não autorizou as notificações.');
+  const reg=await navigator.serviceWorker.ready;const k=(await api('/push/key')).public;let sub=await reg.pushManager.getSubscription();
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(k)});const j=sub.toJSON();
+  await api('/push/subscribe',{method:'POST',body:{endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,device:devName()}})}
+async function pushOff(){const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub){await api('/push/unsubscribe',{method:'POST',body:{endpoint:sub.endpoint}}).catch(()=>{});await sub.unsubscribe()}}
+async function pushBox(box){if(!box)return;let st;try{st=await pushState()}catch(e){st='na'}
+  const T={on:`<span class="pill ok">ligado</span><span>Este aparelho recebe aviso de mensagem nova, conversa transferida, cliente esperando e quando a Nanda chama o time, mesmo com o Oi Nanda fechado.</span><span class="b"><button type="button" class="btn sm" data-pt>Enviar teste</button><button type="button" class="btn sm" data-poff>Desligar</button></span>`,
+    off:`<span>Receba aviso de mensagem nova, conversa transferida e cliente esperando, mesmo com o Oi Nanda fechado. Ligue em cada aparelho que você usa (celular e computador).</span><span class="b"><button type="button" class="btn sm p" data-pon>🔔 Ligar neste aparelho</button></span>`,
+    ios:`<span><b>No iPhone:</b> toque em <b>Compartilhar</b> (o quadrado com a seta) e em <b>Adicionar à Tela de Início</b>. Abra o Oi Nanda pelo ícone que aparece e ligue os avisos aqui.</span>`,
+    denied:`<span>As notificações estão bloqueadas neste navegador. Libere nas configurações do site (o cadeado ao lado do endereço) e volte aqui.</span>`,
+    na:`<span>Este navegador não recebe notificações. No celular, use o Chrome (Android) ou o Safari (iPhone, pela Tela de Início).</span>`}[st];
+  box.innerHTML=T;const re=()=>pushBox(box);
+  const run=(sel,fn,ok)=>{const b=box.querySelector(sel);if(b)b.onclick=async()=>{b.disabled=true;try{await fn();if(ok)toast(ok)}catch(e){toast(e.message)}re()}};
+  run('[data-pon]',async()=>{await pushOn();await api('/push/test',{method:'POST'})},'Avisos ligados. Mandamos um teste.');run('[data-poff]',pushOff,'Avisos desligados neste aparelho.');run('[data-pt]',()=>api('/push/test',{method:'POST'}),'Teste enviado.')}
+async function pushNudge(){const box=$('#inPush');if(!box)return;let st;try{st=await pushState()}catch(e){return}
+  if(st==='on'||st==='na'||st==='denied')return;try{if(localStorage.getItem('oinanda.pushNo')==='1')return}catch(e){}
+  box.innerHTML=`<div class="pnudge">${NI.conversas}<span><b>Receba os avisos ${innerWidth<860?'neste celular':'no celular e no computador'}</b><small>${st==='ios'?'No iPhone, primeiro adicione o Oi Nanda à Tela de Início.':'Mensagem nova, conversa transferida e cliente esperando, mesmo com o Oi Nanda fechado.'}</small></span><button type="button" class="btn sm p" id="inPushB">${st==='ios'?'Como fazer':'Ligar avisos'}</button><button type="button" class="sm-x" id="inPushX" aria-label="Agora não">×</button></div>`;
+  $('#inPushB').onclick=async()=>{if(st==='ios')return meModal();try{await pushOn();await api('/push/test',{method:'POST'});toast('Avisos ligados. Mandamos um teste.');box.innerHTML=''}catch(e){toast(e.message)}};
+  $('#inPushX').onclick=()=>{try{localStorage.setItem('oinanda.pushNo','1')}catch(e){}box.innerHTML=''}}
 async function refresh(){ME=await api('/auth/me')}
 async function loadNiches(){try{const l=await api('/niches');SEG=Object.fromEntries(l.map(n=>[n.key,n.label]));SEGS=Object.fromEntries(l.map(n=>[n.key,n.short]))}catch(e){}}
 async function boot(){
@@ -3261,7 +3302,7 @@ async function boot(){
   if(gq){history.replaceState(null,'','/');VIEW='agenda';AG.tab='config';shell();toast({ok:'Google Agenda conectado.',cancelado:'Conexão com o Google cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Google não completou a conexão. Tente de novo.'}[gq]||'');return}
   shell();
 }
-VIEW=readPath();boot();
+VIEW=readPath();swInit();boot();
 </script>
 </body>
 </html>

@@ -142,6 +142,8 @@ async def do_transfer(company, contact, by_name, by_id, team=None, to_user=None,
         try:
             from notify import transfer_alert
             await transfer_alert(company, assignee, contact, by_name, reason)
+            from push import later, on_transfer
+            later(on_transfer(assignee, contact, by_name, reason))
         except Exception as e:  # aviso nunca trava a transferência
             import logging; logging.getLogger('oinanda').warning('aviso de transferência falhou: %s', e)
     return where
