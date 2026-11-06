@@ -30,6 +30,6 @@ class CompanyUpdate(BaseModel):
     timezone: Optional[str] = Field(default=None, max_length=50)
 class AdminCompanyUpdate(BaseModel):
     status: Optional[Literal['active', 'suspended']] = None
-    plan: Optional[Literal['trial', 'oferta', 'completo', 'rede']] = None
+    plan: Optional[Literal['trial', 'oferta', 'completo', 'rede', 'essencial', 'profissional', 'equipe']] = None
     extend_trial_days: Optional[int] = Field(default=None, ge=1, le=60)
     note: Optional[str] = Field(default=None, max_length=500)

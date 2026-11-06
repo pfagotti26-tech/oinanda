@@ -222,6 +222,7 @@ async def list_segments(user=Depends(current_user)):
 
 @router.post('/segments')
 async def add_segment(body: SegSave, request: Request, user=Depends(current_user)):
+    from billing import require; require(user, 'segmentos')
     if await db.segments.count_documents({'company_id': user['company_id']}) >= 200: raise HTTPException(400, 'Limite de 200 segmentos.')
     s = {'id': uid(), 'company_id': user['company_id'], 'name': body.name.strip(), 'rules': [r.model_dump() for r in body.rules], 'by': user['name'], 'created_at': now()}
     await db.segments.insert_one(s.copy())

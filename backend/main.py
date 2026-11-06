@@ -27,6 +27,7 @@ from goals import router as goals_router
 from journey import router as journey_router
 from media import router as media_router
 from push import router as push_router
+from billing import router as billing_router
 from roi import router as roi_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
@@ -118,6 +119,7 @@ app.include_router(goals_router, prefix="/api")
 app.include_router(journey_router, prefix="/api")
 app.include_router(media_router, prefix="/api")
 app.include_router(push_router, prefix="/api")
+app.include_router(billing_router, prefix="/api")
 app.include_router(roi_router, prefix="/api")
 
 @app.middleware('http')
@@ -206,7 +208,10 @@ async def logout(request: Request, response: Response):
 async def me(user=Depends(current_user)):
     c = user['company']
     trial_left = max(0, (c['trial_ends_at'] - now()).days + 1) if c['plan'] == 'trial' else None
-    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'roles': ROLES}
+    from billing import limits
+    lim = limits(c)
+    if lim['state'] != 'trial': trial_left = None
+    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'roles': ROLES, 'access': lim}
 
 @app.post('/api/auth/password')
 async def change_password(body: PasswordChange, request: Request, response: Response, user=Depends(current_user)):
@@ -240,6 +245,7 @@ async def team(user=Depends(current_user)):
 
 @app.post('/api/team')
 async def invite(body: Invite, request: Request, user=Depends(managers)):
+    from billing import check_seat; await check_seat(user)
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Este e-mail já tem acesso ao Oi Nanda.')
     temp = secrets.token_urlsafe(9)

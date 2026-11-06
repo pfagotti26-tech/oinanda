@@ -13,7 +13,7 @@ def test_fluxo_completo():
         r = c.post('/api/auth/signup', json={'name': 'Ana', 'email': 'ana@studio.com', 'password': 'senha-forte-1', 'company': 'Studio Forma', 'segment': 'studio'})
         assert r.status_code == 200, r.text
         me = c.get('/api/auth/me').json()
-        assert me['user']['role'] == 'owner' and me['company']['name'] == 'Studio Forma' and me['trial_days_left'] == 7
+        assert me['user']['role'] == 'owner' and me['company']['name'] == 'Studio Forma' and me['trial_days_left'] == 14
         assert 'password_hash' not in me['user']
         assert c.post('/api/auth/signup', json={'name': 'Xavier', 'email': 'ana@studio.com', 'password': 'senha-forte-1', 'company': 'Outra'}).status_code == 409
         inv = c.post('/api/team', json={'name': 'Camila', 'email': 'camila@studio.com', 'role': 'agent'}).json()

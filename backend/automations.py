@@ -411,6 +411,9 @@ async def run_once(limit=300):
     for a in await db.automations.find({'active': True}, {'_id': 0}).to_list(5000):
         if a['company_id'] not in cache:
             co = await db.companies.find_one({'id': a['company_id'], 'status': 'active'}, {'_id': 0})
+            if co:
+                from billing import has
+                if not has(co, 'automacoes'): co = None  # só leitura ou plano sem automações
             cache[a['company_id']] = (co, await stages_for(co) if co else None)
         company, stages = cache[a['company_id']]
         if not company or in_quiet(company): continue
@@ -439,6 +442,10 @@ async def loop():
             from goals import tick as goals_tick
             await goals_tick()
         except Exception: log.exception('falha nas metas')
+        try:
+            from billing import tick as billing_tick
+            await billing_tick()
+        except Exception: log.exception('falha na conferência das assinaturas')
         try:
             from push import late_tick
             await late_tick()

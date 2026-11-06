@@ -17,7 +17,7 @@ client = _Client(MONGO_URL, tz_aware=True) if MONGO_URL != 'mock' else _Client(t
 db = client[os.environ.get('DB_NAME', 'oinanda')]
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', '').strip().lower()
 ORIGINS = [o.strip() for o in os.environ.get('APP_ORIGINS', 'https://app.oinanda.com.br').split(',') if o.strip()]
-TRIAL_DAYS = 7
+TRIAL_DAYS = 14
 COOKIE = 'oinanda_session'
 ROLES = {'owner': 'Dono', 'manager': 'Gestor', 'agent': 'Atendente'}
 
@@ -71,6 +71,9 @@ async def current_user(request: Request):
         raise HTTPException(403, 'Esta conta está suspensa. Fale com o suporte do Oi Nanda.')
     if user.get('must_change_password') and request.url.path not in {'/api/auth/me', '/api/auth/password', '/api/auth/logout'}:
         raise HTTPException(403, 'Defina sua senha pessoal para continuar.')
+    from billing import blocked
+    if not user['is_admin'] and blocked(company, request.method, request.url.path):
+        raise HTTPException(402, 'Seu teste grátis terminou e a conta está só para leitura. Assine um plano em Empresa › Assinatura para voltar a usar.')
     user['company'] = company
     user['session_hash'] = session['token_hash']
     return user

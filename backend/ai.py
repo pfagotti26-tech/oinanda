@@ -236,6 +236,15 @@ async def auto_reply(company_id, contact_id, msg_id):
         if not contact or contact.get('needs_human'): return
         s = await settings_for(company_id)
         mode = contact.get('ai_mode') or s['default_mode']
+        if mode == 'auto':
+            from billing import has, ai_allowed
+            co = await db.companies.find_one({'id': company_id}, {'_id': 0}) or {}
+            if not has(co, 'auto') or not await ai_allowed(co):
+                mode = 'copilot'  # plano sem Nanda automática, só leitura ou respostas do mês esgotadas
+                month = now().strftime('%Y-%m')
+                if has(co, 'auto') and co.get('ai_limit_noted') != month:
+                    await db.companies.update_one({'id': company_id}, {'$set': {'ai_limit_noted': month}})
+                    await note(company_id, contact_id, 'As respostas da Nanda deste mês acabaram. Ela volta no mês que vem ou ao mudar de plano em Empresa › Assinatura.')
         # o horário da Meta vem em segundos; a ordem real é a de chegada no servidor
         last = (await db.messages.find({'contact_id': contact_id, 'dir': 'in'}, {'_id': 0}).sort('received_at', -1).to_list(1) or [None])[0]
         if not last or last['id'] != msg_id: return  # chegou mensagem mais nova: a resposta sai na vez dela
@@ -357,6 +366,8 @@ async def suggest(contact_id: str, cached: bool = False, user=Depends(current_us
     if cached:  # sugestão automática ao abrir a conversa: uma por mensagem do cliente
         if c.get('sug_for') == last and c.get('sug'): return c['sug']
         if not key_ok(): return {'reply': '', 'handoff': False, 'reason': '', 'book': None}
+    from billing import ai_allowed
+    if not await ai_allowed(user['company']): raise HTTPException(402, 'As respostas da Nanda deste mês acabaram. Mude de plano em Empresa › Assinatura para continuar.')
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
     if d.get('marcos'): await suggest_marcos(user['company_id'], c, d['marcos'])

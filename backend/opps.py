@@ -51,6 +51,7 @@ class BulkIn(BaseModel):
 
 @router.post('/opps/bulk')
 async def bulk(body: BulkIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'posvenda')
     rows = await run_segment(user, body.rules)
     if not rows: raise HTTPException(400, 'Ninguém neste público.')
     prod = await db.products.find_one({'id': body.product_id, 'company_id': user['company_id']}, {'_id': 0}) if body.product_id else None

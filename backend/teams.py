@@ -64,6 +64,7 @@ async def list_teams(user=Depends(current_user)):
 
 @router.post('/teams')
 async def add_team(body: TeamIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'equipes')
     if await db.teams.count_documents({'company_id': user['company_id']}) >= 20: raise HTTPException(400, 'Limite de 20 equipes.')
     await check_team(user, body)
     n = await db.teams.count_documents({'company_id': user['company_id']})

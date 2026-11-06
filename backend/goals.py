@@ -251,6 +251,7 @@ async def list_goals(user=Depends(managers)):
 
 @router.post('/goals')
 async def add_goal(body: GoalIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'metas')
     await check_goal_in(user, body)
     if await db.goals.count_documents({'company_id': user['company_id']}) >= 300: raise HTTPException(400, 'Limite de 300 metas.')
     g = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'name': body.name.strip(), 'parent_id': None, 'created_at': now(), 'by': user['name']}
@@ -339,6 +340,7 @@ async def list_challenges(user=Depends(current_user)):
 
 @router.post('/challenges')
 async def add_challenge(body: ChallengeIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'metas')
     if body.end < body.start: raise HTTPException(400, 'O fim precisa ser depois do início.')
     if body.metric == 'product_qty' and not await db.products.find_one({'id': body.product_id, 'company_id': user['company_id']}): raise HTTPException(400, 'Escolha o item.')
     ch = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'name': body.name.strip(), 'created_at': now(), 'by': user['name'], 'closed': False}

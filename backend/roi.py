@@ -77,6 +77,7 @@ async def save(user, body, sid=None):
 
 @router.post('/spend')
 async def create(body: SpendIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'retorno')
     d = {'id': uid(), 'company_id': user['company_id'], **await save(user, body), 'by': user['name'], 'created_at': now()}
     await db.spend.insert_one(d.copy())
     await audit(request, user, 'Lançou investimento', f'{d["label"] or d["origin"]} · R$ {d["amount"]:.2f}')
@@ -131,6 +132,7 @@ def day(v):
 @router.post('/spend/import')
 async def import_csv(request: Request, file: UploadFile = File(...), origin: str = Form(default='anuncio'), start: str = Form(default=''), end: str = Form(default=''),
                      user=Depends(managers)):
+    from billing import require; require(user, 'retorno')
     from origins import origins_of
     if origin not in {o['id'] for o in await origins_of(user['company'])}: raise HTTPException(400, 'Origem não existe.')
     raw = await file.read()

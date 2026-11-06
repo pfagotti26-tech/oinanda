@@ -45,6 +45,7 @@ async def preview(body: PreviewIn, user=Depends(managers)):
 
 @router.post('/campaigns')
 async def create(body: CampIn, request: Request, user=Depends(managers)):
+    from billing import require; require(user, 'campanhas')
     t = await db.templates.find_one({'id': body.template_id, 'company_id': user['company_id']}, {'_id': 0})
     if not t: raise HTTPException(404, 'Modelo não encontrado.')
     if t.get('status') != 'APPROVED': raise HTTPException(400, 'Esse modelo ainda não foi aprovado pela Meta.')
@@ -80,7 +81,8 @@ async def tick(limit=PER_TICK):
     sent = 0
     for camp in await db.campaigns.find({'status': 'sending'}, {'_id': 0}).to_list(200):
         company = await db.companies.find_one({'id': camp['company_id'], 'status': 'active'}, {'_id': 0})
-        if not company or in_quiet(company): continue
+        from billing import has
+        if not company or in_quiet(company) or not has(company, 'campanhas'): continue
         t = await db.templates.find_one({'id': camp['template_id']}, {'_id': 0})
         if not t or t.get('status') != 'APPROVED':
             await db.campaigns.update_one({'id': camp['id']}, {'$set': {'status': 'paused', 'paused_reason': 'modelo não está aprovado'}}); continue

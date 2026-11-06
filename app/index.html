@@ -848,6 +848,22 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .vtb.rt small{color:var(--ink3);font-size:11.5px}.vtb.rt .roas{font-weight:600}.vtb.rt .roas.g{color:var(--ok)}.vtb.rt .roas.m{color:var(--warn)}.vtb.rt .roas.b{color:var(--bad)}
 .vtb.rt th{white-space:nowrap}.rt-w{overflow-x:auto;margin:0 -4px}.rt-w table{min-width:760px}
 @media (max-width:1100px){.kpis.rk{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (max-width:600px){.kpis.rk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.banner.ro{background:var(--badsoft);color:var(--bad)}.banner .lnk{margin-left:auto;color:inherit}.banner.ro .btn{margin-left:auto}
+.sb-top .vd-c{display:flex;flex-direction:column;gap:6px}.sb-st{font-size:14.5px;color:var(--ink2)}.sb-st b{color:var(--ink)}.sb-st.readonly b{color:var(--bad)}
+.ubs{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-top:12px}.ub-l{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink3);margin-bottom:5px}.ub-l b{color:var(--ink)}
+.ub-b{height:8px;background:#F3EEE9;border-radius:999px;overflow:hidden}.ub-b span{display:block;height:100%;background:var(--ok);border-radius:999px}.ub-b span.warn{background:#E0A82E}.ub-b span.full{background:var(--bad)}
+.sb-cy{display:flex;justify-content:center;margin:22px 0 14px}.sb-cy small{font-size:11px;color:var(--ok);font-weight:700;margin-left:4px}
+.sb-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.sb-p{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .15s}
+.sb-p.on{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}.sb-p h3{font-size:18px}.sb-pi{font-size:13px;color:var(--ink2);min-height:38px}
+.sb-tag{position:absolute;top:-11px;left:20px;background:var(--c);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px}
+.sb-pr{display:flex;align-items:baseline;gap:4px;margin-top:4px}.sb-pr b{font-size:30px;letter-spacing:-1px}.sb-pr span{color:var(--ink3);font-size:13px}
+.sb-p ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0 6px;font-size:13px;flex:1}.sb-p li{padding-left:20px;position:relative}.sb-p li::before{content:'✓';position:absolute;left:0;color:var(--ok);font-weight:700}
+.sb-p li.no{color:var(--ink3);text-decoration:line-through}.sb-p li.no::before{content:'–';color:var(--ink3)}
+.sb-ex{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;background:#FAF7F4;border-radius:12px;padding:8px 10px}.sb-ex small{color:var(--ink3)}
+.stp{display:flex;align-items:center;gap:10px}.stp button{width:28px;height:28px;border-radius:50%;border:1px solid #DCD2C9;background:#fff;font-size:16px;font-weight:700}.stp button:disabled{opacity:.4}
+.sb-f{margin-top:16px;display:flex;flex-direction:column;gap:12px;max-width:560px;margin-left:auto;margin-right:auto}.sb-ft{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}.lnk.danger{color:var(--bad)}
+@media (max-width:900px){.sb-plans{grid-template-columns:1fr}.ubs{grid-template-columns:1fr}}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -968,7 +984,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 <script>
 let SEG={studio:'Studio, academia ou box',clinica:'Clínica de estética, odonto ou saúde',salao:'Salão, barbearia ou beleza',imobiliaria:'Imobiliária ou corretor',escola:'Escola, idiomas ou cursos presenciais',loja:'Loja ou e-commerce',servicos:'Serviços profissionais (contabilidade, advocacia, consultoria)',restaurante:'Restaurante, delivery ou confeitaria',lancamento:'Infoproduto, curso online ou mentoria',outro:'Outro tipo de negócio'};
 let SEGS={};
-const PLAN={trial:'Teste grátis',oferta:'Oferta do mês',completo:'Completo',rede:'Rede'};
+const PLAN={trial:'Teste grátis',oferta:'Oferta do mês',completo:'Completo',rede:'Rede',essencial:'Essencial',profissional:'Profissional',equipe:'Equipe'};
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dt=v=>v?new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
@@ -1099,10 +1115,12 @@ function shell(){
     <div class="me"><button class="meb" id="meB" title="Seu status e avisos"><span class="avw"><span class="av">${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${esc(u.name)}</b><span id="meSt">${esc(ME.roles[u.role]||u.role)} · ${u.away?'ausente':'disponível'}</span></span></button><button id="out" class="lb">Sair</button></div>
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
-    ${ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.</div>`:''}
+    ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
+     :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${u.role==='owner'?'<button class="lnk" data-sub>Ver planos e assinar</button>':''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
+  document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('assinatura'));
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
   gSearchInit();
@@ -1130,6 +1148,7 @@ function readPath(){
   if(!parts.length)return 'inicio';
   if(parts[0]==='admin')return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao';
   const v=parts[0];
+  if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
@@ -3085,9 +3104,10 @@ const VIEWS={
     <div class="field"><label>WhatsApp do negócio</label><input name="phone" value="${esc(c.phone)}" ${own?'':'disabled'}></div>
     ${own?'<button class="btn p" style="align-self:flex-start">Salvar</button>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
    <div class="card"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
-    ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}. A contratação do plano chega numa próxima etapa.</p>`:''}
+    ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}.</p>`:''}
+    <button class="btn sm ${c.plan==='trial'?'p':''}" style="margin-top:12px" data-sub2>${c.plan==='trial'?'Ver planos e assinar':'Assinatura e uso do plano'}</button>
     <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div>`;
-  renderWa(own);
+  renderWa(own);document.querySelectorAll('[data-sub2]').forEach(b=>b.onclick=()=>go('assinatura'));
   if(own)$('#co').onsubmit=async ev=>{ev.preventDefault();try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(ev.target))});await refresh();toast('Dados salvos.')}catch(e){toast(e.message)}};
  },
  async atividade(){
@@ -3351,6 +3371,49 @@ async function pushNudge(){const box=$('#inPush');if(!box)return;let st;try{st=a
   box.innerHTML=`<div class="pnudge">${NI.conversas}<span><b>Receba os avisos ${innerWidth<860?'neste celular':'no celular e no computador'}</b><small>${st==='ios'?'No iPhone, primeiro adicione o Oi Nanda à Tela de Início.':'Mensagem nova, conversa transferida e cliente esperando, mesmo com o Oi Nanda fechado.'}</small></span><button type="button" class="btn sm p" id="inPushB">${st==='ios'?'Como fazer':'Ligar avisos'}</button><button type="button" class="sm-x" id="inPushX" aria-label="Agora não">×</button></div>`;
   $('#inPushB').onclick=async()=>{if(st==='ios')return meModal();try{await pushOn();await api('/push/test',{method:'POST'});toast('Avisos ligados. Mandamos um teste.');box.innerHTML=''}catch(e){toast(e.message)}};
   $('#inPushX').onclick=()=>{try{localStorage.setItem('oinanda.pushNo','1')}catch(e){}box.innerHTML=''}}
+/* assinatura e planos */
+VIEWS.assinatura=async function(){
+  const own=ME.user.role==='owner';let b=await api('/billing');
+  const q=new URLSearchParams(location.search);if(q.get('preapproval_id')||b.billing.status==='pending'||b.billing.pending_url){try{b=await api('/billing/sync',{method:'POST'})}catch(e){}if(q.get('preapproval_id'))history.replaceState(null,'','/assinatura')}
+  if(b.state!==ME.access?.state||b.plan!==ME.access?.plan){await refresh();shell();return}
+  const S={cycle:b.billing.cycle||'monthly',plan:b.plan&&b.state==='active'?b.plan:'profissional',extra:b.billing.extra_users||0};
+  const money=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2});
+  const bar=(l,v,max)=>`<div class="ub"><div class="ub-l"><span>${l}</span><b>${v} de ${max}</b></div><div class="ub-b"><span style="width:${Math.min(100,100*v/Math.max(1,max))}%" class="${v>=max?'full':v/max>.8?'warn':''}"></span></div></div>`;
+  const draw=()=>{const P=b.plans,ann=S.cycle==='annual';
+    const price=k=>(P[k].price+(k===S.plan?S.extra*b.extra_user:0))*(ann?b.annual_months:1);
+    const cur=b.state==='active'?`<b>Plano ${esc(P[b.plan]?.name||b.plan)}</b>${b.billing.amount?` · ${money(b.billing.amount)} ${b.billing.cycle==='annual'?'por ano':'por mês'}`:''}${b.billing.status==='cancelled'?` · cancelado, vale até ${fmtD(ymd(new Date(b.billing.paid_until)))}`:b.billing.next_payment?` · próxima cobrança em ${fmtD(ymd(new Date(b.billing.next_payment)))}`:''}`
+      :b.state==='trial'?`<b>Teste grátis</b> · ${b.trial_left} ${b.trial_left===1?'dia restante':'dias restantes'} com tudo liberado`:'<b>Conta só para leitura</b> · assine para voltar a usar';
+    $('#page').innerHTML=`<div class="fhd"><div><h1>Assinatura</h1><p class="sub">Escolha o plano do ${esc(ME.company.name)}. Pagamento no cartão pelo Mercado Pago, renovação automática e cancelamento quando quiser.</p></div></div>
+     <div class="sb-top"><div class="vd-c"><div class="sb-st ${b.state}">${cur}</div>
+       ${b.billing.pending_url&&own?`<div class="note warnb" style="margin-top:12px">Pagamento ainda não confirmado. <a class="lnk" href="${esc(b.billing.pending_url)}">Continuar no Mercado Pago</a> · <button class="lnk" id="sbSync">Já paguei, atualizar</button></div>`:''}
+       <div class="ubs">${bar('Pessoas com acesso',b.usage.users,b.limits.users||b.usage.users)}${bar('Respostas da Nanda neste mês',b.usage.ai,b.limits.ai||0)}</div></div></div>
+     ${!b.ready?'<div class="note warnb" style="margin:14px 0">A cobrança ainda está sendo configurada. Em instantes você poderá assinar por aqui.</div>':''}
+     <div class="sb-cy"><div class="seg"><button class="${!ann?'on':''}" data-cy="monthly">Mensal</button><button class="${ann?'on':''}" data-cy="annual">Anual <small>2 meses grátis</small></button></div></div>
+     <div class="sb-plans">${['essencial','profissional','equipe'].map(k=>{const p=P[k],sel=S.plan===k,isCur=b.state==='active'&&b.plan===k;
+       return `<div class="sb-p ${sel?'on':''} ${k==='profissional'?'best':''}" data-pl="${k}">${k==='profissional'?'<span class="sb-tag">Mais escolhido</span>':''}<h3>${p.name}</h3><p class="sb-pi">${p.pitch}</p>
+        <div class="sb-pr"><b>${money(price(k)/(ann?12:1))}</b><span>/mês</span></div><p class="hint">${ann?`${money(price(k))} por ano`:'cobrado todo mês'}</p>
+        <ul><li><b>${p.users+(sel?S.extra:0)} pessoas</b> com acesso</li><li><b>${p.ai.toLocaleString('pt-BR')} respostas</b> da Nanda por mês</li><li>Conversas, agenda, funil, vendas e jornada</li>${Object.entries(b.features).map(([f,n])=>`<li class="${p.features.includes(f)?'':'no'}">${n}</li>`).join('')}</ul>
+        ${sel?`<div class="sb-ex"><span>Pessoas extras <small>(${money(b.extra_user)}/mês cada)</small></span><span class="stp"><button type="button" data-ex="-1" ${S.extra?'':'disabled'}>−</button><b>${S.extra}</b><button type="button" data-ex="1">+</button></span></div>`:''}
+        ${isCur&&b.billing.status==='active'&&S.extra===(b.billing.extra_users||0)&&(b.billing.cycle||'monthly')===S.cycle?'<span class="pill ok" style="align-self:flex-start">seu plano atual</span>':`<button class="btn ${sel?'p':''}" data-go="${k}" ${own&&b.ready?'':'disabled'}>${isCur?'Mudar para esta opção':'Assinar '+p.name}</button>`}</div>`}).join('')}</div>
+     ${own?'':'<p class="note" style="margin-top:14px">Só o dono da conta pode assinar ou mudar de plano.</p>'}
+     <div id="sbForm"></div>
+     <div class="sb-ft"><p class="hint">O valor da Meta pelas mensagens fora da janela de 24 h (modelos) é cobrado direto pela Meta na conta de WhatsApp da empresa, separado do plano. Dúvidas sobre a assinatura: fale com o suporte do Oi Nanda.</p>
+      ${own&&b.billing.status==='active'?'<button class="lnk danger" id="sbCancel">Cancelar assinatura</button>':''}</div>`;
+    document.querySelectorAll('[data-cy]').forEach(x=>x.onclick=()=>{S.cycle=x.dataset.cy;draw()});
+    document.querySelectorAll('[data-pl]').forEach(x=>x.onclick=e=>{if(e.target.closest('button,a'))return;if(S.plan!==x.dataset.pl){S.plan=x.dataset.pl;S.extra=0;draw()}});
+    document.querySelectorAll('[data-ex]').forEach(x=>x.onclick=()=>{S.extra=Math.max(0,Math.min(50,S.extra+Number(x.dataset.ex)));draw()});
+    document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{S.plan=x.dataset.go;const k=S.plan;if(document.querySelector('.sb-p.on')?.dataset.pl!==k){S.extra=0;draw()}
+      const box=$('#sbForm');box.innerHTML=`<form class="vd-c sb-f" id="sbF"><h3>Assinar o ${esc(b.plans[k].name)} · ${money(price(k))} ${S.cycle==='annual'?'por ano':'por mês'}</h3>
+        <div class="field"><label>E-mail para o Mercado Pago</label><input name="email" type="email" required value="${esc(b.billing.email||ME.user.email)}"><span class="hint">Use o e-mail da conta do Mercado Pago de quem vai pagar. O recibo chega nele.</span></div>
+        <div class="row"><button class="btn p">Ir para o pagamento</button><button type="button" class="btn" id="sbX">Voltar</button><span class="err" id="sbE"></span></div></form>`;
+      box.scrollIntoView({behavior:'smooth',block:'center'});$('#sbX').onclick=()=>box.innerHTML='';
+      $('#sbF').onsubmit=async ev=>{ev.preventDefault();const bt=ev.target.querySelector('.btn.p');bt.disabled=true;bt.textContent='Abrindo o Mercado Pago...';
+        try{const r=await api('/billing/subscribe',{method:'POST',body:{plan:k,cycle:S.cycle,extra_users:S.extra,email:ev.target.email.value}});location.href=r.url}
+        catch(e){$('#sbE').textContent=e.message;bt.disabled=false;bt.textContent='Ir para o pagamento'}}});
+    if($('#sbSync'))$('#sbSync').onclick=async()=>{b=await api('/billing/sync',{method:'POST'});if(b.state==='active'){toast('Pagamento confirmado. Obrigado!');await refresh();shell();return}toast('Ainda não confirmado pelo Mercado Pago. Tente de novo em alguns minutos.');draw()};
+    if($('#sbCancel'))$('#sbCancel').onclick=async()=>{if(!await sure('Cancelar a assinatura? A conta continua funcionando até o fim do período pago e depois fica só para leitura.',{ok:'Cancelar assinatura'}))return;
+      try{await api('/billing/cancel',{method:'POST'});toast('Assinatura cancelada.');b=await api('/billing');draw()}catch(e){toast(e.message)}};};
+  draw()};
 async function refresh(){ME=await api('/auth/me')}
 async function loadNiches(){try{const l=await api('/niches');SEG=Object.fromEntries(l.map(n=>[n.key,n.label]));SEGS=Object.fromEntries(l.map(n=>[n.key,n.short]))}catch(e){}}
 async function boot(){
