@@ -84,6 +84,8 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
         t = await ig('GET', '/oauth/access_token', params={'client_id': os.environ['IG_APP_ID'], 'client_secret': os.environ['IG_APP_SECRET'],
                                                           'redirect_uri': redirect_uri(request), 'code': code.split('#')[0]})
         tok = t['access_token']
+        r = await via_page(st['company_id'], st['user_id'], tok)
+        if r: return RedirectResponse(back + '?ig=' + r)
         me = await ig('GET', '/me', tok, {'fields': 'client_business_id'})
         biz = str(me.get('client_business_id') or '')
         exp = now() + timedelta(seconds=int(t['expires_in'])) if t.get('expires_in') else None
@@ -99,6 +101,42 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
     except HTTPException as e:
         log.warning('falha ao conectar instagram: %s', e.detail)
         return RedirectResponse(back + '?ig=erro')
+
+PAGE_FIELDS = ('messages,messaging_postbacks,messaging_seen,message_reactions', 'messages,messaging_postbacks', 'messages')
+
+async def via_page(company_id, user_id, tok):
+    """Conexão pelo login do Facebook: o Instagram do cliente fica ligado a uma Página, e o Oi Nanda fala com ele usando o
+    token da Página (não vence quando vem de um token longo de usuário). Devolve None se o token não é desse tipo."""
+    try:
+        long = await ig('GET', '/oauth/access_token', params={'grant_type': 'fb_exchange_token', 'client_id': os.environ['IG_APP_ID'],
+                                                               'client_secret': os.environ['IG_APP_SECRET'], 'fb_exchange_token': tok})
+        tok = long.get('access_token') or tok
+    except HTTPException as e: log.info('instagram: troca por token longo recusada: %s', e.detail)
+    try: pages = (await ig('GET', '/me/accounts', tok, {'fields': 'id,name,access_token,instagram_business_account{id,username,name,profile_picture_url}', 'limit': '100'})).get('data') or []
+    except HTTPException as e:
+        log.info('instagram: /me/accounts recusado (não é login do Facebook?): %s', e.detail); return None
+    with_ig = [pg for pg in pages if pg.get('instagram_business_account') and pg.get('access_token')]
+    log.info('instagram: login do Facebook da empresa %s: %d página(s), %d com Instagram', company_id, len(pages), len(with_ig))
+    if not pages: return None
+    if not with_ig: return 'sem_pagina'
+    pg = with_ig[0]; acc = pg['instagram_business_account']
+    if await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': company_id}}):
+        log.info('instagram: @%s já está em outra empresa', acc.get('username')); return 'outra_empresa'
+    sub = None
+    for f in PAGE_FIELDS:
+        try: await ig('POST', f'/{pg["id"]}/subscribed_apps', pg['access_token'], {'subscribed_fields': f}); sub = f; break
+        except HTTPException as e: log.info('instagram: assinatura da página com %s recusada: %s', f, e.detail)
+    log.info('instagram: página %s assinada com: %s', pg['id'], sub or 'nada')
+    await db.ig_accounts.update_one({'company_id': company_id}, {'$set': {
+        'company_id': company_id, 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name') or pg.get('name'), 'picture': acc.get('profile_picture_url'),
+        'page_id': str(pg['id']), 'page_name': pg.get('name'), 'mode': 'page', 'token_enc': encrypt(pg['access_token']), 'expires_at': None,
+        'connected_at': now(), 'connected_by': user_id, 'status': 'connected', 'pages_with_ig': len(with_ig)}}, upsert=True)
+    await db.ig_pending.delete_one({'company_id': company_id})
+    await db.audit.insert_one({'id': uid(), 'company_id': company_id, 'actor_id': user_id, 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
+                               'at': now(), 'expires_at': now() + timedelta(days=180)})
+    return 'ok'
+
+def msg_path(a): return '/me/messages' if a.get('mode') == 'page' else f'/{a["ig_id"]}/messages'
 
 async def finish(company_id, user_id, tok, biz, exp):
     """Acha a conta compartilhada, assina os avisos e grava. Devolve 'ok', 'outra_empresa' ou 'vazio'."""
@@ -344,7 +382,7 @@ async def on_comment(a, v):
     first = (contact.get('name') or '').lstrip('@').split(' ')[0]
     dm = a['comment_dm'].replace('{primeiro_nome}', first).replace('{nome}', contact.get('name') or '')
     try:
-        r = await ig('POST', f'/{a["ig_id"]}/messages', tok, payload={'recipient': {'comment_id': cmt}, 'message': {'text': dm}})
+        r = await ig('POST', msg_path(a), tok, payload={'recipient': {'comment_id': cmt}, 'message': {'text': dm}})
         if a.get('comment_reply'): await ig('POST', f'/{cmt}/replies', tok, {'message': a['comment_reply']})
     except HTTPException as e:
         await note(a['company_id'], contact['id'], f'Comentou "{(v.get("text") or "")[:80]}", mas o Instagram não deixou mandar o Direct: {e.detail}')
@@ -371,7 +409,7 @@ async def send(company_id, contact, message, human):
         if not (human and hum):
             raise HTTPException(400, 'No Instagram só dá para responder até 24 h depois da última mensagem do cliente (ou até 7 dias, por uma pessoa do time).')
         body.update(messaging_type='MESSAGE_TAG', tag='HUMAN_AGENT')
-    try: return await ig('POST', f'/{a["ig_id"]}/messages', decrypt(a['token_enc']), payload=body)
+    try: return await ig('POST', msg_path(a), decrypt(a['token_enc']), payload=body)
     except HTTPException as e:
         await revoked(a, e); raise
 

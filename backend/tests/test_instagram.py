@@ -129,3 +129,29 @@ def test_meta_demora_a_liberar_a_conta(monkeypatch):
         c.portal.call(instagram.refresh_tokens)
         s = c.get('/api/ig/status').json()
         assert s['account']['username'] == 'cliente.lenta' and s['pending'] is None
+
+def test_conexao_pela_pagina_do_facebook(monkeypatch):
+    calls = []
+    async def fake_ig(method, path, token=None, params=None, data=None, payload=None, base=None):
+        calls.append((method, path, token, payload))
+        if path == '/oauth/access_token' and (params or {}).get('grant_type') == 'fb_exchange_token': return {'access_token': 'user-longo'}
+        if path == '/oauth/access_token': return {'access_token': 'user-curto'}
+        if path == '/me/accounts': return {'data': [{'id': 'pg1', 'name': 'Página sem IG', 'access_token': 'x'},
+                                                    {'id': 'pg2', 'name': 'Studio P', 'access_token': 'page-tok', 'instagram_business_account': {'id': '17841400000000088', 'username': 'studio.p'}}]}
+        if path.endswith('/messages'): return {'message_id': 'mid-out'}
+        return {'success': True}
+    monkeypatch.setattr(instagram, 'ig', fake_ig)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona P', 'email': 'dp@x.com', 'password': 'senha-forte-1', 'company': 'Studio P', 'segment': 'studio'})
+        url = c.get('/api/ig/connect').json()['url']
+        st = url.split('state=')[1].split('&')[0]
+        r = c.get(f'/api/ig/callback?code=abc&state={st}', follow_redirects=False)
+        assert r.headers['location'].endswith('/empresa?ig=ok')
+        assert c.get('/api/ig/status').json()['account']['username'] == 'studio.p'
+        assert any(p == '/pg2/subscribed_apps' and t == 'page-tok' for _, p, t, _ in calls)
+        assert not any(p == '/me' for _, p, _, _ in calls)  # não caiu no caminho do login unificado
+        # mensagem chegando e resposta saindo pela Página
+        post(c, dm('905', 'Oi!', ig_id='17841400000000088'))
+        conv = next(x for x in c.get('/api/conversations').json() if x.get('ig_username') or x.get('channel') == 'instagram')
+        assert c.post(f'/api/conversations/{conv["id"]}/send', json={'text': 'Oi, tudo bem?'}).status_code == 200
+        assert any(p == '/me/messages' and t == 'page-tok' for _, p, t, _ in calls)
