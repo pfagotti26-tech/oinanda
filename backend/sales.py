@@ -18,7 +18,7 @@ router = APIRouter()
 PAYMENTS = {'pix': 'Pix', 'cartao_credito': 'Cartão de crédito', 'cartao_debito': 'Cartão de débito', 'boleto': 'Boleto',
             'dinheiro': 'Dinheiro', 'transferencia': 'Transferência', 'outro': 'Outro'}
 SOURCES = {'whatsapp': 'Chamou no WhatsApp', 'manual': 'Cadastro manual', 'historico': 'Conversa antiga do celular', 'agenda do celular': 'Agenda do celular'}
-GROUPS = ('seller', 'product', 'category', 'team', 'source', 'kind', 'payment', 'day', 'week', 'month')
+GROUPS = ('seller', 'product', 'category', 'team', 'source', 'kind', 'promo', 'payment', 'day', 'week', 'month')
 MGR = ('owner', 'manager')
 
 # ---------- catálogo ----------
@@ -96,6 +96,8 @@ class SaleIn(BaseModel):
     sellers: Optional[List[SellerIn]] = Field(default=None, max_length=10)
     notes: str = Field(default='', max_length=1000)
     move_won: bool = True
+    promo_ids: Optional[List[str]] = Field(default=None, max_length=20)  # None = aplica sozinho as promoções automáticas
+    coupon: Optional[str] = Field(default=None, max_length=30)
 
 def line_total(i): return round(max(0.0, i['qty'] * i['price'] - (i.get('discount') or 0)), 2)
 
@@ -106,7 +108,7 @@ def local_noon(company, d):
 def local_day(company, dt):
     return aware(dt).astimezone(agenda.tz_of(company)).date()
 
-async def clean_sale(user, body: SaleIn, contact):
+async def clean_sale(user, body: SaleIn, contact, skip_sale=None):
     users = {u['id']: u for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     sellers = [s.model_dump() for s in body.sellers] if body.sellers is not None else [{'user_id': contact.get('assigned_to') or user['id'], 'pct': 100}]
     if any(s['user_id'] not in users for s in sellers): raise HTTPException(400, 'Vendedor não encontrado.')
@@ -126,7 +128,17 @@ async def clean_sale(user, body: SaleIn, contact):
         items.append(it)
     date = local_noon(user['company'], body.date) if body.date else now()
     if date > now() + timedelta(days=1): raise HTTPException(400, 'A data da venda não pode ser no futuro.')
+    import promos as pr
+    r = await pr.price(user['company'], contact, items, body.promo_ids, body.coupon, skip_sale)
+    if body.coupon and not (r['coupon'] or {}).get('ok'): raise HTTPException(400, f'Cupom {body.coupon.strip().upper()}: {r["coupon"]["reason"]}.')
+    subtotal = round(sum(i['total'] for i in items), 2)
+    for it, w in zip(items, r['items']):
+        it['promo_discount'] = w['promo_discount']; it['total'] = round(max(0.0, it['total'] - w['promo_discount']), 2)
+    gross = sum(i['qty'] * i['price'] for i in items); manual = sum(i.get('discount') or 0 for i in items)
+    lim = user['company'].get('max_discount_pct')
+    approval = bool(lim is not None and user['role'] == 'agent' and gross and 100 * manual / gross > lim + 0.001)
     return {'contact_id': contact['id'], 'contact_name': contact.get('name'), 'date': date, 'items': items, 'total': round(sum(i['total'] for i in items), 2),
+            'subtotal': subtotal, 'promos': r['applied'], 'discount': round(manual + r['discount'], 2), 'needs_approval': approval,
             'payment': body.payment, 'sellers': sellers, 'notes': body.notes.strip(), 'team_id': contact.get('team_id'),
             'source': (('ad:' + ((contact.get('ad') or {}).get('headline') or (contact.get('ad') or {}).get('source_id') or 'sem título')) if contact.get('ad') else contact.get('source') or 'whatsapp')}
 
@@ -148,7 +160,9 @@ def out(sale):
 async def create_sale(body: SaleIn, request: Request, user=Depends(current_user)):
     c = await get_contact(user, body.contact_id)
     who = user.get('impersonated_by') or user['name']
-    sale = {'id': uid(), 'company_id': user['company_id'], **await clean_sale(user, body, c), 'status': 'ok',
+    data = await clean_sale(user, body, c)
+    pending = data.pop('needs_approval')
+    sale = {'id': uid(), 'company_id': user['company_id'], **data, 'status': 'pending' if pending else 'ok',
             'created_by': user['id'], 'created_by_name': who, 'created_at': now(), 'history': []}
     await db.sales.insert_one(sale.copy())
     if body.move_won:
@@ -159,7 +173,7 @@ async def create_sale(body: SaleIn, request: Request, user=Depends(current_user)
             await move_stage(user['company'], c, won['id'], who, stages)
     await refresh_contact(user['company'], c['id'])
     brl = f'R$ {sale["total"]:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
-    await note(user['company_id'], c['id'], f'{who} registrou uma venda de {brl}')
+    await note(user['company_id'], c['id'], f'{who} registrou uma venda de {brl}' + (' (desconto acima do limite: aguardando aprovação do gestor)' if pending else ''))
     await audit(request, user, 'Registrou venda', f'{c["name"]} · {brl}')
     return out(sale)
 
@@ -168,16 +182,32 @@ async def edit_sale(sid: str, body: SaleIn, request: Request, user=Depends(curre
     s = await db.sales.find_one({'id': sid, 'company_id': user['company_id']}, {'_id': 0})
     if not s or not can_edit(user, s): raise HTTPException(404, 'Venda não encontrada.')
     c = await db.contacts.find_one({'id': s['contact_id'], 'company_id': user['company_id']}, {'_id': 0}) or {'id': s['contact_id'], 'name': s.get('contact_name')}
-    upd = await clean_sale(user, body, {**c, 'team_id': s.get('team_id'), 'source': None, 'ad': None})
+    upd = await clean_sale(user, body, {**c, 'team_id': s.get('team_id')}, skip_sale=sid)
+    pending = upd.pop('needs_approval')
+    if s.get('status') == 'cancelled': raise HTTPException(400, 'Venda cancelada não pode ser editada.')
+    upd['status'] = 'pending' if pending else ('ok' if user['role'] in MGR else s.get('status', 'ok'))
     upd['source'] = s.get('source'); upd['team_id'] = s.get('team_id'); upd['contact_id'] = s['contact_id']
     if not body.date: upd['date'] = s['date']  # sem data nova: mantém a da venda
     elif local_day(user['company'], upd['date']) == local_day(user['company'], s['date']): upd['date'] = s['date']
-    changes = [k for k in ('date', 'items', 'total', 'payment', 'sellers', 'notes') if upd[k] != s.get(k)]
-    hist = {'at': now(), 'by': user.get('impersonated_by') or user['name'], 'what': ', '.join({'date': 'data', 'items': 'itens', 'total': 'valor', 'payment': 'pagamento', 'sellers': 'vendedores', 'notes': 'observação'}[k] for k in changes) or 'sem mudanças'}
+    changes = [k for k in ('date', 'items', 'total', 'payment', 'sellers', 'notes', 'promos') if upd[k] != s.get(k)]
+    if 'items' in changes and all({k: v for k, v in a.items() if k not in ('promo_discount',)} == {k: v for k, v in b.items() if k not in ('promo_discount',)} for a, b in zip(upd['items'], s.get('items') or [])) and len(upd['items']) == len(s.get('items') or []) and 'total' not in changes: changes.remove('items')
+    hist = {'at': now(), 'by': user.get('impersonated_by') or user['name'], 'what': ', '.join({'date': 'data', 'items': 'itens', 'total': 'valor', 'payment': 'pagamento', 'sellers': 'vendedores', 'notes': 'observação', 'promos': 'promoções'}[k] for k in changes) or 'sem mudanças'}
+    if s.get('status') == 'pending' and upd['status'] == 'ok': hist['what'] += ' e aprovou'
     await db.sales.update_one({'id': sid}, {'$set': {**upd, 'updated_at': now()}, '$push': {'history': hist}})
     await refresh_contact(user['company'], s['contact_id'])
     await audit(request, user, 'Editou venda', f'{s.get("contact_name")} · {hist["what"]}')
     return out({**s, **upd, 'history': (s.get('history') or []) + [hist]})
+
+@router.post('/sales/{sid}/approve')
+async def approve_sale(sid: str, request: Request, user=Depends(managers)):
+    s = await db.sales.find_one({'id': sid, 'company_id': user['company_id']}, {'_id': 0})
+    if not s or s.get('status') != 'pending': raise HTTPException(404, 'Venda não encontrada ou já aprovada.')
+    await db.sales.update_one({'id': sid}, {'$set': {'status': 'ok', 'approved_by': user['name'], 'approved_at': now()},
+                                            '$push': {'history': {'at': now(), 'by': user.get('impersonated_by') or user['name'], 'what': 'aprovou o desconto'}}})
+    await refresh_contact(user['company'], s['contact_id'])
+    await note(user['company_id'], s['contact_id'], f'{user["name"]} aprovou a venda com desconto')
+    await audit(request, user, 'Aprovou venda', s.get('contact_name'))
+    return {'ok': True}
 
 class CancelIn(BaseModel):
     reason: str = Field(default='', max_length=300)
@@ -227,7 +257,8 @@ class Filters(BaseModel):
     payment: Optional[str] = None
     source: Optional[str] = None
     q: Optional[str] = Field(default=None, max_length=80)
-    status: Literal['ok', 'cancelled', 'all'] = 'ok'
+    status: Literal['ok', 'cancelled', 'pending', 'open', 'all'] = 'ok'
+    promo: Optional[str] = None
     kind: Literal['', 'nova', 'recompra'] = ''
 
 def period(company, f: Filters):
@@ -249,7 +280,10 @@ async def origin_names(company):
 
 async def fetch(user, f: Filters, t0, t1):
     q = {'company_id': user['company_id'], 'date': {'$gte': t0, '$lt': t1}}
-    if f.status != 'all': q['status'] = f.status
+    if f.status == 'open': q['status'] = {'$in': ['ok', 'pending']}
+    elif f.status != 'all': q['status'] = f.status
+    if f.promo == 'none': q['promos.0'] = {'$exists': False}
+    elif f.promo: q['promos.promo_id'] = f.promo
     if user['role'] not in MGR: q['$or'] = [{'sellers.user_id': user['id']}, {'created_by': user['id']}]
     if f.team: q['team_id'] = f.team
     if f.payment: q['payment'] = f.payment
@@ -286,7 +320,8 @@ def facts(rows, f, my_id=None):
         if f.seller and f.seller != 'none': share = next((s['pct'] for s in r.get('sellers') or [] if s['user_id'] == f.seller), 0) / 100
         for i in r['items']:
             if not item_ok(i, f): continue
-            out.append({'sale': r, 'item': i, 'value': round(i['total'] * share, 2), 'qty': i['qty'], 'share': share})
+            out.append({'sale': r, 'item': i, 'value': round(i['total'] * share, 2), 'qty': i['qty'], 'share': share,
+                        'disc': round(((i.get('discount') or 0) + (i.get('promo_discount') or 0)) * share, 2)})
     return out
 
 def bucket_of(d, start, size):
@@ -297,13 +332,14 @@ def bucket_of(d, start, size):
 def totals(fs):
     ids = {x['sale']['id'] for x in fs}
     v = round(sum(x['value'] for x in fs), 2)
-    return {'value': v, 'count': len(ids), 'qty': round(sum(x['qty'] for x in fs), 2), 'ticket': round(v / len(ids), 2) if ids else None}
+    return {'value': v, 'count': len(ids), 'qty': round(sum(x['qty'] for x in fs), 2), 'ticket': round(v / len(ids), 2) if ids else None,
+            'discount': round(sum(x.get('disc', 0) for x in fs), 2)}
 
 @router.get('/sales')
 async def list_sales(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
                      product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                     q: Optional[str] = None, status: str = 'ok', kind: str = '', user=Depends(current_user)):
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status, kind=kind)
+                     q: Optional[str] = None, status: str = 'open', kind: str = '', promo: Optional[str] = None, user=Depends(current_user)):
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status, kind=kind, promo=promo)
     await migrate_legacy(user['company'])
     onames = await origin_names(user['company'])
     s0, s1, t0, t1 = period(user['company'], f)
@@ -314,10 +350,10 @@ async def list_sales(start: Optional[str] = None, end: Optional[str] = None, sel
 @router.get('/sales/report')
 async def report(start: Optional[str] = None, end: Optional[str] = None, group: str = 'seller', seller: Optional[str] = None, team: Optional[str] = None,
                  product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                 bucket: Optional[str] = None, kind: str = '', user=Depends(current_user)):
+                 bucket: Optional[str] = None, kind: str = '', promo: Optional[str] = None, user=Depends(current_user)):
     if group not in GROUPS: raise HTTPException(400, 'Agrupamento inválido.')
     if user['role'] not in MGR: seller = user['id']  # atendente vê só as próprias vendas
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind)
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind, promo=promo)
     company = user['company']
     onames = await origin_names(company)
     await migrate_legacy(company)
@@ -349,6 +385,10 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, group: 
             t = teams.get(s.get('team_id'))
             add(t['id'] if t else '_none', t['name'] if t else 'Sem equipe', x, x['value'], x['qty'], t.get('color') if t else None)
         elif group == 'source': add(s['_origin'], onames.get(s['_origin'], s['_origin']), x, x['value'], x['qty'])
+        elif group == 'promo':
+            ps = s.get('promos') or []
+            if not ps: add('none', 'Sem promoção', x, x['value'], x['qty'])
+            else: add(ps[0]['promo_id'], ' + '.join(a['name'] for a in ps), x, x['value'], x['qty'])
         elif group == 'kind': add('nova' if s['_first'] else 'recompra', 'Primeira compra' if s['_first'] else 'Recompra', x, x['value'], x['qty'])
         elif group == 'payment': add(s.get('payment') or '_none', PAYMENTS.get(s.get('payment'), 'Não informado'), x, x['value'], x['qty'])
         else:
@@ -382,8 +422,10 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, group: 
             'rows': out_rows, 'series': ser,
             'options': {'sellers': [{'id': k, 'name': v} for k, v in names.items()], 'teams': [{'id': t['id'], 'name': t['name']} for t in teams.values()],
                         'products': [{'id': p['id'], 'name': p['name']} for p in sorted(cat, key=lambda p: p['name'])] + [{'id': 'avulso:' + n, 'name': n + ' (avulso)'} for n in avulsos],
-                        'categories': cats, 'payments': [{'id': k, 'name': v} for k, v in PAYMENTS.items()], 'sources': [{'id': k, 'name': v} for k, v in onames.items()]},
-            'mine_only': user['role'] not in MGR}
+                        'categories': cats, 'payments': [{'id': k, 'name': v} for k, v in PAYMENTS.items()], 'sources': [{'id': k, 'name': v} for k, v in onames.items()],
+                        'promos': [{'id': p['id'], 'name': p['name']} for p in await db.promos.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)] + [{'id': 'none', 'name': 'Sem promoção'}]},
+            'mine_only': user['role'] not in MGR,
+            'pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending', **({} if user['role'] in MGR else {'sellers.user_id': user['id']})})}
 
 @router.get('/sales/export')
 async def export(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
@@ -397,13 +439,13 @@ async def export(start: Optional[str] = None, end: Optional[str] = None, seller:
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=';')
     br = lambda v: f'{v:.2f}'.replace('.', ',')
-    w.writerow(['Data', 'Cliente', 'Item', 'Categoria', 'Quantidade', 'Preço', 'Desconto', 'Total do item', 'Vendedores', 'Pagamento', 'Equipe', 'Origem', 'Compra', 'Observação'])
+    w.writerow(['Data', 'Cliente', 'Item', 'Categoria', 'Quantidade', 'Preço', 'Desconto', 'Desconto de promoção', 'Total do item', 'Vendedores', 'Pagamento', 'Equipe', 'Origem', 'Compra', 'Promoção', 'Observação'])
     for x in facts(await fetch(user, f, t0, t1), f):
         s, i = x['sale'], x['item']
         w.writerow([local_day(user['company'], s['date']).strftime('%d/%m/%Y'), s.get('contact_name') or '', i['name'], i.get('category') or '',
-                    br(i['qty']).rstrip('0').rstrip(','), br(i['price']), br(i.get('discount') or 0), br(x['value']),
+                    br(i['qty']).rstrip('0').rstrip(','), br(i['price']), br(i.get('discount') or 0), br(i.get('promo_discount') or 0), br(x['value']),
                     ', '.join(f'{y.get("name")} {y["pct"]:g}%' for y in s.get('sellers') or []), PAYMENTS.get(s.get('payment'), ''),
-                    teams.get(s.get('team_id'), ''), onames.get(s['_origin'], ''), 'primeira' if s['_first'] else 'recompra', s.get('notes') or ''])
+                    teams.get(s.get('team_id'), ''), onames.get(s['_origin'], ''), 'primeira' if s['_first'] else 'recompra', ' + '.join(a['name'] + (f' ({a["code"]})' if a.get('code') else '') for a in s.get('promos') or []), s.get('notes') or ''])
     return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8',
                     headers={'Content-Disposition': f'attachment; filename="vendas_{s0.isoformat()}_{s1.isoformat()}.csv"'})
 
@@ -413,7 +455,7 @@ class ViewIn(BaseModel):
     params: Dict[str, str] = Field(default_factory=dict)
     shared: bool = True
 
-KEYS = {'preset', 'start', 'end', 'group', 'seller', 'team', 'product', 'category', 'payment', 'source', 'kind', 'metric', 'chart', 'bucket'}
+KEYS = {'preset', 'start', 'end', 'group', 'seller', 'team', 'product', 'category', 'payment', 'source', 'kind', 'promo', 'metric', 'chart', 'bucket'}
 
 @router.get('/sales/views')
 async def views(user=Depends(current_user)):

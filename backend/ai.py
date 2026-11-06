@@ -54,7 +54,7 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
-def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None):
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra=''):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
     if agenda_text:
@@ -90,7 +90,7 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-{ag}{origin_block(origin_opts, company)}
+{ag}{extra}{origin_block(origin_opts, company)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
 {{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": ""}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
@@ -140,7 +140,13 @@ async def system_for(s, company, contact=None):
     if contact and company.get('ask_origin', True) and not contact.get('origin') and not contact.get('ad'):
         from origins import origins_of
         opts = [o for o in await origins_of(company) if o['id'] != 'anuncio']
-    return build_system(s, company, name, agenda_text, upcoming, opts)
+    extra = ''
+    try:
+        from promos import nanda_block
+        last = (await db.messages.find({'contact_id': contact['id'], 'dir': 'in'}, {'_id': 0, 'text': 1}).sort('at', -1).to_list(1) or [{}])[0].get('text', '') if contact else ''
+        extra = await nanda_block(company, contact or {'id': None}, last)
+    except Exception: log.exception('falha ao montar as promoções')
+    return build_system(s, company, name, agenda_text, upcoming, opts, extra)
 
 async def think(company_id, contact):
     s = await settings_for(company_id)
