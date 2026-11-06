@@ -222,6 +222,16 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .tag{background:#EEF1F4;color:var(--ink2);border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700}
 .ov{position:fixed;inset:0;background:rgba(23,33,43,.35);z-index:40;display:flex;justify-content:flex-end}
 .ov.center{justify-content:center;align-items:center;padding:20px}
+.ov.inpage{position:static;inset:auto;background:none;z-index:auto;display:block;max-width:860px;margin:0 auto 32px;padding:0}
+.page.wide>.ov.inpage,.page.board>.ov.inpage{padding:20px 24px}
+.ov.inpage.incv{max-width:none;margin:0;padding:16px 20px;overflow:auto;min-height:0;background:#FBF8F5;border-right:1px solid var(--line)}.ov.inpage.incv>*{max-width:760px;margin-left:auto;margin-right:auto}.ov.inpage.incv>.ov-back{display:flex;width:max-content;margin:0 auto 10px 0}
+.ov.inpage .modal,.ov.inpage .drawer{width:auto!important;max-width:none;max-height:none;height:auto;overflow:visible;box-shadow:none;border:1px solid var(--line);border-radius:20px;padding:24px}
+.ov.inpage .modal .x,.ov.inpage .drawer .x{display:none}
+.ov-back{display:inline-flex;align-items:center;gap:4px;font-weight:700;color:var(--ink2);font-size:13.5px;margin:0 0 10px;padding:6px 10px 6px 4px;border-radius:10px}.ov-back:hover{background:#F3EEE9;color:var(--ink)}.ov-back svg{width:18px;height:18px}
+.sure{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--warnsoft);border:1px solid #EFD9A6;border-radius:12px;padding:9px 12px;margin:8px 0;font-size:13px;font-weight:600;color:var(--ink)}
+.sure span{flex:1;min-width:180px}.sure input{border:1px solid #DCD2C9;border-radius:9px;padding:6px 9px;font:inherit;font-size:13px;min-width:160px;flex:1}
+td>.sure,tr+.sure{margin:4px}
+@media (max-width:860px){.page.wide>.ov.inpage,.page.board>.ov.inpage{padding:16px}.ov.inpage .modal,.ov.inpage .drawer{padding:18px;border-radius:16px}}
 .drawer{width:400px;max-width:100%;background:#fff;height:100%;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:-20px 0 40px -30px rgba(0,0,0,.4)}
 .modal{width:480px;max-width:100%;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow:auto}
 .drawer .x,.modal .x{margin-left:auto;font-size:20px;color:var(--ink3);line-height:1}
@@ -746,7 +756,7 @@ async function renderWa(own){
     ${n.register_error?`<p class="note" style="margin-top:10px">A Meta não ativou o número na API (${esc(n.register_error)}). Fale com o suporte.</p>`:''}
     ${n.webhook&&n.webhook!=='ok'?`<p class="note" style="margin-top:10px">Aviso: não foi possível inscrever o recebimento de mensagens (${esc(n.webhook)}). Fale com o suporte.</p>`:''}
     ${own?'<button class="btn sm danger" id="waOff" style="margin-top:12px">Desconectar</button>':''}`;
-    if(own)$('#waOff').onclick=async()=>{if(!confirm('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});renderWa(own)};return}
+    if(own)$('#waOff').onclick=async()=>{if(!await sure('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});renderWa(own)};return}
   const es=await api('/wa/signup-config').catch(()=>({enabled:false}));
   box.innerHTML=`<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3>
    ${es.enabled&&own?`<p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Entre com a sua conta do Facebook e escolha o número. <b>Já usa o WhatsApp Business no celular?</b> Escolha "conectar o app WhatsApp Business existente": o celular continua funcionando e as conversas dos últimos 6 meses vêm junto.</p>
@@ -825,7 +835,7 @@ function cvSizes(){const cv=$('.cv');if(!cv)return;
       h.onpointerup=()=>{h.onpointermove=null;h.classList.remove('on');cv.classList.remove('resizing');save()}}})}
 function fitCv(){const cv=$('.cv');if(!cv)return;const top=cv.getBoundingClientRect().top+scrollY;cv.style.height=Math.max(420,innerHeight-top)+'px'}
 addEventListener('resize',()=>{if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}});
-function openConv(id){CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts={};syncUrl();$('.cv')?.classList.add('chat');document.querySelectorAll('.ci').forEach(x=>x.classList.toggle('on',x.dataset.c===id));cvChat(true)}
+function openConv(id){document.querySelectorAll('.ov.incv').forEach(o=>o.remove());CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts={};syncUrl();$('.cv')?.classList.add('chat');document.querySelectorAll('.ci').forEach(x=>x.classList.toggle('on',x.dataset.c===id));cvChat(true)}
 function closeConv(){CV.open=null;syncUrl();$('.cv')?.classList.remove('chat');$('.cv')?.classList.remove('pn-open');cvEmpty();cvList()}
 function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
   b.innerHTML=`<div class="cv-empty"><div><div class="ei">${IC.chat}</div><b>Escolha uma conversa</b><p>${n.waiting?`${n.waiting} ${n.waiting===1?'cliente esperando':'clientes esperando'} resposta.`:'Tudo respondido por aqui.'}</p>
@@ -1191,10 +1201,32 @@ async function drawAgCfg(){
   $('#agSave').onclick=async()=>{try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,
     nanda_books:$('#nb').checked,stage_on_book:$('#sob').value,min_notice_hours:Number($('#mn').value),days_ahead:Number($('#da').value),step:Number($('#stp').value)}});toast('Agenda salva.');$('#agE').textContent=''}catch(e){$('#agE').textContent=e.message}};
   if($('#gOn'))$('#gOn').onclick=async()=>{try{location.href=(await api('/google/connect',{method:'POST'})).url}catch(e){toast(e.message)}};
-  if($('#gOff'))$('#gOff').onclick=async()=>{if(!confirm('Desconectar o Google Agenda?'))return;await api('/google',{method:'DELETE'});drawAgCfg()};
+  if($('#gOff'))$('#gOff').onclick=async()=>{if(!await sure('Desconectar o Google Agenda?'))return;await api('/google',{method:'DELETE'});drawAgCfg()};
 }
 const brl=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
-function overlay(html,center){const o=document.createElement('div');o.className='ov'+(center?' center':'');o.innerHTML=html;o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o);o.querySelectorAll('.x').forEach(x=>x.onclick=()=>o.remove());return o}
+/* telas de edição abrem dentro da página (sem janela por cima), com "Voltar" */
+function overlay(html){
+  const o=document.createElement('div');o.className='ov inpage';
+  o.innerHTML='<button type="button" class="ov-back">'+svg('<path d="m15 6-6 6 6 6"/>')+'Voltar</button>'+html;
+  const chat=VIEW==='conversas'&&innerWidth>860&&$('#cvChat')&&$('#cvChat').offsetParent?$('#cvChat'):null;
+  let page,hidden;
+  if(chat){page=chat.parentElement;hidden=[chat,...page.querySelectorAll(':scope>.ov.inpage')].filter(e=>e.style.display!=='none');o.classList.add('incv');hidden.forEach(e=>e.style.display='none');chat.after(o)}
+  else{page=$('#page')||document.body;hidden=[...page.children].filter(e=>e.style.display!=='none');hidden.forEach(e=>e.style.display='none');page.prepend(o)}const top=page.getBoundingClientRect().top+scrollY-10;if(scrollY>top)scrollTo({top:Math.max(0,top)});
+  const close=()=>{Element.prototype.remove.call(o);hidden.forEach(e=>e.style.display='');if(VIEW==='conversas'&&typeof fitCv==='function'){fitCv();CV.fitW&&CV.fitW()}};
+  o.remove=close;o.querySelectorAll('.x').forEach(x=>x.onclick=close);o.querySelector('.ov-back').onclick=close;
+  const f=o.querySelector('input:not([type=hidden]):not([disabled]),select,textarea');if(f&&innerWidth>860)setTimeout(()=>f.focus({preventScroll:true}),50);
+  return o}
+/* confirmação dentro da página, junto do botão clicado (sem janela do navegador) */
+let LASTBTN=null;document.addEventListener('pointerdown',e=>{LASTBTN=e.target.closest&&e.target.closest('button,a')},true);
+function sure(msg,opt={}){return new Promise(res=>{
+  const el=opt.el||LASTBTN||document.activeElement;const host=(el&&(el.closest('table')||el.closest('.row,.bt,.r,.pr-top,.hd,.tm-c .bt')||el.parentElement))||$('#page');
+  document.querySelectorAll('.sure').forEach(x=>x.remove());
+  const d=document.createElement('div');d.className='sure';
+  d.innerHTML=`<span>${esc(msg)}</span>${opt.input?`<input placeholder="${esc(opt.placeholder||'')}" value="${esc(opt.value||'')}" ${opt.type?`type="${opt.type}"`:''}>`:''}<button type="button" class="btn sm ${opt.ok?'p':'danger'}" data-y>${esc(opt.ok||'Confirmar')}</button><button type="button" class="btn sm" data-n>Voltar</button>`;
+  host.after(d);const i=d.querySelector('input');(i||d.querySelector('[data-y]')).focus();
+  const done=v=>{d.remove();res(v)};
+  d.querySelector('[data-y]').onclick=()=>done(opt.input?i.value:true);d.querySelector('[data-n]').onclick=()=>done(opt.input?null:false);
+  if(i)i.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();done(i.value)}if(e.key==='Escape')done(null)}})}
 async function contactDrawer(id,after){
   if(!STAGES)STAGES=await api('/funnel/stages');
   const c=(await api('/conversations/'+id)).contact;
@@ -1262,7 +1294,7 @@ function drawTpls(tpls){
     <div class="row"><button class="btn p">Enviar para aprovação</button><span class="err" id="tnE"></span></div></form>`,true);
     const f=o.querySelector('#tnF');bindVars(o,f.body);
     f.onsubmit=async ev=>{ev.preventDefault();try{await api('/templates',{method:'POST',body:Object.fromEntries(new FormData(f))});o.remove();CV.tpls=null;toast('Enviado para a Meta.');VIEWS.automacoes()}catch(x){o.querySelector('#tnE').textContent=x.message}}};
-  document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar este modelo? Ele também sai da Meta.'))return;try{await api('/templates/'+b.dataset.tdel,{method:'DELETE'});CV.tpls=null;VIEWS.automacoes()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este modelo? Ele também sai da Meta.'))return;try{await api('/templates/'+b.dataset.tdel,{method:'DELETE'});CV.tpls=null;VIEWS.automacoes()}catch(e){toast(e.message)}});
 }
 async function drawRuns(){
   const rows=await api('/automations/runs');
@@ -1526,7 +1558,7 @@ function productModal(p,ps){
     <div class="row"><button class="btn p">Salvar</button>${p&&!p.service_id?'<button type="button" class="btn sm danger" id="pdDel" style="margin-left:auto">Apagar</button>':''}<span class="err" id="pdE"></span></div></form>`,true);
   const f=o.querySelector('#pdF');
   o.querySelectorAll('[data-kd]').forEach(b=>b.onclick=()=>{f.querySelector(`[name=kind][value=${b.dataset.kd}]`).checked=true;o.querySelectorAll('[data-kd]').forEach(y=>y.classList.toggle('on',y===b))});
-  if($('#pdDel'))$('#pdDel').onclick=async()=>{if(!confirm('Apagar este item? Se já foi vendido, ele só fica inativo.'))return;const r=await api('/products/'+p.id,{method:'DELETE'});o.remove();toast(r.deactivated?'Já foi vendido: ficou inativo.':'Item apagado.');vdProducts()};
+  if($('#pdDel'))$('#pdDel').onclick=async()=>{if(!await sure('Apagar este item? Se já foi vendido, ele só fica inativo.'))return;const r=await api('/products/'+p.id,{method:'DELETE'});o.remove();toast(r.deactivated?'Já foi vendido: ficou inativo.':'Item apagado.');vdProducts()};
   f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,category:f.category.value,price:f.price.value===''?null:Number(f.price.value),kind:f.kind.value,active:f.active.checked};
     try{await api(p?'/products/'+p.id:'/products',{method:p?'PUT':'POST',body});o.remove();toast('Item salvo.');vdProducts()}catch(x){$('#pdE').textContent=x.message}};
 }
@@ -1610,7 +1642,7 @@ async function saleModal(opt){
   if($('#smCpB')){const apC=()=>{coupon=$('#smCp').value.trim().toUpperCase();$('#smCp').value=coupon;if(!contact){$('#smCpS').textContent='Escolha o cliente primeiro.';return}evalP()};
     $('#smCpB').onclick=apC;$('#smCp').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();apC()}}}
   if($('#smApv'))$('#smApv').onclick=async()=>{try{await api('/sales/'+sale.id+'/approve',{method:'POST'});o.remove();toast('Venda aprovada.');opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
-  if($('#smCx'))$('#smCx').onclick=async()=>{const why=prompt('Cancelar esta venda? Ela sai dos relatórios. Motivo (opcional):');if(why===null)return;
+  if($('#smCx'))$('#smCx').onclick=async()=>{const why=await sure('Cancelar esta venda? Ela sai dos relatórios.',{input:true,placeholder:'Motivo (opcional)',ok:'Cancelar venda'});if(why===null)return;
     try{await api('/sales/'+sale.id+'/cancel',{method:'POST',body:{reason:why}});o.remove();toast('Venda cancelada.');opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
   if(!ro)f.onsubmit=async ev=>{ev.preventDefault();$('#smE').textContent='';
     if(!contact)return $('#smE').textContent='Escolha o cliente.';
@@ -1638,12 +1670,12 @@ async function vdPromos(){
       ${mgr?`<div class="row" style="gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn sm" data-tp="bv">Boas-vindas: 10% na primeira compra</button><button class="btn sm" data-tp="vt">Volta: 15% para cliente inativo (cupom)</button><button class="btn sm" data-tp="bx">Leve 3, pague 2</button></div>`:''}</div>`}`;
   if(!mgr)return;
   $('#prNew').onclick=()=>promoModal(null);
-  $('#prLim').onclick=()=>{const v=prompt('Até quantos % de desconto manual o atendente pode dar sem aprovação? Deixe vazio para não ter limite.',lim??'');if(v===null)return;
+  $('#prLim').onclick=async()=>{const v=await sure('Até quantos % de desconto manual o atendente pode dar sem aprovação? Vazio = sem limite.',{input:true,type:'number',value:lim??'',ok:'Salvar'});if(v===null)return;
     api('/promos-settings',{method:'PUT',body:{max_discount_pct:v.trim()===''?null:Number(v.replace(',','.'))}}).then(()=>{ME.company.max_discount_pct=v.trim()===''?null:Number(v.replace(',','.'));toast('Limite salvo.');vdPromos()}).catch(e=>toast(e.message))};
   document.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>promoModal(ps.find(p=>p.id===b.dataset.pe)));
   document.querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>couponsModal(ps.find(p=>p.id===b.dataset.pc)));
   document.querySelectorAll('[data-pt]').forEach(b=>b.onclick=async()=>{const p=ps.find(x=>x.id===b.dataset.pt);try{await api('/promos/'+p.id,{method:'PUT',body:promoBody(p,{active:!p.active})});toast(p.active?'Promoção pausada.':'Promoção ligada.');vdPromos()}catch(e){toast(e.message)}});
-  document.querySelectorAll('[data-pd]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta promoção? Se já foi usada, ela só fica pausada.'))return;const x=await api('/promos/'+b.dataset.pd,{method:'DELETE'});toast(x.paused?'Já foi usada: ficou pausada.':'Promoção apagada.');vdPromos()});
+  document.querySelectorAll('[data-pd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta promoção? Se já foi usada, ela só fica pausada.'))return;const x=await api('/promos/'+b.dataset.pd,{method:'DELETE'});toast(x.paused?'Já foi usada: ficou pausada.':'Promoção apagada.');vdPromos()});
   const TPL={bv:{name:'Boas-vindas',kind:'percent',value:10,first_purchase:true,description:'10% de desconto na primeira compra.'},
     vt:{name:'Volta pra gente',kind:'percent',value:15,only_inactive:true,requires_coupon:true,description:'15% para quem está há um tempo sem comprar.'},
     bx:{name:'Leve 3, pague 2',kind:'bxgy',buy:3,pay:2,scope:'categories',categories:[]}};
@@ -1747,7 +1779,7 @@ async function vdOrigins(){
      <span class="hint">Anúncios da Meta com botão de WhatsApp são marcados sozinhos, com o nome do anúncio.</span></div></div></div>`;
   $('#lkNew').onclick=()=>linkModal(null,o);
   document.querySelectorAll('[data-le]').forEach(b=>b.onclick=()=>linkModal(l.items.find(x=>x.id===b.dataset.le),o));
-  document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.cp);toast('Link copiado.')}catch(e){prompt('Copie o link:',b.dataset.cp)}});
+  document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.cp);toast('Link copiado.')}catch(e){toast(b.dataset.cp)}});
   document.querySelectorAll('[data-qr]').forEach(b=>b.onclick=()=>{const x=l.items.find(y=>y.id===b.dataset.qr);
     overlay(`<div class="modal" style="width:380px;text-align:center"><div class="row"><h2 style="font-size:19px">${esc(x.label)}</h2><button class="x">×</button></div>
       <img src="${esc(x.qr)}" alt="QR Code de ${esc(x.label)}" style="width:260px;height:260px;margin:0 auto;display:block">
@@ -1765,7 +1797,7 @@ function linkModal(x,o){
     <div class="field"><label>Mensagem que já vem escrita</label><input name="message" required maxlength="300" value="${esc(v.message)}"><span class="hint">No fim vai um código curto (ex.: #oi-k3m9p) que identifica o link. O cliente pode apagar o resto do texto, mas o código precisa ficar.</span></div>
     <div class="row"><button class="btn p">Salvar</button>${x?'<button type="button" class="btn sm danger" id="lkDel" style="margin-left:auto">Apagar</button>':''}<span class="err" id="lkE"></span></div></form>`,true);
   const f=ov.querySelector('#lkF');
-  if($('#lkDel'))$('#lkDel').onclick=async()=>{if(!confirm('Apagar este link? Quem usar o link antigo não vai mais ser identificado.'))return;await api('/track-links/'+x.id,{method:'DELETE'});ov.remove();vdOrigins()};
+  if($('#lkDel'))$('#lkDel').onclick=async()=>{if(!await sure('Apagar este link? Quem usar o link antigo não vai mais ser identificado.'))return;await api('/track-links/'+x.id,{method:'DELETE'});ov.remove();vdOrigins()};
   f.onsubmit=async ev=>{ev.preventDefault();const body={label:f.label.value,origin:f.origin.value,detail:f.detail.value,message:f.message.value};
     try{await api(x?'/track-links/'+x.id:'/track-links',{method:x?'PUT':'POST',body});ov.remove();toast('Link salvo.');vdOrigins()}catch(e){$('#lkE').textContent=e.message}};
 }
@@ -1845,7 +1877,7 @@ const VIEWS={
   document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await api('/automations',{method:'POST',body:{recipe:b.dataset.add}});toast('Automação adicionada e ligada.');reload()}catch(e){toast(e.message);b.disabled=false}});
   document.querySelectorAll('[data-tg]').forEach(b=>b.onclick=async()=>{const a=d.items.find(x=>x.id===b.dataset.tg);try{await api('/automations/'+a.id,{method:'PATCH',body:{active:!a.active}});toast(a.active?'Automação desligada.':'Automação ligada.');reload()}catch(e){toast(e.message)}});
   document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>autoModal(d.items.find(x=>x.id===b.dataset.ed),d,tpls));
-  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta automação?'))return;await api('/automations/'+b.dataset.del,{method:'DELETE'});reload()});
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta automação?'))return;await api('/automations/'+b.dataset.del,{method:'DELETE'});reload()});
   document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{const t=b.textContent;b.disabled=true;b.textContent='enviando...';try{await api('/automations/'+b.dataset.ask+'/template',{method:'POST'});toast('Enviado para a Meta. A aprovação costuma sair em minutos ou poucas horas.');reload()}catch(e){toast(e.message);b.disabled=false;b.textContent=t}});
  },
  async relatorios(){
@@ -2089,7 +2121,7 @@ const VIEWS={
     <td style="text-align:right;white-space:nowrap">${c.plan==='trial'?`<button class="btn sm" data-ext="${c.id}">+7 dias</button> `:''}<button class="btn sm" data-enter="${c.id}">Entrar</button> <button class="btn sm ${c.status==='active'?'danger':''}" data-st="${c.id}" data-to="${c.status==='active'?'suspended':'active'}">${c.status==='active'?'Suspender':'Reativar'}</button></td></tr>`).join('')}
    </tbody></table>`:'<div class="empty">Nenhuma empresa ainda.</div>'}</div>`;
   document.querySelectorAll('[data-enter]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.enter+'/enter',{method:'POST'});VIEW='inicio';await boot()});
-  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=async()=>{if(b.dataset.to==='suspended'&&!confirm('Suspender esta conta? O time dela perde o acesso na hora.'))return;await api('/admin/companies/'+b.dataset.st,{method:'PATCH',body:{status:b.dataset.to}});VIEWS['a-clientes']()});
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=async()=>{if(b.dataset.to==='suspended'&&!await sure('Suspender esta conta? O time dela perde o acesso na hora.'))return;await api('/admin/companies/'+b.dataset.st,{method:'PATCH',body:{status:b.dataset.to}});VIEWS['a-clientes']()});
   document.querySelectorAll('[data-ext]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.ext,{method:'PATCH',body:{extend_trial_days:7}});toast('Teste estendido em 7 dias.');VIEWS['a-clientes']()});
   document.querySelectorAll('[data-plan]').forEach(s=>s.onchange=async()=>{await api('/admin/companies/'+s.dataset.plan,{method:'PATCH',body:{plan:s.value}});toast('Plano alterado.');if(s.dataset.plan===ME.company.id){await refresh();shell()}else VIEWS['a-clientes']()});
  },
@@ -2121,7 +2153,7 @@ async function drawTeams(people,canManage){
      ${t.sla_minutes?`<li>Alerta se o cliente esperar mais de <b>${t.sla_minutes} min</b> na fila</li>`:''}</ul>
     ${canManage?`<div class="bt"><button class="btn sm" data-te="${t.id}">Editar</button><button class="btn sm icn danger" data-td="${t.id}" title="Apagar" aria-label="Apagar">${IC.trash}</button></div>`:''}</div>`).join('')}</div>`;
   box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
-  box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
+  box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
 }
 async function meModal(){
   const u=ME.user,canManage=['owner','manager'].includes(u.role);
