@@ -175,6 +175,33 @@ async def enrich(tok, data):
         except HTTPException: pass
     return data
 
+class ProbeIn(BaseModel):
+    ig_id: str = Field(pattern=r'^[0-9]{6,25}$')
+
+@router.post('/ig/probe')
+async def probe(body: ProbeIn, user=Depends(owners)):
+    """Diagnóstico: com a autorização pendente, tenta a conta pelo número que a Meta mostrou na tela de escolha.
+    Se a Meta der acesso, termina a conexão com ela."""
+    p = await db.ig_pending.find_one({'company_id': user['company_id']}, {'_id': 0})
+    if not p: raise HTTPException(400, 'Nenhuma conexão esperando.')
+    tok = decrypt(p['token_enc']); out = {}
+    for fields in ('id,username,name,profile_picture_url', 'id,username', 'id'):
+        try: out = await ig('GET', f'/{body.ig_id}', tok, {'fields': fields}); break
+        except HTTPException as e: out = {'erro': e.detail}
+    log.info('instagram: teste pela conta %s: %s', body.ig_id, 'ok' if 'id' in out else out.get('erro'))
+    if 'id' not in out: return {'ok': False, 'detail': out.get('erro')}
+    try:
+        await ig('POST', f'/{out["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS}); sub = 'ok'
+    except HTTPException as e: sub = e.detail
+    log.info('instagram: assinatura dos avisos da conta %s: %s', out['id'], sub)
+    if sub != 'ok': return {'ok': False, 'account': {k: out.get(k) for k in ('id', 'username')}, 'detail': sub}
+    await db.ig_accounts.update_one({'company_id': user['company_id']}, {'$set': {
+        'company_id': user['company_id'], 'ig_id': str(out['id']), 'username': out.get('username'), 'name': out.get('name'), 'picture': out.get('profile_picture_url'),
+        'business_id': p.get('business_id') or '', 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': p['token_enc'], 'expires_at': p.get('expires_at'),
+        'connected_at': now(), 'connected_by': user['id'], 'status': 'connected'}}, upsert=True)
+    await db.ig_pending.delete_one({'company_id': user['company_id']})
+    return {'ok': True, 'account': {k: out.get(k) for k in ('id', 'username')}}
+
 @router.delete('/ig/account')
 async def disconnect(request: Request, user=Depends(owners)):
     a = await account_of(user['company_id'])
