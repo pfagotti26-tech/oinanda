@@ -115,14 +115,29 @@ async def ig_accounts(tok, biz):
         except HTTPException as e:
             log.info('instagram: %s recusado: %s', path, e.detail); continue
         log.info('instagram: %s trouxe %d conta(s)', path, len(data))
-        if data:
+        if data: return await enrich(tok, data)
+    # último recurso: a própria Meta diz quais contas a autorização cobre (granular_scopes do token)
+    try:
+        dbg = (await ig('GET', '/debug_token', params={'input_token': tok, 'access_token': os.environ['IG_APP_ID'] + '|' + os.environ['IG_APP_SECRET']})).get('data') or {}
+        ids = []
+        for g in dbg.get('granular_scopes') or []:
+            if g.get('scope', '').startswith('instagram_'):
+                ids += [str(i) for i in g.get('target_ids') or [] if str(i) not in ids]
+        log.info('instagram: debug_token tipo %s, escopos %s, %d conta(s)', dbg.get('type'), ','.join(g.get('scope', '') for g in dbg.get('granular_scopes') or []), len(ids))
+        if ids:
             out = []
-            for a in data:
-                try: a.update({k: v for k, v in (await ig('GET', f'/{a["id"]}', tok, {'fields': 'name,profile_picture_url'})).items() if k != 'id'})
-                except HTTPException: pass
-                out.append(a)
+            for i in ids:
+                try: out.append(await ig('GET', f'/{i}', tok, {'fields': 'id,username,name,profile_picture_url'}))
+                except HTTPException as e: log.info('instagram: conta %s recusada: %s', i, e.detail)
             return out
+    except HTTPException as e: log.info('instagram: debug_token recusado: %s', e.detail)
     return []
+
+async def enrich(tok, data):
+    for a in data:
+        try: a.update({k: v for k, v in (await ig('GET', f'/{a["id"]}', tok, {'fields': 'name,profile_picture_url'})).items() if k != 'id'})
+        except HTTPException: pass
+    return data
 
 @router.delete('/ig/account')
 async def disconnect(request: Request, user=Depends(owners)):
