@@ -1,3 +1,4 @@
+from zoneinfo import ZoneInfo
 import os, json, hmac, hashlib, time
 from datetime import timedelta, datetime
 os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif')
@@ -32,7 +33,7 @@ def test_metas(monkeypatch):
         plano = c.post('/api/products', json={'name': 'Plano', 'price': 1000, 'duration_days': 30}).json()
         for wa, nm in [('5511930000001', 'Cli A'), ('5511930000002', 'Cli B'), ('5511930000003', 'Cli C')]: inbound(c, wa, nm, 'oi')
         cv = {x['name']: x['id'] for x in c.get('/api/conversations').json()}
-        today = datetime.now().strftime('%Y-%m-%d')
+        today = datetime.now(ZoneInfo('America/Sao_Paulo')).strftime('%Y-%m-%d')
         c.post('/api/sales', json={'contact_id': cv['Cli A'], 'date': today, 'items': [{'product_id': plano['id'], 'name': 'Plano', 'price': 1000}], 'sellers': [{'user_id': ids['Ana'], 'pct': 100}]})
         c.post('/api/sales', json={'contact_id': cv['Cli B'], 'date': today, 'items': [{'product_id': plano['id'], 'name': 'Plano', 'price': 1000}], 'sellers': [{'user_id': ids['Ana'], 'pct': 50}, {'user_id': ids['João'], 'pct': 50}]})
         c.post('/api/sales', json={'contact_id': cv['Cli A'], 'date': today, 'items': [{'product_id': plano['id'], 'name': 'Plano', 'price': 1000}], 'sellers': [{'user_id': ids['João'], 'pct': 100}]})  # renovação
@@ -64,7 +65,7 @@ def test_metas(monkeypatch):
         assert c.post('/api/goals', json={'name': 'xx', 'metric': 'sales', 'target': 1}).status_code == 403
         # desafio encerrado premia o primeiro
         c.post('/api/auth/logout'); c.post('/api/auth/login', json={'email': 'dg@x.com', 'password': 'senha-forte-1'})
-        y = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'); w = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+        y = (datetime.now(ZoneInfo('America/Sao_Paulo')) - timedelta(days=1)).strftime('%Y-%m-%d'); w = (datetime.now(ZoneInfo('America/Sao_Paulo')) - timedelta(days=7)).strftime('%Y-%m-%d')
         c.post('/api/challenges', json={'name': 'Semana do plano', 'metric': 'sales', 'among': 'users', 'start': w, 'end': y, 'award': 'Vale-jantar'})
         co = c.portal.call(lambda: db.companies.find_one({}, {'_id': 0}))
         c.portal.call(lambda: goals.close_challenges(co))

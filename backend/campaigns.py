@@ -15,7 +15,7 @@ from wallet import Rule, run_segment
 router = APIRouter()
 log = logging.getLogger('oinanda.camp')
 PER_TICK = 30  # mensagens por minuto
-COST = {'MARKETING': 0.36, 'UTILITY': 0.05}  # estimativa em R$ por mensagem no Brasil (a Meta cobra em dólar)
+COST = {'MARKETING': 0.32, 'UTILITY': 0.035}  # estimativa em R$ por mensagem no Brasil (a Meta cobra em dólar)
 
 class CampIn(BaseModel):
     name: str = Field(min_length=2, max_length=60)

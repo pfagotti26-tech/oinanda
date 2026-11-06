@@ -1,3 +1,4 @@
+from zoneinfo import ZoneInfo
 import os, json, hmac, hashlib, time, asyncio
 from datetime import timedelta, datetime
 os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif')
@@ -47,7 +48,7 @@ def test_jornada(monkeypatch):
         cm = c.get(f'/api/contacts/{a}/milestones').json()
         got = {m['id']: m['count'] for m in cm['milestones']}
         assert got['entrou'] == 1 and got['orcamento'] == 2 and got['aceitou'] == 1 and got['comprou'] == 0 and not cm['suggestions']
-        today = datetime.now().strftime('%Y-%m-%d')
+        today = datetime.now(ZoneInfo('America/Sao_Paulo')).strftime('%Y-%m-%d')
         c.post('/api/sales', json={'contact_id': a, 'date': today, 'items': [{'name': 'Plano', 'price': 300}]})
         j = c.get(f'/api/contacts/{a}/journey').json()
         titles = [e['title'] for e in j['items']]

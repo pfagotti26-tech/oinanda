@@ -108,7 +108,9 @@ def line_total(i): return round(max(0.0, i['qty'] * i['price'] - (i.get('discoun
 
 def local_noon(company, d):
     tz = agenda.tz_of(company)
-    return datetime.combine(datetime.strptime(d, '%Y-%m-%d').date(), dtime(12), tz)
+    day = datetime.strptime(d, '%Y-%m-%d').date()
+    if day == now().astimezone(tz).date(): return min(now(), datetime.combine(day, dtime(12), tz))  # venda de hoje: nunca fica no futuro
+    return datetime.combine(day, dtime(12), tz)
 
 def local_day(company, dt):
     return aware(dt).astimezone(agenda.tz_of(company)).date()

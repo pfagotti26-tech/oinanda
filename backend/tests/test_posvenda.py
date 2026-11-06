@@ -1,3 +1,4 @@
+from zoneinfo import ZoneInfo
 import os, json, hmac, hashlib, time
 from datetime import timedelta, datetime
 os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif')
@@ -13,7 +14,7 @@ def inbound(c, wa, name, text):
     raw = json.dumps({'entry': [{'changes': [{'field': 'messages', 'value': {'metadata': {'phone_number_id': '3330011'}, 'contacts': [{'wa_id': wa, 'profile': {'name': name}}], 'messages': [m]}}]}]}).encode()
     c.post('/api/wa/webhook', content=raw, headers={'x-hub-signature-256': 'sha256=' + hmac.new(b'segredo', raw, hashlib.sha256).hexdigest()})
 
-def ago(d): return (datetime.now() - timedelta(days=d)).strftime('%Y-%m-%d')
+def ago(d): return (datetime.now(ZoneInfo('America/Sao_Paulo')) - timedelta(days=d)).strftime('%Y-%m-%d')
 S = {'name': 'Nanda', 'tone': 'proximo', 'goal': '', 'qualify': '', 'handoff': '', 'rules': '', 'about': '', 'offer': '', 'faq': '', 'knowledge': ''}
 
 def test_pos_venda(monkeypatch):
@@ -49,7 +50,7 @@ def test_pos_venda(monkeypatch):
         assert n == 1 and 'Seu Mensalidade vence em' in sent[-1]['text']['body'] and ' OI' in sent[-1]['text']['body']
         assert c.portal.call(automations.run_once) == 0  # não repete
         # depois de vencer sem renovar
-        c.post('/api/automations', json={'name': 'Volta', 'trigger': 'after_expiry', 'hours': 24 * 8, 'message': 'Oi {primeiro_nome}, sentimos sua falta!'})
+        c.post('/api/automations', json={'name': 'Volta', 'trigger': 'after_expiry', 'hours': 24 * 7 + 12, 'message': 'Oi {primeiro_nome}, sentimos sua falta!'})
         assert c.portal.call(automations.run_once) == 2  # Beto (~10 dias) e Caio (~8 dias)
         # oportunidades de pós-venda a partir do público "venceu e não renovou"
         r = c.post('/api/opps/bulk', json={'rules': [{'field': 'expired_within', 'value': 30}], 'kind': 'renovacao', 'assign': 'none'}).json()

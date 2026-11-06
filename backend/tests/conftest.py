@@ -1,6 +1,8 @@
 import os, sys, asyncio, pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 os.environ.setdefault('MONGO_URL', 'mock')
+import tempfile
+os.environ.setdefault('MEDIA_DIR', tempfile.mkdtemp(prefix='oimedia'))
 
 @pytest.fixture(autouse=True)
 def banco_limpo():

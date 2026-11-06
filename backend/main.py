@@ -25,6 +25,7 @@ from campaigns import router as campaigns_router
 from opps import router as opps_router
 from goals import router as goals_router
 from journey import router as journey_router
+from media import router as media_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -111,6 +112,7 @@ app.include_router(campaigns_router, prefix="/api")
 app.include_router(opps_router, prefix="/api")
 app.include_router(goals_router, prefix="/api")
 app.include_router(journey_router, prefix="/api")
+app.include_router(media_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

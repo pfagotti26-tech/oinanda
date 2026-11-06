@@ -30,6 +30,9 @@ services:
     environment:
       MONGO_URL: mongodb://mongo:27017
       DB_NAME: oinanda
+      MEDIA_DIR: /media
+    volumes:
+      - media-data:/media
     depends_on:
       mongo: { condition: service_healthy }
 
@@ -52,5 +55,6 @@ services:
 
 volumes:
   mongo-data:
+  media-data:
   caddy-data:
   caddy-config:

@@ -219,9 +219,12 @@ async def ingest(value):
             await origin_hook(cid, contact, text, ad)
         except Exception: log.exception('falha ao marcar a origem')
         mid = uid()
+        from media import meta_of, schedule
+        mm = meta_of(m)
         await db.messages.insert_one({'id': mid, 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
-                                      'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now()})
-        if ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
+                                      'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now(), **mm, **({'pending': True} if mm else {})})
+        if mm: schedule(mid)  # baixa (e transcreve o áudio) antes de chamar a Nanda
+        elif ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
     for s in value.get('statuses') or []:
         upd = {'status': s.get('status')}
         if s.get('errors'): upd['error'] = (s['errors'][0].get('title') or s['errors'][0].get('message') or 'falhou')
@@ -253,8 +256,9 @@ async def store(cid, contact, m, direction, by=None, imported=False):
     if m.get('id') and await db.messages.find_one({'wa_msg_id': m['id']}): return False
     at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
     text = text_of(m)
+    from media import meta_of
     doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'dir': direction, 'type': m.get('type'), 'text': text,
-           'wa_msg_id': m.get('id'), 'at': at, 'received_at': now() if not imported else at}
+           'wa_msg_id': m.get('id'), 'at': at, 'received_at': now() if not imported else at, **meta_of(m)}
     if direction == 'out': doc.update(by=by, by_id=None, status='sent')
     if imported: doc['imported'] = True
     await db.messages.insert_one(doc)

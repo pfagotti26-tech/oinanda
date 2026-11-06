@@ -117,14 +117,42 @@ def parse(text):
         except ValueError: pass
     return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': []}
 
+def _img_block(r):
+    """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""
+    import base64
+    try:
+        from media import path_for
+        p = path_for(r)
+        if r.get('mime') not in ('image/jpeg', 'image/png', 'image/webp') or not p.exists() or p.stat().st_size > 3_500_000: return None
+        return {'type': 'image', 'source': {'type': 'base64', 'media_type': r['mime'], 'data': base64.b64encode(p.read_bytes()).decode()}}
+    except Exception: return None
+
+def _msg_text(r):
+    t = r.get('type'); txt = r.get('text') or ''
+    if t == 'audio': return f'[áudio] {r["transcript"]}' if r.get('transcript') else '[mandou um áudio que não deu para ouvir]'
+    if t == 'image': return '[foto]' + (f' {r["caption"]}' if r.get('caption') else '')
+    if t == 'video': return '[vídeo]' + (f' {r["caption"]}' if r.get('caption') else '')
+    if t == 'document': return f'[arquivo {r.get("filename") or ""}]'.replace(' ]', ']') + (f' {r["caption"]}' if r.get('caption') else '')
+    if t == 'sticker': return '[figurinha]'
+    return txt
+
 async def history(contact_id, limit=20):
-    rows = await db.messages.find({'contact_id': contact_id, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'dir': 1, 'text': 1}).sort('at', -1).to_list(limit)
+    rows = await db.messages.find({'contact_id': contact_id, 'dir': {'$in': ['in', 'out']}},
+                                  {'_id': 0, 'id': 1, 'company_id': 1, 'dir': 1, 'text': 1, 'type': 1, 'transcript': 1, 'caption': 1, 'filename': 1, 'mime': 1}).sort('at', -1).to_list(limit)
+    rows = list(reversed(rows))
+    imgs = {r['id'] for r in rows[-6:] if r['dir'] == 'in' and r.get('type') == 'image'}
     msgs = []
-    for r in reversed(rows):
+    for r in rows:
         role = 'user' if r['dir'] == 'in' else 'assistant'
-        if msgs and msgs[-1]['role'] == role: msgs[-1]['content'] += '\n' + (r.get('text') or '')
-        else: msgs.append({'role': role, 'content': r.get('text') or ''})
+        blocks = [{'type': 'text', 'text': _msg_text(r) or '…'}]
+        if r['id'] in imgs:
+            b = _img_block(r)
+            if b: blocks.insert(0, b)
+        if msgs and msgs[-1]['role'] == role: msgs[-1]['content'] += blocks
+        else: msgs.append({'role': role, 'content': blocks})
     while msgs and msgs[0]['role'] != 'user': msgs.pop(0)
+    for m in msgs:  # só texto: junta numa string (formato mais simples)
+        if all(b['type'] == 'text' for b in m['content']): m['content'] = '\n'.join(b['text'] for b in m['content'])
     return msgs
 
 async def track(company_id, usage, kind):
@@ -207,6 +235,7 @@ async def auto_reply(company_id, contact_id, msg_id):
         last = (await db.messages.find({'contact_id': contact_id, 'dir': 'in'}, {'_id': 0}).sort('received_at', -1).to_list(1) or [None])[0]
         if not last or last['id'] != msg_id: return  # chegou mensagem mais nova: a resposta sai na vez dela
         if await db.messages.find_one({'contact_id': contact_id, 'dir': 'out', 'at': {'$gt': last['received_at']}}): return  # alguém já respondeu
+        if await db.messages.find_one({'contact_id': contact_id, 'dir': 'in', 'pending': True, 'id': {'$ne': msg_id}}): return  # áudio ainda sendo transcrito: a resposta sai quando terminar
         asks_human = bool(HUMAN_WORDS.search(last.get('text') or ''))
         if mode != 'auto' or not key_ok():
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo

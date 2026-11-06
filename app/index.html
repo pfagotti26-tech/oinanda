@@ -801,6 +801,23 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .side:not(.open)>:not(.sbar){display:none!important}
  .side.open>.co{margin-top:10px}
  .side.open{box-shadow:0 20px 40px -10px rgba(0,0,0,.5)}}
+/* mídia nas conversas */
+.mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
+.mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
+.mvid{display:block;max-width:300px;max-height:340px;border-radius:9px;margin:-2px -6px 4px;background:#000}
+.maud{display:block}.maud audio{width:260px;max-width:100%;height:40px}
+.mtr{display:block;margin-top:6px;padding:6px 9px;border-left:3px solid #DCD2C9;background:rgba(0,0,0,.03);border-radius:6px;font-size:13px;color:var(--ink2);font-style:italic}.mtr.wait{color:var(--ink3)}
+.mcap{display:block}
+.mdoc{display:flex;align-items:center;gap:10px;padding:8px 10px;margin:-2px -4px 4px;border-radius:10px;background:rgba(0,0,0,.04);color:inherit;text-decoration:none;min-width:200px}
+.mdoc i{width:34px;height:34px;border-radius:8px;background:#fff;display:grid;place-items:center;color:var(--c);flex:none}.mdoc i svg{width:18px;height:18px}
+.mdoc span{display:flex;flex-direction:column;min-width:0}.mdoc b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}.mdoc small{text-align:left;margin:0}
+.att{display:flex;align-items:center;gap:10px;background:#FAF7F4;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px}
+.att img{width:44px;height:44px;border-radius:8px;object-fit:cover}.att>i{font-style:normal;width:44px;height:44px;border-radius:8px;background:#fff;display:grid;place-items:center;font-size:20px}
+.att span{display:flex;flex-direction:column;min-width:0;flex:1}.att b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.att small{font-size:11.5px;color:var(--ink3)}
+.att.rec .dot{width:12px;height:12px;border-radius:50%;background:#E5533D;animation:recp 1s infinite;flex:none;margin:0 6px}
+@keyframes recp{50%{opacity:.25}}
+#cvCmp.drop{outline:2px dashed var(--c);outline-offset:-4px}
+@media (max-width:860px){.mimg,.mvid{max-width:220px}.maud audio{width:210px}}
 /* jornada */
 .jn-2c{display:grid;grid-template-columns:280px minmax(0,1fr);gap:28px;align-items:start}
 .jn-side{position:sticky;top:12px;background:#FCFAF8;border:1px solid var(--line);border-radius:16px;padding:16px}.jn-side .jn-hd{margin:0 0 8px}.jn-side .hint{font-size:12px;margin:10px 0 0}
@@ -1180,6 +1197,13 @@ function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
   if($('#cvGoW'))$('#cvGoW').onclick=()=>{CV.filter='waiting';document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x.dataset.f==='waiting'));cvList()};
   const p=$('#cvPanel');if(p)p.innerHTML=''}
 
+const fsize=b=>!b?'':b<1048576?Math.max(1,Math.round(b/1024))+' KB':String((b/1048576).toFixed(1)).replace('.',',')+' MB';
+function mediaHtml(m){const u='/api/media/'+m.id,has=m.media_id||m.file,cap=m.caption?`<span class="mcap">${esc(m.caption)}</span>`:'';
+  if(!has||!['image','video','audio','document','sticker'].includes(m.type))return esc(m.text);
+  if(m.type==='image'||m.type==='sticker')return `<a class="mimg${m.type==='sticker'?' stk':''}" href="${u}" target="_blank" rel="noopener"><img src="${u}" alt="${m.type==='sticker'?'Figurinha':'Foto'}" loading="lazy" onerror="this.parentNode.classList.add('gone')"></a>${cap}`;
+  if(m.type==='video')return `<video class="mvid" src="${u}" controls preload="metadata"></video>${cap}`;
+  if(m.type==='audio')return `<span class="maud"><audio src="${u}" controls preload="none"></audio></span>${m.transcript?`<span class="mtr">${esc(m.transcript)}</span>`:m.pending?'<span class="mtr wait">transcrevendo...</span>':''}`;
+  return `<a class="mdoc" href="${u}" target="_blank" rel="noopener"><i>${svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>')}</i><span><b>${esc(m.filename||'Documento')}</b><small>${fsize(m.size)||'abrir'}</small></span></a>${cap}`}
 function msgsHtml(list){let out='',day='',prev=null;
   const st=s=>s==='read'?'<span class="st read">✓✓</span>':s==='delivered'?'<span class="st">✓✓</span>':s==='failed'?'<span class="st failed">não entregue</span>':s==='sent'?'<span class="st">✓</span>':'';
   for(const m of list){const dk=new Date(m.at).toDateString();if(dk!==day){day=dk;out+=`<div class="dsep"><span>${dayLabel(m.at)}</span></div>`;prev=null}
@@ -1187,7 +1211,7 @@ function msgsHtml(list){let out='',day='',prev=null;
     if(m.dir==='note'){out+=`<div class="m note"><span class="by">🔒 Nota interna · ${esc(m.by||'')}</span>${esc(m.text)}<small>${tm(m.at)}</small></div>`;prev=null;continue}
     const ai=m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||''),auto=m.dir==='out'&&/^Automação/.test(m.by||'');
     const grp=prev&&prev.dir===m.dir&&prev.by===m.by&&(new Date(m.at)-new Date(prev.at))<5*6e4;
-    out+=`<div class="m ${m.dir} ${ai?'ai':''} ${auto?'auto':''} ${grp?'grp':''}">${m.dir==='out'&&m.by&&!grp?`<span class="by">${esc(m.by)}</span>`:''}${m.type==='template'?'<span class="tp">modelo</span>':''}${esc(m.text)}<small>${tm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`;prev=m}
+    out+=`<div class="m ${m.dir} ${ai?'ai':''} ${auto?'auto':''} ${grp?'grp':''}">${m.dir==='out'&&m.by&&!grp?`<span class="by">${esc(m.by)}</span>`:''}${m.type==='template'?'<span class="tp">modelo</span>':''}${mediaHtml(m)}<small>${tm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`;prev=m}
   return out||'<div class="m sys">Nenhuma mensagem ainda.</div>'}
 
 function winInfo(c){if(!c.window_open)return null;const end=new Date(c.window_ends_at);const h=(end-Date.now())/36e5;
@@ -1199,6 +1223,7 @@ async function cvChat(full){
   const c=d.contact;CV.c=c;const me=ME.user,mgr=['owner','manager'].includes(me.role);
   const sig=[d.messages.length,(d.messages.at(-1)||{}).id,d.messages.map(m=>m.status||'').join(''),c.window_open,c.needs_human,c.ai_mode,c.stage,c.assigned_to,c.resolved_at,c.value].join('|');
   if(!full&&sig===CV.sig){const w=winInfo(c),el=$('#cvWin');if(el&&w)el.innerHTML=`<i class="${w.cls}"></i>Janela aberta · ${w.txt}`;return}
+  if(!full&&(CV.rec||[...document.querySelectorAll('#cvMsgs audio,#cvMsgs video')].some(x=>!x.paused)))return;  // gravando ou ouvindo: não redesenha agora
   CV.sig=sig;
   const ta=$('#cvText'),draft=ta?ta.value:'',hadFocus=ta&&document.activeElement===ta,caret=ta?ta.selectionStart:0;
   const ms=$('#cvMsgs'),atBottom=!ms||ms.scrollHeight-ms.scrollTop-ms.clientHeight<60;
@@ -1223,6 +1248,8 @@ async function cvChat(full){
    <div class="cmp" id="cvCmp"></div>`;
   drawComposer(c,w,draft);
   const nm=$('#cvMsgs');if(full||atBottom)nm.scrollTop=nm.scrollHeight;
+  nm._stuck=full||atBottom;nm.addEventListener('scroll',()=>{nm._stuck=nm.scrollHeight-nm.scrollTop-nm.clientHeight<80},{passive:true});
+  if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(nm._stuck)nm.scrollTop=nm.scrollHeight});ro.observe(nm);nm.querySelectorAll('.m').forEach(x=>{if(x.querySelector('img,video'))ro.observe(x)})}  // foto carregando ou caixa de baixo crescendo: continua no fim
   const t2=$('#cvText');if(t2&&(hadFocus||full)){if(full&&innerWidth<860){}else{t2.focus();try{t2.selectionStart=t2.selectionEnd=caret||t2.value.length}catch(e){}}}
   // ações
   $('#cvBack').onclick=closeConv;
@@ -1243,6 +1270,35 @@ async function cvChat(full){
   maybeSuggest(c,d.messages,mode);
 }
 
+/* anexos e áudio gravado */
+async function upMedia(file,caption,voice){const fd=new FormData();fd.append('file',file,file.name||'arquivo');if(caption)fd.append('caption',caption);if(voice)fd.append('voice','true');
+  const r=await fetch('/api/conversations/'+CV.open+'/media',{method:'POST',body:fd,credentials:'same-origin'});let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok)throw new Error(d.detail||'Não foi possível enviar o arquivo.');return d}
+function keepBottom(fn){const nm=$('#cvMsgs'),near=nm&&nm.scrollHeight-nm.scrollTop-nm.clientHeight<80;fn();if(near)nm.scrollTop=nm.scrollHeight}
+function attDraw(){keepBottom(attDraw0)}
+function attDraw0(){const b=$('#cvAtt');if(!b)return;const f=CV.file;if(!f){b.innerHTML='';return}
+  const img=/^image\//.test(f.type)?`<img src="${URL.createObjectURL(f)}" alt="">`:`<i>${f.type.startsWith('audio')?'🎤':f.type.startsWith('video')?'🎬':'📄'}</i>`;
+  b.innerHTML=`<div class="att">${img}<span><b>${esc(f.name)}</b><small>${fsize(f.size)} · ${/^(image|video)\//.test(f.type)||f.type==='application/pdf'?'o texto da caixa vai como legenda':'envia ao clicar em Enviar'}</small></span><button type="button" class="sm-x" id="cvAttX" aria-label="Tirar anexo">×</button></div>`;
+  $('#cvAttX').onclick=()=>{CV.file=null;attDraw()}}
+async function sendFile(ta,grow){const f=CV.file,cap=ta.value.trim();const b=$('#cvF .snd');b&&(b.disabled=true);
+  try{await upMedia(f,cap);CV.file=null;attDraw();ta.value='';grow();CV.sig='';await cvChat(false);cvList();cvCounts()}catch(e){toast(e.message)}b&&(b.disabled=false)}
+function attachInit(c,ta,grow){const fi=$('#cvFile');if(CV.fileFor!==c.id){CV.file=null;CV.fileFor=c.id}
+  const pick=f=>{if(!f)return;if(f.size>16*1048576)return toast('Arquivo grande demais (máximo 16 MB).');CV.file=f;attDraw();ta.focus()};
+  $('#cvAttB').onclick=()=>fi.click();fi.onchange=()=>{pick(fi.files[0]);fi.value=''};
+  ta.onpaste=e=>{const it=[...(e.clipboardData?.items||[])].find(x=>x.kind==='file');if(it){e.preventDefault();const f=it.getAsFile();pick(new File([f],f.name||'imagem.png',{type:f.type}))}};
+  const box=$('#cvCmp');box.ondragover=e=>{e.preventDefault();box.classList.add('drop')};box.ondragleave=()=>box.classList.remove('drop');
+  box.ondrop=e=>{e.preventDefault();box.classList.remove('drop');pick(e.dataTransfer.files[0])};
+  attDraw();
+  $('#cvMic').onclick=async()=>{if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return toast('Este navegador não grava áudio.');
+    let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){return toast('Libere o microfone no navegador para gravar.')}
+    const type=['audio/ogg;codecs=opus','audio/webm;codecs=opus','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    const rec=CV.rec=new MediaRecorder(st,type?{mimeType:type}:{});const parts=[];let t0=Date.now(),send=false;rec.ondataavailable=e=>e.data.size&&parts.push(e.data);
+    const bar=$('#cvAtt');keepBottom(()=>bar.innerHTML=`<div class="att rec"><i class="dot"></i><span><b id="cvRecT">0:00</b><small>gravando áudio</small></span><button type="button" class="btn sm" id="cvRecX">Cancelar</button><button type="button" class="btn sm p" id="cvRecS">Enviar áudio</button></div>`);
+    const tick=setInterval(()=>{const s2=Math.round((Date.now()-t0)/1000);const el=$('#cvRecT');if(el)el.textContent=Math.floor(s2/60)+':'+String(s2%60).padStart(2,'0');if(s2>=300)$('#cvRecS')?.click()},500);
+    rec.onstop=async()=>{CV.rec=null;clearInterval(tick);st.getTracks().forEach(t=>t.stop());if(!send){attDraw();return}
+      const mt=(rec.mimeType||type||'audio/webm').split(';')[0];const blob=new Blob(parts,{type:mt});bar.innerHTML='<div class="att"><i>🎤</i><span><b>Enviando áudio...</b></span></div>';
+      try{await upMedia(new File([blob],'gravacao.'+(mt.includes('ogg')?'ogg':mt.includes('mp4')?'m4a':'webm'),{type:mt}),'',true);CV.sig='';await cvChat(false);cvList()}catch(e){toast(e.message)}attDraw()};
+    $('#cvRecX').onclick=()=>{send=false;rec.stop()};$('#cvRecS').onclick=()=>{send=true;rec.stop()};rec.start(250)}}
 function drawComposer(c,w,draft){
   const box=$('#cvCmp');const first=esc(c.name.split(' ')[0]);
   const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note">🔒 Nota interna</button>${CV.tab==='msg'&&w?`<span class="win" id="cvWin"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
@@ -1250,7 +1306,9 @@ function drawComposer(c,w,draft){
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
      `<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
-  else{box.innerHTML=tabs+`<div id="cvSug"></div><form class="cbox" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+'... (Enter envia · Shift+Enter quebra linha · / respostas rápidas)'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+  else{box.innerHTML=tabs+`<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+     <button type="button" class="ib" id="cvAttB" title="Mandar foto, vídeo ou arquivo" aria-label="Anexar">${svg('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>')}</button><input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+     <button type="button" class="ib" id="cvMic" title="Gravar áudio" aria-label="Gravar áudio">${svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>')}</button>
      <button type="button" class="ib" id="cvQRb" title="Respostas rápidas" aria-label="Respostas rápidas">${svg('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>')}</button>
      ${CV.ai?.key_configured?`<button type="button" class="ib" id="cvSugB" title="A Nanda escreve uma sugestão" aria-label="Sugestão da Nanda">✨</button>`:''}<button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></form>`}
   box.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{CV.drafts=CV.drafts||{};CV.drafts[CV.tab]=$('#cvText')?.value||'';CV.tab=b.dataset.ct;drawComposer(c,w,CV.drafts[CV.tab]||'');$('#cvText')?.focus()});
@@ -1261,7 +1319,8 @@ function drawComposer(c,w,draft){
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items.forEach(x=>x.classList.remove('on'));i=e.key==='ArrowDown'?Math.min(items.length-1,i+1):Math.max(0,i-1);items[i]?.classList.add('on');items[i]?.scrollIntoView({block:'nearest'});return}
       if((e.key==='Enter'||e.key==='Tab')&&items[i]){e.preventDefault();items[i].click();return}if(e.key==='Escape'){p.classList.add('hide');return}}
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#cvF').requestSubmit()}};
-  $('#cvF').onsubmit=async ev=>{ev.preventDefault();const t=ta.value.trim();if(!t)return;ta.value='';grow();
+  if(CV.tab==='msg'&&$('#cvAttB'))attachInit(c,ta,grow);
+  $('#cvF').onsubmit=async ev=>{ev.preventDefault();if(CV.file)return sendFile(ta,grow);const t=ta.value.trim();if(!t)return;ta.value='';grow();
     try{if(CV.tab==='note'){await api('/conversations/'+CV.open+'/note',{method:'POST',body:{text:t}});toast('Nota salva. Só o time vê.')}
       else await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});
       CV.sig='';$('#cvSug')&&($('#cvSug').innerHTML='');await cvChat(false);cvList();cvCounts()}catch(e){toast(e.message);ta.value=t;grow()}};
