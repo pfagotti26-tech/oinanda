@@ -387,6 +387,59 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .pn-kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center}
 .pn-kv>label{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:700;color:var(--ink2)}
 .pn-kv select{padding:7px 9px;font-size:13.5px;min-width:0;width:100%}.pn-kv .pn-val input{padding:7px 9px 7px 0}.pn-kv .pn-own{font-size:13.5px;gap:8px}
+/* vendas */
+.vd-bar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.vd-per{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.vd-per .dates{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink2)}
+.vd-per input[type=date]{border:1px solid #DCD2C9;border-radius:10px;padding:5px 8px;font:inherit;font-size:13px}
+.vd-per .cmp{margin-left:auto;font-size:12px;color:var(--ink3);font-weight:600}
+.vd-fl{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.vd-fl select{border:1px solid #DCD2C9;border-radius:999px;padding:6px 28px 6px 12px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2);background:#fff;max-width:200px;min-width:0}
+.vd-fl select.on{border-color:var(--ink);color:#fff;background-color:var(--ink)}
+.vd-fl .vw{margin-left:auto;display:flex;gap:6px;align-items:center}
+.vd-g{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px;margin-bottom:12px;align-items:start}
+.vd-c{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;min-width:0}
+.vd-c .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.vd-c .hd h3{font-size:15px;margin:0}.vd-c .hd .sp{flex:1}
+.vd-c .hd select{border:1px solid #DCD2C9;border-radius:10px;padding:5px 8px;font:inherit;font-size:13px;font-weight:700}
+.vchart{display:flex;align-items:flex-end;gap:3px;height:260px;border-bottom:1px solid var(--line);padding:0 0 20px 58px;position:relative}
+.vchart .b{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;position:relative;min-width:0;cursor:default}
+.vchart .b i{display:block;width:70%;max-width:26px;background:#F4B29F;border-radius:5px 5px 0 0}.vchart .b:hover i{background:var(--c)}
+.vchart .b span{position:absolute;bottom:-19px;font-size:10.5px;color:var(--ink3);white-space:nowrap}
+.vchart .b em{position:absolute;bottom:calc(var(--h) + 4px);font-style:normal;font-size:10.5px;font-weight:800;color:var(--ink2);white-space:nowrap;display:none}.vchart .b:hover em{display:block}
+.vchart .ax{position:absolute;left:58px;right:0;border-top:1px dashed #EDE5DD;font-size:10.5px;color:var(--ink3)}.vchart .ax span{position:absolute;right:calc(100% + 6px);top:-7px;white-space:nowrap}
+.vbr{display:flex;flex-direction:column;gap:2px}
+.vbr button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;text-align:left;padding:7px 8px;border-radius:10px;width:100%}.vbr button:hover{background:#FBF8F5}
+.vbr .nm{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px}.vbr .nm i{width:9px;height:9px;border-radius:3px;flex:none}
+.vbr .vv{font-size:13.5px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.vbr .tr{grid-column:1/-1;height:7px;background:#F3EEE9;border-radius:99px;overflow:hidden}.vbr .tr i{display:block;height:100%;border-radius:99px}
+.vbr .mt{grid-column:1/-1;font-size:11.5px;color:var(--ink3);font-weight:600}
+.vdonut{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px;align-items:center}.vdonut svg{width:170px;height:170px}
+.vdonut .lgd{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:0}.vdonut .lgd div{display:flex;gap:8px;align-items:center}.vdonut .lgd i{width:10px;height:10px;border-radius:3px;flex:none}
+.vdonut .lgd span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vdonut .lgd b{font-variant-numeric:tabular-nums}
+.vtb td,.vtb th{padding:8px}.vtb td.n,.vtb th.n{text-align:right;font-variant-numeric:tabular-nums}.vtb tr.ck{cursor:pointer}.vtb tr.ck:hover td{background:#FBF8F5}
+.vtb .sx{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:800;background:#EEF1F4;color:var(--ink2);margin:1px 3px 1px 0}
+.vtb .cx td{opacity:.55;text-decoration:line-through}
+.vdl{display:flex;flex-direction:column}.vdl .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 4px;border-bottom:1px solid #F3EEE9;cursor:pointer}.vdl .r:hover{background:#FBF8F5}
+.vdl .r b{font-size:13.5px}.vdl .r .v{font-weight:800;text-align:right}.vdl .r span{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sm-items{display:flex;flex-direction:column;gap:6px}
+.sm-it{display:grid;grid-template-columns:minmax(0,1fr) 64px 100px 90px 92px 30px;gap:6px;align-items:center}
+.sm-it input,.sm-it select,.sm-sl input,.sm-sl select{border:1px solid #DCD2C9;border-radius:10px;padding:8px 9px;font:inherit;font-size:13.5px;min-width:0;width:100%}
+.sm-it .t{text-align:right;font-weight:800;font-size:13.5px;font-variant-numeric:tabular-nums}
+.sm-hd{font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.3px}
+.sm-sl{display:grid;grid-template-columns:minmax(0,1fr) 90px 30px;gap:6px;align-items:center}
+.sm-sum{display:flex;align-items:center;justify-content:space-between;background:var(--soft);border-radius:14px;padding:12px 14px}.sm-sum b{font-size:24px;letter-spacing:-.5px}
+.sm-x{width:30px;height:30px;border-radius:8px;color:var(--ink3);font-size:17px}.sm-x:hover{background:#F3EEE9;color:var(--bad)}
+.sm-pct{font-size:12px;font-weight:700}.sm-pct.bad{color:var(--bad)}
+.sm-hist{font-size:12px;color:var(--ink3);display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:1100px){.vd-g{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.vchart{height:200px;padding-left:46px}.vchart .ax{left:46px}.vd-c{padding:14px}.vd-c .hd .seg{order:3}
+ .vd-bar{padding:10px}.vd-per,.vd-fl{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -10px;padding:0 10px}.vd-per::-webkit-scrollbar,.vd-fl::-webkit-scrollbar{display:none}
+ .vd-per .chip,.vd-fl select{flex:none}.vd-per .cmp{display:none}.vd-fl .vw{margin-left:0}
+ .sm-it{grid-template-columns:56px minmax(0,1fr) minmax(0,1fr) 30px;grid-template-areas:"n n n x" "q p d d" "t t t t";padding-bottom:8px;border-bottom:1px dashed var(--line)}.sm-it .in{grid-area:n}.sm-it .iq{grid-area:q}.sm-it .ip{grid-area:p}.sm-it .id{grid-area:d}.sm-it .t{grid-area:t}.sm-it .sm-x{grid-area:x}
+ .sm-it.h{display:none}.vdonut{grid-template-columns:minmax(0,1fr)}.vdonut svg{margin:0 auto}
+ .vtb .hm{display:none}}
+
+.ks{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800}.ks.kp{background:#EEF1F4;color:var(--ink2)}.ks.kc{background:var(--oksoft);color:var(--ok)}.ks.ki{background:var(--warnsoft);color:var(--warn)}
+.pn-kv .pn-own .hint{font-size:12.5px}.pn-or{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn-tr{background:#F2F6FC}.pn-tr p{font-size:13px;color:var(--ink);line-height:1.4}
 .side .nav .nb{margin-left:auto;background:var(--c);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 6px}
 .cvf.f5{grid-template-columns:repeat(5,minmax(0,1fr))}.cvf.f5 button{font-size:11px}
@@ -615,7 +668,7 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -646,6 +699,7 @@ function pathFor(v){
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
   if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
+  if(v==='vendas'&&VD.tab!=='relatorio')p+='/'+VD.tab;
   return p}
 function readPath(){
   const parts=location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
@@ -655,6 +709,7 @@ function readPath(){
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
+  if(v==='vendas')VD.tab=['lista','produtos','origens'].includes(parts[1])?parts[1]:'relatorio';
   return VIEWS[v]?v:'inicio'}
 function syncUrl(replace){
   if(!ME)return;const p=pathFor(VIEW);
@@ -925,7 +980,9 @@ async function cvPanel(c){
     <label>Etapa</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
     <label>Responsável</label>${mgr?`<select id="pnAs" class="pn-as"><option value="">Sem responsável</option>${(CV.team||[]).filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`
       :`<div class="pn-own">${c.assigned_to===ME.user.id?'Você':esc(c.assigned_name||'Ninguém ainda')}${c.assigned_to!==ME.user.id?'<button class="lnk" id="pnMine">assumir</button>':''}</div>`}
-    <label>Valor</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div></div></div>
+    <label>Situação</label><div class="pn-own"><span><span class="ks ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>${c.sales_count?` <span class="hint">${c.sales_count} ${c.sales_count===1?'compra':'compras'} · ${brl(c.value)}</span>`:''}</span><button class="lnk" id="pnSale">+ venda</button></div>
+    ${c.sales_count?'':`<label>Previsto</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="valor em negociação"></div>`}
+    <label>Origem</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda perguntou',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div></div></div>
    <div class="pn-s"><div class="pn-sh"><label>Próximos horários</label><button class="lnk" id="pnBook">+ agendar</button></div>
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</div>
    <div class="pn-s"><label>Etiquetas</label><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></div>
@@ -937,7 +994,9 @@ async function cvPanel(c){
   $('#pnSt').onchange=e=>patch({stage:e.target.value},'Etapa atualizada.');
   if($('#pnAs'))$('#pnAs').onchange=async e=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Responsável atualizado.');CV.sig='';cvList();cvChat(true)};
   if($('#pnMine'))$('#pnMine').onclick=async()=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:ME.user.id}});CV.sig='';cvList();cvChat(true)};
-  $('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:Number(e.target.value)},'Valor salvo.');
+  if($('#pnVal'))$('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:Number(e.target.value)},'Valor salvo.');
+  $('#pnSale').onclick=()=>saleModal({contact:{id:c.id,name:c.name},onDone:()=>{CV.pnFor=null;CV.sig='';cvChat(true);cvList()}});
+  $('#pnOr').onclick=()=>originEdit(c,()=>{CV.pnFor=null;CV.sig='';cvChat(true)});
   $('#pnBook').onclick=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
   $('#pnTr').onclick=()=>transferModal(c);
   $('#pnDet').onclick=()=>contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()});
@@ -1202,7 +1261,8 @@ async function moveCard(id,to,silent){
   c.stage=to;drawBoard(true);
   try{await api('/contacts/'+id,{method:'PATCH',body:{stage:to}});
     if(!silent)undoToast(`${c.name.split(' ')[0]} foi para ${STAGES.find(s=>s.id===to).name}`,()=>moveCard(id,from,true));
-    drawBoard()}catch(e){c.stage=from;drawBoard(true);toast(e.message)}
+    drawBoard();
+    if(!silent&&STAGES.find(s=>s.id===to).kind==='won')saleModal({contact:{id:c.id,name:c.name},moved:true,onDone:()=>drawBoard()})}catch(e){c.stage=from;drawBoard(true);toast(e.message)}
 }
 function moveMenu(id){
   const c=FN.data.cards.find(x=>x.id===id);
@@ -1269,7 +1329,328 @@ function newContact(pre){
   o.querySelector('#ncF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));if(f.value==='')delete f.value;else f.value=Number(f.value);
     try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
 }
+/* ---------- vendas ---------- */
+const VD={tab:'relatorio',p:{preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',metric:'value',chart:'bars'},q:'',cancelled:false,opts:null};
+const brl2=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const num=v=>(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2});
+const PAL=['#E8603F','#5B7DB1','#2F9AA0','#8E6CC9','#D99A1E','#C2557A','#4F8A5B','#7A6A58','#A7B1BB'];
+const PRESETS=[['hoje','Hoje'],['7d','7 dias'],['30d','30 dias'],['mes','Este mês'],['mes_ant','Mês passado'],['90d','90 dias'],['ano','Este ano'],['custom','Personalizado']];
+const GROUPS_VD=[['seller','Vendedor'],['product','Produto ou serviço'],['category','Categoria'],['team','Equipe'],['source','Origem'],['kind','Primeira compra x recompra'],['payment','Pagamento'],['month','Mês'],['week','Semana'],['day','Dia']];
+const METRICS=[['value','Valor'],['qty','Quantidade'],['count','Vendas'],['ticket','Ticket']];
+const isMgr=()=>['owner','manager'].includes(ME.user.role);
+function vdRange(P){
+  const t=new Date(),d=n=>{const x=new Date(t);x.setDate(x.getDate()-n);return ymd(x)};
+  switch(P.preset){
+    case 'hoje':return [ymd(t),ymd(t)];case '7d':return [d(6),ymd(t)];case '90d':return [d(89),ymd(t)];
+    case 'mes':return [ymd(new Date(t.getFullYear(),t.getMonth(),1)),ymd(t)];
+    case 'mes_ant':return [ymd(new Date(t.getFullYear(),t.getMonth()-1,1)),ymd(new Date(t.getFullYear(),t.getMonth(),0))];
+    case 'ano':return [ymd(new Date(t.getFullYear(),0,1)),ymd(t)];
+    case 'custom':return [P.start||d(29),P.end||ymd(t)];
+    default:return [d(29),ymd(t)]}}
+const fmtD=s=>{if(!s)return '';const [y,m,dd]=s.split('-');return `${dd}/${m}/${y.slice(2)}`};
+function vdQs(extra){const P=VD.p,[s,e]=vdRange(P);const o={start:s,end:e,seller:P.seller,team:P.team,product:P.product,category:P.category,payment:P.payment,source:P.source,kind:P.kind,...(extra||{})};
+  return Object.entries(o).filter(([k,v])=>v!==''&&v!=null).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&')}
+async function vdOptions(){if(!VD.opts){const r=await api('/sales/report?group=seller&start='+ymd(new Date())+'&end='+ymd(new Date()));VD.opts=r.options;VD.mine=r.mine_only}return VD.opts}
+
+function vdBar(onChange,withSearch){
+  const P=VD.p,O=VD.opts,[s,e]=vdRange(P);
+  const sel=(k,label,items)=>items&&items.length?`<select data-fk="${k}" class="${P[k]?'on':''}" aria-label="${label}"><option value="">${label}</option>${items.map(i=>`<option value="${esc(i.id)}" ${P[k]===i.id?'selected':''}>${esc(i.name)}</option>`).join('')}</select>`:'';
+  const active=['seller','team','product','category','payment','source','kind'].some(k=>P[k]);
+  $('#vdBar').innerHTML=`<div class="vd-per">${PRESETS.map(p=>`<button class="chip sm ${P.preset===p[0]?'on':''}" data-pr="${p[0]}">${p[1]}</button>`).join('')}
+     ${P.preset==='custom'?`<span class="dates"><input type="date" id="vdS" value="${s}"> até <input type="date" id="vdE" value="${e}"></span>`:''}
+     <span class="cmp">${fmtD(s)} a ${fmtD(e)}</span></div>
+    <div class="vd-fl">${VD.mine?'':sel('seller','Vendedor',[...O.sellers,{id:'none',name:'Sem vendedor'}])}${sel('team','Equipe',O.teams)}${sel('product','Produto ou serviço',O.products)}
+     ${sel('category','Categoria',[...O.categories.map(c=>({id:c,name:c})),{id:'_none',name:'Sem categoria'}])}${sel('source','Origem',O.sources)}
+     ${sel('kind','Tipo de compra',[{id:'nova',name:'Primeira compra'},{id:'recompra',name:'Recompra'}])}${sel('payment','Pagamento',O.payments)}
+     ${active?'<button class="lnk" id="vdClr">limpar filtros</button>':''}
+     ${withSearch?`<input id="vdQ" placeholder="Buscar cliente ou item" value="${esc(VD.q)}" style="border:1px solid #DCD2C9;border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;min-width:180px">`:''}
+     <span class="vw" id="vdViews"></span></div>`;
+  $('#vdBar').querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.pr;if(P.preset==='custom'){const [a,z]=vdRange({preset:'30d'});P.start=P.start||a;P.end=P.end||z}onChange()});
+  if($('#vdS')){$('#vdS').onchange=e=>{P.start=e.target.value;onChange()};$('#vdE').onchange=e=>{P.end=e.target.value;onChange()}}
+  $('#vdBar').querySelectorAll('[data-fk]').forEach(x=>x.onchange=()=>{P[x.dataset.fk]=x.value;onChange()});
+  if($('#vdClr'))$('#vdClr').onclick=()=>{['seller','team','product','category','payment','source','kind'].forEach(k=>P[k]='');onChange()};
+  if($('#vdQ'))$('#vdQ').oninput=e=>{VD.q=e.target.value;clearTimeout(VD.qt);VD.qt=setTimeout(onChange,250)};
+  vdViews(onChange);
+}
+async function vdViews(onChange){
+  const box=$('#vdViews');if(!box)return;const vs=await api('/sales/views').catch(()=>[]);
+  box.innerHTML=`${vs.length?`<select id="vdVw" aria-label="Visões salvas"><option value="">Visões salvas</option>${vs.map(v=>`<option value="${v.id}">${esc(v.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="vdSv">Salvar visão</button>`;
+  if($('#vdVw'))$('#vdVw').onchange=e=>{const v=vs.find(x=>x.id===e.target.value);if(!v)return;
+    VD.p={preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',metric:'value',chart:'bars',...v.params};onChange();
+    toast(`Visão "${v.name}" aplicada.`)};
+  $('#vdSv').onclick=()=>{const o=overlay(`<form class="modal" id="svF" style="width:420px"><div class="row"><h2 style="font-size:19px">Salvar esta visão</h2><button type="button" class="x">×</button></div>
+     <p class="hint">Guarda o período, os filtros e o jeito de ver o relatório para abrir com um clique.</p>
+     <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="50" placeholder="Ex.: Vendas do mês por vendedor"></div>
+     ${isMgr()?'<label class="ckl"><input type="checkbox" name="shared" checked> Todo o time vê esta visão</label>':''}
+     ${vs.length?`<details><summary class="hint" style="cursor:pointer">Apagar visões</summary>${vs.map(v=>`<div class="row" style="justify-content:space-between;padding:4px 0"><span>${esc(v.name)}</span><button type="button" class="lnk" data-dv="${v.id}">apagar</button></div>`).join('')}</details>`:''}
+     <div class="row"><button class="btn p">Salvar</button><span class="err" id="svE"></span></div></form>`,true);
+    o.querySelectorAll('[data-dv]').forEach(b=>b.onclick=async()=>{await api('/sales/views/'+b.dataset.dv,{method:'DELETE'});b.closest('.row').remove();vdViews(onChange)});
+    o.querySelector('#svF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+      const params=Object.fromEntries(Object.entries(VD.p).filter(([k,v])=>v));
+      try{await api('/sales/views',{method:'POST',body:{name:f.name.value,params,shared:f.shared?f.shared.checked:false}});o.remove();toast('Visão salva.');vdViews(onChange)}catch(x){$('#svE').textContent=x.message}}}
+}
+
+async function vdView(){
+  const mgr=isMgr();
+  $('#page').innerHTML=`<div class="fhd"><div><h1>Vendas</h1><p class="sub">${mgr?'O que foi vendido, por quem, de onde vieram os clientes e como estão os números.':'Suas vendas e os números do seu período.'}</p></div>
+    <div class="tools"><button class="btn sm" id="vdExp">Exportar planilha</button><button class="btn sm p" id="vdNew">+ Registrar venda</button></div></div>
+   <div class="tabs">${[['relatorio','Relatório'],['lista','Vendas'],['produtos','Produtos e serviços'],...(mgr?[['origens','Origens e links']]:[])].map(t=>`<button class="chip ${VD.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
+   <div id="vdBody"><div class="empty">Carregando...</div></div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab;syncUrl();vdView()});
+  $('#vdNew').onclick=()=>saleModal({onDone:()=>vdView()});
+  $('#vdExp').onclick=()=>{location.href='/api/sales/export?'+vdQs()};
+  $('#vdExp').style.display=['relatorio','lista'].includes(VD.tab)?'':'none';
+  await vdOptions();
+  if(VD.tab==='lista')return vdList();
+  if(VD.tab==='produtos')return vdProducts();
+  if(VD.tab==='origens'&&mgr)return vdOrigins();
+  return vdReport();
+}
+
+function vdDelta(cur,prev){if(cur==null||prev==null)return '';if(!prev)return cur>0?'<span class="dl up">novo</span>':'';
+  const d=Math.round(100*(cur-prev)/prev);if(!d)return '<span class="dl eq">= anterior</span>';return `<span class="dl ${d>0?'up':'down'}">${d>0?'↑':'↓'} ${Math.abs(d)}%</span>`}
+const mval=(r,m)=>m==='qty'?r.qty:m==='count'?r.count:m==='ticket'?(r.ticket||0):r.value;
+const mfmt=(v,m)=>m==='qty'||m==='count'?num(v):brl(v);
+function vdDonut(rows,m){
+  const top=rows.slice(0,7),rest=rows.slice(7);const items=top.map((r,i)=>({label:r.label,v:mval(r,m),c:r.color||PAL[i]}));
+  if(rest.length)items.push({label:'Outros',v:rest.reduce((a,r)=>a+mval(r,m),0),c:PAL[8]});
+  const tot=items.reduce((a,x)=>a+x.v,0)||1;let acc=0;const C=2*Math.PI*60;
+  return `<div class="vdonut"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="60" fill="none" stroke="#F3EEE9" stroke-width="22"/>${items.map(x=>{const len=C*x.v/tot,off=C*acc/tot;acc+=x.v;
+     return `<circle cx="80" cy="80" r="60" fill="none" stroke="${x.c}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 80 80)"><title>${esc(x.label)}: ${mfmt(x.v,m)}</title></circle>`}).join('')}
+     <text x="80" y="76" text-anchor="middle" font-size="11" fill="#7A8794" font-weight="700">total</text><text x="80" y="94" text-anchor="middle" font-size="15" font-weight="800" fill="#17212B">${m==='ticket'?'':mfmt(tot,m)}</text></svg>
+    <div class="lgd">${items.map(x=>`<div><i style="background:${x.c}"></i><span>${esc(x.label)}</span><b>${mfmt(x.v,m)}</b><span class="hint" style="flex:none">${Math.round(100*x.v/tot)}%</span></div>`).join('')}</div></div>`}
+function grpLabel(g,l){if(['day','week'].includes(g))return (g==='week'?'Semana de ':'')+fmtD(l);if(g==='month'){const [y,m]=l.split('-');return ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][+m-1]+'/'+y.slice(2)}return l}
+
+async function vdReport(){
+  const P=VD.p,mgr=isMgr();
+  $('#vdBody').innerHTML=`<div class="vd-bar" id="vdBar"></div><div id="vdR"><div class="empty">Carregando...</div></div>`;
+  vdBar(()=>vdReport());
+  const [s,e]=vdRange(P);
+  const [r,ls,org]=await Promise.all([api('/sales/report?'+vdQs({group:P.group})),api('/sales?'+vdQs()),mgr&&!P.seller?api(`/origins/report?start=${s}&end=${e}`).catch(()=>null):null]);
+  const t=r.totals,pv=r.prev,m=P.metric;
+  const kpi=(l,v,dl,sub)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s">${dl||''}${sub?`<span>${sub}</span>`:''}</div></div>`;
+  const ser=r.series,mx=Math.max(1,...ser.map(x=>x.value)),every=Math.ceil(ser.length/10);
+  const sl=d=>r.bucket==='month'?grpLabel('month',d.slice(0,7)):fmtD(d).slice(0,5);
+  const rows=r.rows,rmx=Math.max(1,...rows.map(x=>mval(x,m)));
+  const body=!rows.length?'<div class="empty">Nenhuma venda com esses filtros.</div>'
+    :P.chart==='pie'?vdDonut(rows,m)
+    :P.chart==='table'?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>${GROUPS_VD.find(g=>g[0]===P.group)[1]}</th><th class="n">Valor</th><th class="n">Vendas</th><th class="n hm">Qtd.</th><th class="n hm">Ticket</th><th class="n">%</th></tr></thead><tbody>${rows.map(x=>`<tr class="ck" data-k="${esc(x.key)}"><td>${esc(grpLabel(P.group,x.label))}</td><td class="n"><b>${brl(x.value)}</b></td><td class="n">${x.count}</td><td class="n hm">${num(x.qty)}</td><td class="n hm">${brl(x.ticket)}</td><td class="n">${x.share}%</td></tr>`).join('')}</tbody></table></div>`
+    :`<div class="vbr">${rows.slice(0,15).map((x,i)=>`<button data-k="${esc(x.key)}"><span class="nm"><i style="background:${x.color||PAL[i%8]}"></i>${esc(grpLabel(P.group,x.label))}</span><span class="vv">${mfmt(mval(x,m),m)}</span><span class="tr"><i style="width:${Math.max(2,100*mval(x,m)/rmx)}%;background:${x.color||PAL[i%8]}"></i></span><span class="mt">${x.count} ${x.count===1?'venda':'vendas'} · ${num(x.qty)} ${x.qty===1?'item':'itens'} · ${x.share}% do total</span></button>`).join('')}${rows.length>15?`<p class="hint" style="padding:6px 8px">+ ${rows.length-15} outros. Veja em Tabela.</p>`:''}</div>`;
+  const recent=ls.items.slice(0,6);
+  $('#vdR').innerHTML=`<div class="kpis">${kpi('Faturamento',brl(t.value),vdDelta(t.value,pv.value),'vs. '+fmtD(r.prev_start)+'–'+fmtD(r.prev_end))}${kpi('Vendas',num(t.count),vdDelta(t.count,pv.count))}${kpi('Ticket médio',t.ticket!=null?brl(t.ticket):'—',vdDelta(t.ticket,pv.ticket))}${kpi('Itens vendidos',num(t.qty),vdDelta(t.qty,pv.qty))}</div>
+   ${r.mine_only?'<p class="hint" style="margin:-2px 0 10px">Mostrando só a sua parte das vendas.</p>':''}
+   <div class="vd-g"><div class="vd-c"><div class="hd"><h3>Faturamento ${r.bucket==='day'?'por dia':r.bucket==='week'?'por semana':'por mês'}</h3></div>
+     ${t.count?`<div class="vchart"><div class="ax" style="top:0"><span>${brl(mx)}</span></div><div class="ax" style="top:calc((100% - 20px) / 2)"><span>${brl(mx/2)}</span></div><div class="ax" style="bottom:20px;border:0"><span>R$ 0</span></div>
+      ${ser.map((x,i)=>`<div class="b" title="${sl(x.date)}: ${brl2(x.value)} · ${x.count} ${x.count===1?'venda':'vendas'}" style="--h:${Math.round(100*x.value/mx)}%"><i style="height:${Math.round(100*x.value/mx)}%"></i><em>${brl(x.value)}</em><span>${i%every===0?sl(x.date):''}</span></div>`).join('')}</div>`
+      :`<div class="aempty" style="margin:0"><div><b>Nenhuma venda no período</b><p>Registre vendas pelo botão acima, pela conversa ou movendo o card para a etapa de venda no Funil.</p></div></div>`}</div>
+    <div class="vd-c"><div class="hd"><h3>Últimas vendas</h3><span class="sp"></span><button class="lnk" id="vdAll">ver todas</button></div>
+     <div class="vdl">${recent.map(x=>`<div class="r" data-s="${x.id}"><b>${esc(x.contact_name||'')}</b><span class="v">${brl2(x.total)}</span><span>${fmtD(ymd(new Date(x.date)))} · ${esc(x.items.map(i=>i.name).join(', '))}</span><span style="text-align:right">${esc((x.sellers||[]).map(y=>y.name.split(' ')[0]+(x.sellers.length>1?' '+y.pct+'%':'')).join(' + ')||'sem vendedor')}</span></div>`).join('')||'<div class="empty">Nada por aqui ainda.</div>'}</div></div></div>
+   <div class="vd-c" style="margin-bottom:12px"><div class="hd"><h3>Por</h3><select id="vdGrp">${GROUPS_VD.filter(g=>!(r.mine_only&&g[0]==='seller')).map(g=>`<option value="${g[0]}" ${P.group===g[0]?'selected':''}>${g[1]}</option>`).join('')}</select>
+     <span class="sp"></span><div class="seg">${METRICS.map(x=>`<button class="${m===x[0]?'on':''}" data-m="${x[0]}">${x[1]}</button>`).join('')}</div><div class="seg" style="margin:0">${[['bars','Barras'],['pie','Pizza'],['table','Tabela']].map(x=>`<button class="${P.chart===x[0]?'on':''}" data-ch="${x[0]}">${x[1]}</button>`).join('')}</div></div>
+     ${body}<p class="hint" style="margin-top:8px">${P.group==='seller'?'Venda dividida entre vendedores conta para cada um a parte do seu percentual. ':''}Clique numa linha para filtrar por ela.</p></div>
+   ${org&&org.rows.length?`<div class="vd-c"><div class="hd"><h3>De onde vêm os clientes</h3><span class="hint">contatos que chegaram no período e quantos já compraram</span><span class="sp"></span><button class="lnk" id="vdOrg">links e QR Codes</button></div>
+     <div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Origem</th><th class="n">Contatos</th><th class="n">Viraram clientes</th><th class="n">Conversão</th><th class="n">Faturamento</th><th class="n hm">Ticket</th></tr></thead>
+     <tbody>${org.rows.map(x=>`<tr ${x.id!=='_none'?`class="ck" data-src="${esc(x.id)}"`:''}><td>${x.id==='_none'?'<span class="hint">Não sabemos</span>':esc(x.name)}</td><td class="n">${x.contacts}</td><td class="n">${x.clients}</td><td class="n">${x.conversion!=null?String(x.conversion).replace('.',',')+'%':'—'}</td><td class="n"><b>${brl(x.value)}</b></td><td class="n hm">${x.ticket!=null?brl(x.ticket):'—'}</td></tr>`).join('')}</tbody></table></div>
+     ${org.total&&org.known<org.total?`<p class="hint" style="margin-top:8px">${Math.round(100*(org.total-org.known)/org.total)}% dos contatos sem origem. Use links rastreáveis nos canais e deixe a Nanda perguntar.</p>`:''}
+     ${org.referrals.length?`<h3 class="sec" style="margin-top:14px">Quem mais indica</h3><div class="vdl">${org.referrals.map(x=>`<div class="r" style="cursor:default"><b>${esc(x.name)}</b><span class="v">${x.clients} ${x.clients===1?'virou cliente':'viraram clientes'}</span><span>${x.contacts} ${x.contacts===1?'indicação':'indicações'}</span><span style="text-align:right">${brl(x.value)}</span></div>`).join('')}</div>`:''}</div>`:''}`;
+  $('#vdGrp').onchange=e=>{P.group=e.target.value;vdReport()};
+  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.metric=b.dataset.m;vdReport()});
+  document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{P.chart=b.dataset.ch;vdReport()});
+  const fk={seller:'seller',product:'product',category:'category',team:'team',source:'source',kind:'kind',payment:'payment'}[P.group];
+  $('#vdR').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;
+    if(['day','week','month'].includes(P.group)){const d=new Date(k+'T12:00');const z=new Date(d);if(P.group==='week')z.setDate(z.getDate()+6);else if(P.group==='month'){z.setMonth(z.getMonth()+1);z.setDate(0)}
+      P.preset='custom';P.start=k;P.end=ymd(z);P.group=P.group==='day'?'product':'day'}
+    else if(fk&&k!=='_none'||fk==='category'){P[fk]=k;P.group=P.group==='seller'?'product':'seller'}
+    vdReport()});
+  $('#vdR').querySelectorAll('[data-src]').forEach(b=>b.onclick=()=>{P.source=b.dataset.src;vdReport()});
+  if($('#vdOrg'))$('#vdOrg').onclick=()=>{VD.tab='origens';syncUrl();vdView()};
+  $('#vdAll').onclick=()=>{VD.tab='lista';syncUrl();vdView()};
+  $('#vdR').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>saleModal({sale:ls.items.find(x=>x.id===b.dataset.s),onDone:vdReport}));
+}
+
+async function vdList(){
+  $('#vdBody').innerHTML=`<div class="vd-bar" id="vdBar"></div><div class="row" style="margin:-4px 0 10px;gap:10px"><label class="ckl" style="margin:0"><input type="checkbox" id="vdCx" ${VD.cancelled?'checked':''}> Mostrar canceladas</label></div><div id="vdL"><div class="empty">Carregando...</div></div>`;
+  vdBar(()=>vdList(),true);
+  $('#vdCx').onchange=e=>{VD.cancelled=e.target.checked;vdList()};
+  const r=await api('/sales?'+vdQs({q:VD.q,status:VD.cancelled?'all':'ok'}));const it=r.items;
+  const tot=it.filter(x=>x.status==='ok').reduce((a,x)=>a+x.total,0);
+  $('#vdL').innerHTML=it.length?`<div class="vd-c" style="padding:8px 10px;overflow-x:auto"><table class="vtb"><thead><tr><th>Data</th><th>Cliente</th><th>Itens</th><th class="hm">Vendedores</th><th class="hm">Pagamento</th><th class="hm">Origem</th><th class="n">Total</th></tr></thead>
+    <tbody>${it.map(x=>`<tr class="ck ${x.status==='cancelled'?'cx':''}" data-s="${x.id}"><td>${fmtD(ymd(new Date(x.date)))}</td><td><b>${esc(x.contact_name||'')}</b>${x.first?'':'<span class="sx" style="margin-left:6px">recompra</span>'}</td>
+      <td>${x.items.map(i=>`<span class="sx">${num(i.qty)}× ${esc(i.name)}</span>`).join('')}</td><td class="hm">${(x.sellers||[]).map(y=>esc(y.name.split(' ')[0])+(x.sellers.length>1?` <span class="hint">${y.pct}%</span>`:'')).join(' + ')||'<span class="hint">—</span>'}</td>
+      <td class="hm">${esc(x.payment_label||'—')}</td><td class="hm">${esc(x.source_label||'')}</td><td class="n"><b>${brl2(x.total)}</b></td></tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="6" class="hm" style="text-align:right;font-weight:700">${it.filter(x=>x.status==='ok').length} vendas</td><td class="n"><b>${brl2(tot)}</b></td></tr></tfoot></table></div>`
+    :'<div class="aempty"><div><b>Nenhuma venda com esses filtros</b><p>Mude o período ou registre uma venda.</p></div></div>';
+  $('#vdL').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>saleModal({sale:it.find(x=>x.id===b.dataset.s),onDone:vdList}));
+}
+
+async function vdProducts(){
+  const mgr=isMgr();const ps=await api('/products');
+  $('#vdBody').innerHTML=`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?'<button class="btn sm p" id="pdNew">+ Novo item</button>':''}</div>
+   ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Tipo</th><th class="n">Preço</th><th></th></tr></thead><tbody>
+   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}</td><td>${esc(p.category||'—')}</td><td class="hm">${p.kind==='produto'?'Produto':'Serviço'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">livre</span>'}</td><td class="n">${p.active?'':'<span class="hint">inativo</span>'}</td></tr>`).join('')}</tbody></table></div>`
+   :'<div class="empty">Nenhum item ainda.</div>'}</div>`;
+  if(!mgr)return;
+  $('#pdNew').onclick=()=>productModal(null,ps);
+  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>productModal(ps.find(p=>p.id===b.dataset.p),ps));
+}
+function productModal(p,ps){
+  const x=p||{name:'',category:'',price:null,kind:'servico',active:true};const cats=[...new Set(ps.map(y=>y.category).filter(Boolean))];
+  const o=overlay(`<form class="modal" id="pdF" style="width:460px"><div class="row"><h2 style="font-size:19px">${p?'Editar item':'Novo item'}</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="80" value="${esc(x.name)}" ${x.service_id?'readonly title="Muda na Agenda"':''} placeholder="Ex.: Plano trimestral"></div>
+    <div class="form2"><div class="field"><label>Categoria</label><input name="category" list="pdCats" maxlength="40" value="${esc(x.category||'')}" placeholder="Ex.: Planos"><datalist id="pdCats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
+     <div class="field"><label>Preço (R$)</label><input name="price" type="number" min="0" step="0.01" value="${x.price??''}" placeholder="livre"></div></div>
+    <div class="field"><label>Tipo</label><div class="seg"><label style="display:contents"><input type="radio" name="kind" value="servico" ${x.kind!=='produto'?'checked':''} hidden><button type="button" data-kd="servico" class="${x.kind!=='produto'?'on':''}">Serviço</button></label><label style="display:contents"><input type="radio" name="kind" value="produto" ${x.kind==='produto'?'checked':''} hidden><button type="button" data-kd="produto" class="${x.kind==='produto'?'on':''}">Produto</button></label></div></div>
+    <label class="ckl"><input type="checkbox" name="active" ${x.active?'checked':''}> Ativo (aparece na hora de vender)</label>
+    <div class="row"><button class="btn p">Salvar</button>${p&&!p.service_id?'<button type="button" class="btn sm danger" id="pdDel" style="margin-left:auto">Apagar</button>':''}<span class="err" id="pdE"></span></div></form>`,true);
+  const f=o.querySelector('#pdF');
+  o.querySelectorAll('[data-kd]').forEach(b=>b.onclick=()=>{f.querySelector(`[name=kind][value=${b.dataset.kd}]`).checked=true;o.querySelectorAll('[data-kd]').forEach(y=>y.classList.toggle('on',y===b))});
+  if($('#pdDel'))$('#pdDel').onclick=async()=>{if(!confirm('Apagar este item? Se já foi vendido, ele só fica inativo.'))return;const r=await api('/products/'+p.id,{method:'DELETE'});o.remove();toast(r.deactivated?'Já foi vendido: ficou inativo.':'Item apagado.');vdProducts()};
+  f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,category:f.category.value,price:f.price.value===''?null:Number(f.price.value),kind:f.kind.value,active:f.active.checked};
+    try{await api(p?'/products/'+p.id:'/products',{method:p?'PUT':'POST',body});o.remove();toast('Item salvo.');vdProducts()}catch(x){$('#pdE').textContent=x.message}};
+}
+
+async function saleModal(opt){
+  const sale=opt.sale||null;let contact=opt.contact||(sale?{id:sale.contact_id,name:sale.contact_name}:null);
+  const [ps,team]=await Promise.all([api('/products'),CV.team&&CV.team.length?CV.team:api('/team')]);
+  const active=ps.filter(p=>p.active);const users=team.filter(u=>u.active||(sale&&(sale.sellers||[]).some(s=>s.user_id===u.id)));
+  const ro=sale&&(sale.status==='cancelled'||sale.can_edit===false);
+  let items=sale?sale.items.map(i=>({...i})):[{product_id:null,name:'',category:'',qty:1,price:'',discount:0}];
+  let sellers=sale?(sale.sellers||[]).map(s=>({user_id:s.user_id,pct:s.pct})):[{user_id:ME.user.id,pct:100}];
+  const o=overlay(`<form class="modal" id="smF" style="width:720px"><div class="row"><h2 style="font-size:20px">${sale?(ro?'Venda':'Editar venda'):'Registrar venda'}${contact?' · '+esc(contact.name):''}</h2><button type="button" class="x">×</button></div>
+    ${opt.moved?'<p class="note" style="margin:0">Card movido para a etapa de venda. Registre o que foi vendido para entrar no relatório.</p>':''}
+    ${sale&&sale.status==='cancelled'?'<p class="note warnb" style="margin:0">Venda cancelada. Não conta nos relatórios.</p>':''}
+    ${contact?'':`<div class="field"><label>Cliente</label><input id="smQ" placeholder="Busque pelo nome ou telefone" autocomplete="off"><div id="smR" class="mvlist" style="margin-top:6px"></div></div>`}
+    <div class="form2"><div class="field"><label>Data</label><input type="date" name="date" value="${sale?ymd(new Date(sale.date)):ymd(new Date())}" max="${ymd(new Date())}" ${ro?'disabled':''}></div>
+     <div class="field"><label>Pagamento</label><select name="payment" ${ro?'disabled':''}><option value="">Não informado</option>${VD.opts?VD.opts.payments.map(p=>`<option value="${p.id}" ${sale&&sale.payment===p.id?'selected':''}>${p.name}</option>`).join(''):''}</select></div></div>
+    <div class="field"><label>Itens</label><div class="sm-items" id="smI"></div>${ro?'':'<button type="button" class="lnk" id="smAI" style="margin-top:6px">+ adicionar item</button>'}
+     <datalist id="smCat">${active.map(p=>`<option value="${esc(p.name)}">${p.price!=null?brl2(p.price):''}${p.category?' · '+esc(p.category):''}</option>`).join('')}</datalist></div>
+    <div class="field"><label>Vendedores</label><div class="sm-items" id="smS"></div>${ro?'':'<div class="row" style="gap:14px;margin-top:6px"><button type="button" class="lnk" id="smAS">+ dividir com outro vendedor</button><button type="button" class="lnk" id="smEq">dividir igualmente</button></div>'}</div>
+    <div class="field"><label>Observação</label><input name="notes" maxlength="1000" value="${esc(sale?sale.notes||'':'')}" ${ro?'disabled':''} placeholder="Ex.: parcelado em 3x, entrega dia 15"></div>
+    <div class="sm-sum"><span>Total</span><b id="smT">R$ 0</b></div>
+    ${sale&&(sale.history||[]).length?`<div class="sm-hist">${sale.history.map(h=>`<span>${dt(h.at)} · ${esc(h.by)}: ${esc(h.what)}</span>`).join('')}</div>`:''}
+    ${ro?'':`<div class="row"><button class="btn p">${sale?'Salvar alterações':'Registrar venda'}</button>${sale?'<button type="button" class="btn sm danger" id="smCx" style="margin-left:auto">Cancelar venda</button>':''}<span class="err" id="smE"></span></div>`}</form>`,true);
+  const f=o.querySelector('#smF');
+  const lt=i=>Math.max(0,(Number(i.qty)||0)*(Number(i.price)||0)-(Number(i.discount)||0));
+  const total=()=>{$('#smT').textContent=brl2(items.reduce((a,i)=>a+lt(i),0))};
+  const drawI=()=>{$('#smI').innerHTML=`<div class="sm-it h"><span class="sm-hd">Produto ou serviço</span><span class="sm-hd">Qtd.</span><span class="sm-hd">Preço un.</span><span class="sm-hd">Desconto</span><span class="sm-hd" style="text-align:right">Total</span><span></span></div>`+
+    items.map((i,k)=>`<div class="sm-it"><input class="in" data-i="${k}" data-f="name" list="smCat" value="${esc(i.name)}" placeholder="Escolha ou digite" ${ro?'disabled':''} required>
+     <input class="iq" data-i="${k}" data-f="qty" type="number" min="0.01" step="any" value="${i.qty}" ${ro?'disabled':''} aria-label="Quantidade">
+     <input class="ip" data-i="${k}" data-f="price" type="number" min="0" step="0.01" value="${i.price}" placeholder="R$" ${ro?'disabled':''} required aria-label="Preço">
+     <input class="id" data-i="${k}" data-f="discount" type="number" min="0" step="0.01" value="${i.discount||''}" placeholder="desconto R$" ${ro?'disabled':''} aria-label="Desconto">
+     <span class="t" id="smLt${k}">${brl2(lt(i))}</span>${ro||items.length<2?'<span></span>':`<button type="button" class="sm-x" data-ri="${k}" aria-label="Tirar item">×</button>`}</div>`).join('');
+    $('#smI').querySelectorAll('input').forEach(x=>x.oninput=()=>{const i=items[x.dataset.i],k=x.dataset.f;i[k]=x.value;
+      if(k==='name'){const p=active.find(y=>y.name===x.value);i.product_id=p?p.id:null;i.category=p?p.category||'':'';if(p&&p.price!=null&&(i.price===''||i.price==null)){i.price=p.price;x.closest('.sm-it').querySelector('[data-f=price]').value=p.price}}
+      $('#smLt'+x.dataset.i).textContent=brl2(lt(i));total()});
+    $('#smI').querySelectorAll('[data-ri]').forEach(b=>b.onclick=()=>{items.splice(+b.dataset.ri,1);drawI();total()});total()};
+  const drawS=()=>{const sum=sellers.reduce((a,s)=>a+(Number(s.pct)||0),0);
+    $('#smS').innerHTML=sellers.map((s,k)=>`<div class="sm-sl"><select data-s="${k}" ${ro?'disabled':''}>${users.map(u=>`<option value="${u.id}" ${u.id===s.user_id?'selected':''}>${esc(u.name)}</option>`).join('')}</select>
+      <input data-p="${k}" type="number" min="1" max="100" step="any" value="${s.pct}" ${ro||sellers.length<2?'disabled':''} aria-label="Percentual">${ro||sellers.length<2?'<span></span>':`<button type="button" class="sm-x" data-rs="${k}" aria-label="Tirar vendedor">×</button>`}</div>`).join('')
+      +(sellers.length>1?`<span class="sm-pct ${Math.abs(sum-100)>0.01?'bad':''}">Soma: ${num(sum)}%${Math.abs(sum-100)>0.01?' (precisa dar 100%)':''}</span>`:'')
+      +(!sellers.length?'<span class="hint">Sem vendedor</span>':'');
+    $('#smS').querySelectorAll('[data-s]').forEach(x=>x.onchange=()=>{sellers[x.dataset.s].user_id=x.value});
+    $('#smS').querySelectorAll('[data-p]').forEach(x=>x.oninput=()=>{sellers[x.dataset.p].pct=x.value;const s2=sellers.reduce((a,s)=>a+(Number(s.pct)||0),0);const el=$('#smS .sm-pct');if(el){el.textContent=`Soma: ${num(s2)}%`+(Math.abs(s2-100)>0.01?' (precisa dar 100%)':'');el.classList.toggle('bad',Math.abs(s2-100)>0.01)}});
+    $('#smS').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{sellers.splice(+b.dataset.rs,1);if(sellers.length===1)sellers[0].pct=100;drawS()})};
+  drawI();drawS();
+  if(!ro){
+    $('#smAI').onclick=()=>{items.push({product_id:null,name:'',category:'',qty:1,price:'',discount:0});drawI();$('#smI').querySelectorAll('.in')[items.length-1].focus()};
+    const eq=()=>{const n=sellers.length;sellers.forEach((s,k)=>s.pct=k===n-1?Math.round((100-Math.round(10000/n)/100*(n-1))*100)/100:Math.round(10000/n)/100)};
+    $('#smAS').onclick=()=>{const u=users.find(u=>!sellers.some(s=>s.user_id===u.id));if(!u)return toast('Todo o time já está na venda.');sellers.push({user_id:u.id,pct:0});eq();drawS()};
+    $('#smEq').onclick=()=>{eq();drawS()};
+  }
+  if(!contact){let t;$('#smQ').oninput=e=>{clearTimeout(t);t=setTimeout(async()=>{const q=e.target.value.trim();if(q.length<2){$('#smR').innerHTML='';return}
+      const r=await api('/conversations?q='+encodeURIComponent(q));$('#smR').innerHTML=r.slice(0,6).map(c=>`<button type="button" data-ct="${c.id}"><i style="background:${avc(c.name)}"></i>${esc(c.name)} <span class="hint">${esc(fmtPhone(c.wa_id))}</span></button>`).join('')||'<p class="hint">Ninguém encontrado. Cliente novo? Adicione primeiro no Funil.</p>';
+      $('#smR').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{const c=r.find(x=>x.id===b.dataset.ct);contact={id:c.id,name:c.name};$('#smQ').value=c.name;$('#smR').innerHTML='';
+        if(c.assigned_to&&!sale){sellers=[{user_id:c.assigned_to,pct:100}];drawS()}})},250)}}
+  if($('#smCx'))$('#smCx').onclick=async()=>{const why=prompt('Cancelar esta venda? Ela sai dos relatórios. Motivo (opcional):');if(why===null)return;
+    try{await api('/sales/'+sale.id+'/cancel',{method:'POST',body:{reason:why}});o.remove();toast('Venda cancelada.');opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
+  if(!ro)f.onsubmit=async ev=>{ev.preventDefault();$('#smE').textContent='';
+    if(!contact)return $('#smE').textContent='Escolha o cliente.';
+    const body={contact_id:contact.id,date:f.date.value||null,payment:f.payment.value,notes:f.notes.value,move_won:!opt.moved,
+      items:items.map(i=>({product_id:i.product_id||null,name:i.name.trim(),category:i.category||'',qty:Number(i.qty)||1,price:Number(i.price)||0,discount:Number(i.discount)||0})),
+      sellers:sellers.map(s=>({user_id:s.user_id,pct:Number(s.pct)||0}))};
+    try{await api(sale?'/sales/'+sale.id:'/sales',{method:sale?'PUT':'POST',body});o.remove();toast(sale?'Venda atualizada.':'Venda registrada.');VD.opts=null;opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
+}
+
+/* origens e links */
+let ORG=null;
+async function orgLoad(force){if(!ORG||force)ORG=await api('/origins');return ORG}
+const orgName=id=>((ORG&&ORG.origins)||[]).find(o=>o.id===id)?.name||id;
+const kindOf=c=>{if(!c.sales_count)return 'prospect';const d=ME.company.inactive_days;if(d&&c.last_sale_at&&(Date.now()-new Date(c.last_sale_at))/864e5>d)return 'inativo';return 'cliente'};
+const KIND={prospect:['Prospect','kp'],cliente:['Cliente','kc'],inativo:['Cliente inativo','ki']};
+async function vdOrigins(){
+  const [o,l]=await Promise.all([orgLoad(true),api('/track-links')]);
+  $('#vdBody').innerHTML=`<div class="vd-g" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)"><div class="vd-c"><div class="hd"><h3>Links rastreáveis e QR Codes</h3><span class="sp"></span><button class="btn sm p" id="lkNew">+ Novo link</button></div>
+    <p class="hint" style="margin:-4px 0 12px">Um link para cada canal: site, bio do Instagram, Google, cada evento, cada campanha. Quem chamar por ele já entra com a origem marcada.</p>
+    ${l.phone?'':'<p class="note warnb">Conecte o WhatsApp da empresa (ou informe o telefone em Empresa) para os links funcionarem.</p>'}
+    ${l.items.length?`<div class="vdl">${l.items.map(x=>`<div class="r" style="cursor:default;grid-template-columns:minmax(0,1fr) auto"><b>${esc(x.label)}</b><span class="v" style="font-weight:700;font-size:12.5px">${x.clicks} ${x.clicks===1?'clique':'cliques'} · ${x.contacts} ${x.contacts===1?'contato':'contatos'}</span>
+       <span>${esc(orgName(x.origin))}${x.detail?' · '+esc(x.detail):''} · <code style="font-size:11.5px">${esc(x.short)}</code></span>
+       <span style="display:flex;gap:10px;justify-content:flex-end"><button class="lnk" data-cp="${esc(x.short)}">copiar link</button><button class="lnk" data-qr="${x.id}">QR Code</button><button class="lnk" data-le="${x.id}">editar</button></span></div>`).join('')}</div>`
+     :'<div class="aempty" style="margin:0"><div><b>Nenhum link ainda</b><p>Comece pelo link do site e o da bio do Instagram.</p></div></div>'}</div>
+   <div class="vd-c"><div class="hd"><h3>Origens</h3><span class="sp"></span><button class="btn sm" id="orEd">Editar</button></div>
+    <div class="pn-tg">${o.origins.map(x=>`<span class="tag">${esc(x.name)}</span>`).join('')}</div>
+    <div class="grid" style="gap:8px;margin-top:14px;font-size:13px">
+     <span>${o.ask_origin?'✓ A Nanda pergunta como a pessoa conheceu o negócio quando ainda não se sabe.':'A Nanda não pergunta a origem.'}</span>
+     <span>${o.inactive_days?`Cliente sem comprar há mais de <b>${o.inactive_days} dias</b> vira inativo.`:'Clientes não ficam inativos por tempo.'}</span>
+     <span class="hint">Anúncios da Meta com botão de WhatsApp são marcados sozinhos, com o nome do anúncio.</span></div></div></div>`;
+  $('#lkNew').onclick=()=>linkModal(null,o);
+  document.querySelectorAll('[data-le]').forEach(b=>b.onclick=()=>linkModal(l.items.find(x=>x.id===b.dataset.le),o));
+  document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.cp);toast('Link copiado.')}catch(e){prompt('Copie o link:',b.dataset.cp)}});
+  document.querySelectorAll('[data-qr]').forEach(b=>b.onclick=()=>{const x=l.items.find(y=>y.id===b.dataset.qr);
+    overlay(`<div class="modal" style="width:380px;text-align:center"><div class="row"><h2 style="font-size:19px">${esc(x.label)}</h2><button class="x">×</button></div>
+      <img src="${esc(x.qr)}" alt="QR Code de ${esc(x.label)}" style="width:260px;height:260px;margin:0 auto;display:block">
+      <p class="hint">Quem ler o código abre o WhatsApp da empresa com a mensagem pronta, e a origem já fica marcada.</p>
+      <div class="row" style="justify-content:center"><a class="btn sm p" href="${esc(x.qr)}" download="qr-${esc(x.code)}.svg">Baixar QR Code</a><button class="btn sm" id="qrC">Copiar link</button></div></div>`,true);
+    $('#qrC').onclick=async()=>{try{await navigator.clipboard.writeText(x.short);toast('Link copiado.')}catch(e){}}});
+  $('#orEd').onclick=()=>originsModal(o);
+}
+function linkModal(x,o){
+  const v=x||{label:'',origin:'site',detail:'',message:'Olá! Quero saber mais.'};
+  const ov=overlay(`<form class="modal" id="lkF" style="width:480px"><div class="row"><h2 style="font-size:19px">${x?'Editar link':'Novo link rastreável'}</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Nome do link</label><input name="label" required minlength="2" maxlength="60" value="${esc(v.label)}" placeholder="Ex.: Bio do Instagram, Feira Fitness, Google Meu Negócio"></div>
+    <div class="form2"><div class="field"><label>Origem</label><select name="origin">${o.origins.filter(y=>y.id!=='anuncio').map(y=>`<option value="${y.id}" ${v.origin===y.id?'selected':''}>${esc(y.name)}</option>`).join('')}</select></div>
+     <div class="field"><label>Detalhe (opcional)</label><input name="detail" maxlength="80" value="${esc(v.detail||'')}" placeholder="Ex.: Black Friday, Feira 2026"></div></div>
+    <div class="field"><label>Mensagem que já vem escrita</label><input name="message" required maxlength="300" value="${esc(v.message)}"><span class="hint">No fim vai um código curto (ex.: #oi-k3m9p) que identifica o link. O cliente pode apagar o resto do texto, mas o código precisa ficar.</span></div>
+    <div class="row"><button class="btn p">Salvar</button>${x?'<button type="button" class="btn sm danger" id="lkDel" style="margin-left:auto">Apagar</button>':''}<span class="err" id="lkE"></span></div></form>`,true);
+  const f=ov.querySelector('#lkF');
+  if($('#lkDel'))$('#lkDel').onclick=async()=>{if(!confirm('Apagar este link? Quem usar o link antigo não vai mais ser identificado.'))return;await api('/track-links/'+x.id,{method:'DELETE'});ov.remove();vdOrigins()};
+  f.onsubmit=async ev=>{ev.preventDefault();const body={label:f.label.value,origin:f.origin.value,detail:f.detail.value,message:f.message.value};
+    try{await api(x?'/track-links/'+x.id:'/track-links',{method:x?'PUT':'POST',body});ov.remove();toast('Link salvo.');vdOrigins()}catch(e){$('#lkE').textContent=e.message}};
+}
+function originsModal(o){
+  let rows=o.origins.map(x=>({...x}));
+  const ov=overlay(`<form class="modal" id="orF" style="width:480px"><div class="row"><h2 style="font-size:19px">Origens dos contatos</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Lista de origens</label><div id="orR" class="grid" style="gap:6px"></div><button type="button" class="lnk" id="orAdd" style="margin-top:6px">+ adicionar origem</button>
+     <span class="hint">"Anúncio (Meta)" é automático e sempre fica.</span></div>
+    <label class="ckl"><input type="checkbox" name="ask" ${o.ask_origin?'checked':''}> A Nanda pergunta como a pessoa conheceu o negócio</label>
+    <div class="field"><label>Cliente vira inativo depois de quantos dias sem comprar?</label><input name="days" type="number" min="15" max="1095" value="${o.inactive_days||''}" placeholder="não usar" style="max-width:150px"></div>
+    <div class="row"><button class="btn p">Salvar</button><span class="err" id="orE"></span></div></form>`,true);
+  const draw=()=>{$('#orR').innerHTML=rows.map((r,k)=>`<div class="sm-sl" style="grid-template-columns:minmax(0,1fr) 30px"><input data-k="${k}" value="${esc(r.name)}" maxlength="40" ${r.id==='anuncio'?'disabled':''}>${r.id==='anuncio'?'<span></span>':`<button type="button" class="sm-x" data-x="${k}" aria-label="Tirar">×</button>`}</div>`).join('');
+    $('#orR').querySelectorAll('[data-k]').forEach(i=>i.oninput=()=>rows[i.dataset.k].name=i.value);
+    $('#orR').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{rows.splice(+b.dataset.x,1);draw()})};
+  draw();$('#orAdd').onclick=()=>{rows.push({id:null,name:''});draw();[...$('#orR').querySelectorAll('input')].pop().focus()};
+  ov.querySelector('#orF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+    try{const r=await api('/origins',{method:'PUT',body:{origins:rows.filter(x=>x.name.trim()).map(x=>({id:x.id,name:x.name})),ask_origin:f.ask.checked,inactive_days:f.days.value?Number(f.days.value):null}});
+      ME.company.inactive_days=r.inactive_days;ov.remove();toast('Origens salvas.');vdOrigins()}catch(e){$('#orE').textContent=e.message}};
+}
+async function originEdit(c,after){
+  const o=await orgLoad();
+  const ov=overlay(`<form class="modal" id="oeF" style="width:440px"><div class="row"><h2 style="font-size:19px">Como ${esc(c.name.split(' ')[0])} conheceu vocês?</h2><button type="button" class="x">×</button></div>
+    <div class="field"><label>Origem</label><select name="origin"><option value="">Não sabemos</option>${o.origins.map(x=>`<option value="${x.id}" ${c.origin===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
+    <div class="field" id="oeRef" style="${c.origin==='indicacao'?'':'display:none'}"><label>Quem indicou</label><input name="ref" id="oeQ" value="${esc(c.referred_by_name||'')}" placeholder="Busque um cliente ou digite o nome" autocomplete="off"><div id="oeR" class="mvlist" style="margin-top:6px"></div></div>
+    <div class="field"><label>Detalhe (opcional)</label><input name="detail" maxlength="80" value="${esc(c.origin_detail||'')}" placeholder="Ex.: qual evento, campanha ou post"></div>
+    <div class="row"><button class="btn p">Salvar</button><span class="err" id="oeE"></span></div></form>`,true);
+  const f=ov.querySelector('#oeF');let refId=c.referred_by_id||null;
+  f.origin.onchange=()=>{$('#oeRef').style.display=f.origin.value==='indicacao'?'':'none'};
+  let t;$('#oeQ').oninput=e=>{refId=null;clearTimeout(t);t=setTimeout(async()=>{const q=e.target.value.trim();if(q.length<2){$('#oeR').innerHTML='';return}
+    const r=(await api('/conversations?q='+encodeURIComponent(q))).filter(x=>x.id!==c.id);
+    $('#oeR').innerHTML=r.slice(0,5).map(x=>`<button type="button" data-rf="${x.id}"><i style="background:${avc(x.name)}"></i>${esc(x.name)}</button>`).join('');
+    $('#oeR').querySelectorAll('[data-rf]').forEach(b=>b.onclick=()=>{const x=r.find(y=>y.id===b.dataset.rf);refId=x.id;$('#oeQ').value=x.name;$('#oeR').innerHTML=''})},250)};
+  f.onsubmit=async ev=>{ev.preventDefault();const ind=f.origin.value==='indicacao';
+    try{await api('/contacts/'+c.id+'/origin',{method:'PUT',body:{origin:f.origin.value||null,detail:f.detail.value,referred_by_id:ind?refId:null,referred_by_name:ind&&!refId?f.ref.value||null:null}});ov.remove();toast('Origem salva.');after&&after()}catch(e){$('#oeE').textContent=e.message}};
+}
+
 const VIEWS={
+ vendas:()=>vdView(),
  async automacoes(){
   const [d,tpls]=await Promise.all([api('/automations'),api('/templates')]);
   $('#page').innerHTML=`<div class="fhd"><div><h1>Automações</h1><p class="sub">Mensagens que saem sozinhas na hora certa: lembretes, retomadas e pós-atendimento.</p></div>
@@ -1400,7 +1781,7 @@ const VIEWS={
   POLL=setInterval(()=>{if(VIEW==='funil'&&!document.hidden&&!document.querySelector('.ov')&&!document.querySelector('.kc.drag'))drawBoard().catch(()=>{})},10000);
  },
  async conversas(){
-  const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[])]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
+  const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[]),orgLoad().catch(()=>null)]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
     <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],...(tms.some(t=>t.mine)?[['team','Equipe']]:[]),['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
