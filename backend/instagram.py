@@ -1,7 +1,10 @@
 """Direct do Instagram na mesma caixa de conversas do WhatsApp.
 
-Conexão pela API do Instagram com login do Instagram (conta profissional, sem precisar de Página do Facebook).
-Usa um app da Meta só do Oi Nanda (IG_APP_ID / IG_APP_SECRET no servidor, via deploy/set-instagram.sh).
+Conexão pela API do Instagram com login unificado (a única disponível para apps novos da Meta): o cliente entra com
+Instagram ou Facebook, escolhe o portfólio e a conta profissional, e não precisa de Página do Facebook. O Oi Nanda recebe
+um token de usuário do sistema do portfólio do cliente e fala com graph.facebook.com usando o ID da conta do Instagram.
+Usa o app "Oi Nanda" da Meta (IG_APP_ID / IG_APP_SECRET = ID e chave secreta do app, IG_CONFIG_ID = configuração do
+login), gravados no servidor por deploy/set-instagram.sh.
 
 Regras da Meta para o Direct:
 - só dá para escrever para quem mandou mensagem antes;
@@ -25,12 +28,12 @@ from whatsapp import aware, encrypt, decrypt, note, WINDOW
 
 router = APIRouter()
 log = logging.getLogger('oinanda.ig')
-VER = os.environ.get('IG_API_VERSION', 'v23.0')
-GRAPH = 'https://graph.instagram.com/' + VER
+VER = os.environ.get('IG_API_VERSION', 'v27.0')
+GRAPH = 'https://graph.facebook.com/' + VER
 HUMAN_WINDOW = timedelta(days=7)
-SCOPES = 'instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments'
+FIELDS = 'messages,messaging_postbacks,messaging_seen,comments'
 
-def ready(): return bool(os.environ.get('IG_APP_ID') and os.environ.get('IG_APP_SECRET'))
+def ready(): return bool(os.environ.get('IG_APP_ID') and os.environ.get('IG_APP_SECRET') and os.environ.get('IG_CONFIG_ID'))
 def app_url(request=None):
     o = (os.environ.get('APP_ORIGINS') or '').split(',')[0].strip()
     return o or (str(request.base_url).rstrip('/') if request else '')
@@ -47,7 +50,9 @@ async def ig(method, path, token=None, params=None, data=None, payload=None, bas
     if r.status_code >= 400:
         e = d.get('error') or {}
         msg = e.get('error_user_msg') or e.get('message') or d.get('error_message') or f'erro {r.status_code}'
-        raise HTTPException(400, 'O Instagram recusou: ' + str(msg)[:300])
+        x = HTTPException(400, 'O Instagram recusou: ' + str(msg)[:300])
+        x.revoked = e.get('code') == 190
+        raise x
     return d
 
 async def account_of(company_id): return await db.ig_accounts.find_one({'company_id': company_id}, {'_id': 0})
@@ -64,8 +69,9 @@ async def connect(user=Depends(owners)):
     if not ready(): raise HTTPException(503, 'O Instagram ainda não foi configurado no servidor.')
     state = secrets.token_urlsafe(24)
     await db.oauth_states.insert_one({'state': state, 'kind': 'ig', 'company_id': user['company_id'], 'user_id': user['id'], 'expires_at': now() + timedelta(minutes=15)})
-    q = urlencode({'client_id': os.environ['IG_APP_ID'], 'redirect_uri': redirect_uri(), 'response_type': 'code', 'scope': SCOPES, 'state': state, 'enable_fb_login': '0', 'force_reauth': 'true'})
-    return {'url': 'https://www.instagram.com/oauth/authorize?' + q}
+    q = urlencode({'client_id': os.environ['IG_APP_ID'], 'config_id': os.environ['IG_CONFIG_ID'], 'redirect_uri': redirect_uri(), 'response_type': 'code',
+                   'override_default_response_type': 'true', 'state': state, 'prompt': 'login'})
+    return {'url': f'https://www.facebook.com/{VER}/dialog/oauth?' + q}
 
 @router.get('/ig/callback')
 async def callback(request: Request, code: str = '', state: str = '', error: str = '', error_reason: str = ''):
@@ -74,21 +80,22 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
     if not st or aware(st['expires_at']) < now(): return RedirectResponse(back + '?ig=expirado')
     if error or not code: return RedirectResponse(back + '?ig=cancelado')
     try:
-        short = await ig('POST', '/oauth/access_token', base='https://api.instagram.com', data={
-            'client_id': os.environ['IG_APP_ID'], 'client_secret': os.environ['IG_APP_SECRET'], 'grant_type': 'authorization_code',
-            'redirect_uri': redirect_uri(request), 'code': code.split('#')[0]})
-        long = await ig('GET', '/access_token', base='https://graph.instagram.com', params={'grant_type': 'ig_exchange_token', 'client_secret': os.environ['IG_APP_SECRET'],
-                                                                                            'access_token': short['access_token']})
-        tok = long['access_token']
-        me = await ig('GET', '/me', tok, {'fields': 'user_id,username,name,profile_picture_url'})
-        other = await db.ig_accounts.find_one({'ig_id': str(me.get('user_id')), 'company_id': {'$ne': st['company_id']}})
+        t = await ig('GET', '/oauth/access_token', params={'client_id': os.environ['IG_APP_ID'], 'client_secret': os.environ['IG_APP_SECRET'],
+                                                          'redirect_uri': redirect_uri(request), 'code': code.split('#')[0]})
+        tok = t['access_token']
+        me = await ig('GET', '/me', tok, {'fields': 'client_business_id'})
+        accs = (await ig('GET', '/me/assigned_instagram_accounts', tok, {'fields': 'id,username,name,profile_picture_url'})).get('data') or []
+        if not accs: return RedirectResponse(back + '?ig=sem_conta')
+        acc = accs[0]  # o Oi Nanda trabalha com uma conta por empresa
+        other = await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': st['company_id']}})
         if other: return RedirectResponse(back + '?ig=outra_empresa')
-        await ig('POST', '/me/subscribed_apps', tok, {'subscribed_fields': 'messages,messaging_postbacks,messaging_seen,comments'})
+        await ig('POST', f'/{acc["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
+        exp = now() + timedelta(seconds=int(t['expires_in'])) if t.get('expires_in') else None
         await db.ig_accounts.update_one({'company_id': st['company_id']}, {'$set': {
-            'company_id': st['company_id'], 'ig_id': str(me.get('user_id')), 'app_scoped_id': str(me.get('id') or ''), 'username': me.get('username'), 'name': me.get('name'),
-            'picture': me.get('profile_picture_url'), 'token_enc': encrypt(tok), 'expires_at': now() + timedelta(seconds=int(long.get('expires_in') or 5184000)),
+            'company_id': st['company_id'], 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name'), 'picture': acc.get('profile_picture_url'),
+            'business_id': str(me.get('client_business_id') or ''), 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
             'connected_at': now(), 'connected_by': st['user_id'], 'status': 'connected'}}, upsert=True)
-        await db.audit.insert_one({'id': uid(), 'company_id': st['company_id'], 'actor_id': st['user_id'], 'action': 'Conectou o Instagram', 'target': '@' + str(me.get('username')),
+        await db.audit.insert_one({'id': uid(), 'company_id': st['company_id'], 'actor_id': st['user_id'], 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
                                    'at': now(), 'expires_at': now() + timedelta(days=180)})
         return RedirectResponse(back + '?ig=ok')
     except HTTPException as e:
@@ -118,14 +125,13 @@ async def settings(body: IgSettings, request: Request, user=Depends(managers)):
     return {'ok': True}
 
 async def refresh_tokens():
-    """O token dura 60 dias: renova quando faltam menos de 15."""
-    for a in await db.ig_accounts.find({'expires_at': {'$lt': now() + timedelta(days=15)}, 'status': 'connected'}, {'_id': 0}).to_list(1000):
-        try:
-            d = await ig('GET', '/refresh_access_token', base='https://graph.instagram.com', params={'grant_type': 'ig_refresh_token', 'access_token': decrypt(a['token_enc'])})
-            await db.ig_accounts.update_one({'company_id': a['company_id']}, {'$set': {'token_enc': encrypt(d['access_token']),
-                                                                                   'expires_at': now() + timedelta(seconds=int(d.get('expires_in') or 5184000))}})
-        except HTTPException:
-            await db.ig_accounts.update_one({'company_id': a['company_id']}, {'$set': {'status': 'expired'}})
+    """O token do login unificado é do portfólio do cliente e, na configuração do Oi Nanda, não vence.
+    Se um dia a configuração tiver validade, marca a conta como vencida para o dono reconectar."""
+    await db.ig_accounts.update_many({'status': 'connected', 'expires_at': {'$ne': None, '$lt': now()}}, {'$set': {'status': 'expired'}})
+
+async def revoked(a, e):
+    if getattr(e, 'revoked', False):
+        await db.ig_accounts.update_one({'company_id': a['company_id']}, {'$set': {'status': 'expired'}})
 
 # ---------- receber (webhook) ----------
 @router.get('/ig/webhook')
@@ -261,7 +267,9 @@ async def send(company_id, contact, message, human):
         if not (human and hum):
             raise HTTPException(400, 'No Instagram só dá para responder até 24 h depois da última mensagem do cliente (ou até 7 dias, por uma pessoa do time).')
         body.update(messaging_type='MESSAGE_TAG', tag='HUMAN_AGENT')
-    return await ig('POST', f'/{a["ig_id"]}/messages', decrypt(a['token_enc']), payload=body)
+    try: return await ig('POST', f'/{a["ig_id"]}/messages', decrypt(a['token_enc']), payload=body)
+    except HTTPException as e:
+        await revoked(a, e); raise
 
 async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
     human = bool(by_id) and '(IA)' not in (by_name or '') and not (by_name or '').startswith(('Automação', 'Campanha'))

@@ -1,7 +1,7 @@
 import os, json, hmac, hashlib, time, asyncio
 from datetime import timedelta
 os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif',
-                  IG_APP_ID='111', IG_APP_SECRET='igsecreto', IG_VERIFY_TOKEN='igverif', APP_ORIGINS='https://app.test')
+                  IG_APP_ID='111', IG_APP_SECRET='igsecreto', IG_CONFIG_ID='777', IG_VERIFY_TOKEN='igverif', APP_ORIGINS='https://app.test')
 from cryptography.fernet import Fernet
 os.environ.setdefault('SECRET_KEY', Fernet.generate_key().decode())
 from fastapi.testclient import TestClient
@@ -25,9 +25,9 @@ def test_direct(monkeypatch):
     calls, inbound = [], []
     async def fake_ig(method, path, token=None, params=None, data=None, payload=None, base=None):
         calls.append((method, path, params, payload))
-        if path == '/oauth/access_token': return {'access_token': 'short', 'user_id': 17841400000000001}
-        if path == '/access_token': return {'access_token': 'longo', 'expires_in': 5184000}
-        if path == '/me': return {'user_id': '17841400000000001', 'id': '99', 'username': 'alta_creators', 'name': 'Alta Creators'}
+        if path == '/oauth/access_token': return {'access_token': 'suat', 'token_type': 'bearer'}
+        if path == '/me': return {'client_business_id': '555', 'id': '99'}
+        if path == '/me/assigned_instagram_accounts': return {'data': [{'id': '17841400000000001', 'username': 'alta_creators', 'name': 'Alta Creators'}]}
         if path.endswith('/messages'): return {'recipient_id': 'x', 'message_id': 'out' + str(len(calls))}
         if path.startswith('/9'): return {'name': 'Bia Souza', 'username': 'bia.souza'}
         return {'success': True}
@@ -39,12 +39,12 @@ def test_direct(monkeypatch):
         c.post('/api/auth/signup', json={'name': 'Dona I', 'email': 'di@x.com', 'password': 'senha-forte-1', 'company': 'Studio I', 'segment': 'studio'})
         assert c.get('/api/ig/status').json()['ready'] is True
         url = c.get('/api/ig/connect').json()['url']
-        assert url.startswith('https://www.instagram.com/oauth/authorize?') and 'instagram_business_manage_messages' in url
+        assert url.startswith('https://www.facebook.com/') and '/dialog/oauth?' in url and 'config_id=777' in url
         state = url.split('state=')[1].split('&')[0]
         r = c.get(f'/api/ig/callback?code=abc%23_&state={state}', follow_redirects=False)
         assert r.status_code in (302, 307) and r.headers['location'].endswith('/empresa?ig=ok')
         assert c.get('/api/ig/status').json()['account']['username'] == 'alta_creators'
-        assert any(p == '/me/subscribed_apps' for _, p, _, _ in calls)
+        assert any(p == '/17841400000000001/subscribed_apps' for _, p, _, _ in calls)
         assert c.get(f'/api/ig/callback?code=x&state={state}', follow_redirects=False).headers['location'].endswith('ig=expirado')  # estado só vale uma vez
         # assinatura errada é recusada
         assert c.post('/api/ig/webhook', content=b'{}', headers={'x-hub-signature-256': 'sha256=errado'}).status_code == 403
