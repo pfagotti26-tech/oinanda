@@ -801,6 +801,23 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .side:not(.open)>:not(.sbar){display:none!important}
  .side.open>.co{margin-top:10px}
  .side.open{box-shadow:0 20px 40px -10px rgba(0,0,0,.5)}}
+.cbox.v2{flex-direction:column;align-items:stretch;gap:0;border:1px solid #DCD2C9;border-radius:16px;background:#fff;padding:2px 6px 6px}
+.cbox.v2:focus-within{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
+.cbox.v2 textarea,.cbox.v2 textarea:focus{border:0!important;box-shadow:none!important;border-radius:12px;padding:10px 8px 6px;min-height:42px;background:transparent}
+.ctool{display:flex;align-items:center;justify-content:space-between;gap:8px}.ctl{display:flex;align-items:center;gap:2px;min-width:0}
+.ctool .ib{width:34px;height:34px;color:var(--ink3)}.ctool .ib:hover{color:var(--ink);background:#F3EEE8}.ctool .ib svg{width:19px;height:19px}
+.csep{width:1px;height:20px;background:var(--line);margin:0 6px}
+.ctg{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink3);padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:#fff}
+.ctg i{width:24px;height:14px;border-radius:999px;background:#D5DCE2;position:relative;transition:.15s}.ctg i::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:.15s}
+.ctg.on{color:var(--c2);border-color:var(--soft)}.ctg.on i{background:var(--c)}.ctg.on i::after{left:12px}
+.ctool .btn.snd{height:36px;padding:0 16px;border-radius:999px}
+.sug .row{flex-wrap:wrap;align-items:center}.sug .sug-off{margin-left:auto;font-size:12px}
+@media (max-width:860px){.cbox.v2{border-radius:20px}.ctool .btn.snd{width:38px;height:38px;padding:0;border-radius:50%}.ctg{padding:4px 7px;font-size:11px;gap:5px}.csep{margin:0 3px}.ctool .ib{width:32px}}
+.pn-rail{display:none}
+@media (min-width:1201px){
+ .cv.nopanel{grid-template-columns:var(--lw,340px) minmax(0,1fr) 56px}.cv.nopanel .cv-pn{display:block}.cv.nopanel .cv-pn>:not(.pn-rail){display:none}
+ .cv.nopanel .pn-rail{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0}.pn-rail .av{width:36px;height:36px;font-size:12.5px;margin:6px 0 8px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;flex:none}
+ .pn-rail .ib{width:38px;height:38px;color:var(--ink3)}.pn-rail .ib:hover{color:var(--ink);background:#F3EEE8}.pn-rail .ib svg{width:19px;height:19px}}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -1141,7 +1158,7 @@ async function metaSignup(es,own){
     {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
 let CV={filter:'all',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:''};
-try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0'}catch(e){}
+try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
 const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 const AVC=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#C2557A','#4F8A5B','#E8603F','#7A6A58'];
 const avc=n=>{let h=0;for(const ch of String(n||''))h=(h*31+ch.charCodeAt(0))%997;return AVC[h%AVC.length]};
@@ -1174,7 +1191,7 @@ const CVW=(()=>{try{return JSON.parse(localStorage.getItem('cvw'))||{}}catch(e){
 function cvSizes(){const cv=$('.cv');if(!cv)return;
   const save=()=>{try{localStorage.setItem('cvw',JSON.stringify(CVW))}catch(e){}};
   const apply=()=>{const W=cv.clientWidth,pn=!cv.classList.contains('nopanel');let lw=CVW.lmin?72:(CVW.lw||340),pw=CVW.pw||320;
-    let over=lw+(pn?pw:0)+520-W;  // a conversa no meio nunca fica com menos de 520px
+    let over=lw+(pn?pw:56)+520-W;  // a conversa no meio nunca fica com menos de 520px
     if(over>0&&pn){const d=Math.min(over,pw-260);pw-=d;over-=d}if(over>0&&!CVW.lmin)lw=Math.max(260,lw-over);
     cv.style.setProperty('--lw',lw+'px');cv.style.setProperty('--pw',pw+'px');cv.classList.toggle('lmin',!!CVW.lmin);
     const b=$('#cvLmin');if(b){b.innerHTML=svg(CVW.lmin?'<path d="m9 6 6 6-6 6"/>':'<path d="m15 6-6 6 6 6"/>');b.title=b.ariaLabel=CVW.lmin?'Abrir lista':'Recolher lista'}};
@@ -1306,11 +1323,13 @@ function drawComposer(c,w,draft){
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
      `<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
-  else{box.innerHTML=tabs+`<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
-     <button type="button" class="ib" id="cvAttB" title="Mandar foto, vídeo ou arquivo" aria-label="Anexar">${svg('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>')}</button><input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
-     <button type="button" class="ib" id="cvMic" title="Gravar áudio" aria-label="Gravar áudio">${svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>')}</button>
-     <button type="button" class="ib" id="cvQRb" title="Respostas rápidas" aria-label="Respostas rápidas">${svg('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>')}</button>
-     ${CV.ai?.key_configured?`<button type="button" class="ib" id="cvSugB" title="A Nanda escreve uma sugestão" aria-label="Sugestão da Nanda">✨</button>`:''}<button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></form>`}
+  else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
+   box.innerHTML=tabs+`<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+     <div class="ctool"><div class="ctl">${I('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>','Mandar foto, vídeo ou arquivo','cvAttB')}<input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+      ${I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>','Gravar áudio','cvMic')}
+      ${I('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>','Respostas rápidas','cvQRb')}
+      ${CV.ai?.key_configured?`<span class="csep"></span><button type="button" class="ctg ${CV.sugOff?'':'on'}" id="cvSugT" title="${CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar'}" aria-pressed="${!CV.sugOff}"><i></i>Sugestões</button><button type="button" class="ib" id="cvSugB" title="Pedir uma sugestão agora" aria-label="Pedir sugestão da Nanda">✨</button>`:''}</div>
+      <button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></div></form>`}
   box.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{CV.drafts=CV.drafts||{};CV.drafts[CV.tab]=$('#cvText')?.value||'';CV.tab=b.dataset.ct;drawComposer(c,w,CV.drafts[CV.tab]||'');$('#cvText')?.focus()});
   const ta=$('#cvText');if(!ta)return;ta.value=draft||'';
   const grow=()=>{ta.style.height='auto';ta.style.height=Math.min(160,ta.scrollHeight)+'px'};grow();
@@ -1325,6 +1344,9 @@ function drawComposer(c,w,draft){
       else await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});
       CV.sig='';$('#cvSug')&&($('#cvSug').innerHTML='');await cvChat(false);cvList();cvCounts()}catch(e){toast(e.message);ta.value=t;grow()}};
   if($('#cvQRb'))$('#cvQRb').onclick=()=>qrOpen('');
+  if($('#cvSugT'))$('#cvSugT').onclick=()=>{CV.sugOff=!CV.sugOff;try{localStorage.setItem('oinanda.sugOff',CV.sugOff?'1':'0')}catch(e){}
+    const b=$('#cvSugT');b.classList.toggle('on',!CV.sugOff);b.setAttribute('aria-pressed',String(!CV.sugOff));b.title=CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar';
+    if(CV.sugOff){keepBottom(()=>$('#cvSug').innerHTML='');toast('Sugestões ocultas. O ✨ pede uma quando quiser.')}else{maybeSuggest(c,null,c.ai_mode||CV.ai?.default_mode||'copilot')}};
   if($('#cvSugB'))$('#cvSugB').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='…';try{showSug(await api('/conversations/'+CV.open+'/suggest',{method:'POST'}),true)}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨'};
 }
 
@@ -1383,11 +1405,13 @@ function qrManager(){
 
 function showSug(r,manual){const b=$('#cvSug');if(!b)return;
   if(r.handoff){b.innerHTML=`<div class="sug warn"><b>✨ A Nanda acha melhor alguém do time responder</b><span>${esc(r.reason||'')}</span><button type="button" class="x" data-sx>×</button></div>`}
-  else if(r.reply){b.innerHTML=`<div class="sug"><b>✨ Sugestão da Nanda</b><p>${esc(r.reply)}</p>${r.book?`<span class="hint">Ela sugere agendar ${esc(r.book_label||'')}. Use o botão Agendar para confirmar.</span>`:''}<div class="row"><button type="button" class="btn sm p" data-su>Usar</button><button type="button" class="btn sm" data-sx>Dispensar</button></div></div>`}
+  else if(r.reply){b.innerHTML=`<div class="sug"><b>✨ Sugestão da Nanda</b><p>${esc(r.reply)}</p>${r.book?`<span class="hint">Ela sugere agendar ${esc(r.book_label||'')}. Use o botão Agendar para confirmar.</span>`:''}<div class="row"><button type="button" class="btn sm p" data-su>Usar</button><button type="button" class="btn sm" data-sx>Dispensar</button><button type="button" class="lnk sug-off" data-soff>${CV.sugOff?'mostrar sempre':'ocultar sugestões'}</button></div></div>`}
   else{if(manual)toast('A Nanda não tem sugestão agora.');return}
   b.querySelector('[data-su]')&&(b.querySelector('[data-su]').onclick=()=>{const ta=$('#cvText');ta.value=r.reply;ta.dispatchEvent(new Event('input'));ta.focus();b.innerHTML=''});
-  b.querySelector('[data-sx]').onclick=()=>{CV.sugHide[CV.open]=CV.c.last_in_at;b.innerHTML=''}}
+  b.querySelector('[data-sx]').onclick=()=>{CV.sugHide[CV.open]=CV.c.last_in_at;keepBottom(()=>b.innerHTML='')};
+  b.querySelector('[data-soff]')&&(b.querySelector('[data-soff]').onclick=()=>$('#cvSugT')?.click())}
 async function maybeSuggest(c,msgs,mode){
+  if(CV.sugOff)return;
   if(!c.window_open||c.last_dir!=='in'||!CV.ai?.key_configured||mode==='off'||mode==='auto'||c.needs_human)return;
   if(CV.sugHide[c.id]===c.last_in_at)return;
   const key=c.id+'|'+c.last_in_at;if(CV.sugFor[key]){showSug(CV.sugFor[key]);return}
@@ -1399,7 +1423,14 @@ async function cvPanel(c){
   let ap=[];try{ap=(await api('/contacts/'+c.id+'/appointments')).filter(a=>['scheduled','confirmed'].includes(a.status)&&new Date(a.end)>new Date()).reverse()}catch(e){}
   const src=c.ad?`Anúncio "${esc(c.ad.headline||c.ad.source_id||'')}"`:{manual:'Cadastro manual',historico:'Conversa antiga do celular','agenda do celular':'Agenda do celular'}[c.source]||'Chamou no WhatsApp';
   const sx=stageOf(c.stage);
-  p.innerHTML=`<div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Fechar painel">×</button></div>
+  const RI=(d,t,k)=>`<button type="button" class="ib" data-rail="${k}" title="${t}" aria-label="${t}">${svg(d)}</button>`;
+  p.innerHTML=`<div class="pn-rail"><button type="button" class="ib" id="pnExp" title="Abrir painel do cliente" aria-label="Abrir painel do cliente">${svg('<path d="m15 6-6 6 6 6"/>')}</button>
+    <span class="av" style="background:${avc(c.name)}" title="${esc(c.name)}">${initials(c.name)}</span>
+    ${RI('<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>','Registrar venda','sale')}
+    ${RI('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>','Agendar','book')}
+    ${RI('<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>','Jornada','jn')}
+    ${RI('<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-4-4L4 16z"/>','Detalhes do cliente','det')}</div>
+   <div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Minimizar painel" title="Minimizar painel">${svg('<path d="m9 6 6 6-6 6"/>')}</button></div>
    <div class="pn-hero cp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><div class="tx"><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}</span>
     <div class="pn-tags"><span class="bd2">${src}</span><span class="bd2">desde ${day(c.created_at)}</span>${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div></div>
    ${c.transfer_by&&c.transfer_reason?`<div class="pn-s pn-tr"><label>Transferida por ${esc(c.transfer_by)} · ${ago(c.transfer_at)}</label><p>${esc(c.transfer_reason)}</p></div>`:''}
@@ -1421,6 +1452,10 @@ async function cvPanel(c){
    <div class="pn-s"><button class="btn sm" id="pnDet" style="width:100%;justify-content:center">Ver detalhes completos</button></div>`;
   const patch=async(body,msg)=>{try{await api('/contacts/'+c.id,{method:'PATCH',body});if(msg)toast(msg);CV.sig='';cvChat(false);cvList()}catch(e){toast(e.message)}};
   $('#pnX').onclick=()=>{if(innerWidth<1200){$('.cv').classList.remove('pn-open');return}$('#cvPan')?.click()};
+  $('#pnExp').onclick=()=>$('#cvPan')?.click();
+  p.querySelectorAll('[data-rail]').forEach(b=>b.onclick=()=>{const k=b.dataset.rail;
+    if(k==='sale')return $('#pnSale')&&!$('#pnSale').hidden?$('#pnSale').click():$('#pnSale2')?.click();if(k==='book')return $('#pnBook')?.click();
+    if(k==='jn')return contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()},'jornada');if(k==='det')return $('#pnDet')?.click()});
   $('#pnSt').onchange=e=>patch({stage:e.target.value},'Etapa atualizada.');
   if($('#pnAs'))$('#pnAs').onchange=async e=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:e.target.value||null}});toast('Responsável atualizado.');CV.sig='';cvList();cvChat(true)};
   if($('#pnMine'))$('#pnMine').onclick=async()=>{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:ME.user.id}});CV.sig='';cvList();cvChat(true)};
