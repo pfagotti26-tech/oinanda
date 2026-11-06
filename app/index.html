@@ -532,6 +532,11 @@ td>.sure,tr+.sure{margin:4px}
 .cl-act{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
 .vtb td small{display:block}.sx.ok{background:var(--oksoft);color:var(--ok)}.sx.warn{background:var(--warnsoft);color:var(--warn)}.sx.bad{background:var(--badsoft);color:var(--bad)}
 @media (max-width:960px){.cl-g{grid-template-columns:1fr}.cl-side{position:static;order:2}.cl-act{margin-left:0;width:100%}.cl-act .btn{flex:1;justify-content:center}}
+
+.cp-bar{height:8px;background:#F3EEE9;border-radius:99px;overflow:hidden}.cp-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.rn-up{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.rn-up button{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);border-radius:14px;padding:12px}.rn-up button:hover{border-color:var(--c);background:var(--soft)}
+.rn-up span{font-size:12px;color:var(--ink3);font-weight:700}.rn-up b{font-size:20px;letter-spacing:-.4px}.rn-up small{font-size:12px;color:var(--ink2)}
+@media (max-width:700px){.rn-up{grid-template-columns:1fr}}
 /* vendas v2 */
 .vd-hd{margin-bottom:6px}.vd-hd .btn svg{width:15px;height:15px;margin-right:4px;vertical-align:-3px}
 .utabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto;scrollbar-width:none}.utabs::-webkit-scrollbar{display:none}
@@ -587,7 +592,7 @@ td>.sure,tr+.sure{margin:4px}
  .ls-t{display:none}.ls-cards{display:flex}.ls-top .seg{width:100%;display:flex;overflow-x:auto}.ls-top .seg button{white-space:nowrap}.ls-sum{margin-left:0}
  .sm-act{position:sticky;bottom:0;background:#FBF8F5;padding:10px 0 4px;margin:0 -16px -16px;padding:12px 16px;border-top:1px solid var(--line);border-radius:0 0 16px 16px}
  .fm-hd h2{font-size:19px}}
-.ks{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800}.ks.kp{background:#EEF1F4;color:var(--ink2)}.ks.kc{background:var(--oksoft);color:var(--ok)}.ks.ki{background:var(--warnsoft);color:var(--warn)}
+.ks{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;flex:none;white-space:nowrap;align-self:center}.ks.kp{background:#EEF1F4;color:var(--ink2)}.ks.kc{background:var(--oksoft);color:var(--ok)}.ks.ki{background:var(--warnsoft);color:var(--warn)}
 .pn-kv .pn-own .hint{font-size:12.5px}.pn-or{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn-tr{background:#F2F6FC}.pn-tr p{font-size:13px;color:var(--ink);line-height:1.4}
 .side .nav .nb{margin-left:auto;background:var(--c);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 6px}
@@ -686,7 +691,7 @@ td>.sure,tr+.sure{margin:4px}
 .aempty b{font-size:16px}.aempty p{color:var(--ink2);font-size:13.5px;margin-top:4px;max-width:560px}
 .grp{margin-bottom:6px}.grp .gh{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}.grp .gh .ico{width:28px;height:28px;border-radius:8px}.grp .gh .ico svg{width:15px;height:15px}.grp .gh b{font-size:14px}
 .gtag{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px 3px 7px}.gtag svg{width:13px;height:13px}
-.gtag.g1{background:#E6EEF8;color:#2F6FB5}.gtag.g2{background:var(--oksoft);color:var(--ok)}.gtag.g3{background:var(--warnsoft);color:var(--warn)}
+.gtag.g4,.ico.g4{background:#F1EAFB;color:#7A4FB8}.gtag.g4 svg,.ico.g4 svg{width:14px;height:14px}.gtag.g1{background:#E6EEF8;color:#2F6FB5}.gtag.g2{background:var(--oksoft);color:var(--ok)}.gtag.g3{background:var(--warnsoft);color:var(--warn)}
 .rc2{border-style:dashed;border-color:#E6D6CA}.rc2 b{font-size:14.5px}.rc2 p{font-size:12.5px;color:var(--ink2);margin-top:-6px}.rc2 .gtag+b{margin-top:-2px}
 .btn.add{margin-top:auto;justify-content:center;background:var(--tint);border-color:var(--soft);color:var(--c2)}.btn.add:hover{background:var(--c);border-color:var(--c);color:#fff}
 .note.warnb{border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)}
@@ -841,7 +846,11 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Catálogo de produtos e serviços','vendas',()=>{VD.tab='produtos';return go('vendas')}],
   ['Quem vence nos próximos 15 dias','clientes',()=>{CL.rules=[{field:'expires_in',op:'is',value:15}];CL.seg=null;return go('clientes')}],
   ['Quem venceu e não renovou','clientes',()=>{CL.rules=[{field:'expired_within',op:'is',value:30}];CL.seg=null;return go('clientes')}],
-  ['Montar segmento de clientes','clientes',()=>go('clientes')],
+  ['Montar segmento de clientes','clientes',()=>{CL.tab='seg';return go('clientes')}],
+  ['Funil de pós-venda (renovações)','funil',()=>{FN.pipe='posvenda';return go('funil')}],
+  ['Minha lista de pós-venda','funil',()=>{FN.pipe='posvenda';FN.pf='mine';return go('funil')}],
+  ['Campanhas no WhatsApp','clientes',()=>{CL.tab='camp';return go('clientes')},m],
+  ['Relatório de renovação e upsell','clientes',()=>{CL.tab='ren';return go('clientes')},m],
   ['Agendar horário','agenda',()=>go('agenda').then(()=>bookModal({},()=>VIEWS.agenda()))],
   ['Conversas esperando resposta','conversas',()=>{CV.filter='waiting';CV.open=null;return go('conversas')}],
   ['Ver clientes (já compraram)','conversas',()=>{CV.kind='cliente';CV.origin='';CV.open=null;CV.filter='all';return go('conversas')}],
@@ -911,6 +920,8 @@ function pathFor(v){
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
   if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
   if(v==='vendas'&&VD.tab!=='relatorio')p+='/'+VD.tab;
+  if(v==='clientes'&&CL.tab&&CL.tab!=='seg')p+='/'+({camp:'campanhas',ren:'renovacao'}[CL.tab]);
+  if(v==='funil'&&FN.pipe==='posvenda')p+='/pos-venda';
   return p}
 function readPath(){
   const parts=location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
@@ -921,6 +932,8 @@ function readPath(){
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
   if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens'].includes(parts[1])?parts[1]:'relatorio';
+  if(v==='clientes')CL.tab={campanhas:'camp',renovacao:'ren'}[parts[1]]||'seg';
+  if(v==='funil')FN.pipe=parts[1]==='pos-venda'?'posvenda':'vendas';
   return VIEWS[v]?v:'inicio'}
 function syncUrl(replace){
   if(!ME)return;const p=pathFor(VIEW);
@@ -1444,7 +1457,7 @@ async function contactDrawer(id,after){
     const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,opt_out:!!f.opt_out,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
     try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
 }
-let FN={f:'all',q:'',showLost:false,data:null,sum:null};
+let FN={f:'all',q:'',showLost:false,data:null,sum:null,pipe:'vendas'};
 let AU={tab:'lista'},RP={days:30};
 const svg=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const IC={clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),check:svg('<path d="M20 6 9 17l-5-5"/>'),back:svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
@@ -1455,29 +1468,36 @@ const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':
 function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
   return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
     before_appt:`${t} antes do horário marcado`,appt_no_show:`${t} depois de uma falta`,appt_done:`${t} depois do atendimento`}[a.trigger]||a.trigger}
-const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',data:'dia do horário',hora:'hora do horário'};
+const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',data:'dia do horário',hora:'hora do horário',produto:'item da carteira',vencimento:'data de vencimento',cupom:'cupom individual'};
 const hlv=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>`<b style="color:var(--c2)" title="${VARS_TXT[k]||''}">${VARS_TXT[k]?'['+VARS_TXT[k]+']':m}</b>`);
 function varChips(ta){return `<div class="vars">${Object.entries(VARS_TXT).map(([k,v])=>`<button type="button" data-var="${k}" title="${v}">{${k}}</button>`).join('')}</div>`}
 function bindVars(o,ta){o.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.var+'}';const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length})}
-function autoModal(a,d,tpls){
+async function autoModal(a,d,tpls){
   const x=a||{trigger:'no_reply',hours:24,message:'Oi, {primeiro_nome}! ',active:true};
+  const [aps,apr]=await Promise.all([api('/products').catch(()=>[]),api('/promos').catch(()=>({items:[]}))]);
   const days=x.hours>=24&&x.hours%24===0;
   const o=overlay(`<form class="modal" id="amF"><div class="row"><h2 style="font-size:20px">${a?'Editar automação':'Nova automação'}</h2><button type="button" class="x">×</button></div>
    <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name||'')}" placeholder="Ex.: Retomar orçamento"></div>
    <div class="field"><label>Quando enviar</label><select name="trigger">${Object.entries(d.triggers).map(([k,v])=>`<option value="${k}" ${x.trigger===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div class="field hide" id="amPr"><label>Só para este item <span class="hint">(opcional)</span></label><select name="product_id"><option value="">Qualquer item</option>${aps.filter(p=>p.active).map(p=>`<option value="${p.id}" ${x.product_id===p.id?'selected':''}>${esc(p.name)}${p.duration_days?'':' (sem validade)'}</option>`).join('')}</select></div>
    <div class="form2"><div class="field"><label id="amHL">Quanto tempo</label><div class="row" style="flex-wrap:nowrap"><input name="n" type="number" min="0" step="0.5" value="${days?x.hours/24:x.hours}" style="max-width:110px"><select name="unit"><option value="h" ${days?'':'selected'}>horas</option><option value="d" ${days?'selected':''}>dias</option></select></div></div>
     <div class="field" id="amSt"><label>Etapa</label><select name="stage_id"><option value="">Qualquer etapa em andamento</option>${d.stages.map(s=>`<option value="${s.id}" ${x.stage_id===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
    <div class="field"><label>Mensagem</label><textarea name="message" rows="4" required minlength="5" maxlength="1000">${esc(x.message||'')}</textarea>${varChips()}<span class="hint">Clique numa variável para inserir. Para virar modelo da Meta, a mensagem não pode começar nem terminar com variável.</span></div>
+   <label class="ckl"><input type="checkbox" name="cpOn" ${x.coupon_promo_id?'checked':''}> Gerar um cupom individual para cada envio ({cupom})</label>
+   <div class="row pf-v ${x.coupon_promo_id?'':'hide'}" id="amCp">da promoção <select name="coupon_promo_id" style="border:1px solid #DCD2C9;border-radius:10px;padding:7px 9px;font:inherit">${(apr.items||[]).map(p=>`<option value="${p.id}" ${x.coupon_promo_id===p.id?'selected':''}>${esc(p.name)}</option>`).join('')||'<option value="">Crie uma promoção antes</option>'}</select></div>
    <div class="form2"><div class="field"><label>Depois de enviar, mover para</label><select name="move_to"><option value="">Não mover</option>${d.stages.map(s=>`<option value="${s.id}" ${x.move_to===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
     <div class="field"><label>Modelo para depois de 24 h</label><select name="template_id"><option value="">Nenhum</option>${tpls.filter(t=>t.status!=='REJECTED').map(t=>`<option value="${t.id}" ${x.template_id===t.id?'selected':''}>${esc(t.label)} (${esc(t.label_status)})</option>`).join('')}</select></div></div>
    <div class="row"><button class="btn p">Salvar</button><span class="err" id="amE"></span></div></form>`,true);
   const f=o.querySelector('#amF');bindVars(o,f.message);
   const sync=()=>{const t=f.trigger.value;o.querySelector('#amSt').classList.toggle('hide',!['stage_enter','no_reply'].includes(t));
     f.stage_id.options[0].textContent=t==='stage_enter'?'Escolha a etapa':'Qualquer etapa em andamento';
-    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois'}[t]};
+    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois',before_expiry:'Quanto tempo antes de vencer',after_expiry:'Quanto tempo depois de vencer',after_purchase:'Quanto tempo depois da compra'}[t];
+    o.querySelector('#amPr').classList.toggle('hide',!['before_expiry','after_expiry','after_purchase'].includes(t))};
+  f.cpOn.onchange=()=>o.querySelector('#amCp').classList.toggle('hide',!f.cpOn.checked);
   f.trigger.onchange=sync;sync();
   f.onsubmit=async ev=>{ev.preventDefault();const n=Number(f.n.value);
-    const body={name:f.name.value,trigger:f.trigger.value,hours:f.unit.value==='d'?n*24:n,stage_id:['stage_enter','no_reply'].includes(f.trigger.value)?(f.stage_id.value||null):null,message:f.message.value,move_to:f.move_to.value||null,template_id:f.template_id.value||null};
+    const body={name:f.name.value,trigger:f.trigger.value,hours:f.unit.value==='d'?n*24:n,stage_id:['stage_enter','no_reply'].includes(f.trigger.value)?(f.stage_id.value||null):null,message:f.message.value,move_to:f.move_to.value||null,template_id:f.template_id.value||null,
+      product_id:['before_expiry','after_expiry','after_purchase'].includes(f.trigger.value)?(f.product_id.value||null):null,coupon_promo_id:f.cpOn.checked?(f.coupon_promo_id.value||null):null};
     try{if(a)await api('/automations/'+a.id,{method:'PATCH',body});else await api('/automations',{method:'POST',body});o.remove();toast('Automação salva.');VIEWS.automacoes()}catch(e){o.querySelector('#amE').textContent=e.message}};
 }
 function drawTpls(tpls){
@@ -1997,7 +2017,7 @@ async function couponsModal(p){
 }
 
 /* clientes: carteira e segmentos */
-const CL={rules:[],seg:null,data:null,t:null,n:0};
+const CL={rules:[],seg:null,data:null,t:null,n:0,tab:'seg'};
 const CLF=[['product','Tem / já teve um item'],['category','Tem / já teve uma categoria'],['expires_in','Vence nos próximos dias'],['expired_within','Venceu e não renovou'],
   ['last_purchase','Última compra'],['purchases','Número de compras'],['spent','Total gasto'],['kind','Situação'],['origin','Origem'],['stage','Etapa do funil'],
   ['tag','Etiqueta'],['team','Equipe'],['owner','Responsável'],['promo','Usou promoção'],['created','Chegou há']];
@@ -2010,10 +2030,12 @@ function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).lengt
     ['Sem comprar há 90 dias','Clientes para reativar',[{field:'kind',op:'is',value:'cliente'},{field:'last_purchase',op:'more',value:90}]],['Melhores clientes','Gastaram R$ 1.000 ou mais',[{field:'spent',op:'gte',value:1000}]],
     ['Compraram só uma vez','Bom público para a segunda compra',[{field:'kind',op:'is',value:'cliente'},{field:'purchases',op:'lte',value:1}]],['Prospects parados','Chegaram há mais de 7 dias e não compraram',[{field:'kind',op:'is',value:'prospect'},{field:'created',op:'more',value:7}]]);return t}
 async function clView(){
+  if(CL.tab==='camp'&&isMgr())return clCamps();
+  if(CL.tab==='ren'&&isMgr())return clRen();
   const [ps,org,st,tms,team,pr,segs]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[])]);
   const D=CL.data={products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
   const tpl=clTemplates(D);
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Clientes</h1><p class="sub">Monte públicos da sua base: quem tem o quê, quem vai vencer e quem pode comprar mais.</p></div></div>
+  $('#page').innerHTML=clHead()+`
    <div class="cl-g"><aside class="cl-side">
      <div class="cl-box"><h3>Seus segmentos</h3>${segs.length?segs.map(x=>`<div class="cl-seg ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}"><b>${esc(x.name)}</b><span>${x.count??'—'}</span></button><button class="sm-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}">×</button></div>`).join(''):'<p class="hint">Nenhum salvo ainda. Monte um ao lado e salve.</p>'}</div>
      <div class="cl-box"><h3>Modelos prontos</h3>${tpl.map((x,i)=>`<button class="cl-tp" data-tp="${i}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></button>`).join('')}</div>
@@ -2022,6 +2044,7 @@ async function clView(){
       <div id="clR" class="cl-rules"></div>
       <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">Adicionar condição</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
      <div id="clRes"></div></section></div>`;
+  clTabs();
   document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>{CL.rules=JSON.parse(JSON.stringify(tpl[+b.dataset.tp][2]));CL.seg=null;clView()});
   document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>{const x=segs.find(y=>y.id===b.dataset.sg);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()});
   document.querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este segmento? Os clientes não são afetados.'))return;await api('/segments/'+b.dataset.sd,{method:'DELETE'});if(CL.seg===b.dataset.sd)CL.seg=null;clView()});
@@ -2059,7 +2082,7 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;box.
   let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;
   const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr();
   box.innerHTML=`<div class="cl-sum"><div><b>${num(r.count)}</b> ${r.count===1?'cliente':'clientes'}${r.spent?` · ${brl(r.spent)} já gastos`:''}<span class="hint"> · ${num(r.reachable)} podem receber mensagem</span></div>
-     <div class="cl-act"><button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button>':''}<button class="btn sm p" id="clSave">${CL.seg?'Salvar alterações':'Salvar segmento'}</button></div></div>
+     <div class="cl-act"><button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button><button class="btn sm" id="clOpp">Criar oportunidades</button><button class="btn sm" id="clCamp">Enviar campanha</button>':''}<button class="btn sm p" id="clSave">${CL.seg?'Salvar alterações':'Salvar segmento'}</button></div></div>
    ${r.items.length?`<div class="vd-c ls-t"><table class="vtb"><thead><tr><th>Cliente</th><th>Tem</th><th>Próximo vencimento</th><th class="n">Compras</th><th class="n">Gasto</th><th>Responsável</th></tr></thead><tbody>
      ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><b>${esc(c.name)}</b>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}<small>${esc(fmtPhone(c.wa_id))}</small></td>
        <td>${c.has.map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td>${c.next_expiry?fmtD(ymd(new Date(c.next_expiry))):'<span class="hint">—</span>'}</td>
@@ -2073,8 +2096,126 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;box.
     try{const x=await api(cur?'/segments/'+cur.id:'/segments',{method:cur?'PUT':'POST',body:{name,rules:CL.rules}});CL.seg=x.id;toast('Segmento salvo.');clView()}catch(e){toast(e.message)}};
   $('#clTag').onclick=async()=>{const tag=await sure(`Colocar uma etiqueta nos ${num(r.count)} clientes deste público:`,{input:true,placeholder:'Ex.: renovacao-nov',ok:'Etiquetar',el:$('#clTag')});if(!tag)return;
     try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} clientes.`)}catch(e){toast(e.message)}};
+  if($('#clOpp'))$('#clOpp').onclick=()=>{if(!r.count)return toast('Ninguém neste público.');oppForm(CL.rules,r.count)};
+  if($('#clCamp'))$('#clCamp').onclick=()=>{if(!r.reachable)return toast('Ninguém neste público pode receber mensagem.');campForm(CL.rules,r.count)};
   if($('#clExp'))$('#clExp').onclick=async()=>{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
     const a=document.createElement('a');a.href=URL.createObjectURL(await res.blob());a.download='clientes.csv';a.click()};
+}
+
+/* pós-venda, campanhas e renovação */
+const OPK={renovacao:['Renovação','kc'],upsell:['Próximo produto','kp'],reativacao:['Reativação','ki']};
+function clHead(){const mgr=isMgr();const tabs=[['seg','Segmentos'],...(mgr?[['camp','Campanhas'],['ren','Renovação e upsell']]:[])];
+  return `<div class="fhd"><div><h1>Clientes</h1><p class="sub">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div></div>
+   <nav class="utabs">${tabs.map(t=>`<button class="${(CL.tab||'seg')===t[0]?'on':''}" data-clt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
+function clTabs(){document.querySelectorAll('[data-clt]').forEach(b=>b.onclick=()=>{CL.tab=b.dataset.clt;syncUrl();clView()})}
+async function oppForm(rules,count){
+  const [ps,tms,team]=await Promise.all([api('/products'),api('/teams').catch(()=>[]),api('/team')]);
+  const o=overlay(`<form class="modal" id="opF"><div class="fm-hd"><h2>Criar oportunidades no pós-venda</h2><button type="button" class="x">×</button></div>
+   <p class="hint" style="margin:0">Cada um dos <b>${num(count)}</b> clientes deste público vira um card na coluna "A contatar" do funil de pós-venda. Quem já tem um card aberto igual não é duplicado.</p>
+   <div class="field"><label>Tipo</label><div class="opt-g" style="grid-template-columns:repeat(3,1fr)">${Object.entries(OPK).map(([k,v],i)=>`<button type="button" class="opt ${i===0?'on':''}" data-ok="${k}"><b>${v[0]}</b><span>${{renovacao:'Vai vencer ou venceu',upsell:'Oferecer o próximo item',reativacao:'Parou de comprar'}[k]}</span></button>`).join('')}</div></div>
+   <div class="field"><label>Item <span class="hint">(opcional)</span></label><select name="product"><option value="">${'O que vence primeiro / qualquer'}</option>${ps.filter(p=>p.active).map(p=>`<option value="${p.id}">${esc(p.name)}${p.price!=null?' · '+brl(p.price):''}</option>`).join('')}</select></div>
+   <div class="field"><label>Quem vai atender</label><select name="assign"><option value="owner">O responsável atual de cada cliente</option>${tms.length?'<option value="team">Uma equipe (rodízio)</option>':''}<option value="user">Uma pessoa</option><option value="none">Ninguém ainda (fila)</option></select></div>
+   <div class="field hide" id="opT"><label>Equipe</label><select name="team">${tms.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</select></div>
+   <div class="field hide" id="opU"><label>Pessoa</label><select name="user">${team.filter(u=>u.active).map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select></div>
+   <div class="field"><label>Recado para o time <span class="hint">(opcional)</span></label><input name="note" maxlength="300" placeholder="Ex.: oferecer 10% na renovação anual até sexta"></div>
+   <div class="row"><button class="btn p">Criar ${num(count)} ${count===1?'oportunidade':'oportunidades'}</button><span class="err" id="opE"></span></div></form>`);
+  const f=o.querySelector('#opF');let kind='renovacao';
+  o.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>{kind=b.dataset.ok;o.querySelectorAll('[data-ok]').forEach(y=>y.classList.toggle('on',y===b))});
+  f.assign.onchange=()=>{$('#opT').classList.toggle('hide',f.assign.value!=='team');$('#opU').classList.toggle('hide',f.assign.value!=='user')};
+  f.onsubmit=async ev=>{ev.preventDefault();try{const r=await api('/opps/bulk',{method:'POST',body:{rules,kind,product_id:f.product.value||null,assign:f.assign.value,team_id:f.team?f.team.value:null,user_id:f.user.value,note:f.note.value}});
+    o.remove();toast(`${r.created} ${r.created===1?'oportunidade criada':'oportunidades criadas'}${r.skipped?` · ${r.skipped} já tinham`:''}.`);FN.pipe='posvenda';go('funil')}catch(e){$('#opE').textContent=e.message}};
+}
+async function campForm(rules,count){
+  const [tpls,pr]=await Promise.all([api('/templates').catch(()=>[]),api('/promos').catch(()=>({items:[]}))]);const ok=tpls.filter(t=>t.status==='APPROVED');
+  const o=overlay(`<form class="modal sm2" id="caF"><div class="fm-hd"><h2>Campanha no WhatsApp</h2><button type="button" class="x">×</button></div>
+   <div class="sm-grid"><div class="sm-main">
+    <div class="field"><label>Nome da campanha</label><input name="name" required minlength="2" maxlength="60" placeholder="Ex.: Renovação de novembro"></div>
+    <div class="field"><label>Mensagem (modelo aprovado pela Meta)</label>${ok.length?`<select name="tpl">${ok.map(t=>`<option value="${t.id}">${esc(t.label)} · ${t.category==='UTILITY'?'utilidade':'marketing'}</option>`).join('')}</select>`
+      :`<p class="note warnb" style="margin:0">Nenhum modelo aprovado ainda. Campanhas para quem não falou nas últimas 24 h precisam de modelo. <button type="button" class="lnk" id="caMk">Criar modelo</button></p>`}
+     <span class="hint">Use {primeiro_nome}, {produto}, {vencimento} e {cupom} no modelo para personalizar.</span></div>
+    <div class="wab" id="caPv" style="max-width:420px"></div>
+    <label class="ckl"><input type="checkbox" name="cp"> Gerar um cupom individual para cada pessoa ({cupom})</label>
+    <div class="row pf-v hide" id="caCp">Promoção <select name="promo" style="border:1px solid #DCD2C9;border-radius:10px;padding:7px 9px;font:inherit">${(pr.items||[]).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select> válido por <input type="number" name="days" min="1" max="180" value="15"> dias</div>
+   </div><aside class="sm-side"><div class="sm-sticky"><h3>Quem recebe</h3><div id="caSum"><span class="hint">Calculando...</span></div>
+    <p class="hint">Envia aos poucos (cerca de 30 por minuto), só das 8h às 21h, e nunca para quem pediu para não receber.</p>
+    <div class="sm-act"><button class="btn p" ${ok.length?'':'disabled'}>Enviar campanha</button><span class="err" id="caE"></span></div></div></aside></div></form>`);
+  const f=o.querySelector('#caF');let pv=null;
+  if($('#caMk'))$('#caMk').onclick=()=>{o.remove();AU.tab='modelos';go('automacoes')};
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',servico:'',data:'',hora:''};
+  const draw=async()=>{if(!ok.length){$('#caSum').innerHTML=`<b style="font-size:22px">${num(count)}</b> no público`;return}const t=ok.find(x=>x.id===f.tpl.value);
+    $('#caPv').innerHTML=`<span class="wl">Como chega</span>${esc(t.body).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b>${esc(sample[k])}</b>`:m)}<small>09:00 ✓✓</small>`;
+    try{pv=await api('/campaigns/preview',{method:'POST',body:{rules,template_id:t.id}})}catch(e){$('#caSum').textContent=e.message;return}
+    if(pv.needs_coupon){f.cp.checked=true;$('#caCp').classList.remove('hide')}
+    $('#caSum').innerHTML=`<div class="sm-sum" style="background:#fff;flex-direction:column;align-items:stretch"><div class="sm-tt" style="margin:0;justify-content:space-between"><span>Vão receber</span><b>${num(pv.reachable)}</b></div>
+      <div class="sm-br">${pv.opt_out?`<span>Pediram para não receber <b>${pv.opt_out}</b></span>`:''}<span>Tempo para enviar <b>~${pv.minutes} min</b></span><span>Custo estimado na Meta <b>${brl2(pv.cost)}</b></span></div></div>`};
+  if(ok.length){f.tpl.onchange=draw}draw();
+  f.cp.onchange=()=>$('#caCp').classList.toggle('hide',!f.cp.checked);
+  f.onsubmit=async ev=>{ev.preventDefault();$('#caE').textContent='';if(!pv)return;
+    if(!await sure(`Enviar para ${num(pv.reachable)} pessoas? Depois de começar, dá para parar, mas não desfazer o que já saiu.`,{ok:'Enviar agora',el:o.querySelector('.sm-act .btn.p')}))return;
+    try{await api('/campaigns',{method:'POST',body:{name:f.name.value,rules,template_id:f.tpl.value,coupon_promo_id:f.cp.checked?f.promo.value:null,coupon_days:Number(f.days.value)||15,segment_id:CL.seg}});
+      o.remove();toast('Campanha começou a ser enviada.');CL.tab='camp';syncUrl();clView()}catch(e){$('#caE').textContent=e.message}};
+}
+async function clCamps(){
+  $('#page').innerHTML=clHead()+'<div id="caL"><div class="empty">Carregando...</div></div>';clTabs();
+  const cs=await api('/campaigns');const st={sending:['enviando','warn'],done:['concluída','ok'],stopped:['parada','grey'],paused:['pausada','bad']};
+  $('#caL').innerHTML=cs.length?`<div class="agrid">${cs.map(c=>{const p=c.total?Math.round(100*(c.sent+c.errors+c.skipped)/c.total):0;return `<div class="pr-c"><div class="hd"><b>${esc(c.name)}</b><span class="pill ${st[c.status][1]}">${st[c.status][0]}</span></div>
+     <p class="rl hint" style="margin:0">${esc(c.template)} · ${dt(c.created_at)} · por ${esc(c.by)}${c.paused_reason?' · '+esc(c.paused_reason):''}</p>
+     <div class="cp-bar"><i style="width:${p}%"></i></div><span class="hint">${c.sent} de ${c.total} enviadas${c.errors?` · ${c.errors} com erro`:''}${c.queued?` · ${c.queued} na fila`:''}</span>
+     <div class="nums"><div><b>${c.sent}</b><span>entregues</span></div><div><b>${c.replied}</b><span>responderam</span></div><div><b>${c.bought}</b><span>compraram</span></div><div><b>${brl(c.revenue)}</b><span>faturado</span></div></div>
+     ${c.status==='sending'?`<div class="bt"><button class="btn sm danger" data-cst="${c.id}">Parar</button></div>`:''}</div>`}).join('')}</div>`
+   :'<div class="aempty"><div><b>Nenhuma campanha ainda</b><p>Monte um público em Segmentos (ex.: "Vence nos próximos 15 dias") e clique em "Enviar campanha".</p></div></div>';
+  document.querySelectorAll('[data-cst]').forEach(b=>b.onclick=async()=>{if(!await sure('Parar esta campanha? Quem ainda não recebeu fica sem receber.'))return;await api('/campaigns/'+b.dataset.cst+'/stop',{method:'POST'});clCamps()});
+  if(cs.some(c=>c.status==='sending')){clearTimeout(CL.ct);CL.ct=setTimeout(()=>{if(VIEW==='clientes'&&CL.tab==='camp'&&!document.querySelector('.ov'))clCamps()},15000)}
+}
+async function clRen(){
+  CL.rp=CL.rp||'90d';
+  $('#page').innerHTML=clHead()+`<div class="ls-top"><label class="fb-sel">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<select id="rnP">${[['30d','Últimos 30 dias'],['90d','Últimos 90 dias'],['ano','Este ano']].map(p=>`<option value="${p[0]}" ${CL.rp===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></label></div><div id="rnB"><div class="empty">Carregando...</div></div>`;clTabs();
+  $('#rnP').onchange=e=>{CL.rp=e.target.value;clRen()};
+  const [s,e]=vdRange({preset:CL.rp==='ano'?'ano':CL.rp});const r=await api(`/reports/retention?start=${s}&end=${e}`);
+  const kpi=(l,v,sub)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s"><span>${sub||''}</span></div></div>`;
+  const U=r.upcoming;
+  $('#rnB').innerHTML=`<div class="kpis">${kpi('Venceram no período',num(r.due),'itens com validade')}${kpi('Renovaram',r.rate!=null?String(r.rate).replace('.',',')+'%':'—',`${r.renewed} de ${r.due}`)}${kpi('Deixaram de renovar',brl(r.lost_value),'valor da última compra')}${kpi('Pós-venda',`${r.opps_won}`,`fechadas no período · ${brl(r.opps_won_value)} · ${r.opps_open} abertas`)}</div>
+   <div class="vd-g"><div class="vd-c"><div class="hd"><h3>A vencer</h3><span class="hint">o que está em risco se ninguém agir</span></div>
+     <div class="rn-up">${[['30','30 dias'],['60','60 dias'],['90','90 dias']].map(([k,l])=>`<button data-up="${k}"><span>Próximos ${l}</span><b>${brl(U[k].value)}</b><small>${U[k].count} ${U[k].count===1?'item':'itens'}</small></button>`).join('')}</div>
+     <p class="hint" style="margin-top:8px">Clique para ver quem é e agir: campanha, oportunidade ou mensagem.</p></div>
+    <div class="vd-c"><div class="hd"><h3>Renovação por item</h3></div>${r.by_product.length?`<table class="vtb"><thead><tr><th>Item</th><th class="n">Venceram</th><th class="n">Renovaram</th><th class="n">Perdido</th></tr></thead><tbody>${r.by_product.map(b=>`<tr><td>${esc(b.name)}</td><td class="n">${b.due}</td><td class="n"><b>${b.rate!=null?String(b.rate).replace('.',',')+'%':'—'}</b></td><td class="n">${brl(b.lost_value)}</td></tr>`).join('')}</tbody></table>`:'<p class="hint">Nenhum item com validade venceu no período. Coloque validade nos itens do catálogo para acompanhar.</p>'}</div></div>
+   <div class="vd-c"><div class="hd"><h3>Próximo produto (upsell)</h3><span class="hint">de quem comprou um item, quantos compraram o seguinte</span></div>
+    ${r.upsell.length?`<table class="vtb"><thead><tr><th>Comprou</th><th>Próximo</th><th class="n">Clientes</th><th class="n">Compraram o próximo</th><th></th></tr></thead><tbody>${r.upsell.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.next)}</td><td class="n">${u.buyers}</td><td class="n"><b>${String(u.rate).replace('.',',')}%</b> <span class="hint">(${u.converted})</span></td><td class="n"><button class="lnk" data-us="${esc(u.name)}">ver quem falta</button></td></tr>`).join('')}</tbody></table>`
+     :'<p class="hint">Diga no catálogo o que oferecer depois de cada item ("Depois de comprar este, oferecer") para medir o upsell.</p>'}</div>`;
+  document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{CL.rules=[{field:'expires_in',op:'is',value:Number(b.dataset.up)}];CL.seg=null;CL.tab='seg';syncUrl();clView()});
+  document.querySelectorAll('[data-us]').forEach(b=>b.onclick=async()=>{const ps=await api('/products');const p=ps.find(x=>x.name===b.dataset.us);if(!p||!(p.next_ids||[]).length)return;
+    CL.rules=[{field:'product',op:'ever',value:p.id},{field:'product',op:'never',value:p.next_ids[0]}];CL.seg=null;CL.tab='seg';syncUrl();clView()});
+}
+/* funil de pós-venda */
+async function fnPost(){
+  const mgr=isMgr();FN.pf=FN.pf||'all';
+  const d=await api('/opps'+(FN.pf==='mine'?'?mine=1':''));FN.pd=d;
+  const its=d.items.filter(o=>FN.pk?o.kind===FN.pk:true);
+  const due=o=>{if(!o.due_at)return '';const n=Math.round((new Date(o.due_at)-Date.now())/864e5);return n<0?`venceu há ${-n} d`:n===0?'vence hoje':`vence em ${n} d`};
+  $('#fnSum').innerHTML=`<div class="s"><b>${d.totals.todo?.count||0}</b>a contatar</div><div class="s"><b>${d.totals.talking?.count||0}</b>em conversa</div><div class="s ok"><b>${d.totals.won?.count||0}${d.totals.won?.value?' · '+brl(d.totals.won.value):''}</b>renovaram / compraram</div><div class="s"><b>${d.totals.lost?.count||0}</b>não quiseram</div>`;
+  $('#fnBar').innerHTML=`${[['all','Todos'],['mine','Minha lista']].map(f=>`<button class="chip ${FN.pf===f[0]?'on':''}" data-pf="${f[0]}">${f[1]}</button>`).join('')}<span class="hint" style="margin:0 4px">·</span>${[['','Todos os tipos'],...Object.entries(OPK).map(([k,v])=>[k,v[0]])].map(f=>`<button class="chip ${(FN.pk||'')===f[0]?'on':''}" data-pk="${f[0]}">${f[1]}</button>`).join('')}`;
+  document.querySelectorAll('[data-pf]').forEach(b=>b.onclick=()=>{FN.pf=b.dataset.pf;fnPost()});document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{FN.pk=b.dataset.pk;fnPost()});
+  $('#kb').innerHTML=d.stages.map((s,i)=>{const cs=its.filter(o=>o.stage_id===s.id);const col=s.kind==='won'?'#0A5C50':s.kind==='lost'?'#A7B1BB':STAGE_COLORS[i%STAGE_COLORS.length];
+    return `<div class="col ${s.kind}" style="--sc:${col}"><div class="ch"><b>${esc(s.name)}</b><span class="ct">${cs.length}</span></div><div class="cvl">${cs.reduce((a,o)=>a+(o.value||0),0)?brl(cs.reduce((a,o)=>a+(o.value||0),0)):'&nbsp;'}</div>
+     <div class="cards">${cs.map(o=>`<div class="kc" data-op="${o.id}" tabindex="0" role="button"><div class="tp"><span class="av">${initials(o.contact_name)}</span><span class="nm"><b>${esc(o.contact_name)}</b><small>${esc(o.product_name||'')}${o.due_at?' · '+due(o):''}</small></span></div>
+       <div class="ft"><span class="ks ${OPK[o.kind][1]}">${OPK[o.kind][0]}</span>${o.value?`<span class="money">${brl(o.value)}</span>`:''}${o.due_at&&new Date(o.due_at)<new Date()&&s.kind==='open'?'<span class="bd red">vencido</span>':''}<span class="own ${o.owner?'':'none'}" title="${o.owner?'Responsável: '+esc(o.owner):'Sem responsável'}">${o.owner?initials(o.owner):'?'}</span></div></div>`).join('')
+       ||`<div class="emp">${s.id==='todo'?(mgr?'Crie oportunidades a partir de um público em Clientes':'Nada na sua lista agora'):'—'}</div>`}</div></div>`}).join('');
+  $('#kb').querySelectorAll('[data-op]').forEach(c=>{const g=()=>oppDetail(d.items.find(o=>o.id===c.dataset.op));c.onclick=g;c.onkeydown=e=>{if(e.key==='Enter')g()}});
+}
+async function oppDetail(op){const d=FN.pd,mgr=isMgr();const team=mgr?await api('/team'):[];
+  const o=overlay(`<div class="modal"><div class="fm-hd"><h2>${esc(op.contact_name)}</h2><span class="ks ${OPK[op.kind][1]}">${OPK[op.kind][0]}</span><button class="x">×</button></div>
+   <p class="hint" style="margin:0">${op.product_name?esc(op.product_name)+(op.value?' · '+brl(op.value):''):'Sem item definido'}${op.due_at?' · vence/venceu em '+fmtD(ymd(new Date(op.due_at))):''} · criada por ${esc(op.by||'')} em ${dt(op.created_at)}</p>
+   <div class="field"><label>Etapa</label><div class="mvlist">${d.stages.map((s,i)=>`<button data-ts="${s.id}" class="${s.id===op.stage_id?'cur':''}" style="--sc:${s.kind==='won'?'#0A5C50':s.kind==='lost'?'#A7B1BB':STAGE_COLORS[i%STAGE_COLORS.length]}"><i></i>${esc(s.name)}</button>`).join('')}</div></div>
+   ${mgr?`<div class="field"><label>Responsável</label><select id="odA"><option value="">Ninguém (fila)</option>${team.filter(u=>u.active).map(u=>`<option value="${u.id}" ${u.id===op.assigned_to?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div>`:op.assigned_to?'':'<button class="btn sm" id="odMe">Pegar para mim</button>'}
+   <div class="field"><label>Anotação</label><textarea id="odN" rows="3" maxlength="500" placeholder="Ex.: pediu para falar depois do dia 10">${esc(op.note||'')}</textarea></div>
+   <div class="row"><button class="btn p" id="odC">Abrir conversa</button><button class="btn" id="odV">Registrar venda</button></div></div>`);
+  const save=async body=>{try{await api('/opps/'+op.id,{method:'PATCH',body});Object.assign(op,body)}catch(e){toast(e.message)}};
+  o.querySelectorAll('[data-ts]').forEach(b=>b.onclick=async()=>{await save({stage_id:b.dataset.ts});o.remove();toast('Card movido.');fnPost()});
+  if($('#odA'))$('#odA').onchange=e=>save(e.target.value?{assigned_to:e.target.value}:{unassign:true});
+  if($('#odMe'))$('#odMe').onclick=async()=>{await save({assigned_to:ME.user.id});o.remove();fnPost()};
+  $('#odN').onblur=e=>{if(e.target.value!==(op.note||''))save({note:e.target.value}).then(()=>toast('Anotação salva.'))};
+  $('#odC').onclick=()=>{o.remove();CV.open=op.contact_id;CV.filter='all';go('conversas')};
+  $('#odV').onclick=()=>{o.remove();saleModal({contact:{id:op.contact_id,name:op.contact_name},items:op.product_id?[{product_id:op.product_id,name:op.product_name,price:op.value}]:null,onDone:()=>fnPost()})};
 }
 
 /* origens e links */
@@ -2170,10 +2311,11 @@ const VIEWS={
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
   const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
   const cfgA=AG.cfg||await api('/agenda/settings').catch(()=>null);const tm=new Date();tm.setDate(tm.getDate()+1);
-  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00'};
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00',produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2'};
   const prev=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b title="${esc(VARS_TXT[k]||k)}">${esc(sample[k])}</b>`:m);
   const bubble=t=>`<div class="wab"><span class="wl">Como a cliente recebe</span>${prev(t)}<small>09:00 ✓✓</small></div>`;
-  const GRP={before_appt:['g1','Antes do horário','Lembretes que reduzem falta.',IC.clock],appt_no_show:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],appt_done:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],no_reply:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back],stage_enter:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back]};
+  const GRP={before_appt:['g1','Antes do horário','Lembretes que reduzem falta.',IC.clock],appt_no_show:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],appt_done:['g2','Depois do atendimento','Remarcar quem faltou e puxar o próximo passo.',IC.check],no_reply:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back],stage_enter:['g3','Retomar quem sumiu','Retomadas educadas para quem parou de responder.',IC.back],
+    before_expiry:['g4','Pós-venda e renovação','Renovar antes de vencer, chamar de volta quem deixou vencer e oferecer o próximo passo.',NI.vendas],after_expiry:['g4','Pós-venda e renovação','Renovar antes de vencer, chamar de volta quem deixou vencer e oferecer o próximo passo.',NI.vendas],after_purchase:['g4','Pós-venda e renovação','Renovar antes de vencer, chamar de volta quem deixou vencer e oferecer o próximo passo.',NI.vendas]};
   const tbadge=a=>{const t=T[a.template_id];
     if(t&&t.status==='APPROVED')return '<span class="pill ok">✓ envia a qualquer hora</span>';
     if(t&&t.status==='REJECTED')return `<span class="pill bad">modelo recusado</span><button class="lnk" data-ask="${a.id}">pedir de novo</button>`;
@@ -2275,8 +2417,17 @@ const VIEWS={
  },
  async funil(){
   const canManage=['owner','manager'].includes(ME.user.role);
+  if(FN.pipe==='posvenda'){
+   $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Renovações, próximo produto e reativação de quem já é cliente.</p></div>
+    <div class="tools">${canManage?'<button class="btn sm p" id="fnFromSeg">+ A partir de um público</button>':''}</div></div>
+    <nav class="utabs"><button data-pp="vendas">Vendas</button><button class="on" data-pp="posvenda">Pós-venda</button></nav>
+    <div class="fn-sum" id="fnSum"></div><div class="fn-bar" id="fnBar"></div><div class="kb" id="kb"></div>`;
+   document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{FN.pipe=b.dataset.pp;syncUrl();VIEWS.funil()});
+   if($('#fnFromSeg'))$('#fnFromSeg').onclick=()=>{CL.tab='seg';go('clientes')};
+   return fnPost()}
   $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Cada card é um cliente. Arraste entre as etapas ou use ⇄ para mover.</p></div>
     <div class="tools">${canManage?'<button class="btn sm" id="fnSt">Editar etapas</button>':''}<button class="btn sm p" id="fnNew">+ Contato</button></div></div>
+    <nav class="utabs"><button class="on" data-pp="vendas">Vendas</button><button data-pp="posvenda">Pós-venda</button></nav>
     <div class="fn-sum" id="fnSum"></div>
     <div class="fn-bar"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fnQ" placeholder="Buscar cliente, telefone ou etiqueta" value="${esc(FN.q)}"><button type="button" class="clr ${FN.q?'':'hide'}" id="fnX" aria-label="Limpar busca">×</button></label>
      ${[['all','Todos'],['mine','Meus'],['unassigned','Sem dono'],['waiting','Esperando resposta'],['stale','Parados']].map(f=>`<button class="chip ${FN.f===f[0]?'on':''}" data-ff="${f[0]}">${f[1]}</button>`).join('')}</div>
@@ -2285,6 +2436,7 @@ const VIEWS={
   $('#fnX').onclick=()=>{FN.q='';$('#fnQ').value='';$('#fnX').classList.add('hide');drawBoard(true);$('#fnQ').focus()};
   document.querySelectorAll('[data-ff]').forEach(b=>b.onclick=()=>{FN.f=b.dataset.ff;document.querySelectorAll('[data-ff]').forEach(x=>x.classList.toggle('on',x===b));drawBoard(true)});
   if($('#fnSt'))$('#fnSt').onclick=stagesEditor;$('#fnNew').onclick=()=>newContact();
+  document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{FN.pipe=b.dataset.pp;syncUrl();VIEWS.funil()});
   await drawBoard();
   POLL=setInterval(()=>{if(VIEW==='funil'&&!document.hidden&&!document.querySelector('.ov')&&!document.querySelector('.kc.drag'))drawBoard().catch(()=>{})},10000);
  },

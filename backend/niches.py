@@ -35,6 +35,18 @@ FOLLOWUP = [
       why='Última tentativa, sem pressionar.'),
 ]
 
+LIFECYCLE = [
+    R('renova_7d', 'Renovação: 7 dias antes de vencer', 'before_expiry', 168,
+      'Oi, {primeiro_nome}! Seu {produto} vence em {vencimento}. Quer que eu já deixe a renovação garantida para você não ficar sem?',
+      why='Lembra antes de vencer, quando é mais fácil renovar. Vale para itens com validade no catálogo.'),
+    R('volta_7d', 'Retomada: 7 dias depois de vencer', 'after_expiry', 168,
+      'Oi, {primeiro_nome}! Sentimos sua falta por aqui. Quer voltar com o {produto}? Posso te passar as condições de agora.',
+      why='Chama de volta quem deixou vencer e não renovou.'),
+    R('proximo_15d', 'Próximo passo: 15 dias depois da compra', 'after_purchase', 360,
+      'Oi, {primeiro_nome}! Como está sendo o {produto}? Se quiser ir para o próximo passo, me chama que eu te mostro as opções.',
+      why='Abre a porta para o próximo produto, depois que o cliente já sentiu o valor do primeiro.'),
+]
+
 NICHES = {
     'studio': {
         'label': 'Studio, academia ou box', 'short': 'Studio e academia',
@@ -160,7 +172,7 @@ ORDER = ['studio', 'clinica', 'salao', 'imobiliaria', 'escola', 'loja', 'servico
 def niche(segment): return NICHES.get(segment) or NICHES['outro']
 
 def recipes_for(segment):
-    return niche(segment)['recipes']
+    return niche(segment)['recipes'] + LIFECYCLE
 
 @router.get('/niches')
 async def niches():
