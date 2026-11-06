@@ -39,6 +39,10 @@ a{color:var(--c2)}
 .pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--soft);color:var(--c2)}
 .pill.ok{background:var(--oksoft);color:var(--ok)}.pill.warn{background:var(--warnsoft);color:var(--warn)}.pill.bad{background:var(--badsoft);color:var(--bad)}.pill.grey{background:#EEF1F4;color:var(--ink2)}
 /* auth */
+.tip{position:fixed;z-index:10000;max-width:260px;background:#17212B;color:#fff;font-size:12.5px;line-height:1.4;padding:7px 10px;border-radius:8px;pointer-events:none;opacity:0;transform:translateY(-2px);transition:opacity .12s,transform .12s;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}.tip.on{opacity:1;transform:none}
+.ii{display:inline-grid;place-items:center;width:15px;height:15px;padding:0;margin-left:3px;border:1.3px solid currentColor;border-radius:50%;background:none;color:var(--ink3);font:italic 700 10px/1 Georgia,serif;text-transform:none;letter-spacing:0;vertical-align:1px;cursor:pointer;opacity:.75}.ii:hover,.ii:focus-visible{opacity:1;color:var(--c)}
+.info-pop{position:fixed;z-index:10000;width:290px;max-width:calc(100vw - 16px);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px -18px rgba(23,33,43,.45);padding:13px 15px;font-size:13.5px;line-height:1.5;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:400}.info-pop .ip-t{font-weight:700;font-size:13.5px;margin-bottom:3px}.info-pop p b{color:var(--ink);font-weight:600}.info-pop p{margin:0;color:var(--ink2)}
+.mn-n button.on::after{content:none!important}.mn-n button small{display:block;font-weight:400;font-size:11.5px;color:var(--ink3);margin-top:1px;white-space:normal}
 .auth{min-height:100vh;display:grid;place-items:center;padding:24px}
 .auth .card{width:420px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:28px 28px 28px 8px;padding:32px;box-shadow:0 30px 60px -40px rgba(23,33,43,.4)}
 .pw{position:relative;display:block}.pw input{padding-right:46px}.pw .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:none;color:var(--ink2);border-radius:9px;display:grid;place-items:center;cursor:pointer}.pw .eye:hover{background:var(--soft);color:var(--ink)}.pw .eye svg{width:19px;height:19px}
@@ -1011,6 +1015,41 @@ async function api(path,opt={}){
 }
 let ME=null,VIEW='inicio';
 
+/* ---------- dicas: nome das ações (hover / segurar no celular) e "o que é isso?" (ⓘ) ---------- */
+const INFO={
+ situacao:['Situação','Em que ponto a pessoa está com o seu negócio. <b>Prospect</b>: ainda não comprou. <b>Cliente</b>: já comprou. <b>Cliente inativo</b>: comprou, mas faz tempo que não volta. Muda sozinha quando você registra uma venda.'],
+ previsto:['Previsto','Quanto essa venda deve render se fechar. Ex.: plano trimestral, R$ 450. Entra no valor do funil e ajuda a prever o mês.'],
+ origem:['Origem','Por onde a pessoa chegou: anúncio, Instagram, indicação, Google... Vem sozinha quando dá para saber (anúncio ou link rastreável), e você pode marcar à mão. É o que mostra, em Vendas › Retorno, qual canal traz cliente.'],
+ jornada:['Jornada','A linha do tempo da pessoa com os momentos que importam: entrou, fez a experimental, pediu orçamento, comprou. A Nanda sugere os marcos e o time confirma. Os marcos de cada etapa ficam em Configurar › Jornada.'],
+ horarios:['Próximos horários','Aulas, consultas ou visitas marcadas com essa pessoa. Também aparecem na Agenda.'],
+ etiquetas:['Etiquetas','Palavras curtas para separar clientes do seu jeito. Ex.: pilates, manhã, indicação. Servem para filtrar em Clientes e para montar segmentos.'],
+ anotacoes:['Anotações','O que o time precisa lembrar sobre a pessoa, sempre à vista aqui. Ex.: tem dor no joelho, prefere ser chamada à tarde. O cliente nunca vê.'],
+ janela:['Janela de 24 h','Regra da Meta: depois que o cliente manda mensagem, você tem 24 h para responder à vontade. Passou disso, só dá para chamar com um <b>modelo aprovado</b> pela Meta, e cada envio tem custo. Quando o cliente responde, a janela abre de novo.'],
+ janela_ig:['Prazo do Instagram','No Direct, a empresa só pode escrever depois que a pessoa chama. Até 24 h depois, qualquer um responde, inclusive a Nanda. De 24 h a 7 dias, só uma pessoa do time. Passou disso, é preciso esperar ela chamar de novo.'],
+};
+const MODE_DESC={auto:'Automática: a Nanda responde sozinha e chama o time quando precisa.',copilot:'Copiloto: a Nanda sugere a resposta e você decide se envia.',off:'Pausada: a Nanda não responde sozinha aqui. O time conduz.'};
+const MODE_SHORT={auto:'Responde sozinha e chama o time quando precisa.',copilot:'Sugere a resposta e você decide se envia.',off:'Não responde sozinha aqui. O time conduz.'};
+const ii=k=>`<button type="button" class="ii" data-info="${k}" aria-label="O que é ${INFO[k][0]}?">i</button>`;
+const TIP={el:null,t:null,cur:null,pop:null};
+function tipShow(t){const v=t.dataset.tip;if(!v||!document.body.contains(t))return;let el=TIP.el;if(!el){el=TIP.el=document.createElement('div');el.className='tip';el.setAttribute('role','tooltip');document.body.appendChild(el)}
+  el.textContent=v;el.classList.add('on');const r=t.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight;let top=r.bottom+8;if(top+h>innerHeight-8)top=r.top-h-8;
+  el.style.top=Math.max(8,top)+'px';el.style.left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8))+'px';TIP.cur=t}
+function tipHide(){clearTimeout(TIP.t);TIP.el&&TIP.el.classList.remove('on');TIP.cur=null}
+function tipTake(t){if(t.hasAttribute('title')){const v=t.getAttribute('title');t.removeAttribute('title');if(v){t.dataset.tip=v;if(!t.textContent.trim()&&!t.getAttribute('aria-label'))t.setAttribute('aria-label',v)}}return t.dataset.tip}
+document.addEventListener('mouseover',e=>{const t=e.target.closest&&e.target.closest('[title],[data-tip]');if(!t||t===TIP.cur||!tipTake(t))return;clearTimeout(TIP.t);TIP.t=setTimeout(()=>tipShow(t),TIP.el&&TIP.el.classList.contains('on')?0:350)});
+document.addEventListener('mouseout',e=>{const t=e.target.closest&&e.target.closest('[data-tip]');if(t&&!t.contains(e.relatedTarget))tipHide()});
+['mousedown','scroll','keydown'].forEach(ev=>document.addEventListener(ev,tipHide,true));
+let tipLp;document.addEventListener('touchstart',e=>{const t=e.target.closest&&e.target.closest('[title],[data-tip]');clearTimeout(tipLp);if(t&&tipTake(t))tipLp=setTimeout(()=>tipShow(t),450)},{passive:true});
+document.addEventListener('touchend',()=>{clearTimeout(tipLp);if(TIP.cur)setTimeout(tipHide,1800)},{passive:true});
+function infoClose(){TIP.pop&&TIP.pop.remove();TIP.pop=null}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-info]');
+  if(!b){if(TIP.pop&&!TIP.pop.contains(e.target))infoClose();return}
+  e.preventDefault();e.stopPropagation();const same=TIP.pop&&TIP.pop.dataset.k===b.dataset.info;infoClose();if(same)return;
+  const [t,txt]=INFO[b.dataset.info]||[];if(!t)return;const p=TIP.pop=document.createElement('div');p.className='info-pop';p.dataset.k=b.dataset.info;p.setAttribute('role','dialog');
+  p.innerHTML=`<div class="ip-t">${t}</div><p>${txt}</p>`;document.body.appendChild(p);const r=b.getBoundingClientRect(),w=p.offsetWidth,h=p.offsetHeight;let top=r.bottom+8;if(top+h>innerHeight-8)top=r.top-h-8;
+  p.style.top=Math.max(8,top)+'px';p.style.left=Math.max(8,Math.min(r.left-20,innerWidth-w-8))+'px'},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')infoClose()});document.addEventListener('scroll',e=>{if(TIP.pop&&!TIP.pop.contains(e.target))infoClose()},true);
+
 /* ---------- autenticação ---------- */
 function eyes(root){(root||document).querySelectorAll('input[type=password]:not([data-eye])').forEach(i=>{i.dataset.eye=1;const w=document.createElement('span');w.className='pw';i.parentNode.insertBefore(w,i);w.appendChild(i);
   const b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','Mostrar senha');b.title='Mostrar senha';b.innerHTML=EYE[0];w.appendChild(b);
@@ -1358,13 +1397,13 @@ async function cvChat(full){
     <span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>
     <div class="who"><b>${esc(c.name)}</b><span>${c.channel==='instagram'?`<i class="chi ig">${IGI}</i>`:''}${esc(contactSub(c))}${c.ad?' · veio do anúncio':''}</span></div>
     <div class="act">
-     <label class="nsw ${mode}" title="Como a Nanda atua nesta conversa"><span>Nanda</span><select id="cvMode"><option value="" ${!c.ai_mode?'selected':''}>${MODES[CV.ai?.default_mode||'copilot']}${innerWidth<860?'':' (padrão)'}</option>${Object.entries(MODES).map(([k,v])=>`<option value="${k}" ${c.ai_mode===k?'selected':''}>${v}</option>`).join('')}</select></label>
-     ${!c.assigned_to?'<button class="btn sm p" id="cvMine" title="A conversa passa a ser sua">Pegar</button>':''}
+     <label class="nsw ${mode}" title="Como a Nanda atua nesta conversa. ${MODE_DESC[mode]||''}"><span>Nanda</span><select id="cvMode"><option value="" ${!c.ai_mode?'selected':''}>${MODES[CV.ai?.default_mode||'copilot']}${innerWidth<860?'':' (padrão)'}</option>${Object.entries(MODES).map(([k,v])=>`<option value="${k}" ${c.ai_mode===k?'selected':''}>${v}</option>`).join('')}</select></label>
+     ${!c.assigned_to?'<button class="btn sm p" id="cvMine" title="A conversa passa a ser sua: você vira o responsável e recebe os avisos dela">Pegar</button>':''}
      <button class="ib" id="cvTr" title="Transferir para outra equipe ou pessoa" aria-label="Transferir">${svg('<path d="M7 7h11l-3-3M17 17H6l3 3"/>')}</button>
      <button class="ib hide-m" id="cvBook" title="Agendar horário" aria-label="Agendar horário">${IC.clock}</button>
      <button class="ib hide-m ${resolved?'on':''}" id="cvRes" title="${resolved?'Resolvida · clique para reabrir':'Marcar como resolvida'}" aria-label="${resolved?'Reabrir conversa':'Marcar como resolvida'}">${IC.check}</button>
-     <div class="mnw"><button class="ib" id="cvMore" aria-label="Mais ações" aria-haspopup="true">⋯</button>
-      <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}</button>`).join('')}</div><button data-mn="tr">Transferir</button><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
+     <div class="mnw"><button class="ib" id="cvMore" title="Mais ações" aria-label="Mais ações" aria-haspopup="true">⋯</button>
+      <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}${mode===k?' ✓':''}<small>${MODE_SHORT[k]}</small></button>`).join('')}</div><button data-mn="tr">Transferir</button><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
      <button class="ib pn-t ${CV.panel?'on':''}" id="cvPan" aria-label="Painel do cliente" title="Painel do cliente">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}</button>
     </div></div>
    ${c.needs_human?`<div class="human">🙋 ${first} quer falar com alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}</div>`:''}
@@ -1427,11 +1466,11 @@ function attachInit(c,ta,grow){const fi=$('#cvFile');if(CV.fileFor!==c.id){CV.fi
     $('#cvRecX').onclick=()=>{send=false;rec.stop()};$('#cvRecS').onclick=()=>{send=true;rec.stop()};rec.start(250)}}
 function drawComposer(c,w,draft){
   const box=$('#cvCmp');const first=esc(c.name.split(' ')[0]);
-  const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note">🔒 Nota interna</button>${CV.tab==='msg'&&w?`<span class="win" id="cvWin"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
+  const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">🔒 Nota interna</button>${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
   if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea><button class="btn p">Salvar nota</button></form>`}
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
-     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 7 dias sem resposta':first+' ainda não mandou mensagem'}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
-     :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
+     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 7 dias sem resposta':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
+     :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'} ${ii('janela')}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
   else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
    box.innerHTML=tabs+`${c.human_only?`<div class="wbar off"><i></i><span>Instagram: passou de 24 h desde a última mensagem de ${first}. Até ${fmtD(ymd(new Date(c.window_ends_at)))}, só uma pessoa do time pode responder (a Nanda não).</span></div>`:''}<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
@@ -1554,16 +1593,16 @@ async function cvPanel(c){
     <label>Etapa</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
     <label>Responsável</label>${mgr?`<select id="pnAs" class="pn-as"><option value="">Sem responsável</option>${(CV.team||[]).filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`
       :`<div class="pn-own">${c.assigned_to===ME.user.id?'Você':esc(c.assigned_name||'Ninguém ainda')}${c.assigned_to!==ME.user.id?'<button class="lnk" id="pnMine">assumir</button>':''}</div>`}
-    <label>Situação</label><div class="pn-own"><span><span class="ks ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>${c.sales_count?` <span class="hint">${c.sales_count} ${c.sales_count===1?'compra':'compras'} · ${brl(c.value)}</span>`:''}</span><button class="lnk" id="pnSale" ${c.sales_count?'hidden':''}>+ venda</button></div>
-    ${c.sales_count?'':`<label>Previsto</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="valor em negociação"></div>`}
-    <label>Origem</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda perguntou',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div></div></div>
-   <div class="pn-s" id="pnJn"><div class="pn-sh"><label>Jornada</label><button class="lnk" id="pnJnAll">ver tudo</button></div><div class="jn-b"><span class="hint">Carregando...</span></div></div>
+    <label>Situação ${ii('situacao')}</label><div class="pn-own"><span><span class="ks ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>${c.sales_count?` <span class="hint">${c.sales_count} ${c.sales_count===1?'compra':'compras'} · ${brl(c.value)}</span>`:''}</span><button class="lnk" id="pnSale" ${c.sales_count?'hidden':''}>+ venda</button></div>
+    ${c.sales_count?'':`<label>Previsto ${ii('previsto')}</label><div class="pn-val"><span>R$</span><input id="pnVal" type="number" min="0" step="1" value="${c.value??''}" placeholder="valor em negociação"></div>`}
+    <label>Origem ${ii('origem')}</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda perguntou',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div></div></div>
+   <div class="pn-s" id="pnJn"><div class="pn-sh"><label>Jornada ${ii('jornada')}</label><button class="lnk" id="pnJnAll">ver tudo</button></div><div class="jn-b"><span class="hint">Carregando...</span></div></div>
    ${c.sales_count?`<div class="pn-s"><div class="pn-sh"><label>Carteira</label><button class="lnk" id="pnSale2">+ venda</button></div><div id="pnWal" class="pn-wal"><span class="hint">Carregando...</span></div>
      <details class="pn-hist"><summary>Histórico de compras (${c.sales_count})</summary><div id="pnBuys" class="pn-buys"></div></details></div>`:''}
-   <div class="pn-s"><div class="pn-sh"><label>Próximos horários</label><button class="lnk" id="pnBook">+ agendar</button></div>
+   <div class="pn-s"><div class="pn-sh"><label>Próximos horários ${ii('horarios')}</label><button class="lnk" id="pnBook">+ agendar</button></div>
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</div>
-   <div class="pn-s"><label>Etiquetas</label><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></div>
-   <div class="pn-s"><div class="pn-sh"><label>Anotações</label><span class="hint" id="pnNs"></span></div><textarea id="pnN" rows="4" placeholder="O que o time precisa saber sobre ${esc(c.name.split(' ')[0])}">${esc(c.notes||'')}</textarea></div>
+   <div class="pn-s"><label>Etiquetas ${ii('etiquetas')}</label><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></div>
+   <div class="pn-s"><div class="pn-sh"><label>Anotações ${ii('anotacoes')}</label><span class="hint" id="pnNs"></span></div><textarea id="pnN" rows="4" placeholder="O que o time precisa saber sobre ${esc(c.name.split(' ')[0])}">${esc(c.notes||'')}</textarea></div>
    ${c.handoff_reason&&c.needs_human?`<div class="pn-s"><label>Por que a Nanda chamou o time</label><p class="hint">${esc(c.handoff_reason)}</p></div>`:''}
    <div class="pn-s"><button class="btn sm" id="pnDet" style="width:100%;justify-content:center">Ver detalhes completos</button></div>`;
   const patch=async(body,msg)=>{try{await api('/contacts/'+c.id,{method:'PATCH',body});if(msg)toast(msg);CV.sig='';cvChat(false);cvList()}catch(e){toast(e.message)}};
@@ -3040,7 +3079,7 @@ const VIEWS={
   const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[]),orgLoad().catch(()=>null)]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas'],['waiting','Esperando'],['mine','Minhas'],...(tms.some(t=>t.mine)?[['team','Equipe']]:[]),['unassigned','Sem dono']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
+    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvf ${tms.some(t=>t.mine)?'f5':''}">${[['all','Todas','Todas as conversas'],['waiting','Esperando','Clientes que mandaram mensagem e ainda não tiveram resposta, do mais antigo para o mais novo'],['mine','Minhas','Conversas em que você é o responsável'],...(tms.some(t=>t.mine)?[['team','Equipe','Conversas das equipes de que você faz parte']]:[]),['unassigned','Sem dono','Conversas sem responsável. Abra e clique em Pegar para assumir']].map(f=>`<button class="${CV.filter===f[0]?'on':''}" data-f="${f[0]}" title="${f[2]}">${f[1]}<i></i></button>`).join('')}</div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
