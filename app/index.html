@@ -438,6 +438,25 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
  .sm-it.h{display:none}.vdonut{grid-template-columns:minmax(0,1fr)}.vdonut svg{margin:0 auto}
  .vtb .hm{display:none}}
 
+
+.sx{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:800;background:#EEF1F4;color:var(--ink2)}
+#prF input[type=number],#prF input[type=time],#cpF input[type=number]{border:1px solid #DCD2C9;border-radius:10px;padding:7px 9px;font:inherit;font-size:13.5px}
+.pr-top{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:12px;flex-wrap:wrap}
+.pr-top>div{flex:1;min-width:220px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--ink2)}.pr-top>div b{color:var(--ink);font-size:13.5px}
+.pr-c{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}.pr-c.off{background:#FCFAF8}
+.pr-c .hd{display:flex;align-items:center;gap:8px}.pr-c .hd b{font-size:15.5px;flex:1;min-width:0}.pr-c .rl{font-size:13.5px;color:var(--ink);margin:0;line-height:1.4}
+.pr-c .tg2{display:flex;gap:4px;flex-wrap:wrap}.pr-c .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.pr-c .nums div{display:flex;flex-direction:column}.pr-c .nums b{font-size:15px;font-variant-numeric:tabular-nums}.pr-c .nums span{font-size:11.5px;color:var(--ink3)}
+.pr-c .bt{display:flex;gap:6px;justify-content:flex-end}
+.pill.blue{background:#E8F0FB;color:#2F67B1}
+.chks.sm label{padding:4px 9px;font-size:12px}
+.pr-box{display:flex;flex-direction:column;gap:6px}
+.pr-o{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer}.pr-o.on{border-color:var(--ok);background:var(--oksoft)}
+.pr-o input{width:auto;margin:0}.pr-o span{flex:1;min-width:0;display:flex;flex-direction:column}.pr-o b{font-size:13.5px}.pr-o small{font-size:12px;color:var(--ink2)}.pr-o em{font-style:normal;font-weight:800;font-size:13.5px;color:var(--ok);white-space:nowrap}
+.pr-no{font-size:12.5px;color:var(--ink3)}.pr-no summary{cursor:pointer}.pr-no span{display:block;margin-top:3px}
+.sm-sum{flex-wrap:wrap;gap:8px}.sm-br{display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--ink2)}.sm-br b{color:var(--ink)}.sm-tt{display:flex;align-items:baseline;gap:12px;margin-left:auto}
+.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+@media (max-width:700px){.pr-c .nums{grid-template-columns:repeat(2,1fr)}}
 .ks{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800}.ks.kp{background:#EEF1F4;color:var(--ink2)}.ks.kc{background:var(--oksoft);color:var(--ok)}.ks.ki{background:var(--warnsoft);color:var(--warn)}
 .pn-kv .pn-own .hint{font-size:12.5px}.pn-or{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn-tr{background:#F2F6FC}.pn-tr p{font-size:13px;color:var(--ink);line-height:1.4}
@@ -709,7 +728,7 @@ function readPath(){
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
-  if(v==='vendas')VD.tab=['lista','produtos','origens'].includes(parts[1])?parts[1]:'relatorio';
+  if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens'].includes(parts[1])?parts[1]:'relatorio';
   return VIEWS[v]?v:'inicio'}
 function syncUrl(replace){
   if(!ME)return;const p=pathFor(VIEW);
@@ -1330,12 +1349,12 @@ function newContact(pre){
     try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
 }
 /* ---------- vendas ---------- */
-const VD={tab:'relatorio',p:{preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',metric:'value',chart:'bars'},q:'',cancelled:false,opts:null};
+const VD={tab:'relatorio',p:{preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',promo:'',metric:'value',chart:'bars'},q:'',cancelled:false,opts:null};
 const brl2=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const num=v=>(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2});
 const PAL=['#E8603F','#5B7DB1','#2F9AA0','#8E6CC9','#D99A1E','#C2557A','#4F8A5B','#7A6A58','#A7B1BB'];
 const PRESETS=[['hoje','Hoje'],['7d','7 dias'],['30d','30 dias'],['mes','Este mês'],['mes_ant','Mês passado'],['90d','90 dias'],['ano','Este ano'],['custom','Personalizado']];
-const GROUPS_VD=[['seller','Vendedor'],['product','Produto ou serviço'],['category','Categoria'],['team','Equipe'],['source','Origem'],['kind','Primeira compra x recompra'],['payment','Pagamento'],['month','Mês'],['week','Semana'],['day','Dia']];
+const GROUPS_VD=[['seller','Vendedor'],['product','Produto ou serviço'],['category','Categoria'],['team','Equipe'],['source','Origem'],['kind','Primeira compra x recompra'],['promo','Promoção'],['payment','Pagamento'],['month','Mês'],['week','Semana'],['day','Dia']];
 const METRICS=[['value','Valor'],['qty','Quantidade'],['count','Vendas'],['ticket','Ticket']];
 const isMgr=()=>['owner','manager'].includes(ME.user.role);
 function vdRange(P){
@@ -1348,27 +1367,27 @@ function vdRange(P){
     case 'custom':return [P.start||d(29),P.end||ymd(t)];
     default:return [d(29),ymd(t)]}}
 const fmtD=s=>{if(!s)return '';const [y,m,dd]=s.split('-');return `${dd}/${m}/${y.slice(2)}`};
-function vdQs(extra){const P=VD.p,[s,e]=vdRange(P);const o={start:s,end:e,seller:P.seller,team:P.team,product:P.product,category:P.category,payment:P.payment,source:P.source,kind:P.kind,...(extra||{})};
+function vdQs(extra){const P=VD.p,[s,e]=vdRange(P);const o={start:s,end:e,seller:P.seller,team:P.team,product:P.product,category:P.category,payment:P.payment,source:P.source,kind:P.kind,promo:P.promo,...(extra||{})};
   return Object.entries(o).filter(([k,v])=>v!==''&&v!=null).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&')}
 async function vdOptions(){if(!VD.opts){const r=await api('/sales/report?group=seller&start='+ymd(new Date())+'&end='+ymd(new Date()));VD.opts=r.options;VD.mine=r.mine_only}return VD.opts}
 
 function vdBar(onChange,withSearch){
   const P=VD.p,O=VD.opts,[s,e]=vdRange(P);
   const sel=(k,label,items)=>items&&items.length?`<select data-fk="${k}" class="${P[k]?'on':''}" aria-label="${label}"><option value="">${label}</option>${items.map(i=>`<option value="${esc(i.id)}" ${P[k]===i.id?'selected':''}>${esc(i.name)}</option>`).join('')}</select>`:'';
-  const active=['seller','team','product','category','payment','source','kind'].some(k=>P[k]);
+  const active=['seller','team','product','category','payment','source','kind','promo'].some(k=>P[k]);
   $('#vdBar').innerHTML=`<div class="vd-per">${PRESETS.map(p=>`<button class="chip sm ${P.preset===p[0]?'on':''}" data-pr="${p[0]}">${p[1]}</button>`).join('')}
      ${P.preset==='custom'?`<span class="dates"><input type="date" id="vdS" value="${s}"> até <input type="date" id="vdE" value="${e}"></span>`:''}
      <span class="cmp">${fmtD(s)} a ${fmtD(e)}</span></div>
     <div class="vd-fl">${VD.mine?'':sel('seller','Vendedor',[...O.sellers,{id:'none',name:'Sem vendedor'}])}${sel('team','Equipe',O.teams)}${sel('product','Produto ou serviço',O.products)}
      ${sel('category','Categoria',[...O.categories.map(c=>({id:c,name:c})),{id:'_none',name:'Sem categoria'}])}${sel('source','Origem',O.sources)}
-     ${sel('kind','Tipo de compra',[{id:'nova',name:'Primeira compra'},{id:'recompra',name:'Recompra'}])}${sel('payment','Pagamento',O.payments)}
+     ${sel('kind','Tipo de compra',[{id:'nova',name:'Primeira compra'},{id:'recompra',name:'Recompra'}])}${sel('promo','Promoção',O.promos)}${sel('payment','Pagamento',O.payments)}
      ${active?'<button class="lnk" id="vdClr">limpar filtros</button>':''}
      ${withSearch?`<input id="vdQ" placeholder="Buscar cliente ou item" value="${esc(VD.q)}" style="border:1px solid #DCD2C9;border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;min-width:180px">`:''}
      <span class="vw" id="vdViews"></span></div>`;
   $('#vdBar').querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.pr;if(P.preset==='custom'){const [a,z]=vdRange({preset:'30d'});P.start=P.start||a;P.end=P.end||z}onChange()});
   if($('#vdS')){$('#vdS').onchange=e=>{P.start=e.target.value;onChange()};$('#vdE').onchange=e=>{P.end=e.target.value;onChange()}}
   $('#vdBar').querySelectorAll('[data-fk]').forEach(x=>x.onchange=()=>{P[x.dataset.fk]=x.value;onChange()});
-  if($('#vdClr'))$('#vdClr').onclick=()=>{['seller','team','product','category','payment','source','kind'].forEach(k=>P[k]='');onChange()};
+  if($('#vdClr'))$('#vdClr').onclick=()=>{['seller','team','product','category','payment','source','kind','promo'].forEach(k=>P[k]='');onChange()};
   if($('#vdQ'))$('#vdQ').oninput=e=>{VD.q=e.target.value;clearTimeout(VD.qt);VD.qt=setTimeout(onChange,250)};
   vdViews(onChange);
 }
@@ -1376,7 +1395,7 @@ async function vdViews(onChange){
   const box=$('#vdViews');if(!box)return;const vs=await api('/sales/views').catch(()=>[]);
   box.innerHTML=`${vs.length?`<select id="vdVw" aria-label="Visões salvas"><option value="">Visões salvas</option>${vs.map(v=>`<option value="${v.id}">${esc(v.name)}</option>`).join('')}</select>`:''}<button class="btn sm" id="vdSv">Salvar visão</button>`;
   if($('#vdVw'))$('#vdVw').onchange=e=>{const v=vs.find(x=>x.id===e.target.value);if(!v)return;
-    VD.p={preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',metric:'value',chart:'bars',...v.params};onChange();
+    VD.p={preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',promo:'',metric:'value',chart:'bars',...v.params};onChange();
     toast(`Visão "${v.name}" aplicada.`)};
   $('#vdSv').onclick=()=>{const o=overlay(`<form class="modal" id="svF" style="width:420px"><div class="row"><h2 style="font-size:19px">Salvar esta visão</h2><button type="button" class="x">×</button></div>
      <p class="hint">Guarda o período, os filtros e o jeito de ver o relatório para abrir com um clique.</p>
@@ -1394,7 +1413,7 @@ async function vdView(){
   const mgr=isMgr();
   $('#page').innerHTML=`<div class="fhd"><div><h1>Vendas</h1><p class="sub">${mgr?'O que foi vendido, por quem, de onde vieram os clientes e como estão os números.':'Suas vendas e os números do seu período.'}</p></div>
     <div class="tools"><button class="btn sm" id="vdExp">Exportar planilha</button><button class="btn sm p" id="vdNew">+ Registrar venda</button></div></div>
-   <div class="tabs">${[['relatorio','Relatório'],['lista','Vendas'],['produtos','Produtos e serviços'],...(mgr?[['origens','Origens e links']]:[])].map(t=>`<button class="chip ${VD.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
+   <div class="tabs">${[['relatorio','Relatório'],['lista','Vendas'],['produtos','Produtos e serviços'],['promocoes','Promoções'],...(mgr?[['origens','Origens e links']]:[])].map(t=>`<button class="chip ${VD.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
    <div id="vdBody"><div class="empty">Carregando...</div></div>`;
   document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab;syncUrl();vdView()});
   $('#vdNew').onclick=()=>saleModal({onDone:()=>vdView()});
@@ -1403,6 +1422,7 @@ async function vdView(){
   await vdOptions();
   if(VD.tab==='lista')return vdList();
   if(VD.tab==='produtos')return vdProducts();
+  if(VD.tab==='promocoes')return vdPromos();
   if(VD.tab==='origens'&&mgr)return vdOrigins();
   return vdReport();
 }
@@ -1437,8 +1457,9 @@ async function vdReport(){
     :P.chart==='table'?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>${GROUPS_VD.find(g=>g[0]===P.group)[1]}</th><th class="n">Valor</th><th class="n">Vendas</th><th class="n hm">Qtd.</th><th class="n hm">Ticket</th><th class="n">%</th></tr></thead><tbody>${rows.map(x=>`<tr class="ck" data-k="${esc(x.key)}"><td>${esc(grpLabel(P.group,x.label))}</td><td class="n"><b>${brl(x.value)}</b></td><td class="n">${x.count}</td><td class="n hm">${num(x.qty)}</td><td class="n hm">${brl(x.ticket)}</td><td class="n">${x.share}%</td></tr>`).join('')}</tbody></table></div>`
     :`<div class="vbr">${rows.slice(0,15).map((x,i)=>`<button data-k="${esc(x.key)}"><span class="nm"><i style="background:${x.color||PAL[i%8]}"></i>${esc(grpLabel(P.group,x.label))}</span><span class="vv">${mfmt(mval(x,m),m)}</span><span class="tr"><i style="width:${Math.max(2,100*mval(x,m)/rmx)}%;background:${x.color||PAL[i%8]}"></i></span><span class="mt">${x.count} ${x.count===1?'venda':'vendas'} · ${num(x.qty)} ${x.qty===1?'item':'itens'} · ${x.share}% do total</span></button>`).join('')}${rows.length>15?`<p class="hint" style="padding:6px 8px">+ ${rows.length-15} outros. Veja em Tabela.</p>`:''}</div>`;
   const recent=ls.items.slice(0,6);
-  $('#vdR').innerHTML=`<div class="kpis">${kpi('Faturamento',brl(t.value),vdDelta(t.value,pv.value),'vs. '+fmtD(r.prev_start)+'–'+fmtD(r.prev_end))}${kpi('Vendas',num(t.count),vdDelta(t.count,pv.count))}${kpi('Ticket médio',t.ticket!=null?brl(t.ticket):'—',vdDelta(t.ticket,pv.ticket))}${kpi('Itens vendidos',num(t.qty),vdDelta(t.qty,pv.qty))}</div>
+  $('#vdR').innerHTML=`<div class="kpis">${kpi('Faturamento',brl(t.value),vdDelta(t.value,pv.value),(t.discount?brl(t.discount)+' em descontos · ':'')+'vs. '+fmtD(r.prev_start)+'–'+fmtD(r.prev_end))}${kpi('Vendas',num(t.count),vdDelta(t.count,pv.count))}${kpi('Ticket médio',t.ticket!=null?brl(t.ticket):'—',vdDelta(t.ticket,pv.ticket))}${kpi('Itens vendidos',num(t.qty),vdDelta(t.qty,pv.qty))}</div>
    ${r.mine_only?'<p class="hint" style="margin:-2px 0 10px">Mostrando só a sua parte das vendas.</p>':''}
+   ${r.pending?`<div class="note warnb" style="margin:0 0 12px;display:flex;align-items:center;gap:10px">${r.pending} ${r.pending===1?'venda aguardando':'vendas aguardando'} aprovação do gestor por causa do desconto. <button class="lnk" id="vdPend" style="margin-left:auto">ver</button></div>`:''}
    <div class="vd-g"><div class="vd-c"><div class="hd"><h3>Faturamento ${r.bucket==='day'?'por dia':r.bucket==='week'?'por semana':'por mês'}</h3></div>
      ${t.count?`<div class="vchart"><div class="ax" style="top:0"><span>${brl(mx)}</span></div><div class="ax" style="top:calc((100% - 20px) / 2)"><span>${brl(mx/2)}</span></div><div class="ax" style="bottom:20px;border:0"><span>R$ 0</span></div>
       ${ser.map((x,i)=>`<div class="b" title="${sl(x.date)}: ${brl2(x.value)} · ${x.count} ${x.count===1?'venda':'vendas'}" style="--h:${Math.round(100*x.value/mx)}%"><i style="height:${Math.round(100*x.value/mx)}%"></i><em>${brl(x.value)}</em><span>${i%every===0?sl(x.date):''}</span></div>`).join('')}</div>`
@@ -1456,7 +1477,7 @@ async function vdReport(){
   $('#vdGrp').onchange=e=>{P.group=e.target.value;vdReport()};
   document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.metric=b.dataset.m;vdReport()});
   document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{P.chart=b.dataset.ch;vdReport()});
-  const fk={seller:'seller',product:'product',category:'category',team:'team',source:'source',kind:'kind',payment:'payment'}[P.group];
+  const fk={seller:'seller',product:'product',category:'category',team:'team',source:'source',kind:'kind',payment:'payment',promo:'promo'}[P.group];
   $('#vdR').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;
     if(['day','week','month'].includes(P.group)){const d=new Date(k+'T12:00');const z=new Date(d);if(P.group==='week')z.setDate(z.getDate()+6);else if(P.group==='month'){z.setMonth(z.getMonth()+1);z.setDate(0)}
       P.preset='custom';P.start=k;P.end=ymd(z);P.group=P.group==='day'?'product':'day'}
@@ -1465,6 +1486,7 @@ async function vdReport(){
   $('#vdR').querySelectorAll('[data-src]').forEach(b=>b.onclick=()=>{P.source=b.dataset.src;vdReport()});
   if($('#vdOrg'))$('#vdOrg').onclick=()=>{VD.tab='origens';syncUrl();vdView()};
   $('#vdAll').onclick=()=>{VD.tab='lista';syncUrl();vdView()};
+  if($('#vdPend'))$('#vdPend').onclick=()=>{VD.tab='lista';syncUrl();vdView()};
   $('#vdR').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>saleModal({sale:ls.items.find(x=>x.id===b.dataset.s),onDone:vdReport}));
 }
 
@@ -1475,7 +1497,7 @@ async function vdList(){
   const r=await api('/sales?'+vdQs({q:VD.q,status:VD.cancelled?'all':'ok'}));const it=r.items;
   const tot=it.filter(x=>x.status==='ok').reduce((a,x)=>a+x.total,0);
   $('#vdL').innerHTML=it.length?`<div class="vd-c" style="padding:8px 10px;overflow-x:auto"><table class="vtb"><thead><tr><th>Data</th><th>Cliente</th><th>Itens</th><th class="hm">Vendedores</th><th class="hm">Pagamento</th><th class="hm">Origem</th><th class="n">Total</th></tr></thead>
-    <tbody>${it.map(x=>`<tr class="ck ${x.status==='cancelled'?'cx':''}" data-s="${x.id}"><td>${fmtD(ymd(new Date(x.date)))}</td><td><b>${esc(x.contact_name||'')}</b>${x.first?'':'<span class="sx" style="margin-left:6px">recompra</span>'}</td>
+    <tbody>${it.map(x=>`<tr class="ck ${x.status==='cancelled'?'cx':''}" data-s="${x.id}"><td>${fmtD(ymd(new Date(x.date)))}</td><td><b>${esc(x.contact_name||'')}</b>${x.first?'':'<span class="sx" style="margin-left:6px">recompra</span>'}${x.status==='pending'?'<span class="pill warn" style="margin-left:6px">aguardando aprovação</span>':''}${(x.promos||[]).map(a=>`<span class="sx" style="margin-left:4px;background:var(--soft);color:var(--c2)">${esc(a.code||a.name)}</span>`).join('')}</td>
       <td>${x.items.map(i=>`<span class="sx">${num(i.qty)}× ${esc(i.name)}</span>`).join('')}</td><td class="hm">${(x.sellers||[]).map(y=>esc(y.name.split(' ')[0])+(x.sellers.length>1?` <span class="hint">${y.pct}%</span>`:'')).join(' + ')||'<span class="hint">—</span>'}</td>
       <td class="hm">${esc(x.payment_label||'—')}</td><td class="hm">${esc(x.source_label||'')}</td><td class="n"><b>${brl2(x.total)}</b></td></tr>`).join('')}</tbody>
     <tfoot><tr><td colspan="6" class="hm" style="text-align:right;font-weight:700">${it.filter(x=>x.status==='ok').length} vendas</td><td class="n"><b>${brl2(tot)}</b></td></tr></tfoot></table></div>`
@@ -1526,12 +1548,36 @@ async function saleModal(opt){
      <datalist id="smCat">${active.map(p=>`<option value="${esc(p.name)}">${p.price!=null?brl2(p.price):''}${p.category?' · '+esc(p.category):''}</option>`).join('')}</datalist></div>
     <div class="field"><label>Vendedores</label><div class="sm-items" id="smS"></div>${ro?'':'<div class="row" style="gap:14px;margin-top:6px"><button type="button" class="lnk" id="smAS">+ dividir com outro vendedor</button><button type="button" class="lnk" id="smEq">dividir igualmente</button></div>'}</div>
     <div class="field"><label>Observação</label><input name="notes" maxlength="1000" value="${esc(sale?sale.notes||'':'')}" ${ro?'disabled':''} placeholder="Ex.: parcelado em 3x, entrega dia 15"></div>
-    <div class="sm-sum"><span>Total</span><b id="smT">R$ 0</b></div>
+    <div class="field"><label>Promoções e cupom</label><div id="smPr" class="pr-box"><span class="hint">${contact?'Calculando...':'Escolha o cliente para ver as promoções que valem para ele.'}</span></div>
+     ${ro?'':`<div class="row" style="gap:6px;margin-top:6px"><input id="smCp" placeholder="Tem cupom? Digite o código" maxlength="30" style="max-width:240px;text-transform:uppercase" value="${esc(((sale&&sale.promos)||[]).find(a=>a.code)?.code||'')}"><button type="button" class="btn sm" id="smCpB">Aplicar</button><span class="hint" id="smCpS"></span></div>`}</div>
+    <div class="sm-sum"><div class="sm-br" id="smBr"></div><div class="sm-tt"><span>Total</span><b id="smT">R$ 0</b></div></div>
+    <p class="note warnb" id="smAp" style="display:none;margin:0"></p>
     ${sale&&(sale.history||[]).length?`<div class="sm-hist">${sale.history.map(h=>`<span>${dt(h.at)} · ${esc(h.by)}: ${esc(h.what)}</span>`).join('')}</div>`:''}
-    ${ro?'':`<div class="row"><button class="btn p">${sale?'Salvar alterações':'Registrar venda'}</button>${sale?'<button type="button" class="btn sm danger" id="smCx" style="margin-left:auto">Cancelar venda</button>':''}<span class="err" id="smE"></span></div>`}</form>`,true);
+    ${sale&&sale.status==='pending'?`<p class="note warnb" style="margin:0">Aguardando aprovação do gestor: o desconto manual passou do limite. ${isMgr()?'':'Ela entra nos relatórios depois de aprovada.'}</p>`:''}
+    ${ro?'':`<div class="row"><button class="btn p">${sale?'Salvar alterações':'Registrar venda'}</button>${sale&&sale.status==='pending'&&isMgr()?'<button type="button" class="btn sm ok" id="smApv">Aprovar</button>':''}${sale?'<button type="button" class="btn sm danger" id="smCx" style="margin-left:auto">Cancelar venda</button>':''}<span class="err" id="smE"></span></div>`}</form>`,true);
   const f=o.querySelector('#smF');
   const lt=i=>Math.max(0,(Number(i.qty)||0)*(Number(i.price)||0)-(Number(i.discount)||0));
-  const total=()=>{$('#smT').textContent=brl2(items.reduce((a,i)=>a+lt(i),0))};
+  let promoIds=sale?(sale.promos||[]).filter(a=>!a.code).map(a=>a.promo_id):null,coupon=((sale&&sale.promos)||[]).find(a=>a.code)?.code||'',EV=null,evT=null,evN=0;
+  const total=()=>{const gross=items.reduce((a,i)=>a+(Number(i.qty)||0)*(Number(i.price)||0),0),man=items.reduce((a,i)=>a+(Number(i.discount)||0),0),sub=items.reduce((a,i)=>a+lt(i),0),pd=EV?EV.discount:0;
+    $('#smT').textContent=brl2(Math.max(0,sub-pd));
+    $('#smBr').innerHTML=(man||pd)?`<span>Itens <b>${brl2(gross)}</b></span>${man?`<span>Desconto manual <b>− ${brl2(man)}</b></span>`:''}${pd?`<span>Promoções <b>− ${brl2(pd)}</b></span>`:''}`:'';
+    const lim=ME.company.max_discount_pct,pct=gross?100*man/gross:0,ap=$('#smAp');
+    if(ap){const need=lim!=null&&ME.user.role==='agent'&&pct>lim+0.001;ap.style.display=need?'':'none';if(need)ap.textContent=`Desconto manual de ${num(pct)}% passa do limite de ${num(lim)}%. A venda fica aguardando aprovação do gestor.`}
+    clearTimeout(evT);evT=setTimeout(evalP,350)};
+  const evalP=async()=>{if(!contact||!$('#smPr'))return;const n=++evN;
+    const its=items.filter(i=>Number(i.qty)>0&&i.price!==''&&i.name.trim()).map(i=>({product_id:i.product_id||null,category:i.category||'',qty:Number(i.qty)||0,price:Number(i.price)||0,discount:Number(i.discount)||0}));
+    if(!its.length){EV=null;$('#smPr').innerHTML='<span class="hint">Adicione os itens para ver as promoções.</span>';return}
+    let r;try{r=await api('/promos/evaluate',{method:'POST',body:{contact_id:contact.id,items:its,promo_ids:promoIds,coupon:coupon||null,sale_id:sale?sale.id:null}})}catch(e){return}
+    if(n!==evN)return;EV=r;if(promoIds===null)promoIds=r.applied.filter(a=>!a.coupon_id).map(a=>a.promo_id);
+    const ap=new Set(r.applied.map(a=>a.promo_id)),ok=r.available.filter(a=>!a.reason),no=r.available.filter(a=>a.reason&&a.reason!=='precisa de cupom'&&a.reason!=='nenhum item da venda entra nela');
+    $('#smPr').innerHTML=(ok.length?ok.map(a=>{const x=r.applied.find(y=>y.promo_id===a.id);return `<label class="pr-o ${ap.has(a.id)?'on':''}"><input type="checkbox" data-po="${a.id}" ${ap.has(a.id)?'checked':''} ${ro||(x&&x.coupon_id)?'disabled':''}><span><b>${esc(a.name)}</b><small>${esc(a.rule)}</small></span><em>${ap.has(a.id)?'− '+brl2(x.discount):brl2(a.discount)}</em></label>`}).join('')
+      :'<span class="hint">Nenhuma promoção vale para esta venda.</span>')
+      +(no.length?`<details class="pr-no"><summary>${no.length} ${no.length===1?'promoção não vale':'promoções não valem'} aqui</summary>${no.map(a=>`<span>${esc(a.name)}: ${esc(a.reason)}</span>`).join('')}</details>`:'');
+    $('#smPr').querySelectorAll('[data-po]').forEach(x=>x.onchange=()=>{const id=x.dataset.po;promoIds=x.checked?[...new Set([...(promoIds||[]),id])]:(promoIds||[]).filter(y=>y!==id);evalP()});
+    if($('#smCpS'))$('#smCpS').innerHTML=r.coupon?(r.coupon.ok?`<span style="color:var(--ok);font-weight:700">✓ cupom ${esc(r.coupon.code)} aplicado</span>`:`<span style="color:var(--bad);font-weight:700">${esc(r.coupon.reason)}</span>`):'';
+    const pd=r.discount,sub=items.reduce((a,i)=>a+lt(i),0);$('#smT').textContent=brl2(Math.max(0,sub-pd));
+    const gross=items.reduce((a,i)=>a+(Number(i.qty)||0)*(Number(i.price)||0),0),man=items.reduce((a,i)=>a+(Number(i.discount)||0),0);
+    $('#smBr').innerHTML=(man||pd)?`<span>Itens <b>${brl2(gross)}</b></span>${man?`<span>Desconto manual <b>− ${brl2(man)}</b></span>`:''}${pd?`<span>Promoções <b>− ${brl2(pd)}</b></span>`:''}`:''};
   const drawI=()=>{$('#smI').innerHTML=`<div class="sm-it h"><span class="sm-hd">Produto ou serviço</span><span class="sm-hd">Qtd.</span><span class="sm-hd">Preço un.</span><span class="sm-hd">Desconto</span><span class="sm-hd" style="text-align:right">Total</span><span></span></div>`+
     items.map((i,k)=>`<div class="sm-it"><input class="in" data-i="${k}" data-f="name" list="smCat" value="${esc(i.name)}" placeholder="Escolha ou digite" ${ro?'disabled':''} required>
      <input class="iq" data-i="${k}" data-f="qty" type="number" min="0.01" step="any" value="${i.qty}" ${ro?'disabled':''} aria-label="Quantidade">
@@ -1560,15 +1606,122 @@ async function saleModal(opt){
   if(!contact){let t;$('#smQ').oninput=e=>{clearTimeout(t);t=setTimeout(async()=>{const q=e.target.value.trim();if(q.length<2){$('#smR').innerHTML='';return}
       const r=await api('/conversations?q='+encodeURIComponent(q));$('#smR').innerHTML=r.slice(0,6).map(c=>`<button type="button" data-ct="${c.id}"><i style="background:${avc(c.name)}"></i>${esc(c.name)} <span class="hint">${esc(fmtPhone(c.wa_id))}</span></button>`).join('')||'<p class="hint">Ninguém encontrado. Cliente novo? Adicione primeiro no Funil.</p>';
       $('#smR').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{const c=r.find(x=>x.id===b.dataset.ct);contact={id:c.id,name:c.name};$('#smQ').value=c.name;$('#smR').innerHTML='';
-        if(c.assigned_to&&!sale){sellers=[{user_id:c.assigned_to,pct:100}];drawS()}})},250)}}
+        if(c.assigned_to&&!sale){sellers=[{user_id:c.assigned_to,pct:100}];drawS()}promoIds=null;evalP()})},250)}}
+  if($('#smCpB')){const apC=()=>{coupon=$('#smCp').value.trim().toUpperCase();$('#smCp').value=coupon;if(!contact){$('#smCpS').textContent='Escolha o cliente primeiro.';return}evalP()};
+    $('#smCpB').onclick=apC;$('#smCp').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();apC()}}}
+  if($('#smApv'))$('#smApv').onclick=async()=>{try{await api('/sales/'+sale.id+'/approve',{method:'POST'});o.remove();toast('Venda aprovada.');opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
   if($('#smCx'))$('#smCx').onclick=async()=>{const why=prompt('Cancelar esta venda? Ela sai dos relatórios. Motivo (opcional):');if(why===null)return;
     try{await api('/sales/'+sale.id+'/cancel',{method:'POST',body:{reason:why}});o.remove();toast('Venda cancelada.');opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
   if(!ro)f.onsubmit=async ev=>{ev.preventDefault();$('#smE').textContent='';
     if(!contact)return $('#smE').textContent='Escolha o cliente.';
     const body={contact_id:contact.id,date:f.date.value||null,payment:f.payment.value,notes:f.notes.value,move_won:!opt.moved,
       items:items.map(i=>({product_id:i.product_id||null,name:i.name.trim(),category:i.category||'',qty:Number(i.qty)||1,price:Number(i.price)||0,discount:Number(i.discount)||0})),
-      sellers:sellers.map(s=>({user_id:s.user_id,pct:Number(s.pct)||0}))};
-    try{await api(sale?'/sales/'+sale.id:'/sales',{method:sale?'PUT':'POST',body});o.remove();toast(sale?'Venda atualizada.':'Venda registrada.');VD.opts=null;opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
+      sellers:sellers.map(s=>({user_id:s.user_id,pct:Number(s.pct)||0})),promo_ids:promoIds,coupon:EV&&EV.coupon&&EV.coupon.ok?coupon:null};
+    try{const r=await api(sale?'/sales/'+sale.id:'/sales',{method:sale?'PUT':'POST',body});o.remove();toast(r.status==='pending'?'Venda registrada. Vai para aprovação do gestor por causa do desconto.':sale?'Venda atualizada.':'Venda registrada.');VD.opts=null;opt.onDone&&opt.onDone()}catch(x){$('#smE').textContent=x.message}};
+}
+
+/* promoções e cupons */
+const PST={ativa:['ativa','ok'],agendada:['agendada','blue'],pausada:['pausada','grey'],encerrada:['encerrada','grey'],esgotada:['esgotada','warn'],fora_do_horario:['fora do horário agora','warn']};
+const PKIND=[['percent','% de desconto'],['fixed','R$ de desconto'],['price','Preço especial'],['bxgy','Leve X, pague Y']];
+const WK=['seg','ter','qua','qui','sex','sáb','dom'];
+async function vdPromos(){
+  const mgr=isMgr();const r=await api('/promos');const ps=r.items;
+  const lim=r.max_discount_pct;
+  $('#vdBody').innerHTML=`<div class="pr-top"><div><b>Limite de desconto do atendente</b><span>${lim!=null?`Desconto manual acima de <b>${String(lim).replace('.',',')}%</b> numa venda precisa da aprovação do gestor. Promoções não contam.`:'Sem limite: atendentes podem dar qualquer desconto manual.'}</span></div>${mgr?'<button class="btn sm" id="prLim">Alterar</button>':''}${mgr?'<button class="btn sm p" id="prNew">+ Nova promoção</button>':''}</div>
+   ${ps.length?`<div class="agrid">${ps.map(p=>{const st=PST[p.state]||[p.state,'grey'];return `<div class="pr-c ${p.state==='ativa'?'':'off'}">
+     <div class="hd"><b>${esc(p.name)}</b><span class="pill ${st[1]}">${st[0]}</span>${mgr?`<button class="tg ${p.active?'on':''}" data-pt="${p.id}" role="switch" aria-checked="${p.active}" aria-label="${p.active?'Pausar':'Ligar'} ${esc(p.name)}"></button>`:''}</div>
+     <p class="rl">${esc(p.rule)}</p>
+     <div class="tg2">${p.requires_coupon?`<span class="sx">${p.coupons} ${p.coupons===1?'cupom':'cupons'}</span>`:'<span class="sx">automática</span>'}${p.stackable?'<span class="sx">junta com outras</span>':''}${p.nanda_offers?'<span class="sx">a Nanda oferece</span>':''}${p.starts?`<span class="sx">de ${fmtD(p.starts)}</span>`:''}</div>
+     <div class="nums"><div><b>${p.uses}</b><span>${p.uses===1?'uso':'usos'}</span></div><div><b>${brl(p.revenue)}</b><span>faturado</span></div><div><b>${brl(p.discount_given)}</b><span>de desconto</span></div><div><b>${p.clients}</b><span>${p.clients===1?'cliente':'clientes'}</span></div></div>
+     ${mgr?`<div class="bt"><button class="btn sm" data-pc="${p.id}">Cupons</button><button class="btn sm" data-pe="${p.id}">Editar</button><button class="btn sm icn danger" data-pd="${p.id}" title="Apagar" aria-label="Apagar">${IC.trash}</button></div>`:''}</div>`}).join('')}</div>`
+    :`<div class="aempty"><div><b>Nenhuma promoção ainda</b><p>Comece por uma destas e ajuste depois. Elas entram na hora de registrar a venda e a Nanda passa a saber delas.</p></div>
+      ${mgr?`<div class="row" style="gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn sm" data-tp="bv">Boas-vindas: 10% na primeira compra</button><button class="btn sm" data-tp="vt">Volta: 15% para cliente inativo (cupom)</button><button class="btn sm" data-tp="bx">Leve 3, pague 2</button></div>`:''}</div>`}`;
+  if(!mgr)return;
+  $('#prNew').onclick=()=>promoModal(null);
+  $('#prLim').onclick=()=>{const v=prompt('Até quantos % de desconto manual o atendente pode dar sem aprovação? Deixe vazio para não ter limite.',lim??'');if(v===null)return;
+    api('/promos-settings',{method:'PUT',body:{max_discount_pct:v.trim()===''?null:Number(v.replace(',','.'))}}).then(()=>{ME.company.max_discount_pct=v.trim()===''?null:Number(v.replace(',','.'));toast('Limite salvo.');vdPromos()}).catch(e=>toast(e.message))};
+  document.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>promoModal(ps.find(p=>p.id===b.dataset.pe)));
+  document.querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>couponsModal(ps.find(p=>p.id===b.dataset.pc)));
+  document.querySelectorAll('[data-pt]').forEach(b=>b.onclick=async()=>{const p=ps.find(x=>x.id===b.dataset.pt);try{await api('/promos/'+p.id,{method:'PUT',body:promoBody(p,{active:!p.active})});toast(p.active?'Promoção pausada.':'Promoção ligada.');vdPromos()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-pd]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar esta promoção? Se já foi usada, ela só fica pausada.'))return;const x=await api('/promos/'+b.dataset.pd,{method:'DELETE'});toast(x.paused?'Já foi usada: ficou pausada.':'Promoção apagada.');vdPromos()});
+  const TPL={bv:{name:'Boas-vindas',kind:'percent',value:10,first_purchase:true,description:'10% de desconto na primeira compra.'},
+    vt:{name:'Volta pra gente',kind:'percent',value:15,only_inactive:true,requires_coupon:true,description:'15% para quem está há um tempo sem comprar.'},
+    bx:{name:'Leve 3, pague 2',kind:'bxgy',buy:3,pay:2,scope:'categories',categories:[]}};
+  document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>promoModal(null,TPL[b.dataset.tp]));
+}
+const PKEYS=['name','description','active','starts','ends','weekdays','hour_from','hour_to','scope','categories','product_ids','kind','value','buy','pay','first_purchase','only_inactive','min_total','origins','max_uses','max_per_contact','requires_coupon','stackable','nanda_offers'];
+const promoBody=(p,over)=>Object.fromEntries(PKEYS.map(k=>[k,(over&&k in over)?over[k]:p[k]]).filter(([k,v])=>v!==undefined));
+async function promoModal(p,tpl){
+  const [prods,org]=await Promise.all([api('/products'),orgLoad()]);const cats=[...new Set(prods.map(x=>x.category).filter(Boolean))];
+  const x={name:'',description:'',active:true,starts:null,ends:null,weekdays:[],hour_from:null,hour_to:null,scope:'all',categories:[],product_ids:[],kind:'percent',value:10,buy:3,pay:2,first_purchase:false,only_inactive:false,min_total:null,origins:[],max_uses:null,max_per_contact:null,requires_coupon:false,stackable:false,nanda_offers:true,...(tpl||{}),...(p||{})};
+  const chips=(name,items,sel)=>`<div class="chks">${items.map(i=>`<label><input type="checkbox" name="${name}" value="${esc(i.id)}" ${sel.includes(i.id)?'checked':''}>${esc(i.name)}</label>`).join('')||'<span class="hint">Nada cadastrado ainda.</span>'}</div>`;
+  const o=overlay(`<form class="modal" id="prF" style="width:640px"><div class="row"><h2 style="font-size:20px">${p?'Editar promoção':'Nova promoção'}</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name)}" placeholder="Ex.: Black Friday, Boas-vindas, Terça do treino"></div>
+   <div class="field"><label>Desconto</label><div class="seg" id="prK">${PKIND.map(k=>`<button type="button" data-k="${k[0]}" class="${x.kind===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
+    <div class="row" style="gap:8px;margin-top:8px;font-size:13.5px" id="prV"></div></div>
+   <div class="field"><label>Vale para</label><div class="seg" id="prSc">${[['all','Tudo'],['categories','Categorias'],['products','Produtos e serviços']].map(k=>`<button type="button" data-s="${k[0]}" class="${x.scope===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
+    <div id="prScC" style="margin-top:8px;${x.scope==='categories'?'':'display:none'}">${chips('cat',cats.map(c=>({id:c,name:c})),x.categories)}</div>
+    <div id="prScP" style="margin-top:8px;${x.scope==='products'?'':'display:none'}">${chips('prod',prods.filter(y=>y.active).map(y=>({id:y.id,name:y.name})),x.product_ids)}</div></div>
+   <div class="field"><label>Quando vale</label><div class="form2"><div class="field"><span class="hint">Início</span><input type="date" name="starts" value="${x.starts||''}"></div><div class="field"><span class="hint">Fim</span><input type="date" name="ends" value="${x.ends||''}"></div></div>
+    <div class="row" style="gap:10px;flex-wrap:wrap;margin-top:6px"><div class="chks sm">${WK.map((d,i)=>`<label><input type="checkbox" name="wd" value="${i}" ${x.weekdays.includes(i)?'checked':''}>${d}</label>`).join('')}</div>
+     <span class="row" style="gap:6px;font-size:13px">das <input type="time" name="hf" value="${x.hour_from||''}" style="width:110px"> às <input type="time" name="ht" value="${x.hour_to||''}" style="width:110px"></span></div>
+    <span class="hint">Sem datas, vale sempre. Sem dias marcados, vale todos os dias. Ela liga e desliga sozinha.</span></div>
+   <details ${x.first_purchase||x.only_inactive||x.min_total||x.origins.length||x.max_uses||x.max_per_contact?'open':''}><summary style="cursor:pointer;font-weight:700;font-size:13.5px">Condições (opcional)</summary><div class="grid" style="gap:10px;margin-top:10px">
+    <label class="ckl"><input type="checkbox" name="first" ${x.first_purchase?'checked':''}> Só na primeira compra do cliente</label>
+    <label class="ckl"><input type="checkbox" name="inactive" ${x.only_inactive?'checked':''}> Só para cliente inativo (sem comprar há ${ME.company.inactive_days||90} dias)</label>
+    <div class="row" style="gap:8px;font-size:13.5px">Compra mínima de R$ <input type="number" name="min" min="0" step="0.01" value="${x.min_total??''}" style="width:110px"></div>
+    <div class="field"><span class="hint">Só para quem veio de</span>${chips('org',org.origins,x.origins)}</div>
+    <div class="row" style="gap:8px;font-size:13.5px;flex-wrap:wrap">Limite de <input type="number" name="mu" min="1" value="${x.max_uses??''}" placeholder="—" style="width:80px"> usos no total e <input type="number" name="mpc" min="1" value="${x.max_per_contact??''}" placeholder="—" style="width:80px"> por cliente</div></div></details>
+   <div class="field"><label>Como entra na venda</label><div class="modes" style="grid-template-columns:1fr 1fr">
+     <label><input type="radio" name="rc" value="0" ${!x.requires_coupon?'checked':''}><b>Automática</b>Aparece marcada quando a venda se encaixa.</label>
+     <label><input type="radio" name="rc" value="1" ${x.requires_coupon?'checked':''}><b>Só com cupom</b>Vale quando o cliente tem o código.</label></div>
+    <label class="ckl" style="margin-top:8px"><input type="checkbox" name="stack" ${x.stackable?'checked':''}> Pode juntar com outras promoções</label>
+    <label class="ckl"><input type="checkbox" name="nanda" ${x.nanda_offers?'checked':''}> A Nanda pode oferecer esta promoção</label></div>
+   <div class="field"><label>Texto para a Nanda (opcional)</label><textarea name="description" rows="2" maxlength="400" placeholder="Ex.: válida para matrículas feitas até domingo; não vale para planos família.">${esc(x.description||'')}</textarea></div>
+   <div class="row"><button class="btn p">Salvar</button><label class="ckl" style="margin:0 0 0 auto"><input type="checkbox" name="active" ${x.active?'checked':''}> Ligada</label><span class="err" id="prE"></span></div></form>`,true);
+  const f=o.querySelector('#prF');let kind=x.kind,scope=x.scope;
+  const drawV=()=>{$('#prV').innerHTML=kind==='bxgy'?`Leve <input type="number" name="buy" min="2" max="100" value="${x.buy||3}" style="width:70px"> pague <input type="number" name="pay" min="1" max="99" value="${x.pay||2}" style="width:70px">`
+    :`${kind==='percent'?'':'R$ '}<input type="number" name="value" min="0" step="${kind==='percent'?'1':'0.01'}" value="${x.value??''}" required style="width:110px"> ${kind==='percent'?'% de desconto':kind==='fixed'?'de desconto no total dos itens':'por unidade'}`};
+  drawV();
+  o.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;o.querySelectorAll('[data-k]').forEach(y=>y.classList.toggle('on',y===b));if(kind==='price'&&scope==='all')o.querySelector('[data-s=products]').click();drawV()});
+  o.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{scope=b.dataset.s;o.querySelectorAll('[data-s]').forEach(y=>y.classList.toggle('on',y===b));$('#prScC').style.display=scope==='categories'?'':'none';$('#prScP').style.display=scope==='products'?'':'none'});
+  const vals=n=>[...f.querySelectorAll(`[name=${n}]:checked`)].map(i=>i.value);
+  f.onsubmit=async ev=>{ev.preventDefault();$('#prE').textContent='';
+    const body={name:f.name.value,description:f.description.value,active:f.active.checked,starts:f.starts.value||null,ends:f.ends.value||null,weekdays:vals('wd').map(Number),
+      hour_from:f.hf.value||null,hour_to:f.ht.value||null,scope,categories:vals('cat'),product_ids:vals('prod'),kind,value:f.value?Number(f.value.value)||0:0,buy:f.buy?Number(f.buy.value):0,pay:f.pay?Number(f.pay.value):0,
+      first_purchase:f.first.checked,only_inactive:f.inactive.checked,min_total:f.min.value?Number(f.min.value):null,origins:vals('org'),max_uses:f.mu.value?Number(f.mu.value):null,max_per_contact:f.mpc.value?Number(f.mpc.value):null,
+      requires_coupon:f.rc.value==='1',stackable:f.stack.checked,nanda_offers:f.nanda.checked};
+    try{const r=await api(p?'/promos/'+p.id:'/promos',{method:p?'PUT':'POST',body});o.remove();toast('Promoção salva.');VD.opts=null;
+      if(!p&&body.requires_coupon){await vdPromos();couponsModal({...r,coupons:0})}else vdPromos()}catch(e){$('#prE').textContent=e.message}};
+}
+async function couponsModal(p){
+  const o=overlay(`<div class="modal" style="width:620px"><div class="row"><h2 style="font-size:20px">Cupons · ${esc(p.name)}</h2><button class="x">×</button></div>
+   <div class="seg" id="cpM"><button class="on" data-m="one">Código para divulgar</button><button data-m="many">Códigos individuais</button></div>
+   <form id="cpF" class="grid" style="gap:10px"></form><div id="cpL"><div class="empty">Carregando...</div></div></div>`,true);
+  let mode='one';
+  const drawF=()=>{$('#cpF').innerHTML=mode==='one'
+    ?`<p class="hint" style="margin:0">Um código só para campanha, post ou anúncio (ex.: BLACK20). Cada cliente usa uma vez.</p>
+      <div class="form2"><div class="field"><label>Código</label><input name="code" required maxlength="20" placeholder="BLACK20" style="text-transform:uppercase"></div><div class="field"><label>Válido até (opcional)</label><input type="date" name="expires"></div></div>
+      <div class="row" style="gap:8px;font-size:13.5px">Limite total de <input type="number" name="mu" min="1" placeholder="—" style="width:80px"> usos</div>
+      <label class="ckl"><input type="checkbox" name="public" checked> A Nanda pode passar este código para quem perguntar</label>`
+    :`<p class="hint" style="margin:0">Códigos únicos, cada um vale uma vez. Bom para mandar a clientes específicos ou imprimir.</p>
+      <div class="form2"><div class="field"><label>Quantos</label><input type="number" name="count" min="1" max="500" value="20" required></div><div class="field"><label>Começo do código (opcional)</label><input name="prefix" maxlength="10" placeholder="VIP" style="text-transform:uppercase"></div></div>
+      <div class="field"><label>Válidos até (opcional)</label><input type="date" name="expires" style="max-width:200px"></div>`;
+    $('#cpF').insertAdjacentHTML('beforeend','<div class="row"><button class="btn p">Criar</button><span class="err" id="cpE"></span></div>')};
+  const load=async()=>{const cs=await api('/promos/'+p.id+'/coupons');
+    $('#cpL').innerHTML=cs.length?`<div class="row" style="margin:14px 0 6px"><h3 class="sec" style="margin:0">${cs.length} ${cs.length===1?'cupom':'cupons'}</h3><button class="lnk" id="cpX" style="margin-left:auto">baixar lista</button></div>
+      <div style="max-height:300px;overflow:auto"><table class="vtb"><thead><tr><th>Código</th><th>Tipo</th><th class="n">Usos</th><th>Validade</th><th></th></tr></thead><tbody>${cs.map(c=>`<tr class="${c.active?'':'cx'}"><td><b style="font-family:monospace;font-size:13.5px">${esc(c.code)}</b></td><td>${c.public?'divulgado':c.max_uses===1?'individual':'código'}${c.contact_name?' · '+esc(c.contact_name):''}</td><td class="n">${c.used}${c.max_uses?' / '+c.max_uses:''}</td><td>${c.expires?fmtD(c.expires):'—'}</td><td class="n"><button class="lnk" data-cc="${esc(c.code)}">copiar</button> <button class="lnk" data-cd="${c.id}">${c.used?'desativar':'apagar'}</button></td></tr>`).join('')}</tbody></table></div>`
+      :'<p class="hint" style="margin-top:14px">Nenhum cupom ainda.</p>';
+    $('#cpL').querySelectorAll('[data-cc]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.cc);toast('Código copiado.')}catch(e){}});
+    $('#cpL').querySelectorAll('[data-cd]').forEach(b=>b.onclick=async()=>{await api('/coupons/'+b.dataset.cd,{method:'DELETE'});load()});
+    if($('#cpX'))$('#cpX').onclick=()=>{const csv='﻿Código;Usos;Limite;Validade\n'+cs.map(c=>[c.code,c.used,c.max_uses||'',c.expires||''].join(';')).join('\n');
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='cupons-'+p.name.toLowerCase().replace(/\W+/g,'-')+'.csv';a.click()}};
+  drawF();load();
+  o.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;o.querySelectorAll('[data-m]').forEach(y=>y.classList.toggle('on',y===b));drawF()});
+  $('#cpF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+    const body=mode==='one'?{code:f.code.value.trim().toUpperCase(),expires:f.expires.value||null,max_uses:f.mu.value?Number(f.mu.value):null,one_per_contact:true,public:f.public.checked}
+      :{count:Number(f.count.value),prefix:f.prefix.value.trim(),expires:f.expires.value||null,one_per_contact:true,public:false};
+    try{const r=await api('/promos/'+p.id+'/coupons',{method:'POST',body});toast(r.length===1?'Cupom '+r[0].code+' criado.':r.length+' cupons criados.');drawF();load();if(VD.tab==='promocoes')vdPromos()}catch(e){$('#cpE').textContent=e.message}};
 }
 
 /* origens e links */

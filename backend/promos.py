@@ -161,6 +161,7 @@ async def price(company, contact, items, promo_ids=None, coupon=None, skip_sale=
     as promoções aplicadas e as disponíveis com o motivo de quem não vale."""
     promos = await db.promos.find({'company_id': company['id']}, {'_id': 0}).to_list(500)
     for p in promos: p['uses'] = await uses_of(p['id'], skip_sale=skip_sale)
+    names = {x['id']: x['name'] for x in await db.products.find({'company_id': company['id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(1000)}
     cp, cp_err = await find_coupon(company['id'], coupon, contact['id'], skip_sale) if coupon else (None, None)
     chosen = set(promo_ids or [])
     if cp and not cp_err: chosen.add(cp['promo_id'])
@@ -171,7 +172,7 @@ async def price(company, contact, items, promo_ids=None, coupon=None, skip_sale=
         reason = await why_not(p, company, contact, items, coupon_ok, skip_sale)
         d, _ = promo_discount(p, items) if not reason else (0, {})
         if not reason and d <= 0: reason = 'não dá desconto nesta venda'
-        avail.append({'id': p['id'], 'name': p['name'], 'rule': rule_text(p), 'requires_coupon': p.get('requires_coupon'), 'stackable': p.get('stackable'),
+        avail.append({'id': p['id'], 'name': p['name'], 'rule': rule_text(p, names), 'requires_coupon': p.get('requires_coupon'), 'stackable': p.get('stackable'),
                       'discount': d, 'reason': reason, 'auto': not p.get('requires_coupon')})
         if not reason and (p['id'] in chosen or (auto and not p.get('requires_coupon') and promo_ids is None)): ok.append((p, coupon_ok))
     # não cumulativas: fica só a que dá mais desconto (cupom tem prioridade) junto com as cumulativas
