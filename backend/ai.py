@@ -14,7 +14,7 @@ from fastapi import APIRouter, Request, Depends, HTTPException
 from pydantic import BaseModel, Field
 from core import db, now, uid, audit, current_user, managers
 import whatsapp
-from whatsapp import get_contact, deliver, note
+from whatsapp import get_contact, deliver, note, aware
 from datetime import datetime
 import agenda
 
@@ -145,6 +145,15 @@ async def system_for(s, company, contact=None):
         from promos import nanda_block
         last = (await db.messages.find({'contact_id': contact['id'], 'dir': 'in'}, {'_id': 0, 'text': 1}).sort('at', -1).to_list(1) or [{}])[0].get('text', '') if contact else ''
         extra = await nanda_block(company, contact or {'id': None}, last)
+        if contact and contact.get('holdings'):
+            from wallet import state_of, offers_for, products_map
+            tz = agenda.tz_of(company)
+            has = [f"{x['name']}" + (f" (até {aware(x['expires_at']).astimezone(tz):%d/%m}" + (', vence logo' if state_of(x) == 'vence_logo' else ', já venceu' if state_of(x) == 'vencido' else '') + ')' if x.get('expires_at') else '') for x in contact['holdings']]
+            offs = offers_for(contact['holdings'], await products_map(company['id']))
+            extra += '\nO QUE ESTE CLIENTE JÁ COMPROU: ' + '; '.join(has) + '\n'
+            if offs:
+                extra += 'PODE FAZER SENTIDO OFERECER (só quando combinar com a conversa, sem empurrar; preço só se estiver no conhecimento): ' + '; '.join(
+                    ('renovação de ' if o['why'] == 'renovar' else 'voltar com ' if o['why'] == 'voltar' else '') + o['name'] for o in offs) + '\n'
     except Exception: log.exception('falha ao montar as promoções')
     return build_system(s, company, name, agenda_text, upcoming, opts, extra)
 

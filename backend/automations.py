@@ -6,6 +6,10 @@ Automação = gatilho + mensagem (+ mudar de etapa, opcional). Gatilhos:
 - before_appt    X horas antes de um horário marcado (lembrete)
 - appt_no_show   X horas depois de um horário marcado como "Faltou"
 - appt_done      X horas depois de um horário marcado como "Compareceu"
+- before_expiry  X horas antes de um item da carteira vencer (renovação)
+- after_expiry   X horas depois de vencer sem renovar (retomada)
+- after_purchase X horas depois de uma compra (próxima oferta, pós-venda)
+Pode gerar um cupom individual para cada envio ({cupom}).
 
 Envio: se o cliente falou nas últimas 24 h, vai a mensagem normal. Fora disso a Meta só aceita modelo
 aprovado; se a automação tiver um, ele é usado. Sem modelo, a vez é pulada e fica registrada.
@@ -26,10 +30,12 @@ import agenda
 log = logging.getLogger('oinanda.auto')
 router = APIRouter()
 TRIGGERS = {'stage_enter': 'Entrou na etapa', 'no_reply': 'Sem resposta do cliente', 'before_appt': 'Antes do horário marcado',
-            'appt_no_show': 'Depois de uma falta', 'appt_done': 'Depois do atendimento'}
+            'appt_no_show': 'Depois de uma falta', 'appt_done': 'Depois do atendimento', 'before_expiry': 'Antes de vencer',
+            'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra'}
 GRACE = timedelta(hours=24)  # depois do momento certo, ainda tenta por 24 h (ex.: servidor reiniciando, fora do horário)
 QUIET = (8, 21)
-VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'data': '12/11', 'hora': '09:00'}
+VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'data': '12/11', 'hora': '09:00',
+        'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10'}
 
 # ---------- variáveis ----------
 def render(text, ctx):
@@ -42,7 +48,13 @@ async def context(company, contact, appt=None):
         appt = up[0] if up else None
     name = (contact.get('name') or '').strip()
     first = name.split(' ')[0] if name and not name.isdigit() else ''
-    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'data': '', 'hora': ''}
+    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': ''}
+    hs = [x for x in contact.get('holdings') or [] if x.get('expires_at')]
+    if hs:  # o item que vence primeiro (ou o que venceu por último)
+        fut = [x for x in hs if aware(x['expires_at']) >= now()]
+        x = min(fut, key=lambda y: aware(y['expires_at'])) if fut else max(hs, key=lambda y: aware(y['expires_at']))
+        ctx.update(produto=x['name'], vencimento=f"{aware(x['expires_at']).astimezone(tz):%d/%m}")
+    if appt and appt.get('_extra'): ctx.update(appt['_extra']); appt = None
     if appt:
         t = aware(appt['start']).astimezone(tz)
         ctx.update(servico=appt.get('service_name') or '', data=f'{agenda.WEEK[t.weekday()]} {t:%d/%m}', hora=f'{t:%H:%M}')
@@ -181,7 +193,9 @@ def stage_by_hint(stages, hint):
 class AutoIn(BaseModel):
     recipe: Optional[str] = Field(default=None, max_length=40)
     name: Optional[str] = Field(default=None, min_length=2, max_length=60)
-    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done']] = None
+    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done', 'before_expiry', 'after_expiry', 'after_purchase']] = None
+    product_id: Optional[str] = None
+    coupon_promo_id: Optional[str] = None
     hours: Optional[float] = Field(default=None, ge=0, le=24 * 120)
     stage_id: Optional[str] = None
     message: Optional[str] = Field(default=None, min_length=5, max_length=1000)
@@ -197,6 +211,8 @@ async def check_refs(user, a):
     if a.get('template_id') and not await db.templates.find_one({'id': a['template_id'], 'company_id': user['company_id']}):
         raise HTTPException(400, 'Modelo não encontrado.')
     if a.get('trigger') == 'stage_enter' and not a.get('stage_id'): raise HTTPException(400, 'Escolha a etapa.')
+    if a.get('product_id') and not await db.products.find_one({'id': a['product_id'], 'company_id': user['company_id']}): raise HTTPException(400, 'Item não encontrado.')
+    if a.get('coupon_promo_id') and not await db.promos.find_one({'id': a['coupon_promo_id'], 'company_id': user['company_id']}): raise HTTPException(400, 'Promoção não encontrada.')
 
 def auto_out(a, stages=None):
     a = {k: v for k, v in a.items() if k != '_id'}
@@ -230,7 +246,8 @@ async def create_auto(body: AutoIn, request: Request, user=Depends(managers)):
     else:
         if not (body.name and body.trigger and body.message and body.hours is not None): raise HTTPException(400, 'Preencha nome, gatilho, tempo e mensagem.')
         a.update(name=body.name.strip(), trigger=body.trigger, hours=body.hours, stage_id=body.stage_id, message=body.message.strip(),
-                 template_id=body.template_id, move_to=body.move_to, active=True if body.active is None else body.active, category='MARKETING')
+                 template_id=body.template_id, move_to=body.move_to, active=True if body.active is None else body.active, category='MARKETING',
+                 product_id=body.product_id, coupon_promo_id=body.coupon_promo_id)
     await check_refs(user, a)
     await db.automations.insert_one(a.copy())
     await audit(request, user, 'Criou automação', a['name'])
@@ -241,7 +258,7 @@ async def patch_auto(aid: str, body: AutoIn, request: Request, user=Depends(mana
     a = await db.automations.find_one({'id': aid, 'company_id': user['company_id']}, {'_id': 0})
     if not a: raise HTTPException(404, 'Automação não encontrada.')
     upd = body.model_dump(exclude_unset=True); upd.pop('recipe', None)
-    for k in ('stage_id', 'move_to', 'template_id'):
+    for k in ('stage_id', 'move_to', 'template_id', 'product_id', 'coupon_promo_id'):
         if k in upd and not upd[k]: upd[k] = None
     a.update(upd)
     await check_refs(user, a)
@@ -301,6 +318,22 @@ async def candidates(a, company, stages):
                 anchor = max(marks) if marks else aware(c.get('created_at'))
                 if not anchor or not (oldest < anchor <= cut): continue
             out.append((f"{a['id']}:{c['id']}:{anchor.isoformat()}", c, None))
+    elif t in ('before_expiry', 'after_expiry'):
+        pid = a.get('product_id')
+        lo, hi = (now(), now() + h) if t == 'before_expiry' else (cut - timedelta(days=3), cut)  # retomada: ainda tenta por 3 dias
+        for c in await db.contacts.find({'company_id': cid, 'opt_out': {'$ne': True}, 'holdings.expires_at': {'$gt': lo, '$lte': hi}}, {'_id': 0}).to_list(3000):
+            for x in c.get('holdings') or []:
+                e = aware(x.get('expires_at'))
+                if e and lo < e <= hi and (not pid or x.get('product_id') == pid):
+                    tz = agenda.tz_of(company)
+                    out.append((f"{a['id']}:{c['id']}:{x['key']}:{e.isoformat()}", c, {'_extra': {'produto': x['name'], 'vencimento': f'{e.astimezone(tz):%d/%m}'}}))
+    elif t == 'after_purchase':
+        q = {'company_id': cid, 'status': 'ok', 'date': {'$lte': cut, '$gt': oldest}}
+        if a.get('product_id'): q['items.product_id'] = a['product_id']
+        for sl in await db.sales.find(q, {'_id': 0}).to_list(3000):
+            c = await db.contacts.find_one({'id': sl['contact_id']}, {'_id': 0})
+            it = next((i for i in sl['items'] if not a.get('product_id') or i.get('product_id') == a['product_id']), sl['items'][0])
+            if c and not c.get('opt_out'): out.append((f"{a['id']}:{sl['id']}", c, {'_extra': {'produto': it['name']}}))
     else:
         if t == 'before_appt': q = {'status': {'$in': agenda.ACTIVE}, 'start': {'$gt': now(), '$lte': now() + h}}
         elif t == 'appt_no_show': q = {'status': 'no_show', 'start': {'$lte': cut, '$gt': oldest - GRACE}}
@@ -319,6 +352,8 @@ async def fire(a, company, stages, key, contact, appt):
     except Exception: return None  # já disparou (chave única)
     by = f'Automação · {a["name"]}'
     ctx = await context(company, contact, appt)
+    if a.get('coupon_promo_id') and '{cupom}' in (a.get('message') or '') + str((await db.templates.find_one({'id': a.get('template_id')}, {'_id': 0, 'params': 1}) or {}).get('params')):
+        ctx['cupom'] = await personal_coupon(company['id'], a['coupon_promo_id'], contact['id'], f'Automação · {a["name"]}')
     li = aware(contact.get('last_in_at'))
     status, detail = 'skipped', ''
     try:
@@ -338,6 +373,18 @@ async def fire(a, company, stages, key, contact, appt):
     await db.automation_runs.update_one({'key': key}, {'$set': {'status': status, 'detail': detail}})
     await db.automations.update_one({'id': a['id']}, {'$inc': {'sent' if status == 'sent' else 'skipped': 1}, '$set': {'last_run_at': now()}})
     return status
+
+async def personal_coupon(company_id, promo_id, contact_id, by, days=30, prefix=''):
+    """Cupom individual de uso único para este cliente (vale por alguns dias)."""
+    import promos
+    from datetime import datetime
+    body = promos.CouponIn(max_uses=1, one_per_contact=True, expires=(now() + timedelta(days=days)).date().isoformat())
+    for _ in range(5):
+        code = promos.random_code(prefix or 'OI')
+        if not await db.coupons.find_one({'company_id': company_id, 'code': code}): break
+    c = await promos.make_coupon(company_id, promo_id, code, body, contact_id, by)
+    await db.promos.update_one({'id': promo_id}, {'$set': {'requires_coupon': True}})
+    return c['code']
 
 async def run_once(limit=300):
     from funnel import stages_for
@@ -365,4 +412,8 @@ async def loop():
             from teams import check_sla
             await check_sla()
         except Exception: log.exception('falha no alerta de fila das equipes')
+        try:
+            from campaigns import tick
+            await tick()
+        except Exception: log.exception('falha no envio das campanhas')
         await asyncio.sleep(every)

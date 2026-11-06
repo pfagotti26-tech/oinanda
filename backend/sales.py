@@ -179,6 +179,9 @@ async def create_sale(body: SaleIn, request: Request, user=Depends(current_user)
         if won and next((s['kind'] for s in stages if s['id'] == c.get('stage')), None) != 'won':
             await move_stage(user['company'], c, won['id'], who, stages)
     await refresh_contact(user['company'], c['id'])
+    if sale['status'] == 'ok':
+        from opps import on_sale
+        await on_sale(user['company_id'], c['id'], sale)
     brl = f'R$ {sale["total"]:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
     await note(user['company_id'], c['id'], f'{who} registrou uma venda de {brl}' + (' (desconto acima do limite: aguardando aprovação do gestor)' if pending else ''))
     await audit(request, user, 'Registrou venda', f'{c["name"]} · {brl}')

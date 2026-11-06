@@ -55,6 +55,7 @@ async def graph(method, path, token, payload=None, params=None):
 
 def aware(dt):
     if dt is None: return None
+    if isinstance(dt, str): dt = datetime.fromisoformat(dt.replace('Z', '+00:00'))
     return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
 # ---------- conexão do número ----------

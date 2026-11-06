@@ -21,6 +21,8 @@ from sales import router as sales_router
 from origins import router as origins_router
 from promos import router as promos_router
 from wallet import router as wallet_router
+from campaigns import router as campaigns_router
+from opps import router as opps_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -73,6 +75,8 @@ async def lifespan(app):
     await db.coupons.create_index([('company_id', 1), ('code', 1)], unique=True)
     await db.promos.create_index('company_id')
     await db.segments.create_index('company_id')
+    await db.campaign_sends.create_index([('campaign_id', 1), ('status', 1)])
+    await db.opps.create_index([('company_id', 1), ('contact_id', 1)])
     await db.contacts.create_index([('company_id', 1), ('next_expiry', 1)])
     worker = None
     if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
@@ -98,6 +102,8 @@ app.include_router(sales_router, prefix="/api")
 app.include_router(origins_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
 app.include_router(wallet_router, prefix="/api")
+app.include_router(campaigns_router, prefix="/api")
+app.include_router(opps_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):
