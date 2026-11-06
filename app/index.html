@@ -537,6 +537,39 @@ td>.sure,tr+.sure{margin:4px}
 .rn-up{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.rn-up button{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);border-radius:14px;padding:12px}.rn-up button:hover{border-color:var(--c);background:var(--soft)}
 .rn-up span{font-size:12px;color:var(--ink3);font-weight:700}.rn-up b{font-size:20px;letter-spacing:-.4px}.rn-up small{font-size:12px;color:var(--ink2)}
 @media (max-width:700px){.rn-up{grid-template-columns:1fr}}
+
+/* metas */
+.mt-g{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}.mt-main{min-width:0}.mt-side{display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}
+.mt-main .sec{margin:6px 0 8px}.gl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:14px}
+.gl-c{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}.gl-c.big{border-width:1.5px}
+.gl-c.lv-meta,.gl-c.lv-super{border-color:#BFE3D2;background:linear-gradient(180deg,#F4FBF7,#fff)}
+.gl-h{display:flex;gap:10px;align-items:flex-start}.gl-h>div{flex:1;min-width:0;display:flex;flex-direction:column}.gl-h b{font-size:15px}.gl-h span{font-size:12px;color:var(--ink3)}
+.gl-v{display:flex;align-items:baseline;gap:8px}.gl-v b{font-size:26px;letter-spacing:-.6px;font-variant-numeric:tabular-nums}.gl-v span{color:var(--ink3);font-size:13px}.gl-v em{margin-left:auto;font-style:normal;font-weight:800;font-size:15px}
+.gl-bar{position:relative;height:12px;background:#F3EEE9;border-radius:99px;overflow:visible}.gl-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c),#F09A75)}
+.lv-meta .gl-bar i,.lv-super .gl-bar i{background:linear-gradient(90deg,var(--ok),#36A27D)}.gl-bar .gk{position:absolute;top:-3px;bottom:-3px;width:2px;background:#C9BEB3;border-radius:2px;display:block}.gl-bar .gk.gm{background:var(--ink)}.gl-bar .gk.gs{background:#7A4FB8}
+.gl-bar.sm{height:7px;margin:6px 0 2px}
+.gl-f{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}.gl-f .ok{color:var(--ok);font-weight:700}.gl-f .bad{color:var(--bad);font-weight:700}
+.gl-aw{font-size:12.5px;background:#FFF7E6;border-radius:10px;padding:6px 10px;color:#7A5A12}
+.lv-c{display:flex;gap:14px;align-items:center}.lv-c>div:last-child{flex:1;display:flex;flex-direction:column}.lv-c b{font-size:20px}.lv-c small{font-size:12px;color:var(--ink3)}
+.lv-b{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:30px;background:#F3EEE9}.lv-b.lv-ouro{background:#FFF4D6}.lv-b.lv-diamante{background:#E8F3FB}.lv-b.lv-prata{background:#EEF1F4}
+.rk{display:flex;flex-direction:column;gap:2px}.rk-r{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;font-size:14px}.rk-r.me{background:var(--soft)}
+.rk-r .md{width:26px;text-align:center;font-size:18px;flex:none}.rk-r .nm{flex:1;min-width:0;display:flex;flex-direction:column}.rk-r small{font-size:11px;color:var(--ink3)}.rk-r b{font-variant-numeric:tabular-nums}
+.rk-n{font-size:12px!important;font-weight:800;color:var(--ink3)}
+.ach{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ac{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;padding:8px;opacity:.55}.ac.on{opacity:1;border-color:#EBD58D;background:#FFFBEA}
+.ac i{font-style:normal;color:#D99A1E;font-size:16px}.ac b{font-size:12.5px}.ac small{font-size:11px;color:var(--ink3)}
+.aw-r{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F3EEE9}.aw-r>span:first-child{flex:1;min-width:0;display:flex;flex-direction:column}.aw-r small{font-size:12px;color:var(--ink3)}
+.mc-t{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #F3EEE9;cursor:pointer}.mc-t input{width:auto;margin-top:3px}.mc-t span{display:flex;flex-direction:column}.mc-t small{color:var(--ink3);font-size:12.5px}
+.pt-g{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}.pt-g label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}.pt-g input{width:80px;border:1px solid #DCD2C9;border-radius:9px;padding:6px 8px;font:inherit}
+.in-mt{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;margin-bottom:14px}.in-rk{display:flex;flex-direction:column;gap:4px;text-align:left}.in-rk b{font-size:34px;letter-spacing:-1px}.in-rk b small{font-size:14px;color:var(--ink3)}
+body.tv .app{display:none}.tvw{position:fixed;inset:0;background:#17212B;color:#fff;z-index:100;padding:28px 36px;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.tv-h{display:flex;align-items:center;gap:16px;font-size:18px}.tv-h>span:nth-of-type(2){margin-left:auto;color:#9AA7B4;text-transform:capitalize}.tv-h button{color:#9AA7B4;font-weight:700}
+.tv-g{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}.tv-goals{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start}.tv-goals .gl-c{color:var(--ink)}
+.tv-rk{background:rgba(255,255,255,.06);border-radius:20px;padding:20px}.tv-rk h2{margin:0 0 10px;font-size:22px}.tv-r{display:grid;grid-template-columns:44px 1fr auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:20px}
+.tv-r em{font-style:normal;font-weight:800}.tv-r small{grid-column:2/4;color:#9AA7B4;font-size:13px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}.confetti i{position:absolute;top:-10px;width:8px;height:14px;border-radius:2px;animation:cf 2.6s ease-in forwards}
+@keyframes cf{to{transform:translateY(105vh) rotate(720deg);opacity:.8}}
+@media (max-width:1100px){.mt-g{grid-template-columns:1fr}.mt-side{position:static}.tv-g{grid-template-columns:1fr}}
+@media (max-width:700px){.in-mt{grid-template-columns:1fr}.pt-g{grid-template-columns:1fr}.tv-goals{grid-template-columns:1fr}.gl-grid{grid-template-columns:1fr}}
 /* vendas v2 */
 .vd-hd{margin-bottom:6px}.vd-hd .btn svg{width:15px;height:15px;margin-right:4px;vertical-align:-3px}
 .utabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto;scrollbar-width:none}.utabs::-webkit-scrollbar{display:none}
@@ -822,19 +855,19 @@ function passwordView(){
 }
 
 /* ---------- casca ---------- */
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['empresa','Empresa'],['atividade','Atividade']];
 const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversas:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
   nanda:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
   funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',
   agenda:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',vendas:'<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
-  automacoes:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',clientes:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17a3.5 3.5 0 0 1 7 0M15 10h3M15 14h3"/>',relatorios:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  automacoes:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',metas:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',clientes:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17a3.5 3.5 0 0 1 7 0M15 10h3M15 14h3"/>',relatorios:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   equipe:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',
   empresa:'<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/>',
   atividade:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
   'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
-const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','automacoes','relatorios']],['Configurar',['nanda','equipe','empresa','atividade']]];
+const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','metas','automacoes','relatorios']],['Configurar',['nanda','equipe','empresa','atividade']]];
 const NAVMINI={get(){try{return localStorage.getItem('navmini')==='1'}catch(e){return false}},set(v){try{localStorage.setItem('navmini',v?'1':'0')}catch(e){}}};
 const nrm=t=>(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
@@ -851,6 +884,10 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Minha lista de pós-venda','funil',()=>{FN.pipe='posvenda';FN.pf='mine';return go('funil')}],
   ['Campanhas no WhatsApp','clientes',()=>{CL.tab='camp';return go('clientes')},m],
   ['Relatório de renovação e upsell','clientes',()=>{CL.tab='ren';return go('clientes')},m],
+  ['Minhas metas e ranking','metas',()=>{MT.tab='painel';return go('metas')}],
+  ['Criar meta','metas',()=>{MT.tab='metas';return go('metas').then(()=>goalForm(null))},m],
+  ['Criar desafio','metas',()=>{MT.tab='desafios';return go('metas').then(()=>challengeForm())},m],
+  ['Modo TV (ranking e metas)','metas',()=>go('metas').then(()=>mtTv())],
   ['Agendar horário','agenda',()=>go('agenda').then(()=>bookModal({},()=>VIEWS.agenda()))],
   ['Conversas esperando resposta','conversas',()=>{CV.filter='waiting';CV.open=null;return go('conversas')}],
   ['Ver clientes (já compraram)','conversas',()=>{CV.kind='cliente';CV.origin='';CV.open=null;CV.filter='all';return go('conversas')}],
@@ -883,7 +920,7 @@ const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-ativid
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
   const canManage=['owner','manager'].includes(u.role);
-  const allowed=v=>canManage||!['atividade','nanda','automacoes','relatorios'].includes(v);
+  const allowed=v=>(canManage||!['atividade','nanda','automacoes','relatorios'].includes(v))&&(v!=='metas'||canManage||gamOn());
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side">
@@ -922,6 +959,7 @@ function pathFor(v){
   if(v==='vendas'&&VD.tab!=='relatorio')p+='/'+VD.tab;
   if(v==='clientes'&&CL.tab&&CL.tab!=='seg')p+='/'+({camp:'campanhas',ren:'renovacao'}[CL.tab]);
   if(v==='funil'&&FN.pipe==='posvenda')p+='/pos-venda';
+  if(v==='metas'&&MT.tab!=='painel')p+='/'+MT.tab;
   return p}
 function readPath(){
   const parts=location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
@@ -934,6 +972,7 @@ function readPath(){
   if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens'].includes(parts[1])?parts[1]:'relatorio';
   if(v==='clientes')CL.tab={campanhas:'camp',renovacao:'ren'}[parts[1]]||'seg';
   if(v==='funil')FN.pipe=parts[1]==='pos-venda'?'posvenda':'vendas';
+  if(v==='metas')MT.tab=['metas','desafios','premios','config'].includes(parts[1])?parts[1]:'painel';
   return VIEWS[v]?v:'inicio'}
 function syncUrl(replace){
   if(!ME)return;const p=pathFor(VIEW);
@@ -1158,8 +1197,10 @@ async function pollCounts(){if(!ME)return;let n;try{n=await api('/inbox/counts')
   if(NOTIF.seen){for(const t of n.transfers||[])if(!NOTIF.seen.has(t.id)){const msg=`${(t.transfer_by||'Alguém').split(' ')[0]} transferiu ${t.name} para você${t.transfer_reason?': '+t.transfer_reason:''}`;toast(msg);
       try{if('Notification' in window&&Notification.permission==='granted'){const nn=new Notification('Oi Nanda · conversa transferida',{body:msg,tag:t.id});nn.onclick=()=>{focus();CV.open=t.id;go('conversas')}}}catch(e){}}}
   NOTIF.seen=new Set(ids);
+  const cel=n.celebrations||[];if(NOTIF.cel){for(const c of cel)if(!NOTIF.cel.has(c.key))celebrate(c.text)}NOTIF.cel=new Set(cel.map(c=>c.key));
   document.querySelectorAll('[data-f]').forEach(x=>{const i=x.querySelector('i');if(i)i.textContent=String(n[x.dataset.f]||0)});
   document.title=(ids.length?`(${ids.length}) `:'')+document.title.replace(/^\(\d+\) /,'')}
+function celebrate(text){toast('🎉 '+text);const d=document.createElement('div');d.className='confetti';d.innerHTML=Array.from({length:40},(_,i)=>`<i style="left:${Math.random()*100}%;animation-delay:${Math.random()*.6}s;background:${['#E8603F','#2F9AA0','#D99A1E','#8E6CC9','#4F8A5B'][i%5]}"></i>`).join('');document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
 async function qrLoad(){if(!CV.qr)CV.qr=await api('/quick-replies').catch(()=>[]);return CV.qr}
 async function qrOpen(term){const p=$('#cvQR');if(!p)return;const all=await qrLoad();const t=term.toLowerCase();
   const list=all.filter(r=>!t||r.shortcut.includes(t)||r.text.toLowerCase().includes(t)).slice(0,8);
@@ -2218,6 +2259,174 @@ async function oppDetail(op){const d=FN.pd,mgr=isMgr();const team=mgr?await api(
   $('#odV').onclick=()=>{o.remove();saleModal({contact:{id:op.contact_id,name:op.contact_name},items:op.product_id?[{product_id:op.product_id,name:op.product_name,price:op.value}]:null,onDone:()=>fnPost()})};
 }
 
+/* metas, prêmios e gamificação */
+const MT={tab:'painel',data:null,tv:null};
+const MTM={revenue:['Faturamento','brl'],sales:['Número de vendas','num'],ticket:['Ticket médio','brl'],new_clients:['Clientes novos (primeira compra)','num'],renewals:['Renovações','num'],
+  upsell:['Vendas de próximo produto','num'],reactivations:['Clientes reativados','num'],product_qty:['Unidades de um item','num'],appointments:['Agendamentos','num'],attended:['Comparecimentos','num'],
+  assisted:['Oportunidades passadas que viraram venda','num'],response:['Tempo da 1ª resposta (minutos, quanto menor melhor)','min'],quality:['Nota do atendimento (0 a 10)','score'],points:['Pontos','num']};
+const mtF=(v,m)=>v==null?'—':MTM[m][1]==='brl'?brl(v):MTM[m][1]==='min'?num(v)+' min':MTM[m][1]==='score'?String(v).replace('.',','):num(v);
+const LVL={abaixo:['abaixo do mínimo','bad'],minimo:['mínimo','warn'],meta:['meta batida','ok'],super:['supermeta!','ok']};
+const gamOn=()=>{const g=ME.company.gamify||{};return !!(g.goals||g.game||g.awards)};
+function goalCard(g,big){const fl=g.floor_pct,sp=g.super_pct,scale=Math.max(sp,g.pct)*1.05;const at=x=>Math.min(100,100*x/scale);
+  return `<div class="gl-c ${big?'big':''} lv-${g.level}"><div class="gl-h"><div><b>${esc(g.name)}</b><span>${esc(g.owner_name||'')} · ${esc(MTM[g.metric][0])}${g.product_name?' · '+esc(g.product_name):''}</span></div><span class="pill ${LVL[g.level][1]}">${LVL[g.level][0]}</span></div>
+   <div class="gl-v"><b>${mtF(g.value,g.metric)}</b><span>de ${mtF(g.target,g.metric)}</span><em>${num(g.pct)}%</em></div>
+   <div class="gl-bar"><i style="width:${at(g.pct)}%"></i><span class="gk" style="left:${at(fl)}%" title="mínimo ${fl}%"></span><span class="gk gm" style="left:${at(100)}%" title="meta"></span><span class="gk gs" style="left:${at(sp)}%" title="supermeta ${sp}%"></span></div>
+   <div class="gl-f">${g.per_day!=null&&g.pct<100&&g.days_left>0?`<span>Faltam <b>${mtF(Math.max(0,g.target-(g.value||0)),g.metric)}</b> · <b>${mtF(g.per_day,g.metric)}</b> por dia</span>`:g.pct>=100?'<span>🎉 Meta batida</span>':''}
+    ${g.projection_pct!=null&&g.pct<100?`<span class="${g.on_track?'ok':'bad'}">${g.on_track?'No ritmo':'Abaixo do ritmo'} · projeção ${num(g.projection_pct)}%</span>`:''}<span class="hint">${g.days_left?g.days_left+' dias restantes':'último dia'}</span></div>
+   ${g.award_meta||g.award_super?`<div class="gl-aw">🏆 ${g.award_meta?`Meta: ${esc(g.award_meta)}`:''}${g.award_meta&&g.award_super?' · ':''}${g.award_super?`Supermeta: ${esc(g.award_super)}`:''}</div>`:''}</div>`}
+function mtHead(){const mgr=isMgr();const tabs=[['painel','Painel'],...(mgr?[['metas','Metas']]:[]),['desafios','Desafios'],['premios','Prêmios'],...(mgr?[['config','Configurar']]:[])];
+  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Metas da empresa, das equipes e de cada pessoa, com prêmios e ranking.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}</div></div>
+   <nav class="utabs">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
+async function mtView(){
+  const mgr=isMgr();if(!gamOn()&&mgr&&MT.tab!=='config')MT.tab='config';
+  $('#page').innerHTML=mtHead()+'<div id="mtB"><div class="empty">Carregando...</div></div>';
+  document.querySelectorAll('[data-mtt]').forEach(b=>b.onclick=()=>{MT.tab=b.dataset.mtt;syncUrl();mtView()});
+  if($('#mtTv'))$('#mtTv').onclick=mtTv;
+  if(!gamOn()&&!mgr){$('#mtB').innerHTML='<div class="aempty"><div><b>Metas ainda não estão ligadas</b><p>Peça para o dono ou gestor ligar em Metas › Configurar.</p></div></div>';return}
+  if(MT.tab==='config')return mtConfig();if(MT.tab==='metas')return mtGoals();if(MT.tab==='desafios')return mtChallenges();if(MT.tab==='premios')return mtAwards();
+  return mtBoard();
+}
+async function mtBoard(){
+  const b=MT.data=await api('/goals/board');const s=b.settings;
+  if(!b.enabled){$('#mtB').innerHTML='<div class="aempty"><div><b>Nada ligado ainda</b></div></div>';return}
+  const mine=b.my_goals||[],others=(b.goals||[]).filter(g=>!mine.includes(g)&&!(g.scope==='user'&&g.target_id===ME.user.id));
+  const comp=others.filter(g=>g.scope==='company'),tms=others.filter(g=>g.scope==='team'),ppl=others.filter(g=>g.scope==='user');
+  const medal=i=>`<span class="md">${['🥇','🥈','🥉'][i]||`<small class="rk-n">${i+1}º</small>`}</span>`;
+  $('#mtB').innerHTML=`<div class="mt-g"><div class="mt-main">
+    ${s.goals?`${mine.length?`<h3 class="sec">Minhas metas</h3><div class="gl-grid">${mine.map(g=>goalCard(g,true)).join('')}</div>`:''}
+     ${comp.length?`<h3 class="sec">Empresa</h3><div class="gl-grid">${comp.map(g=>goalCard(g)).join('')}</div>`:''}
+     ${tms.length?`<h3 class="sec">Equipes</h3><div class="gl-grid">${tms.map(g=>goalCard(g)).join('')}</div>`:''}
+     ${ppl.length?`<h3 class="sec">Pessoas</h3><div class="gl-grid">${ppl.map(g=>goalCard(g)).join('')}</div>`:''}
+     ${!(b.goals||[]).length?`<div class="aempty"><div><b>Nenhuma meta ainda</b><p>${isMgr()?'Crie a primeira em Metas: por exemplo, faturamento do mês da empresa e de cada equipe.':'Quando o gestor criar metas, elas aparecem aqui.'}</p></div>${isMgr()?'<button class="btn p" id="mtFirst">Criar meta</button>':''}</div>`:''}`:''}
+    ${(b.challenges||[]).length?`<h3 class="sec">Desafios</h3><div class="gl-grid">${b.challenges.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(MTM[c.metric][0])} · até ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award):''}</span></div><span class="pill ${c.state==='valendo'?'ok':'grey'}">${c.state}</span></div>
+      <div class="rk">${c.rows.slice(0,5).map((r,i)=>`<div class="rk-r ${r.id===ME.user.id?'me':''}">${medal(i)}<span class="nm">${esc(r.name)}</span><b>${mtF(r.value,c.metric)}</b></div>`).join('')}</div></div>`).join('')}</div>`:''}
+   </div><aside class="mt-side">
+    ${s.game&&b.level?`<div class="vd-c lv-c"><div class="lv-b lv-${nrm(b.level.name)}">${{Bronze:'🥉',Prata:'🥈',Ouro:'🥇',Diamante:'💎'}[b.level.name]}</div><div><span class="hint">Seu nível</span><b>${b.level.name}</b><small>${num(b.level.points)} pontos nos últimos 12 meses</small>
+      ${b.level.next?`<div class="gl-bar sm"><i style="width:${b.level.pct}%"></i></div><small>faltam ${num(b.level.to_next)} para ${b.level.next}</small>`:''}</div></div>
+     <div class="vd-c"><div class="hd"><h3>Ranking do mês</h3>${b.my_rank?`<span class="hint">você: ${b.my_rank.pos}º de ${b.total_people} · ${num(b.my_rank.points)} pts</span>`:''}</div>
+      <div class="rk">${b.ranking.map((r,i)=>`<div class="rk-r ${r.id===ME.user.id?'me':''}">${medal(r.pos-1)}<span class="nm">${esc(r.name)}<small>${r.level}</small></span><b>${num(r.points)} pts</b></div>`).join('')||'<p class="hint">Sem pontos ainda neste mês.</p>'}</div>
+      ${b.team_ranking&&b.team_ranking.length?`<h3 class="sec" style="margin-top:12px">Equipes</h3><div class="rk">${b.team_ranking.map((r,i)=>`<div class="rk-r">${medal(i)}<span class="nm">${esc(r.name)}</span><b>${num(r.points)} pts</b></div>`).join('')}</div>`:''}</div>
+     <div class="vd-c"><div class="hd"><h3>Conquistas</h3><span class="hint">${b.achievements.filter(a=>a.done).length} de ${b.achievements.length}</span></div><div class="ach">${b.achievements.map(a=>`<div class="ac ${a.done?'on':''}" title="${esc(a.desc)}"><i>${a.done?'★':'☆'}</i><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></div>`).join('')}</div></div>`:''}
+    ${s.awards&&(b.awards||[]).length?`<div class="vd-c"><div class="hd"><h3>Prêmios recentes</h3></div>${b.awards.slice(0,5).map(a=>`<div class="aw-r"><span>🏆 <b>${esc(a.text)}</b><small>${esc(a.owner_name||'')} · ${esc(a.goal)} · ${a.level==='super'?'supermeta':a.level==='meta'?'meta':esc(a.level)}</small></span><span class="pill ${a.status==='delivered'?'grey':'ok'}">${a.status==='delivered'?'entregue':'conquistado'}</span></div>`).join('')}</div>`:''}
+   </aside></div>`;
+  if($('#mtFirst'))$('#mtFirst').onclick=()=>{MT.tab='metas';syncUrl();mtView().then(()=>goalForm(null))};
+}
+async function mtGoals(){
+  const gs=await api('/goals');const top=gs.filter(g=>!g.parent_id);
+  $('#mtB').innerHTML=`<div class="ls-top"><span class="ls-sum" style="margin:0">${gs.length} ${gs.length===1?'meta':'metas'}</span><button class="btn sm p" id="glNew" style="margin-left:auto">+ Nova meta</button></div>
+   ${top.length?`<div class="vd-c ls-t" style="display:block"><table class="vtb"><thead><tr><th>Meta</th><th>Para</th><th>Período</th><th class="n">Alvo</th><th class="n">Agora</th><th></th></tr></thead><tbody>
+    ${top.map(g=>{const kids=gs.filter(k=>k.parent_id===g.id);return `<tr><td><b>${esc(g.name)}</b><small>${esc(MTM[g.metric][0])}</small></td><td>${esc(g.owner_name)}${kids.length?`<small>dividida entre ${kids.length}</small>`:''}</td>
+      <td>${{week:'Semana',month:'Mês',quarter:'Trimestre',custom:fmtD(g.start)+'–'+fmtD(g.end)}[g.period]}</td><td class="n">${mtF(g.target,g.metric)}</td>
+      <td class="n">${g.pct!=null?`<span class="pill ${LVL[g.level][1]}">${num(g.pct)}%</span>`:'<span class="hint">pausada</span>'}</td>
+      <td class="n" style="white-space:nowrap">${g.scope==='team'&&['revenue','sales','new_clients','renewals','upsell','reactivations','product_qty','appointments','attended','assisted'].includes(g.metric)?`<button class="lnk" data-gs="${g.id}">dividir</button> `:''}<button class="lnk" data-ge="${g.id}">editar</button> <button class="lnk" data-gd="${g.id}">apagar</button></td></tr>`}).join('')}</tbody></table></div>`
+    :'<div class="aempty"><div><b>Nenhuma meta ainda</b><p>Comece pelo faturamento do mês da empresa. Depois crie metas por equipe e divida entre as pessoas.</p></div></div>'}`;
+  $('#glNew').onclick=()=>goalForm(null);
+  document.querySelectorAll('[data-ge]').forEach(b=>b.onclick=()=>goalForm(gs.find(g=>g.id===b.dataset.ge)));
+  document.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>splitForm(gs.find(g=>g.id===b.dataset.gs)));
+  document.querySelectorAll('[data-gd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta meta? As divididas dela também saem.'))return;await api('/goals/'+b.dataset.gd,{method:'DELETE'});mtGoals()});
+}
+async function goalForm(g){
+  const [team,tms,ps]=await Promise.all([api('/team'),api('/teams').catch(()=>[]),api('/products')]);const aw=(ME.company.gamify||{}).awards;
+  const x=g||{name:'',metric:'revenue',scope:'company',target_id:null,period:'month',target:'',floor_pct:80,super_pct:120,product_id:null,award_meta:'',award_super:'',active:true};
+  const o=overlay(`<form class="modal" id="glF"><div class="fm-hd"><h2>${g?'Editar meta':'Nova meta'}</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name)}" placeholder="Ex.: Faturamento de novembro"></div>
+   <div class="field"><label>O que medir</label><select name="metric">${Object.entries(MTM).filter(([k])=>k!=='points').map(([k,v])=>`<option value="${k}" ${x.metric===k?'selected':''}>${v[0]}</option>`).join('')}</select></div>
+   <div class="field ${x.metric==='product_qty'?'':'hide'}" id="glP"><label>Item</label><select name="product">${ps.map(p=>`<option value="${p.id}" ${x.product_id===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+   <div class="field"><label>Para quem</label><div class="seg" id="glS">${[['company','Empresa'],['team','Equipe'],['user','Pessoa']].map(k=>`<button type="button" data-sc="${k[0]}" class="${x.scope===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
+    <select name="team" class="${x.scope==='team'?'':'hide'}" style="margin-top:8px">${tms.map(t=>`<option value="${t.id}" ${x.target_id===t.id?'selected':''}>${esc(t.name)}</option>`).join('')||'<option value="">Crie equipes em Equipe</option>'}</select>
+    <select name="user" class="${x.scope==='user'?'':'hide'}" style="margin-top:8px">${team.filter(u=>u.active).map(u=>`<option value="${u.id}" ${x.target_id===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div>
+   <div class="form2"><div class="field"><label>Período</label><select name="period">${[['week','Toda semana'],['month','Todo mês'],['quarter','Todo trimestre'],['custom','Datas específicas']].map(p=>`<option value="${p[0]}" ${x.period===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></div>
+    <div class="field"><label id="glTL">Meta</label><input name="target" type="number" min="0" step="any" required value="${x.target}" placeholder="Ex.: 50000"></div></div>
+   <div class="form2 ${x.period==='custom'?'':'hide'}" id="glD"><div class="field"><label>Início</label><input type="date" name="start" value="${x.start||''}"></div><div class="field"><label>Fim</label><input type="date" name="end" value="${x.end||''}"></div></div>
+   <div class="row pf-v">Degraus: mínimo <input type="number" name="fl" min="10" max="100" value="${x.floor_pct}">% · supermeta <input type="number" name="sp" min="100" max="500" value="${x.super_pct}">%</div>
+   ${aw?`<div class="form2"><div class="field"><label>Prêmio ao bater a meta <span class="hint">(opcional)</span></label><input name="am" maxlength="120" value="${esc(x.award_meta||'')}" placeholder="Ex.: bônus de R$ 300"></div>
+    <div class="field"><label>Prêmio da supermeta <span class="hint">(opcional)</span></label><input name="as" maxlength="120" value="${esc(x.award_super||'')}" placeholder="Ex.: folga na sexta"></div></div>`:''}
+   <label class="ckl"><input type="checkbox" name="active" ${x.active!==false?'checked':''}> Ativa</label>
+   <div class="row"><button class="btn p">Salvar meta</button><span class="err" id="glE"></span></div></form>`);
+  const f=o.querySelector('#glF');let scope=x.scope;
+  const sync=()=>{$('#glP').classList.toggle('hide',f.metric.value!=='product_qty');$('#glD').classList.toggle('hide',f.period.value!=='custom');
+    $('#glTL').textContent='Meta'+({brl:' (R$)',min:' (minutos)',score:' (nota)'}[MTM[f.metric.value][1]]||'')};
+  f.metric.onchange=sync;f.period.onchange=sync;sync();
+  o.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{scope=b.dataset.sc;o.querySelectorAll('[data-sc]').forEach(y=>y.classList.toggle('on',y===b));f.team.classList.toggle('hide',scope!=='team');f.user.classList.toggle('hide',scope!=='user')});
+  f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,metric:f.metric.value,scope,target_id:scope==='team'?f.team.value:scope==='user'?f.user.value:null,period:f.period.value,
+      start:f.start.value||null,end:f.end.value||null,target:Number(f.target.value),floor_pct:Number(f.fl.value)||80,super_pct:Number(f.sp.value)||120,product_id:f.metric.value==='product_qty'?f.product.value:null,
+      award_meta:f.am?f.am.value:'',award_super:f.as?f.as.value:'',active:f.active.checked};
+    try{await api(g?'/goals/'+g.id:'/goals',{method:g?'PUT':'POST',body});o.remove();toast('Meta salva.');mtGoals()}catch(e){$('#glE').textContent=e.message}};
+}
+async function splitForm(g){
+  const [tms,team]=await Promise.all([api('/teams'),api('/team')]);const t=tms.find(x=>x.id===g.target_id)||{member_ids:[]};const P=Object.fromEntries(team.map(u=>[u.id,u]));
+  const o=overlay(`<form class="modal" id="spF"><div class="fm-hd"><h2>Dividir "${esc(g.name)}"</h2><button type="button" class="x">×</button></div>
+   <p class="hint" style="margin:0">Cria uma meta para cada pessoa da equipe, somando ${mtF(g.target,g.metric)}. Se já tinha divisão, ela é refeita.</p>
+   <div class="grid" style="gap:8px">${t.member_ids.map(i=>`<div class="row pf-v" style="justify-content:space-between"><span>${esc((P[i]||{}).name||'?')}</span><span><input type="number" min="0" step="any" data-w="${i}" value="1"> peso · <b data-wv="${i}"></b></span></div>`).join('')}</div>
+   <div class="row"><button class="btn p">Dividir</button><button type="button" class="lnk" id="spEq">dividir igual</button><span class="err" id="spE"></span></div></form>`);
+  const calc=()=>{const ws=[...o.querySelectorAll('[data-w]')];const tot=ws.reduce((a,i)=>a+(Number(i.value)||0),0);ws.forEach(i=>{o.querySelector(`[data-wv="${i.dataset.w}"]`).textContent=tot?mtF(g.target*(Number(i.value)||0)/tot,g.metric):'—'})};
+  o.querySelectorAll('[data-w]').forEach(i=>i.oninput=calc);calc();
+  $('#spEq').onclick=()=>{o.querySelectorAll('[data-w]').forEach(i=>i.value=1);calc()};
+  o.querySelector('#spF').onsubmit=async ev=>{ev.preventDefault();const weights=Object.fromEntries([...o.querySelectorAll('[data-w]')].map(i=>[i.dataset.w,Number(i.value)||0]));
+    try{await api('/goals/'+g.id+'/split',{method:'POST',body:{mode:'weights',weights}});o.remove();toast('Meta dividida.');mtGoals()}catch(e){$('#spE').textContent=e.message}};
+}
+async function mtChallenges(){
+  const cs=await api('/challenges');const mgr=isMgr();const medal=i=>`<span class="md">${['🥇','🥈','🥉'][i]||`<small class="rk-n">${i+1}º</small>`}</span>`;
+  $('#mtB').innerHTML=`${mgr?'<div class="ls-top"><span class="hint">Competições com prazo e prêmio para os primeiros.</span><button class="btn sm p" id="chNew" style="margin-left:auto">+ Novo desafio</button></div>':''}
+   ${cs.length?`<div class="gl-grid">${cs.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(MTM[c.metric][0])} · ${fmtD(c.start)} a ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award)+(c.winners>1?` (${c.winners} primeiros)`:''):''}</span></div><span class="pill ${c.state==='valendo'?'ok':c.state==='agendado'?'blue':'grey'}">${c.state}</span></div>
+     <div class="rk">${c.rows.slice(0,8).map((r,i)=>`<div class="rk-r ${r.id===ME.user.id?'me':''}">${medal(i)}<span class="nm">${esc(r.name)}</span><b>${mtF(r.value,c.metric)}</b></div>`).join('')}</div>
+     ${mgr?`<div class="bt" style="display:flex;justify-content:flex-end"><button class="lnk" data-chd="${c.id}">apagar</button></div>`:''}</div>`).join('')}</div>`
+    :'<div class="aempty"><div><b>Nenhum desafio ainda</b><p>Ex.: "Quem vender mais planos anuais até sexta ganha um vale-jantar".</p></div></div>'}`;
+  if($('#chNew'))$('#chNew').onclick=challengeForm;
+  document.querySelectorAll('[data-chd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este desafio?'))return;await api('/challenges/'+b.dataset.chd,{method:'DELETE'});mtChallenges()});
+}
+async function challengeForm(){
+  const ps=await api('/products');const t=new Date(),e=new Date();e.setDate(e.getDate()+6);
+  const o=overlay(`<form class="modal" id="chF"><div class="fm-hd"><h2>Novo desafio</h2><button type="button" class="x">×</button></div>
+   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" placeholder="Ex.: Semana do plano anual"></div>
+   <div class="form2"><div class="field"><label>Quem vence</label><select name="metric">${['revenue','sales','product_qty','new_clients','renewals','upsell','reactivations','appointments','assisted','points'].map(k=>`<option value="${k}">Mais ${MTM[k][0].toLowerCase()}</option>`).join('')}</select></div>
+    <div class="field"><label>Entre</label><select name="among"><option value="users">Pessoas</option><option value="teams">Equipes</option></select></div></div>
+   <div class="field hide" id="chP"><label>Item</label><select name="product">${ps.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div>
+   <div class="form2"><div class="field"><label>Começa</label><input type="date" name="start" value="${ymd(t)}" required></div><div class="field"><label>Termina</label><input type="date" name="end" value="${ymd(e)}" required></div></div>
+   <div class="form2"><div class="field"><label>Prêmio</label><input name="award" maxlength="120" placeholder="Ex.: vale-jantar"></div><div class="field"><label>Para os</label><select name="winners"><option value="1">1º lugar</option><option value="2">2 primeiros</option><option value="3">3 primeiros</option></select></div></div>
+   <div class="row"><button class="btn p">Criar desafio</button><span class="err" id="chE"></span></div></form>`);
+  const f=o.querySelector('#chF');f.metric.onchange=()=>$('#chP').classList.toggle('hide',f.metric.value!=='product_qty');
+  f.onsubmit=async ev=>{ev.preventDefault();try{await api('/challenges',{method:'POST',body:{name:f.name.value,metric:f.metric.value,among:f.among.value,product_id:f.metric.value==='product_qty'?f.product.value:null,start:f.start.value,end:f.end.value,award:f.award.value,winners:Number(f.winners.value)}});o.remove();toast('Desafio criado.');mtChallenges()}catch(x){$('#chE').textContent=x.message}};
+}
+async function mtAwards(){
+  const as=await api('/awards');const mgr=isMgr();
+  $('#mtB').innerHTML=as.length?`<div class="vd-c">${as.map(a=>`<div class="aw-r"><span>🏆 <b>${esc(a.text)}</b><small>${esc(a.owner_name||'')} · ${esc(a.goal)} · ${a.level==='super'?'supermeta':a.level==='meta'?'meta':esc(a.level)} · ${dt(a.at)}${a.delivered_at?' · entregue por '+esc(a.delivered_by)+' em '+dt(a.delivered_at):''}</small></span>
+     ${a.status==='delivered'?'<span class="pill grey">entregue</span>':mgr?`<button class="btn sm" data-awd="${a.id}">Marcar entregue</button>`:'<span class="pill ok">conquistado</span>'}</div>`).join('')}</div>`
+    :'<div class="aempty"><div><b>Nenhum prêmio ainda</b><p>Coloque um prêmio numa meta ou num desafio. Quando alguém bater, ele aparece aqui para o gestor entregar.</p></div></div>';
+  document.querySelectorAll('[data-awd]').forEach(b=>b.onclick=async()=>{await api('/awards/'+b.dataset.awd+'/deliver',{method:'POST'});toast('Prêmio marcado como entregue.');mtAwards()});
+}
+async function mtConfig(){
+  const s=await api('/goals/settings');
+  $('#mtB').innerHTML=`<form id="mcF" class="grid" style="gap:12px;max-width:820px">
+   <div class="vd-c"><h3 class="sec" style="margin-top:0">O que ligar</h3><p class="hint" style="margin:0 0 10px">Ligue só o que faz sentido para o seu time. Dá para mudar quando quiser.</p>
+    ${[['goals','Metas','Metas da empresa, das equipes e de cada pessoa, com ritmo e projeção.'],['awards','Prêmios','Prêmio ao bater meta ou vencer desafio. O gestor marca quando entregar.'],['game','Pontos, ranking e conquistas','Pontos por ações reais, níveis, conquistas e ranking do mês.']].map(k=>`<label class="mc-t"><input type="checkbox" name="${k[0]}" ${s[k[0]]?'checked':''}><span><b>${k[1]}</b><small>${k[2]}</small></span></label>`).join('')}</div>
+   <div class="vd-c"><h3 class="sec" style="margin-top:0">Quem vê o ranking</h3><div class="modes" style="grid-template-columns:repeat(3,1fr)">${[['all','Todos veem tudo','Ranking completo para o time.'],['podium','Só o pódio','Atendentes veem os 3 primeiros e a própria posição.'],['self','Cada um vê só a sua','Só a própria posição. Gestor vê tudo.']].map(k=>`<label><input type="radio" name="ranking" value="${k[0]}" ${s.ranking===k[0]?'checked':''}><b>${k[1]}</b>${k[2]}</label>`).join('')}</div></div>
+   <div class="vd-c"><h3 class="sec" style="margin-top:0">Pontos</h3><p class="hint" style="margin:0 0 10px">Só contam ações reais. Venda cancelada tira os pontos. Em venda dividida, cada um ganha a parte do seu percentual.</p>
+    <div class="pt-g">${Object.entries(s.labels).map(([k,l])=>`<label><span>${esc(l)}</span><input type="number" min="0" max="1000" name="pt_${k}" value="${s.points[k]}"></label>`).join('')}</div></div>
+   <div class="row"><button class="btn p">Salvar</button><span class="err" id="mcE"></span></div></form>`;
+  $('#mcF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;const points=Object.fromEntries(Object.keys(s.labels).map(k=>[k,Number(f['pt_'+k].value)||0]));
+    try{const r=await api('/goals/settings',{method:'PUT',body:{goals:f.goals.checked,awards:f.awards.checked,game:f.game.checked,ranking:f.ranking.value,points}});ME.company.gamify=r;toast('Salvo.');
+      shell()}catch(e){$('#mcE').textContent=e.message}};
+}
+async function mtTv(){
+  document.body.classList.add('tv');try{await document.documentElement.requestFullscreen()}catch(e){}
+  const box=document.createElement('div');box.className='tvw';document.body.appendChild(box);
+  const draw=async()=>{let b;try{b=await api('/goals/board')}catch(e){return}const medal=i=>['🥇','🥈','🥉'][i]||(i+1)+'º';
+    const gs=(b.goals||[]).filter(g=>g.scope!=='user').slice(0,6);
+    box.innerHTML=`<div class="tv-h"><span class="logo"><i>oi</i><b>Nanda</b></span><b>${esc(ME.company.name)}</b><span>${new Date().toLocaleString('pt-BR',{weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'})}</span><button id="tvX">Sair ✕</button></div>
+     <div class="tv-g"><div class="tv-goals">${gs.map(g=>goalCard(g,true)).join('')||'<p>Sem metas da empresa ou de equipes.</p>'}</div>
+      ${b.ranking?`<div class="tv-rk"><h2>Ranking do mês</h2>${b.ranking.slice(0,10).map((r,i)=>`<div class="tv-r"><span>${medal(i)}</span><b>${esc(r.name)}</b><em>${num(r.points)} pts</em><small>${brl(r.revenue)}</small></div>`).join('')}</div>`:''}</div>`;
+    $('#tvX').onclick=close};
+  const close=()=>{clearInterval(MT.tv);box.remove();document.body.classList.remove('tv');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})};
+  document.addEventListener('fullscreenchange',function f(){if(!document.fullscreenElement&&document.body.classList.contains('tv')){close();document.removeEventListener('fullscreenchange',f)}});
+  await draw();MT.tv=setInterval(draw,60000);
+}
+async function inicioMeta(){const box=$('#inMeta');if(!box||!gamOn())return;let b;try{b=await api('/goals/board')}catch(e){return}if(!b.enabled||!$('#inMeta'))return;
+  const g=(b.my_goals||[])[0]||(b.goals||[]).find(x=>x.scope==='company');
+  if(!g&&!b.my_rank)return;
+  box.innerHTML=`<div class="in-mt">${g?goalCard(g,true):''}${b.my_rank?`<button class="vd-c in-rk" id="inRk"><span class="hint">Ranking do mês</span><b>${b.my_rank.pos}º <small>de ${b.total_people}</small></b><span>${num(b.my_rank.points)} pontos · nível ${b.level.name}</span></button>`:''}</div>`;
+  if($('#inRk'))$('#inRk').onclick=()=>go('metas')}
+
 /* origens e links */
 let ORG=null;
 async function orgLoad(force){if(!ORG||force)ORG=await api('/origins');return ORG}
@@ -2298,6 +2507,7 @@ async function originEdit(c,after){
 }
 
 const VIEWS={
+ metas:()=>mtView(),
  vendas:()=>vdView(),
  clientes:()=>clView(),
  async automacoes(){
@@ -2515,7 +2725,7 @@ const VIEWS={
  },
  async inicio(){
   const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);const au=['owner','manager'].includes(u.role)?await api('/automations').catch(()=>null):null;
-  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p>
+  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p><div id="inMeta"></div>
    ${sm?`<div class="grid g4" style="margin-bottom:14px">
     <button class="card stat" data-to="conversas" style="text-align:left"><span>Esperando resposta</span><b>${sm.waiting}</b></button>
     <button class="card stat" data-to="conversas" style="text-align:left"><span>Pediram atendente</span><b style="color:${sm.needs_human?'var(--bad)':'inherit'}">${sm.needs_human}</b></button>
@@ -2528,6 +2738,7 @@ const VIEWS={
     <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'4'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
     ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'5'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
    </div></div>`;
+  inicioMeta();
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
  },
  async equipe(){

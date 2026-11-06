@@ -176,7 +176,7 @@ def progress(g, agg_val, a, b, t0, t1):
     level = 'super' if pct >= g['super_pct'] else 'meta' if pct >= 100 else 'minimo' if pct >= g['floor_pct'] else 'abaixo'
     out = {'value': v, 'pct': pct, 'level': level, 'elapsed': round(100 * el, 1), 'days_left': max(0, (t1 - max(t, t0)).days), 'start': a.isoformat(), 'end': b.isoformat()}
     if g['metric'] in ADDITIVE and v is not None:
-        out['projection'] = round(v / el, 2) if el > 0.02 else None
+        out['projection'] = round(v / el, 2) if el >= 0.25 else None  # no começo do período a projeção engana
         out['projection_pct'] = round(100 * out['projection'] / g['target'], 1) if out['projection'] is not None else None
         days = max(1, (t1 - max(t, t0)).days)
         out['per_day'] = round(max(0, g['target'] - v) / days, 2) if t < t1 else 0
