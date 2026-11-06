@@ -112,9 +112,10 @@ def parse(text):
             d = json.loads(m.group(0))
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
             return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
-                    'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80]}
+                    'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80],
+                    'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else []}
         except ValueError: pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': ''}
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': []}
 
 async def history(contact_id, limit=20):
     rows = await db.messages.find({'contact_id': contact_id, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'dir': 1, 'text': 1}).sort('at', -1).to_list(limit)
@@ -155,6 +156,10 @@ async def system_for(s, company, contact=None):
                 extra += 'PODE FAZER SENTIDO OFERECER (só quando combinar com a conversa, sem empurrar; preço só se estiver no conhecimento): ' + '; '.join(
                     ('renovação de ' if o['why'] == 'renovar' else 'voltar com ' if o['why'] == 'voltar' else '') + o['name'] for o in offs) + '\n'
     except Exception: log.exception('falha ao montar as promoções')
+    try:
+        from journey import nanda_block as journey_block
+        if contact: extra += journey_block(company)
+    except Exception: log.exception('falha ao montar os marcos')
     return build_system(s, company, name, agenda_text, upcoming, opts, extra)
 
 async def think(company_id, contact):
@@ -184,6 +189,12 @@ async def route(company_id, contact, reason):
         fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
         await route_handoff(company, fresh, reason, fresh.get('last_text') or '')
     except Exception: log.exception('falha ao direcionar o repasse para uma equipe')
+
+async def suggest_marcos(company_id, contact, ids):
+    try:
+        from journey import suggest
+        await suggest(await db.companies.find_one({'id': company_id}, {'_id': 0}), contact, ids)
+    except Exception: log.exception('falha ao sugerir marcos')
 
 async def auto_reply(company_id, contact_id, msg_id):
     await asyncio.sleep(debounce())
@@ -222,6 +233,7 @@ async def auto_reply(company_id, contact_id, msg_id):
                 ref = d['origin_detail'] if d['origin'] == 'indicacao' else None
                 await set_origin(company, contact, d['origin'], d['origin_detail'], 'nanda', None, ref)
                 await note(company_id, contact_id, f'A Nanda descobriu a origem: {names[d["origin"]]}' + (f' · {d["origin_detail"]}' if d['origin_detail'] else ''))
+        if d.get('marcos'): await suggest_marcos(company_id, contact, d['marcos'])
         if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
         log.exception('falha na resposta automática')
@@ -313,6 +325,7 @@ async def suggest(contact_id: str, cached: bool = False, user=Depends(current_us
         if not key_ok(): return {'reply': '', 'handoff': False, 'reason': '', 'book': None}
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
+    if d.get('marcos'): await suggest_marcos(user['company_id'], c, d['marcos'])
     if last: await db.contacts.update_one({'id': c['id']}, {'$set': {'sug_for': last, 'sug': {k: d.get(k) for k in ('reply', 'handoff', 'reason', 'book')}}})
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d

@@ -98,7 +98,7 @@ FIELDS = {
 }
 
 class Rule(BaseModel):
-    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created']
+    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created', 'milestone']
     op: str = Field(default='is', max_length=12)  # is | not | active | ever | never | gte | lte | more | less
     value: Any = None
 
@@ -156,6 +156,15 @@ def match(c, r: Rule, ctx):
     if f == 'team': return (c.get('team_id') == (v or None)) == (op != 'not')
     if f == 'owner': return (c.get('assigned_to') == (v or None)) == (op != 'not')
     if f == 'promo': return (c['id'] in ctx['promo_users'].get(v, set())) == (op != 'not')
+    if f == 'milestone':
+        mid = v.get('id') if isinstance(v, dict) else v
+        last = ctx['milestones'].get(mid, {}).get(c['id'])
+        if op == 'never': return last is None
+        if op in ('within', 'more'):
+            if last is None: return False
+            days = (t - last).days; n = _days(v.get('days') if isinstance(v, dict) else 0)
+            return days <= n if op == 'within' else days > n
+        return last is not None
     return True
 
 async def run_segment(user, rules):
@@ -166,6 +175,12 @@ async def run_segment(user, rules):
     ctx = {'inactive_days': company.get('inactive_days'), 'first_stage': stages[0]['id'] if stages else None, 'promo_users': {}}
     for pid in {r.value for r in rules if r.field == 'promo'}:
         ctx['promo_users'][pid] = set(await db.sales.distinct('contact_id', {'company_id': company['id'], 'status': 'ok', 'promos.promo_id': pid}))
+    ctx['milestones'] = {}
+    if any(r.field == 'milestone' for r in rules):
+        from journey import hits_for
+        for h in await hits_for(company):
+            d = ctx['milestones'].setdefault(h['milestone_id'], {})
+            if h['contact_id'] not in d or h['at'] > d[h['contact_id']]: d[h['contact_id']] = h['at']
     if any(r.field in ('product', 'category', 'expires_in', 'expired_within') for r in rules):  # carteira ainda não calculada
         products = None
         for c in await db.contacts.find({'company_id': company['id'], 'sales_count': {'$gt': 0}, 'holdings': {'$exists': False}}, {'_id': 0, 'id': 1}).to_list(20000):

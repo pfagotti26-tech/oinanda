@@ -31,7 +31,7 @@ log = logging.getLogger('oinanda.auto')
 router = APIRouter()
 TRIGGERS = {'stage_enter': 'Entrou na etapa', 'no_reply': 'Sem resposta do cliente', 'before_appt': 'Antes do horário marcado',
             'appt_no_show': 'Depois de uma falta', 'appt_done': 'Depois do atendimento', 'before_expiry': 'Antes de vencer',
-            'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra'}
+            'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra', 'after_milestone': 'Depois de atingir um marco da jornada'}
 GRACE = timedelta(hours=24)  # depois do momento certo, ainda tenta por 24 h (ex.: servidor reiniciando, fora do horário)
 QUIET = (8, 21)
 VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'data': '12/11', 'hora': '09:00',
@@ -193,7 +193,9 @@ def stage_by_hint(stages, hint):
 class AutoIn(BaseModel):
     recipe: Optional[str] = Field(default=None, max_length=40)
     name: Optional[str] = Field(default=None, min_length=2, max_length=60)
-    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done', 'before_expiry', 'after_expiry', 'after_purchase']] = None
+    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done', 'before_expiry', 'after_expiry', 'after_purchase', 'after_milestone']] = None
+    milestone_id: Optional[str] = Field(default=None, max_length=12)
+    unless_id: Optional[str] = Field(default=None, max_length=12)
     product_id: Optional[str] = None
     coupon_promo_id: Optional[str] = None
     hours: Optional[float] = Field(default=None, ge=0, le=24 * 120)
@@ -211,6 +213,11 @@ async def check_refs(user, a):
     if a.get('template_id') and not await db.templates.find_one({'id': a['template_id'], 'company_id': user['company_id']}):
         raise HTTPException(400, 'Modelo não encontrado.')
     if a.get('trigger') == 'stage_enter' and not a.get('stage_id'): raise HTTPException(400, 'Escolha a etapa.')
+    if a.get('trigger') == 'after_milestone':
+        from journey import active_ms
+        ids = {m['id'] for m in active_ms(user['company'])}
+        if a.get('milestone_id') not in ids: raise HTTPException(400, 'Escolha o marco.')
+        if a.get('unless_id') and a['unless_id'] not in ids: raise HTTPException(400, 'Marco não encontrado.')
     if a.get('product_id') and not await db.products.find_one({'id': a['product_id'], 'company_id': user['company_id']}): raise HTTPException(400, 'Item não encontrado.')
     if a.get('coupon_promo_id') and not await db.promos.find_one({'id': a['coupon_promo_id'], 'company_id': user['company_id']}): raise HTTPException(400, 'Promoção não encontrada.')
 
@@ -247,7 +254,7 @@ async def create_auto(body: AutoIn, request: Request, user=Depends(managers)):
         if not (body.name and body.trigger and body.message and body.hours is not None): raise HTTPException(400, 'Preencha nome, gatilho, tempo e mensagem.')
         a.update(name=body.name.strip(), trigger=body.trigger, hours=body.hours, stage_id=body.stage_id, message=body.message.strip(),
                  template_id=body.template_id, move_to=body.move_to, active=True if body.active is None else body.active, category='MARKETING',
-                 product_id=body.product_id, coupon_promo_id=body.coupon_promo_id)
+                 product_id=body.product_id, coupon_promo_id=body.coupon_promo_id, milestone_id=body.milestone_id, unless_id=body.unless_id)
     await check_refs(user, a)
     await db.automations.insert_one(a.copy())
     await audit(request, user, 'Criou automação', a['name'])
@@ -258,7 +265,7 @@ async def patch_auto(aid: str, body: AutoIn, request: Request, user=Depends(mana
     a = await db.automations.find_one({'id': aid, 'company_id': user['company_id']}, {'_id': 0})
     if not a: raise HTTPException(404, 'Automação não encontrada.')
     upd = body.model_dump(exclude_unset=True); upd.pop('recipe', None)
-    for k in ('stage_id', 'move_to', 'template_id', 'product_id', 'coupon_promo_id'):
+    for k in ('stage_id', 'move_to', 'template_id', 'product_id', 'coupon_promo_id', 'milestone_id', 'unless_id'):
         if k in upd and not upd[k]: upd[k] = None
     a.update(upd)
     await check_refs(user, a)
@@ -327,6 +334,18 @@ async def candidates(a, company, stages):
                 if e and lo < e <= hi and (not pid or x.get('product_id') == pid):
                     tz = agenda.tz_of(company)
                     out.append((f"{a['id']}:{c['id']}:{x['key']}:{e.isoformat()}", c, {'_extra': {'produto': x['name'], 'vencimento': f'{e.astimezone(tz):%d/%m}'}}))
+    elif t == 'after_milestone':
+        from journey import hits_for
+        hits = await hits_for(company, start=oldest, end=cut)
+        mine = [x for x in hits if x['milestone_id'] == a.get('milestone_id')]
+        later = {}
+        if a.get('unless_id') and mine:
+            for x in await hits_for(company, list({m['contact_id'] for m in mine}), start=oldest):
+                if x['milestone_id'] == a['unless_id']: later.setdefault(x['contact_id'], []).append(x['at'])
+        for x in mine:
+            if any(w >= x['at'] for w in later.get(x['contact_id'], [])): continue  # já avançou: não precisa
+            c = await db.contacts.find_one({'id': x['contact_id']}, {'_id': 0})
+            if c and not c.get('opt_out'): out.append((f"{a['id']}:{c['id']}:{x['at'].isoformat()}", c, None))
     elif t == 'after_purchase':
         q = {'company_id': cid, 'status': 'ok', 'date': {'$lte': cut, '$gt': oldest}}
         if a.get('product_id'): q['items.product_id'] = a['product_id']
