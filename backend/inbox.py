@@ -5,6 +5,7 @@
 - Resolvido: tira a conversa da fila "Esperando resposta" até o cliente mandar mensagem de novo.
 """
 import re, unicodedata
+from datetime import timedelta
 from typing import Optional
 from fastapi import APIRouter, Request, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -37,7 +38,11 @@ async def counts(user=Depends(current_user)):
             'has_team': bool(mine), 'transfers': pend,'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
             'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)),
             'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread')),
-            'sales_pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending'}) if user['role'] in ('owner', 'manager') else 0}
+            'sales_pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending'}) if user['role'] in ('owner', 'manager') else 0,
+            'celebrations': [{'key': h['key'], 'text': (f"{h.get('owner_name') or 'A empresa'} {'venceu' if 'lugar' in h['level'] else 'bateu'} "
+                                                         + (f"o desafio {h['goal']} ({h['level']})" if 'lugar' in h['level'] else f"{'a supermeta' if h['level'] == 'super' else 'a meta'} {h['goal']}"))}
+                             for h in await db.goal_hits.find({'company_id': user['company_id'], 'at': {'$gte': now() - timedelta(minutes=30)}}, {'_id': 0}).to_list(10)]
+                            if (user['company'].get('gamify') or {}).get('goals') or (user['company'].get('gamify') or {}).get('game') else []}
 
 # ---------- respostas rápidas ----------
 class QuickIn(BaseModel):

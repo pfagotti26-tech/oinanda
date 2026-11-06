@@ -416,4 +416,8 @@ async def loop():
             from campaigns import tick
             await tick()
         except Exception: log.exception('falha no envio das campanhas')
+        try:
+            from goals import tick as goals_tick
+            await goals_tick()
+        except Exception: log.exception('falha nas metas')
         await asyncio.sleep(every)
