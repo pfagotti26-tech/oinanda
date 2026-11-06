@@ -59,7 +59,7 @@ async def timeline(company, c):
     from origins import origins_of
     on = {o['id']: o['name'] for o in await origins_of(company)}
     src = (f'Anúncio "{c["ad"].get("headline") or c["ad"].get("source_id") or ""}"' if c.get('ad') else
-           {'manual': 'Cadastrado à mão', 'historico': 'Conversa antiga do celular', 'agenda do celular': 'Agenda do celular'}.get(c.get('source'), 'Chamou no WhatsApp'))
+           {'manual': 'Cadastrado à mão', 'historico': 'Conversa antiga do celular', 'agenda do celular': 'Agenda do celular', 'instagram': 'Chamou no Direct do Instagram', 'instagram_comentario': 'Comentou num post do Instagram'}.get(c.get('source'), 'Chamou no WhatsApp'))
     det = src + (f' · origem: {on.get(c["origin"], c["origin"])}' if c.get('origin') else '') + (f' · {c["origin_detail"]}' if c.get('origin_detail') else '')
     out.append(ev(c.get('created_at') or now(), 'entrada', 'Entrou como contato', det))
 

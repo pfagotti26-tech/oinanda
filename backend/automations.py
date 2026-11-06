@@ -153,6 +153,7 @@ async def del_template(tid: str, request: Request, user=Depends(managers)):
 async def send_template(company_id, contact, t, ctx, by_name, by_id=None, values=None):
     n = await number_of(company_id)
     vals = values or [str(ctx.get(p) or '-') for p in t.get('params') or []]
+    if not contact.get('wa_id'): raise HTTPException(400, 'Este contato não tem WhatsApp.')
     payload = {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'template',
                'template': {'name': t['name'], 'language': {'code': t.get('language') or 'pt_BR'}}}
     if vals: payload['template']['components'] = [{'type': 'body', 'parameters': [{'type': 'text', 'text': v} for v in vals]}]
@@ -378,6 +379,8 @@ async def fire(a, company, stages, key, contact, appt):
     try:
         if li and now() - li < WINDOW:
             await deliver(company['id'], contact, render(a['message'], ctx), None, by); status = 'sent'
+        elif contact.get('channel') == 'instagram':
+            detail = 'Instagram: fora das 24 h só uma pessoa do time pode responder'
         else:
             t = await db.templates.find_one({'id': a.get('template_id'), 'company_id': company['id']}, {'_id': 0}) if a.get('template_id') else None
             if t and t.get('status') == 'APPROVED':
@@ -446,6 +449,10 @@ async def loop():
             from billing import tick as billing_tick
             await billing_tick()
         except Exception: log.exception('falha na conferência das assinaturas')
+        try:
+            from instagram import refresh_tokens
+            await refresh_tokens()
+        except Exception: log.exception('falha ao renovar o acesso do Instagram')
         try:
             from push import late_tick
             await late_tick()

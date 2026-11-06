@@ -864,6 +864,13 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .stp{display:flex;align-items:center;gap:10px}.stp button{width:28px;height:28px;border-radius:50%;border:1px solid #DCD2C9;background:#fff;font-size:16px;font-weight:700}.stp button:disabled{opacity:.4}
 .sb-f{margin-top:16px;display:flex;flex-direction:column;gap:12px;max-width:560px;margin-left:auto;margin-right:auto}.sb-ft{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}.lnk.danger{color:var(--bad)}
 @media (max-width:900px){.sb-plans{grid-template-columns:1fr}.ubs{grid-template-columns:1fr}}
+.chb{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;border:2px solid #fff}
+.chb.ig,.igl{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}.chb svg{width:10px;height:10px}
+.chi{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:4px;color:#fff;margin-right:4px;vertical-align:-2px}.chi svg{width:10px;height:10px}.chi.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+.igl{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff}.igl svg{width:16px;height:16px}
+.igacc{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.igacc img,.igacc .av{width:44px;height:44px;border-radius:50%;object-fit:cover;display:grid;place-items:center;color:#fff;font-weight:600}
+.igacc>span.igt{display:flex;flex-direction:column;flex:1;min-width:160px}.igacc .av{flex:none}.igacc small{color:var(--ink3);font-size:12.5px}
+.igf{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}.igf h4{font-size:14px}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -1091,7 +1098,7 @@ function gSearchInit(){
     const acts=gActions().filter(a=>nrm(a[0]).includes(k)||k.split(' ').every(w=>nrm(a[0]).includes(w))).map(a=>({g:'Ações',l:a[0],ic:NI[a[1]]||NI.dot,run:a[2]}));
     items=[...acts,...pages];sel=0;nav.hidden=true;res.hidden=false;draw();
     if(v.length>=2){clearTimeout(t);t=setTimeout(async()=>{let cs=[];try{cs=await api('/conversations?q='+encodeURIComponent(v))}catch(e){}if(my!==n)return;
-      items=[...cs.slice(0,6).map(c=>({g:'Clientes',l:c.name,s:fmtPhone(c.wa_id),ic:`<span class="gav" style="background:${avc(c.name)}">${initials(c.name)}</span>`,run:()=>{CV.open=c.id;CV.filter='all';return go('conversas')}})),...acts,...pages];draw()},220)}};
+      items=[...cs.slice(0,6).map(c=>({g:'Clientes',l:c.name,s:contactSub(c),ic:`<span class="gav" style="background:${avc(c.name)}">${initials(c.name)}</span>`,run:()=>{CV.open=c.id;CV.filter='all';return go('conversas')}})),...acts,...pages];draw()},220)}};
   q.oninput=run;q.onfocus=()=>{if(q.value)run()};q.onblur=()=>setTimeout(()=>{if(document.activeElement!==q)close()},150);
   q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(items.length-1,sel+1);draw()}else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(0,sel-1);draw()}else if(e.key==='Enter'){e.preventDefault();pick(sel)}else if(e.key==='Escape'){close();q.blur()}};
 }
@@ -1165,6 +1172,25 @@ addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelect
 function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada'].includes(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));return (VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
+/* Instagram Direct */
+async function renderIg(own){const box=$('#igc');if(!box)return;let d;try{d=await api('/ig/status')}catch(e){box.innerHTML='';return}
+  const q=new URLSearchParams(location.search).get('ig');if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.'}[q]||'')}
+  const a=d.account,hd=`<div class="row" style="gap:10px;margin-bottom:8px"><span class="igl">${IGI}</span><h3 style="margin:0">Instagram Direct</h3>${a?`<span class="pill ${a.status==='connected'?'ok':'bad'}">${a.status==='connected'?'conectado':'reconectar'}</span>`:''}</div>`;
+  if(!d.ready){box.innerHTML=hd+'<p class="hint">O Instagram ainda está sendo configurado no servidor do Oi Nanda.</p>';return}
+  if(!a){box.innerHTML=hd+`<p style="color:var(--ink2);font-size:13.5px">As mensagens do Direct chegam nas mesmas Conversas do WhatsApp, e a Nanda responde do mesmo jeito. Precisa ser uma <b>conta profissional</b> (comercial ou de criador).</p>
+     ${own?'<button class="btn p" id="igCon" style="margin-top:12px">Conectar Instagram</button>':'<p class="note" style="margin-top:10px">Só o dono da conta conecta o Instagram.</p>'}`;
+    if($('#igCon'))$('#igCon').onclick=async e=>{e.target.disabled=true;try{location.href=(await api('/ig/connect')).url}catch(x){toast(x.message);e.target.disabled=false}};return}
+  box.innerHTML=hd+`<div class="igacc">${a.picture?`<img src="${esc(a.picture)}" alt="">`:`<span class="av" style="background:${avc(a.username||'i')}">${initials(a.username||'I')}</span>`}<span class="igt"><b>@${esc(a.username||'')}</b><small>${esc(a.name||'')} · conectado em ${fmtD(ymd(new Date(a.connected_at)))}</small></span>
+     ${own?`<button class="btn sm" id="igRe">${a.status==='connected'?'Reconectar':'Reconectar agora'}</button><button class="lnk danger" id="igOff">desconectar</button>`:''}</div>
+    <form id="igF" class="igf"><h4>Comentou, recebeu no Direct</h4><p class="hint">Quando alguém comentar uma destas palavras num post ou anúncio, a mensagem abaixo vai sozinha para o Direct da pessoa (uma vez por comentário). Ótimo para "comente QUERO".</p>
+     <div class="field"><label>Palavras</label><input name="w" value="${esc((a.comment_words||[]).join(', '))}" placeholder="quero, eu quero, preço"></div>
+     <div class="field"><label>Mensagem no Direct</label><textarea name="dm" rows="3" maxlength="900" placeholder="Oi {primeiro_nome}! Vi seu comentário. Te mando os detalhes por aqui 😊">${esc(a.comment_dm||'')}</textarea></div>
+     <div class="field"><label>Resposta pública no comentário <span class="hint">(opcional)</span></label><input name="rp" maxlength="300" value="${esc(a.comment_reply||'')}" placeholder="Te chamei no Direct!"></div>
+     <div class="row"><button class="btn sm p">Salvar</button><span class="err" id="igE"></span></div></form>`;
+  if($('#igRe'))$('#igRe').onclick=async()=>{try{location.href=(await api('/ig/connect')).url}catch(x){toast(x.message)}};
+  if($('#igOff'))$('#igOff').onclick=async()=>{if(!await sure('Desconectar o Instagram? As conversas continuam aqui, mas não chegam mensagens novas do Direct.',{ok:'Desconectar'}))return;await api('/ig/account',{method:'DELETE'});renderIg(own)};
+  $('#igF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+    try{await api('/ig/settings',{method:'PUT',body:{comment_words:f.w.value.split(',').map(x=>x.trim()).filter(Boolean),comment_dm:f.dm.value,comment_reply:f.rp.value}});toast('Salvo.')}catch(x){$('#igE').textContent=x.message}}}
 async function renderWa(own){
   const n=await api('/wa/number');const box=$('#wa');if(!box)return;
   if(n){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
@@ -1230,7 +1256,7 @@ async function cvList(){
   if(CV.filter==='waiting')CV.list.sort((a,b)=>(a.wait_from||'9')<(b.wait_from||'9')?-1:1);  // quem espera há mais tempo primeiro
   el.innerHTML=CV.list.length?CV.list.map(c=>{const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in';
    return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
-    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
+    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${c.channel==='instagram'?`<i class="chb ig" title="Instagram">${IGI}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
      <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w==='off'?'<span class="bd2 grey">chegou fora do horário</span>':w?`<span class="bd2 ${w}">esperando ${waitTxt(c)}</span>`:''}
@@ -1302,7 +1328,7 @@ async function cvChat(full){
   box.innerHTML=`<div class="ch-top">
     <button class="ib back" id="cvBack" aria-label="Voltar para a lista">${svg('<path d="m15 18-6-6 6-6"/>')}</button>
     <span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>
-    <div class="who"><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}${c.ad?' · veio do anúncio':''}</span></div>
+    <div class="who"><b>${esc(c.name)}</b><span>${c.channel==='instagram'?`<i class="chi ig">${IGI}</i>`:''}${esc(contactSub(c))}${c.ad?' · veio do anúncio':''}</span></div>
     <div class="act">
      <label class="nsw ${mode}" title="Como a Nanda atua nesta conversa"><span>Nanda</span><select id="cvMode"><option value="" ${!c.ai_mode?'selected':''}>${MODES[CV.ai?.default_mode||'copilot']}${innerWidth<860?'':' (padrão)'}</option>${Object.entries(MODES).map(([k,v])=>`<option value="${k}" ${c.ai_mode===k?'selected':''}>${v}</option>`).join('')}</select></label>
      ${!c.assigned_to?'<button class="btn sm p" id="cvMine" title="A conversa passa a ser sua">Pegar</button>':''}
@@ -1376,10 +1402,11 @@ function drawComposer(c,w,draft){
   const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note">🔒 Nota interna</button>${CV.tab==='msg'&&w?`<span class="win" id="cvWin"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
   if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea><button class="btn p">Salvar nota</button></form>`}
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
-     `<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
+     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 7 dias sem resposta':first+' ainda não mandou mensagem'}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
+     :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
   else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
-   box.innerHTML=tabs+`<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+   box.innerHTML=tabs+`${c.human_only?`<div class="wbar off"><i></i><span>Instagram: passou de 24 h desde a última mensagem de ${first}. Até ${fmtD(ymd(new Date(c.window_ends_at)))}, só uma pessoa do time pode responder (a Nanda não).</span></div>`:''}<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
      <div class="ctool"><div class="ctl">${I('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>','Mandar foto, vídeo ou arquivo','cvAttB')}<input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
       ${I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>','Gravar áudio','cvMic')}
       ${I('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>','Respostas rápidas','cvQRb')}
@@ -1482,7 +1509,7 @@ async function maybeSuggest(c,msgs,mode){
 async function cvPanel(c){
   const p=$('#cvPanel');if(!p)return;CV.pnFor=c.id;const mgr=['owner','manager'].includes(ME.user.role);
   let ap=[];try{ap=(await api('/contacts/'+c.id+'/appointments')).filter(a=>['scheduled','confirmed'].includes(a.status)&&new Date(a.end)>new Date()).reverse()}catch(e){}
-  const src=c.ad?`Anúncio "${esc(c.ad.headline||c.ad.source_id||'')}"`:{manual:'Cadastro manual',historico:'Conversa antiga do celular','agenda do celular':'Agenda do celular'}[c.source]||'Chamou no WhatsApp';
+  const src=c.ad?`Anúncio "${esc(c.ad.headline||c.ad.source_id||'')}"`:{manual:'Cadastro manual',historico:'Conversa antiga do celular','agenda do celular':'Agenda do celular',instagram:'Chamou no Direct do Instagram',instagram_comentario:'Comentou num post do Instagram'}[c.source]||'Chamou no WhatsApp';
   const sx=stageOf(c.stage);
   const RI=(d,t,k)=>`<button type="button" class="ib" data-rail="${k}" title="${t}" aria-label="${t}">${svg(d)}</button>`;
   p.innerHTML=`<div class="pn-rail"><button type="button" class="ib" id="pnExp" title="Abrir painel do cliente" aria-label="Abrir painel do cliente">${svg('<path d="m15 6-6 6 6 6"/>')}</button>
@@ -1492,7 +1519,7 @@ async function cvPanel(c){
     ${RI('<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>','Jornada','jn')}
     ${RI('<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-4-4L4 16z"/>','Detalhes do cliente','det')}</div>
    <div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Minimizar painel" title="Minimizar painel">${svg('<path d="m9 6 6 6-6 6"/>')}</button></div>
-   <div class="pn-hero cp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><div class="tx"><b>${esc(c.name)}</b><span>${esc(fmtPhone(c.wa_id))}</span>
+   <div class="pn-hero cp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><div class="tx"><b>${esc(c.name)}</b><span>${esc(contactSub(c))}</span>
     <div class="pn-tags"><span class="bd2">${src}</span><span class="bd2">desde ${day(c.created_at)}</span>${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div></div>
    ${c.transfer_by&&c.transfer_reason?`<div class="pn-s pn-tr"><label>Transferida por ${esc(c.transfer_by)} · ${ago(c.transfer_at)}</label><p>${esc(c.transfer_reason)}</p></div>`:''}
    <div class="pn-s"><div class="pn-kv"><label>Equipe</label><div class="pn-own">${c.team_id&&TMN(c.team_id)?`<span class="tmp lg" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:'<span class="hint">Nenhuma</span>'}<button class="lnk" id="pnTr">transferir</button></div>
@@ -1615,7 +1642,9 @@ function apptModal(a,after){
   o.querySelector('#apC').onclick=()=>{o.remove();CV.open=a.contact_id;go('conversas')};
 }
 const HH=52;
-const fmtPhone=p=>{const d=String(p||'').replace(/\D/g,'');const n=d.startsWith('55')&&d.length>=12?d.slice(2):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:'+'+d};
+const IGI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>';
+const contactSub=c=>c&&c.channel==='instagram'?'@'+(c.ig_username||'instagram'):fmtPhone(c&&c.wa_id);
+const fmtPhone=p=>{if(!p)return '';const d=String(p||'').replace(/\D/g,'');const n=d.startsWith('55')&&d.length>=12?d.slice(2):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:'+'+d};
 const toMin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
 const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 function lanes(items){const ev=items.map(a=>({a,s:toMin(a.start.slice(11,16)),e:toMin(a.end.slice(11,16))||1440})).sort((x,y)=>x.s-y.s);
@@ -1742,7 +1771,7 @@ async function contactDrawer(id,after,tab){
   const c=(await api('/conversations/'+id)).contact;
   const o=overlay(`<div class="drawer cd-w"><div class="row"><h2 style="font-size:20px;letter-spacing:-.4px">${esc(c.name)}</h2><button type="button" class="x">×</button></div>
     <nav class="utabs cd-t"><button type="button" data-cdt="dados" class="on">Dados</button><button type="button" data-cdt="jornada">Jornada</button></nav><div id="cdJn" class="hide"></div><form id="cdF" class="cd-f">
-    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">+${esc(c.wa_id)} · ${c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
+    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">${esc(contactSub(c))} · ${c.channel==='instagram'?(c.source==='instagram_comentario'?'comentou num post do Instagram':'veio pelo Direct do Instagram'):c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
     <div class="field"><label>Nome</label><input name="name" value="${esc(c.name)}" required></div>
     <div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
     <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div>
@@ -3106,8 +3135,8 @@ const VIEWS={
    <div class="card"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
     ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}.</p>`:''}
     <button class="btn sm ${c.plan==='trial'?'p':''}" style="margin-top:12px" data-sub2>${c.plan==='trial'?'Ver planos e assinar':'Assinatura e uso do plano'}</button>
-    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div>`;
-  renderWa(own);document.querySelectorAll('[data-sub2]').forEach(b=>b.onclick=()=>go('assinatura'));
+    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div><div class="card" style="margin-top:14px" id="igc"></div>`;
+  renderWa(own);renderIg(own);document.querySelectorAll('[data-sub2]').forEach(b=>b.onclick=()=>go('assinatura'));
   if(own)$('#co').onsubmit=async ev=>{ev.preventDefault();try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(ev.target))});await refresh();toast('Dados salvos.')}catch(e){toast(e.message)}};
  },
  async atividade(){

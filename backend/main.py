@@ -29,6 +29,7 @@ from media import router as media_router
 from push import router as push_router
 from billing import router as billing_router
 from roi import router as roi_router
+from instagram import router as ig_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -48,7 +49,14 @@ async def lifespan(app):
     await db.login_limits.create_index('expires_at', expireAfterSeconds=0)
     await db.wa_numbers.create_index('company_id', unique=True)
     await db.wa_numbers.create_index('phone_number_id', unique=True)
-    await db.contacts.create_index([('company_id', 1), ('wa_id', 1)], unique=True)
+    info = await db.contacts.index_information()  # contato do Instagram não tem WhatsApp: o índice único vale só para quem tem
+    if 'company_id_1_wa_id_1' in info and not info['company_id_1_wa_id_1'].get('partialFilterExpression'):
+        await db.contacts.drop_index('company_id_1_wa_id_1')
+    await db.contacts.create_index([('company_id', 1), ('wa_id', 1)], unique=True, partialFilterExpression={'wa_id': {'$type': 'string'}})
+    await db.contacts.create_index([('company_id', 1), ('ig_id', 1)], unique=True, partialFilterExpression={'ig_id': {'$type': 'string'}})
+    await db.ig_accounts.create_index('company_id', unique=True)
+    await db.ig_accounts.create_index('ig_id')
+    await db.ig_comments.create_index('comment_id', unique=True)
     await db.contacts.create_index([('company_id', 1), ('last_at', -1)])
     await db.messages.create_index([('contact_id', 1), ('at', -1)])
     await db.messages.create_index('wa_msg_id', sparse=True)
@@ -126,6 +134,7 @@ app.include_router(media_router, prefix="/api")
 app.include_router(push_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 app.include_router(roi_router, prefix="/api")
+app.include_router(ig_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

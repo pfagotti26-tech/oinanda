@@ -391,6 +391,10 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     li = aware(c.get('last_in_at'))
     c['window_open'] = bool(li and now() - li < WINDOW)
     c['window_ends_at'] = (li + WINDOW) if li else None
+    if c.get('channel') == 'instagram':  # Instagram: de 24 h a 7 dias só uma pessoa do time responde
+        from instagram import HUMAN_WINDOW
+        c['human_only'] = bool(li and WINDOW <= now() - li < HUMAN_WINDOW)
+        if c['human_only']: c['window_open'], c['window_ends_at'] = True, li + HUMAN_WINDOW
     from inbox import wait_ctx, wait_info, waiting as is_waiting
     c['waiting'] = is_waiting(c)
     wf, lim = wait_info(c, await wait_ctx(user['company']))
@@ -402,6 +406,9 @@ class SendIn(BaseModel):
 
 async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
     """Envia texto pelo WhatsApp da empresa e registra na conversa. Usado pelo time e pela Nanda."""
+    if contact.get('channel') == 'instagram':
+        from instagram import deliver as ig_deliver
+        return await ig_deliver(company_id, contact, text, by_id, by_name, assign_to)
     li = aware(contact.get('last_in_at'))
     if not li or now() - li >= WINDOW:
         raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')
