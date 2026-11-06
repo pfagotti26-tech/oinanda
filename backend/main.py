@@ -186,7 +186,7 @@ async def signup(body: Signup, request: Request, response: Response):
     key = digest('signup:' + client_ip(request))
     doc = await throttle(key, limit=5, minutes=60)
     email = str(body.email).lower()
-    if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre ou recupere a senha.')
+    if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
                'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now()}
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
@@ -198,6 +198,15 @@ async def signup(body: Signup, request: Request, response: Response):
     log.info('nova empresa: %s (%s)', company['name'], email)
     await open_session(user, response)
     return {'ok': True}
+
+@app.get('/api/auth/email-check')
+async def email_check(email: str, request: Request):
+    """No cadastro: avisa na hora que o e-mail já tem conta (o cadastro já revelaria isso; aqui só chega antes)."""
+    key = digest('emailcheck:' + client_ip(request))
+    doc = await throttle(key, limit=30, minutes=60)
+    await strike(key, doc, minutes=60)
+    e = email.strip().lower()[:200]
+    return {'exists': bool(e and await db.users.find_one({'email': e}, {'_id': 1}))}
 
 @app.post('/api/auth/login')
 async def login(body: Login, request: Request, response: Response):

@@ -41,6 +41,10 @@ a{color:var(--c2)}
 /* auth */
 .auth{min-height:100vh;display:grid;place-items:center;padding:24px}
 .auth .card{width:420px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:28px 28px 28px 8px;padding:32px;box-shadow:0 30px 60px -40px rgba(23,33,43,.4)}
+.pw{position:relative;display:block}.pw input{padding-right:46px}.pw .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:none;color:var(--ink2);border-radius:9px;display:grid;place-items:center;cursor:pointer}.pw .eye:hover{background:var(--soft);color:var(--ink)}.pw .eye svg{width:19px;height:19px}
+.field .fh{font-size:12px;color:var(--ink2);margin-top:5px;display:block}.field .fh.low{color:#B4432F}.field .fh.mid{color:#9A6B12}.field .fh.ok{color:#2E7D4F}.field .fe{font-size:12.5px;color:#B4432F;margin-top:5px}.field .fe:empty{display:none}.field .fe a{font-weight:600;text-decoration:underline;cursor:pointer;color:inherit}
+.field input.bad,.field select.bad{border-color:#D9806E}.field label .opt{font-style:normal;font-weight:400;color:var(--ink2);font-size:11.5px;margin-left:3px}.field select:invalid{color:var(--ink2)}
+.auth .trust{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 14px;margin-top:14px;font-size:12px;color:var(--ink2)}.auth .trust span:before{content:'✓ ';color:#2E7D4F;font-weight:700}
 .auth h1{font-size:24px;letter-spacing:-.6px;margin:18px 0 4px}
 .auth p.l{color:var(--ink2);margin-bottom:20px}
 .auth form{display:flex;flex-direction:column;gap:12px}
@@ -1007,36 +1011,59 @@ async function api(path,opt={}){
 let ME=null,VIEW='inicio';
 
 /* ---------- autenticação ---------- */
-function authView(mode){
+function eyes(root){(root||document).querySelectorAll('input[type=password]:not([data-eye])').forEach(i=>{i.dataset.eye=1;const w=document.createElement('span');w.className='pw';i.parentNode.insertBefore(w,i);w.appendChild(i);
+  const b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','Mostrar senha');b.title='Mostrar senha';b.innerHTML=EYE[0];w.appendChild(b);
+  b.onclick=()=>{const show=i.type==='password';i.type=show?'text':'password';b.innerHTML=EYE[show?1:0];b.title=b.ariaLabel=show?'Esconder senha':'Mostrar senha';i.focus()}})}
+const EYE=['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'];
+function authView(mode,email){
   const signup=mode==='signup';
   $('#root').innerHTML=`<div class="auth"><div class="card">
    <span class="logo"><i>oi</i><b>Nanda</b></span>
    <h1>${signup?'Crie sua conta':'Entrar'}</h1>
-   <p class="l">${signup?'7 dias grátis, sem cartão. Em seguida você conecta o WhatsApp.':'Acesse o painel da sua empresa.'}</p>
-   <form id="f">
+   <p class="l">${signup?'14 dias grátis, sem cartão. Depois você conecta o WhatsApp e o Instagram.':'Acesse o painel da sua empresa.'}</p>
+   <form id="f" novalidate>
     ${signup?`<div class="field"><label>Seu nome</label><input name="name" required minlength="2" autocomplete="name"></div>
-    <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2"></div>
-    <div class="field"><label>Segmento</label><select name="segment">${Object.entries(SEG).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
-    <div class="field"><label>WhatsApp do negócio</label><input name="phone" placeholder="(11) 99999-0000" autocomplete="tel"></div>`:''}
-    <div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email"></div>
-    <div class="field"><label>Senha ${signup?'(mínimo 8 caracteres)':''}</label><input name="password" type="password" required ${signup?'minlength="8" autocomplete="new-password"':'autocomplete="current-password"'}></div>
+    <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2" autocomplete="organization"></div>
+    <div class="field"><label>Segmento</label><select name="segment" required><option value="" disabled selected>Escolha o seu segmento</option>${Object.entries(SEG).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><small class="fh">Define o funil e o jeito da Nanda falar. Dá para mudar depois.</small></div>
+    <div class="field"><label>WhatsApp do negócio (opcional)</label><input name="phone" type="tel" inputmode="tel" placeholder="(11) 99999-0000" autocomplete="tel"></div>`:''}
+    <div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(email||'')}"><div class="fe" id="eE"></div></div>
+    <div class="field"><label>Senha</label><input name="password" type="password" required ${signup?'minlength="8" autocomplete="new-password"':'autocomplete="current-password"'}>${signup?'<small class="fh" id="pwH">Mínimo de 8 caracteres.</small>':''}</div>
     <div class="err" id="e"></div>
     <button class="btn p" type="submit">${signup?'Criar conta e começar':'Entrar'}</button>
    </form>
+   ${signup?'<div class="trust"><span>Sem cartão</span><span>Cancela quando quiser</span><span>Seus dados ficam com você</span></div>':''}
    <div class="sw">${signup?'Já tem conta? <a data-go="login">Entrar</a>':'Ainda não tem conta? <a data-go="signup">Criar conta grátis</a>'}</div>
    ${signup?'<div class="sw" style="font-size:12px">Ao criar a conta você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</div>':''}
   </div></div>`;
-  document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{history.replaceState(null,'',a.dataset.go==='signup'?'/cadastro':'/');authView(a.dataset.go)});
-  $('#f').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#e').textContent='';
-    const body=Object.fromEntries(new FormData(ev.target));
-    try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});if(signup||location.pathname.startsWith('/cadastro')){history.replaceState(null,'','/');VIEW='inicio'}else VIEW=readPath();await boot()}catch(e){$('#e').textContent=e.message;b.disabled=false}};
+  eyes($('#f'));
+  const go=(m,em)=>{history.replaceState(null,'',m==='signup'?'/cadastro':'/');authView(m,em)};
+  document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go,$('#f [name=email]').value));
+  const f=$('#f'),em=f.querySelector('[name=email]');let taken=false;
+  const fieldErr=(i,msg)=>{i.classList.toggle('bad',!!msg);const fe=i.closest('.field').querySelector('.fe');if(fe)fe.innerHTML=msg||''};
+  if(signup){
+    em.onblur=async()=>{const v=em.value.trim();taken=false;if(!v||!em.checkValidity()){fieldErr(em,v?'Confira o e-mail: falta algo como nome@empresa.com.br.':'');return}
+      try{const r=await api('/auth/email-check?email='+encodeURIComponent(v));taken=r.exists;fieldErr(em,r.exists?'Este e-mail já tem conta no Oi Nanda. <a id="goLogin">Entrar com ele</a>':'');
+        if(r.exists)$('#goLogin').onclick=()=>go('login',v)}catch(e){}};
+    em.oninput=()=>{if(em.classList.contains('bad')){taken=false;fieldErr(em,'')}};
+    const pw=f.querySelector('[name=password]'),h=$('#pwH');
+    pw.oninput=()=>{const v=pw.value,sc=(v.length>=8)+(v.length>=12)+(/[A-Z]/.test(v)&&/[a-z]/.test(v))+/\d/.test(v)+/[^A-Za-z0-9]/.test(v);
+      h.className='fh '+(v.length<8?'':sc>=4?'ok':sc>=3?'mid':'low');h.textContent=v.length<8?`Mínimo de 8 caracteres${v?` (faltam ${8-v.length})`:''}.`:sc>=4?'Senha forte.':sc>=3?'Senha boa. Misturar números e símbolos deixa mais forte.':'Senha fraca. Use mais caracteres, números ou símbolos.'};
+  } else if(email){f.querySelector('[name=password]').focus()}
+  f.onsubmit=async ev=>{ev.preventDefault();const b=f.querySelector('button[type=submit]');$('#e').textContent='';
+    const bad=[...f.querySelectorAll('input,select')].find(i=>!i.checkValidity());
+    if(bad){bad.focus();$('#e').textContent=bad.name==='segment'?'Escolha o seu segmento.':bad.name==='password'&&signup?'A senha precisa ter pelo menos 8 caracteres.':bad.name==='email'?'Confira o e-mail.':'Preencha o campo em destaque.';bad.classList.add('bad');bad.addEventListener('input',()=>bad.classList.remove('bad'),{once:true});return}
+    if(signup&&taken){em.focus();return}
+    b.disabled=true;const body=Object.fromEntries(new FormData(f));
+    try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});if(signup||location.pathname.startsWith('/cadastro')){history.replaceState(null,'','/');VIEW='inicio'}else VIEW=readPath();await boot()}
+    catch(e){b.disabled=false;if(signup&&e.status===409){taken=true;fieldErr(em,'Este e-mail já tem conta no Oi Nanda. <a id="goLogin">Entrar com ele</a>');$('#goLogin').onclick=()=>go('login',em.value.trim());em.focus()}else $('#e').textContent=e.message}};
+  (signup?f.querySelector('[name=name]'):(email?null:em))?.focus();
 }
 function passwordView(){
   $('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span>
    <h1>Crie sua senha pessoal</h1><p class="l">Você entrou com uma senha provisória. Escolha a sua para continuar.</p>
    <form id="f"><div class="field"><label>Senha provisória</label><input name="current_password" type="password" required></div>
    <div class="field"><label>Nova senha (mínimo 8 caracteres)</label><input name="new_password" type="password" minlength="8" required autocomplete="new-password"></div>
-   <div class="err" id="e"></div><button class="btn p">Salvar e entrar</button></form></div></div>`;
+   <div class="err" id="e"></div><button class="btn p">Salvar e entrar</button></form></div></div>`;eyes($('#root'));
   $('#f').onsubmit=async ev=>{ev.preventDefault();try{await api('/auth/password',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});await boot()}catch(e){$('#e').textContent=e.message}};
 }
 
