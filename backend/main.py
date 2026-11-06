@@ -88,6 +88,11 @@ async def lifespan(app):
     await db.journey.create_index([('company_id', 1), ('contact_id', 1)])
     await db.push_subs.create_index('endpoint', unique=True)
     await db.push_subs.create_index('user_id')
+    # contas em teste quando os planos chegaram: ganham 14 dias a partir de hoje, para ninguém cair em "só leitura" de surpresa
+    for c in await db.companies.find({'plan': 'trial', 'trial_v2': {'$ne': True}}, {'_id': 0, 'id': 1, 'trial_ends_at': 1}).to_list(10000):
+        end = max(c.get('trial_ends_at') or now(), now() + timedelta(days=TRIAL_DAYS)) if c.get('trial_ends_at') and c['trial_ends_at'].tzinfo else now() + timedelta(days=TRIAL_DAYS)
+        await db.companies.update_one({'id': c['id']}, {'$set': {'trial_ends_at': end, 'trial_v2': True}})
+    await db.companies.update_many({'trial_v2': {'$ne': True}}, {'$set': {'trial_v2': True}})
     await db.contacts.create_index([('company_id', 1), ('next_expiry', 1)])
     worker = None
     if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
@@ -172,7 +177,7 @@ async def signup(body: Signup, request: Request, response: Response):
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre ou recupere a senha.')
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
-               'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'created_at': now()}
+               'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now()}
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
             'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
     await db.companies.insert_one(company.copy())
