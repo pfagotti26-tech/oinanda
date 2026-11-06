@@ -842,6 +842,12 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .pushb>span:not(.pill):not(.b){flex:1 1 260px}.pushb .b{display:flex;gap:6px}
 .pnudge{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--soft);border-radius:16px;padding:12px 14px;margin:0 0 14px}
 .pnudge>svg{width:22px;height:22px;color:var(--c);flex:none}.pnudge span{display:flex;flex-direction:column;flex:1;min-width:0}.pnudge b{font-size:14px}.pnudge small{font-size:12.5px;color:var(--ink3)}
+.kpis.rk{grid-template-columns:repeat(6,minmax(0,1fr))}.kpis.rk .kpi b{font-size:22px;white-space:nowrap;overflow:visible}.kpis.rk .kpi{padding:14px 14px}
+#rImp svg,#rNew svg{width:16px;height:16px}#rImp{white-space:nowrap}.vtb.rt td.n{white-space:nowrap}.kpi.up b{color:var(--ok)}.kpi.down b{color:var(--bad)}
+.vtb.rt tr.ch td{font-size:13px;color:var(--ink2);background:#FCFAF8}.vtb.rt tr.ch td:first-child{padding-left:26px}.vtb.rt tr.ch td:first-child::before{content:'↳ ';color:var(--ink3)}
+.vtb.rt small{color:var(--ink3);font-size:11.5px}.vtb.rt .roas{font-weight:600}.vtb.rt .roas.g{color:var(--ok)}.vtb.rt .roas.m{color:var(--warn)}.vtb.rt .roas.b{color:var(--bad)}
+.vtb.rt th{white-space:nowrap}.rt-w{overflow-x:auto;margin:0 -4px}.rt-w table{min-width:760px}
+@media (max-width:1100px){.kpis.rk{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (max-width:600px){.kpis.rk{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* mídia nas conversas */
 .mimg{display:block;margin:-2px -6px 4px;border-radius:9px;overflow:hidden;max-width:300px;background:#F3EEE9;min-height:60px}.mimg img{display:block;max-width:100%;max-height:340px;object-fit:cover}
 .mimg.stk{background:none;max-width:150px}.mimg.gone{min-height:0}.mimg.gone img{display:none}.mimg.gone::after{content:'📷 Foto indisponível';display:block;padding:10px;font-size:12.5px;color:var(--ink3)}
@@ -1127,7 +1133,7 @@ function readPath(){
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
-  if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens'].includes(parts[1])?parts[1]:'relatorio';
+  if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno'].includes(parts[1])?parts[1]:'relatorio';
   if(v==='clientes')CL.tab={campanhas:'camp',renovacao:'ren'}[parts[1]]||'seg';
   if(v==='funil')FN.pipe=parts[1]==='pos-venda'?'posvenda':'vendas';
   if(v==='metas')MT.tab=['metas','desafios','premios','config'].includes(parts[1])?parts[1]:'painel';
@@ -1942,7 +1948,7 @@ async function vdViews(onChange){
 
 async function vdView(){
   const mgr=isMgr();
-  const tabs=[['relatorio','Relatório'],['lista','Vendas'],['promocoes','Promoções'],['produtos','Catálogo'],...(mgr?[['origens','Origens e links']]:[])];
+  const tabs=[['relatorio','Relatório'],['lista','Vendas'],['promocoes','Promoções'],['produtos','Catálogo'],...(mgr?[['retorno','Retorno'],['origens','Origens e links']]:[])];
   $('#page').innerHTML=`<div class="fhd vd-hd"><div><h1>Vendas</h1><p class="sub">${mgr?'O que foi vendido, por quem e de onde vieram os clientes.':'Suas vendas e os seus números.'}</p></div>
     <div class="tools"><button class="btn sm" id="vdExp">${svg('<path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/>')}Exportar</button><button class="btn sm p" id="vdNew">+ Registrar venda</button></div></div>
    <nav class="utabs" role="tablist">${tabs.map(t=>`<button role="tab" aria-selected="${VD.tab===t[0]}" class="${VD.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</nav>
@@ -1957,6 +1963,7 @@ async function vdView(){
   if(VD.tab==='produtos')return vdProducts();
   if(VD.tab==='promocoes')return vdPromos();
   if(VD.tab==='origens'&&mgr)return vdOrigins();
+  if(VD.tab==='retorno'&&mgr)return vdRoi();
   return vdReport();
 }
 
@@ -2677,6 +2684,62 @@ async function orgLoad(force){if(!ORG||force)ORG=await api('/origins');return OR
 const orgName=id=>((ORG&&ORG.origins)||[]).find(o=>o.id===id)?.name||id;
 const kindOf=c=>{if(!c.sales_count)return 'prospect';const d=ME.company.inactive_days;if(d&&c.last_sale_at&&(Date.now()-new Date(c.last_sale_at))/864e5>d)return 'inativo';return 'cliente'};
 const KIND={prospect:['Prospect','kp'],cliente:['Cliente','kc'],inativo:['Cliente inativo','ki']};
+/* retorno por anúncio e por canal */
+const xr=v=>v==null?'—':String(v.toFixed(1)).replace('.',',')+'x';
+async function vdRoi(){const P=VD.p,[s,e]=vdRange(P);
+  $('#vdBody').innerHTML=`<div class="fb-row" style="margin-bottom:14px"><label class="fb-sel">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<select id="rPr" aria-label="Período">${PRESETS.filter(p=>p[0]!=='hoje').map(p=>`<option value="${p[0]}" ${P.preset===p[0]?'selected':''}>${p[0]==='custom'?'Escolher datas…':p[1]}</option>`).join('')}</select></label>
+     ${P.preset==='custom'?`<span class="fb-dates"><input type="date" id="rS" value="${s}"><span>até</span><input type="date" id="rE" value="${e}"></span>`:`<span class="fb-rng">${fmtD(s)} – ${fmtD(e)}</span>`}<span class="fb-sp"></span>
+     <button class="btn sm" id="rImp">${svg('<path d="M12 21V9m0 0-4 4m4-4 4 4M5 3h14"/>')}Importar da Meta (CSV)</button><button class="btn sm p" id="rNew">+ Lançar investimento</button></div><div id="rBody"><div class="empty">Carregando...</div></div>`;
+  $('#rPr').onchange=x=>{P.preset=x.target.value;if(P.preset==='custom'){const [a,z]=vdRange({preset:'30d'});P.start=P.start||a;P.end=P.end||z}vdRoi()};
+  if($('#rS')){$('#rS').onchange=x=>{P.start=x.target.value;vdRoi()};$('#rE').onchange=x=>{P.end=x.target.value;vdRoi()}}
+  const [r,sp,op]=await Promise.all([api(`/reports/roi?start=${s}&end=${e}`),api('/spend'),api('/spend/options')]);const ON=Object.fromEntries(op.origins.map(g=>[g.id,g.name]));
+  $('#rNew').onclick=()=>spendForm(null,op);$('#rImp').onclick=()=>spendImport(op);
+  const t=r.paid.spend?r.paid:r.total,K=(l,v,sub,cls)=>`<div class="kpi ${cls||''}"><span class="l">${l}</span><b>${v}</b>${sub?`<div class="s"><span>${sub}</span></div>`:''}</div>`;
+  const row=(x,child)=>`<tr class="${child?'ch':''} ${x.result!=null&&x.result<0?'neg':''}"><td>${child?'':'<b>'}${esc(x.name)}${child?'':'</b>'}</td><td class="n">${x.spend?brl(x.spend):'—'}</td><td class="n">${x.leads}</td><td class="n">${x.cpl!=null?brl(x.cpl):'—'}</td>
+     <td class="n">${x.clients}${x.clients&&x.conversion!=null?` <small>${String(x.conversion).replace('.',',')}%</small>`:''}</td><td class="n">${x.cac!=null?brl(x.cac):'—'}</td><td class="n">${x.revenue?brl(x.revenue):'—'}</td><td class="n roas ${x.roas==null?'':x.roas>=3?'g':x.roas>=1?'m':'b'}">${xr(x.roas)}</td></tr>`;
+  const inP=sp.filter(x=>x.end>=s&&x.start<=e);
+  $('#rBody').innerHTML=`${r.has_spend?'':`<div class="note" style="margin-bottom:14px"><b>Lance quanto foi investido</b> em cada canal (anúncios, Google, evento, panfleto...) para ver custo por contato, custo por cliente e quanto cada real voltou em vendas. Dá para importar o relatório do Gerenciador de Anúncios da Meta.</div>`}
+   <div class="kpis rk">${K('Investido',brl(t.spend||0),r.paid.spend?'nos canais pagos':'nada lançado no período')}${K('Contatos',t.leads,t.cpl!=null?brl(t.cpl)+' por contato':'')}
+     ${K('Viraram clientes',t.clients,t.cac!=null?brl(t.cac)+' por cliente':t.conversion!=null?String(t.conversion).replace('.',',')+'% dos contatos':'')}${K('Faturamento',brl(t.revenue||0),'o que esses clientes compraram')}
+     ${K('Retorno',xr(t.roas),t.roas!=null?`cada R$ 1 virou R$ ${t.roas.toFixed(2).replace('.',',')}`:'lance o investimento',t.roas==null?'':t.roas>=1?'up':'down')}${K('Resultado',t.result!=null?brl(t.result):'—',t.result!=null?'faturamento menos investimento':'',t.result==null?'':t.result>=0?'up':'down')}</div>
+   <div class="vd-c" style="margin-top:14px"><div class="hd"><h3>Por canal e campanha</h3><span class="hint">Contatos que chegaram no período e tudo o que eles compraram até hoje.</span></div>
+    ${r.rows.length?`<div class="rt-w"><table class="vtb rt"><thead><tr><th>Canal</th><th class="n">Investido</th><th class="n">Contatos</th><th class="n">Custo por contato</th><th class="n">Clientes</th><th class="n">Custo por cliente</th><th class="n">Faturamento</th><th class="n">Retorno</th></tr></thead>
+     <tbody>${r.rows.map(x=>row(x)+(x.children||[]).map(c=>row(c,true)).join('')).join('')}</tbody></table></div>`:'<p class="hint">Nenhum contato nem investimento no período.</p>'}</div>
+   <div class="vd-c" style="margin-top:14px"><div class="hd"><h3>Investimentos lançados</h3><span class="hint">${inP.length} no período</span></div>
+    ${inP.length?`<div class="vdl">${inP.map(x=>`<div class="r" style="grid-template-columns:minmax(0,1fr) auto"><b>${esc(ON[x.origin]||x.origin)}${x.label?' · '+esc(x.label):''}</b><span class="v">${brl(x.amount)}</span>
+      <span>${fmtD(x.start)}${x.end!==x.start?' a '+fmtD(x.end):''}${x.notes?' · '+esc(x.notes):''}</span><span style="display:flex;gap:10px;justify-content:flex-end"><button class="lnk" data-se="${x.id}">editar</button><button class="lnk" data-sd="${x.id}">apagar</button></span></div>`).join('')}</div>`
+     :'<p class="hint">Nada lançado neste período.</p>'}</div>`;
+  $('#rBody').querySelectorAll('[data-se]').forEach(b=>b.onclick=()=>spendForm(sp.find(x=>x.id===b.dataset.se),op));
+  $('#rBody').querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este investimento?',{ok:'Apagar'}))return;await api('/spend/'+b.dataset.sd,{method:'DELETE'});vdRoi()})}
+function spendForm(x,op){const v=x||{origin:'anuncio',ref_kind:null,ref:'',label:'',start:vdRange({preset:'mes'})[0],end:ymd(new Date()),amount:'',notes:''};
+  const o=overlay(`<form class="modal" id="spF" style="width:560px"><div class="row"><h2 style="font-size:20px">${x?'Editar investimento':'Lançar investimento'}</h2><button type="button" class="x">×</button></div>
+   <div class="form2"><div class="field"><label>Canal</label><select name="origin">${op.origins.map(g=>`<option value="${g.id}" ${v.origin===g.id?'selected':''}>${esc(g.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Valor investido (R$)</label><input name="amount" type="number" min="0.01" step="0.01" required value="${v.amount}" placeholder="Ex.: 1500"></div></div>
+   <div class="field" id="spRef"></div>
+   <div class="form2"><div class="field"><label>De</label><input name="start" type="date" required value="${v.start}"></div><div class="field"><label>Até</label><input name="end" type="date" required value="${v.end}"></div></div>
+   <div class="field"><label>Observação <span class="hint">(opcional)</span></label><input name="notes" maxlength="200" value="${esc(v.notes||'')}" placeholder="Ex.: impulsionamento do post de novembro"></div>
+   <p class="hint">Se o investimento pega só parte do período do relatório, entra proporcional aos dias.</p>
+   <div class="row"><button class="btn p">Salvar</button><span class="err" id="spE"></span></div></form>`);
+  const f=o.querySelector('#spF');
+  const drawRef=()=>{const g=f.origin.value,box=o.querySelector('#spRef');
+    if(g==='anuncio'){box.innerHTML=`<label>Qual anúncio</label><select name="ad"><option value="">Todos os anúncios (investimento geral)</option>${op.ads.map(a=>`<option value="${esc(a.id)}" ${v.ref_kind==='ad'&&v.ref===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select><span class="hint">Os anúncios aparecem aqui quando alguém chama por eles.</span>`}
+    else{const opts=[...new Set([...(op.details[g]||[]),...op.links.filter(l=>l.origin===g).map(l=>l.detail)])];
+      box.innerHTML=`<label>Campanha, evento ou link <span class="hint">(opcional)</span></label><input name="det" list="spDl" maxlength="80" value="${v.ref_kind==='detail'?esc(v.ref||''):''}" placeholder="Deixe vazio para o canal inteiro"><datalist id="spDl">${opts.map(d=>`<option value="${esc(d)}">`).join('')}</datalist><span class="hint">Use o mesmo nome do detalhe da origem (ex.: o nome do evento) para cruzar com os contatos.</span>`}};
+  f.origin.onchange=drawRef;drawRef();
+  f.onsubmit=async ev=>{ev.preventDefault();const g=f.origin.value,ad=f.ad?.value,det=f.det?.value.trim();
+    const body={origin:g,ref_kind:ad?'ad':det?'detail':null,ref:ad||det||null,label:ad?(op.ads.find(a=>a.id===ad)||{}).name:det||'',start:f.start.value,end:f.end.value,amount:Number(f.amount.value),notes:f.notes.value};
+    try{await api('/spend'+(x?'/'+x.id:''),{method:x?'PUT':'POST',body});o.remove();toast('Investimento salvo.');vdRoi()}catch(e){o.querySelector('#spE').textContent=e.message}}}
+function spendImport(op){const [a,z]=vdRange(VD.p);
+  const o=overlay(`<form class="modal" id="siF" style="width:600px"><div class="row"><h2 style="font-size:20px">Importar investimentos</h2><button type="button" class="x">×</button></div>
+   <div class="note" style="font-size:13px"><b>No Gerenciador de Anúncios da Meta:</b> abra <b>Anúncios</b>, escolha o período, clique em <b>Exportar → Exportar dados da tabela → CSV</b>. Deixe as colunas <b>Nome do anúncio</b>, <b>ID do anúncio</b> e <b>Valor usado</b>. Com o ID, cada anúncio cruza direto com os contatos que chamaram por ele.<br>Também serve qualquer planilha com uma coluna de valor (e, se tiver, nome da campanha e datas).</div>
+   <div class="field"><label>Arquivo CSV</label><input type="file" name="file" accept=".csv,text/csv" required></div>
+   <div class="form2"><div class="field"><label>Canal</label><select name="origin">${op.origins.map(g=>`<option value="${g.id}" ${g.id==='anuncio'?'selected':''}>${esc(g.name)}</option>`).join('')}</select></div><span></span></div>
+   <div class="form2"><div class="field"><label>De <span class="hint">(se o arquivo não tiver datas)</span></label><input name="start" type="date" value="${a}"></div><div class="field"><label>Até</label><input name="end" type="date" value="${z}"></div></div>
+   <div class="row"><button class="btn p">Importar</button><span class="err" id="siE"></span></div></form>`);
+  const f=o.querySelector('#siF');f.onsubmit=async ev=>{ev.preventDefault();const fd=new FormData(f);
+    const r=await fetch('/api/spend/import',{method:'POST',body:fd,credentials:'same-origin'});let d={};try{d=await r.json()}catch(e){}
+    if(!r.ok){o.querySelector('#siE').textContent=d.detail||'Não foi possível importar.';return}
+    o.remove();toast(`${d.created} ${d.created===1?'investimento importado':'investimentos importados'}${d.skipped?` · ${d.skipped} ${d.skipped===1?'linha ignorada':'linhas ignoradas'} (sem valor ou já importadas)`:''}.`);vdRoi()}}
 async function vdOrigins(){
   const [o,l]=await Promise.all([orgLoad(true),api('/track-links')]);
   $('#vdBody').innerHTML=`<div class="vd-g" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)"><div class="vd-c"><div class="hd"><h3>Links rastreáveis e QR Codes</h3><span class="sp"></span><button class="btn sm p" id="lkNew">+ Novo link</button></div>
