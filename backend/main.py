@@ -35,6 +35,8 @@ from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, Company
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 log = logging.getLogger('oinanda')
+# o httpx registra a URL inteira de cada chamada (com tokens e chaves na query): nunca no log
+for _n in ('httpx', 'httpcore'): logging.getLogger(_n).setLevel(logging.WARNING)
 
 @asynccontextmanager
 async def lifespan(app):

@@ -42,9 +42,8 @@ def redirect_uri(request=None): return app_url(request) + '/api/ig/callback'
 # ---------- chamadas à Meta (isoladas para os testes) ----------
 async def ig(method, path, token=None, params=None, data=None, payload=None, base=None):
     async with httpx.AsyncClient(timeout=20) as c:
-        p = dict(params or {})
-        if token: p['access_token'] = token
-        r = await c.request(method, (base or GRAPH) + path, params=p, data=data, json=payload)
+        h = {'Authorization': 'Bearer ' + token} if token else {}  # token no cabeçalho, nunca na URL
+        r = await c.request(method, (base or GRAPH) + path, params=params or None, data=data, json=payload, headers=h)
     try: d = r.json()
     except ValueError: d = {}
     if r.status_code >= 400:
@@ -84,16 +83,20 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
                                                           'redirect_uri': redirect_uri(request), 'code': code.split('#')[0]})
         tok = t['access_token']
         me = await ig('GET', '/me', tok, {'fields': 'client_business_id'})
-        accs = (await ig('GET', '/me/assigned_instagram_accounts', tok, {'fields': 'id,username,name,profile_picture_url'})).get('data') or []
+        biz = str(me.get('client_business_id') or '')
+        accs = await ig_accounts(tok, biz)
+        log.info('instagram: conexão da empresa %s, portfólio %s, %d conta(s)', st['company_id'], biz or '-', len(accs))
         if not accs: return RedirectResponse(back + '?ig=sem_conta')
         acc = accs[0]  # o Oi Nanda trabalha com uma conta por empresa
         other = await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': st['company_id']}})
-        if other: return RedirectResponse(back + '?ig=outra_empresa')
+        if other:
+            log.info('instagram: @%s já está em outra empresa', acc.get('username'))
+            return RedirectResponse(back + '?ig=outra_empresa')
         await ig('POST', f'/{acc["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
         exp = now() + timedelta(seconds=int(t['expires_in'])) if t.get('expires_in') else None
         await db.ig_accounts.update_one({'company_id': st['company_id']}, {'$set': {
             'company_id': st['company_id'], 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name'), 'picture': acc.get('profile_picture_url'),
-            'business_id': str(me.get('client_business_id') or ''), 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
+            'business_id': biz, 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
             'connected_at': now(), 'connected_by': st['user_id'], 'status': 'connected'}}, upsert=True)
         await db.audit.insert_one({'id': uid(), 'company_id': st['company_id'], 'actor_id': st['user_id'], 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
                                    'at': now(), 'expires_at': now() + timedelta(days=180)})
@@ -101,6 +104,25 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
     except HTTPException as e:
         log.warning('falha ao conectar instagram: %s', e.detail)
         return RedirectResponse(back + '?ig=erro')
+
+async def ig_accounts(tok, biz):
+    """Contas do Instagram que o cliente compartilhou. O caminho oficial é /me/assigned_instagram_accounts; se ele
+    vier vazio (a Meta às vezes demora a refletir o compartilhamento), tenta pelo portfólio do cliente."""
+    tries = [('/me/assigned_instagram_accounts', 'id,username')]
+    if biz: tries += [(f'/{biz}/instagram_accounts', 'id,username'), (f'/{biz}/owned_instagram_accounts', 'id,username')]
+    for path, fields in tries:
+        try: data = (await ig('GET', path, tok, {'fields': fields})).get('data') or []
+        except HTTPException as e:
+            log.info('instagram: %s recusado: %s', path, e.detail); continue
+        log.info('instagram: %s trouxe %d conta(s)', path, len(data))
+        if data:
+            out = []
+            for a in data:
+                try: a.update({k: v for k, v in (await ig('GET', f'/{a["id"]}', tok, {'fields': 'name,profile_picture_url'})).items() if k != 'id'})
+                except HTTPException: pass
+                out.append(a)
+            return out
+    return []
 
 @router.delete('/ig/account')
 async def disconnect(request: Request, user=Depends(owners)):

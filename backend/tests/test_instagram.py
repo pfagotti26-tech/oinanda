@@ -29,6 +29,7 @@ def test_direct(monkeypatch):
         if path == '/me': return {'client_business_id': '555', 'id': '99'}
         if path == '/me/assigned_instagram_accounts': return {'data': [{'id': '17841400000000001', 'username': 'alta_creators', 'name': 'Alta Creators'}]}
         if path.endswith('/messages'): return {'recipient_id': 'x', 'message_id': 'out' + str(len(calls))}
+        if path == '/17841400000000001': return {'name': 'Alta Creators', 'profile_picture_url': 'x'}
         if path.startswith('/9'): return {'name': 'Bia Souza', 'username': 'bia.souza'}
         return {'success': True}
     monkeypatch.setattr(instagram, 'ig', fake_ig)
