@@ -28,6 +28,8 @@ class ProductIn(BaseModel):
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
     kind: Literal['produto', 'servico'] = 'servico'
     active: bool = True
+    duration_days: Optional[int] = Field(default=None, ge=1, le=3650)  # validade: plano, módulo, assinatura
+    next_ids: List[str] = Field(default_factory=list, max_length=10)     # o que oferecer depois
 
 async def sync_agenda(company):
     """Os serviços da agenda entram no catálogo (e o preço acompanha)."""
@@ -59,8 +61,11 @@ async def add_product(body: ProductIn, request: Request, user=Depends(managers))
 async def edit_product(pid: str, body: ProductIn, request: Request, user=Depends(managers)):
     p = await db.products.find_one({'id': pid, 'company_id': user['company_id']}, {'_id': 0})
     if not p: raise HTTPException(404, 'Item não encontrado.')
-    upd = {**body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip()}
+    upd = {**body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'next_ids': [i for i in body.next_ids if i != pid]}
     await db.products.update_one({'id': pid}, {'$set': upd})
+    if p.get('duration_days') != body.duration_days or p.get('name') != upd['name']:
+        from wallet import recompute_product
+        await recompute_product(user['company_id'], pid)
     return {**p, **upd}
 
 @router.delete('/products/{pid}')
@@ -147,6 +152,8 @@ async def refresh_contact(company, contact_id):
     rows = await db.sales.find({'company_id': company['id'], 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'total': 1, 'date': 1}).to_list(1000)
     await db.contacts.update_one({'id': contact_id}, {'$set': {'value': round(sum(r['total'] for r in rows), 2) if rows else None, 'sales_count': len(rows),
                                                               'first_sale_at': min((r['date'] for r in rows), default=None), 'last_sale_at': max((r['date'] for r in rows), default=None)}})
+    from wallet import refresh_holdings
+    await refresh_holdings(company['id'], contact_id)
 
 def can_edit(user, sale):
     return user['role'] in MGR or sale.get('created_by') == user['id'] or any(s['user_id'] == user['id'] for s in sale.get('sellers') or [])
