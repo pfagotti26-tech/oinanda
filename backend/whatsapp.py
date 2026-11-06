@@ -213,6 +213,10 @@ async def ingest(value):
         if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir='in')
         if names.get(wa_id): upd['name'] = names[wa_id]
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd, '$inc': {'unread': 1}})
+        try:
+            from origins import on_inbound as origin_hook
+            await origin_hook(cid, contact, text, ad)
+        except Exception: log.exception('falha ao marcar a origem')
         mid = uid()
         await db.messages.insert_one({'id': mid, 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
                                       'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now()})
@@ -330,7 +334,7 @@ async def get_contact(user, contact_id):
     return c
 
 @router.get('/conversations')
-async def conversations(filter: str = 'all', q: str = '', user=Depends(current_user)):
+async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', user=Depends(current_user)):
     from inbox import waiting
     qq = {'company_id': user['company_id']}
     if filter == 'mine': qq['assigned_to'] = user['id']
@@ -347,7 +351,14 @@ async def conversations(filter: str = 'all', q: str = '', user=Depends(current_u
         ors = [{'name': {'$regex': re.escape(term), '$options': 'i'}}, {'tags': {'$regex': re.escape(term), '$options': 'i'}}]
         if len(digits) >= 3: ors.append({'wa_id': {'$regex': digits}})
         qq['$or'] = ors
+    if kind == 'prospect': qq['sales_count'] = {'$in': [None, 0]}
+    elif kind in ('cliente', 'inativo'): qq['sales_count'] = {'$gt': 0}
+    if origin: qq['origin'] = None if origin == '_none' else origin
     rows = await db.contacts.find(qq, {'_id': 0}).sort('last_at', -1).to_list(300)
+    if kind in ('cliente', 'inativo'):
+        from origins import status_of
+        days = user['company'].get('inactive_days')
+        rows = [r for r in rows if status_of(r, days) == kind]
     if filter == 'waiting': rows = [r for r in rows if waiting(r)]
     for r in rows: r['waiting'] = waiting(r)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}

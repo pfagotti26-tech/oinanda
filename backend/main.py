@@ -18,6 +18,7 @@ from inbox import router as inbox_router
 from teams import router as teams_router
 from notify import router as notify_router
 from sales import router as sales_router
+from origins import router as origins_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -66,6 +67,7 @@ async def lifespan(app):
     await db.sales.create_index([('company_id', 1), ('contact_id', 1)])
     await db.products.create_index([('company_id', 1), ('name', 1)])
     await db.transfers.create_index([('company_id', 1), ('at', -1)])
+    await db.track_links.create_index('code', unique=True)
     worker = None
     if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
         worker = asyncio.create_task(automations.loop())
@@ -87,6 +89,7 @@ app.include_router(inbox_router, prefix='/api')
 app.include_router(teams_router, prefix='/api')
 app.include_router(notify_router, prefix="/api")
 app.include_router(sales_router, prefix="/api")
+app.include_router(origins_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

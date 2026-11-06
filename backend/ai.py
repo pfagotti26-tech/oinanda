@@ -54,7 +54,7 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
-def build_system(s, company, contact_name, agenda_text=None, upcoming=None):
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
     if agenda_text:
@@ -90,10 +90,20 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-{ag}
+{ag}{origin_block(origin_opts, company)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": ""}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
+
+def origin_block(opts, company):
+    if not opts: return ''
+    return f"""
+COMO O CLIENTE CONHECEU O NEGÓCIO (ainda não sabemos):
+- Depois de ajudar no que o cliente pediu (nunca logo na primeira resposta e nunca no meio de uma dúvida), pergunte uma vez, com leveza, como ele conheceu o {company['name']}. Se ele já disse na conversa, não pergunte.
+- Quando souber, preencha "origin" com um destes ids: {', '.join(f'{o["id"]} ({o["name"]})' for o in opts)}.
+- Em "origin_detail" coloque o detalhe se houver: nome de quem indicou, qual evento, qual campanha ou post. Senão deixe vazio.
+- Se a resposta não se encaixar em nenhum, use "outro" com o que ele disse no detalhe.
+"""
 
 def parse(text):
     m = re.search(r'\{.*\}', text or '', re.S)
@@ -101,9 +111,10 @@ def parse(text):
         try:
             d = json.loads(m.group(0))
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
-            return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b}
+            return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
+                    'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80]}
         except ValueError: pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None}
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': ''}
 
 async def history(contact_id, limit=20):
     rows = await db.messages.find({'contact_id': contact_id, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'dir': 1, 'text': 1}).sort('at', -1).to_list(limit)
@@ -125,7 +136,11 @@ async def system_for(s, company, contact=None):
     except Exception: log.exception('falha ao montar a agenda'); agenda_text = None
     upcoming = await agenda.upcoming_for(company['id'], contact['id']) if contact and agenda_text else None
     name = (contact.get('name') or '').split(' ')[0] if contact else 'Cliente'
-    return build_system(s, company, name, agenda_text, upcoming)
+    opts = None
+    if contact and company.get('ask_origin', True) and not contact.get('origin') and not contact.get('ad'):
+        from origins import origins_of
+        opts = [o for o in await origins_of(company) if o['id'] != 'anuncio']
+    return build_system(s, company, name, agenda_text, upcoming, opts)
 
 async def think(company_id, contact):
     s = await settings_for(company_id)
@@ -184,6 +199,14 @@ async def auto_reply(company_id, contact_id, msg_id):
             except (HTTPException, ValueError):
                 d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
         if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+        if d.get('origin') and not contact.get('origin'):
+            from origins import origins_of, set_origin
+            company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+            names = {o['id']: o['name'] for o in await origins_of(company)}
+            if d['origin'] in names:
+                ref = d['origin_detail'] if d['origin'] == 'indicacao' else None
+                await set_origin(company, contact, d['origin'], d['origin_detail'], 'nanda', None, ref)
+                await note(company_id, contact_id, f'A Nanda descobriu a origem: {names[d["origin"]]}' + (f' · {d["origin_detail"]}' if d['origin_detail'] else ''))
         if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
         log.exception('falha na resposta automática')

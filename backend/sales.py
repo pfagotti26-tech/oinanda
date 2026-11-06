@@ -18,7 +18,7 @@ router = APIRouter()
 PAYMENTS = {'pix': 'Pix', 'cartao_credito': 'Cartão de crédito', 'cartao_debito': 'Cartão de débito', 'boleto': 'Boleto',
             'dinheiro': 'Dinheiro', 'transferencia': 'Transferência', 'outro': 'Outro'}
 SOURCES = {'whatsapp': 'Chamou no WhatsApp', 'manual': 'Cadastro manual', 'historico': 'Conversa antiga do celular', 'agenda do celular': 'Agenda do celular'}
-GROUPS = ('seller', 'product', 'category', 'team', 'source', 'payment', 'day', 'week', 'month')
+GROUPS = ('seller', 'product', 'category', 'team', 'source', 'kind', 'payment', 'day', 'week', 'month')
 MGR = ('owner', 'manager')
 
 # ---------- catálogo ----------
@@ -132,8 +132,9 @@ async def clean_sale(user, body: SaleIn, contact):
 
 async def refresh_contact(company, contact_id):
     """O valor do card no funil passa a ser a soma das vendas do cliente."""
-    rows = await db.sales.find({'company_id': company['id'], 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'total': 1}).to_list(1000)
-    await db.contacts.update_one({'id': contact_id}, {'$set': {'value': round(sum(r['total'] for r in rows), 2) if rows else None, 'sales_count': len(rows)}})
+    rows = await db.sales.find({'company_id': company['id'], 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'total': 1, 'date': 1}).to_list(1000)
+    await db.contacts.update_one({'id': contact_id}, {'$set': {'value': round(sum(r['total'] for r in rows), 2) if rows else None, 'sales_count': len(rows),
+                                                              'first_sale_at': min((r['date'] for r in rows), default=None), 'last_sale_at': max((r['date'] for r in rows), default=None)}})
 
 def can_edit(user, sale):
     return user['role'] in MGR or sale.get('created_by') == user['id'] or any(s['user_id'] == user['id'] for s in sale.get('sellers') or [])
@@ -227,6 +228,7 @@ class Filters(BaseModel):
     source: Optional[str] = None
     q: Optional[str] = Field(default=None, max_length=80)
     status: Literal['ok', 'cancelled', 'all'] = 'ok'
+    kind: Literal['', 'nova', 'recompra'] = ''
 
 def period(company, f: Filters):
     tz = agenda.tz_of(company)
@@ -241,15 +243,30 @@ def src_label(s):
     if (s or '').startswith('ad:'): return 'Anúncio: ' + s[3:]
     return SOURCES.get(s, s or 'Outro')
 
+async def origin_names(company):
+    from origins import origins_of
+    return {o['id']: o['name'] for o in await origins_of(company)} | {'_none': 'Não sabemos'}
+
 async def fetch(user, f: Filters, t0, t1):
     q = {'company_id': user['company_id'], 'date': {'$gte': t0, '$lt': t1}}
     if f.status != 'all': q['status'] = f.status
     if user['role'] not in MGR: q['$or'] = [{'sellers.user_id': user['id']}, {'created_by': user['id']}]
     if f.team: q['team_id'] = f.team
     if f.payment: q['payment'] = f.payment
-    if f.source: q['source'] = f.source
     if f.seller and f.seller != 'none': q['sellers.user_id'] = f.seller
     rows = await db.sales.find(q, {'_id': 0}).sort('date', -1).to_list(20000)
+    # origem atual do cliente (correções feitas depois valem para trás) e se foi a primeira compra dele
+    cids = list({r['contact_id'] for r in rows})
+    cs = {c['id']: c for c in await db.contacts.find({'id': {'$in': cids}}, {'_id': 0, 'id': 1, 'origin': 1, 'ad': 1}).to_list(len(cids) + 1)}
+    first = {}
+    for x in await db.sales.find({'company_id': user['company_id'], 'contact_id': {'$in': cids}, 'status': 'ok'}, {'_id': 0, 'id': 1, 'contact_id': 1, 'date': 1}).sort('date', 1).to_list(50000):
+        first.setdefault(x['contact_id'], x['id'])
+    for r in rows:
+        c = cs.get(r['contact_id']) or {}
+        r['_origin'] = c.get('origin') or ('anuncio' if c.get('ad') or (r.get('source') or '').startswith('ad:') else '_none')
+        r['_first'] = first.get(r['contact_id']) == r['id']
+    if f.source: rows = [r for r in rows if r['_origin'] == f.source]
+    if f.kind: rows = [r for r in rows if r['_first'] == (f.kind == 'nova')]
     if f.seller == 'none': rows = [r for r in rows if not r.get('sellers')]
     if f.q:
         t = f.q.lower()
@@ -285,22 +302,24 @@ def totals(fs):
 @router.get('/sales')
 async def list_sales(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
                      product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                     q: Optional[str] = None, status: str = 'ok', user=Depends(current_user)):
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status)
+                     q: Optional[str] = None, status: str = 'ok', kind: str = '', user=Depends(current_user)):
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status, kind=kind)
     await migrate_legacy(user['company'])
+    onames = await origin_names(user['company'])
     s0, s1, t0, t1 = period(user['company'], f)
     rows = await fetch(user, f, t0, t1)
     if f.product or f.category: rows = [r for r in rows if any(item_ok(i, f) for i in r['items'])]
-    return {'start': s0.isoformat(), 'end': s1.isoformat(), 'items': [{**out(r), 'source_label': src_label(r.get('source')), 'can_edit': can_edit(user, r)} for r in rows[:2000]]}
+    return {'start': s0.isoformat(), 'end': s1.isoformat(), 'items': [{**out(r), 'source_label': onames.get(r['_origin'], ''), 'first': r['_first'], 'can_edit': can_edit(user, r)} for r in rows[:2000]]}
 
 @router.get('/sales/report')
 async def report(start: Optional[str] = None, end: Optional[str] = None, group: str = 'seller', seller: Optional[str] = None, team: Optional[str] = None,
                  product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                 bucket: Optional[str] = None, user=Depends(current_user)):
+                 bucket: Optional[str] = None, kind: str = '', user=Depends(current_user)):
     if group not in GROUPS: raise HTTPException(400, 'Agrupamento inválido.')
     if user['role'] not in MGR: seller = user['id']  # atendente vê só as próprias vendas
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source)
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind)
     company = user['company']
+    onames = await origin_names(company)
     await migrate_legacy(company)
     s0, s1, t0, t1 = period(company, f)
     days = (s1 - s0).days + 1
@@ -329,7 +348,8 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, group: 
         elif group == 'team':
             t = teams.get(s.get('team_id'))
             add(t['id'] if t else '_none', t['name'] if t else 'Sem equipe', x, x['value'], x['qty'], t.get('color') if t else None)
-        elif group == 'source': add(s.get('source') or '_none', src_label(s.get('source')), x, x['value'], x['qty'])
+        elif group == 'source': add(s['_origin'], onames.get(s['_origin'], s['_origin']), x, x['value'], x['qty'])
+        elif group == 'kind': add('nova' if s['_first'] else 'recompra', 'Primeira compra' if s['_first'] else 'Recompra', x, x['value'], x['qty'])
         elif group == 'payment': add(s.get('payment') or '_none', PAYMENTS.get(s.get('payment'), 'Não informado'), x, x['value'], x['qty'])
         else:
             b = bucket_of(local_day(company, s['date']), s0, group)
@@ -357,33 +377,33 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, group: 
     seen = await db.sales.find({'company_id': user['company_id']}, {'_id': 0, 'items.name': 1, 'items.product_id': 1, 'items.category': 1, 'source': 1}).to_list(20000)
     avulsos = sorted({i['name'] for r in seen for i in r['items'] if not i.get('product_id')})
     cats = sorted({p.get('category') for p in cat if p.get('category')} | {i.get('category') for r in seen for i in r['items'] if i.get('category')})
-    srcs = sorted({r.get('source') for r in seen if r.get('source')})
     return {'start': s0.isoformat(), 'end': s1.isoformat(), 'days': days, 'bucket': size, 'group': group,
             'totals': tot, 'prev': prev, 'prev_start': (s0 - timedelta(days=days)).isoformat(), 'prev_end': (s0 - timedelta(days=1)).isoformat(),
             'rows': out_rows, 'series': ser,
             'options': {'sellers': [{'id': k, 'name': v} for k, v in names.items()], 'teams': [{'id': t['id'], 'name': t['name']} for t in teams.values()],
                         'products': [{'id': p['id'], 'name': p['name']} for p in sorted(cat, key=lambda p: p['name'])] + [{'id': 'avulso:' + n, 'name': n + ' (avulso)'} for n in avulsos],
-                        'categories': cats, 'payments': [{'id': k, 'name': v} for k, v in PAYMENTS.items()], 'sources': [{'id': s, 'name': src_label(s)} for s in srcs]},
+                        'categories': cats, 'payments': [{'id': k, 'name': v} for k, v in PAYMENTS.items()], 'sources': [{'id': k, 'name': v} for k, v in onames.items()]},
             'mine_only': user['role'] not in MGR}
 
 @router.get('/sales/export')
 async def export(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
                  product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                 user=Depends(current_user)):
+                 kind: str = '', user=Depends(current_user)):
     if user['role'] not in MGR: seller = user['id']
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source)
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind)
+    onames = await origin_names(user['company'])
     s0, s1, t0, t1 = period(user['company'], f)
     teams = {t['id']: t['name'] for t in await db.teams.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(50)}
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=';')
     br = lambda v: f'{v:.2f}'.replace('.', ',')
-    w.writerow(['Data', 'Cliente', 'Item', 'Categoria', 'Quantidade', 'Preço', 'Desconto', 'Total do item', 'Vendedores', 'Pagamento', 'Equipe', 'Origem', 'Observação'])
+    w.writerow(['Data', 'Cliente', 'Item', 'Categoria', 'Quantidade', 'Preço', 'Desconto', 'Total do item', 'Vendedores', 'Pagamento', 'Equipe', 'Origem', 'Compra', 'Observação'])
     for x in facts(await fetch(user, f, t0, t1), f):
         s, i = x['sale'], x['item']
         w.writerow([local_day(user['company'], s['date']).strftime('%d/%m/%Y'), s.get('contact_name') or '', i['name'], i.get('category') or '',
                     br(i['qty']).rstrip('0').rstrip(','), br(i['price']), br(i.get('discount') or 0), br(x['value']),
                     ', '.join(f'{y.get("name")} {y["pct"]:g}%' for y in s.get('sellers') or []), PAYMENTS.get(s.get('payment'), ''),
-                    teams.get(s.get('team_id'), ''), src_label(s.get('source')), s.get('notes') or ''])
+                    teams.get(s.get('team_id'), ''), onames.get(s['_origin'], ''), 'primeira' if s['_first'] else 'recompra', s.get('notes') or ''])
     return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8',
                     headers={'Content-Disposition': f'attachment; filename="vendas_{s0.isoformat()}_{s1.isoformat()}.csv"'})
 
@@ -393,7 +413,7 @@ class ViewIn(BaseModel):
     params: Dict[str, str] = Field(default_factory=dict)
     shared: bool = True
 
-KEYS = {'preset', 'start', 'end', 'group', 'seller', 'team', 'product', 'category', 'payment', 'source', 'metric', 'chart', 'bucket'}
+KEYS = {'preset', 'start', 'end', 'group', 'seller', 'team', 'product', 'category', 'payment', 'source', 'kind', 'metric', 'chart', 'bucket'}
 
 @router.get('/sales/views')
 async def views(user=Depends(current_user)):
