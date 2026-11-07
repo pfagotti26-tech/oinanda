@@ -452,6 +452,10 @@ async def loop():
             await billing_tick()
         except Exception: log.exception('falha na conferência das assinaturas')
         try:
+            from mailer import trial_tick
+            await trial_tick()
+        except Exception: log.exception('falha nos avisos de fim do teste')
+        try:
             from instagram import refresh_tokens
             await refresh_tokens()
         except Exception: log.exception('falha ao renovar o acesso do Instagram')

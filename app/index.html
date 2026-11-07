@@ -54,6 +54,8 @@ a{color:var(--c2)}
 .auth h1{font-size:24px;letter-spacing:-.6px;margin:18px 0 4px}
 .auth p.l{color:var(--ink2);margin-bottom:20px}
 .auth form{display:flex;flex-direction:column;gap:12px}
+.auth .forgot{display:inline-block;margin-top:7px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink2);text-decoration:underline}
+.auth .done{background:#F1FBF4;border:1px solid #CDEFD8;border-radius:12px;padding:12px 14px;font-size:14px;color:var(--ink);line-height:1.5}
 .auth .sw{margin-top:16px;font-size:13.5px;color:var(--ink2);text-align:center}
 .auth .sw a{font-weight:700;cursor:pointer}
 /* shell */
@@ -1069,6 +1071,37 @@ function eyes(root){(root||document).querySelectorAll('input[type=password]:not(
   const b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','Mostrar senha');b.title='Mostrar senha';b.innerHTML=EYE[0];w.appendChild(b);
   b.onclick=()=>{const show=i.type==='password';i.type=show?'text':'password';b.innerHTML=EYE[show?1:0];b.title=b.ariaLabel=show?'Esconder senha':'Mostrar senha';i.focus()}})}
 const EYE=['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'];
+function authCard(inner){$('#root').innerHTML=`<div class="auth"><a class="back-site" href="https://oinanda.com.br/">← Voltar para o site</a><div class="card"><a class="logo" href="https://oinanda.com.br/" title="Ir para o site do Oi Nanda"><i>oi</i><b>Nanda</b></a>${inner}</div></div>`}
+function forgotView(email){
+  history.replaceState(null,'','/');
+  authCard(`<h1>Esqueci minha senha</h1><p class="l">Digite o e-mail da sua conta. Mandamos um link para você criar uma senha nova.</p>
+   <form id="f" novalidate><div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(email||'')}"></div>
+   <div class="err" id="e"></div><button class="btn p" type="submit">Mandar link</button></form>
+   <div class="sw"><a id="bk">← Voltar para o login</a></div>`);
+  const f=$('#f'),em=f.querySelector('[name=email]');em.focus();$('#bk').onclick=()=>authView('login',em.value.trim());
+  f.onsubmit=async ev=>{ev.preventDefault();$('#e').textContent='';if(!em.checkValidity()){em.classList.add('bad');$('#e').textContent='Confira o e-mail: falta algo como nome@empresa.com.br.';em.focus();return}
+    const b=f.querySelector('button');b.disabled=true;b.textContent='Mandando...';
+    try{await api('/auth/forgot',{method:'POST',body:{email:em.value.trim()}});
+      authCard(`<h1>Confira seu e-mail</h1><div class="done">Se <b>${esc(em.value.trim())}</b> tiver conta no Oi Nanda, o link para criar uma senha nova chega em alguns minutos. Ele vale por 30 minutos.</div>
+       <p class="l" style="margin-top:14px">Não chegou? Olhe a caixa de spam ou promoções. Se trabalha numa equipe, o dono da conta também consegue mandar um link novo em <b>Equipe</b>.</p>
+       <div class="sw"><a id="bk">← Voltar para o login</a></div>`);$('#bk').onclick=()=>authView('login',em.value.trim())}
+    catch(e){b.disabled=false;b.textContent='Mandar link';$('#e').textContent=e.message}}}
+async function resetView(token){
+  let r={valid:false};try{r=await api('/auth/reset?token='+encodeURIComponent(token||''))}catch(e){}
+  if(!r.valid){authCard(`<h1>Link expirado</h1><p class="l">Este link já foi usado ou passou do prazo. Peça um novo, leva um minuto.</p><button class="btn p" id="nw">Pedir um link novo</button><div class="sw"><a id="bk">← Voltar para o login</a></div>`);
+    $('#nw').onclick=()=>forgotView('');$('#bk').onclick=()=>{history.replaceState(null,'','/');authView('login')};return}
+  authCard(`<h1>${r.invite?'Crie sua senha':'Crie uma senha nova'}</h1><p class="l">${r.name?esc(r.name)+', e':'E'}scolha uma senha com pelo menos 8 caracteres.${r.invite?' Depois você já entra no Oi Nanda.':' As sessões abertas em outros aparelhos serão encerradas.'}</p>
+   <form id="f" novalidate><div class="field"><label>Nova senha</label><input name="password" type="password" required minlength="8" autocomplete="new-password"><small class="fh" id="pwH">Mínimo de 8 caracteres.</small></div>
+   <div class="field"><label>Repita a senha</label><input name="again" type="password" required autocomplete="new-password"></div>
+   <div class="err" id="e"></div><button class="btn p" type="submit">Salvar e entrar</button></form>`);
+  eyes($('#f'));const f=$('#f'),pw=f.password,ag=f.again,h=$('#pwH');pw.focus();
+  pw.oninput=()=>{const v=pw.value;h.className='fh '+(v.length<8?'':'ok');h.textContent=v.length<8?`Mínimo de 8 caracteres${v?` (faltam ${8-v.length})`:''}.`:'Tamanho ok.'};
+  f.onsubmit=async ev=>{ev.preventDefault();$('#e').textContent='';
+    if(pw.value.length<8){$('#e').textContent='A senha precisa ter pelo menos 8 caracteres.';pw.focus();return}
+    if(pw.value!==ag.value){$('#e').textContent='As duas senhas não estão iguais.';ag.focus();return}
+    const b=f.querySelector('button');b.disabled=true;
+    try{await api('/auth/reset',{method:'POST',body:{token,password:pw.value}});history.replaceState(null,'','/');VIEW='inicio';toast('Senha salva. Bem-vindo!');await boot()}
+    catch(e){b.disabled=false;$('#e').textContent=e.message}}}
 function authView(mode,email){
   const signup=mode==='signup';
   $('#root').innerHTML=`<div class="auth"><a class="back-site" href="https://oinanda.com.br/">← Voltar para o site</a><div class="card">
@@ -1081,7 +1114,7 @@ function authView(mode,email){
     <div class="field"><label>Segmento</label><select name="segment" required><option value="" disabled selected>Escolha o seu segmento</option>${Object.entries(SEG).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><small class="fh">Define o funil e o jeito da Nanda falar. Dá para mudar depois.</small></div>
     <div class="field"><label>WhatsApp do negócio (opcional)</label><input name="phone" type="tel" inputmode="tel" placeholder="(11) 99999-0000" autocomplete="tel"></div>`:''}
     <div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(email||'')}"><div class="fe" id="eE"></div></div>
-    <div class="field"><label>Senha</label><input name="password" type="password" required ${signup?'minlength="8" autocomplete="new-password"':'autocomplete="current-password"'}>${signup?'<small class="fh" id="pwH">Mínimo de 8 caracteres.</small>':''}</div>
+    <div class="field"><label>Senha</label><input name="password" type="password" required ${signup?'minlength="8" autocomplete="new-password"':'autocomplete="current-password"'}>${signup?'<small class="fh" id="pwH">Mínimo de 8 caracteres.</small>':'<a class="forgot" id="fgt">Esqueci minha senha</a>'}</div>
     <div class="err" id="e"></div>
     <button class="btn p" type="submit">${signup?'Criar conta e começar':'Entrar'}</button>
    </form>
@@ -1092,6 +1125,7 @@ function authView(mode,email){
   eyes($('#f'));
   const go=(m,em)=>{history.replaceState(null,'',m==='signup'?'/cadastro':'/');authView(m,em)};
   document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go,$('#f [name=email]').value));
+  if($('#fgt'))$('#fgt').onclick=()=>forgotView($('#f [name=email]').value.trim());
   const f=$('#f'),em=f.querySelector('[name=email]');let taken=false;
   const fieldErr=(i,msg)=>{i.classList.toggle('bad',!!msg);const fe=i.closest('.field').querySelector('.fe');if(fe)fe.innerHTML=msg||''};
   if(signup){
@@ -3232,12 +3266,12 @@ const VIEWS={
    <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
   drawTeams(team,canManage);
-  const showTemp=(name,email,temp)=>{$('#invOut').innerHTML=`<div class="note" style="margin-top:14px">Envie para ${esc(name)}: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória<br><span class="temp">${esc(temp)}</span><br>No primeiro acesso a pessoa cria a senha dela. Esta senha não aparece de novo.</div>`};
+  const showTemp=(name,email,temp,emailed)=>{$('#invOut').innerHTML=emailed?`<div class="note" style="margin-top:14px">Mandamos para <b>${esc(email)}</b> o link para ${esc(name.split(' ')[0])} criar a senha (vale por ${'3 dias'}). Se o e-mail não chegar, peça para olhar o spam ou passe a senha provisória <span class="temp">${esc(temp)}</span></div>`:`<div class="note" style="margin-top:14px">Envie para ${esc(name)}: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória<br><span class="temp">${esc(temp)}</span><br>No primeiro acesso a pessoa cria a senha dela. Esta senha não aparece de novo.</div>`};
   if($('#inv'))$('#inv').onsubmit=async ev=>{ev.preventDefault();const body=Object.fromEntries(new FormData(ev.target));
-    try{const r=await api('/team',{method:'POST',body});await VIEWS.equipe();showTemp(r.member.name,r.member.email,r.temp_password)}catch(e){toast(e.message)}};
+    try{const r=await api('/team',{method:'POST',body});await VIEWS.equipe();showTemp(r.member.name,r.member.email,r.temp_password,r.emailed)}catch(e){toast(e.message)}};
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{try{await api('/team/'+b.dataset.act,{method:'PATCH',body:{active:b.dataset.on==='1'}});VIEWS.equipe()}catch(e){toast(e.message)}});
   document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{const m=team.find(x=>x.id===b.dataset.reset);
-    try{const r=await api('/team/'+m.id+'/reset',{method:'POST'});await VIEWS.equipe();showTemp(m.name,m.email,r.temp_password)}catch(e){toast(e.message)}});
+    try{const r=await api('/team/'+m.id+'/reset',{method:'POST'});await VIEWS.equipe();showTemp(m.name,m.email,r.temp_password,r.emailed)}catch(e){toast(e.message)}});
  },
  async empresa(){
   const c=ME.company,own=ME.user.role==='owner';
@@ -3561,6 +3595,9 @@ VIEWS.assinatura=async function(){
 async function refresh(){ME=await api('/auth/me')}
 async function loadNiches(){try{const l=await api('/niches');SEG=Object.fromEntries(l.map(n=>[n.key,n.label]));SEGS=Object.fromEntries(l.map(n=>[n.key,n.short]))}catch(e){}}
 async function boot(){
+  if(location.pathname.startsWith('/nova-senha')){const t=new URLSearchParams(location.search).get('t');history.replaceState(null,'','/nova-senha');try{if(t)sessionStorage.setItem('oinanda.rt',t)}catch(e){}
+    let tk=t;try{tk=tk||sessionStorage.getItem('oinanda.rt')}catch(e){}return resetView(tk)}
+  try{sessionStorage.removeItem('oinanda.rt')}catch(e){}
   if(!Object.keys(SEGS).length)await loadNiches();
   try{await refresh()}catch(e){
     if(e.status===403&&/senha/.test(e.message))return passwordView();

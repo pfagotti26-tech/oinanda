@@ -1,7 +1,8 @@
 """API do Oi Nanda — etapa 1: contas, empresas, equipe, admin, auditoria e saúde do sistema."""
 import secrets, logging
 from contextlib import asynccontextmanager
-from datetime import timedelta
+from datetime import timedelta, timezone
+from pydantic import BaseModel, Field, EmailStr
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from core import (db, client, now, iso, uid, digest, client_ip, hash_password, verify_password, public_user, audit,
@@ -45,6 +46,8 @@ async def lifespan(app):
     await db.companies.create_index('id', unique=True)
     await db.sessions.create_index('token_hash', unique=True)
     await db.sessions.create_index('expires_at', expireAfterSeconds=0)
+    await db.password_resets.create_index('token_hash', unique=True)
+    await db.password_resets.create_index('expires_at', expireAfterSeconds=86400)
     await db.audit.create_index([('company_id', 1), ('at', -1)])
     await db.audit.create_index('expires_at', expireAfterSeconds=0)
     await db.errors.create_index('expires_at', expireAfterSeconds=0)
@@ -199,6 +202,9 @@ async def signup(body: Signup, request: Request, response: Response):
     await audit(request, user, 'Criou a conta da empresa', company['name'], company['id'])
     log.info('nova empresa: %s (%s)', company['name'], email)
     await open_session(user, response)
+    import mailer
+    from push import later
+    later(mailer.send_welcome(user, company))
     return {'ok': True}
 
 @app.get('/api/auth/email-check')
@@ -223,6 +229,64 @@ async def login(body: Login, request: Request, response: Response):
     await db.users.update_one({'id': user['id']}, {'$set': {'last_login_at': now()}})
     await audit(request, user, 'Entrou no sistema')
     await open_session(user, response)
+    return {'ok': True}
+
+# ---------- esqueci a senha ----------
+class ForgotIn(BaseModel):
+    email: EmailStr
+class ResetIn(BaseModel):
+    token: str = Field(min_length=20, max_length=200)
+    password: str = Field(min_length=8, max_length=200)
+
+@app.post('/api/auth/forgot')
+async def forgot(body: ForgotIn, request: Request):
+    """Manda o link de nova senha. A resposta é sempre a mesma, para não revelar quem tem conta."""
+    email = str(body.email).lower()
+    for key, lim in ((digest('forgot-ip:' + client_ip(request)), 10), (digest('forgot:' + email), 3)):
+        doc = await throttle(key, limit=lim, minutes=60)
+        await strike(key, doc, minutes=60)
+    user = await db.users.find_one({'email': email, 'active': True}, {'_id': 0})
+    if user:
+        import mailer
+        await mailer.send_reset(user)
+        await audit(request, user, 'Pediu link de nova senha')
+    return {'ok': True}
+
+async def reset_doc(token):
+    r = await db.password_resets.find_one({'token_hash': digest(token or ''), 'used': False}, {'_id': 0})
+    exp = r and r.get('expires_at')
+    if exp and exp.tzinfo is None: exp = exp.replace(tzinfo=timezone.utc)
+    if not r or exp <= now(): return None, None
+    user = await db.users.find_one({'id': r['user_id'], 'active': True}, {'_id': 0})
+    return (r, user) if user else (None, None)
+
+@app.get('/api/auth/reset')
+async def reset_check(token: str, request: Request):
+    key = digest('resetchk:' + client_ip(request))
+    doc = await throttle(key, limit=30, minutes=60)
+    r, user = await reset_doc(token)
+    if not r:
+        await strike(key, doc, minutes=60)
+        return {'valid': False}
+    return {'valid': True, 'name': (user.get('name') or '').split(' ')[0], 'invite': r.get('kind') == 'invite'}
+
+@app.post('/api/auth/reset')
+async def reset_password(body: ResetIn, request: Request, response: Response):
+    key = digest('reset:' + client_ip(request))
+    doc = await throttle(key, limit=10, minutes=60)
+    r, user = await reset_doc(body.token)
+    if not r:
+        await strike(key, doc, minutes=60)
+        raise HTTPException(400, 'Este link expirou ou já foi usado. Peça um novo em "Esqueci minha senha".')
+    claimed = await db.password_resets.update_one({'token_hash': r['token_hash'], 'used': False}, {'$set': {'used': True, 'used_at': now()}})
+    if not claimed.modified_count: raise HTTPException(400, 'Este link já foi usado.')
+    version = user.get('auth_version', 0) + 1
+    await db.users.update_one({'id': user['id']}, {'$set': {'password_hash': hash_password(body.password), 'must_change_password': False,
+                                                            'auth_version': version, 'last_login_at': now()}})
+    await db.password_resets.update_many({'user_id': user['id'], 'used': False}, {'$set': {'used': True}})
+    await db.sessions.delete_many({'user_id': user['id']})
+    await audit(request, user, 'Criou senha nova pelo link do e-mail')
+    await open_session({**user, 'auth_version': version}, response)
     return {'ok': True}
 
 @app.post('/api/auth/logout')
@@ -280,7 +344,9 @@ async def invite(body: Invite, request: Request, user=Depends(managers)):
               'password_hash': hash_password(temp), 'must_change_password': True, 'auth_version': 0, 'created_at': now(), 'invited_by': user['id']}
     await db.users.insert_one(member.copy())
     await audit(request, user, f'Convidou {member["name"]} como {ROLES[body.role]}', email)
-    return {'member': out(member), 'temp_password': temp}
+    import mailer
+    emailed = await mailer.send_invite(member, user.get('impersonated_by') or user['name'], user['company']['name'])
+    return {'member': out(member), 'temp_password': temp, 'emailed': emailed}
 
 @app.patch('/api/team/{member_id}')
 async def update_member(member_id: str, body: MemberUpdate, request: Request, user=Depends(managers)):
@@ -305,7 +371,9 @@ async def reset_member(member_id: str, request: Request, user=Depends(managers))
                                                   '$inc': {'auth_version': 1}})
     await db.sessions.delete_many({'user_id': member_id})
     await audit(request, user, 'Gerou senha provisória para ' + member['name'])
-    return {'temp_password': temp}
+    import mailer
+    emailed = await mailer.send_reset({**member, 'auth_version': member.get('auth_version', 0) + 1})
+    return {'temp_password': temp, 'emailed': emailed}
 
 # ---------- atividade da empresa ----------
 @app.get('/api/audit')
