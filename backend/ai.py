@@ -188,6 +188,10 @@ async def system_for(s, company, contact=None):
         from journey import nanda_block as journey_block
         if contact: extra += journey_block(company)
     except Exception: log.exception('falha ao montar os marcos')
+    try:
+        from channels import nanda_block as wa_block, wa_link
+        if contact and contact.get('channel') == 'instagram' and not contact.get('wa_id'): extra += wa_block(contact, await wa_link(company['id'], contact))
+    except Exception: log.exception('falha ao montar o link do whatsapp')
     return build_system(s, company, name, agenda_text, upcoming, opts, extra)
 
 async def think(company_id, contact):

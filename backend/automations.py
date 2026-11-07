@@ -374,6 +374,8 @@ async def fire(a, company, stages, key, contact, appt):
     ctx = await context(company, contact, appt)
     if a.get('coupon_promo_id') and '{cupom}' in (a.get('message') or '') + str((await db.templates.find_one({'id': a.get('template_id')}, {'_id': 0, 'params': 1}) or {}).get('params')):
         ctx['cupom'] = await personal_coupon(company['id'], a['coupon_promo_id'], contact['id'], f'Automação · {a["name"]}')
+    from channels import view
+    contact = view(contact)
     li = aware(contact.get('last_in_at'))
     status, detail = 'skipped', ''
     try:

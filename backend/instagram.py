@@ -342,16 +342,28 @@ async def ingest(a, m):
     att = (msg.get('attachments') or [{}])[0] if msg.get('attachments') else None
     t = (att or {}).get('type')
     text = msg.get('text') or LABEL.get(t, '📎 Anexo' if att else '')
+    if att and t not in LABEL:  # tipo novo: guarda o formato para conferir depois
+        log.info('anexo do instagram de tipo %s', t)
+        try:
+            from whatsapp import sample
+            await sample('ig_attachment', {'type': t, 'keys': sorted((att.get('payload') or {}).keys())})
+        except Exception: pass
     if (msg.get('reply_to') or {}).get('story'): text = '↩️ Respondeu seu story: ' + (msg.get('text') or LABEL.get(t, ''))
     kind = KIND.get(t, 'text')
     doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'channel': 'instagram', 'dir': 'out' if echo else 'in', 'type': kind, 'text': text,
            'wa_msg_id': mid, 'at': at, 'received_at': now()}
     url = ((att or {}).get('payload') or {}).get('url')
     if url and kind != 'text': doc.update(media_url=url, pending=not echo)
+    elif url: doc['link'] = url  # anexo sem tipo conhecido: pelo menos dá para abrir
     if echo: doc.update(by='Instagram', by_id=None, status='sent')
     await db.messages.insert_one(doc.copy())
     upd = {'last_at': at, 'last_text': text[:200], 'last_dir': doc['dir']}
-    if not echo: upd['last_in_at'] = at
+    if not echo:
+        from channels import on_inbound_set, phones_in
+        upd['last_in_at'] = at
+        upd.update(on_inbound_set(contact, 'instagram', at))
+        ph = [p for p in phones_in(msg.get('text')) if p != contact.get('phone_hint_no')] if not contact.get('wa_id') else []
+        if ph: upd['phone_hint'] = ph[0]  # mandou o número: a tela oferece salvar como WhatsApp
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd, **({} if echo else {'$inc': {'unread': 1}})})
     import whatsapp
     if echo:

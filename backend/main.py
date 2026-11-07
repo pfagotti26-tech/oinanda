@@ -137,6 +137,8 @@ app.include_router(push_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 app.include_router(roi_router, prefix="/api")
 app.include_router(ig_router, prefix="/api")
+from channels import router as channels_router
+app.include_router(channels_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

@@ -198,21 +198,24 @@ async def ingest(value):
         at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
         if now() - at < timedelta(seconds=60): at = now()  # a Meta manda em segundos; a hora de chegada mantém a ordem certa
         text = text_of(m)
-        contact = await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+        from channels import variants, claim_from_instagram, on_inbound_set
+        contact = await db.contacts.find_one({'company_id': cid, 'wa_id': {'$in': variants(wa_id)}}, {'_id': 0})
+        if not contact: contact = await claim_from_instagram(cid, wa_id, text)
         ad = ad_of(m)
         if not contact:
             contact = {'id': uid(), 'company_id': cid, 'wa_id': wa_id, 'name': names.get(wa_id) or wa_id, 'assigned_to': None,
                        'unread': 0, 'created_at': at, 'source': 'anuncio' if ad else 'whatsapp'}
             if ad: contact['ad'] = ad
             await db.contacts.insert_one(contact.copy())
-        upd = {}
+        upd = {'wa_id': wa_id} if contact.get('wa_id') != wa_id else {}  # guarda o número do jeito que a Meta manda
         if ad and not contact.get('ad'): upd['ad'] = ad
         if STOP.match(text or '') and not contact.get('opt_out'):
             upd['opt_out'] = True
             await note(cid, contact['id'], 'O cliente pediu para não receber mensagens automáticas. Automações e modelos ficam desligados para ele.')
         if not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at')): upd['last_in_at'] = at
+        if not aware(contact.get('wa_last_in_at')) or at >= aware(contact.get('wa_last_in_at')): upd.update(on_inbound_set(contact, 'whatsapp', at))
         if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir='in')
-        if names.get(wa_id): upd['name'] = names[wa_id]
+        if names.get(wa_id) and (contact.get('channel') != 'instagram' or not contact.get('name') or contact['name'].startswith('@')): upd['name'] = names[wa_id]
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd, '$inc': {'unread': 1}})
         try:
             from origins import on_inbound as origin_hook
@@ -246,7 +249,8 @@ async def company_of(value):
     return n
 
 async def upsert_contact(cid, wa_id, name=None, source='whatsapp'):
-    c = await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+    from channels import variants
+    c = await db.contacts.find_one({'company_id': cid, 'wa_id': {'$in': variants(wa_id)}}, {'_id': 0})
     if c:
         if name and (not c.get('name') or c['name'] == wa_id): await db.contacts.update_one({'id': c['id']}, {'$set': {'name': name}}); c['name'] = name
         return c
@@ -268,6 +272,7 @@ async def store(cid, contact, m, direction, by=None, imported=False):
     upd = {}
     if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir=direction)
     if direction == 'in' and (not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at'))): upd['last_in_at'] = at
+    if direction == 'in' and contact.get('ig_id') and (not aware(contact.get('wa_last_in_at')) or at >= aware(contact.get('wa_last_in_at'))): upd['wa_last_in_at'] = at
     if upd:
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd}); contact.update(upd)
     return True
@@ -383,7 +388,9 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
 
 @router.get('/conversations/{contact_id}')
 async def conversation(contact_id: str, user=Depends(current_user)):
-    c = await get_contact(user, contact_id)
+    from channels import view, has, last_in, out_channel, fmt
+    raw = await get_contact(user, contact_id)
+    c = view(raw)
     msgs = await db.messages.find({'contact_id': contact_id, 'company_id': user['company_id']}, {'_id': 0}).sort('at', -1).to_list(200)
     if c.get('unread'): await db.contacts.update_one({'id': contact_id}, {'$set': {'unread': 0}})
     if c.get('assigned_to') == user['id'] and c.get('transfer_seen') is False:  # quem recebeu a transferência abriu
@@ -399,13 +406,27 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     c['waiting'] = is_waiting(c)
     wf, lim = wait_info(c, await wait_ctx(user['company']))
     c['wait_from'], c['wait_limit'] = (wf.isoformat() if wf else None), lim
+    c['channels'] = [ch for ch in ('instagram', 'whatsapp') if has(raw, ch)]
+    c['reply_channel'] = out_channel(raw)
+    if len(c['channels']) == 2:  # janela de cada canal, para o seletor
+        from instagram import HUMAN_WINDOW
+        wins = {}
+        for ch in c['channels']:
+            li2 = aware(last_in(raw, ch))
+            lim2 = HUMAN_WINDOW if ch == 'instagram' else WINDOW
+            wins[ch] = {'open': bool(li2 and now() - li2 < lim2), 'last_in_at': li2}
+        c['windows'] = wins
+    if c.get('phone_hint'): c['phone_hint_fmt'] = fmt(c['phone_hint'])
+    if c.get('wa_id'): c['wa_fmt'] = fmt(c['wa_id'])
     return {'contact': c, 'messages': list(reversed(msgs))}
 
 class SendIn(BaseModel):
     text: str = Field(min_length=1, max_length=4096)
 
 async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
-    """Envia texto pelo WhatsApp da empresa e registra na conversa. Usado pelo time e pela Nanda."""
+    """Envia texto pelo canal da conversa (WhatsApp ou Instagram) e registra. Usado pelo time e pela Nanda."""
+    from channels import view
+    contact = view(contact)
     if contact.get('channel') == 'instagram':
         from instagram import deliver as ig_deliver
         return await ig_deliver(company_id, contact, text, by_id, by_name, assign_to)
@@ -414,6 +435,7 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
         raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')
     number = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
     if not number: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
+    if not contact.get('wa_id'): raise HTTPException(400, 'Este cliente não tem WhatsApp salvo.')
     res = await graph('POST', f'/{number["phone_number_id"]}/messages', decrypt(number['token_enc']),
                       {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'text', 'text': {'body': text}})
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'text', 'text': text,

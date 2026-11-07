@@ -173,7 +173,8 @@ async def get_media(msg_id: str, user=Depends(current_user)):
 # ---------- enviados ----------
 @router.post('/conversations/{contact_id}/media')
 async def send_media(contact_id: str, file: UploadFile = File(...), caption: str = Form(default=''), voice: bool = Form(default=False), user=Depends(current_user)):
-    c = await get_contact(user, contact_id)
+    from channels import view
+    c = view(await get_contact(user, contact_id))
     li = aware(c.get('last_in_at'))
     if c.get('channel') != 'instagram' and (not li or now() - li >= WINDOW): raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. Fora da janela, só modelo aprovado.')
     data = await file.read()
