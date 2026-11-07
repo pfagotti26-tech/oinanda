@@ -102,7 +102,7 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
         log.warning('falha ao conectar instagram: %s', e.detail)
         return RedirectResponse(back + '?ig=erro')
 
-PAGE_FIELDS = ('messages,messaging_postbacks,messaging_seen,message_reactions', 'messages,messaging_postbacks', 'messages')
+PAGE_FIELDS = ('messages,messaging_postbacks,message_reactions', 'messages,messaging_postbacks', 'messages')
 
 async def via_page(company_id, user_id, tok):
     """Conexão pelo login do Facebook: o Instagram do cliente fica ligado a uma Página, e o Oi Nanda fala com ele usando o
