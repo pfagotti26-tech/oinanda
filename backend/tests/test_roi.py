@@ -56,8 +56,19 @@ def test_retorno(monkeypatch):
         ev = next(x for x in rp['rows'] if x['key'] == 'evento')
         assert ev['spend'] == 600 and ev['revenue'] == 300 and ev['result'] == -300 and ev['children'][0]['leads'] == 1
         assert rp['total']['spend'] == 1150 and rp['total']['leads'] == 4 and rp['paid']['revenue'] == 1500
+        # pago x orgânico: anúncio e evento têm investimento, então os dois contam como pago
+        g = rp['groups']
+        assert an['group'] == 'paid' and ev['group'] == 'paid' and g['paid']['leads'] == 4 and g['paid']['share'] == 100 and g['organic']['leads'] == 0 and g['unknown']['leads'] == 0
         # período que pega só metade do investimento do botox
         rp2 = c.get(f'/api/reports/roi?start={d(4)}&end={d(0)}').json()
         assert next(x for x in rp2['rows'] if x['key'] == 'anuncio')['children'][0]['spend'] in (200, 150)
+        # chega um contato por indicação (orgânico) e um que ninguém sabe de onde veio
+        hook(c, '5511980000005', 'Edu', 'oi'); hook(c, '5511980000006', 'Fabi', 'oi')
+        cv = {x['name']: x['id'] for x in c.get('/api/conversations').json()}
+        c.put(f"/api/contacts/{cv['Edu']}/origin", json={'origin': 'indicacao', 'detail': 'Carla'})
+        c.post('/api/sales', json={'contact_id': cv['Edu'], 'date': d(0), 'items': [{'name': 'Limpeza', 'price': 200}]})
+        g = c.get(f'/api/reports/roi?start={d(29)}&end={d(0)}').json()['groups']
+        assert g['organic']['leads'] == 1 and g['organic']['clients'] == 1 and g['organic']['revenue'] == 200 and g['organic']['conversion'] == 100
+        assert g['unknown']['leads'] == 1 and g['unknown']['share'] == round(100 / 6, 1) and g['paid']['share'] == round(400 / 6, 1)
         sid = c.get('/api/spend').json()[0]['id']
         assert c.delete(f'/api/spend/{sid}').status_code == 200

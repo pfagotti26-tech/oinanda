@@ -1029,6 +1029,18 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .xmod{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}.xmod input{margin-top:3px;width:18px;height:18px;accent-color:var(--c)}
 .xmod span{display:grid;gap:2px}.xmod small{color:var(--ink3);font-size:12.5px;line-height:1.4}.nav-x{opacity:.75}.nav-x:hover{opacity:1}
 #extras.flash{animation:xflash 1.6s ease}@keyframes xflash{0%,40%{box-shadow:0 0 0 3px var(--c)}100%{box-shadow:0 0 0 0 transparent}}
+.og{margin-bottom:14px}.og-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--line);margin:4px 0 16px;gap:2px}
+.og-bar i{display:block;min-width:0}.og-bar .p{background:var(--c)}.og-bar .o{background:#0E9A7B}.og-bar .u{background:#C9D1D9}
+.og-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.og-col{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;align-content:start;min-width:0}
+.og-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}.og-h b{font-size:15.5px;font-weight:700}.og-h em{font-style:normal;margin-left:auto;font-size:12.5px;color:var(--ink3);font-weight:600}
+.og-dot{width:10px;height:10px;border-radius:50%;background:var(--c)}.og-col.o .og-dot{background:#0E9A7B}
+.og-r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+.og-r b{font-weight:600}.og-r .og-n{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2)}.og-r .og-c{color:var(--ink2);font-size:12.5px}
+.og-r .og-v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ok)}.og-r small{grid-column:1/-1;font-size:12px;color:var(--ink3)}
+.og-t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:9px;font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.og-u{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;background:var(--warnsoft);color:var(--warn);border-radius:12px;padding:11px 14px;font-size:13px}
+@media (max-width:860px){.og-cols{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2183,7 +2195,7 @@ async function vdViews(onChange){
 
 async function vdView(){
   const mgr=isMgr();
-  const tabs=[['relatorio','Relatório'],['lista','Vendas'],['promocoes','Promoções'],['produtos','Catálogo'],...(mgr?[['retorno','Retorno'],['origens','Origens e links']]:[])];
+  const tabs=[['relatorio','Relatório'],['lista','Vendas'],['promocoes','Promoções'],['produtos','Catálogo'],...(mgr?[['retorno','Origem e retorno'],['origens','Origens e links']]:[])];
   $('#page').innerHTML=`<div class="fhd vd-hd"><div><h1>Vendas</h1><p class="sub">${mgr?'O que foi vendido, por quem e de onde vieram os clientes.':'Suas vendas e os seus números.'}</p></div>
     <div class="tools"><button class="btn sm" id="vdExp">${svg('<path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/>')}Exportar</button><button class="btn sm p" id="vdNew">+ Registrar venda</button></div></div>
    <nav class="utabs" role="tablist">${tabs.map(t=>`<button role="tab" aria-selected="${VD.tab===t[0]}" class="${VD.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</nav>
@@ -2934,6 +2946,15 @@ async function vdRoi(){const P=VD.p,[s,e]=vdRange(P);
      <td class="n">${x.clients}${x.clients&&x.conversion!=null?` <small>${String(x.conversion).replace('.',',')}%</small>`:''}</td><td class="n">${x.cac!=null?brl(x.cac):'—'}</td><td class="n">${x.revenue?brl(x.revenue):'—'}</td><td class="n roas ${x.roas==null?'':x.roas>=3?'g':x.roas>=1?'m':'b'}">${xr(x.roas)}</td></tr>`;
   const inP=sp.filter(x=>x.end>=s&&x.start<=e);
   $('#rBody').innerHTML=`${r.has_spend?'':`<div class="note" style="margin-bottom:14px"><b>Lance quanto foi investido</b> em cada canal (anúncios, Google, evento, panfleto...) para ver custo por contato, custo por cliente e quanto cada real voltou em vendas. Dá para importar o relatório do Gerenciador de Anúncios da Meta.</div>`}
+   ${(()=>{const G=r.groups||{},pc=v=>Math.round(v||0)+'%',tot=r.total.leads||0;if(!tot)return '';
+     const line=x=>`<div class="og-r"><b>${esc(x.name)}</b><span class="og-n">${x.leads} ${x.leads===1?'contato':'contatos'}</span><span class="og-c">${x.clients?`${x.clients} ${x.clients===1?'virou cliente':'viraram clientes'} · ${pc(x.conversion)}`:'ainda sem venda'}</span><span class="og-v">${x.revenue?brl(x.revenue):'—'}</span>${x.spend?`<small>investido ${brl(x.spend)} · voltou ${xr(x.roas)}</small>`:''}</div>`;
+     const col=(g,t2,cls,hint)=>{const rs=r.rows.filter(x=>x.group===g),k=G[g]||{};return `<div class="og-col ${cls}"><div class="og-h"><span class="og-dot"></span><b>${t2}</b><em>${pc(k.share)} dos contatos</em></div>
+       ${rs.length?rs.map(line).join(''):`<p class="hint">${hint}</p>`}${rs.length>1?`<div class="og-t"><span>${k.leads} contatos</span><span>${k.clients} clientes · ${pc(k.conversion)}</span><span>${brl(k.revenue||0)}</span></div>`:''}</div>`};
+     const u=G.unknown||{leads:0,share:0};
+     return `<div class="vd-c og"><div class="hd"><h3>De onde vêm seus clientes</h3><span class="hint">Contatos que chegaram no período, por origem, e quantos viraram clientes.</span></div>
+      <div class="og-bar" role="img" aria-label="Pago ${pc((G.paid||{}).share)}, orgânico ${pc((G.organic||{}).share)}, sem origem ${pc(u.share)}"><i class="p" style="flex:${(G.paid||{}).leads||0}"></i><i class="o" style="flex:${(G.organic||{}).leads||0}"></i><i class="u" style="flex:${u.leads||0}"></i></div>
+      <div class="og-cols">${col('paid','Pago','p','Nenhum contato de anúncio ou canal com investimento no período.')}${col('organic','Orgânico','o','Nenhum contato com origem orgânica marcada no período.')}</div>
+      ${u.leads?`<div class="og-u"><span><b>${u.leads} ${u.leads===1?'contato':'contatos'} sem origem</b> (${pc(u.share)}). Para diminuir: use um link rastreável na bio e nos posts, e deixe a Nanda perguntar de onde a pessoa veio.</span><button class="btn sm" id="ogLk">Criar link rastreável</button></div>`:''}</div>`})()}
    <div class="kpis rk">${K('Investido',brl(t.spend||0),r.paid.spend?'nos canais pagos':'nada lançado no período')}${K('Contatos',t.leads,t.cpl!=null?brl(t.cpl)+' por contato':'')}
      ${K('Viraram clientes',t.clients,t.cac!=null?brl(t.cac)+' por cliente':t.conversion!=null?String(t.conversion).replace('.',',')+'% dos contatos':'')}${K('Faturamento',brl(t.revenue||0),'o que esses clientes compraram')}
      ${K('Retorno',xr(t.roas),t.roas!=null?`cada R$ 1 virou R$ ${t.roas.toFixed(2).replace('.',',')}`:'lance o investimento',t.roas==null?'':t.roas>=1?'up':'down')}${K('Resultado',t.result!=null?brl(t.result):'—',t.result!=null?'faturamento menos investimento':'',t.result==null?'':t.result>=0?'up':'down')}</div>
@@ -2944,6 +2965,7 @@ async function vdRoi(){const P=VD.p,[s,e]=vdRange(P);
     ${inP.length?`<div class="vdl">${inP.map(x=>`<div class="r" style="grid-template-columns:minmax(0,1fr) auto"><b>${esc(ON[x.origin]||x.origin)}${x.label?' · '+esc(x.label):''}</b><span class="v">${brl(x.amount)}</span>
       <span>${fmtD(x.start)}${x.end!==x.start?' a '+fmtD(x.end):''}${x.notes?' · '+esc(x.notes):''}</span><span style="display:flex;gap:10px;justify-content:flex-end"><button class="lnk" data-se="${x.id}">editar</button><button class="lnk" data-sd="${x.id}">apagar</button></span></div>`).join('')}</div>`
      :'<p class="hint">Nada lançado neste período.</p>'}</div>`;
+  if($('#ogLk'))$('#ogLk').onclick=()=>{VD.tab='origens';go('vendas')};
   $('#rBody').querySelectorAll('[data-se]').forEach(b=>b.onclick=()=>spendForm(sp.find(x=>x.id===b.dataset.se),op));
   $('#rBody').querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este investimento?',{ok:'Apagar'}))return;await api('/spend/'+b.dataset.sd,{method:'DELETE'});vdRoi()})}
 function spendForm(x,op){const v=x||{origin:'anuncio',ref_kind:null,ref:'',label:'',start:vdRange({preset:'mes'})[0],end:ymd(new Date()),amount:'',notes:''};

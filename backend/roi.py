@@ -217,4 +217,11 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, user=De
     tot = kpis({'spend': spend_total, 'leads': len(cs), 'clients': sum(1 for c in cs if c['id'] in rev), 'revenue': sum(rev.get(c['id'], 0) for c in cs)})
     paid = [r for r in out if r['spend']]
     tot_paid = kpis({'spend': sum(r['spend'] for r in paid), 'leads': sum(r['leads'] for r in paid), 'clients': sum(r['clients'] for r in paid), 'revenue': sum(r['revenue'] for r in paid)})
-    return {'start': s0.isoformat(), 'end': s1.isoformat(), 'rows': out, 'total': tot, 'paid': tot_paid, 'has_spend': bool(spend_total)}
+    # de onde vêm os clientes: pago (anúncio ou canal com investimento lançado), orgânico e sem origem
+    for r in out: r['group'] = 'unknown' if r['key'] == '_none' else 'paid' if (r['spend'] or r['key'] == 'anuncio') else 'organic'
+    def grp(g):
+        rs = [r for r in out if r['group'] == g]
+        return kpis({'spend': sum(r['spend'] for r in rs), 'leads': sum(r['leads'] for r in rs), 'clients': sum(r['clients'] for r in rs), 'revenue': sum(r['revenue'] for r in rs)})
+    groups = {g: grp(g) for g in ('paid', 'organic', 'unknown')}
+    for g in groups.values(): g['share'] = round(100 * g['leads'] / len(cs), 1) if cs else 0
+    return {'start': s0.isoformat(), 'end': s1.isoformat(), 'rows': out, 'total': tot, 'paid': tot_paid, 'has_spend': bool(spend_total), 'groups': groups}
