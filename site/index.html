@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oi Nanda — CRM e automação de vendas pelo WhatsApp com IA</title>
 <link rel="icon" href="/favicon.png">
-<meta property="og:title" content="Oi Nanda — a Nanda vende pelo seu WhatsApp">
+<meta property="og:title" content="Oi Nanda — pare de perder venda por demora no WhatsApp">
 <meta property="og:description" content="CRM de vendas pelo WhatsApp e Instagram, com IA. Responde em segundos, marca horário e passa para o seu time quem está pronto. 14 dias grátis, sem cartão.">
 <meta property="og:image" content="/og.png">
 <meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp e Instagram com IA: a Nanda responde 24h, agenda e passa para o seu time quem está pronto para fechar. 14 dias grátis, sem cartão.">
@@ -27,7 +27,7 @@ a{color:inherit}
 img,video{display:block;max-width:100%}img{height:auto}
 .wrap{max-width:var(--w);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 h1,h2,h3{letter-spacing:-.03em;line-height:1.08;text-wrap:balance;font-weight:800}
-h1{font-size:clamp(36px,4.7vw,56px)}
+h1{font-size:clamp(36px,4.4vw,48px)}
 p,li,summary,.float,.band span{text-wrap:pretty}
 .lead,.fine,.final p,.calc .out span,.head h2{text-wrap:balance}
 br.m{display:none}
@@ -160,6 +160,35 @@ nav .btn{padding:11px 20px;font-size:15px}
 .meta b{color:var(--ink);font-weight:800;flex-basis:100%;text-align:center}
 .meta span::before{content:"✓";color:var(--ok);font-weight:800;margin-right:8px}
 
+/* chamada no meio da página */
+.cta{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:clamp(26px,4vw,40px);font-weight:700;color:var(--ink2);font-size:15.5px}
+/* segmentos em abas */
+.sg{display:grid;gap:22px}
+.sgt{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.sgt button{font:inherit;font-weight:700;font-size:15.5px;padding:11px 18px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.sgt button:hover{border-color:var(--coral)}
+.sgt button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.sgt button:focus-visible{outline:3px solid var(--coral-soft);outline-offset:2px}
+.sgp{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:16px}
+.sgc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px;display:grid;gap:14px;align-content:start;min-width:0}
+.sgl{font-size:12.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.sgc h3{font-size:19px}
+.sgc ol{list-style:none;display:grid;gap:0;counter-reset:f}
+.sgc ol li{counter-increment:f;display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center;font-weight:700;font-size:16px;padding:7px 0;position:relative}
+.sgc ol li::before{content:counter(f);width:28px;height:28px;border-radius:50%;background:var(--coral-soft);color:var(--coral-ink);font-size:13.5px;font-weight:800;display:grid;place-items:center;position:relative;z-index:1}
+.sgc ol li:not(:last-child)::after{content:"";position:absolute;left:13px;top:50%;height:100%;width:2px;background:var(--coral-soft)}
+.sgc ol li:last-child::before{background:var(--ok);color:#fff;content:"✓"}
+.sgc ul{list-style:none;display:grid;gap:12px}
+.sgc ul li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:16px;line-height:1.45;color:var(--ink2)}
+.sgc ul li::before{content:"✓";color:var(--ok);font-weight:800}
+.sgc.msg{background:var(--soft);border-color:transparent}
+.bub{background:#fff;border-radius:6px 18px 18px 18px;padding:14px 16px;font-size:16px;line-height:1.45;box-shadow:0 8px 22px rgba(23,33,43,.08)}
+.more{font-weight:800;color:var(--coral-ink);font-size:15px;text-decoration:none;margin-top:4px}
+.more:hover{text-decoration:underline}
+.anchor{background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 20px;font-size:15.5px;color:var(--ink2);text-wrap:balance}
+.anchor b{color:var(--coral-ink);font-weight:800;font-variant-numeric:tabular-nums}.anchor span{color:var(--ink);font-weight:700}
+.fine a,.faq a{color:var(--coral-ink);font-weight:700}
+
 /* preços */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
 .plan{border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;display:grid;gap:14px;align-content:start;background:#fff;min-width:0}
@@ -197,6 +226,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   .float.a{left:-9%;top:44%}.float.b{right:-9%;top:70%}.float.c{display:none}
   br.m{display:inline}
   .row .txt p{font-size:17px}.row li{font-size:16px}
+  .sgp{grid-template-columns:1fr}.sgt{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-20px;padding:2px 20px 6px;scrollbar-width:none}.sgt::-webkit-scrollbar{display:none}
+  .anchor{border-radius:18px}.tag .dk{display:none}
   .meta{flex-direction:column;align-items:flex-start;gap:10px;text-align:left}.meta b{text-align:left}
   .band .wrap{grid-template-columns:1fr 1fr}
   .phone{width:min(64%,260px)}
@@ -205,11 +236,11 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 }
 @media (min-width:901px) and (max-width:1180px){.float.a{left:-20%;top:38%}.float.b{top:60%}.float.b{right:-2%}.float.c{left:-6%}}
 @media (max-width:520px){
-  h1{font-size:clamp(29px,9.2vw,36px)}
+  h1{font-size:clamp(27px,8.6vw,34px)}
   .proof{font-size:13px;gap:6px 10px;justify-content:space-between}.proof span{white-space:nowrap}.proof span::before{margin-right:5px}
   .band span{font-size:14px}
   .segs{grid-template-columns:1fr}
-  .acts .btn{width:100%}
+  .acts .btn,.cta .btn,.calc .out .btn{width:100%}
   nav .btn.t{display:none}
 }
 @media (max-width:360px){.tag{font-size:12.5px;white-space:nowrap}.proof{justify-content:flex-start}}
@@ -229,9 +260,9 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 
 <header class="hero" id="topo"><div class="wrap">
   <div class="copy">
-    <span class="tag"><i><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></i>WhatsApp e Instagram · API oficial da Meta</span>
-    <h1>O CRM com IA que <br><em class="hl">atende, agenda <br class="m">e&nbsp;vende</em> <br>pelo seu&nbsp;WhatsApp.</h1>
-    <p class="lead">A Nanda responde em segundos, marca o horário e só chama o seu time quando o cliente está pronto. Você cuida de quem está na sua frente.</p>
+    <span class="tag"><i><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></i><span>CRM com IA para WhatsApp e Instagram<span class="dk"> · API oficial da Meta</span></span></span>
+    <h1>Pare de <em class="hl">perder&nbsp;venda</em> <br>por&nbsp;demora <br class="m">no&nbsp;WhatsApp.</h1>
+    <p class="lead">A Nanda responde em segundos, marca o horário e chama o seu time na hora de fechar. Você atende quem está na sua frente sem deixar ninguém esperando.</p>
     <div class="acts">
       <a class="btn p" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a>
       <a class="btn" href="https://wa.me/5511975754765?text=Oi%2C%20Nanda!%20Quero%20te%20conhecer">Conversar com a Nanda</a>
@@ -258,10 +289,11 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   <div class="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-renata.jpg?v=3" muted playsinline loop preload="metadata" aria-label="Vídeo: um dia da Renata com o Oi Nanda"></video>
    <button class="snd" id="vidSnd" type="button">🔊 Assistir com som</button></div>
   <p class="fine center">História de exemplo, com imagens ilustrativas e as telas reais do Oi Nanda.</p>
+  <div class="cta"><a class="btn p" href="https://app.oinanda.com.br/cadastro">Quero isso no meu WhatsApp</a><span>14 dias grátis · sem cartão</span></div>
 </div></section>
 
 <section class="soft"><div class="wrap">
-  <div class="head center"><span class="eyb">A virada</span><h2>Sua venda não devia depender de quem lembrou de responder.</h2><p class="lead">O WhatsApp lota, o time responde o que dá, e o cliente que ficou sem resposta some sem&nbsp;avisar.</p></div>
+  <div class="head center"><span class="eyb">A virada</span><h2>O mesmo WhatsApp, antes e depois da Nanda.</h2><p class="lead">Sua venda não devia depender de quem lembrou de&nbsp;responder.</p></div>
   <div class="ba">
     <div class="before"><h3>Hoje, sem a Nanda</h3><ul>
       <li>Mensagem das 22h respondida às 9h, quando o cliente já fechou com&nbsp;outro</li>
@@ -306,7 +338,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
         <label for="cT"><span>Ticket médio <b id="oT">R$ 290</b></span><input id="cT" type="range" min="50" max="3000" step="10" value="290"></label>
         <label for="cP"><span>Ficam mais de 5 min sem resposta <b id="oP">35%</b></span><input id="cP" type="range" min="5" max="90" value="35"></label>
       </div></div>
-    <div class="out"><small>Venda perdida estimada</small><strong id="oM">R$ 13.195</strong><span>por mês · <span id="oY">R$ 158.340</span> por ano</span><span style="margin-top:10px;color:#fff;font-weight:700">A Nanda começa em R$&nbsp;147 por&nbsp;mês.</span></div>
+    <div class="out"><small>Venda perdida estimada</small><strong id="oM">R$ 13.195</strong><span>por mês · <span id="oY">R$ 158.340</span> por ano</span><span style="margin-top:6px;color:#fff;font-weight:700">A Nanda começa em R$&nbsp;147 por&nbsp;mês.</span><a class="btn p" style="margin-top:14px" href="https://app.oinanda.com.br/cadastro">Parar de perder essa venda</a></div>
   </div>
 </div></section>
 
@@ -320,18 +352,46 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 </div></section>
 
 <section id="segmentos"><div class="wrap">
-  <div class="head center"><span class="eyb">Para quem é</span><h2>Feita para quem vende conversando</h2><p class="lead">Cada segmento fecha de um jeito. A Nanda chega com funil, agenda e mensagens prontas para o seu.</p></div>
-  <div class="segs">
-    <a href="/segmentos/#clinicas"><h3>Clínicas de estética e odonto</h3><p>Menos falta, mais orçamento fechado, paciente voltando no prazo.</p><span>Ver página →</span></a>
-    <a href="/segmentos/#studios"><h3>Studios e academias</h3><p>Mais experimentais virando plano e mais renovações.</p><span>Ver página →</span></a>
-    <a href="/segmentos/#lancamentos"><h3>Lançamentos e infoprodutos</h3><p>Dúvida respondida na hora e o time só com quem está pronto.</p><span>Ver página →</span></a>
-    <a href="https://app.oinanda.com.br/cadastro"><h3>Outro segmento</h3><p>Funil simples e a Nanda tirando dúvidas. Você ajusta o resto.</p><span>Começar assim →</span></a>
+  <div class="head center"><span class="eyb">Para quem é</span><h2>Já chega pronta para o seu tipo de negócio</h2><p class="lead">Escolha o seu e veja o que vem configurado no primeiro acesso. Você só ajusta os textos.</p></div>
+  <div class="sg">
+    <div class="sgt" role="tablist" aria-label="Segmentos"><button type="button" role="tab" id="sgt-clinica" aria-controls="sgp-clinica" aria-selected="true">Clínica</button><button type="button" role="tab" id="sgt-studio" aria-controls="sgp-studio" aria-selected="false" tabindex="-1">Studio e academia</button><button type="button" role="tab" id="sgt-salao" aria-controls="sgp-salao" aria-selected="false" tabindex="-1">Salão e barbearia</button><button type="button" role="tab" id="sgt-imob" aria-controls="sgp-imob" aria-selected="false" tabindex="-1">Imobiliária</button><button type="button" role="tab" id="sgt-loja" aria-controls="sgp-loja" aria-selected="false" tabindex="-1">Loja</button><button type="button" role="tab" id="sgt-info" aria-controls="sgp-info" aria-selected="false" tabindex="-1">Infoproduto</button></div>
+    <div class="sgp" role="tabpanel" id="sgp-clinica" aria-labelledby="sgt-clinica">
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Clínicas de estética, odonto e saúde</h3><ol><li>Novo contato</li><li>Avaliação marcada</li><li>Avaliou</li><li>Orçamento enviado</li><li>Fechou</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>Sumiu há 1 e há 3 dias: retoma</li><li>Orçamento sem resposta: pergunta</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Orçamento sem resposta</span><p class="bub">Oi, Helena! Ficou alguma dúvida sobre o orçamento? Posso te ajudar a escolher a melhor data.</p><a class="more" href="/segmentos/#clinicas">Ver a página do segmento →</a></div>
+    </div>
+    <div class="sgp" role="tabpanel" id="sgp-studio" aria-labelledby="sgt-studio" hidden>
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Studios, academias e boxes</h3><ol><li>Novo contato</li><li>Aula experimental marcada</li><li>Fez a aula</li><li>Negociando</li><li>Matriculou</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>Depois da aula: manda os planos</li><li>Aluno sumido há 30 dias: chama de volta</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Depois da aula experimental</span><p class="bub">Oi, Diego! O que achou da aula? Se quiser, já te mando os planos para começar.</p><a class="more" href="/segmentos/#studios">Ver a página do segmento →</a></div>
+    </div>
+    <div class="sgp" role="tabpanel" id="sgp-salao" aria-labelledby="sgt-salao" hidden>
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Salões, barbearias e beleza</h3><ol><li>Novo contato</li><li>Horário marcado</li><li>Atendido</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>30 dias depois: chama para voltar</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Hora de voltar</span><p class="bub">Oi, Camila! Já faz um mês do seu último horário. Quer que eu reserve o próximo?</p><a class="more" href="https://app.oinanda.com.br/cadastro">Começar com esse funil →</a></div>
+    </div>
+    <div class="sgp" role="tabpanel" id="sgp-imob" aria-labelledby="sgt-imob" hidden>
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Imobiliárias e corretores</h3><ol><li>Novo lead</li><li>Qualificado</li><li>Visita marcada</li><li>Proposta</li><li>Negócio fechado</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete da visita na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>Sumiu há 1 e há 3 dias: retoma</li><li>Depois da visita: oferece opções</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Depois da visita</span><p class="bub">Oi, Marcos! O que achou do imóvel? Se quiser, separo outras opções parecidas.</p><a class="more" href="https://app.oinanda.com.br/cadastro">Começar com esse funil →</a></div>
+    </div>
+    <div class="sgp" role="tabpanel" id="sgp-loja" aria-labelledby="sgt-loja" hidden>
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Lojas e e-commerces</h3><ol><li>Novo contato</li><li>Em atendimento</li><li>Orçamento enviado</li><li>Comprou</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Sumiu há 1 e há 3 dias: retoma</li><li>Orçamento sem resposta: pergunta</li><li>45 dias depois: chama para recompra</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Orçamento sem resposta</span><p class="bub">Oi, Paula! Separei as peças que você pediu. Quer que eu reserve para você?</p><a class="more" href="https://app.oinanda.com.br/cadastro">Começar com esse funil →</a></div>
+    </div>
+    <div class="sgp" role="tabpanel" id="sgp-info" aria-labelledby="sgt-info" hidden>
+      <div class="sgc"><span class="sgl">Funil pronto</span><h3>Lançamentos, cursos e mentorias</h3><ol><li>Novo lead</li><li>Interessado</li><li>Link enviado</li><li>Comprou</li></ol></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Sumiu há 1 e há 3 dias: retoma</li><li>Recebeu o link e não comprou: pergunta</li><li>Quem quer fechar vai direto para o time</li></ul></div>
+      <div class="sgc msg"><span class="sgl">Exemplo · Link enviado e não comprou</span><p class="bub">Oi, Sofia! Conseguiu acessar o link? Se tiver qualquer dúvida antes de entrar, me fala.</p><a class="more" href="/segmentos/#lancamentos">Ver a página do segmento →</a></div>
+    </div>
+    <p class="fine center">Não achou o seu? <a href="https://app.oinanda.com.br/cadastro">Comece com um funil simples</a> e monte o resto do seu jeito.</p>
   </div>
   <div class="meta" style="margin-top:clamp(40px,6vw,72px)"><b>Sobre a API oficial do WhatsApp</b><span>Seu número e seu histórico continuam seus</span><span>Conexão autorizada pela Meta</span><span>Bem menos risco de bloqueio</span></div>
 </div></section>
 
 <section id="precos" class="soft"><div class="wrap">
-  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias com tudo liberado, sem&nbsp;cartão.</p></div>
+  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias com tudo liberado, sem&nbsp;cartão.</p><p class="anchor">Na conta que você fez acima, a demora custa <b id="oA">R$ 13.195</b> por&nbsp;mês. <span>O plano começa em R$&nbsp;147.</span></p></div>
   <div class="plans">
     <div class="plan"><span class="who">Para quem está começando</span><h3>Essencial</h3><div class="price">R$ 147<small> /mês</small></div>
       <ul><li>2 pessoas no time</li><li>WhatsApp oficial e Instagram na mesma caixa</li><li>Funil, agenda e registro de vendas</li><li>A Nanda sugere a resposta: 300&nbsp;por&nbsp;mês</li><li>Automações e lembretes</li></ul>
@@ -352,9 +412,14 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     <details open><summary>Vou perder o meu WhatsApp Business?</summary><p>Não. A Nanda entra junto com o app que você já usa. Você continua respondendo pelo celular quando quiser, e tudo fica no mesmo histórico.</p></details>
     <details><summary>Minha cliente vai perceber que é um robô?</summary><p>A Nanda se apresenta pelo nome, fala do seu jeito e nunca finge ser humana se perguntarem. O que a cliente percebe é que foi respondida em segundos. E quando ela quer uma pessoa, uma pessoa aparece.</p></details>
     <details><summary>E se a Nanda errar?</summary><p>Ela só fala o que está nos seus preços e nas suas regras. Fora disso, chama o time. Tudo o que ela diz fica no histórico, e você pode pausar por conversa com um toque.</p></details>
+    <details><summary>Preciso entender de tecnologia para configurar?</summary><p>Não. Você conecta o WhatsApp seguindo o passo a passo na tela, escolhe o seu segmento e escreve preços e horários do jeito que explicaria para uma funcionária nova. O funil e as mensagens já vêm prontos.</p></details>
+    <details><summary>Pago alguma coisa além do plano?</summary><p>Não há taxa de implantação. As conversas que o cliente começa não têm custo. A Meta cobra só pelas mensagens que você inicia fora da janela de 24 horas, como lembretes e campanhas, e o valor aparece antes de&nbsp;enviar.</p></details>
+    <details><summary>E se as respostas da Nanda acabarem antes do fim do mês?</summary><p>Nada para de funcionar. As mensagens continuam chegando e o seu time responde normalmente. A Nanda avisa que o limite acabou e volta no mês seguinte, ou na hora, se você mudar de&nbsp;plano.</p></details>
+    <details><summary>Os dados dos meus clientes ficam seguros?</summary><p>Cada pessoa do time só vê o que a permissão dela libera, os acessos à Meta ficam guardados com criptografia e as conversas não são usadas para treinar IA. Seguimos a LGPD, e você pode excluir a conta e os dados quando quiser. Os detalhes estão na <a href="/privacidade/">política de privacidade</a>.</p></details>
     <details><summary>Serve para o meu segmento se não está na lista?</summary><p>Serve. Você começa com um funil simples e a Nanda tirando dúvidas, e monta o resto do seu jeito.</p></details>
     <details><summary>Como cancelo?</summary><p>Pelo próprio sistema, quando quiser. Sem fidelidade.</p></details>
   </div>
+  <div class="cta"><span>Ficou com outra dúvida?</span><a class="btn" href="https://wa.me/5511975754765?text=Oi%2C%20Nanda!%20Quero%20te%20conhecer">Perguntar pelo WhatsApp</a></div>
 </div></section>
 
 <section style="padding-top:0"><div class="wrap">
@@ -374,7 +439,10 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   }
   var $=function(i){return document.getElementById(i)},brl=function(n){return 'R$ '+Math.round(n).toLocaleString('pt-BR')};
   function up(){var n=+$('cN').value,t=+$('cT').value,p=+$('cP').value,m=Math.round(n*26*(p/100)*.25*t);
-    $('oN').textContent=n;$('oT').textContent=brl(t);$('oP').textContent=p+'%';$('oM').textContent=brl(m);$('oY').textContent=brl(m*12)}
+    $('oN').textContent=n;$('oT').textContent=brl(t);$('oP').textContent=p+'%';$('oM').textContent=brl(m);if($('oA'))$('oA').textContent=brl(m);$('oY').textContent=brl(m*12)}
+  var tb=[].slice.call(document.querySelectorAll('.sgt button'));
+  function pick(b,f){tb.forEach(function(x){var on=x===b;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;$(x.getAttribute('aria-controls')).hidden=!on});if(f)b.focus()}
+  tb.forEach(function(b,i){b.onclick=function(){pick(b)};b.onkeydown=function(e){var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){e.preventDefault();pick(tb[(i+d+tb.length)%tb.length],1)}}});
   ['cN','cT','cP'].forEach(function(i){$(i).oninput=up});up();
 })();
 </script>
