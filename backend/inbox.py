@@ -40,7 +40,9 @@ def wait_from(li, hours, tz):
 async def wait_ctx(company):
     """Horário de atendimento (o da agenda) e limite de cada equipe."""
     import agenda
-    try: hours = (await agenda.settings_for(company)).get('hours')
+    try:
+        s = await agenda.settings_for(company)
+        hours = s.get('hours') if s.get('hours_set', True) else None  # conta nova: só depois que a empresa define o horário
     except Exception: hours = None
     slas = {t['id']: t.get('sla_minutes') for t in await db.teams.find({'company_id': company['id']}, {'_id': 0, 'id': 1, 'sla_minutes': 1}).to_list(200)}
     return {'hours': hours, 'tz': agenda.tz_of(company), 'slas': slas}

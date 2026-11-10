@@ -329,7 +329,7 @@ td>.sure,tr+.sure{margin:4px}
 .qe{padding:8px 10px;font-size:13px;color:var(--ink2)}
 .qri{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px}.qri b{color:var(--c2)}.qri span{color:var(--ink2)}
 .sug{background:#FFF7F3;border:1px solid var(--soft);border-radius:14px;padding:10px 12px;margin-bottom:8px;position:relative;display:flex;flex-direction:column;gap:6px}
-.sug b{font-size:12.5px;color:var(--c2)}.sug p{font-size:13.5px;white-space:pre-wrap}.sug.warn{background:var(--warnsoft);border-color:#EFD9A6}.sug.warn b{color:var(--warn)}.sug span{font-size:12.5px;color:var(--ink2)}
+.sug b{font-size:12.5px;color:var(--c2)}.sug p{font-size:13.5px;white-space:pre-wrap}.sug.warn{background:var(--warnsoft);border-color:#EFD9A6}.sug.ok{background:#F1FBF4;border-color:#CDEFD8}.sug.ok b{color:var(--ok)}.sug a{text-decoration:underline;cursor:pointer;color:inherit;font-weight:600}.sug.warn b{color:var(--warn)}.sug span{font-size:12.5px;color:var(--ink2)}
 .sug .x{position:absolute;right:8px;top:6px;font-size:18px;color:var(--ink3)}
 .wclosed{background:#FFFAF0;border:1px solid #F1DFB4;border-radius:14px;padding:12px 14px}
 .wclosed>b{font-size:14px;color:var(--warn)}.wclosed>p{font-size:13px;color:var(--ink2);margin:3px 0 10px}
@@ -833,6 +833,10 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .ctg.on{color:var(--c2);border-color:var(--soft)}.ctg.on i{background:var(--c)}.ctg.on i::after{left:12px}
 .ctool .btn.snd{height:36px;padding:0 16px;border-radius:999px}
 .sug .row{flex-wrap:wrap;align-items:center}.sug .sug-off{margin-left:auto;font-size:12px}
+@media (max-width:860px){  /* celular: avisos e sugestão ocupam pouco, para sobrar espaço para as mensagens */
+ .cmp .wbar{padding:4px 8px;margin-bottom:5px;font-size:11.5px;gap:6px}.cmp .wbar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmp .wbar .lnk{font-size:11.5px}
+ .sug{padding:7px 10px;gap:4px}.sug p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.sug.open p{display:block}
+ .sug .row{flex-wrap:nowrap}.sug .row .btn.sm{padding:5px 12px;font-size:12.5px}.sug .sug-off{display:none}}
 @media (max-width:860px){.cbox.v2{border-radius:20px}.ctool .btn.snd{width:38px;height:38px;padding:0;border-radius:50%}.ctg{padding:4px 7px;font-size:11px;gap:5px}.csep{margin:0 3px}.ctool .ib{width:32px}}
 .pn-rail{display:none}
 @media (min-width:1201px){
@@ -1468,7 +1472,7 @@ async function cvChat(full){
    <div class="msgs" id="cvMsgs">${msgsHtml(d.messages)}</div>
    <div class="cmp" id="cvCmp"></div>`;
   drawComposer(c,w,draft);
-  const wc=waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){$('#cvCmp').insertAdjacentHTML('afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`:`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR">Não precisa responder</button></div>`);
+  const wc=waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){$('#cvCmp').insertAdjacentHTML('afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?(innerWidth<860?`Chegou fora do horário`:`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`):`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR">Não precisa responder</button></div>`);
     $('#cvNoR').onclick=async()=>{try{await api('/conversations/'+c.id+'/no-reply',{method:'POST'});toast('Saiu da fila de espera.');CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}}}
   const nm=$('#cvMsgs');if(full||atBottom)nm.scrollTop=nm.scrollHeight;
   nm._stuck=full||atBottom;nm.addEventListener('scroll',()=>{nm._stuck=nm.scrollHeight-nm.scrollTop-nm.clientHeight<80},{passive:true});
@@ -1481,7 +1485,7 @@ async function cvChat(full){
   if($('#cvMine'))$('#cvMine').onclick=async()=>{try{await api('/conversations/'+CV.open+'/take',{method:'POST'});toast('A conversa agora é sua.');CV.pnFor=null;cvChat(true);cvList();cvCounts()}catch(x){toast(x.message);cvList()}};
   $('#cvTr').onclick=()=>transferModal(c);
   const doRes=async()=>{await api('/conversations/'+CV.open+'/resolve',{method:'POST',body:{resolved:!resolved}});toast(resolved?'Conversa reaberta.':'Marcada como resolvida.');cvCounts();cvList();cvChat(true)};
-  const doBook=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
+  const doBook=()=>bookModal({contact:{id:c.id,name:c.name}},async ap=>{CV.pnFor=null;await cvChat(true);if(ap&&ap.start)confirmBook(c,ap)});
   $('#cvRes').onclick=doRes;$('#cvBook').onclick=doBook;
   const mn=$('#cvMn');$('#cvMore').onclick=e=>{e.stopPropagation();mn.classList.toggle('hide')};
   document.addEventListener('click',()=>mn.classList.add('hide'),{once:true});
@@ -1544,6 +1548,16 @@ function waBox(c){const host=$('#cvCmp');if(!host)return;host.querySelector('.wa
   if($('#waNum'))$('#waNum').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#waSave2').click()}};
   if($('#waLink'))$('#waLink').onclick=async()=>{try{const r=await api('/conversations/'+c.id+'/wa-invite');const ta=$('#cvText');CV.waOpen=null;host.querySelector('.wabox')?.remove();
       if(ta){ta.value=r.text;ta.dispatchEvent(new Event('input'));ta.focus();toast('Mensagem pronta. Confira e clique em Enviar.')}}catch(e){toast(e.message)}}}
+function confirmBook(c,ap){  /* depois de agendar: mensagem de confirmação pronta para o cliente */
+  const ta=$('#cvText');if(!ta||CV.tab!=='msg')return;
+  const d=ap.start.slice(0,10),h=ap.start.slice(11,16),dt=new Date(d+'T12:00:00');
+  const wd=['domingo','segunda','terça','quarta','quinta','sexta','sábado'][dt.getDay()],dd=d.slice(8,10)+'/'+d.slice(5,7);
+  const first=(c.name||'').split(' ')[0];
+  ta.value=`Oi${first&&!/^[\d+(]/.test(first)?', '+first:''}! ${ap.service_name?'Sua '+ap.service_name.toLowerCase():'Seu horário'} ficou marcada para ${wd}, ${dd}, às ${h.replace(':00','h').replace(':','h')}. Te esperamos! 😊`;
+  ta.dispatchEvent(new Event('input'));ta.focus();
+  const b=$('#cvSug');if(b)keepBottom(()=>b.innerHTML=`<div class="sug ok"><b>✓ Agendado. Quer avisar ${esc(first)}?</b><span>A confirmação já está escrita na caixa. Confira e clique em Enviar.${CV.autoRem?'':' Para lembrar na véspera sozinho, ligue o lembrete em <a data-to2="automacoes">Automações</a>.'}</span><button type="button" class="x" data-sx>×</button></div>`);
+  b&&b.querySelector('[data-sx]')&&(b.querySelector('[data-sx]').onclick=()=>{b.innerHTML=''});
+  b&&b.querySelector('[data-to2]')&&(b.querySelector('[data-to2]').onclick=()=>go('automacoes'))}
 function drawComposer(c,w,draft){
   const box=$('#cvCmp');const first=esc(c.name.split(' ')[0]);
   const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">🔒 Nota interna</button>${CV.tab==='msg'?chSel(c):''}${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
@@ -1646,6 +1660,7 @@ function showSug(r,manual){const b=$('#cvSug');if(!b)return;
   if(r.handoff){b.innerHTML=`<div class="sug warn"><b>✨ A Nanda acha melhor alguém do time responder</b><span>${esc(r.reason||'')}</span><button type="button" class="x" data-sx>×</button></div>`}
   else if(r.reply){b.innerHTML=`<div class="sug"><b>✨ Sugestão da Nanda</b><p>${esc(r.reply)}</p>${r.book?`<span class="hint">Ela sugere agendar ${esc(r.book_label||'')}. Use o botão Agendar para confirmar.</span>`:''}<div class="row"><button type="button" class="btn sm p" data-su>Usar</button><button type="button" class="btn sm" data-sx>Dispensar</button><button type="button" class="lnk sug-off" data-soff>${CV.sugOff?'mostrar sempre':'ocultar sugestões'}</button></div></div>`}
   else{if(manual)toast('A Nanda não tem sugestão agora.');return}
+  b.querySelector('.sug p')&&(b.querySelector('.sug p').onclick=e=>e.currentTarget.closest('.sug').classList.toggle('open'));
   b.querySelector('[data-su]')&&(b.querySelector('[data-su]').onclick=()=>{const ta=$('#cvText');ta.value=r.reply;ta.dispatchEvent(new Event('input'));ta.focus();b.innerHTML=''});
   b.querySelector('[data-sx]').onclick=()=>{CV.sugHide[CV.open]=CV.c.last_in_at;keepBottom(()=>b.innerHTML='')};
   b.querySelector('[data-soff]')&&(b.querySelector('[data-soff]').onclick=()=>$('#cvSugT')?.click())}
@@ -1775,7 +1790,7 @@ async function bookModal(pre,after){
   if(pre.time){const b=o.querySelector(`#bkS [data-t="${pre.time}"]`);if(b)b.click();else if(f.ftime){f.ftime.value=pre.time;o.querySelector('#bkS').insertAdjacentHTML('afterbegin',`<span class="hint" style="width:100%">${pre.time} não está entre os horários livres. Dá para marcar como encaixe (campo abaixo) ou escolher outro.</span>`)}}
   f.onsubmit=async ev=>{ev.preventDefault();const ft=f.ftime?.value;const time=ft||pick;if(!time)return o.querySelector('#bkE').textContent='Escolha um horário.';
     const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft};
-    try{await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after()}catch(e){o.querySelector('#bkE').textContent=e.message}};
+    try{const ap=await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after(ap)}catch(e){o.querySelector('#bkE').textContent=e.message}};
 }
 function apptModal(a,after){
   const st=[['scheduled','Agendado'],['confirmed','Confirmado'],['done','Compareceu'],['no_show','Faltou'],['canceled','Cancelado']];
@@ -3243,10 +3258,10 @@ const VIEWS={
     <button class="card stat" data-to="funil" style="text-align:left"><span>Vendas no mês</span><b>${sm.won}${sm.won_value?` <small style="font-size:14px;color:var(--ok)">${brl(sm.won_value)}</small>`:''}</b></button></div>`:''}
    <div class="card"><div class="steps">
     <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
-    <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':'2'}</span><div><b>Convide seu time</b><p>Cada pessoa com seu acesso e sua fila de conversas.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
-    <div class="step ${num?'done':''}"><span class="n">${num?'✓':'3'}</span><div><b>Conectar o WhatsApp</b><p>${num?'Conectado: '+esc(num.display_phone||''):'Pela API oficial da Meta, junto com o app que você já usa.'}</p></div>${num?'':'<button class="btn sm" data-to="empresa">Conectar</button>'}</div>
-    <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'4'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
-    ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'5'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
+    <div class="step ${num?'done':''}"><span class="n">${num?'✓':'2'}</span><div><b>Conectar o WhatsApp</b><p>${num?'Conectado: '+esc(num.display_phone||''):'Pela API oficial da Meta, junto com o app que você já usa.'}</p></div>${num?'':'<button class="btn sm" data-to="empresa">Conectar</button>'}</div>
+    <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'3'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
+    ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'4'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
+    <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':au?'5':'4'}</span><div><b>Convide seu time</b><p>Se mais alguém atende, cada pessoa com seu acesso e sua fila de conversas. Pode pular se é só você.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
    </div></div>`;
   inicioMeta();pushNudge();
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));

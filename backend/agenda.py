@@ -30,7 +30,7 @@ def default_settings(segment):
 async def settings_for(company):
     s = await db.agenda_settings.find_one({'company_id': company['id']}, {'_id': 0})
     if not s:
-        s = {'company_id': company['id'], **default_settings(company.get('segment'))}
+        s = {'company_id': company['id'], **default_settings(company.get('segment')), 'hours_set': False}
         from funnel import stages_for
         marcada = next((x for x in await stages_for(company) if 'marcad' in x['name'].lower()), None)
         if marcada: s['stage_on_book'] = marcada['id']
@@ -160,6 +160,7 @@ async def put_settings(body: SettingsIn, request: Request, user=Depends(managers
                 try: a, b = dtime.fromisoformat(r[0]), dtime.fromisoformat(r[1])
                 except (ValueError, IndexError): raise HTTPException(400, 'Horário inválido. Use 09:00.')
                 if a >= b: raise HTTPException(400, f'No {WEEK[int(k)]}, o fim precisa ser depois do início.')
+        upd['hours_set'] = True  # a partir daqui o "chegou fora do horário" vale
     if 'stage_on_book' in body.model_fields_set and body.stage_on_book in ('', None): upd['stage_on_book'] = None
     await settings_for(user['company'])
     await db.agenda_settings.update_one({'company_id': user['company_id']}, {'$set': upd})
