@@ -16,7 +16,7 @@
 {$SITE_HOSTS} {
 	encode zstd gzip
 	root * /srv/site
-	@html path / /index.html /privacidade/ /termos/
+	@html path / /index.html /segmentos/ /privacidade/ /termos/
 	header @html Cache-Control "no-cache"
 	file_server
 	import seguranca

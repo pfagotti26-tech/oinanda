@@ -6,1031 +6,367 @@
 <title>Oi Nanda — CRM e automação de vendas pelo WhatsApp com IA</title>
 <link rel="icon" href="/favicon.png">
 <meta property="og:title" content="Oi Nanda — a Nanda vende pelo seu WhatsApp">
-<meta property="og:description" content="CRM e automação de vendas pelo WhatsApp, com IA. Responde em segundos, marca horário, manda o seu link de pagamento e passa para o seu time quem está pronto. 14 dias grátis, sem cartão.">
+<meta property="og:description" content="CRM de vendas pelo WhatsApp e Instagram, com IA. Responde em segundos, marca horário e passa para o seu time quem está pronto. 14 dias grátis, sem cartão.">
 <meta property="og:image" content="/og.png">
-<meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp com IA: a Nanda responde 24h, agenda, leva o cliente até o pagamento e passa para o seu time quem está pronto para fechar. Funil, automações e turnos inclusos. 14 dias grátis.">
+<meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp e Instagram com IA: a Nanda responde 24h, agenda e passa para o seu time quem está pronto para fechar. 14 dias grátis, sem cartão.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--bg:#FBFCFC;--panel:#fff;--line:#E3E8EC;--ink:#17212B;--ink-2:#4B5968;--ink-3:#8593A1;--teal:#0E7C6B;--teal-ink:#0A5C50;--teal-soft:#E3F3EF;--teal-tint:#F1FAF7;--amber:#E0A82E;--amber-soft:#FBF1D9;--red:#D14D3F;--bubble-out:#DDF4EC;--r:12px}
+/* Layout: uma coluna calma, uma ideia por seção, muito respiro; a Renata dá rosto à página e o coral aparece só onde é para clicar. */
+:root{
+  --bg:#FFFFFF; --soft:#FFF5F0; --ink:#17212B; --ink2:#4B5968; --ink3:#8593A1; --line:#EFE6DF;
+  --coral:#E8603F; --coral-ink:#C44A2C; --coral-soft:#FCE4DA; --ok:#0A7C62; --ok-soft:#E3F5EE; --wa:#25D366;
+  --font:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:24px; --w:1120px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
-:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
-.wrap{max-width:1140px;margin:0 auto;padding:0 32px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:var(--r);font-weight:800;font-size:15px;letter-spacing:-.1px;border:1px solid var(--line);background:#fff;transition:.12s}
-.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
-.btn.primary:hover{background:var(--teal-ink)}
-.btn.ghost{border-color:transparent;color:var(--teal-ink)}
-.btn.lg{padding:18px 28px;font-size:16.5px;border-radius:14px}
-h1{font-size:clamp(44px,6vw,76px);line-height:1.02;letter-spacing:-2.2px;font-weight:800}
-h2{font-size:clamp(30px,3.8vw,44px);line-height:1.08;letter-spacing:-1.3px;font-weight:800}
-h3{font-size:20px;font-weight:800;letter-spacing:-.4px}
-.lead{font-size:20px;line-height:1.55;color:var(--ink-2);max-width:540px}
-.sub{color:var(--ink-2)}
-section{padding:112px 0}
-.page{display:none}.page.on{display:block}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img,video{display:block;max-width:100%}img{height:auto}
+.wrap{max-width:var(--w);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{letter-spacing:-.03em;line-height:1.08;text-wrap:balance;font-weight:800}
+h1{font-size:clamp(38px,5.4vw,62px)}
+h2{font-size:clamp(30px,3.8vw,44px)}
+h3{font-size:21px;letter-spacing:-.01em;line-height:1.25}
+.lead{font-size:clamp(18px,1.7vw,20px);color:var(--ink2);max-width:34em}
+.eyb{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--coral-ink);margin-bottom:14px}
+em.hl{font-style:normal;color:var(--coral)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:800;font-size:16.5px;padding:15px 26px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--coral-soft);outline-offset:2px}
+.btn.p{background:var(--coral);border-color:var(--coral);color:#fff;box-shadow:0 10px 24px rgba(232,96,63,.25)}
+.btn.p:hover{background:var(--coral-ink);border-color:var(--coral-ink)}
+.btn.t{border-color:transparent;background:transparent;color:var(--coral-ink);padding-inline:14px}
+section{padding-block:clamp(64px,9vw,112px)}
+.center{text-align:center}.center .lead{margin-inline:auto}
+.head{display:grid;gap:14px;margin-bottom:clamp(32px,5vw,56px)}
+.head.center{justify-items:center}
 
 /* nav */
-nav{position:sticky;top:0;background:rgba(251,252,252,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:20}
-nav .wrap{height:72px;display:flex;align-items:center;gap:32px}
-.brand{display:flex;align-items:center;gap:10px}
-.wm{font-weight:800;font-size:22px;letter-spacing:-.9px;color:var(--ink);line-height:1}
-.wm b{color:var(--teal);font-weight:800}
-nav .links{display:flex;gap:4px;flex:1}
-nav .links a{padding:8px 12px;border-radius:8px;font-weight:600;font-size:14.5px;color:var(--ink-2)}
-nav .links a:hover,nav .links a.on{background:#EEF1F4;color:var(--ink)}
-nav .cta{display:flex;gap:8px;align-items:center}
-.segtag{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-weight:800;font-size:15.5px;margin-bottom:22px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px 9px 10px;box-shadow:0 6px 20px -14px rgba(23,33,43,.4)}
-.segtag>i{width:26px;height:26px;border-radius:50%;background:#25D366;display:grid;place-items:center;flex:none;font-style:normal}
-.segtag>i svg{width:15px;height:15px;fill:#fff;display:block}
-.segtag i{width:7px;height:7px;border-radius:50%;background:var(--teal);font-style:normal}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:#fff}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:inline-flex;flex-direction:column;align-items:flex-start;background:var(--coral);border-radius:13px;padding:5px 12px 7px 11px;line-height:1;text-decoration:none}
+.logo i{font-style:normal;font-weight:700;font-size:10px;background:#fff;color:var(--coral);border-radius:6px 6px 6px 2px;padding:1px 5px 2px;transform:rotate(-5deg);margin-bottom:2px}
+.logo b{color:#fff;font-size:20px;font-weight:700;letter-spacing:-.8px}
+nav .links{display:flex;gap:26px;margin-left:8px}
+nav .links a{text-decoration:none;font-weight:600;font-size:15.5px;color:var(--ink2)}
+nav .links a:hover{color:var(--ink)}
+nav .sp{flex:1}
+nav .btn{padding:11px 20px;font-size:15px}
 
-.dd{position:relative}
-.ddb{padding:8px 12px;border-radius:8px;font-weight:600;font-size:14.5px;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
-.dd:hover .ddb{background:#EEF1F4;color:var(--ink)}
-.ddm{position:absolute;top:100%;left:0;padding-top:8px;display:none;z-index:30}
-.dd:hover .ddm,.dd:focus-within .ddm{display:block}
-.ddm>a{display:block;background:#fff;border:1px solid var(--line);border-bottom:0;padding:12px 16px;width:320px;font-weight:600}
-.ddm>a:first-child{border-radius:14px 14px 0 0}
-.ddm>a:last-child{border-radius:0 0 14px 14px;border-bottom:1px solid var(--line);box-shadow:0 20px 40px -20px rgba(23,33,43,.3)}
-.ddm>a:hover{background:var(--teal-tint)}
-.ddm b{display:block;font-size:14.5px}
-.ddm span{display:block;font-size:12.5px;color:var(--ink-2);font-weight:500}
-.wa{position:fixed;right:24px;bottom:24px;z-index:25;display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:12px 16px 12px 12px;border-radius:999px;font-weight:800;font-size:14.5px;box-shadow:0 14px 34px -12px rgba(23,33,43,.6)}
-.wa i{width:34px;height:34px;border-radius:50%;background:#25D366;display:grid;place-items:center;font-style:normal}
-.wa i svg{width:20px;height:20px;fill:#fff}
-.wa small{display:block;font-weight:500;font-size:12px;color:#B9C3CD}
-.try{background:var(--ink);color:#fff;border-radius:28px;padding:64px 64px;display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center}
-.try h2{color:#fff}
-.try p{color:#B9C3CD;margin-top:16px;font-size:18.5px;line-height:1.55}
-.try .phone{background:#EEF2F4;border-radius:22px;padding:16px;color:var(--ink)}
-.try .acts{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
-.try .acts .btn{white-space:nowrap;padding:16px 22px;font-size:15.5px}
-.try h2{font-size:clamp(28px,3.2vw,38px)}
-.btn.wa-btn{background:#25D366;border-color:#25D366;color:#fff}
-.btn.wa-btn:hover{background:#1DB954}
-.btn.white{background:#fff;border-color:#fff;color:var(--ink)}
-.proof{display:flex;gap:28px;flex-wrap:wrap;margin-top:24px;font-size:14px;color:var(--ink-2)}
-.proof span{display:flex;gap:7px;align-items:center}
-.proof span::before{content:"✓";color:var(--teal);font-weight:800}
-/* manifesto */
-.mani{max-width:760px;margin:0 auto;text-align:center}
-.mani>p:first-of-type{font-size:clamp(20px,2.3vw,27px);line-height:1.4;letter-spacing:-.5px;font-weight:600;color:var(--ink)}
-.mani span{display:inline-block;margin-top:18px;font-size:14px;font-weight:800;color:var(--teal-ink)}
-.mani .born{margin:28px auto 0;font-size:16px;line-height:1.6;font-weight:500;letter-spacing:0;color:var(--ink-2);max-width:560px;padding-top:24px;border-top:1px solid var(--line)}
-.mani::before{content:"";display:block;width:56px;height:56px;border-radius:50%;background-color:#EAD9CF;margin:0 auto 22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M8 4h24a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H18l-8 7v-7H8a6 6 0 0 1-6-6V10a6 6 0 0 1 6-6z' fill='%23E8603F'/%3E%3Ccircle cx='15' cy='18.5' r='4.6' stroke='%23fff' stroke-width='2.8' fill='none'/%3E%3Crect x='23.6' y='14.2' width='2.8' height='9' rx='1.4' fill='%23fff'/%3E%3Ccircle cx='25' cy='10.4' r='1.8' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat}
-/* owner pains */
-.own{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.oi{background:var(--bg);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px}
-.oi .d{font-size:19px;line-height:1.3;font-weight:800;letter-spacing:-.4px}
-.oi .s{font-size:15.5px;line-height:1.55;color:var(--ink)}
-.oi .lb{font-size:12px;font-weight:800;color:var(--ink-3)}
-.oi .lb.on{color:var(--teal-ink);margin-top:6px}
-.oi .d{color:var(--ink-2);font-weight:700;font-size:16.5px}
-@media (max-width:900px){.own{grid-template-columns:1fr}}
-/* hero bullets */
-.hl{list-style:none;margin-top:26px;display:flex;flex-direction:column;gap:11px;max-width:520px}
-.hl li{display:flex;gap:12px;align-items:flex-start;font-size:18px;line-height:1.4;color:var(--ink)}
-.hl li::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--teal-soft);flex:none;margin-top:2px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C44A2C' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L19 7'/%3E%3C/svg%3E");background-size:12px;background-position:center;background-repeat:no-repeat}
-/* whatsapp look */
-.demo{background:#EFE7DD;background-image:radial-gradient(rgba(0,0,0,.045) 1px,transparent 1px);background-size:14px 14px;padding:0;overflow:hidden;border:0}
-.demo .bar{background:#075E54;color:#fff;padding:12px 14px;margin:0;border:0;gap:12px;border-radius:0}
-.demo .bar b{color:#fff;font-size:14.5px}
-.demo .bar .st{color:#B8E6DC;font-size:12px}
-.demo .bar .md{background:transparent;color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;padding:0}
-.demo .bar .md::before{content:"";width:18px;height:18px;border-radius:50%;background:#25D366 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z'/%3E%3C/svg%3E") center/12px no-repeat}
-.demo .ms{padding:14px 12px 10px}
-.demo .m.in{background:#fff;border-radius:10px;border-top-left-radius:2px}
-.demo .m.out{background:#DCF8C6;border-radius:10px;border-top-right-radius:2px}
-.demo .m.out::after{content:"✓✓";display:block;text-align:right;font-size:10.5px;color:#34B7F1;margin-top:3px;letter-spacing:-1px}
-.demo .m.out.pay::after,.demo .m.typing::after{display:none}
-.demo .m.out.pay{background:#fff;padding:0;border:1px solid #D9D2C8}
-.demo .m .by{color:#C44A2C}
-.demo .m.sys{background:#FFF5C4;color:#6B5600;font-weight:600;box-shadow:0 1px 1px rgba(0,0,0,.06)}
-.demo .foot{background:#F0F0F0;display:flex;align-items:center;gap:10px;padding:8px 10px}
-.demo .foot span{flex:1;background:#fff;border-radius:999px;padding:9px 14px;font-size:13.5px;color:#8593A1}
-.demo .foot i{width:36px;height:36px;border-radius:50%;background:#075E54;display:grid;place-items:center}
-.demo .foot i svg{width:18px;height:18px;fill:#fff}
-.demo .replay{bottom:62px;right:12px;background:rgba(255,255,255,.9)}
-/* live demo */
-.demo .av.nanda{background:#fff}
-.demo .av.nanda svg path{fill:#E8603F}
-.demo .av.nanda svg circle{fill:#fff}
-.demo .av.nanda svg circle,.demo .av.nanda svg rect{fill:#fff;stroke:#fff}
-.demo .av.nanda svg circle:first-of-type{fill:none}
-.demo .bar .st{font-size:12px;color:var(--teal-ink);font-weight:700}
-.demo .ms{height:440px;overflow-y:auto;scroll-behavior:smooth;padding-bottom:30px;scrollbar-width:none}
-.demo .ms>*{flex:none}
-.demo .ms::-webkit-scrollbar{display:none}
-.m{animation:none;opacity:1;transform:none;animation:pop .25s}
-.m.typing{display:flex;gap:4px;padding:12px 14px;min-width:0}
-.m.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-3);animation:blink 1s infinite}
-.m.typing i:nth-child(2){animation-delay:.2s}.m.typing i:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
-/* product tour */
-.tour{display:grid;grid-template-columns:300px 1fr;gap:28px;align-items:start}
-.tabs{display:flex;flex-direction:column;gap:6px}
-.tab{text-align:left;padding:16px 18px;border-radius:14px;display:flex;flex-direction:column;gap:4px;border:1px solid transparent}
-.tab b{font-size:16px}
-.tab span{font-size:14px;color:var(--ink-2);line-height:1.45}
-.tab:hover{background:#fff}
-.tab.on{background:#fff;border-color:var(--line);box-shadow:0 10px 30px -18px rgba(23,33,43,.25)}
-.tab.on b{color:var(--teal-ink)}
-.shotbox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:10px;box-shadow:0 30px 60px -36px rgba(23,33,43,.35)}
-.shotbox img{width:100%;height:auto;border-radius:12px;display:block}
-.shotbox .cap{padding:12px 8px 4px;font-size:14px;color:var(--ink-2)}
-@media (max-width:900px){.tour{grid-template-columns:minmax(0,1fr)}.tour>*{min-width:0}.tabs{flex-direction:row;overflow:auto}.tab{min-width:220px}}
-/* personal demo */
-.pf{margin-top:26px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
-.fill{font-size:clamp(19px,2vw,24px);line-height:1.8;font-weight:700;letter-spacing:-.3px;color:#fff;max-width:520px}
-.fill input{font:inherit;font-weight:800;color:#FFB38A;background:none;border:0;border-bottom:2px solid rgba(255,179,138,.5);padding:0 2px;outline:0;min-width:3ch;text-align:center}
-.fill input:focus{border-bottom-color:#FFB38A;background:rgba(255,255,255,.05);border-radius:6px 6px 0 0}
-.fill input::placeholder{color:rgba(255,179,138,.5);font-weight:600}
-.try .acts{margin-top:14px}
-.try .acts .btn{padding:12px 18px;font-size:14.5px}
-/* seg bar */
-.segbar{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 24px 0;font-size:14px}
-.segbar span{color:var(--ink-3);font-weight:600;margin-right:6px}
-.segbar a{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:700;color:var(--ink-2)}
-.segbar a:hover{border-color:var(--teal);color:var(--teal-ink)}
-/* loss calculator */
-.calc{background:var(--ink);color:#fff;border-radius:28px;padding:56px 64px;margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.calc h2{color:#fff}
-.calc p.l{color:#B9C3CD;margin-top:14px;font-size:17.5px;line-height:1.55}
-.calc .ctr{display:flex;flex-direction:column;gap:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:28px}
-.calc label{display:flex;justify-content:space-between;font-size:14px;color:#B9C3CD;font-weight:600}
-.calc label b{color:#fff;font-size:15px}
-.calc input[type=range]{width:100%;accent-color:var(--teal);margin-top:8px}
-.calc .out{border-top:1px solid rgba(255,255,255,.12);padding-top:20px}
-.calc .out span{display:block;font-size:14px;color:#B9C3CD}
-.calc .out b{display:block;font-size:46px;letter-spacing:-2px;line-height:1.05;color:#FFB38A;font-variant-numeric:tabular-nums}
-.calc .out small{display:block;margin-top:8px;font-size:14px;color:#B9C3CD}
-.calc .out em{font-style:normal;color:#fff;font-weight:800}
-.sq{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.sqi{background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px}
-.sqi span{font-size:14px;color:var(--ink-2);font-weight:600}
-.sqi b{font-size:34px;letter-spacing:-1.5px;line-height:1;font-variant-numeric:tabular-nums}
-.sqi p{font-size:14.5px;color:var(--ink-2);line-height:1.5;margin-top:4px}
-.sqi.us{background:var(--teal);color:#fff}
-.sqi.us span,.sqi.us p{color:#FFE1D4}
-.orig{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.orig blockquote{font-size:clamp(20px,2.2vw,26px);line-height:1.4;letter-spacing:-.5px;font-weight:700;border-left:4px solid var(--teal);padding-left:22px}
-.orig p{color:var(--ink-2);font-size:16.5px;line-height:1.6;margin-top:14px}
-.pick{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-.pick a{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--ink-2);background:#fff}
-.pick a:hover{border-color:var(--teal);color:var(--teal-ink)}
-.pick span{font-size:13.5px;color:var(--ink-3);align-self:center;margin-right:4px}
-.guar{display:flex;gap:12px;align-items:flex-start;background:var(--amber-soft);border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.45;color:#5B4100}
-.guar i{font-style:normal;font-weight:800;flex:none}
-@media (max-width:900px){.calc,.orig{grid-template-columns:1fr;padding:36px 24px}.sq{grid-template-columns:1fr}}
-.cmpd summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.cmpd summary h2{font-size:clamp(22px,2.6vw,30px)}
-.cmpd summary::after{content:"+";font-size:30px;color:var(--teal);font-weight:400}
-.cmpd[open] summary::after{content:"–"}
-/* spotlights */
-.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
-.flow4>div{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px}
-.flow4 i{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;margin-bottom:6px}
-.flow4 b{font-size:17px;letter-spacing:-.3px}
-.flow4 span{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
-.mock{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 30px 60px -36px rgba(23,33,43,.35);overflow:hidden}
-.mock-pay{max-width:620px;margin:0 auto}
-.mk-h{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:#FBFAF8}
-.mk-h .dot{width:9px;height:9px;border-radius:50%;background:#E3DCD5}
-.mk-h b{margin-left:10px;font-size:13px;color:var(--ink-2);font-weight:700}
-.mk-chat{background:#EFE7DD;padding:16px;display:flex;flex-direction:column;gap:8px}
-.mk-m{max-width:80%;padding:9px 13px;border-radius:12px;font-size:14px;line-height:1.45;background:#fff}
-.mk-m.out{align-self:flex-end;background:#DCF8C6;border-top-right-radius:2px}
-.mk-m .by{display:block;font-size:11px;font-weight:800;color:var(--teal-ink)}
-.mk-card{align-self:flex-end;background:#fff;border:1px solid #D9D2C8;border-radius:12px;width:290px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
-.mk-ct{font-size:12px;font-weight:800;color:var(--ink-3);margin-bottom:2px}
-.mk-row{display:flex;justify-content:space-between;font-size:13.5px}
-.mk-row span{color:var(--ink-2)}
-.mk-btn{margin-top:6px;background:var(--teal);color:#fff;text-align:center;font-weight:800;font-size:13.5px;padding:9px;border-radius:9px}
-.mk-sys{align-self:center;background:#FFF5C4;color:#6B5600;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px}
-.mk-sys.ok{background:#DDF4EC;color:#0A5C50}
-.mk-tbl{padding:8px 0}
-.mk-tr{display:grid;grid-template-columns:1.8fr 1fr .8fr .7fr;gap:10px;padding:11px 16px;font-size:13.5px;align-items:center;border-bottom:1px solid var(--line)}
-.mk-tr:last-child{border:0}
-.mk-tr.h{font-size:11.5px;color:var(--ink-3);font-weight:700}
-.mk-tr i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:1px}
-.mk-tr b{font-variant-numeric:tabular-nums}
-.mk-tr b.g{color:#0A5C50}
-.mk-note{margin:10px 16px 16px;background:var(--amber-soft);color:#5B4100;font-size:13px;line-height:1.45;padding:10px 12px;border-radius:10px}
-.mk-coach{display:flex;flex-direction:column}
-.mk-p{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
-.mk-p .av{width:32px;height:32px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;flex:none}
-.mk-p b{display:flex;align-items:center;gap:8px;font-size:14px}
-.mk-p em{font-style:normal;font-size:11px;font-weight:800;background:#DDF4EC;color:#0A5C50;padding:2px 8px;border-radius:999px}
-.mk-p em.w{background:var(--amber-soft);color:#7A5600}.mk-p em.r{background:#FBE6E3;color:#8A2A20}
-.mk-p p{font-size:13.5px;line-height:1.45;color:var(--ink-2);margin-top:3px}
-.mk-p u{text-decoration:none;font-weight:800;color:var(--ink)}
-.ticks{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:22px}
-.ticks li{display:block;position:relative;padding-left:34px;font-size:15.5px;line-height:1.5;color:var(--ink-2)}
-.ticks li::before{content:"";position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:var(--teal-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C44A2C' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L19 7'/%3E%3C/svg%3E") center/12px no-repeat}
-.ticks b{color:var(--ink)}
-@media (max-width:900px){.flow4{grid-template-columns:1fr 1fr}}
-@media (max-width:560px){.flow4{grid-template-columns:1fr}}
-/* day timeline */
-.tl{display:flex;flex-direction:column;position:relative;max-width:900px}
-.tl::before{content:"";position:absolute;left:92px;top:12px;bottom:12px;width:2px;background:var(--line)}
-.tli{display:grid;grid-template-columns:72px 1fr auto;gap:0 28px;align-items:start;padding:14px 0;position:relative}
-.tli .t{font-weight:800;font-size:14px;color:var(--ink-2);text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
-.tli::before{content:"";position:absolute;left:86px;top:20px;width:14px;height:14px;border-radius:50%;background:var(--teal);border:3px solid #fff;box-shadow:0 0 0 2px var(--teal)}
-.tli .tx{font-size:16px;line-height:1.5;padding-left:28px}
-.tli .rs{font-size:12.5px;font-weight:800;color:#0A5C50;background:#DDF4EC;padding:5px 10px;border-radius:999px;white-space:nowrap;margin-top:2px}
-.tli:last-child .rs{background:var(--teal);color:#fff}
-@media (max-width:700px){.tli{grid-template-columns:1fr;gap:6px}.tli .t{text-align:left}.tl::before,.tli::before{display:none}.tli .tx{padding-left:0}}
-/* capabilities */
-.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.cap-i{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
-.cap-i i{width:44px;height:44px;border-radius:12px;background:var(--teal-soft);display:grid;place-items:center;margin-bottom:6px}
-.cap-i i svg{width:22px;height:22px;stroke:var(--teal-ink);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.cap-i h3{font-size:19px;line-height:1.25;letter-spacing:-.4px}
-.cap-i p{font-size:15px;line-height:1.55;color:var(--ink-2)}
-@media (max-width:900px){.caps{grid-template-columns:1fr}}
-/* before/after */
-.ba{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.bac{border:1px solid var(--line);border-radius:20px;padding:28px 28px 30px;position:relative;overflow:hidden}
-.bac::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
-.bac.before::before{background:var(--red)}
-.bac.after::before{background:#128C7E}
-.bac .tag{display:inline-block;font-size:12.5px;font-weight:800;padding:5px 10px;border-radius:999px;margin-bottom:12px}
-.bac.before .tag{background:#FBE6E3;color:#8A2A20}
-.bac.after .tag{background:#DDF4EC;color:#0A5C50}
-.bac h3{font-size:21px;margin-bottom:16px}
-.bac ul{list-style:none;display:flex;flex-direction:column;gap:12px}
-.bac li{display:flex;gap:12px;font-size:15.5px;line-height:1.5;color:var(--ink-2)}
-.bac li::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;margin-top:1px;background-position:center;background-repeat:no-repeat;background-size:12px}
-.bac.before li::before{background-color:#FBE6E3;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D14D3F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E")}
-.bac.after li::before{background-color:#DDF4EC;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23128C7E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L19 7'/%3E%3C/svg%3E")}
-.bac.after li{color:var(--ink)}
-@media (max-width:900px){.ba{grid-template-columns:1fr}}
-/* why now */
-.why{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-@media (max-width:900px){.why{grid-template-columns:1fr}}
-.wi{display:flex;gap:16px;align-items:flex-start;background:#fff;border-radius:18px;padding:24px}
-.wi i{width:40px;height:40px;border-radius:12px;background:var(--teal);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px;flex:none}
-.wi b{display:block;font-size:19px;letter-spacing:-.4px;margin-bottom:4px}
-.wi span{font-size:15.5px;color:var(--ink-2);line-height:1.5}
-@media (max-width:900px){.why{grid-template-columns:1fr}}
 /* hero */
-.hero{padding:96px 0 88px;display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:center}
-.hero .acts{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
-.hero .fine{margin-top:18px;font-size:14px;color:var(--ink-3)}
-.hero h1 em{font-style:normal;color:var(--teal)}
-.hero h1 em.wpp{color:#128C7E}
-.hero h1 .lt{font-weight:500;letter-spacing:-1.2px;color:var(--ink-2)}
-/* phone demo */
-.demo{background:#EEF2F4;border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:0 30px 60px -30px rgba(23,33,43,.35);position:relative}
-.demo .bar{display:flex;align-items:center;gap:10px;padding:6px 6px 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
-.demo .bar .av{width:34px;height:34px;border-radius:50%;background:#5B7DB1;color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px}
-.demo .bar b{display:block;font-size:14px}
-.demo .bar span{font-size:12px;color:var(--ink-2)}
-.demo .bar .md{margin-left:auto;font-size:11px;font-weight:800;color:var(--teal-ink);background:var(--teal-soft);padding:4px 9px;border-radius:999px}
-.demo .ms{display:flex;flex-direction:column;gap:7px;min-height:300px}
-.m{max-width:82%;padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.4;box-shadow:0 1px 1px rgba(0,0,0,.05);opacity:0;transform:translateY(6px);animation:pop .35s forwards}
-.m.in{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
-.m.out{align-self:flex-end;background:var(--bubble-out);border-bottom-right-radius:4px}
-.m .by{display:block;font-size:11px;font-weight:800;color:var(--teal-ink);margin-bottom:2px}
-.m.sys{align-self:center;background:var(--amber-soft);color:#7A5600;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 12px;box-shadow:none}
-.m.pay{background:#fff;border:1px solid var(--line);padding:0;overflow:hidden;min-width:260px}
-.m.pay .ph{background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:7px 12px;display:flex;justify-content:space-between;gap:12px}
-.m.pay .pb{padding:10px 12px;display:flex;gap:10px;align-items:center}
-.m.pay .qr{width:48px;height:48px;background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/12px 12px;border:1px solid var(--line)}
-.m.pay b{font-size:16px;display:block}
-.m.pay small{font-size:11.5px;color:var(--ink-2)}
-@keyframes pop{to{opacity:1;transform:none}}
-.demo .replay{position:absolute;right:18px;bottom:12px;font-size:12px;font-weight:700;color:var(--ink-3);background:#EEF2F4;padding:4px 8px;border-radius:999px}
-@media (prefers-reduced-motion:reduce){.m{animation:none;opacity:1;transform:none}}
+.hero{padding-block:clamp(40px,6vw,84px) clamp(56px,7vw,96px);background:linear-gradient(180deg,var(--soft),#fff)}
+.hero{overflow:hidden;padding-bottom:0!important}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,6vw,80px);align-items:end}
+.hero .copy{padding-bottom:clamp(40px,6vw,84px);align-self:center}
+.hero .copy{display:grid;gap:22px;min-width:0}
+.tag{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 9px;justify-self:start}
+.tag i{width:22px;height:22px;border-radius:50%;background:var(--wa);display:grid;place-items:center}
+.tag svg{width:13px;height:13px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.proof{display:flex;gap:20px;flex-wrap:wrap;font-size:14.5px;font-weight:600;color:var(--ink2)}
+.proof span::before{content:"✓";color:var(--ok);font-weight:800;margin-right:7px}
+.pic{position:relative;justify-self:center;align-self:end;width:min(100%,500px);aspect-ratio:1/1.1}
+.pic img{position:absolute;bottom:0;left:50%;height:104%;width:auto;max-width:none;transform:translateX(-50%);filter:drop-shadow(0 20px 34px rgba(23,33,43,.16))}
+.sh1{position:absolute;left:6%;right:6%;bottom:-12%;aspect-ratio:1;border-radius:50%;background:var(--coral-soft)}
+.sh2{position:absolute;right:0;top:10%;width:26%;aspect-ratio:1;border-radius:50%;border:14px solid var(--coral)}
+.sh3{position:absolute;left:-4%;bottom:14%;width:18%;aspect-ratio:1;border-radius:26% 26% 26% 6%;background:#F4C46A;transform:rotate(-8deg)}
+.float{position:absolute;z-index:2;background:#fff;border-radius:18px;box-shadow:0 18px 44px rgba(23,33,43,.16);padding:12px 16px;display:flex;gap:11px;align-items:center;font-size:14.5px;line-height:1.3;max-width:270px;text-align:left}
+.float b{display:block;font-weight:800}.float span{color:var(--ink2)}
+.float .ic{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--wa)}
+.float .ic svg{width:22px;height:22px}
+.float.a{left:-14%;top:22%;animation:bob 5s ease-in-out infinite}
+.float.b{right:-12%;top:50%;animation:bob 5s ease-in-out -2.5s infinite}
+.float.b .ic{background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px}
+.float.c{left:-8%;bottom:8%;animation:bob 6s ease-in-out -1.2s infinite}
+.float.c .ic{background:var(--coral-soft);font-size:18px}
+@keyframes bob{50%{transform:translateY(-8px)}}
 
-/* trust strip */
-.strip{background:transparent}
-.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-top:40px;padding-bottom:0}
-.strip .wrap>div{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.4}
-.strip b{display:block}
-.strip span{color:var(--ink-2);font-size:13.5px;display:block;margin-top:2px}
-.strip i{width:30px;height:30px;border-radius:8px;background:var(--teal-soft);color:var(--teal-ink);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;flex:none}
+/* faixa de confiança */
+.band{background:var(--ink);color:#fff}
+.band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding-block:30px}
+.band b{display:block;font-size:clamp(22px,2.4vw,30px);font-weight:800;letter-spacing:-.02em;color:#FFB79F;line-height:1.15}
+.band span{font-size:15px;color:#C6CFD8}
+/* celulares animados */
+.phw{position:relative;display:grid;place-items:center;padding-block:10px;min-width:0}
+.phw .blob{position:absolute;width:min(92%,440px);aspect-ratio:1;border-radius:46% 54% 52% 48%/50% 46% 54% 50%;background:var(--soft)}
+.row.flip .phw .blob{background:var(--ok-soft)}
+.phone{position:relative;width:min(72%,290px);aspect-ratio:540/920;border-radius:40px;background:#0B0F15;padding:9px;box-shadow:0 34px 70px rgba(23,33,43,.22),inset 0 0 0 2px #2A313B}
+.phone video{width:100%;height:100%;object-fit:cover;border-radius:32px;background:#FBF8F5}
+.phone .isl{position:absolute;left:50%;top:15px;width:76px;height:20px;border-radius:12px;background:#0B0F15;transform:translateX(-50%);z-index:1;display:none}
+/* vídeo */
+.vbox{position:relative;max-width:960px;margin:0 auto;border-radius:var(--r);overflow:hidden;background:var(--ink);aspect-ratio:16/9;box-shadow:0 30px 80px rgba(23,33,43,.16)}
+.vbox video{width:100%;height:100%;object-fit:cover;cursor:pointer}
+.snd{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;background:rgba(23,33,43,.86);color:#fff;border:0;border-radius:999px;padding:11px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.fine{font-size:13.5px;color:var(--ink3);margin-top:14px}
 
-/* dores */
-.head{max-width:640px;margin-bottom:48px}
-.head.c{margin-left:auto;margin-right:auto;text-align:center}
-.head p{margin-top:14px;color:var(--ink-2);font-size:18.5px;line-height:1.55}
-.pains{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.pain{background:#fff;border-radius:20px;padding:30px;display:grid;grid-template-columns:1fr;gap:18px}
-.pain .d{font-size:22px;line-height:1.25;font-weight:800;letter-spacing:-.5px}
-.pain .d::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--red);margin-bottom:12px}
-.pain .s{display:flex;gap:10px;align-items:flex-start;background:var(--teal-tint);border:1px solid #C6E6DC;border-radius:14px;padding:16px 18px;font-size:15.5px;line-height:1.5}
-.pain .s b{color:var(--teal-ink);white-space:nowrap}
+/* virada */
+.soft{background:var(--soft)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ba>div{border-radius:var(--r);padding:clamp(24px,3vw,36px);display:grid;gap:16px;align-content:start;min-width:0}
+.ba .before{background:#fff;border:1px solid var(--line)}
+.ba .after{background:var(--ink);color:#fff}
+.ba h3{font-size:22px}
+.ba ul{list-style:none;display:grid;gap:13px}
+.ba li{display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:16px;line-height:1.45}
+.ba .before li{color:var(--ink2)}.ba .before li::before{content:"×";color:#C0453A;font-weight:800;font-size:19px;line-height:1.2}
+.ba .after li::before{content:"✓";color:#7FE0BF;font-weight:800}
 
-/* steps */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.step{padding:0 8px}
-.step .n{width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;margin-bottom:20px}
-.step p{color:var(--ink-2);font-size:16px;margin-top:8px;line-height:1.55}
+/* blocos de recurso */
+.feat{display:grid;gap:clamp(64px,9vw,112px)}
+.row{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.row.flip .txt{order:2}
+.row .txt{display:grid;gap:16px;min-width:0}
+.row .txt p{color:var(--ink2)}
+.row ul{list-style:none;display:grid;gap:11px;margin-top:4px}
+.row li{display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:16px;line-height:1.5}
+.row li::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--coral-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23C44A2C' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;margin-top:3px}
+.row li b{font-weight:800}
+.shot{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 60px rgba(23,33,43,.10);background:#FBF8F5}
+.shot .bar{height:30px;background:#F5EFE9;display:flex;gap:6px;align-items:center;padding:0 14px}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:#E3D9CF}
+.shot img{width:100%}
 
-/* autos */
-.autos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.auto{background:#fff;border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:1fr 36px;grid-template-rows:auto auto;gap:4px 14px;align-items:center}
-.auto .w{font-size:17px;grid-column:1;grid-row:1}
-.auto .w b{color:var(--teal-ink)}
-.auto .t{grid-column:1;grid-row:2;font-size:15px;color:var(--ink-2);margin-top:2px}
-.auto .t::before{content:"→ ";color:var(--teal);font-weight:800}
-.auto .tg{grid-column:2;grid-row:1/3;width:36px;height:20px;border-radius:10px;background:var(--teal);position:relative}
-.auto .tg::after{content:"";position:absolute;top:2px;left:18px;width:16px;height:16px;border-radius:50%;background:#fff}
+/* calculadora */
+.calc{background:var(--ink);color:#fff;border-radius:32px;padding:clamp(28px,4.5vw,56px);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:center}
+.calc .eyb{color:#FFB79F}
+.calc p{color:#C6CFD8}
+.calc .ctl{display:grid;gap:22px;margin-top:26px}
+.calc label{display:grid;gap:8px;font-size:15px;font-weight:600;color:#C6CFD8}
+.calc label span{display:flex;justify-content:space-between}
+.calc label b{color:#fff;font-size:17px;font-variant-numeric:tabular-nums}
+.calc input[type=range]{width:100%;accent-color:var(--coral);height:28px}
+.calc .out{background:rgba(255,255,255,.07);border-radius:var(--r);padding:clamp(24px,3vw,36px);text-align:center;display:grid;gap:8px}
+.calc .out small{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFB79F}
+.calc .out strong{font-size:clamp(40px,5vw,58px);font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.calc .out span{color:#C6CFD8;font-size:15px}
 
-/* feature split */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
-.split ul{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:26px}
-.split li{display:flex;gap:12px;font-size:17px;line-height:1.5}
-.split li::before{content:"✓";color:var(--teal);font-weight:800}
-.shot{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 30px 60px -36px rgba(23,33,43,.35)}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.kpi{border:1px solid var(--line);border-radius:12px;padding:14px}
-.kpi b{font-size:30px;letter-spacing:-1px;display:block;font-variant-numeric:tabular-nums}
-.kpi.g b{color:var(--teal)}.kpi.a b{color:#7A5600}
-.kpi span{font-size:13px;color:var(--ink-2)}
-.fun{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.fun div{display:grid;grid-template-columns:130px 1fr 40px;gap:10px;align-items:center;font-size:13px}
-.fun i{display:block;height:18px;border-radius:5px;background:var(--teal-soft);position:relative;overflow:hidden}
-.fun i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--teal);border-radius:5px}
-.fun b{text-align:right}
+/* passos, segmentos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
+.steps>div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px;display:grid;gap:10px;align-content:start;counter-increment:s;min-width:0}
+.steps>div::before{content:counter(s);width:40px;height:40px;border-radius:50%;background:var(--coral-soft);color:var(--coral-ink);font-weight:800;display:grid;place-items:center;margin-bottom:6px}
+.steps p,.segs p{color:var(--ink2);font-size:16px}
+.segs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.segs a{display:grid;gap:8px;align-content:start;border:1px solid var(--line);border-radius:var(--r);padding:24px;text-decoration:none;background:#fff;transition:border-color .15s,transform .15s;min-width:0}
+.segs a:hover{border-color:var(--coral);transform:translateY(-2px)}
+.segs a span{font-weight:800;color:var(--coral-ink);font-size:15px;margin-top:6px}
+.meta{display:flex;gap:14px 34px;flex-wrap:wrap;justify-content:center;align-items:center;font-weight:700;color:var(--ink2);font-size:15.5px;border-block:1px solid var(--line);padding-block:26px}
+.meta b{color:var(--ink);font-weight:800}
+.meta span::before{content:"✓";color:var(--ok);font-weight:800;margin-right:8px}
 
-/* compare */
-.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;font-size:14px}
-.cmp th,.cmp td{padding:16px 14px;text-align:left;border-bottom:1px solid var(--line);line-height:1.45}
-.cmp th{font-size:13px;color:var(--ink-3);font-weight:700}
-.cmp tr:last-child td{border:0}
-.cmp td:first-child{font-weight:700}
-.cmp .y{color:var(--teal-ink);font-weight:800}
-.cmp .n{color:var(--ink-3)}
-.cmp th.us,.cmp td.us{background:var(--teal-tint)}
-
-/* pricing */
-.price{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:18px;align-items:stretch}
-.plan.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
-.plan.dark .tag{background:rgba(255,255,255,.12);color:#fff}
-.plan.dark .amt{font-size:34px;letter-spacing:-1px}
-.plan.dark .amt small{color:#B9C3CD;display:block;font-size:14px;margin-top:4px}
-.plan.dark li{color:#E6EBEF}
-.plan.dark li::before{color:#FFB38A}
-.plan.dark .foot{color:#B9C3CD}
-@media (max-width:1100px){.price{grid-template-columns:1fr}}
-.plan{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:16px}
-.plan.hot{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal),0 30px 50px -36px rgba(14,124,107,.5)}
-.plan .tag{font-size:12.5px;font-weight:800;color:var(--teal-ink);background:var(--teal-soft);padding:4px 10px;border-radius:999px;align-self:flex-start}
-.plan .amt{font-size:46px;font-weight:800;letter-spacing:-2px;line-height:1}
-.plan .amt small{display:block;font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:0;margin-top:6px}
-.plan .was{color:var(--ink-3);text-decoration:line-through;font-size:14px}
-.plan ul{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:16px;flex:1}
-.plan li{display:flex;gap:9px}.plan li::before{content:"✓";color:var(--teal);font-weight:800}
-.plan li.x::before{content:"·";color:var(--ink-3)}
-.plan .foot{font-size:13px;color:var(--ink-3)}
-.meta-note{margin-top:20px;font-size:14px;line-height:1.5;color:var(--ink-2);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px}
+/* preços */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;display:grid;gap:14px;align-content:start;background:#fff;min-width:0}
+.plan.top{border:2px solid var(--coral);box-shadow:0 24px 60px rgba(232,96,63,.14);position:relative}
+.plan .who{font-size:14px;font-weight:700;color:var(--ink3)}
+.plan.top .who{color:var(--coral-ink)}
+.plan .price{font-size:44px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.plan .price small{font-size:16px;font-weight:600;color:var(--ink3);letter-spacing:0}
+.plan ul{list-style:none;display:grid;gap:10px;font-size:15.5px;color:var(--ink2);margin-block:6px 10px}
+.plan li{display:grid;grid-template-columns:20px 1fr;gap:8px}.plan li::before{content:"✓";color:var(--ok);font-weight:800}
+.plan .btn{width:100%}
 
 /* faq */
-.faq{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
-details{border-top:1px solid var(--line);padding:22px 0}
-summary{font-weight:800;font-size:17px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
-summary::after{content:"+";color:var(--teal);font-size:20px;line-height:1}
-details[open] summary::after{content:"–"}
-details p{margin-top:10px;color:var(--ink-2);font-size:16px;line-height:1.55}
+.faq{max-width:760px;margin:0 auto;display:grid;gap:10px}
+.faq details{border:1px solid var(--line);border-radius:18px;background:#fff;padding:0 22px}
+.faq summary{list-style:none;cursor:pointer;font-weight:800;font-size:17px;padding:18px 0;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:24px;font-weight:500;color:var(--coral);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{color:var(--ink2);padding-bottom:20px;font-size:16px}
 
-/* segments grid (home) */
-.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.seg{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:10px;transition:.12s;text-align:left}
-.seg:hover{border-color:var(--teal);transform:translateY(-2px)}
-.seg b{font-size:21px;letter-spacing:-.5px}
-.seg p{color:var(--ink-2);font-size:15.5px;flex:1;line-height:1.5}
-.seg span{color:var(--teal-ink);font-weight:800;font-size:14px}
-.seg.soon{opacity:.6}
+/* final */
+.final{background:var(--coral);color:#fff;border-radius:32px;padding:clamp(36px,6vw,72px);text-align:center;display:grid;gap:18px;justify-items:center}
+.final p{max-width:32em;color:#FFE9E1;font-size:18px}
+.final .btn.p{background:var(--ink);border-color:var(--ink);box-shadow:none}
+.final .btn{border-color:rgba(255,255,255,.5);background:transparent;color:#fff}
+footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:center;line-height:1.8}
 
-/* final cta */
-.final{background:var(--ink);color:#fff;border-radius:28px;padding:72px;display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center}
-.final h2{color:#fff}
-.final p{color:#B9C3CD;margin-top:16px;font-size:18.5px;line-height:1.55;max-width:460px}
-.final form{display:flex;flex-direction:column;gap:12px;background:#fff;color:var(--ink);border-radius:20px;padding:28px}
-.final input{border:1px solid var(--line);border-radius:12px;padding:14px 16px;font:inherit;font-size:16px}
-.final small{font-size:12.5px;color:var(--ink-3)}
-footer{padding:56px 0;color:var(--ink-3);font-size:13px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;opacity:0;transition:.2s;pointer-events:none}
-.toast.show{opacity:1}
-
-@media (max-width:900px){.try{grid-template-columns:1fr;padding:40px 28px}.wa small{display:none}.hero{padding:56px 0 48px;gap:40px}.hero,.split,.final{grid-template-columns:1fr}.strip .wrap,.steps,.segs{grid-template-columns:1fr 1fr}.pains,.autos,.price,.faq{grid-template-columns:1fr}nav .links{display:none}section{padding:72px 0}.final{padding:40px 28px}.wrap{padding:0 20px}}
-@media (max-width:560px){.strip .wrap,.steps,.segs{grid-template-columns:1fr}}
-:root{--bg:#FDFAF7;--panel:#fff;--line:#EEE4DC;--teal:#E8603F;--teal-ink:#C44A2C;--teal-soft:#FBE6DE;--teal-tint:#FEF5F1;--red:#9E2B1E;--bubble-out:#DDF4EC;--amber:#D99A1E;--amber-soft:#FBF0D6}
-.wa i{background:#25D366}
-.segtag,.wm b{color:var(--teal-ink)}
-.strip i{background:var(--teal-soft);color:var(--teal-ink)}
-.pain .d::before{background:var(--teal)}
-.lg8{display:inline-flex;flex-direction:column;align-items:flex-start;background:#E8603F;border-radius:13px;padding:6px 13px 8px 12px;position:relative;line-height:1;font-family:Manrope,system-ui,sans-serif}.lg8::after{content:"";position:absolute;left:12px;bottom:-8px;border-left:6px solid #E8603F;border-right:6px solid transparent;border-top:0;border-bottom:8px solid transparent;width:0;height:0;border-top:8px solid #E8603F;border-bottom:0}.lg8 i{font-style:normal;font-weight:800;font-size:10.5px;background:#fff;color:#E8603F;border-radius:6px 6px 6px 2px;padding:1px 5px 2px;transform:rotate(-5deg);margin-bottom:2px;box-shadow:0 2px 4px -2px rgba(0,0,0,.3)}.lg8 b{color:#fff;font-size:22px;font-weight:800;letter-spacing:-.9px}
-
-/* identidade: blocos de cor, pílulas, canto de balão */
-.btn,.btn.lg{border-radius:999px}
-.vsec{padding:72px 0 88px;scroll-margin-top:72px}
-.btn.vlink{background:transparent;border-color:transparent;color:var(--teal-ink)}.btn.vlink:hover{background:#FBE6DE}
-.vsec .head{margin-bottom:32px}
-.vbox{position:relative;max-width:980px;margin:0 auto;border-radius:24px;overflow:hidden;background:#17212B;box-shadow:0 30px 80px rgba(23,33,43,.18),0 6px 18px rgba(23,33,43,.08);aspect-ratio:16/9}
-.vbox video{display:block;width:100%;height:100%;object-fit:cover;cursor:pointer}
-.vbox .snd{position:absolute;left:18px;bottom:18px;display:inline-flex;align-items:center;gap:8px;background:rgba(23,33,43,.86);color:#fff;border:0;border-radius:999px;padding:11px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
-.vbox .snd:hover{background:#17212B}
-.vbox .snd svg{width:18px;height:18px}
-.vsec .vfine{text-align:center;margin-top:14px;font-size:13.5px;color:var(--ink-3)}
-.vsec .acts{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
-@media (max-width:700px){.vsec{padding:48px 0 60px}.vbox{border-radius:16px}.vbox .snd{left:10px;bottom:10px;padding:9px 14px;font-size:13.5px}}
-.herob{background:#FFF4EF;position:relative;overflow:hidden;border-radius:0 0 48px 48px}
-.herob::before,.herob::after{content:"";position:absolute;background:rgba(232,96,63,.09);border-radius:60px 60px 60px 10px;pointer-events:none}
-.herob::before{width:560px;height:320px;right:-140px;top:-110px;transform:rotate(-8deg)}
-.herob::after{width:300px;height:180px;left:-130px;bottom:-70px;border-radius:44px 44px 8px 44px}
-.herob .hero{position:relative;z-index:1}
-.herob h1 em{color:#E8603F}
-.herob h1 em.wpp{color:#128C7E;background:#fff;border-radius:22px 22px 22px 6px;padding:0 .16em .06em;display:inline-block;line-height:1.05;margin-top:6px;box-shadow:0 14px 30px -18px rgba(23,33,43,.4)}
-.herob .lead{color:#4B5968;font-size:19px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;max-width:560px}
-.chips span{background:#fff;border:1px solid #F3D9CE;border-radius:999px 999px 999px 4px;padding:7px 14px;font-size:14px;font-weight:700;color:#C44A2C}
-.herob .segtag{border:0}
-.herob .demo{box-shadow:none}
-.segbar{padding-top:28px}
-.calc,.try,.final{border-radius:36px 36px 36px 8px}
-.final{background:#E8603F}
-.final p{color:#FFE3D8}
-.final .btn.primary{background:#17212B;border-color:#17212B}
-.final .btn.primary:hover{background:#000}
-.herob .segtag>i{width:26px;height:26px;background:#25D366}.demo .bar .st{color:#B8E6DC}
-
-/* hero: celular + painel */
-.stage{position:relative;height:660px}
-.desk{position:absolute;left:150px;top:70px;width:640px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 50px 90px -40px rgba(23,33,43,.45);border:1px solid #EEE4DC}
-.desk .dbar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#F3F5F7;border-bottom:1px solid #E3E8EC;font-size:12px;font-weight:700;color:#8593A1}
-.desk .dbar i{width:10px;height:10px;border-radius:50%;background:#E3E8EC}.desk .dbar i:first-child{background:#FF6159}.desk .dbar i:nth-child(2){background:#FFBD2E}.desk .dbar i:nth-child(3){background:#28C941}
-.desk .dbar span{margin-left:10px}
-.desk img{display:block;width:100%}
-.cel{position:absolute;left:-10px;top:0;width:318px;height:650px;background:#0F1419;border-radius:54px;padding:11px;box-shadow:0 60px 100px -40px rgba(23,33,43,.55),inset 0 0 0 2px #2A333C;z-index:2}
-.cel .notch{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:92px;height:27px;background:#0F1419;border-radius:20px;z-index:4}
-.cel .sb{position:absolute;top:11px;left:11px;right:11px;height:46px;background:#075E54;border-radius:43px 43px 0 0;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0 34px;color:#fff;font-size:13px;z-index:3}
-.cel .sb span{font-size:9px;letter-spacing:1px;opacity:.9}
-.cel .demo{height:100%;border-radius:43px;display:flex;flex-direction:column;padding:46px 0 0;border:0;box-shadow:none;background-color:#EFE7DD;background-image:radial-gradient(rgba(0,0,0,.045) 1px,transparent 1px);background-size:14px 14px}
-.cel .demo .bar{border-radius:0;margin:0;padding:6px 12px 10px;background:#075E54}
-.cel .demo .ms{height:auto;flex:1;min-height:0}
-.cel .demo .foot{padding:8px 10px 22px}
-.cel .demo .replay{bottom:76px}
-@media (max-width:900px){.stage{height:640px;margin-bottom:10px}.desk{display:none}.cel{left:50%;transform:translateX(-50%);width:300px;height:620px}.herob .hero{padding-top:36px}}
-.cel .demo .bar .md{display:none}
-.herob .demo{color:#17212B}
-.btn{white-space:nowrap}
-@media (max-width:900px){.herob{border-radius:0 0 28px 28px}.herob::before{width:300px;height:180px}}
-
-
-/* topo: entrar, whatsapp e menu do celular */
-nav .cta{gap:10px;margin-left:auto}
-nav .cta .btn{padding:11px 18px;border-radius:999px;font-size:14.5px}
-nav .btn.in{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
-nav .btn.in:hover{border-color:var(--ink)}
-nav .btn svg{width:17px;height:17px;flex:none}
-nav .wa-ic{width:44px;height:44px;padding:0!important;justify-content:center;background:#fff;border:1.5px solid var(--line)}
-nav .wa-ic svg{width:21px;height:21px;fill:#25D366}
-nav .wa-ic:hover{border-color:#25D366;background:#F1FBF4}
-.burger{display:none;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:#fff;flex-direction:column;gap:4px;align-items:center;justify-content:center;flex:none}
-.burger span{width:18px;height:2px;background:var(--ink);border-radius:2px;transition:.2s}
-nav.open .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
-nav.open .burger span:nth-child(2){opacity:0}
-nav.open .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-.mmenu{display:none}
 @media (max-width:900px){
- nav .wrap{height:64px;gap:12px}
- nav .links,nav .cta .wa-ic,nav .cta .btn.primary{display:none}
- .burger{display:flex}
- nav .cta .btn.in{padding:10px 14px}
- nav.open .mmenu{display:block}
- .mmenu{position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 30px 50px -30px rgba(23,33,43,.35);max-height:calc(100vh - 64px);overflow:auto;padding:14px 20px 22px}
- .mmenu .mm-h{display:block;font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-3);margin:4px 4px 6px}
- .mmenu .mm-s{display:block;padding:10px 12px;border-radius:12px}
- .mmenu .mm-s:hover{background:var(--teal-tint)}
- .mmenu .mm-s b{display:block;font-size:15px}.mmenu .mm-s span{display:block;font-size:13px;color:var(--ink-2)}
- .mmenu .mm-l{display:block;padding:14px 12px;border-top:1px solid var(--line);font-weight:700;font-size:15.5px}
- .mmenu .mm-s+.mm-l{margin-top:8px}
- .mmenu .mm-b{display:grid;gap:10px;margin-top:14px}
- .mmenu .mm-b .btn{justify-content:center;border-radius:999px;padding:14px 18px}
- .mmenu .btn.mm-wa{background:#fff;border:1.5px solid var(--line);color:var(--ink)}.mmenu .btn.mm-wa svg{width:19px;height:19px;fill:#25D366}
- .mmenu .btn.in{background:#fff;border:1.5px solid var(--line);color:var(--ink)}.mmenu .btn.in svg{width:17px;height:17px}
+  nav .links{display:none}
+  .hero .wrap,.row,.calc,.ba{grid-template-columns:1fr}
+  .row.flip .txt{order:0}
+  .pic{width:min(88%,340px);margin-top:10px}
+  .float{font-size:12.5px;padding:9px 11px;max-width:190px}.float .ic{width:32px;height:32px}
+  .float.a{left:-7%;top:44%}.float.b{right:-7%;top:70%}.float.c{display:none}
+  .band .wrap{grid-template-columns:1fr 1fr}
+  .phone{width:min(64%,260px)}
+      .steps,.plans{grid-template-columns:1fr}
+  .segs{grid-template-columns:1fr 1fr}
 }
-@media (max-width:380px){nav .cta .btn.in{padding:9px 12px;font-size:14px}nav .cta .btn.in svg{display:none}}
-@media (max-width:560px){.price,.try,.final{grid-template-columns:minmax(0,1fr)!important}.price>*,.try>*,.final>*,.try form>*{min-width:0}.try input,.try select,.try button{min-width:0;max-width:100%}}
-@media (max-width:560px){
- .herob .segtag,.herob .chips,.herob::before{display:none}
- .herob .hero{padding-top:28px}
- .herob h1{font-size:40px;letter-spacing:-1.6px}
- .herob .lead{font-size:17px;margin-top:14px!important}
- .herob .acts{flex-direction:column;gap:6px;margin-top:24px}
- .herob .acts .btn{width:100%;justify-content:center}
- .herob .acts .btn:not(.primary){border:0;background:transparent;padding:12px;font-size:15.5px;color:#C44A2C}
- .herob .proof{justify-content:center;margin-top:10px}
- .wa{padding:0;right:16px;bottom:16px;background:transparent;box-shadow:none}
- .wa span{display:none}
- .wa i{width:56px;height:56px;box-shadow:0 12px 28px -10px rgba(0,0,0,.45)}
- .wa i svg{width:30px;height:30px}
+@media (max-width:520px){
+  .segs{grid-template-columns:1fr}
+  .acts .btn{width:100%}
+  nav .btn.t{display:none}
 }
-.mk-tr.ag{grid-template-columns:.5fr 1.6fr 1fr}
-.mk-tr.ag em{font-style:normal;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;justify-self:end;white-space:nowrap}
-.mk-tr.ag em.ok{background:#DDF4EC;color:#0A5C50}.mk-tr.ag em.w{background:#FBF0D6;color:#7A5600}.mk-tr.ag em.n{background:#EEF1F4;color:#4B5968}
-.split .ticks li{display:block;font-size:16px}
-.herob h1{font-size:clamp(40px,4.4vw,60px);letter-spacing:-1.8px}
-.pic{position:absolute;left:-70px;top:0;width:460px;height:640px}
-.pic .blob{position:absolute;left:20px;right:50px;bottom:30px;height:360px;background:#F8D3C4;border-radius:56px 56px 56px 12px}
-.pic .blob::after{content:"";position:absolute;left:40px;bottom:-26px;border-top:28px solid #F8D3C4;border-right:28px solid transparent}
-.pic img{position:absolute;bottom:30px;left:70px;width:262px;display:block;border-radius:0 0 0 12px}
-.pic .pk{position:absolute;left:60px;bottom:-4px;background:#fff;color:#0A5C50;font-weight:800;font-size:14px;padding:10px 14px;border-radius:16px 16px 16px 4px;box-shadow:0 14px 30px -12px rgba(0,0,0,.35);z-index:2}
-@media (max-width:900px){.pic{display:none}}
-@media (min-width:901px){.herob .cel{left:270px}}
-.eyb{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#C44A2C;background:#FBE6DE;border-radius:999px 999px 999px 4px;padding:5px 12px;margin-bottom:14px}
-.calc .eyb{background:rgba(255,255,255,.1);color:#FFB38A}
-.head.c .eyb{margin-left:auto;margin-right:auto}
-.metab{padding:56px 0}
-.mb{display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px 28px 28px 8px;padding:32px 40px}
-.mb .seal{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#1877F2;background:#E8F1FE;border-radius:999px;padding:6px 12px;margin-bottom:10px}
-.mb h3{font-size:24px;letter-spacing:-.6px;line-height:1.2}
-.mb ul{list-style:none;display:flex;flex-direction:column;gap:10px}
-.mb li{position:relative;padding-left:30px;font-size:16px;color:var(--ink-2)}
-.mb li::before{content:"✓";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:#DDF4EC;color:#0A5C50;font-size:12px;font-weight:800;display:grid;place-items:center}
-@media (max-width:900px){.mb{grid-template-columns:1fr;padding:26px 22px;gap:18px}}
-@media (min-width:901px){.segs{grid-template-columns:repeat(4,1fr)}}
+@media (prefers-reduced-motion:reduce){.float{animation:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
 </style>
 </head>
 <body>
+
+
 <nav><div class="wrap">
-  <a class="brand" href="#home"><span class="lg8" aria-label="Oi Nanda"><i>oi</i><b>Nanda</b></span></a>
-  <div class="links" id="navlinks">
-    <div class="dd"><button class="ddb">Soluções <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
-      <div class="ddm">
-        <a href="#studios"><b>Studios e academias</b><span>Experimental que vira plano, renovação automática</span></a>
-        <a href="#clinicas"><b>Clínicas de estética e odonto</b><span>Menos falta, orçamento fechado, retorno</span></a>
-        <a href="#lancamentos"><b>Lançamentos e infoprodutos</b><span>SDR em turno, boleto recuperado, comissão</span></a>
-        <a href="#home"><b>Outro segmento</b><span>Comece com o kit básico</span></a>
-      </div></div>
-    <a href="#como">Como funciona</a><a href="#precos">Preço</a><a href="#faq">Perguntas</a>
-  </div>
-  <div class="cta"><a class="btn wa-ic" href="#" data-wa aria-label="Falar no WhatsApp" title="Falar no WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z"/></svg></a><a class="btn in" href="https://app.oinanda.com.br/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Entrar</a><a class="btn primary" href="#" data-trial>Testar 14 dias grátis</a>
-    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mmenu"><span></span><span></span><span></span></button></div>
-</div>
-<div class="mmenu" id="mmenu">
-  <span class="mm-h">Soluções</span>
-  <a class="mm-s" href="#studios"><b>Studios e academias</b><span>Experimental que vira plano</span></a>
-  <a class="mm-s" href="#clinicas"><b>Clínicas de estética e odonto</b><span>Menos falta, orçamento fechado</span></a>
-  <a class="mm-s" href="#lancamentos"><b>Lançamentos e infoprodutos</b><span>Lead respondido na hora</span></a>
-  <a class="mm-s" href="#home"><b>Outro segmento</b><span>Comece com o kit básico</span></a>
-  <a class="mm-l" href="#como">Como funciona</a><a class="mm-l" href="#precos">Preço</a><a class="mm-l" href="#faq">Perguntas</a>
-  <div class="mm-b"><a class="btn primary" href="#" data-trial>Testar 14 dias grátis</a><a class="btn mm-wa" href="#" data-wa><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z"/></svg>Falar no WhatsApp</a><a class="btn in" href="https://app.oinanda.com.br/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Entrar na minha conta</a></div>
+  <a class="logo" href="#topo" aria-label="Oi Nanda"><i>oi</i><b>Nanda</b></a>
+  <div class="links"><a href="#como">Como funciona</a><a href="#segmentos">Para quem é</a><a href="#precos">Preço</a><a href="#faq">Perguntas</a></div>
+  <span class="sp"></span>
+  <a class="btn t" href="https://app.oinanda.com.br/entrar">Entrar</a>
+  <a class="btn p" href="https://app.oinanda.com.br/cadastro">Testar grátis</a>
 </div></nav>
 
-<main id="root"></main>
-<a class="wa" href="#" data-wa><i><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z"/></svg></i><span>Oi, Nanda!<small>a IA responde em segundos</small></span></a>
-<div class="toast" id="toast"></div>
+<header class="hero" id="topo"><div class="wrap">
+  <div class="copy">
+    <span class="tag"><i><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></i>WhatsApp e Instagram · API oficial da Meta</span>
+    <h1>O CRM com IA que <em class="hl">atende, agenda e vende</em> pelo seu WhatsApp.</h1>
+    <p class="lead">A Nanda responde em segundos, marca o horário e só chama o seu time quando o cliente está pronto. Você cuida de quem está na sua frente.</p>
+    <div class="acts">
+      <a class="btn p" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a>
+      <a class="btn" href="https://wa.me/5511975754765?text=Oi%2C%20Nanda!%20Quero%20te%20conhecer">Conversar com a Nanda</a>
+    </div>
+    <div class="proof"><span>Sem cartão</span><span>No ar em 15 minutos</span><span>Cancela quando quiser</span></div>
+  </div>
+  <div class="pic">
+    <span class="sh1"></span><span class="sh2"></span><span class="sh3"></span>
+    <img src="shots/nanda.webp" alt="Dona de negócio sorrindo, tranquila com o atendimento em dia" width="900" height="1773">
+    <div class="float a"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></span><div><b>Helena</b><span>Quanto custa a limpeza de pele?</span></div></div>
+    <div class="float b"><span class="ic">✓</span><div><b>A Nanda respondeu em 8 s</b><span>Avaliação marcada · qui, 14h</span></div></div>
+    <div class="float c"><span class="ic">📅</span><div><b>Agenda de amanhã</b><span>6 horários confirmados</span></div></div>
+  </div>
+</div></header>
+<div class="band"><div class="wrap">
+  <div><b>Segundos</b><span>para a primeira resposta</span></div>
+  <div><b>24 horas</b><span>atendendo, até de madrugada</span></div>
+  <div><b>15 minutos</b><span>para começar a usar</span></div>
+  <div><b>14 dias</b><span>grátis, sem cartão</span></div>
+</div></div>
+
+<section id="video"><div class="wrap">
+  <div class="head center"><span class="eyb">Na prática</span><h2>Um dia da Renata com o Oi Nanda</h2><p class="lead">Em pouco mais de um minuto: a cliente que ia embora, a resposta que já estava pronta e a venda que voltou.</p></div>
+  <div class="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-renata.jpg?v=3" muted playsinline loop preload="metadata" aria-label="Vídeo: um dia da Renata com o Oi Nanda"></video>
+   <button class="snd" id="vidSnd" type="button">🔊 Assistir com som</button></div>
+  <p class="fine center">História de exemplo, com imagens ilustrativas e as telas reais do Oi Nanda.</p>
+</div></section>
+
+<section class="soft"><div class="wrap">
+  <div class="head center"><span class="eyb">A virada</span><h2>Sua venda não devia depender de quem lembrou de responder.</h2><p class="lead">O WhatsApp lota, o time responde o que dá, e o cliente que ficou sem resposta some sem avisar.</p></div>
+  <div class="ba">
+    <div class="before"><h3>Hoje, sem a Nanda</h3><ul>
+      <li>Mensagem das 22h respondida às 9h, quando o cliente já fechou com outro</li>
+      <li>Várias pessoas no mesmo número, ninguém sabe quem respondeu o quê</li>
+      <li>"Vou pensar" vira silêncio, porque ninguém volta nele</li>
+      <li>Horário marcado de boca: metade esquece e falta</li></ul></div>
+    <div class="after"><h3>Com a Nanda</h3><ul>
+      <li>Resposta em segundos, 24 horas, pelo seu número oficial</li>
+      <li>Cada conversa tem dono: o time vê a sua fila, o gestor vê tudo</li>
+      <li>Quem parou no funil é retomado no prazo certo, sem ninguém lembrar</li>
+      <li>Horário marcado na conversa, com lembrete na véspera</li></ul></div>
+  </div>
+</div></section>
+
+<section id="como"><div class="wrap feat">
+  <div class="row">
+    <div class="txt"><span class="eyb">1 · Atende</span><h2>A resposta chega antes de o cliente desistir.</h2>
+      <p>A Nanda lê a mensagem e deixa a resposta pronta, com o seu preço e os seus horários. Você confere e envia com um toque, ou deixa ela responder sozinha.</p>
+      <ul><li><span><b>Ela só fala o que você ensinou.</b> Nunca inventa preço nem promessa.</span></li><li><span><b>WhatsApp e Instagram juntos.</b> Tudo numa caixa só, com o histórico inteiro.</span></li><li><span><b>Sabe a hora de chamar você.</b> Cliente pronto para fechar vai para a pessoa certa.</span></li></ul></div>
+    <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_a.mp4" poster="img/poster_a.jpg" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando a conversa: a Nanda sugere a resposta, você toca em Usar e envia"></video></div></div>
+  </div>
+  <div class="row flip">
+    <div class="txt"><span class="eyb">2 · Agenda</span><h2>A agenda se enche pela conversa.</h2>
+      <p>A Nanda oferece os horários livres, marca na sua agenda e lembra o cliente antes. Tudo no WhatsApp, sem ninguém ligar para confirmar.</p>
+      <ul><li><span><b>Só horário livre de verdade.</b> Sem marcar dois no mesmo lugar.</span></li><li><span><b>Lembrete que sai sozinho.</b> Menos falta, sem você lembrar de lembrar.</span></li><li><span><b>Faltou? Ela chama para remarcar.</b></span></li></ul></div>
+    <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_b.mp4" poster="img/poster_b.jpg" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando a agenda do dia com um novo horário marcado"></video></div></div>
+  </div>
+  <div class="row">
+    <div class="txt"><span class="eyb">3 · Mostra de onde vem a venda</span><h2>Você finalmente sabe qual anúncio se paga.</h2>
+      <p>O cliente chega pelo anúncio, pelo Instagram ou pela indicação já com a origem marcada, e ela segue até a venda. O painel soma por canal quanto vendeu e quanto custou.</p>
+      <ul><li><span><b>Anúncio, link e QR code</b> marcados sem configurar nada.</span></li><li><span><b>Retorno por campanha.</b> Realocar verba vira conta, não palpite.</span></li></ul></div>
+    <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_c.mp4" poster="img/poster_c.jpg" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando o retorno por canal e campanha"></video></div></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="calc">
+    <div><span class="eyb">Faça a conta</span><h2>Quanto o seu WhatsApp perde por mês sem resposta?</h2>
+      <p style="margin-top:12px">Mova os controles com os números do seu negócio. Base conservadora: 1 em cada 4 contatos sem resposta em 5 minutos não compra.</p>
+      <div class="ctl">
+        <label for="cN"><span>Contatos novos por dia <b id="oN">20</b></span><input id="cN" type="range" min="2" max="150" value="20"></label>
+        <label for="cT"><span>Ticket médio <b id="oT">R$ 290</b></span><input id="cT" type="range" min="50" max="3000" step="10" value="290"></label>
+        <label for="cP"><span>Ficam mais de 5 min sem resposta <b id="oP">35%</b></span><input id="cP" type="range" min="5" max="90" value="35"></label>
+      </div></div>
+    <div class="out"><small>Venda perdida estimada</small><strong id="oM">R$ 13.195</strong><span>por mês · <span id="oY">R$ 158.340</span> por ano</span><span style="margin-top:10px;color:#fff;font-weight:700">A Nanda começa em R$ 147 por mês.</span></div>
+  </div>
+</div></section>
+
+<section class="soft"><div class="wrap">
+  <div class="head center"><span class="eyb">Para começar</span><h2>Em 15 minutos, a Nanda já está atendendo</h2><p class="lead">Nenhum passo precisa de técnico. E você continua com o seu WhatsApp.</p></div>
+  <div class="steps">
+    <div><h3>Conecte o WhatsApp</h3><p>Pela API oficial da Meta, junto com o app que você já usa. Sem trocar de número e sem perder o histórico.</p></div>
+    <div><h3>Conte do seu negócio</h3><p>Escolha o segmento e ensine preços e horários. A Nanda já chega com o funil e as mensagens do seu ramo.</p></div>
+    <div><h3>Deixe a Nanda começar</h3><p>Ela responde, agenda e lembra. Quem quer fechar vai para o seu time, com a conversa inteira.</p></div>
+  </div>
+</div></section>
+
+<section id="segmentos"><div class="wrap">
+  <div class="head"><h2>Feita para quem vende conversando</h2><p class="lead">Cada segmento fecha de um jeito. A Nanda chega com funil, agenda e mensagens prontas para o seu.</p></div>
+  <div class="segs">
+    <a href="/segmentos/#clinicas"><h3>Clínicas de estética e odonto</h3><p>Menos falta, mais orçamento fechado, paciente voltando no prazo.</p><span>Ver página →</span></a>
+    <a href="/segmentos/#studios"><h3>Studios e academias</h3><p>Mais experimentais virando plano e mais renovações.</p><span>Ver página →</span></a>
+    <a href="/segmentos/#lancamentos"><h3>Lançamentos e infoprodutos</h3><p>Dúvida respondida na hora e o time só com quem está pronto.</p><span>Ver página →</span></a>
+    <a href="https://app.oinanda.com.br/cadastro"><h3>Outro segmento</h3><p>Funil simples e a Nanda tirando dúvidas. Você ajusta o resto.</p><span>Começar assim →</span></a>
+  </div>
+  <div class="meta" style="margin-top:clamp(40px,6vw,72px)"><b>Sobre a API oficial do WhatsApp</b><span>Seu número e seu histórico continuam seus</span><span>Conexão autorizada pela Meta</span><span>Bem menos risco de bloqueio</span></div>
+</div></section>
+
+<section id="precos" class="soft"><div class="wrap">
+  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias com tudo liberado, sem cartão.</p></div>
+  <div class="plans">
+    <div class="plan"><span class="who">Para quem está começando</span><h3>Essencial</h3><div class="price">R$ 147<small> /mês</small></div>
+      <ul><li>2 pessoas no time</li><li>WhatsApp oficial e Instagram na mesma caixa</li><li>Funil, agenda e registro de vendas</li><li>A Nanda sugere a resposta: 300 por mês</li><li>Automações e lembretes</li></ul>
+      <a class="btn" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a></div>
+    <div class="plan top"><span class="who">Mais escolhido · a Nanda atendendo sozinha</span><h3>Profissional</h3><div class="price">R$ 297<small> /mês</small></div>
+      <ul><li>5 pessoas no time</li><li>Tudo do Essencial</li><li>A Nanda responde sozinha 24h</li><li>2.000 respostas da Nanda por mês</li><li>Campanhas, segmentos e retorno por anúncio</li></ul>
+      <a class="btn p" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a></div>
+    <div class="plan"><span class="who">Para operação com time</span><h3>Equipe</h3><div class="price">R$ 597<small> /mês</small></div>
+      <ul><li>12 pessoas no time</li><li>Tudo do Profissional</li><li>6.000 respostas da Nanda por mês</li><li>Equipes, fila por turno e rodízio</li><li>Metas, ranking e pós-venda</li></ul>
+      <a class="btn" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a></div>
+  </div>
+  <p class="fine center" style="max-width:46em;margin-inline:auto">Conversas que o cliente inicia não custam nada. Mensagens que você inicia fora das 24 h são cobradas pela Meta, e o valor aparece antes de enviar.</p>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="head center"><h2>O que perguntam antes de começar</h2></div>
+  <div class="faq">
+    <details open><summary>Vou perder o meu WhatsApp Business?</summary><p>Não. A Nanda entra junto com o app que você já usa. Você continua respondendo pelo celular quando quiser, e tudo fica no mesmo histórico.</p></details>
+    <details><summary>Minha cliente vai perceber que é um robô?</summary><p>A Nanda se apresenta pelo nome, fala do seu jeito e nunca finge ser humana se perguntarem. O que a cliente percebe é que foi respondida em segundos. E quando ela quer uma pessoa, uma pessoa aparece.</p></details>
+    <details><summary>E se a Nanda errar?</summary><p>Ela só fala o que está nos seus preços e nas suas regras. Fora disso, chama o time. Tudo o que ela diz fica no histórico, e você pode pausar por conversa com um toque.</p></details>
+    <details><summary>Serve para o meu segmento se não está na lista?</summary><p>Serve. Você começa com um funil simples e a Nanda tirando dúvidas, e monta o resto do seu jeito.</p></details>
+    <details><summary>Como cancelo?</summary><p>Pelo próprio sistema, quando quiser. Sem fidelidade.</p></details>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="final"><h2>Mais conversa virando venda.</h2><p>Conecte o seu número e veja a Nanda atendendo ainda hoje. 14 dias grátis, sem cartão.</p>
+    <div class="acts" style="justify-content:center"><a class="btn p" href="https://app.oinanda.com.br/cadastro">Começar os 14 dias grátis</a><a class="btn" href="https://wa.me/5511975754765?text=Oi%2C%20Nanda!%20Quero%20te%20conhecer">Conversar com a Nanda</a></div></div>
+</div></section>
+
+<footer><div class="wrap">© 2026 Oi Nanda · Fagotti Marketing Direto Ltda · CNPJ 40.864.395/0001-95<br><a href="/termos/">Termos</a> · <a href="/privacidade/">Privacidade</a></div></footer>
 
 <script>
-/* ===== CONFIGURAÇÃO: troque pelo número de WhatsApp da Oi Nanda (só dígitos, com 55 e DDD) ===== */
-const WA_NUMERO='5511975754765';
-
-/* ---------- content ---------- */
-const site={
- home:{
-  nav:'Início',
-  tag:'Plataforma de vendas no WhatsApp · API Oficial da Meta',
-  h1:'O CRM com IA que <em>atende, agenda e vende</em> pelo <span style="white-space:nowrap">seu <em class="wpp">WhatsApp</em>.</span>',
-  lead:'A Nanda trabalha <b>24 horas</b>: responde em segundos, marca o horário, manda o seu link de pagamento e só chama seu time quando o cliente está pronto.',
-  chips:['Multiatendimento','Funil de vendas','Agenda e lembretes','Follow-up automático','Automações'],
-  demo:[
-   {in:'Oi! Quanto custa o trimestral?'},
-   {out:'Oi, Mariana! O trimestral é R$ 790, ou R$ 711 no Pix à vista. Você já fez a aula experimental?',by:'Nanda'},
-   {in:'Fiz na quinta, adorei. Dá pra parcelar?'},
-   {sys:'A Nanda passou para a Camila · cliente pronta para fechar'},
-   {out:'Dá sim! 3x de R$ 263 no cartão, ou R$ 711 no Pix. Qual prefere?',by:'Camila'},
-   {in:'Pix!'},
-   {out:'Perfeito! Nossa chave Pix é o CNPJ 12.345.678/0001-90. Me manda o comprovante que eu já confirmo sua matrícula 💜',by:'Camila'},
-   {sys:'Comprovante recebido · Camila moveu para Matriculou'},
-  ],
-  whoTitle:'Feita para quem precisa vender mais sem virar a noite no WhatsApp',
-  whoLead:'Cada segmento fecha de um jeito. A Nanda chega com funil, agenda, follow-up e as mensagens certas para o seu, e você ajusta o que quiser.',
-  pains:null,
-  compare:true,
- },
- studios:{
-  nav:'Studios e academias',
-  tag:'CRM de vendas pelo WhatsApp para studios e academias',
-  h1:'Mais experimentais virando plano. <em>Mais planos renovando.</em>',
-  lead:['Marca a experimental e confirma na véspera','Retoma quem fez a aula e não fechou','Chama para renovar antes do plano vencer','Seu time só entra para fechar'],
-  demo:[
-   {in:'Vi no Instagram. Tem aula de manhã cedo?'},
-   {out:'Tem sim, a primeira turma é às 6h. Quer fazer uma aula experimental grátis essa semana? Tenho quarta e quinta às 6h.',by:'Nanda'},
-   {in:'Quinta pode ser'},
-   {sys:'Experimental marcada: quinta, 6h · lembrete na véspera'},
-   {in:'Fiz a aula, adorei! Quanto fica?'},
-   {out:'Que bom! O trimestral sai R$ 711 no Pix à vista. Te mando a chave?',by:'Camila'},
-   {in:'Manda!'},
-   {sys:'Camila moveu para Matriculou · lembrete de renovação em 25/jan'},
-  ],
-  pains:[
-   ['Fez a experimental, disse que amou… e ninguém mais falou com ela. Essa é a maior perda do studio.','Dois dias depois eu pergunto como foi e ofereço o plano. Quem responde cai no seu time para fechar. É onde mais aluno novo entra.'],
-   ['Faltou na experimental e a vaga foi embora.','Confirmo na véspera com um botão. Se não der, já ofereço outro horário. Menos falta, mais aula cheia.'],
-   ['Às 22h chega um “oi, tem vaga?” e fica no vácuo até de manhã. De manhã, já fechou com outro.','Respondo na hora, tiro dúvida e marco a aula. De manhã, o seu time encontra a conversa pronta para fechar.'],
-   ['O plano venceu e o aluno só não renovou porque ninguém lembrou.','Aos 25 dias eu puxo papo, pergunto como está indo e ofereço renovar ou subir para o trimestral. Renovação é a venda mais barata que existe.'],
-  ],
-  autos:[
-   ['Novo contato','na hora','IA manda o formulário de agendamento dentro do chat; a pessoa escolhe o horário sem sair do WhatsApp'],['Experimental','1 dia antes','IA confirma presença e reagenda se precisar'],
-   ['Fez a aula','2 dias sem fechar','IA pergunta como foi e oferece o plano'],
-   ['Conversando','1 dia sem resposta','IA retoma com uma pergunta leve'],
-   ['Negociando','1 dia sem resposta','IA retoma com uma pergunta leve; em 24 h avisa o vendedor'],
-   ['Plano mensal','25 dias','IA oferece renovação ou trimestral'],
-   ['Sumiu','60 dias','campanha de reativação com horário novo'],
-  ],
-  kpis:[['46%','das experimentais viram plano','g'],['R$ 48 mil','vendidos no mês','a'],['1 min','até a primeira resposta',''],['9','planos fechados só pela IA','']],
-  funil:[['Novo contato',100,100],['Respondeu',81,81],['Experimental',46,46],['Negociando',29,29],['Matriculou',22,22]],
-  faq:[
-   ['Vou perder o meu WhatsApp Business?','Não. A Nanda entra junto com o app que você já usa. Você continua respondendo pelo celular quando quiser; ela cuida do resto e tudo fica no mesmo histórico.'],
-   ['A Nanda vai inventar preço ou desconto?','Não. Ela só usa a tabela que você cadastra. Se perguntarem algo fora dela, chama uma pessoa.'],
-   ['E se eu tiver duas unidades?','Cada unidade tem número, equipe e tabela própria, e você vê tudo junto na visão da matriz.'],
-   ['Integra com meu sistema de agenda?','Na primeira versão, a agenda da experimental é do Oi Nanda. Integrações com sistemas de academia entram em seguida, e os fundadores escolhem quais primeiro.'],
-  ],
- },
- clinicas:{
-  nav:'Clínicas de estética',
-  tag:'CRM de vendas pelo WhatsApp para clínicas de estética e odonto',
-  h1:'Menos falta. Mais orçamento fechado. <em>Paciente que volta.</em>',
-  lead:['Marca a avaliação na sua agenda e confirma na véspera','Retoma orçamento parado até virar procedimento','Chama a paciente para o retorno no prazo certo','Passa para a recepção quem quer falar com gente'],
-  demo:[
-   {in:'Oi, quero avaliar harmonização'},
-   {out:'Oi, Renata! A avaliação com a Dra. Paula é gratuita. Tenho terça às 14h ou quinta às 10h. Qual prefere?',by:'Nanda'},
-   {in:'Quinta às 10h'},
-   {sys:'Avaliação marcada · confirmação automática na quarta'},
-   {out:'Lembrando sua avaliação amanhã, 10h. Confirma?  [Confirmo] [Remarcar]',by:'Nanda'},
-   {in:'Confirmo'},
-   {sys:'Compareceu · orçamento de R$ 2.400 enviado pela Dra. Paula'},
-   {out:'Renata, ficou alguma dúvida sobre o orçamento? Se quiser, já deixo seu horário reservado.',by:'Nanda'},
-   {sys:'Renata pediu para falar com a recepção · procedimento agendado'},
-  ],
-  pains:[
-   ['Ela faltou, e o horário valia R$ 400. Não por descaso: ninguém lembrou dela direito.','Dois dias antes eu confirmo com um botão. No dia, lembro de novo quem não respondeu. Se faltou, já ofereço dois horários. A agenda para de vazar.'],
-   ['Recebeu o orçamento, ficou pensando e a clínica nunca mais falou com ela. Metade dos orçamentos morre assim.','Três dias depois eu volto: tiro a dúvida e ofereço reservar o horário. Ela se sente lembrada, não cobrada. E o orçamento fecha.'],
-   ['A recepcionista saiu e levou a história de cada paciente na cabeça.','Comigo, tudo fica na clínica: conversa, orçamento, anotações, quem atendeu. A pessoa muda, a relação continua e a venda também.'],
-   ['Fez o procedimento, adorou, e nunca mais apareceu.','No prazo certo eu chamo para o retorno, com horário livre e uma mensagem que parece da clínica, não de robô. Quem é lembrada, volta. E paciente que volta custa zero de anúncio.'],
-  ],
-  autos:[
-   ['Novo contato','na hora','formulário de agendamento dentro do chat; a paciente escolhe dia e horário sem link'],['Avaliação','2 dias antes','confirmação com botão; lembrete no dia para quem não respondeu'],
-   ['Procedimento','1 dia antes','orientações de preparo aprovadas pela clínica'],
-   ['Compareceu','na hora','orçamento fica anotado na ficha da paciente'],['Orçamento enviado','3 dias sem resposta','IA retoma, tira a dúvida e oferece reservar o horário'],
-   ['Compareceu','1 dia depois','pós-atendimento e pedido de avaliação'],
-   ['Fechou','prazo do procedimento','aviso de retorno com horário livre'],
-   ['Faltou','na hora','IA oferece dois novos horários'],
-  ],
-  kpis:[['–38%','de faltas em avaliações','g'],['R$ 71 mil','em orçamentos fechados no mês','a'],['52%','dos orçamentos viram procedimento',''],['31','retornos agendados pela IA','']],
-  funil:[['Novo contato',100,100],['Avaliação marcada',64,64],['Compareceu',48,48],['Orçamento enviado',41,41],['Fechou',27,27]],
-  faq:[
-   ['A Nanda dá orientação clínica?','Não. Ela confirma, remarca, manda o preparo que a clínica aprovou e tira dúvidas de preço e horário. Qualquer pergunta clínica vai para a equipe.'],
-   ['A Nanda cobra o sinal?','Ela manda a chave Pix ou o link de pagamento que a clínica já usa, quando a paciente quer fechar. O dinheiro vai direto para a sua conta; a recepção confere e move a paciente no funil.'],
-   ['E a LGPD?','Dados hospedados no Brasil, acesso por pessoa e registro de quem viu o quê. A paciente sai da lista com uma mensagem, e você exporta tudo em 1 clique se sair.'],
-   ['Integra com meu prontuário?','Na primeira versão, não. Agenda e histórico de conversa são do Oi Nanda; a integração com prontuário entra conforme os fundadores pedirem.'],
-  ],
- },
- lancamentos:{
-  nav:'Lançamentos e infoprodutos',
-  tag:'CRM de vendas pelo WhatsApp para lançamentos e infoprodutos',
-  h1:'Dois mil leads respondidos na hora. <em>Boleto recuperado antes de vencer.</em>',
-  lead:['Responde o carrinho inteiro na hora, pelo nome','Retoma quem gerou boleto e não pagou','Passa pro closer só quem está pronto para comprar','Comissão calculada; Hotmart, Kiwify e Eduzz integrados'],
-  demo:[
-   {in:'Vi a aula 3. Esse curso serve pra quem tá começando?'},
-   {out:'Serve, Bruno. O módulo 1 é do zero, e você tem 7 dias de garantia. O carrinho fecha hoje às 23h59. Quer o link?',by:'Nanda'},
-   {in:'Gerei o boleto mas não paguei ainda'},
-   {sys:'Boleto gerado às 14:10 · sem pagamento · IA retoma às 20h'},
-   {out:'Bruno, o boleto só compensa em 2 dias e o carrinho fecha hoje. Se preferir garantir agora, no checkout dá para pagar no Pix. Quer o link de novo?',by:'Nanda'},
-   {in:'Manda o link'},
-   {out:'Aqui: hotmart.com/seu-curso 🚀 Qualquer dúvida me chama.',by:'Nanda'},
-  ],
-  pains:[
-   ['Carrinho abre, chegam 2 mil pessoas e o time responde 200.','Eu respondo as 2 mil, na hora, pelo nome. Quem está pronto ou travou vai para o SDR com a conversa inteira. Ninguém espera.'],
-   ['Gerou o boleto, ficou com dúvida, e ninguém perguntou se precisava de ajuda. É dinheiro na mesa.','Seis horas depois eu pergunto se ficou dúvida e mando o link do checkout de novo. Boleto recuperado é gente atendida, e é a venda mais barata do lançamento.'],
-   ['Dois vendedores falam com a mesma pessoa. Ela percebe.','Cada pessoa tem um dono, por turno e por rodízio. Quem assume vê tudo que eu já conversei. Para o cliente, é uma voz só.'],
-   ['No fim do lançamento, a comissão vira briga de planilha.','Venda aprovada entra com quem fechou. Comissão por pessoa, por turno e por origem, pronta para pagar. Time bem tratado também vende mais.'],
-  ],
-  autos:[
-   ['Lead novo','na hora','IA cumprimenta citando a aula que a pessoa viu'],
-   ['Carrinho aberto','a cada 24 h','mensagem de template com o que falta para fechar'],
-   ['Boleto gerado','6 h sem pagar','IA pergunta se ficou dúvida e reenvia o link do checkout'],
-   ['Carrinho abandonado','1 h depois','IA chama pelo nome e oferece ajuda'],
-   ['Carrinho fecha','2 h antes','última chamada para quem conversou e não comprou'],
-   ['Comprou','1 dia depois','boas-vindas e convite para a comunidade'],
-  ],
-  kpis:[['27%','dos boletos recuperados','g'],['R$ 312 mil','no lançamento','a'],['38 s','até a primeira resposta na abertura',''],['6','SDRs em 3 turnos, sem lead duplicado','']],
-  funil:[['Lead',100,100],['Conversou',72,72],['Carrinho aberto',31,31],['Boleto gerado',14,14],['Comprou',9,9]],
-  faq:[
-   ['Integra com qual plataforma?','Hotmart, Kiwify e Eduzz na primeira versão, por webhook oficial. Venda aprovada entra sozinha no funil com o vendedor certo.'],
-   ['Aguenta o volume da abertura de carrinho?','O WhatsApp é pela API oficial da Meta, sem celular conectado e sem limite de atendentes. O limite diário de mensagens iniciadas por você aparece na tela.'],
-   ['A Nanda vende sozinha?','Ela tira dúvida, recupera boleto e manda o link. Você decide por etapa se ela fecha ou passa para o SDR.'],
-   ['Funciona para perpétuo?','Sim. As automações de carrinho viram automações de oferta, e a IA roda 24h com teto de gasto que você define.'],
-  ],
- },
-};
-const owner={
- home:{t:'Imagina o seu dia com a Nanda',l:'Não é só o WhatsApp que muda. É a sua rotina, o seu fim de semana e o quanto você sabe do seu negócio.',i:[
-  ['Você responde WhatsApp às 23h, no almoço e no fim de semana.','Você janta sem olhar o celular. De manhã, abre o painel e vê o que a Nanda agendou, cobrou e fechou enquanto você vivia.'],
-  ['Alguém chamou às 2h da manhã e fechou com o concorrente às 8h.','Ela foi respondida em 10 segundos, marcou o horário e acordou com tudo pronto para o seu time. Você só viu a venda entrar.'],
-  ['Seu negócio depende de uma pessoa que pode sair amanhã.','Cada conversa, histórico e cliente ficam no seu negócio. Quem entrar continua de onde a outra parou, sem perder ninguém.'],
-  ['Você não sabe quanto vendeu, quem vendeu, nem onde perde.','Um painel que responde em 5 segundos: quanto entrou, por quem, por turno, e onde está vazando. Comissão calculada. Zero planilha.'],
- ]},
- studios:{t:'Imagina o seu studio com a Nanda',l:'Você abriu um studio para dar aula e cuidar de gente. Não para morar no WhatsApp.',i:[
-  ['Dá aula às 6h e responde WhatsApp até meia-noite.','Você dá a aula das 6h e, enquanto isso, a Nanda já marcou três experimentais. À noite, o celular fica na gaveta.'],
-  ['Experimental grátis que não vira plano é hora sua jogada fora.','Cada experimental é retomada em 2 dias e levada até o fechamento. Você vê a taxa de conversão subir no painel, semana a semana.'],
-  ['Fim do mês é correr atrás de renovação.','Aos 25 dias a Nanda já ofereceu renovar. O dia 30 chega com a maioria renovada, sem você mandar uma mensagem.'],
- ]},
- clinicas:{t:'Imagina a sua clínica com a Nanda',l:'Você investe em anúncio para a agenda vazar na recepção. Agora imagina a agenda cheia e confirmada.',i:[
-  ['Paga tráfego, lota a agenda e perde 30% em faltas.','Agenda confirmada em dois tempos, com botão. Quem não pode, remarca sozinha. A falta cai, e você vê quanto no painel.'],
-  ['Orçamento alto parado no WhatsApp da recepção.','Três dias depois a Nanda retoma e tira a dúvida. Orçamento vira procedimento sem a recepção correr atrás.'],
-  ['Recepção muda, e o relacionamento com a paciente vai embora junto.','Cada paciente tem histórico na clínica. A recepção muda, a relação continua, e a paciente nem percebe.'],
- ]},
- lancamentos:{t:'Imagina o seu lançamento com a Nanda',l:'Carrinho aberto é a semana mais cara do seu ano. Imagina ela sem nenhum lead no vácuo.',i:[
-  ['Contrata 10 SDRs para 5 dias e não sabe quem fez o quê.','Cada lead tem dono, por turno. A Nanda lê as conversas e te mostra quem fecha, quem perde e por quê. No fim, a comissão já está calculada. Sem planilha, sem briga.'],
-  ['Boleto gerado e não pago é 20% do faturamento sumindo.','Seis horas depois a Nanda já perguntou e reenviou o link. Você acompanha a recuperação subindo em tempo real.'],
-  ['IA que vende promessa que você não fez.','Ela só fala o que está na sua tabela e na sua garantia. Fora disso, chama o SDR. Você automatiza sem perder o controle do discurso.'],
- ]},
-};
-const steps=[['Conecte o WhatsApp','Pela API oficial da Meta, junto com o app que você já usa. Sem trocar número, sem perder nome, histórico nem nível de qualidade.'],['Conte do seu negócio','Escolha o segmento e a Nanda chega sabendo o jeito de falar, os preços e os horários. Você ajusta o que quiser.'],['Deixe a Nanda começar','Ela responde, agenda e lembra. Quem quer fechar vai para o seu time. Tudo com histórico.']];
-
-
-/* ---------- render ---------- */
-const $=s=>document.querySelector(s);
-function demo(ms){const biz={home:'Studio Forma',studios:'Studio Forma',clinicas:'Clínica Viva',lancamentos:'Curso Decola'}[cur]||'Seu negócio';return `<div class="demo" data-demo='${JSON.stringify(ms).replace(/'/g,"&#39;")}'><div class="bar"><div class="av nanda"><svg viewBox="0 0 40 40" width="22" height="22"><path d="M8 4h24a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6H18l-8 7v-7H8a6 6 0 0 1-6-6V10a6 6 0 0 1 6-6z" fill="#fff"/><circle cx="15" cy="18.5" r="4.6" stroke="#E8603F" stroke-width="2.8" fill="none"/><rect x="23.6" y="14.2" width="2.8" height="9" rx="1.4" fill="#E8603F"/><circle cx="25" cy="10.4" r="1.8" fill="#E8603F"/></svg></div><div><b>Nanda · ${biz}</b><span class="st">online</span></div><span class="md">WhatsApp</span></div><div class="ms"></div><button class="replay" data-replay>↻ ver de novo</button><div class="foot"><span>Mensagem</span><i><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z"/></svg></i></div></div>`}
-function playDemo(el){const ms=JSON.parse(el.dataset.demo);const box=el.querySelector('.ms');const st=el.querySelector('.st');box.innerHTML='';let i=0;clearTimeout(el._t);
-  const typing=(side)=>{const d=document.createElement('div');d.className='m '+side+' typing';d.innerHTML='<i></i><i></i><i></i>';box.appendChild(d);box.scrollTop=box.scrollHeight;return d};
-  const step=()=>{if(i>=ms.length){el._t=setTimeout(()=>playDemo(el),5000);return}const m=ms[i++];
-    if(m.sys){const d=document.createElement('div');d.className='m sys';d.textContent=m.sys;box.appendChild(d);box.scrollTop=box.scrollHeight;el._t=setTimeout(step,1100);return}
-    if(m.pay){const d=document.createElement('div');d.className='m out pay';d.innerHTML=`<div class="ph"><span>Pix gerado</span><span>${m.pay[1]}</span></div><div class="pb"><div class="qr"></div><div><b>${m.pay[0]}</b><small>confirmação automática</small></div></div>`;box.appendChild(d);box.scrollTop=box.scrollHeight;el._t=setTimeout(step,1600);return}
-    const side=m.in?'in':'out';if(side==='out')st.textContent='digitando…';const t=typing(side);const txt=m.in||m.out;
-    el._t=setTimeout(()=>{t.remove();st.textContent='online';const d=document.createElement('div');d.className='m '+side;d.innerHTML=(m.by?`<span class="by">${m.by}</span>`:'')+txt;box.appendChild(d);box.scrollTop=box.scrollHeight;el._t=setTimeout(step,side==='in'?700:900)},side==='in'?900:Math.min(2200,600+txt.length*18))};
-  el._t=setTimeout(step,600)}
-function hero(p){return `<div class="herob"><header class="wrap hero"><div><div class="segtag"><i><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z"/></svg></i>${p.tag}</div><h1>${p.h1}</h1>${Array.isArray(p.lead)?`<ul class="hl">${p.lead.map(x=>`<li>${x}</li>`).join('')}</ul>`:`<p class="lead" style="margin-top:18px">${p.lead}</p>`}${p.chips?`<div class="chips">${p.chips.map(c=>`<span>${c}</span>`).join('')}</div>`:''}<div class="acts"><a class="btn primary lg" href="#" data-trial>Testar 14 dias grátis</a><a class="btn lg" href="#" data-wa>Conversar com a Nanda</a>${(cur==='home'||cur==='clinicas')?'<a class="btn lg vlink" href="#" data-vid>▶ Ver em 1 minuto</a>':''}</div><div class="proof"><span>Sem cartão</span><span>No ar em 15 minutos</span><span>Cancela quando quiser</span></div></div><div class="stage"><div class="pic"><div class="blob"></div><img src="shots/nanda.webp" alt="Dona de negócio usando o Oi Nanda no celular"><span class="pk">✓ Avaliação marcada · qui, 10h</span></div><div class="cel"><div class="notch"></div><div class="sb"><b>9:41</b><span>●●● 5G ▮</span></div>${demo(p.demo)}</div></div></header></div>`}
-const strip=`<div class="strip"><div class="wrap"><div><i>✓</i><div><b>Seu WhatsApp continua seu</b><span>API oficial da Meta, junto com o app que você já usa</span></div></div><div><i>R$</i><div><b>Um preço por negócio</b><span>time inteiro incluso, sem cobrar por usuário</span></div></div><div><i>BR</i><div><b>Dados no Brasil, LGPD</b><span>suporte em português, saída com seus dados em 1 clique</span></div></div><div><i>Pix</i><div><b>Proposta e cobrança na conversa</b><span>aceite registrado, Pix, cartão e assinatura, com nota fiscal</span></div></div></div></div>`;
-function pains(p,seg){return `<section><div class="wrap"><div class="head"><h2>Onde a venda escapa hoje</h2><p>Quatro momentos em que o cliente de ${seg} se sente esquecido e a venda vai junto. Em cada um, a Nanda já chega sabendo o que fazer.</p></div><div class="pains">${p.map(x=>`<div class="pain"><div class="d">${x[0]}</div><div class="s"><b>Nanda:</b><span>${x[1]}</span></div></div>`).join('')}</div></div></section>`}
-const day={
- home:['Um dia com a Nanda no seu WhatsApp','Terça-feira comum. Você não mexeu no celular para vender nenhuma vez.',[
-  ['06:10','Primeira mensagem do dia chega antes de você acordar. "Tem horário cedo?" A Nanda responde em 8 segundos e marca a experimental de quinta.','agendou'],
-  ['08:30','Você abre o painel com o café: 4 agendamentos, 2 clientes que pediram o link de pagamento de madrugada, 1 pronto esperando o seu time.','2 vendas encaminhadas'],
-  ['15:00','O "vou pensar" das 11h recebe a retomada automática com uma pergunta leve. Responde em 3 minutos e pede a chave.','1 venda'],
-  ['23:40','Alguém pergunta o preço. A Nanda responde, oferece a experimental e agenda para amanhã. Você já estava dormindo.','agendou'],
-  ['Seg, 08:00','Comissão da semana calculada por pessoa. Coaching enviado para cada vendedor. Origem de cada venda no painel.','R$ 9.870 na semana']]],
- studios:['Um dia com a Nanda no seu studio','Quarta-feira. Você deu 5 aulas e não vendeu nenhuma pelo celular. Mesmo assim, vendeu.',[
-  ['05:50','"Tem vaga às 6h amanhã?" A Nanda responde antes do primeiro aluno chegar e marca a experimental.','agendou'],
-  ['07:15','Você está em aula. Três experimentais de ontem recebem "como foi?" e duas pedem o plano.','2 prontas para fechar'],
-  ['12:30','Almoço. A Nanda confirma as 8 experimentais de amanhã com botão. 7 confirmam, 1 remarca sozinha.','0 falta amanhã'],
-  ['16:00','Aluna que sumiu há 60 dias recebe a campanha do horário novo. Responde: "que saudade". Volta.','R$ 290'],
-  ['19:30','Renovação: 6 planos vencendo em 5 dias recebem o convite para renovar. 4 respondem que sim.','4 renovações'],
-  ['23:10','"Quanto é o trimestral?" Resposta em segundos, experimental marcada. Você dormindo.','agendou'],
-  ['Seg, 08:00','Painel: 46% das experimentais viraram plano. Comissão da Camila pronta. Coaching enviado.','R$ 11.200 na semana']]],
- clinicas:['Um dia com a Nanda na sua clínica','Quinta-feira. A recepção atendeu quem estava na frente. A Nanda cuidou de quem estava no WhatsApp.',[
-  ['07:00','Confirmação em dois tempos das 12 avaliações de hoje. 10 confirmam, 1 remarca, 1 não responde e recebe lembrete às 8h.','1 falta, não 4'],
-  ['09:40','Orçamento de R$ 2.400 parado há 3 dias recebe a retomada. A paciente pede para agendar às 9:52.','1 procedimento'],
-  ['13:15','Paciente que fez procedimento em abril é chamada para o retorno, com horário livre. Agenda.','retorno marcado'],
-  ['17:30','Lead do anúncio "Harmonização" chega com a origem marcada. A Nanda abre falando do anúncio e marca avaliação.','agendou'],
-  ['20:00','Preparo para o procedimento de amanhã enviado, no texto aprovado pela clínica.','0 dúvida amanhã'],
-  ['22:50','"Quanto custa a limpeza de pele?" Respondida, avaliação marcada. A recepcionista já estava em casa.','agendou'],
-  ['Seg, 08:00','Painel: falta caiu de 31% para 9%. Orçamentos fechados na semana: 11 de 19. Origem de cada um.','R$ 26.400 na semana']]],
- lancamentos:['Um dia de carrinho aberto com a Nanda','Dia 2 do carrinho. 2.140 conversas. Nenhuma no vácuo.',[
-  ['00:01','Carrinho abre. 380 mensagens na primeira hora. A Nanda responde todas pelo nome, com a oferta e a garantia.','0 sem resposta'],
-  ['08:00','Turno da manhã entra. A fila mostra 42 leads prontos para fechar, cada um com dono. Nenhum duplicado.','42 na fila'],
-  ['10:30','Boletos gerados ontem e não pagos recebem uma retomada com o link do checkout. Os que respondem vão para o closer.','boletos retomados'],
-  ['14:00','"Vou pensar" das 9h recebe retomada: "o que falta para decidir?". 1 em 5 compra.','R$ 7.970'],
-  ['21:00','Última chamada automática para quem conversou e não comprou, 2 h antes de fechar.','R$ 23.400'],
-  ['23:59','Carrinho fecha. Comissão de cada SDR calculada por venda e por origem. Sem planilha.','fechado'],
-  ['Dia seguinte','Coaching por vendedor: quem fechou, quem perdeu e por quê. Base pronta para o próximo lançamento.','R$ 312 mil no lançamento']]],
-};
-function dayTimeline(seg){const d=day[seg]||day.home;return `<section><div class="wrap"><div class="head"><span class="eyb">Na prática</span><h2>${d[0]}</h2><p>${d[1]}</p></div><div class="tl">${d[2].map(x=>`<div class="tli"><span class="t">${x[0]}</span><div class="tx">${x[1]}</div><span class="rs">${x[2]}</span></div>`).join('')}</div></div></section>`}
-function ownerPains(seg){const o=owner[seg]||owner.home;return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head"><h2>${o.t}</h2><p>${o.l}</p></div><div class="own">${o.i.map(x=>`<div class="oi"><span class="lb">Hoje</span><div class="d">${x[0]}</div><span class="lb on">Com a Nanda</span><div class="s">${x[1]}</div></div>`).join('')}</div></div></section>`}
-function how(){return `<section id="como" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head c"><span class="eyb">Para começar</span><h2>Em 15 minutos, a Nanda já está atendendo</h2><p>Nenhum passo precisa de técnico. E você continua com o seu WhatsApp.</p></div><div class="steps">${steps.map((s,i)=>`<div class="step"><div class="n">${i+1}</div><h3>${s[0]}</h3><p>${s[1]}</p></div>`).join('')}</div></div></section>`}
-function autos(a){return `<section><div class="wrap"><div class="head"><h2>O que a Nanda faz sozinha para a venda não parar</h2><p>Já vem ligado. Pause, mude o prazo ou o jeito de falar. Tudo que ela faz fica no histórico da conversa.</p></div><div class="autos">${a.map(x=>`<div class="auto"><div class="w">Em <b>${x[0]}</b> há <b>${x[1]}</b></div><div class="t">${x[2]}</div><span class="tg"></span></div>`).join('')}</div></div></section>`}
-function results(p){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap split"><div><h2>O painel responde a pergunta do dono: onde estou perdendo venda?</h2><ul><li>Quanto vendeu, quem vendeu e quanto a Nanda fechou sozinha</li><li>De onde veio cada venda: qual anúncio, Instagram, indicação ou Google</li><li>Em que momento as pessoas somem, com a ação que resolve a um clique</li><li>Quanto tempo cada pessoa esperou por resposta, por turno</li><li>Quantos clientes voltaram, e quantos renovaram</li><li>A Nanda lê as conversas do time e aponta, por vendedor, onde a venda escapou e o que dizer da próxima vez</li></ul></div><div class="shot"><div class="kpis">${p.kpis.map(k=>`<div class="kpi ${k[2]}"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('')}</div><div class="fun">${p.funil.map(f=>`<div><span>${f[0]}</span><i style="--w:${f[2]}%"></i><b>${f[1]}</b></div>`).join('')}</div><p class="sub" style="font-size:12px;margin-top:10px">Números ilustrativos do kit, para mostrar o que o painel acompanha.</p></div></div></section>`}
-function tryIt(seg){const d={home:['Studio Forma','plano trimestral de pilates','790'],studios:['Studio Forma','plano trimestral','790'],clinicas:['Clínica Viva','limpeza de pele','280'],lancamentos:['Curso Decola','curso completo','997']}[seg]||['Studio Forma','plano trimestral','790'];
-return `<section><div class="wrap"><div class="try"><div><h2>Veja a Nanda vendendo o seu produto. Agora.</h2><p>Complete a frase e assista a conversa acontecer com a sua marca, o seu produto e o seu preço. É assim que o seu cliente vai ser atendido amanhã.</p>
-<div class="pf"><p class="fill">Meu negócio se chama <input id="pfN" value="${d[0]}" placeholder="nome do negócio" size="14">, eu vendo <input id="pfP" value="${d[1]}" placeholder="o que você vende" size="18"> por R$&nbsp;<input id="pfV" value="${d[2]}" inputmode="numeric" placeholder="preço" size="5">.</p><button class="btn primary lg" id="pfGo">Ver a Nanda vender isso</button></div>
-<div class="acts"><a class="btn wa-btn" href="#" data-wa>Prefiro conversar com ela no WhatsApp</a></div></div><div class="phone" style="padding:0;background:none" id="pfDemo"></div></div></div></section>`}
-function personalDemo(){const n=(document.getElementById('pfN').value||'seu negócio').trim(),p=(document.getElementById('pfP').value||'seu produto').trim(),v=parseInt((document.getElementById('pfV').value||'0').replace(/\D/g,''))||0;const pix=Math.round(v*0.9);const fmt=x=>'R$ '+x.toLocaleString('pt-BR');
- const ms=[{in:`Oi! Quanto custa ${p.replace(/^(o|a|os|as)\s/i,'')}?`},{out:`Oi! Aqui na ${n}, ${p} sai por ${fmt(v)}. Posso te perguntar uma coisa rápida para indicar o melhor para você?`,by:'Nanda'},{in:'pode'},{out:'Você já conhece a gente ou seria a primeira vez?',by:'Nanda'},{in:'primeira vez. vou pensar e te falo'},{out:`Claro! Só para você não perder: o valor no Pix vale até hoje, e eu já deixo reservado no seu nome. Quer que eu mande o Pix de ${fmt(pix)} agora ou prefere falar com alguém da ${n}?`,by:'Nanda'},{in:'manda o pix'},{pay:[fmt(pix)+',00',p]},{sys:`Pago · ${n} · nota fiscal enviada · cliente novo no funil`}];
- const c=cur;cur='home';const el=document.getElementById('pfDemo');el.innerHTML=demo(ms).replace('Nanda · Studio Forma','Nanda · '+n);cur=c;const box=el.querySelector('[data-demo]');playDemo(box);el.querySelector('[data-replay]').onclick=()=>playDemo(box)}
-function videoSec(){return `<section class="vsec" id="video"><div class="wrap"><div class="head c"><span class="eyb">Na prática</span><h2>Um dia da Renata com o Oi Nanda</h2><p>Em pouco mais de um minuto: a cliente que ia embora, a resposta que já estava pronta e a venda que voltou.</p></div>
-<div class="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-renata.jpg?v=3" muted playsinline loop preload="metadata" aria-label="Vídeo: um dia da Renata com o Oi Nanda"></video>
-<button class="snd" id="vidSnd" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg><span>Assistir com som</span></button></div>
-<p class="vfine">História de exemplo, com imagens ilustrativas e as telas reais do Oi Nanda.</p>
-<div class="acts"><a class="btn primary lg" href="#" data-trial>Testar 14 dias grátis</a><a class="btn lg" href="#" data-wa>Conversar com a Nanda</a></div></div></section>`}
-function videoInit(){const v=document.getElementById('vid'),b=document.getElementById('vidSnd');if(!v)return;
- const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){if(v.muted)v.play().catch(()=>{})}else if(v.muted)v.pause()}),{threshold:.35});io.observe(v);
- const sound=()=>{v.muted=false;v.loop=false;v.currentTime=0;v.controls=true;v.play().catch(()=>{});b.style.display='none'};
- b.onclick=sound;v.onclick=()=>{if(v.muted)sound()};v.onended=()=>{v.controls=true}}
-function segBar(){return `<div class="segbar"><span>Veja a Nanda no seu segmento</span><a href="#studios">Studios e academias</a><a href="#clinicas">Clínicas de estética</a><a href="#lancamentos">Lançamentos</a></div>`}
-function calc(seg){const t={home:[20,290],studios:[10,290],clinicas:[10,900],lancamentos:[80,497]}[seg]||[20,290];return `<section style="padding-top:64px"><div class="wrap"><div class="calc"><div><span class="eyb">O problema</span><h2>Quanto o seu WhatsApp perde por mês sem resposta?</h2><p class="l">Mova os controles com os números do seu negócio. Contato sem resposta rápida fecha com quem respondeu primeiro.</p><p class="l" style="margin-top:14px;font-size:12.5px;opacity:.7">Base conservadora: 1 em cada 4 contatos sem resposta em 5 minutos não compra.</p></div>
-<div class="ctr"><div><label>Contatos novos por dia <b id="cN">${t[0]}</b></label><input type="range" min="5" max="500" step="5" value="${t[0]}" data-c="n"></div><div><label>Ticket médio <b id="cT">R$ ${t[1]}</b></label><input type="range" min="50" max="3000" step="10" value="${t[1]}" data-c="t"></div><div><label>Contatos que ficam mais de 5 min sem resposta <b id="cP">35%</b></label><input type="range" min="5" max="90" step="5" value="35" data-c="p"></div><div class="out"><span>Venda perdida estimada</span><b id="cOut">R$ 0</b><small>por mês · <em id="cYear">R$ 0</em> por ano. A Nanda custa R$ 147.</small></div></div></div></div></section>`}
-function statusQuo(){return `<section style="padding-bottom:0"><div class="wrap"><div class="head"><h2>O que custa ficar como está</h2><p>Você já paga por isso. Só não aparece na fatura.</p></div><div class="sq">
-<div class="sqi"><span>Contratar alguém para a noite e o fim de semana</span><b>R$ 2.800+</b><p>por mês, com encargos, para responder o que chega fora do horário. E ainda dorme.</p></div>
-<div class="sqi"><span>Ferramenta que cobra por usuário</span><b>R$ 745</b><p>por mês, em média, para um time de 5 pessoas. E sem turnos.</p></div>
-<div class="sqi us"><span>A Nanda, com 5 pessoas no time</span><b>R$ 297</b><p>por mês no plano Profissional. Responde 24h, marca horário e sabe quando chamar você. Começa em R$ 147.</p></div>
-</div></div></section>`}
-function origin(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap orig"><div><h2>De onde a Nanda veio</h2><p>A Nanda não nasceu num laboratório. Nasceu dentro de uma operação que vende por conversa todos os dias, com time em turno, comissão por venda e meta mensal. Primeiro ela foi copiloto do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.</p><p>Por isso ela tem o que ferramenta de software não tem: regra de até onde ir sozinha, fila por turno, comissão calculada e cobrança dentro da conversa. Não é feature de roadmap. É o que uma operação real precisou para vender.</p></div><blockquote>Tudo que está nesta página foi usado para vender antes de virar produto. Se não fechasse venda, não estaria aqui.</blockquote></div></section>`}
-const tourItems=[
- ['inbox','Conversas','Todas as conversas, com a Nanda sugerindo a resposta e o funil do lado. Agendar é um botão.','A tela onde o seu time passa o dia: fila por turno, IA copiloto, etapa do funil e agenda sem sair da conversa.'],
- ['funil','Funil','Quem está em cada etapa, quanto vale e há quanto tempo está parado.','Cada coluna mostra as automações ligadas. Clicou no cliente, abriu a conversa.'],
- ['autom','Automações','O que a Nanda faz sozinha quando alguém para no funil.','Regras por etapa e por prazo, em português. Ative, pause ou mude o texto.'],
- ['fluxos','Construtor de fluxos','Arraste blocos e monte o caminho do cliente: pergunta, agenda, follow-up e passar pro time. Sem programar.','Do anúncio ao aluno ativo, num desenho só. Cada bloco mostra quantas pessoas passaram por ele hoje.'],
- ['painel','Painel','Quanto vendeu, quem vendeu, quanto a Nanda fechou sozinha e onde o funil perde.','Um botão “Ativar” ao lado da maior perda do mês.'],
-];
-function tour(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head"><span class="eyb">Por dentro do CRM</span><h2>Por dentro, é simples assim</h2><p>Cinco telas. Nenhum menu escondido. Quem já usa WhatsApp aprende numa tarde.</p></div><div class="tour"><div class="tabs">${tourItems.map((t,i)=>`<button class="tab ${i===0?'on':''}" data-tab="${i}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join('')}</div><div class="shotbox"><img id="tourImg" src="shots/${tourItems[0][0]}.jpg" alt="${tourItems[0][1]}" width="1200" height="750"><div class="cap" id="tourCap">${tourItems[0][3]}</div></div></div></div></section>`}
-function pricing(seg){const plans=[
- ['Essencial',147,'Para quem está começando',['2 pessoas no time','WhatsApp oficial + Instagram Direct na mesma caixa','Funil, agenda e registro de vendas','A Nanda sugere a resposta e você envia: 300 por mês','Automações, lembretes, promoções e cupons'],''],
- ['Profissional',297,'A Nanda atendendo sozinha',['5 pessoas no time','Tudo do Essencial','A Nanda responde sozinha 24h e chama o time quando precisa','2.000 respostas da Nanda por mês','Campanhas e segmentos de clientes','Retorno por anúncio e jornada do cliente'],'hot'],
- ['Equipe',597,'Para operação com time',['12 pessoas no time','Tudo do Profissional','6.000 respostas da Nanda por mês','Equipes, fila por turno e rodízio','Metas, prêmios e ranking','Funil de pós-venda e renovação'],''],
-];return `<section id="precos" style="background:#fff;border-top:1px solid var(--line)"><div class="wrap"><div class="head"><span class="eyb">Investimento</span><h2>Escolha o plano que cabe no seu momento. Ele cresce com você.</h2><p>Contratar alguém para cobrir a noite e o fim de semana custa mais de R$ 2.800 por mês. A Nanda começa em R$ 147. Sem fidelidade, sem taxa de implantação. As mensagens que você inicia pela Meta são pagas a preço de custo, e o valor aparece antes de enviar.</p></div><div class="price">
- ${plans.map(([n,v,t,li,cls])=>`<div class="plan ${cls}"><span class="tag" ${cls?'':'style="background:#EEF1F4;color:var(--ink-2)"'}>${cls?'Mais escolhido · ':''}${t}</span><div><b style="font-size:20px">${n}</b><div class="amt">R$ ${v}<small>/mês</small></div></div><ul>${li.map(x=>`<li>${x}</li>`).join('')}</ul><a class="btn ${cls?'primary ':''}lg" href="#" data-trial>Testar 14 dias grátis</a></div>`).join('')}
-</div><div class="meta-note">Teste de 14 dias com tudo liberado, sem cartão. No anual você paga 10 meses e usa 12. Pessoa extra no time: R$ 39/mês. Rede com 3 ou mais unidades: <a href="#" data-wa>fale com a gente</a>.<br>Custo da Meta, para referência: conversas que o cliente inicia não custam nada. Mensagens que você inicia (campanha, lembrete fora de 24 h) custam cerca de R$ 0,43 cada e aparecem antes de você enviar.</div></div></section>`}
-function faq(f){return `<section id="faq"><div class="wrap"><div class="head c"><h2>O que perguntam antes de começar</h2></div><div class="faq">${f.map(x=>`<details><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</div></div></section>`}
-function final(seg){return `<section><div class="wrap"><div class="final"><div><h2>14 dias comigo. Sem cartão.</h2><p>Conecte seu número agora e hoje à noite eu já respondo por você. Gostou, escolhe o plano e continua sem reconfigurar nada.</p></div><form data-form><input placeholder="Seu nome" required><input placeholder="Seu WhatsApp" required><input placeholder="Nome do negócio" required><button class="btn primary lg" type="submit">Começar os 14 dias grátis</button><small>Eu te chamo no WhatsApp em minutos para conectar o número. Sem spam, prometo.</small></form></div></div></section>`}
-const foot=`<footer class="wrap"><span>© 2026 Oi Nanda · FAGOTTI MARKETING DIRETO LTDA · CNPJ 40.864.395/0001-95</span><span>WhatsApp (11) 94001-2030 · oi@oinanda.com.br · <a href="/termos/">Termos</a> · <a href="/privacidade/">Privacidade</a> · Cancelamento em 1 clique</span></footer>`;
-function manifesto(){return `<section style="padding:88px 0 40px"><div class="wrap"><div class="mani"><p>“Quem não entende de pessoas não entende de negócio. A Nanda não nasceu num laboratório: nasceu dentro da minha operação, que vende por conversa todos os dias, com time em turno e meta. Primeiro ela foi copilota do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.”</p><span>Paulo, fundador do Oi Nanda</span><p class="born">Por isso ela faz o que ferramenta não faz: sabe até onde ir sozinha, trabalha em turno, calcula comissão e cobra dentro da conversa. Cada pessoa que te procura é respondida, lembrada e levada até o Pix. Bem tratada, ela compra. Bem lembrada, ela volta.</p></div></div></section>`}
-function beforeAfter(seg){
- const d={
-  home:['Sua venda não devia depender de quem lembrou de responder.','Hoje o WhatsApp lota, o time responde o que dá, e o cliente que não teve resposta some sem avisar.',
-   ['Mensagem das 22h respondida às 9h, quando o cliente já fechou com outro','Cinco pessoas no mesmo número, ninguém sabe quem respondeu o quê','"Vou pensar" vira silêncio, porque ninguém volta nele','Horário marcado de boca; metade esquece e falta','Cliente perguntou o preço e ninguém voltou para saber se fechou'],
-   ['A Nanda responde em segundos, 24h, pelo seu número oficial','Cada conversa tem dono; o time vê só a sua fila, o gestor vê tudo','Quem parou no funil é retomado no prazo certo, sem ninguém lembrar','Horário marcado e confirmado na conversa; lembrete na véspera','Quem pede o link de pagamento recebe na hora, e o time vê no funil quem fechou']],
-  studios:['Seu studio não devia perder aluno entre a experimental e o plano.','Hoje a experimental é marcada no improviso, ninguém confirma, quem faz a aula e some não é retomado, e a renovação depende de alguém lembrar.',
-   ['Experimental marcada por mensagem, sem confirmação; metade falta','Fez a aula, "amou", e ninguém mais falou com ela','Plano vence e o aluno só não renovou porque ninguém avisou','Horário das 6h perguntado às 23h, respondido no dia seguinte','Aluno pediu o valor do plano às 22h e ninguém respondeu'],
-   ['A Nanda marca a experimental com formulário no chat e confirma na véspera','Dois dias depois da aula, retoma e oferece o plano','Aos 25 dias, oferece renovar ou subir para o trimestral','Responde às 23h e marca a aula; o time encontra pronta de manhã','Responde o valor na hora e já manda a sua chave Pix ou link']],
-  clinicas:['Sua agenda não devia vazar na recepção.','Hoje a recepção confirma quando dá, o orçamento fica parado no WhatsApp e a paciente que fez o procedimento não é chamada para voltar.',
-   ['30% de falta em avaliações que custaram anúncio','Orçamento de R$ 2.400 enviado e nunca mais respondido','Recepcionista saiu e levou a história das pacientes','Paciente adorou o procedimento e nunca mais apareceu','Sinal cobrado "quando a paciente lembrar"'],
-   ['Confirmação em dois tempos, com botão; faltou, a Nanda reagenda','Orçamento parado é retomado no prazo, sem a recepção lembrar','Tudo fica na clínica: conversa, orçamento, quem atendeu','No prazo do procedimento, a Nanda chama para o retorno','Quem quer fechar vai direto para a recepção, com a conversa toda']],
-  lancamentos:['Seu carrinho não devia ter lead no vácuo.','Hoje abrem 2 mil conversas, o time responde 200, o boleto não pago expira em silêncio e a comissão vira briga de planilha.',
-   ['2 mil leads na abertura, 200 respondidos no dia','Boleto gerado e não pago: 20% do faturamento sumindo','Dois SDRs falando com o mesmo lead','"Vou pensar" sem retorno até o carrinho fechar','Comissão calculada à mão, com discussão'],
-   ['A Nanda responde os 2 mil na hora, pelo nome','Boleto sem pagamento em 6 h recebe uma retomada com o link','Cada lead tem dono, por turno e rodízio','Última chamada 2 h antes do carrinho fechar','Comissão por venda e por origem, pronta no fim']],
- }[seg]||null;
- if(!d)return '';
- return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap"><div class="head c"><span class="eyb">A virada</span><h2>${d[0]}</h2><p>${d[1]}</p></div><div class="ba"><div class="bac before"><span class="tag">Hoje, sem a Nanda</span><h3>O caos do dia a dia</h3><ul>${d[2].map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="bac after"><span class="tag">Com a Nanda</span><h3>Tudo no lugar, na hora certa</h3><ul>${d[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div></div></section>`}
-const caps=[
- ['chat','Atende e vende 24 horas, do seu jeito','A Nanda responde em segundos, com os seus preços e o seu tom, e sabe até onde ir sozinha: tira dúvida, agenda e manda o seu link de pagamento; o que precisa de uma pessoa vai para o time. É como ter sua melhor vendedora acordada o tempo todo.'],
- ['pix','Leva o cliente até o pagamento','Quando o cliente quer fechar, a Nanda manda a chave Pix ou o link de pagamento que você já usa, e o dinheiro cai direto na sua conta. Quem precisa de uma pessoa vai para o seu time, com a conversa inteira.'],
- ['funil','Funil que já vem pronto para o seu segmento','Etapas, prazos e automações montados para como a sua aluna, a sua paciente ou o seu lead decide. Você ajusta; não começa do zero. Um contato pode estar em mais de um funil.'],
- ['clock','Ninguém some sem a Nanda tentar','Quem parou no funil é retomado no prazo certo, com a mensagem certa: a experimental que não virou plano, o orçamento parado, o boleto não pago, o plano vencendo. Você define a regra uma vez; ela roda todo dia.'],
- ['pin','Você sabe de onde veio cada venda','Anúncio, Instagram, indicação, Google ou QR code: a origem chega marcada e vai até a venda. O painel mostra quanto cada canal vendeu e quanto custou. Realocar verba deixa de ser palpite.'],
- ['team','Time em turno, comissão calculada, coaching da Nanda','Cada conversa tem dono; cada turno tem fila. No fim do mês a comissão já está pronta, por pessoa e por origem. E a Nanda lê as conversas do time e aponta, para cada um, onde a venda escapou.'],
-];
-const capIcon={chat:'<path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.8-4.6A8 8 0 1 1 21 12z"/>',pix:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="11" rx="1.5"/><rect x="16" y="4" width="5" height="7" rx="1.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'};
-function capsGrid(){return `<section><div class="wrap"><div class="head c"><h2>Tudo que a venda pelo WhatsApp precisa. Numa Nanda só.</h2><p>Seis coisas que funcionam juntas, no mesmo número. O que acontece numa aparece na outra na hora, sem ninguém copiar nada.</p></div><div class="caps">${caps.map(c=>`<div class="cap-i"><i><svg viewBox="0 0 24 24">${capIcon[c[0]]}</svg></i><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join('')}</div></div></section>`}
-function spotlights(){return `<section>
- <div class="wrap split">
-  <div class="mock">
-   <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>Agenda · quinta, 24/10 · Clínica Viva</b></div>
-   <div class="mk-tbl">
-    <div class="mk-tr ag"><b>09:00</b><span>Renata · avaliação facial</span><em class="ok">Confirmou</em></div>
-    <div class="mk-tr ag"><b>10:30</b><span>Júlia · limpeza de pele</span><em class="ok">Confirmou</em></div>
-    <div class="mk-tr ag"><b>13:00</b><span>Marcos · clareamento</span><em class="w">Remarcou p/ sexta</em></div>
-    <div class="mk-tr ag"><b>13:00</b><span>Ana · lista de espera</span><em class="ok">Pegou a vaga</em></div>
-    <div class="mk-tr ag"><b>16:00</b><span>Paula · retorno botox</span><em class="n">Lembrete às 14h</em></div>
-   </div>
-   <div class="mk-note">O horário do Marcos voltou para a agenda e a Nanda ofereceu para a lista de espera. A Ana pegou em 4 minutos.</div>
-  </div>
-  <div>
-   <span class="eyb">1 · Atende e agenda</span><h2>A agenda se enche pela conversa. E o cliente não esquece de vir.</h2>
-   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">A Nanda oferece os horários livres, marca na sua agenda, confirma antes e remarca quando o cliente pede. Tudo no WhatsApp, sem a recepção ligar para ninguém.</p>
-   <ul class="ticks">
-    <li><b>Só horário livre:</b> por profissional e por sala, sem marcar dois no mesmo lugar.</li>
-    <li><b>Confirmação em dois tempos:</b> na véspera e 2 horas antes, com botão de confirmar ou remarcar.</li>
-    <li><b>Desmarcou, preencheu:</b> a vaga volta e vai para quem está na lista de espera.</li>
-   </ul>
-  </div>
- </div>
-</section>
-<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
- <div class="wrap">
-  <div class="head c"><span class="eyb">2 · Vende</span><h2>Do "quanto fica?" ao "fechado", na mesma conversa</h2><p>A Nanda responde, marca e leva o cliente até o pagamento. O dinheiro cai direto na sua conta, do jeito que você já recebe hoje.</p></div>
-  <div class="flow4">
-   <div><i>1</i><b>Responde o preço</b><span>Com os valores e condições que você ensinou. Ela nunca inventa preço nem promessa.</span></div>
-   <div><i>2</i><b>Marca o horário</b><span>Oferece só horários livres de verdade e confirma na hora. O agendamento vai para a sua agenda.</span></div>
-   <div><i>3</i><b>Manda o seu pagamento</b><span>Quando o cliente quer fechar, envia a sua chave Pix ou o link do seu checkout. Sem intermediário.</span></div>
-   <div><i>4</i><b>Passa para o seu time</b><span>Quem precisa de uma pessoa vai com a conversa inteira. O time confere e move o card para "Fechou".</span></div>
-  </div>
-  <div class="mock mock-pay">
-   <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>Conversa · Renata · Clínica Viva</b></div>
-   <div class="mk-chat">
-    <div class="mk-m">Gostei do orçamento! Como faço para reservar?</div>
-    <div class="mk-m out"><span class="by">Nanda</span>Que ótimo, Renata! Tenho quinta às 10h ou sexta às 15h para o procedimento. Qual fica melhor?</div>
-    <div class="mk-m">Quinta às 10h</div>
-    <div class="mk-sys">Nanda agendou Harmonização facial para qui 22/10 às 10:00</div>
-    <div class="mk-m out"><span class="by">Nanda</span>Reservado! Para confirmar, o sinal pode ser no Pix da clínica: CNPJ 12.345.678/0001-90. Me manda o comprovante por aqui 😊</div>
-    <div class="mk-sys ok">Comprovante recebido · recepção moveu para Fechou</div>
-   </div>
-  </div>
- </div>
-</section>
-<section>
- <div class="wrap split">
-  <div>
-   <span class="eyb">3 · Chama o seu time</span><h2>A Nanda sabe a hora de chamar o seu time</h2>
-   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">IA boa não prende o cliente. Quando ele está pronto para fechar, pede para falar com alguém ou pergunta algo que só você responde, a conversa vai para a pessoa certa, com o resumo pronto.</p>
-   <ul class="ticks">
-    <li><b>Você define quando:</b> valor alto, pedido do cliente, palavra-chave ou etapa do funil.</li>
-    <li><b>Assume com um clique:</b> você pausa a Nanda naquela conversa e responde do seu jeito.</li><li><b>Cliente irritado vira alerta:</b> a Nanda percebe o tom e chama alguém na hora.</li>
-    <li><b>Ninguém pergunta de novo:</b> quem assume lê em 10 segundos o que o cliente quer.</li>
-   </ul>
-  </div>
-  <div class="mock">
-   <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>Conversa · Bruno · Studio Forma</b></div>
-   <div class="mk-chat">
-    <div class="mk-m">Quero fechar o semestral, só tenho uma dúvida sobre a turma das 6h</div>
-    <div class="mk-m out"><span class="by">Nanda</span>Ótimo, Bruno! Vou te passar para a Camila, que cuida das matrículas. Ela já vê tudo o que a gente conversou.</div>
-    <div class="mk-sys">A Nanda passou para a Camila · pronto para fechar</div>
-    <div class="mk-card" style="align-self:center"><div class="mk-ct">Resumo para a Camila</div><div class="mk-row"><span>Quer</span><b>Plano semestral</b></div><div class="mk-row"><span>Dúvida</span><b>Vaga na turma das 6h</b></div><div class="mk-row"><span>Veio de</span><b>Anúncio "Aula grátis"</b></div></div>
-    <div class="mk-m out"><span class="by">Camila</span>Oi, Bruno! A turma das 6h tem 2 vagas. Quer que eu já reserve a sua vaga?</div>
-   </div>
-  </div>
- </div>
-</section>`}
-function gestao(){return `<section>
- <div class="wrap split">
-  <div>
-   <span class="eyb">Para quem tem time</span><h2>Você finalmente vai saber de onde veio cada venda</h2>
-   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">Chega de "acho que foi do anúncio". O cliente chega pelo anúncio, pelo Instagram, pela indicação ou pelo QR code já com a origem marcada, e ela segue até a venda. O painel soma por canal: quanto vendeu, quanto custou, quantas vezes se pagou.</p>
-   <ul class="ticks">
-    <li><b>Anúncio Click-to-WhatsApp:</b> a Nanda sabe qual criativo trouxe a pessoa e já abre a conversa falando dele.</li>
-    <li><b>Link e QR code próprios:</b> um para cada campanha, cartaz ou post. Sem configurar nada.</li>
-    <li><b>Indicação e Google:</b> perguntado e registrado sem o cliente perceber.</li>
-    <li><b>Retorno por canal:</b> "Aula grátis custou R$ 1.900 e trouxe R$ 17,2 mil". Realocar verba vira conta, não palpite.</li>
-   </ul>
-  </div>
-  <div class="mock">
-   <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>De onde veio cada venda · outubro</b></div>
-   <div class="mk-tbl">
-    <div class="mk-tr h"><span>Origem</span><span>Vendas</span><span>Custo</span><span>Retorno</span></div>
-    <div class="mk-tr"><span><i style="background:#E8603F"></i>Anúncio "Aula grátis" (IG)</span><span>R$ 17.200</span><span>R$ 1.900</span><b class="g">9,0x</b></div>
-    <div class="mk-tr"><span><i style="background:#5B7DB1"></i>Instagram orgânico</span><span>R$ 10.800</span><span>—</span><b class="g">∞</b></div>
-    <div class="mk-tr"><span><i style="background:#8E6BBF"></i>Indicação</span><span>R$ 9.600</span><span>—</span><b class="g">∞</b></div>
-    <div class="mk-tr"><span><i style="background:#E0A82E"></i>Anúncio "Horário 6h" (FB)</span><span>R$ 6.300</span><span>R$ 1.400</span><b>4,5x</b></div>
-    <div class="mk-tr"><span><i style="background:#8593A1"></i>Google</span><span>R$ 4.400</span><span>R$ 600</span><b>7,3x</b></div>
-   </div>
-   <div class="mk-note">Sugestão da Nanda: mover R$ 700 do "Horário 6h" para o "Aula grátis" rende cerca de R$ 3 mil a mais no mês.</div>
-  </div>
- </div>
-</section>
-<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
- <div class="wrap split">
-  <div class="mock">
-   <div class="mk-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>O que a Nanda viu nas conversas · semana 42</b></div>
-   <div class="mk-coach">
-    <div class="mk-p"><span class="av" style="background:#E07A5F">CA</span><div><b>Camila <em>38% fecham</em></b><p>Fecha bem, mas em 6 conversas ofereceu desconto antes do cliente pedir. <u>Sugestão:</u> apresentar o plano trimestral primeiro.</p></div></div>
-    <div class="mk-p"><span class="av" style="background:#5B7DB1">RS</span><div><b>Rafael <em class="w">29% fecham</em></b><p>Perdeu 4 vendas no "vou pensar": respondeu "ok, fico no aguardo". <u>Sugestão:</u> perguntar o que falta para decidir.</p></div></div>
-    <div class="mk-p"><span class="av" style="background:#8E6BBF">TL</span><div><b>Thais <em class="r">14% fecham</em></b><p>6 min para responder à noite; 3 clientes sumiram antes. <u>Sugestão:</u> deixar a Nanda abrir e assumir depois.</p></div></div>
-   </div>
-   <div class="mk-note">Cada pessoa recebe só o seu, na segunda de manhã. Você vê o consolidado.</div>
-  </div>
-  <div>
-   <h2>Nunca mais "ele é bom, só não fecha"</h2>
-   <p class="sub" style="margin-top:14px;font-size:17px;line-height:1.6">A Nanda lê todas as conversas do time, não uma amostra. Toda segunda, cada vendedor recebe onde a venda escapou na semana e o que dizer da próxima vez. Você recebe o consolidado, com quem fecha, quem perde e por quê.</p>
-   <ul class="ticks">
-    <li><b>Por vendedor, por turno:</b> tempo de resposta, objeção mal tratada, desconto dado cedo demais.</li>
-    <li><b>Com a frase certa:</b> não é nota, é sugestão de resposta para a situação que ele perdeu.</li>
-    <li><b>Comissão já calculada:</b> no mesmo lugar, por venda e por origem. Fim de mês sem planilha e sem briga.</li>
-    <li><b>Sem constranger:</b> o feedback é privado; o ranking é por resultado, não por exposição.</li>
-   </ul>
-  </div>
- </div>
-</section>`}
-function metaBand(){return `<section class="metab"><div class="wrap"><div class="mb"><div><span class="seal"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l2.4 2.1 3.2-.3.9 3.1 2.8 1.6-1 3 1 3-2.8 1.6-.9 3.1-3.2-.3L12 22l-2.4-2.1-3.2.3-.9-3.1-2.8-1.6 1-3-1-3 2.8-1.6.9-3.1 3.2.3z" fill="#1877F2"/><path d="M8 12.2l2.6 2.6L16 9.4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>Parceiro tecnológico da Meta</span><h3>Feita sobre a API Oficial do WhatsApp</h3></div><ul><li>Bem menos risco de bloqueio que ferramentas não oficiais</li><li>Conexão estável, autorizada pela própria Meta</li><li>Seu número e seu histórico continuam seus</li></ul></div></div></section>`}
-function segsGrid(){return `<section><div class="wrap"><div class="head"><h2>${site.home.whoTitle}</h2><p>${site.home.whoLead}</p></div><div class="segs">
- <a class="seg" href="#studios"><b>Studios e academias</b><p>Mais experimentais virando plano e mais renovações, sem ninguém correr atrás.</p><span>Ver página →</span></a>
- <a class="seg" href="#clinicas"><b>Clínicas de estética e odonto</b><p>Menos falta, mais orçamento fechado, paciente voltando no prazo.</p><span>Ver página →</span></a>
- <a class="seg" href="#lancamentos"><b>Lançamentos e infoprodutos</b><p>Carrinho inteiro respondido na hora, boleto recuperado e SDR só com quem está pronto.</p><span>Ver página →</span></a>
- <a class="seg" href="#" data-trial><b>Outro segmento</b><p>Funil de 4 etapas, Nanda respondendo dúvidas e marcando horário. Você monta o resto em uma tarde.</p><span>Começar assim mesmo →</span></a>
-</div></div></section>`}
-
-let cur='home';
-(()=>{const nv=document.querySelector('nav'),bg=document.getElementById('burger');
-  const set=o=>{nv.classList.toggle('open',o);bg.setAttribute('aria-expanded',o);bg.setAttribute('aria-label',o?'Fechar menu':'Abrir menu')};
-  bg.onclick=()=>set(!nv.classList.contains('open'));
-  document.getElementById('mmenu').addEventListener('click',e=>{if(e.target.closest('a'))set(false)});
-  addEventListener('hashchange',()=>set(false));addEventListener('keydown',e=>{if(e.key==='Escape')set(false)});})();
-function render(seg){
-  cur=site[seg]?seg:'home';const p=site[seg]||site.home;const isHome=!site[seg]||seg==='home';
-  let h=hero(p);
-  if(isHome){h+=videoSec()+segBar()+calc('home')+beforeAfter('home')+spotlights()+tour()+gestao()+dayTimeline('home')+how()+segsGrid()+metaBand()+pricing('home')+faq([['Vou perder o meu WhatsApp Business?','Não. A Nanda entra junto com o app que você já usa (a Meta chama isso de coexistência). Você continua respondendo pelo celular quando quiser; ela cuida do resto e tudo fica no mesmo histórico.'],['Minha cliente vai perceber que é um robô?','A Nanda se apresenta pelo nome, fala do seu jeito e nunca finge ser humana se perguntarem. Na prática, o que a cliente percebe é que foi respondida em segundos. E quando ela quer uma pessoa, uma pessoa aparece.'],['E se a Nanda errar?','Ela só fala o que está na sua tabela e nas suas regras. Fora disso, chama o time. Tudo que ela diz fica no histórico, e você pode pausar por conversa com um toque.'],['Serve para o meu segmento se não está na lista?','Serve. Você começa com o kit "Outro", que tem funil de 4 etapas e IA de dúvidas, e monta o resto. Se vários clientes do mesmo segmento aparecerem, viramos kit.'],['Migro de outra ferramenta sem perder nada?','O número migra com nome de exibição, nível de qualidade e limite de envio preservados. Importamos os contatos. O que não migra é a conta de API da outra empresa, e você não precisa dela.'],['Meus dados e os dos meus clientes treinam alguma IA?','Não. Suas conversas não treinam modelo nenhum, nem o nosso. Dados hospedados no Brasil, criptografados em repouso e em trânsito, com acesso por pessoa e registro de quem viu o quê.'],['A Nanda usa qual modelo de IA?','Modelos de mercado, trocáveis. Você não precisa saber qual: define o que ela pode fazer e o teto de gasto, e vê o custo no painel.'],['Como cancelo?','Pelo próprio sistema, em um clique, com exportação de todos os seus dados antes.']])+final('home')}
-  else{const name={studios:'studios e academias',clinicas:'clínicas',lancamentos:'lançamentos'}[seg];h+=(seg==='clinicas'?videoSec():'')+calc(seg)+beforeAfter(seg)+spotlights()+tour()+dayTimeline(seg)+autos(p.autos)+how()+results(p)+metaBand()+pricing(seg)+faq(p.faq)+final(seg)}
-  $('#root').innerHTML=h+foot;
-  document.querySelectorAll('#navlinks a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+seg));
-  document.querySelectorAll('[data-pre],[data-trial]').forEach(b=>b.onclick=e=>{e.preventDefault();document.querySelector('[data-form]').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>document.querySelector('[data-form] input')?.focus(),500)});
-  document.querySelectorAll('[data-wa]').forEach(b=>b.onclick=e=>{e.preventDefault();window.open('https://wa.me/'+WA_NUMERO+'?text='+encodeURIComponent('Oi, Nanda! Quero te conhecer'),'_blank')});
-  document.querySelectorAll('[data-demo]').forEach(playDemo);videoInit();document.querySelectorAll('[data-vid]').forEach(b=>b.onclick=e=>{e.preventDefault();const v=document.getElementById('video');v&&v.scrollIntoView({behavior:'smooth',block:'start'})});
-  if(document.getElementById('pfGo')){const fit=i=>{i.style.width=Math.max(3,(i.value||i.placeholder).length*0.62+1.2)+'ch'};document.querySelectorAll('.fill input').forEach(i=>{fit(i);i.oninput=()=>fit(i)});document.getElementById('pfGo').onclick=personalDemo;['pfN','pfP','pfV'].forEach(id=>document.getElementById(id).onkeydown=e=>{if(e.key==='Enter')personalDemo()});personalDemo()}
-  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const t=tourItems[b.dataset.tab];document.getElementById('tourImg').src='shots/'+t[0]+'.jpg';document.getElementById('tourImg').alt=t[1];document.getElementById('tourCap').textContent=t[3]});
-  document.querySelectorAll('[data-replay]').forEach(b=>b.onclick=()=>playDemo(b.closest('[data-demo]')));
-  const cs=document.querySelectorAll('[data-c]');if(cs.length){const up=()=>{const n=+document.querySelector('[data-c=n]').value,t=+document.querySelector('[data-c=t]').value,p=+document.querySelector('[data-c=p]').value;document.getElementById('cN').textContent=n;document.getElementById('cT').textContent='R$ '+t;document.getElementById('cP').textContent=p+'%';const m=Math.round(n*26*(p/100)*0.25*t);document.getElementById('cOut').textContent='R$ '+m.toLocaleString('pt-BR');document.getElementById('cYear').textContent='R$ '+(m*12).toLocaleString('pt-BR')};cs.forEach(i=>i.oninput=up);up()}
-  document.querySelector('[data-form]').onsubmit=e=>{e.preventDefault();toast('Recebido! A gente te chama no WhatsApp em minutos.');e.target.reset()};
-  window.scrollTo({top:0});
-}
-let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600)}
-function route(){const h=location.hash.replace('#','');if(h.endsWith('-precos')){const seg=h.replace('-precos','');if(!document.getElementById(h))render(seg);setTimeout(()=>document.getElementById(h)?.scrollIntoView({behavior:'smooth'}),50);return}render(h||'home')}
-window.addEventListener('hashchange',route);route();
+(function(){
+  var v=document.getElementById('vid'),b=document.getElementById('vidSnd');
+  if(v){
+    if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){if(!v.muted)return;if(e.isIntersecting)v.play().catch(function(){});else v.pause()})},{threshold:.35}).observe(v)}
+    var snd=function(){v.muted=false;v.loop=false;v.currentTime=0;v.controls=true;v.play().catch(function(){});b.hidden=true};
+    b.onclick=snd;v.onclick=function(){if(v.muted)snd()};
+  }
+  var $=function(i){return document.getElementById(i)},brl=function(n){return 'R$ '+Math.round(n).toLocaleString('pt-BR')};
+  function up(){var n=+$('cN').value,t=+$('cT').value,p=+$('cP').value,m=Math.round(n*26*(p/100)*.25*t);
+    $('oN').textContent=n;$('oT').textContent=brl(t);$('oP').textContent=p+'%';$('oM').textContent=brl(m);$('oY').textContent=brl(m*12)}
+  ['cN','cT','cP'].forEach(function(i){$(i).oninput=up});up();
+})();
 </script>
+
 </body>
 </html>
