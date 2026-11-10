@@ -176,6 +176,36 @@ section{position:relative}section>.wrap{position:relative;z-index:1}
 .meta b{color:var(--ink);font-weight:800;flex-basis:100%;text-align:center}
 .meta span::before{content:"✓";color:var(--ok);font-weight:800;margin-right:8px}
 
+/* destaque do copiloto */
+.hi{background:#fff;border:1px solid var(--coral-soft);border-left:4px solid var(--coral);border-radius:14px;padding:14px 18px;display:grid;gap:6px;box-shadow:0 10px 26px rgba(232,96,63,.08)}
+.hi-t{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--coral-ink)}
+.hi p{font-size:15.5px;line-height:1.45;color:var(--ink2)}.hi p b{color:var(--ink)}
+
+/* já tenho whatsapp business */
+.wbg{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+.wbc{border-radius:var(--r);padding:clamp(24px,3vw,34px);display:grid;gap:18px;align-content:start;min-width:0}
+.wbc.a{background:#fff;border:1px solid var(--line)}
+.wbc.b{background:var(--ink);color:#fff;box-shadow:0 26px 60px rgba(23,33,43,.20);position:relative;overflow:hidden}
+.wbc.b::before{content:"";position:absolute;width:300px;height:300px;right:-110px;top:-130px;border-radius:50%;background:radial-gradient(closest-side,rgba(232,96,63,.45),rgba(232,96,63,0))}
+.wbh{display:flex;gap:12px;align-items:center;position:relative;z-index:1}
+.wbh b{display:block;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.wbh span{font-size:13.5px;color:var(--ink3)}
+.wbc.b .wbh span{color:#9FB0C0}
+.wbi{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;font-weight:800;font-size:17px;background:var(--ok-soft);color:var(--ok)}
+.wbc.b .wbi{background:var(--coral);color:#fff}
+.wbc ul{list-style:none;display:grid;gap:0;position:relative;z-index:1}
+.wbc li{font-size:16px;line-height:1.45;padding:12px 0;border-top:1px solid var(--line)}
+.wbc.a li{color:var(--ink2)}
+.wbc.b li{border-color:rgba(255,255,255,.14)}
+.wbc.b li b{color:#FFC7B2}
+.wbk{text-align:center;margin-top:clamp(22px,3vw,32px);font-size:clamp(16px,1.9vw,19px);color:var(--ink2);text-wrap:balance}
+.wbk b{color:var(--ink);font-weight:800}
+
+/* para quem não é */
+.nope{max-width:720px;margin:clamp(30px,4vw,44px) auto 0;background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:22px 26px;text-align:center}
+.nope p{font-size:16px;line-height:1.55;color:var(--ink2)}.nope b{color:var(--ink)}
+.out-f{font-size:12.5px;color:#9FB0C0;line-height:1.4;margin-top:4px}
+
 /* chamada no meio da página */
 .cta{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:clamp(26px,4vw,40px);font-weight:700;color:var(--ink2);font-size:15.5px}
 /* segmentos em abas */
@@ -243,6 +273,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   br.m{display:inline}br.dsk{display:none}
   .tzk{left:10px;top:10px;font-size:12.5px;padding:7px 12px 7px 8px}.tzk i{width:22px;height:22px}
   .row .txt p{font-size:17px}.row li{font-size:16px}
+  .wbg{grid-template-columns:1fr}
   .sgp{grid-template-columns:1fr}.sgt{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-20px;padding:2px 20px 6px;scrollbar-width:none}.sgt::-webkit-scrollbar{display:none}
   .anchor{border-radius:18px}.tag .dk{display:none}
   .meta{flex-direction:column;align-items:flex-start;gap:10px;text-align:left}.meta b{text-align:left}
@@ -329,7 +360,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 <section id="como"><div class="wrap feat">
   <div class="row">
     <div class="txt"><span class="eyb">1 · Atende</span><h2>A resposta chega antes de&nbsp;o&nbsp;cliente desistir.</h2>
-      <p>A Nanda lê a mensagem e deixa a resposta pronta, com o seu preço e os seus horários. Você confere e envia com um toque, ou deixa ela responder sozinha.</p>
+      <p>No começo, a Nanda não fala com ninguém sozinha. Ela lê a mensagem, escreve a resposta com o seu preço e os seus horários, e espera o seu toque para enviar. Quando você vir que ela acerta, é só&nbsp;soltar.</p>
+      <div class="hi"><span class="hi-t">Modo copiloto · vem ligado</span><p><b>Ela só envia o que você aprovar.</b> Você solta a Nanda quando quiser, e pausa qualquer conversa com um&nbsp;toque.</p></div>
       <ul><li><span><b>Ela só fala o que você ensinou.</b> Nunca inventa preço nem promessa.</span></li><li><span><b>WhatsApp e Instagram juntos.</b> Tudo numa caixa só, com o histórico inteiro.</span></li><li><span><b>Sabe a hora de chamar você.</b> Cliente pronto para fechar vai para a pessoa certa.</span></li></ul></div>
     <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_a.mp4" poster="img/poster_a.jpg" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando a conversa: a Nanda sugere a resposta, você toca em Usar e envia"></video></div></div>
   </div>
@@ -347,16 +379,28 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   </div>
 </div></section>
 
+
+<section class="soft wb"><div class="wrap">
+  <div class="head center"><span class="eyb">"Mas eu já tenho WhatsApp Business"</span><h2>Você não troca o seu WhatsApp. <br class="dsk">Você para de depender&nbsp;dele.</h2><p class="lead">O app continua do seu jeito, no seu&nbsp;celular. A&nbsp;Nanda entra junto e cuida do que ele nunca&nbsp;fez.</p></div>
+  <div class="wbg">
+    <div class="wbc a"><div class="wbh"><span class="wbi" aria-hidden="true">✓</span><div><b>O WhatsApp Business já faz</b><span>e continua fazendo</span></div></div>
+      <ul><li>Saudação e mensagem de ausência</li><li>Etiquetas para organizar</li><li>Catálogo de produtos</li><li>Respostas rápidas que você digita</li><li>Um aparelho por número</li></ul></div>
+    <div class="wbc b"><div class="wbh"><span class="wbi" aria-hidden="true">+</span><div><b>O que só a Nanda faz</b><span>junto com ele</span></div></div>
+      <ul><li>Responde a pergunta que a cliente fez, com o <b>seu</b> preço</li><li>Mostra em que etapa cada pessoa parou e cobra de volta</li><li>Marca na sua agenda e lembra na véspera</li><li>Atende às 22h, quando você já fechou</li><li>Time inteiro no mesmo número, cada conversa com um dono</li></ul></div>
+  </div>
+  <p class="wbk">Saudação automática não é atendimento. <b>Quem responde de verdade, ou é você, ou é a Nanda.</b></p>
+</div></section>
+
 <section style="padding-top:0"><div class="wrap">
   <div class="calc">
     <div><span class="eyb">Faça a conta</span><h2>Quanto o seu WhatsApp perde por mês sem resposta?</h2>
       <p style="margin-top:12px">Mova os controles com os números do seu negócio. Base conservadora: 1 em cada 4 contatos sem resposta em 5 minutos não compra.</p>
       <div class="ctl">
-        <label for="cN"><span>Contatos novos por dia <b id="oN">20</b></span><input id="cN" type="range" min="2" max="150" value="20"></label>
+        <label for="cN"><span>Contatos novos por dia <b id="oN">8</b></span><input id="cN" type="range" min="2" max="150" value="8"></label>
         <label for="cT"><span>Ticket médio <b id="oT">R$ 290</b></span><input id="cT" type="range" min="50" max="3000" step="10" value="290"></label>
         <label for="cP"><span>Ficam mais de 5 min sem resposta <b id="oP">35%</b></span><input id="cP" type="range" min="5" max="90" value="35"></label>
       </div></div>
-    <div class="out"><small>Venda perdida estimada</small><strong id="oM">R$ 13.195</strong><span>por mês · <span id="oY">R$ 158.340</span> por ano</span><span style="margin-top:6px;color:#fff;font-weight:700">A Nanda começa em R$&nbsp;147 por&nbsp;mês.</span><a class="btn p" style="margin-top:14px" href="https://app.oinanda.com.br/cadastro">Parar de perder essa venda</a></div>
+    <div class="out"><small>Estimativa conservadora</small><strong id="oM">R$ 5.278</strong><span>por mês · <span id="oY">R$ 63.336</span> por ano</span><span class="out-f">Conta simples com os seus números. Serve para ter ordem de grandeza, não é promessa de&nbsp;resultado.</span><span style="margin-top:6px;color:#fff;font-weight:700">A Nanda começa em R$&nbsp;147 por&nbsp;mês.</span><a class="btn p" style="margin-top:14px" href="https://app.oinanda.com.br/cadastro">Parar de perder essa venda</a></div>
   </div>
 </div></section>
 
@@ -403,13 +447,14 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
       <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Sumiu há 1 e há 3 dias: retoma</li><li>Recebeu o link e não comprou: pergunta</li><li>Quem quer fechar vai direto para o time</li></ul></div>
       <div class="sgc msg"><span class="sgl">Exemplo · Link enviado e não comprou</span><p class="bub">Oi, Sofia! Conseguiu acessar o link? Se tiver qualquer dúvida antes de entrar, me fala.</p><a class="more" href="/segmentos/#lancamentos">Ver a página do segmento →</a></div>
     </div>
-    <p class="fine center">Não achou o seu? <a href="https://app.oinanda.com.br/cadastro">Comece com um funil simples</a> e monte o resto do seu jeito.</p>
+    <div class="nope"><p><b>Não serve para todo mundo.</b> Se você vende sem conversar, se recebe uma ou duas mensagens por semana, ou se procura disparo em massa para lista comprada, a Nanda não é para você. Ela é para quem fecha venda conversando e está perdendo conversa pelo&nbsp;caminho.</p></div>
+    <p class="fine center">Não achou o seu segmento? <a href="https://app.oinanda.com.br/cadastro">Comece com um funil simples</a> e monte o resto do seu jeito.</p>
   </div>
   <div class="meta" style="margin-top:clamp(40px,6vw,72px)"><b>Sobre a API oficial do WhatsApp</b><span>Seu número e seu histórico continuam seus</span><span>Conexão autorizada pela Meta</span><span>Bem menos risco de bloqueio</span></div>
 </div></section>
 
 <section id="precos" class="soft"><div class="wrap">
-  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias com tudo liberado, sem&nbsp;cartão.</p><p class="anchor">Na conta que você fez acima, a demora custa <b id="oA">R$ 13.195</b> por&nbsp;mês. <span>O plano começa em R$&nbsp;147.</span></p></div>
+  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias com tudo liberado, sem&nbsp;cartão.</p><p class="anchor">Na conta que você fez acima, a demora custa <b id="oA">R$ 5.278</b> por&nbsp;mês. <span>O plano começa em R$&nbsp;147.</span></p></div>
   <div class="plans">
     <div class="plan"><span class="who">Para quem está começando</span><h3>Essencial</h3><div class="price">R$ 147<small> /mês</small></div>
       <ul><li>2 pessoas no time</li><li>WhatsApp oficial e Instagram na mesma caixa</li><li>Funil, agenda e registro de vendas</li><li>A Nanda sugere a resposta: 300&nbsp;por&nbsp;mês</li><li>Automações e lembretes</li></ul>
