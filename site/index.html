@@ -103,7 +103,18 @@ nav .btn{padding:11px 20px;font-size:15px}
 /* vídeo */
 .vbox{position:relative;max-width:960px;margin:0 auto;border-radius:var(--r);overflow:hidden;background:var(--ink);aspect-ratio:16/9;box-shadow:0 30px 80px rgba(23,33,43,.16)}
 .vbox video{width:100%;height:100%;object-fit:cover;cursor:pointer}
-.snd{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;background:rgba(23,33,43,.86);color:#fff;border:0;border-radius:999px;padding:11px 18px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.tzk{position:absolute;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;background:rgba(23,33,43,.82);color:#fff;border:0;border-radius:999px;padding:10px 16px 10px 12px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
+.tzk i,.tzp i{font-style:normal;display:grid;place-items:center;border-radius:50%;background:var(--coral);color:#fff}
+.tzk i{width:26px;height:26px;font-size:11px;padding-left:2px}
+.tze{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:20px;background:rgba(15,21,28,.72);color:#fff;opacity:0;pointer-events:none;transition:opacity .5s}
+.tz.end .tze{opacity:1;pointer-events:auto}.tz.end .tzk{opacity:0}
+.tze p{font-size:clamp(15px,2vw,19px);font-weight:600;color:#FFD9CC}.tze p b{font-variant-numeric:tabular-nums;color:#fff;font-weight:800}
+.tzp{display:inline-flex;align-items:center;gap:14px;background:#fff;color:var(--ink);border:0;border-radius:999px;padding:12px 28px 12px 12px;font:inherit;font-weight:800;font-size:clamp(17px,2.2vw,22px);cursor:pointer;box-shadow:0 0 0 0 rgba(255,255,255,.5);animation:pulse 1.8s ease-out infinite}
+.tzp i{width:clamp(44px,5vw,56px);height:clamp(44px,5vw,56px);font-size:clamp(16px,2vw,20px);padding-left:4px}
+.tze span{font-size:14px;color:#C6CFD8;font-weight:600}
+@keyframes pulse{70%{box-shadow:0 0 0 18px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.vbox.on .tzk,.vbox.on .tze{display:none}
+br.dsk{display:inline}
 .fine{font-size:13.5px;color:var(--ink3);margin-top:14px}
 
 /* virada */
@@ -229,7 +240,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   .pic{width:min(88%,340px);margin-top:10px}
   .float{font-size:12.5px;padding:9px 12px 9px 10px;gap:9px}.float .ic{width:32px;height:32px}
   .float.a{left:-9%;top:44%}.float.b{right:-9%;top:70%}.float.c{display:none}
-  br.m{display:inline}
+  br.m{display:inline}br.dsk{display:none}
+  .tzk{left:10px;top:10px;font-size:12.5px;padding:7px 12px 7px 8px}.tzk i{width:22px;height:22px}
   .row .txt p{font-size:17px}.row li{font-size:16px}
   .sgp{grid-template-columns:1fr}.sgt{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-20px;padding:2px 20px 6px;scrollbar-width:none}.sgt::-webkit-scrollbar{display:none}
   .anchor{border-radius:18px}.tag .dk{display:none}
@@ -249,7 +261,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   nav .btn.t{display:none}
 }
 @media (max-width:360px){.tag{font-size:12.5px;white-space:nowrap}.proof{justify-content:flex-start}}
-@media (prefers-reduced-motion:reduce){.float{animation:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
+@media (prefers-reduced-motion:reduce){.tzp{animation:none}.float{animation:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
 </style>
 </head>
 <body>
@@ -290,9 +302,10 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 </div></div>
 
 <section id="video" class="glow"><div class="wrap">
-  <div class="head center"><span class="eyb">Na prática</span><h2>Um dia da Renata com o Oi Nanda</h2><p class="lead">Em pouco mais de um minuto: a cliente que ia embora, a resposta que já estava pronta e a venda que voltou.</p></div>
-  <div class="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-renata.jpg?v=3" muted playsinline loop preload="metadata" aria-label="Vídeo: um dia da Renata com o Oi Nanda"></video>
-   <button class="snd" id="vidSnd" type="button">🔊 Assistir com som</button></div>
+  <div class="head center"><span class="eyb">1 minuto que vale a sua atenção</span><h2>Você perdeu uma venda hoje. <br class="dsk">E&nbsp;nem ficou sabendo.</h2><p class="lead">Foi aquela mensagem que chegou enquanto você atendia outra pessoa. Aperte o play e veja o que a Renata fez com a&nbsp;dela.</p></div>
+  <div class="vbox tz" id="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-capa.jpg" muted playsinline preload="metadata" aria-label="Vídeo: a história da Renata e da mensagem que ficou sem resposta"></video>
+   <button class="tzk" id="vidSnd" type="button"><i>▶</i> Assistir com som · 1 min</button>
+   <div class="tze"><p>Helena está sem resposta há <b id="tzT">0:00</b></p><button class="tzp" id="vidPlay" type="button"><i>▶</i> Ver o que aconteceu</button><span>1 minuto · com som</span></div></div>
   <p class="fine center">História de exemplo, com imagens ilustrativas e as telas reais do Oi Nanda.</p>
   <div class="cta"><a class="btn p" href="https://app.oinanda.com.br/cadastro">Quero isso no meu WhatsApp</a><span>14 dias grátis · sem cartão</span></div>
 </div></section>
@@ -436,11 +449,21 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 
 <script>
 (function(){
-  var v=document.getElementById('vid'),b=document.getElementById('vidSnd');
-  if(v){
-    if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){if(!v.muted)return;if(e.isIntersecting)v.play().catch(function(){});else v.pause()})},{threshold:.35}).observe(v)}
-    var snd=function(){v.muted=false;v.loop=false;v.currentTime=0;v.controls=true;v.play().catch(function(){});b.hidden=true};
-    b.onclick=snd;v.onclick=function(){if(v.muted)snd()};
+  var v=document.getElementById('vid'),box=document.getElementById('vbox');
+  if(v&&box){
+    // trailer: toca sem som só o trecho da mensagem sem resposta, para no gancho e convida a ver o final
+    var A=5,B=13.6,tz=true,seen=0,hold=0,calm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches,T=document.getElementById('tzT');
+    var fmt=function(s){return Math.floor(s/60)+':'+('0'+s%60).slice(-2)};
+    setInterval(function(){if(tz&&seen)T.textContent=fmt(Math.round((Date.now()-seen)/1000))},1000);
+    var seek=function(t){if(v.readyState)try{v.currentTime=t}catch(e){}else v.addEventListener('loadedmetadata',function(){try{v.currentTime=t}catch(e){}},{once:true})};
+    var go=function(){if(!tz||calm)return;box.classList.remove('end');seek(A);v.play().catch(function(){box.classList.add('end')})};
+    var end=function(){v.pause();box.classList.add('end');clearTimeout(hold);hold=setTimeout(function(){if(tz&&vis)go()},5000)};
+    var vis=false;
+    v.addEventListener('timeupdate',function(){if(tz&&v.currentTime>=B&&!box.classList.contains('end'))end()});
+    if(calm||!('IntersectionObserver' in window)){box.classList.add('end');seen=Date.now()}
+    else new IntersectionObserver(function(es){es.forEach(function(e){vis=e.isIntersecting;if(!tz)return;if(vis){if(!seen)seen=Date.now();if(!box.classList.contains('end'))go()}else{v.pause();clearTimeout(hold);box.classList.remove('end')}})},{threshold:.35}).observe(box);
+    var full=function(){if(!tz)return;tz=false;clearTimeout(hold);box.classList.remove('end');box.classList.add('on');v.muted=false;v.controls=true;seek(0);v.play().catch(function(){})};
+    box.addEventListener('click',function(){full()});
   }
   var $=function(i){return document.getElementById(i)},brl=function(n){return 'R$ '+Math.round(n).toLocaleString('pt-BR')};
   function up(){var n=+$('cN').value,t=+$('cT').value,p=+$('cP').value,m=Math.round(n*26*(p/100)*.25*t);
