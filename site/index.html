@@ -61,7 +61,7 @@ nav .sp{flex:1}
 nav .btn{padding:11px 20px;font-size:15px}
 
 /* hero */
-.hero{padding-block:clamp(40px,6vw,84px) clamp(56px,7vw,96px);background:linear-gradient(180deg,var(--soft),#fff)}
+.hero{padding-block:clamp(40px,6vw,84px) clamp(56px,7vw,96px);background:radial-gradient(52% 70% at 88% 18%,#FFDCCB 0,rgba(255,220,203,0) 62%),radial-gradient(42% 58% at 4% 0,#FFEFD2 0,rgba(255,239,210,0) 62%),radial-gradient(60% 60% at 38% 108%,#FFE3D8 0,rgba(255,227,216,0) 66%),#FFF8F4;position:relative;border-radius:0 0 50% 50%/0 0 clamp(20px,3.4vw,52px) clamp(20px,3.4vw,52px)}
 .hero{overflow:hidden;padding-bottom:0!important}
 .hero .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(28px,4.5vw,60px);align-items:end}
 .hero .copy{padding-bottom:clamp(40px,6vw,84px);align-self:center}
@@ -84,13 +84,13 @@ nav .btn{padding:11px 20px;font-size:15px}
 .float.a{left:-14%;top:33%;animation:bob 5s ease-in-out infinite}
 .float.b{right:-12%;top:56%;animation:bob 5s ease-in-out -2.5s infinite}
 .float.b .ic{background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px}
-.float.c{left:-8%;bottom:8%;animation:bob 6s ease-in-out -1.2s infinite}
+.float.c{left:-8%;bottom:13%;animation:bob 6s ease-in-out -1.2s infinite}
 .float.c .ic{background:var(--coral-soft);font-size:18px}
 @keyframes bob{50%{transform:translateY(-8px)}}
 
 /* faixa de confiança */
-.band{background:var(--ink);color:#fff}
-.band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding-block:30px}
+.band{color:#fff;position:relative;z-index:3;margin-top:calc(-1*clamp(34px,4.6vw,54px));padding-inline:max(20px,env(safe-area-inset-left,0px))}
+.band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:26px clamp(22px,3.4vw,40px);border-radius:var(--r);background:radial-gradient(46% 120% at 100% 0,rgba(232,96,63,.30) 0,rgba(232,96,63,0) 70%),var(--ink);box-shadow:0 24px 56px rgba(23,33,43,.22)}
 .band b{display:block;font-size:clamp(22px,2.4vw,30px);font-weight:800;letter-spacing:-.02em;color:#FFB79F;line-height:1.15}
 .band span{font-size:15px;color:#C6CFD8}
 /* celulares animados */
@@ -107,7 +107,12 @@ nav .btn{padding:11px 20px;font-size:15px}
 .fine{font-size:13.5px;color:var(--ink3);margin-top:14px}
 
 /* virada */
-.soft{background:var(--soft)}
+.soft{background:linear-gradient(180deg,#FFF3EC,#FFF8F4);border-radius:50%/clamp(22px,4vw,64px)}
+section{position:relative}section>.wrap{position:relative;z-index:1}
+.glow{overflow:hidden}
+.glow::before,.glow::after{content:"";position:absolute;border-radius:50%;pointer-events:none;aspect-ratio:1}
+.glow::before{width:min(72vw,620px);left:max(-220px,-24vw);top:-60px;background:radial-gradient(closest-side,rgba(252,228,218,.85),rgba(252,228,218,0))}
+.glow::after{width:min(64vw,520px);right:max(-200px,-22vw);bottom:-40px;background:radial-gradient(closest-side,rgba(227,245,238,.9),rgba(227,245,238,0))}
 .ba{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .ba>div{border-radius:var(--r);padding:clamp(24px,3vw,36px);display:grid;gap:16px;align-content:start;min-width:0}
 .ba .before{background:#fff;border:1px solid var(--line)}
@@ -134,7 +139,7 @@ nav .btn{padding:11px 20px;font-size:15px}
 .shot img{width:100%}
 
 /* calculadora */
-.calc{background:var(--ink);color:#fff;border-radius:32px;padding:clamp(28px,4.5vw,56px);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:center}
+.calc{background:radial-gradient(46% 70% at 100% 0,rgba(232,96,63,.26) 0,rgba(232,96,63,0) 70%),radial-gradient(40% 60% at 0 100%,rgba(127,224,191,.10) 0,rgba(127,224,191,0) 70%),var(--ink);color:#fff;border-radius:32px;padding:clamp(28px,4.5vw,56px);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:center}
 .calc .eyb{color:#FFB79F}
 .calc p{color:#C6CFD8}
 .calc .ctl{display:grid;gap:22px;margin-top:26px}
@@ -211,7 +216,7 @@ nav .btn{padding:11px 20px;font-size:15px}
 .faq p{color:var(--ink2);padding-bottom:20px;font-size:16px}
 
 /* final */
-.final{background:var(--coral);color:#fff;border-radius:32px;padding:clamp(36px,6vw,72px);text-align:center;display:grid;gap:18px;justify-items:center}
+.final{background:radial-gradient(50% 90% at 100% 0,rgba(255,170,120,.55) 0,rgba(255,170,120,0) 62%),radial-gradient(44% 80% at 0 100%,rgba(196,74,44,.7) 0,rgba(196,74,44,0) 66%),var(--coral);color:#fff;border-radius:32px;padding:clamp(36px,6vw,72px);text-align:center;display:grid;gap:18px;justify-items:center}
 .final p{max-width:32em;color:#FFE9E1;font-size:18px}
 .final .btn.p{background:var(--ink);border-color:var(--ink);box-shadow:none}
 .final .btn{border-color:rgba(255,255,255,.5);background:transparent;color:#fff}
@@ -229,7 +234,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   .sgp{grid-template-columns:1fr}.sgt{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:-20px;padding:2px 20px 6px;scrollbar-width:none}.sgt::-webkit-scrollbar{display:none}
   .anchor{border-radius:18px}.tag .dk{display:none}
   .meta{flex-direction:column;align-items:flex-start;gap:10px;text-align:left}.meta b{text-align:left}
-  .band .wrap{grid-template-columns:1fr 1fr}
+  .band .wrap{grid-template-columns:1fr 1fr;gap:16px 14px;padding:22px 20px}
   .phone{width:min(64%,260px)}
       .steps,.plans{grid-template-columns:1fr}
   .segs{grid-template-columns:1fr 1fr}
@@ -284,7 +289,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   <div><b>14 dias</b><span>grátis, sem cartão</span></div>
 </div></div>
 
-<section id="video"><div class="wrap">
+<section id="video" class="glow"><div class="wrap">
   <div class="head center"><span class="eyb">Na prática</span><h2>Um dia da Renata com o Oi Nanda</h2><p class="lead">Em pouco mais de um minuto: a cliente que ia embora, a resposta que já estava pronta e a venda que voltou.</p></div>
   <div class="vbox"><video id="vid" src="video/historia-renata.mp4?v=4" poster="video/historia-renata.jpg?v=3" muted playsinline loop preload="metadata" aria-label="Vídeo: um dia da Renata com o Oi Nanda"></video>
    <button class="snd" id="vidSnd" type="button">🔊 Assistir com som</button></div>
@@ -351,7 +356,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   </div>
 </div></section>
 
-<section id="segmentos"><div class="wrap">
+<section id="segmentos" class="glow"><div class="wrap">
   <div class="head center"><span class="eyb">Para quem é</span><h2>Já chega pronta para o seu tipo de negócio</h2><p class="lead">Escolha o seu e veja o que vem configurado no primeiro acesso. Você só ajusta os textos.</p></div>
   <div class="sg">
     <div class="sgt" role="tablist" aria-label="Segmentos"><button type="button" role="tab" id="sgt-clinica" aria-controls="sgp-clinica" aria-selected="true">Clínica</button><button type="button" role="tab" id="sgt-studio" aria-controls="sgp-studio" aria-selected="false" tabindex="-1">Studio e academia</button><button type="button" role="tab" id="sgt-salao" aria-controls="sgp-salao" aria-selected="false" tabindex="-1">Salão e barbearia</button><button type="button" role="tab" id="sgt-imob" aria-controls="sgp-imob" aria-selected="false" tabindex="-1">Imobiliária</button><button type="button" role="tab" id="sgt-loja" aria-controls="sgp-loja" aria-selected="false" tabindex="-1">Loja</button><button type="button" role="tab" id="sgt-info" aria-controls="sgp-info" aria-selected="false" tabindex="-1">Infoproduto</button></div>
