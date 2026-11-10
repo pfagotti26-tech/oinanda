@@ -310,6 +310,7 @@ async def add_hit(company_id, contact_id, m, at, source, by, by_id=None, note_tx
 
 # ---------- sugestões da Nanda ----------
 def nanda_block(company):
+    if ((company or {}).get('modules') or {}).get('jornada') is False: return ''  # recurso desligado nesta conta
     ms = [m for m in active_ms(company) if m.get('nanda') and m.get('hint')]
     if not ms: return ''
     return '\nMARCOS DA JORNADA (para o time acompanhar):\n- Inclua no JSON o campo "marcos": lista com o id de cada um destes que aconteceu nas últimas mensagens. Se nenhum, lista vazia.\n' + \

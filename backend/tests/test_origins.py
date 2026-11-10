@@ -68,3 +68,40 @@ def test_origem_links_e_cliente(monkeypatch):
         # configurar origens: o automático do anúncio sempre fica
         cfg = c.put('/api/origins', json={'origins': [{'name': 'Google'}, {'name': 'Parceria com academia'}], 'inactive_days': 90}).json()
         assert [x['id'] for x in cfg['origins']] == ['anuncio', 'google', 'parceria_com_academia']
+
+def test_cliente_conta_a_origem_no_whatsapp(monkeypatch):
+    async def fake_graph(method, path, token, payload=None, params=None):
+        return {'success': True, 'display_phone_number': '+55 11 97575-0000'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona R', 'email': 'dr@x.com', 'password': 'senha-forte-1', 'company': 'Studio R2', 'segment': 'studio'})
+        c.post('/api/wa/connect', json={'phone_number_id': '6660011', 'waba_id': '6660012', 'token': 'EAA' + 'q' * 30})
+        inbound(c, '5511944440000', 'Rui Conta', 'Boa tarde! A Carla Mendes me indicou vocês')
+        inbound(c, '5511955550000', 'Lia Ads', 'oi, vi o anúncio no insta')
+        cv = {x['name']: x for x in c.get('/api/conversations').json()}
+        assert (cv['Rui Conta']['origin'], cv['Rui Conta']['origin_detail'], cv['Rui Conta']['origin_by']) == ('indicacao', 'Carla Mendes', 'cliente')
+        assert cv['Lia Ads']['origin'] == 'anuncio' and 'Instagram' in cv['Lia Ads']['origin_detail']
+
+def test_cliente_conta_a_origem():
+    from origins import said_origin
+    todas = {'anuncio', 'google', 'instagram', 'facebook', 'tiktok', 'indicacao'}
+    assert said_origin('Oi, vi o anúncio de vocês no Instagram', todas) == ('anuncio', 'Disse que viu um anúncio no Instagram')
+    assert said_origin('achei vocês no google', todas)[0] == 'google'
+    assert said_origin('A Carla me indicou', todas) == ('indicacao', 'Carla')
+    assert said_origin('foi indicação da Maria Souza', todas) == ('indicacao', 'Maria Souza')
+    assert said_origin('vim pelo insta', todas)[0] == 'instagram'
+    for t in ('vocês tem instagram?', 'Qual o insta de vocês', 'quanto custa?', ''):
+        assert said_origin(t, todas) is None
+    assert said_origin('achei no google', {'instagram'}) is None  # origem desligada na empresa
+
+def test_recursos_extras_comecam_desligados():
+    import journey
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona M', 'email': 'dm@x.com', 'password': 'senha-forte-1', 'company': 'Studio M', 'segment': 'studio'})
+        co = c.get('/api/auth/me').json()['company']
+        assert co['modules'] == {'metas': False, 'jornada': False}
+        assert journey.nanda_block(co) == ''
+        r = c.put('/api/company/modules', json={'jornada': True}).json()
+        assert r['modules'] == {'metas': False, 'jornada': True}
+        co = c.get('/api/auth/me').json()['company']
+        assert journey.nanda_block({**co, 'modules': {'jornada': False}}) == ''

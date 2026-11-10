@@ -2,6 +2,7 @@
 import secrets, logging
 from contextlib import asynccontextmanager
 from datetime import timedelta, timezone
+from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
 from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import JSONResponse
@@ -194,7 +195,8 @@ async def signup(body: Signup, request: Request, response: Response):
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
-               'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now()}
+               'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now(),
+               'modules': {'metas': False, 'jornada': False}}  # conta nova começa enxuta; liga em Empresa › Recursos extras
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
             'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
     await db.companies.insert_one(company.copy())
@@ -329,6 +331,20 @@ async def update_company(body: CompanyUpdate, request: Request, user=Depends(own
         await db.companies.update_one({'id': user['company_id']}, {'$set': changes})
         await audit(request, user, 'Alterou os dados da empresa', ', '.join(changes))
     return await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
+
+class ModulesIn(BaseModel):
+    metas: Optional[bool] = None
+    jornada: Optional[bool] = None
+
+@app.put('/api/company/modules')
+async def set_modules(body: ModulesIn, request: Request, user=Depends(managers)):
+    """Liga ou desliga os recursos extras (Metas, Jornada) no menu e na Nanda."""
+    ch = {f'modules.{k}': v for k, v in body.model_dump(exclude_none=True).items()}
+    if ch:
+        await db.companies.update_one({'id': user['company_id']}, {'$set': ch})
+        await audit(request, user, 'Ajustou os recursos extras', ', '.join(f"{k.split('.')[1]} {'ligado' if v else 'desligado'}" for k, v in ch.items()))
+    c = await db.companies.find_one({'id': user['company_id']}, {'_id': 0, 'modules': 1})
+    return {'modules': (c or {}).get('modules') or {}}
 
 # ---------- equipe ----------
 @app.get('/api/team')

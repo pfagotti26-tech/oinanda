@@ -24,7 +24,38 @@ router = APIRouter()
 DEFAULT = [('anuncio', 'Anúncio (Meta)'), ('google', 'Google'), ('site', 'Site'), ('instagram', 'Instagram'), ('facebook', 'Facebook'),
            ('tiktok', 'TikTok'), ('indicacao', 'Indicação'), ('evento', 'Evento'), ('campanha', 'Campanha'), ('outro', 'Outros')]
 CODE = re.compile(r'#oi-([a-z0-9]{5})\b', re.I)
-HOW = {'anuncio': 'automático pelo anúncio', 'link': 'pelo link rastreável', 'nanda': 'a Nanda perguntou', 'time': 'informado pelo time'}
+HOW = {'anuncio': 'automático pelo anúncio', 'link': 'pelo link rastreável', 'nanda': 'a Nanda perguntou', 'cliente': 'o cliente contou', 'time': 'informado pelo time'}
+
+# O cliente conta de onde veio ("vi o anúncio no Instagram", "a Carla me indicou"). Só frases claras, para não marcar errado.
+_VERB = r'(?:vi|vim|achei|conheci|encontrei|soube|descobri|pesquisei|busquei|cheguei|apareceu|aparece|pelo|pela|atrav[eé]s d[oa]|l[aá] n[oa]|aqui d[oa]|no seu|na sua)'
+SAID = [
+    ('anuncio', re.compile(_VERB + r'[^.?!\n]{0,30}\b(?:an[uú]ncio|propaganda|patrocinad[oa])', re.I), 'Disse que viu um anúncio'),
+    ('google', re.compile(_VERB + r'[^.?!\n]{0,25}\bgoogle\b', re.I), 'Disse que achou no Google'),
+    ('instagram', re.compile(_VERB + r'[^.?!\n]{0,25}\b(?:instagram|insta)\b', re.I), 'Disse que veio do Instagram'),
+    ('facebook', re.compile(_VERB + r'[^.?!\n]{0,25}\b(?:facebook|face)\b', re.I), 'Disse que veio do Facebook'),
+    ('tiktok', re.compile(_VERB + r'[^.?!\n]{0,25}\btik ?tok\b', re.I), 'Disse que veio do TikTok'),
+]
+REF = [re.compile(r'(?:\b[Aa]|\b[Oo]|^)\s*([A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20}(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20})?)\s+(?:me\s+)?indic', re.U),
+       re.compile(r'indica[çc][aã]o\s+d[aoe]\s+([A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20}(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20})?)', re.U),
+       re.compile(r'indicad[ao]\s+(?:pel[ao]|por)\s+([A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20}(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕ][\wÀ-ÿ]{1,20})?)', re.U)]
+REF_ANY = re.compile(r'\b(?:me\s+indic|indica[çc][aã]o\s+d|indicad[ao]\s+(?:pel|por)|uma\s+amiga\s+(?:me\s+)?(?:falou|indicou)|um\s+amigo\s+(?:me\s+)?(?:falou|indicou))', re.I)
+
+def said_origin(text, allowed):
+    """(id, detalhe) quando o cliente diz claramente de onde veio; senão None. Anúncio ganha de rede social ("vi o anúncio no Insta")."""
+    t = (text or '').strip()
+    if not t or len(t) > 600: return None
+    if 'indicacao' in allowed and REF_ANY.search(t):
+        for r in REF:
+            m = r.search(t)
+            if m: return 'indicacao', m.group(1).strip()
+        return 'indicacao', ''
+    for oid, rx, det in SAID:
+        if oid in allowed and rx.search(t):
+            if oid == 'anuncio':
+                net = next((n for n, w in (('Instagram', r'\binsta'), ('Facebook', r'\bface'), ('Google', r'\bgoogle'), ('TikTok', r'\btik ?tok')) if re.search(w, t, re.I)), '')
+                return oid, ('Disse que viu um anúncio no ' + net) if net else det
+            return oid, det
+    return None
 
 def default_origins(): return [{'id': i, 'name': n} for i, n in DEFAULT]
 
@@ -70,7 +101,7 @@ async def put_origins(body: OriginsIn, request: Request, user=Depends(managers))
 # ---------- origem de um contato ----------
 async def set_origin(company, contact, origin, detail='', how='time', referred_by_id=None, referred_by_name=None, force=False):
     """Grava a origem. Sem force, não troca uma origem que veio de fonte mais confiável."""
-    rank = {'anuncio': 4, 'link': 3, 'time': 2, 'nanda': 1}
+    rank = {'anuncio': 4, 'link': 3, 'time': 2, 'cliente': 1, 'nanda': 1}
     cur = contact.get('origin_by')
     if contact.get('origin') and not force and rank.get(cur, 0) > rank.get(how, 0): return False
     upd = {'origin': origin, 'origin_detail': (detail or '').strip()[:80], 'origin_by': how, 'origin_at': now(),
@@ -109,7 +140,13 @@ async def on_inbound(company_id, contact, text, ad):
         await set_origin(company, contact, 'anuncio', ad.get('headline') or ad.get('source_id') or '', 'anuncio')
         return
     m = CODE.search(text or '')
-    if not m: return
+    if not m:
+        if contact.get('origin') or not (company or {}).get('ask_origin', True): return
+        got = said_origin(text, {o['id'] for o in await origins_of(company)})
+        if got and await set_origin(company, contact, got[0], got[1], 'cliente', None, got[1] if got[0] == 'indicacao' else None):
+            names = {o['id']: o['name'] for o in await origins_of(company)}
+            await note(company_id, contact['id'], f'O cliente contou de onde veio: {names.get(got[0], got[0])}' + (f' · {got[1]}' if got[1] and got[0] == 'indicacao' else ''))
+        return
     link = await db.track_links.find_one({'company_id': company_id, 'code': m.group(1).lower()}, {'_id': 0})
     if not link: return
     if await set_origin(company, contact, link['origin'], link.get('detail') or link['label'], 'link'):

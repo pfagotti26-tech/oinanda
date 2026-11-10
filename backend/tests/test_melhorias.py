@@ -131,9 +131,10 @@ def test_nanda_blocos_testes_e_relatorios(monkeypatch):
     with TestClient(app, base_url='https://testserver') as c:
         setup(c, 'barba@x.com', 'salao', '8880001')
         c.put('/api/ai/settings', json={'about': 'Barbearia do Zé', 'offer': 'Corte R$ 50', 'qualify': 'Qual serviço?', 'rules': 'Não dar desconto', 'goal': 'Marcar horário'})
-        s = c.get('/api/ai/settings').json(); assert s['taught']
+        assert c.post('/api/products', json={'name': 'Corte degradê', 'price': 55, 'category': 'Cabelo'}).status_code == 200
+        s = c.get('/api/ai/settings').json(); assert s['taught'] and any(p['name'] == 'Corte degradê' and p['price'] == 55 for p in s['catalog'])
         c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'quanto é?'}]})
-        for part in ('Sobre o negócio:\nBarbearia do Zé', 'O que vende e preços:\nCorte R$ 50', 'SEU OBJETIVO NA CONVERSA: Marcar horário', 'Qual serviço?', 'REGRAS DESTE NEGÓCIO:\nNão dar desconto'):
+        for part in ('Sobre o negócio:\nBarbearia do Zé', 'Condições, pacotes e observações de preço:\nCorte R$ 50', '- Corte degradê (Cabelo): R$ 55', 'SEU OBJETIVO NA CONVERSA: Marcar horário', 'Qual serviço?', 'REGRAS DESTE NEGÓCIO:\nNão dar desconto'):
             assert part in seen['system']
         c.post('/api/ai/tests', json={'name': 'Preço', 'messages': [{'dir': 'in', 'text': 'quanto custa o corte?'}], 'expect': 'reply', 'contains': 'R$ 50'})
         c.post('/api/ai/tests', json={'name': 'Desconto', 'messages': [{'dir': 'in', 'text': 'faz desconto?'}], 'expect': 'handoff'})

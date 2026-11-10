@@ -21,6 +21,7 @@ def test_jornada(monkeypatch):
     monkeypatch.setattr(whatsapp, 'graph', fake_graph)
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Dona J', 'email': 'dj@x.com', 'password': 'senha-forte-1', 'company': 'Studio J', 'segment': 'studio'})
+        c.put('/api/company/modules', json={'jornada': True})  # conta nova começa com a Jornada desligada
         c.post('/api/wa/connect', json={'phone_number_id': '3330011', 'waba_id': '3330012', 'token': 'EAA' + 'q' * 30})
         inbound(c, '5511940000001', 'Lead A', 'oi, quanto custa?')
         inbound(c, '5511940000002', 'Lead B', 'oi')

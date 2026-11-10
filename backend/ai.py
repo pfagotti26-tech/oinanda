@@ -36,6 +36,21 @@ async def settings_for(company_id):
 
 def key_ok(): return bool(os.environ.get('ANTHROPIC_API_KEY'))
 
+def brl(v): return f'R$ {v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.').replace(',00', '')
+
+async def catalog_items(company_id):
+    """Itens ativos do Catálogo: a fonte oficial de preços que a Nanda usa."""
+    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1}).sort('name', 1).to_list(300)
+    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days')} for r in rows]
+
+def catalog_text(items):
+    out = []
+    for r in items:
+        bits = [brl(r['price']) if r.get('price') is not None else 'preço sob consulta (chame o time se perguntarem)']
+        if r.get('duration_days'): bits.append(f"vale {r['duration_days']} dias")
+        out.append(f"- {r['name']}" + (f" ({r['category']})" if r['category'] else '') + ': ' + ' · '.join(bits))
+    return '\n'.join(out)
+
 async def llm(system, messages, max_tokens=500):
     """Chamada ao Claude. Isolada para os testes substituírem. Devolve (texto, uso)."""
     key = os.environ.get('ANTHROPIC_API_KEY')
@@ -50,7 +65,9 @@ async def llm(system, messages, max_tokens=500):
     return text, data.get('usage') or {}
 
 def knowledge_block(s):
-    parts = [('Sobre o negócio', s.get('about')), ('O que vende e preços', s.get('offer')), ('Perguntas frequentes', s.get('faq')), ('Outras informações', s.get('knowledge'))]
+    parts = [('Sobre o negócio', s.get('about')),
+             ('Catálogo com os preços oficiais (se algo abaixo disser outro valor, vale este)', s.get('_catalog')),
+             ('Condições, pacotes e observações de preço', s.get('offer')), ('Perguntas frequentes', s.get('faq')), ('Outras informações', s.get('knowledge'))]
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
@@ -192,6 +209,8 @@ async def system_for(s, company, contact=None):
         from channels import nanda_block as wa_block, wa_link
         if contact and contact.get('channel') == 'instagram' and not contact.get('wa_id'): extra += wa_block(contact, await wa_link(company['id'], contact))
     except Exception: log.exception('falha ao montar o link do whatsapp')
+    try: s = {**s, '_catalog': catalog_text(await catalog_items(company['id']))}
+    except Exception: log.exception('falha ao montar o catálogo')
     return build_system(s, company, name, agenda_text, upcoming, opts, extra)
 
 async def think(company_id, contact):
@@ -272,14 +291,7 @@ async def auto_reply(company_id, contact_id, msg_id):
             except (HTTPException, ValueError):
                 d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
         if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
-        if d.get('origin') and not contact.get('origin'):
-            from origins import origins_of, set_origin
-            company = await db.companies.find_one({'id': company_id}, {'_id': 0})
-            names = {o['id']: o['name'] for o in await origins_of(company)}
-            if d['origin'] in names:
-                ref = d['origin_detail'] if d['origin'] == 'indicacao' else None
-                await set_origin(company, contact, d['origin'], d['origin_detail'], 'nanda', None, ref)
-                await note(company_id, contact_id, f'A Nanda descobriu a origem: {names[d["origin"]]}' + (f' · {d["origin_detail"]}' if d['origin_detail'] else ''))
+        await apply_origin(company_id, contact, d)
         if d.get('marcos'): await suggest_marcos(company_id, contact, d['marcos'])
         if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
@@ -321,6 +333,10 @@ async def get_settings(user=Depends(current_user)):
     month = now().strftime('%Y-%m')
     s['usage'] = await db.ai_usage.find_one({'company_id': user['company_id'], 'month': month}, {'_id': 0}) or {}
     s['key_configured'] = key_ok()
+    try:
+        from sales import sync_agenda; await sync_agenda(user['company'])  # serviços da Agenda entram no Catálogo
+    except Exception: log.exception('falha ao sincronizar a agenda com o catálogo')
+    s['catalog'] = await catalog_items(user['company_id'])
     return s
 
 @router.put('/ai/settings')
@@ -362,6 +378,17 @@ async def test(body: TestIn, user=Depends(managers)):
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
 
+async def apply_origin(company_id, contact, d):
+    """Grava a origem que a Nanda entendeu da conversa (no automático e nas sugestões)."""
+    if not d.get('origin') or contact.get('origin'): return
+    from origins import origins_of, set_origin
+    company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+    names = {o['id']: o['name'] for o in await origins_of(company)}
+    if d['origin'] not in names: return
+    ref = d['origin_detail'] if d['origin'] == 'indicacao' else None
+    if await set_origin(company, contact, d['origin'], d['origin_detail'], 'nanda', None, ref):
+        await note(company_id, contact['id'], f'A Nanda descobriu a origem: {names[d["origin"]]}' + (f' · {d["origin_detail"]}' if d['origin_detail'] else ''))
+
 # ---------- na conversa ----------
 @router.post('/conversations/{contact_id}/suggest')
 async def suggest(contact_id: str, cached: bool = False, user=Depends(current_user)):
@@ -375,6 +402,7 @@ async def suggest(contact_id: str, cached: bool = False, user=Depends(current_us
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
     if d.get('marcos'): await suggest_marcos(user['company_id'], c, d['marcos'])
+    await apply_origin(user['company_id'], c, d)
     if last: await db.contacts.update_one({'id': c['id']}, {'$set': {'sug_for': last, 'sug': {k: d.get(k) for k in ('reply', 'handoff', 'reason', 'book')}}})
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
