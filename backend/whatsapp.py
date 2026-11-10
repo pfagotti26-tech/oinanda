@@ -399,9 +399,9 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     c['window_open'] = bool(li and now() - li < WINDOW)
     c['window_ends_at'] = (li + WINDOW) if li else None
     if c.get('channel') == 'instagram':  # Instagram: de 24 h a 7 dias só uma pessoa do time responde
-        from instagram import HUMAN_WINDOW
-        c['human_only'] = bool(li and WINDOW <= now() - li < HUMAN_WINDOW)
-        if c['human_only']: c['window_open'], c['window_ends_at'] = True, li + HUMAN_WINDOW
+        from instagram import human_window
+        c['human_only'] = bool(li and WINDOW <= now() - li < human_window())
+        if c['human_only']: c['window_open'], c['window_ends_at'] = True, li + human_window()
     from inbox import wait_ctx, wait_info, waiting as is_waiting
     c['waiting'] = is_waiting(c)
     wf, lim = wait_info(c, await wait_ctx(user['company']))
@@ -409,11 +409,11 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     c['channels'] = [ch for ch in ('instagram', 'whatsapp') if has(raw, ch)]
     c['reply_channel'] = out_channel(raw)
     if len(c['channels']) == 2:  # janela de cada canal, para o seletor
-        from instagram import HUMAN_WINDOW
+        from instagram import human_window
         wins = {}
         for ch in c['channels']:
             li2 = aware(last_in(raw, ch))
-            lim2 = HUMAN_WINDOW if ch == 'instagram' else WINDOW
+            lim2 = human_window() if ch == 'instagram' else WINDOW
             wins[ch] = {'open': bool(li2 and now() - li2 < lim2), 'last_in_at': li2}
         c['windows'] = wins
     if c.get('phone_hint'): c['phone_hint_fmt'] = fmt(c['phone_hint'])

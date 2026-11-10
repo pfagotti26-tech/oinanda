@@ -1,7 +1,7 @@
 import os, json, hmac, hashlib, time, asyncio
 from datetime import timedelta
 os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif',
-                  IG_APP_ID='111', IG_APP_SECRET='igsecreto', IG_CONFIG_ID='777', IG_VERIFY_TOKEN='igverif', APP_ORIGINS='https://app.test')
+                  IG_APP_ID='111', IG_HUMAN_AGENT='1', IG_APP_SECRET='igsecreto', IG_CONFIG_ID='777', IG_VERIFY_TOKEN='igverif', APP_ORIGINS='https://app.test')
 from cryptography.fernet import Fernet
 os.environ.setdefault('SECRET_KEY', Fernet.generate_key().decode())
 from fastapi.testclient import TestClient

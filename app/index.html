@@ -317,6 +317,7 @@ td>.sure,tr+.sure{margin:4px}
 .ctabs button{font-size:12.5px;font-weight:600;color:var(--ink3);padding:5px 10px;border-radius:8px}.ctabs button.on{background:#F3EEE8;color:var(--ink)}
 .ctabs .win{margin-left:auto;font-size:12px;color:var(--ink2);font-weight:500;display:flex;align-items:center;gap:6px}.ctabs .win i{width:8px;height:8px;border-radius:50%;background:var(--ok)}.ctabs .win i.amber{background:#E0A82E}
 .cbox{display:flex;gap:6px;align-items:flex-end}
+@media (max-width:860px){input,textarea,select{font-size:16px!important}}  /* iPhone: abaixo de 16px o Safari dá zoom ao tocar no campo */
 .cbox textarea{flex:1;resize:none;border:1px solid #DCD2C9;border-radius:14px;padding:10px 13px;min-height:44px;max-height:160px;outline:0;font:inherit;width:100%;display:block}
 .cbox textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
 .cbox.note textarea{background:#FFFBEA;border-color:#E6C766}
@@ -1041,7 +1042,7 @@ const INFO={
  etiquetas:['Etiquetas','Palavras curtas para separar clientes do seu jeito. Ex.: pilates, manhã, indicação. Servem para filtrar em Clientes e para montar segmentos.'],
  anotacoes:['Anotações','O que o time precisa lembrar sobre a pessoa, sempre à vista aqui. Ex.: tem dor no joelho, prefere ser chamada à tarde. O cliente nunca vê.'],
  janela:['Janela de 24 h','Regra da Meta: depois que o cliente manda mensagem, você tem 24 h para responder à vontade. Passou disso, só dá para chamar com um <b>modelo aprovado</b> pela Meta, e cada envio tem custo. Quando o cliente responde, a janela abre de novo.'],
- janela_ig:['Prazo do Instagram','No Direct, a empresa só pode escrever depois que a pessoa chama. Até 24 h depois, qualquer um responde, inclusive a Nanda. De 24 h a 7 dias, só uma pessoa do time. Passou disso, é preciso esperar ela chamar de novo.'],
+ janela_ig:['Prazo do Instagram','No Direct, a empresa só pode escrever depois que a pessoa chama. Depois que ela manda mensagem, a conversa fica aberta por 24 h, para o time e para a Nanda. Passou disso, é preciso esperar ela chamar de novo (ou continuar pelo WhatsApp, se ela passou o número).'],
 };
 const MODE_DESC={auto:'Automática: a Nanda responde sozinha e chama o time quando precisa.',copilot:'Copiloto: a Nanda sugere a resposta e você decide se envia.',off:'Pausada: a Nanda não responde sozinha aqui. O time conduz.'};
 const MODE_SHORT={auto:'Responde sozinha e chama o time quando precisa.',copilot:'Sugere a resposta e você decide se envia.',off:'Não responde sozinha aqui. O time conduz.'};
@@ -1546,7 +1547,7 @@ function drawComposer(c,w,draft){
   const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">🔒 Nota interna</button>${CV.tab==='msg'?chSel(c):''}${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
   if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea><button class="btn p">Salvar nota</button></form>`}
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
-     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 7 dias sem resposta':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
+     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 24 h desde a última mensagem':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
      :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'} ${ii('janela')}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
   else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;

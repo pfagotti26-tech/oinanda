@@ -30,7 +30,8 @@ router = APIRouter()
 log = logging.getLogger('oinanda.ig')
 VER = os.environ.get('IG_API_VERSION', 'v27.0')
 GRAPH = 'https://graph.facebook.com/' + VER
-HUMAN_WINDOW = timedelta(days=7)
+# Responder de 24 h a 7 dias (tag HUMAN_AGENT) só depois que a Meta aprovar o recurso "Human Agent": ligue com IG_HUMAN_AGENT=1
+def human_window(): return timedelta(days=7) if os.environ.get("IG_HUMAN_AGENT") == "1" else WINDOW
 FIELDS = 'messages,messaging_postbacks,messaging_seen,comments'
 
 def ready(): return bool(os.environ.get('IG_APP_ID') and os.environ.get('IG_APP_SECRET') and os.environ.get('IG_CONFIG_ID'))
@@ -410,7 +411,7 @@ def window(contact):
     li = aware(contact.get('last_in_at'))
     if not li: return False, False
     age = now() - li
-    return age < WINDOW, age < HUMAN_WINDOW
+    return age < WINDOW, age < human_window()
 
 async def send(company_id, contact, message, human):
     a = await account_of(company_id)
