@@ -380,25 +380,29 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         wf, lim = wait_info(r, wctx)
         r['wait_from'], r['wait_limit'] = (wf.isoformat() if wf else None), lim
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
+    from channels import window_of
     for r in rows:
         r['assigned_name'] = names.get(r.get('assigned_to'))
         li = aware(r.get('last_in_at'))
-        r['window_open'] = bool(li and now() - li < WINDOW)
+        w = window_of(r.get('channel'))
+        r['window_open'] = True if w is None else bool(li and now() - li < w)  # Telegram e e-mail não têm janela
     return rows
 
 @router.get('/conversations/{contact_id}')
 async def conversation(contact_id: str, user=Depends(current_user)):
-    from channels import view, has, last_in, out_channel, fmt
+    from channels import view, has, last_in, out_channel, fmt, window_of
     raw = await get_contact(user, contact_id)
     c = view(raw)
     msgs = await db.messages.find({'contact_id': contact_id, 'company_id': user['company_id']}, {'_id': 0}).sort('at', -1).to_list(200)
     if c.get('unread'): await db.contacts.update_one({'id': contact_id}, {'$set': {'unread': 0}})
     if c.get('assigned_to') == user['id'] and c.get('transfer_seen') is False:  # quem recebeu a transferência abriu
         await db.contacts.update_one({'id': contact_id}, {'$set': {'transfer_seen': True}})
+    from channels import window_of
     li = aware(c.get('last_in_at'))
-    c['window_open'] = bool(li and now() - li < WINDOW)
-    c['window_ends_at'] = (li + WINDOW) if li else None
-    if c.get('channel') == 'instagram':  # Instagram: de 24 h a 7 dias só uma pessoa do time responde
+    w = window_of(c.get('channel'))
+    c['window_open'] = True if w is None else bool(li and now() - li < w)
+    c['window_ends_at'] = (li + w) if (li and w) else None
+    if c.get('channel') in ('instagram', 'messenger'):  # da Meta: de 24 h a 7 dias só uma pessoa do time responde
         from instagram import human_window
         c['human_only'] = bool(li and WINDOW <= now() - li < human_window())
         if c['human_only']: c['window_open'], c['window_ends_at'] = True, li + human_window()
@@ -406,15 +410,16 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     c['waiting'] = is_waiting(c)
     wf, lim = wait_info(c, await wait_ctx(user['company']))
     c['wait_from'], c['wait_limit'] = (wf.isoformat() if wf else None), lim
-    c['channels'] = [ch for ch in ('instagram', 'whatsapp') if has(raw, ch)]
+    from channels import channels_of
+    c['channels'] = channels_of(raw)
     c['reply_channel'] = out_channel(raw)
-    if len(c['channels']) == 2:  # janela de cada canal, para o seletor
+    if len(c['channels']) > 1:  # janela de cada canal, para o seletor
         from instagram import human_window
         wins = {}
         for ch in c['channels']:
             li2 = aware(last_in(raw, ch))
-            lim2 = human_window() if ch == 'instagram' else WINDOW
-            wins[ch] = {'open': bool(li2 and now() - li2 < lim2), 'last_in_at': li2}
+            lim2 = human_window() if ch in ('instagram', 'messenger') else window_of(ch)
+            wins[ch] = {'open': True if lim2 is None else bool(li2 and now() - li2 < lim2), 'last_in_at': li2}
         c['windows'] = wins
     if c.get('phone_hint'): c['phone_hint_fmt'] = fmt(c['phone_hint'])
     if c.get('wa_id'): c['wa_fmt'] = fmt(c['wa_id'])
@@ -431,6 +436,9 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
     if ch in ('instagram', 'messenger'):
         from instagram import deliver as meta_deliver
         return await meta_deliver(company_id, contact, text, by_id, by_name, assign_to, ch)
+    if ch == 'telegram':
+        from telegram import deliver as tg_deliver
+        return await tg_deliver(company_id, contact, text, by_id, by_name, assign_to)
     li = aware(contact.get('last_in_at'))
     if not li or now() - li >= WINDOW:
         raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')

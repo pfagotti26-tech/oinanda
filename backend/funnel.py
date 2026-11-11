@@ -62,7 +62,9 @@ async def funnel(mine: bool = False, user=Depends(current_user)):
         if r.get('stage') not in ids: r['stage'] = ids[0]
         r['assigned_name'] = names.get(r.get('assigned_to'))
         li = aware(r.pop('last_in_at', None))
-        r['window_open'] = bool(li and now() - li < WINDOW)
+        from channels import window_of
+        w = window_of(r.get('channel'))
+        r['window_open'] = True if w is None else bool(li and now() - li < w)
     totals = {i: {'count': 0, 'value': 0} for i in ids}
     for r in rows:
         totals[r['stage']]['count'] += 1; totals[r['stage']]['value'] += r.get('value') or 0

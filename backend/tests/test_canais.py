@@ -61,7 +61,7 @@ def test_instagram_continua_no_whatsapp(monkeypatch):
         r = c.post(f'/api/conversations/{conv["id"]}/whatsapp', json={'phone': d['phone_hint']}).json()
         assert r == {'contact_id': conv['id'], 'merged': False, 'wa_id': '5511941999929'}
         d = c.get(f'/api/conversations/{conv["id"]}').json()['contact']
-        assert d['channels'] == ['instagram', 'whatsapp'] and d['reply_channel'] == 'instagram' and not d.get('phone_hint')
+        assert d['channels'] == ['whatsapp', 'instagram'] and d['reply_channel'] == 'instagram' and not d.get('phone_hint')
         assert d['windows']['whatsapp']['open'] is False and d['windows']['instagram']['open'] is True
         # ela chama no WhatsApp (a Meta manda sem o 9): cai na mesma ficha e a resposta passa a sair pelo WhatsApp
         wa_in(c, '551141999929', 'Fernanda', 'Oi, sou eu')
@@ -98,7 +98,7 @@ def test_juntar_com_ficha_do_whatsapp(monkeypatch):
         d = c.get(f'/api/conversations/{ig["id"]}').json()
         texts = [m['text'] for m in d['messages']]
         assert 'Oi pelo zap' in texts and 'Oi pelo Direct' in texts and 'cliente antiga' in texts
-        assert d['contact']['wa_id'] == '5511988887777' and d['contact']['channels'] == ['instagram', 'whatsapp']
+        assert d['contact']['wa_id'] == '5511988887777' and d['contact']['channels'] == ['whatsapp', 'instagram']
 
 def test_link_do_whatsapp_identifica_pelo_arroba(monkeypatch):
     sent = []
