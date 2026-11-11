@@ -196,7 +196,7 @@ async def signup(body: Signup, request: Request, response: Response):
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
                'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now(),
-               'modules': {'metas': False, 'jornada': False}}  # conta nova começa enxuta; liga em Empresa › Recursos extras
+               'modules': {'metas': False, 'jornada': False}, 'channels': {}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
             'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
     await db.companies.insert_one(company.copy())
@@ -345,6 +345,22 @@ async def set_modules(body: ModulesIn, request: Request, user=Depends(managers))
         await audit(request, user, 'Ajustou os recursos extras', ', '.join(f"{k.split('.')[1]} {'ligado' if v else 'desligado'}" for k, v in ch.items()))
     c = await db.companies.find_one({'id': user['company_id']}, {'_id': 0, 'modules': 1})
     return {'modules': (c or {}).get('modules') or {}}
+
+class ChannelsIn(BaseModel):
+    messenger: Optional[bool] = None
+    telegram: Optional[bool] = None
+    email: Optional[bool] = None
+
+@app.put('/api/company/channels')
+async def set_channels(body: ChannelsIn, request: Request, user=Depends(managers)):
+    """Liga ou desliga os canais extras. Desligar só esconde: nada é apagado e a conversa antiga continua lá."""
+    from channels import label
+    ch = {f'channels.{k}': v for k, v in body.model_dump(exclude_none=True).items()}
+    if ch:
+        await db.companies.update_one({'id': user['company_id']}, {'$set': ch})
+        await audit(request, user, 'Ajustou os canais', ', '.join(f"{label(k.split('.')[1])} {'ligado' if v else 'desligado'}" for k, v in ch.items()))
+    c = await db.companies.find_one({'id': user['company_id']}, {'_id': 0, 'channels': 1})
+    return {'channels': (c or {}).get('channels') or {}}
 
 # ---------- equipe ----------
 @app.get('/api/team')

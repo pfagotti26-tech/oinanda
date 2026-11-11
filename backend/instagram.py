@@ -64,6 +64,7 @@ async def status(user=Depends(current_user)):
     pend = None if a else await db.ig_pending.find_one({'company_id': user['company_id']}, {'_id': 0, 'gave_up': 1, 'reason': 1, 'created_at': 1})
     return {'ready': ready(), 'account': {k: a.get(k) for k in ('username', 'name', 'picture', 'connected_at', 'expires_at', 'comment_words', 'comment_dm', 'comment_reply', 'status')} if a else None,
             'pending': ({'gave_up': bool(pend.get('gave_up')), 'reason': pend.get('reason')} if pend else None),
+            'page': {'ready': page_ready(a), 'name': (a or {}).get('page_name')} if a else None,
             'redirect_uri': redirect_uri(), 'webhook': app_url() + '/api/ig/webhook'}
 
 @router.get('/ig/connect')
@@ -137,7 +138,19 @@ async def via_page(company_id, user_id, tok):
                                'at': now(), 'expires_at': now() + timedelta(days=180)})
     return 'ok'
 
-def msg_path(a): return '/me/messages' if a.get('mode') == 'page' else f'/{a["ig_id"]}/messages'
+def msg_path(a, ch='instagram'): return '/me/messages' if (ch == 'messenger' or a.get('mode') == 'page') else f'/{a["ig_id"]}/messages'
+
+# O Messenger usa a MESMA conexão: página do Facebook em modo 'page', mesmo token, mesmo /me/messages.
+# Muda só quem é o cliente (PSID em vez de IGSID) e onde o id fica na ficha (fb_id em vez de ig_id).
+SELF = {'instagram': 'ig_id', 'messenger': 'page_id'}
+CID = {'instagram': 'ig_id', 'messenger': 'fb_id'}
+
+def page_ready(a): return bool(a and a.get('mode') == 'page' and a.get('page_id'))
+
+async def messenger_on(company_id):
+    from channels import on
+    co = await db.companies.find_one({'id': company_id}, {'_id': 0, 'channels': 1}) or {}
+    return on(co, 'messenger')
 
 async def finish(company_id, user_id, tok, biz, exp):
     """Acha a conta compartilhada, assina os avisos e grava. Devolve 'ok', 'outra_empresa' ou 'vazio'."""
@@ -293,42 +306,54 @@ async def webhook(request: Request):
         raise HTTPException(403, 'Assinatura inválida.')
     try: body = json.loads(raw)
     except ValueError: return {'ok': True}
+    page = body.get('object') == 'page'
     for e in body.get('entry') or []:
         try:
-            a = await db.ig_accounts.find_one({'ig_id': str(e.get('id'))}, {'_id': 0})
+            eid = str(e.get('id'))
+            a = await db.ig_accounts.find_one({'page_id': eid} if page else {'ig_id': eid}, {'_id': 0})
             if not a: continue
+            if page:  # Messenger: mesma página, só entra se a empresa ligou o canal
+                if not await messenger_on(a['company_id']): continue
+                for m in e.get('messaging') or []: await ingest(a, m, 'messenger')
+                continue
             for m in e.get('messaging') or []: await ingest(a, m)
             for ch in e.get('changes') or []:
                 if ch.get('field') == 'comments': await on_comment(a, ch.get('value') or {})
-        except Exception: log.exception('falha no webhook do instagram')
+        except Exception: log.exception('falha no webhook da meta')
     return {'ok': True}
 
 LABEL = {'image': '📷 Foto', 'video': '🎬 Vídeo', 'audio': '🎤 Áudio', 'file': '📄 Arquivo', 'share': '🔗 Compartilhou uma publicação', 'story_mention': '📣 Mencionou você no story',
          'ig_reel': '🎬 Compartilhou um reel', 'reel': '🎬 Compartilhou um reel', 'ig_post': '🔗 Compartilhou um post', 'like_heart': '❤️'}
 KIND = {'image': 'image', 'video': 'video', 'audio': 'audio', 'file': 'document'}
 
-async def profile(a, igsid):
-    try: return await ig('GET', f'/{igsid}', decrypt(a['token_enc']), {'fields': 'name,username,profile_pic'})
+async def profile(a, sid, ch='instagram'):
+    f = 'name,profile_pic' if ch == 'messenger' else 'name,username,profile_pic'
+    try: return await ig('GET', f'/{sid}', decrypt(a['token_enc']), {'fields': f})
     except HTTPException: return {}
 
-async def upsert(a, igsid, username=None, source='instagram'):
+async def upsert(a, sid, username=None, source='instagram', ch='instagram'):
     cid = a['company_id']
-    c = await db.contacts.find_one({'company_id': cid, 'ig_id': igsid}, {'_id': 0})
+    c = await db.contacts.find_one({'company_id': cid, CID[ch]: sid}, {'_id': 0})
     if c: return c, False
-    p = await profile(a, igsid)
+    p = await profile(a, sid, ch)
     un = p.get('username') or username
-    c = {'id': uid(), 'company_id': cid, 'channel': 'instagram', 'ig_id': igsid, 'ig_username': un, 'name': p.get('name') or (('@' + un) if un else 'Instagram'),
-         'ig_pic': p.get('profile_pic'), 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
+    if ch == 'messenger':
+        c = {'id': uid(), 'company_id': cid, 'channel': 'messenger', 'fb_id': sid, 'name': p.get('name') or 'Messenger',
+             'ig_pic': p.get('profile_pic'), 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
+    else:
+        c = {'id': uid(), 'company_id': cid, 'channel': 'instagram', 'ig_id': sid, 'ig_username': un, 'name': p.get('name') or (('@' + un) if un else 'Instagram'),
+             'ig_pic': p.get('profile_pic'), 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
     await db.contacts.insert_one(c.copy())
     try:
         from origins import origins_of, set_origin
         company = await db.companies.find_one({'id': cid}, {'_id': 0})
-        if 'instagram' in {o['id'] for o in await origins_of(company)}:
-            await set_origin(company, c, 'instagram', 'Comentário em post' if source == 'instagram_comentario' else 'Direct', 'link')
-    except Exception: log.exception('falha ao marcar a origem do instagram')
+        oid = 'instagram' if ch == 'instagram' else 'facebook'
+        if oid in {o['id'] for o in await origins_of(company)}:
+            await set_origin(company, c, oid, 'Comentário em post' if source == 'instagram_comentario' else 'Direct', 'link')
+    except Exception: log.exception('falha ao marcar a origem de %s', ch)
     return c, True
 
-async def ingest(a, m):
+async def ingest(a, m, ch='instagram'):
     cid = a['company_id']
     msg = m.get('message') or {}
     if not msg or msg.get('is_deleted'): return
@@ -336,10 +361,10 @@ async def ingest(a, m):
     if mid and await db.messages.find_one({'wa_msg_id': mid}): return
     echo = bool(msg.get('is_echo'))
     igsid = str((m.get('recipient') if echo else m.get('sender') or {}).get('id') or '')
-    if not igsid or igsid == a['ig_id']: return
+    if not igsid or igsid == str(a.get(SELF[ch]) or ''): return
     at = datetime.fromtimestamp(int(m.get('timestamp') or 0) / 1000, tz=timezone.utc) if m.get('timestamp') else now()
     if now() - at < timedelta(seconds=60): at = now()
-    contact, _ = await upsert(a, igsid)
+    contact, _ = await upsert(a, igsid, ch=ch, source=ch)
     att = (msg.get('attachments') or [{}])[0] if msg.get('attachments') else None
     t = (att or {}).get('type')
     text = msg.get('text') or LABEL.get(t, '📎 Anexo' if att else '')
@@ -351,24 +376,24 @@ async def ingest(a, m):
         except Exception: pass
     if (msg.get('reply_to') or {}).get('story'): text = '↩️ Respondeu seu story: ' + (msg.get('text') or LABEL.get(t, ''))
     kind = KIND.get(t, 'text')
-    doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'channel': 'instagram', 'dir': 'out' if echo else 'in', 'type': kind, 'text': text,
+    doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'channel': ch, 'dir': 'out' if echo else 'in', 'type': kind, 'text': text,
            'wa_msg_id': mid, 'at': at, 'received_at': now()}
     url = ((att or {}).get('payload') or {}).get('url')
     if url and kind != 'text': doc.update(media_url=url, pending=not echo)
     elif url: doc['link'] = url  # anexo sem tipo conhecido: pelo menos dá para abrir
-    if echo: doc.update(by='Instagram', by_id=None, status='sent')
+    if echo: doc.update(by='Instagram' if ch == 'instagram' else 'Messenger', by_id=None, status='sent')
     await db.messages.insert_one(doc.copy())
     upd = {'last_at': at, 'last_text': text[:200], 'last_dir': doc['dir']}
     if not echo:
         from channels import on_inbound_set, phones_in
         upd['last_in_at'] = at
-        upd.update(on_inbound_set(contact, 'instagram', at))
+        upd.update(on_inbound_set(contact, ch, at))
         ph = [p for p in phones_in(msg.get('text')) if p != contact.get('phone_hint_no')] if not contact.get('wa_id') else []
         if ph: upd['phone_hint'] = ph[0]  # mandou o número: a tela oferece salvar como WhatsApp
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd, **({} if echo else {'$inc': {'unread': 1}})})
     import whatsapp
     if echo:
-        if whatsapp.ON_HUMAN_SEND: await whatsapp.ON_HUMAN_SEND({'company_id': cid, 'name': 'Alguém pelo Instagram', 'id': None}, contact)
+        if whatsapp.ON_HUMAN_SEND: await whatsapp.ON_HUMAN_SEND({'company_id': cid, 'name': 'Alguém pelo ' + ('Instagram' if ch == 'instagram' else 'Messenger'), 'id': None}, contact)
         return
     if url and kind != 'text':
         from media import schedule
@@ -413,23 +438,25 @@ def window(contact):
     age = now() - li
     return age < WINDOW, age < human_window()
 
-async def send(company_id, contact, message, human):
+async def send(company_id, contact, message, human, ch='instagram'):
     a = await account_of(company_id)
-    if not a or a.get('status') != 'connected': raise HTTPException(400, 'O Instagram da empresa não está conectado.')
+    nome = 'Instagram' if ch == 'instagram' else 'Messenger'
+    if not a or a.get('status') != 'connected': raise HTTPException(400, f'O {nome} da empresa não está conectado.')
+    if ch == 'messenger' and not page_ready(a): raise HTTPException(400, 'O Messenger precisa da conexão pela Página do Facebook. Reconecte em Empresa › Instagram.')
     normal, hum = window(contact)
-    body = {'recipient': {'id': contact['ig_id']}, 'message': message}
+    body = {'recipient': {'id': contact[CID[ch]]}, 'message': message}
     if not normal:
         if not (human and hum):
-            raise HTTPException(400, 'No Instagram só dá para responder até 24 h depois da última mensagem do cliente (ou até 7 dias, por uma pessoa do time).')
+            raise HTTPException(400, f'No {nome} só dá para responder até 24 h depois da última mensagem do cliente (ou até 7 dias, por uma pessoa do time).')
         body.update(messaging_type='MESSAGE_TAG', tag='HUMAN_AGENT')
-    try: return await ig('POST', msg_path(a), decrypt(a['token_enc']), payload=body)
+    try: return await ig('POST', msg_path(a, ch), decrypt(a['token_enc']), payload=body)
     except HTTPException as e:
         await revoked(a, e); raise
 
-async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
+async def deliver(company_id, contact, text, by_id, by_name, assign_to=None, ch='instagram'):
     human = bool(by_id) and '(IA)' not in (by_name or '') and not (by_name or '').startswith(('Automação', 'Campanha'))
-    res = await send(company_id, contact, {'text': text[:1000]}, human)
-    msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'channel': 'instagram', 'dir': 'out', 'type': 'text', 'text': text,
+    res = await send(company_id, contact, {'text': text[:1000]}, human, ch)
+    msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'channel': ch, 'dir': 'out', 'type': 'text', 'text': text,
            'wa_msg_id': res.get('message_id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
     await db.messages.insert_one(msg.copy())
     upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out'}

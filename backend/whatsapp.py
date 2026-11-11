@@ -424,12 +424,13 @@ class SendIn(BaseModel):
     text: str = Field(min_length=1, max_length=4096)
 
 async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
-    """Envia texto pelo canal da conversa (WhatsApp ou Instagram) e registra. Usado pelo time e pela Nanda."""
+    """Envia texto pelo canal da conversa e registra. Usado pelo time e pela Nanda."""
     from channels import view
     contact = view(contact)
-    if contact.get('channel') == 'instagram':
-        from instagram import deliver as ig_deliver
-        return await ig_deliver(company_id, contact, text, by_id, by_name, assign_to)
+    ch = contact.get('channel')
+    if ch in ('instagram', 'messenger'):
+        from instagram import deliver as meta_deliver
+        return await meta_deliver(company_id, contact, text, by_id, by_name, assign_to, ch)
     li = aware(contact.get('last_in_at'))
     if not li or now() - li >= WINDOW:
         raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')

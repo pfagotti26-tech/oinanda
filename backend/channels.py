@@ -6,7 +6,7 @@
 - Se já existir uma ficha com esse WhatsApp, as duas viram uma só (mensagens, vendas, agenda... tudo vai junto).
 """
 import re, logging
-from typing import Literal
+from datetime import timedelta
 from urllib.parse import quote
 from fastapi import APIRouter, Request, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -51,38 +51,69 @@ def fmt(wa):
         return f'({wa[2:4]}) {r[:-4]}-{r[-4:]}'
     return '+' + wa if wa else ''
 
-# ---------- canal de cada conversa ----------
-def has(c, ch):
-    return bool(c.get('ig_id')) if ch == 'instagram' else bool(c.get('wa_id'))
+# ---------- os canais ----------
+# Cada canal diz onde guarda o id do cliente na ficha, onde guarda a janela e quanto tempo ela dura.
+# WhatsApp e Instagram vêm de fábrica. Os outros a empresa liga em Empresa › Mais canais.
+CH = {
+    'whatsapp':  {'label': 'WhatsApp',  'id': 'wa_id', 'at': 'wa_last_in_at', 'window': timedelta(hours=24), 'core': True},
+    'instagram': {'label': 'Instagram', 'id': 'ig_id', 'at': 'ig_last_in_at', 'window': timedelta(hours=24), 'core': True},
+    'messenger': {'label': 'Messenger', 'id': 'fb_id', 'at': 'fb_last_in_at', 'window': timedelta(hours=24)},
+    'telegram':  {'label': 'Telegram',  'id': 'tg_id', 'at': 'tg_last_in_at', 'window': None},
+    'email':     {'label': 'E-mail',    'id': 'em_id', 'at': 'em_last_in_at', 'window': None},
+}
+CORE = tuple(k for k, v in CH.items() if v.get('core'))
+OPT = tuple(k for k, v in CH.items() if not v.get('core'))
+DEFAULT = 'whatsapp'
 
+def label(ch): return (CH.get(ch) or {}).get('label') or ch
+def window_of(ch): return (CH.get(ch) or {}).get('window')
+def id_of(c, ch): return (c or {}).get(CH[ch]['id']) if ch in CH else None
+def has(c, ch): return bool(id_of(c, ch))
+def channels_of(c): return [ch for ch in CH if has(c, ch)]
+
+def on(company, ch):
+    """O canal está ligado para a empresa? Os de fábrica estão sempre."""
+    return True if ch in CORE else bool(((company or {}).get('channels') or {}).get(ch))
+
+async def enabled(company_id):
+    co = await db.companies.find_one({'id': company_id}, {'_id': 0, 'channels': 1}) or {}
+    return [ch for ch in CH if on(co, ch)]
+
+# ---------- canal de cada conversa ----------
 def last_in(c, ch):
-    if ch == 'instagram':
-        return c.get('ig_last_in_at') or (c.get('last_in_at') if c.get('channel') == 'instagram' else None)
-    return c.get('wa_last_in_at') or (c.get('last_in_at') if c.get('channel') != 'instagram' else None)
+    if ch not in CH: return None
+    v = c.get(CH[ch]['at'])
+    if v: return v
+    return c.get('last_in_at') if (c.get('channel') or DEFAULT) == ch else None  # ficha antiga, de um canal só
 
 def out_channel(c):
-    ch = c.get('reply_channel') or ('instagram' if c.get('channel') == 'instagram' else 'whatsapp')
-    if not has(c, ch): ch = 'whatsapp' if ch == 'instagram' else 'instagram'
-    if not has(c, ch): ch = 'instagram' if c.get('channel') == 'instagram' else 'whatsapp'
-    return ch
+    """Por onde a resposta sai: o que o time escolheu, senão o último canal em que o cliente escreveu."""
+    got = channels_of(c)
+    if c.get('reply_channel') in got: return c['reply_channel']
+    if not got: return c.get('channel') or DEFAULT
+    if len(got) == 1: return got[0]
+    from whatsapp import aware
+    wrote = [x for x in got if last_in(c, x)]
+    if wrote: return max(wrote, key=lambda x: aware(last_in(c, x)))
+    return c['channel'] if c.get('channel') in got else got[0]
 
 def view(c, ch=None):
     """A ficha vista pelo canal de saída: channel e last_in_at daquele canal (o resto do código usa esses dois)."""
-    if not c or not (c.get('ig_id') and c.get('wa_id')): return c
+    if not c or len(channels_of(c)) < 2: return c
     ch = ch or out_channel(c)
     return {**c, 'channel': ch, 'last_in_at': last_in(c, ch)}
 
 def on_inbound_set(c, ch, at):
     """Campos a gravar quando o cliente escreve por um canal."""
-    upd = {('ig_last_in_at' if ch == 'instagram' else 'wa_last_in_at'): at}
-    other = 'whatsapp' if ch == 'instagram' else 'instagram'
-    if has(c, other) and out_channel(c) != ch: upd['reply_channel'] = ch
+    if ch not in CH: return {}
+    upd = {CH[ch]['at']: at}
+    if len(channels_of(c)) > 1 and out_channel(c) != ch: upd['reply_channel'] = ch
     return upd
 
 # ---------- juntar duas fichas ----------
 MOVE = ('messages', 'appointments', 'campaign_sends', 'coupons', 'journey', 'notify_log', 'opps', 'quality', 'sales', 'stage_events', 'transfers')
 NEVER = {'_id', 'id', 'company_id', 'created_at', 'name', 'unread', 'tags', 'sales_count', 'channel', 'reply_channel', 'phone_hint',
-         'last_at', 'last_text', 'last_dir', 'last_in_at', 'ig_last_in_at', 'wa_last_in_at'}
+         'last_at', 'last_text', 'last_dir', 'last_in_at'} | {v['at'] for v in CH.values()}
 
 def _later(a, b):
     from whatsapp import aware
@@ -101,10 +132,9 @@ async def merge(keep, drop):
     upd = {k: v for k, v in drop.items() if k not in NEVER and v not in (None, '', [], {}) and keep.get(k) in (None, '', [], {})}
     if _is_placeholder(keep.get('name'), keep) and not _is_placeholder(drop.get('name'), drop): upd['name'] = drop['name']
     upd['tags'] = list(dict.fromkeys((keep.get('tags') or []) + (drop.get('tags') or [])))
-    for k in ('ig_last_in_at', 'wa_last_in_at'):
-        ch = 'instagram' if k == 'ig_last_in_at' else 'whatsapp'
+    for ch, meta in CH.items():
         v = _later(last_in(keep, ch), last_in(drop, ch))
-        if v: upd[k] = v
+        if v: upd[meta['at']] = v
     upd['last_in_at'] = _later(keep.get('last_in_at'), drop.get('last_in_at'))
     from whatsapp import aware
     if (aware(drop.get('last_at')) or now().replace(year=2000)) > (aware(keep.get('last_at')) or now().replace(year=2000)):
@@ -150,13 +180,14 @@ async def drop_hint(contact_id: str, user=Depends(current_user)):
     return {'ok': True}
 
 class ChannelIn(BaseModel):
-    channel: Literal['instagram', 'whatsapp']
+    channel: str
 
 @router.post('/conversations/{contact_id}/channel')
 async def set_channel(contact_id: str, body: ChannelIn, user=Depends(current_user)):
     from whatsapp import get_contact
+    if body.channel not in CH: raise HTTPException(400, 'Canal desconhecido.')
     c = await get_contact(user, contact_id)
-    if not has(c, body.channel): raise HTTPException(400, 'Este cliente não tem ' + ('Instagram.' if body.channel == 'instagram' else 'WhatsApp salvo.'))
+    if not has(c, body.channel): raise HTTPException(400, f'Este cliente não tem {label(body.channel)}.')
     await db.contacts.update_one({'id': c['id']}, {'$set': {'reply_channel': body.channel}})
     return {'ok': True}
 

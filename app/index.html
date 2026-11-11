@@ -893,7 +893,8 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .sb-f{margin-top:16px;display:flex;flex-direction:column;gap:12px;max-width:560px;margin-left:auto;margin-right:auto}.sb-ft{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}.lnk.danger{color:var(--bad)}
 @media (max-width:900px){.sb-plans{grid-template-columns:1fr}.ubs{grid-template-columns:1fr}}
 .chb{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;border:2px solid #fff}
-.chb.ig,.igl{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}.chb svg{width:10px;height:10px}
+.chb.ig,.igl{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+.chb.mg,.chi.mg,.mgl{background:linear-gradient(45deg,#0695FF,#A334FA)}.chb svg{width:10px;height:10px}
 .chi{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:4px;color:#fff;margin-right:4px;vertical-align:-2px}.chi svg{width:10px;height:10px}.chi.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
 .igl{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff}.igl svg{width:16px;height:16px}
 .igacc{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.igacc img,.igacc .av{width:44px;height:44px;border-radius:50%;object-fit:cover;display:grid;place-items:center;color:#fff;font-weight:600}
@@ -1190,6 +1191,7 @@ function passwordView(){
 
 /* ---------- casca ---------- */
 const modOn=k=>k==='metas'?(((ME.company.modules||{}).metas!==false)||gamOn()):((ME.company.modules||{})[k]!==false);
+const chOn=k=>!!((ME.company&&ME.company.channels||{})[k]);
 const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['jornada','Jornada'],['empresa','Empresa'],['atividade','Atividade']];
 const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversas:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
   nanda:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
@@ -1326,6 +1328,7 @@ function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&[
 /* ---------- telas ---------- */
 /* Instagram Direct */
 async function renderIg(own){const box=$('#igc');if(!box)return;let d;try{d=await api('/ig/status')}catch(e){box.innerHTML='';return}
+  const mg=$('#mgSt');if(mg)mg.textContent=!chOn('messenger')?'':!d.account?'Conecte o Instagram primeiro — o Messenger vem junto.':(d.page&&d.page.ready)?'Recebendo pela página '+(d.page.name||'do Facebook')+'.':'Reconecte o Instagram pelo login do Facebook para o Messenger funcionar.';
   const q=new URLSearchParams(location.search).get('ig');if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.',sem_conta:'Nenhuma conta do Instagram foi compartilhada. Conecte de novo e marque a conta profissional.',aguardando:'Autorizado. Falta a Meta liberar a conta: o Oi Nanda vai conferir sozinho nos próximos minutos.',sem_pagina:'Nenhuma Página do Facebook com Instagram ligado. No Instagram: Configurações › Central de Contas, ligue a conta a uma Página e conecte de novo.'}[q]||'')}
   const a=d.account,hd=`<div class="row" style="gap:10px;margin-bottom:8px"><span class="igl">${IGI}</span><h3 style="margin:0">Instagram Direct</h3>${a?`<span class="pill ${a.status==='connected'?'ok':'bad'}">${a.status==='connected'?'conectado':'reconectar'}</span>`:''}</div>`;
   if(!d.ready){box.innerHTML=hd+'<p class="hint">O Instagram ainda está sendo configurado no servidor do Oi Nanda.</p>';return}
@@ -1414,7 +1417,7 @@ async function cvList(){
   if(CV.filter==='waiting')CV.list.sort((a,b)=>(a.wait_from||'9')<(b.wait_from||'9')?-1:1);  // quem espera há mais tempo primeiro
   el.innerHTML=CV.list.length?CV.list.map(c=>{const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in';
    return `<button class="ci ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
-    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${c.channel==='instagram'?`<i class="chb ig" title="Instagram">${IGI}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
+    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
      <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w==='off'?'<span class="bd2 grey">chegou fora do horário</span>':w?`<span class="bd2 ${w}">esperando ${waitTxt(c)}</span>`:''}
@@ -1465,7 +1468,7 @@ function msgsHtml(list){let out='',day='',prev=null;const two=(CV.c?.channels||[
     if(m.dir==='note'){out+=`<div class="m note"><span class="by">🔒 Nota interna · ${esc(m.by||'')}</span>${esc(m.text)}<small>${tm(m.at)}</small></div>`;prev=null;continue}
     const ai=m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||''),auto=m.dir==='out'&&/^Automação/.test(m.by||'');
     const grp=prev&&prev.dir===m.dir&&prev.by===m.by&&(new Date(m.at)-new Date(prev.at))<5*6e4;
-    const chb=two?(m.channel==='instagram'?`<span class="chb2" title="Pelo Instagram"><i class="chi ig">${IGI}</i></span>`:`<span class="chb2" title="Pelo WhatsApp"><i class="chi wa">${WAI}</i></span>`):'';
+    const chb=two?(CHI[m.channel]?`<span class="chb2" title="Pelo ${CHI[m.channel][1]}"><i class="chi ${CHI[m.channel][0]}">${chIcon(m.channel)}</i></span>`:`<span class="chb2" title="Pelo WhatsApp"><i class="chi wa">${WAI}</i></span>`):'';
     out+=`<div class="m ${m.dir} ${ai?'ai':''} ${auto?'auto':''} ${grp?'grp':''}">${m.dir==='out'&&m.by&&!grp?`<span class="by">${esc(m.by)}</span>`:''}${m.type==='template'?'<span class="tp">modelo</span>':''}${mediaHtml(m)}${m.link?`<br><a class="mlink" href="${esc(m.link)}" target="_blank" rel="noopener">Abrir anexo ↗</a>`:''}<small>${chb}${tm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`;prev=m}
   return out||'<div class="m sys">Nenhuma mensagem ainda.</div>'}
 
@@ -1593,7 +1596,7 @@ function drawComposer(c,w,draft){
   const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">🔒 Nota interna</button>${CV.tab==='msg'?chSel(c):''}${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
   if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea><button class="btn p">Salvar nota</button></form>`}
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
-     c.channel==='instagram'?`<b>${c.last_in_at?'Passaram 24 h desde a última mensagem':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No Instagram só dá para escrever quando ${first} chamar no Direct. Quando chamar, a conversa abre de novo.</p>`
+     CHI[c.channel]?`<b>${c.last_in_at?'Passaram 24 h desde a última mensagem':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No ${CHI[c.channel][1]} só dá para escrever quando ${first} chamar. Quando chamar, a conversa abre de novo.</p>`
      :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'} ${ii('janela')}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
   else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
@@ -1839,8 +1842,11 @@ function apptModal(a,after){
 }
 const HH=52;
 const WAI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.7z"/></svg>';
+const MGI='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.3 2 2 6.2 2 11.8c0 3.2 1.4 6 3.7 7.8V23l3.4-1.9c.9.3 1.9.4 2.9.4 5.7 0 10-4.2 10-9.7S17.7 2 12 2zm1 13.1l-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7z"/></svg>';
+const CHI={instagram:['ig','Instagram'],messenger:['mg','Messenger']};
+const chIcon=ch=>ch==='messenger'?MGI:IGI;
 const IGI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>';
-const contactSub=c=>!c?'':c.ig_id&&c.wa_id?'@'+(c.ig_username||'instagram')+' · '+fmtPhone(c.wa_id):c.channel==='instagram'||c.ig_id?'@'+(c.ig_username||'instagram'):fmtPhone(c.wa_id);
+const contactSub=c=>!c?'':c.ig_id&&c.wa_id?'@'+(c.ig_username||'instagram')+' · '+fmtPhone(c.wa_id):c.channel==='instagram'||c.ig_id?'@'+(c.ig_username||'instagram'):c.channel==='messenger'||c.fb_id?'Messenger':fmtPhone(c.wa_id);
 const fmtPhone=p=>{if(!p)return '';const d=String(p||'').replace(/\D/g,'');const n=d.startsWith('55')&&d.length>=12?d.slice(2):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:'+'+d};
 const toMin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
 const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
@@ -1968,7 +1974,7 @@ async function contactDrawer(id,after,tab){
   const c=(await api('/conversations/'+id)).contact;
   const o=overlay(`<div class="drawer cd-w"><div class="row"><h2 style="font-size:20px;letter-spacing:-.4px">${esc(c.name)}</h2><button type="button" class="x">×</button></div>
     <nav class="utabs cd-t"><button type="button" data-cdt="dados" class="on">Dados</button>${modOn('jornada')?'<button type="button" data-cdt="jornada">Jornada</button>':''}</nav><div id="cdJn" class="hide"></div><form id="cdF" class="cd-f">
-    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">${esc(contactSub(c))} · ${c.channel==='instagram'?(c.source==='instagram_comentario'?'comentou num post do Instagram':'veio pelo Direct do Instagram'):c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
+    <p style="color:var(--ink2);font-size:13px;margin-top:-8px">${esc(contactSub(c))} · ${c.channel==='messenger'?'veio pelo Messenger':c.channel==='instagram'?(c.source==='instagram_comentario'?'comentou num post do Instagram':'veio pelo Direct do Instagram'):c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
     <div class="field"><label>Nome</label><input name="name" value="${esc(c.name)}" required></div>
     <div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
     <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div>
@@ -3350,11 +3356,18 @@ const VIEWS={
     ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}.</p>`:''}
     <button class="btn sm ${c.plan==='trial'?'p':''}" style="margin-top:12px" data-sub2>${c.plan==='trial'?'Ver planos e assinar':'Assinatura e uso do plano'}</button>
     <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div><div class="card" style="margin-top:14px" id="igc"></div>
-   ${['owner','manager'].includes(ME.user.role)?`<div class="card" style="margin-top:14px" id="extras"><h3 style="margin-bottom:4px">Recursos extras</h3>
+   ${['owner','manager'].includes(ME.user.role)?`<div class="card" style="margin-top:14px" id="chmore"><h3 style="margin-bottom:4px">Mais canais</h3>
+    <p class="hint" style="margin:0 0 12px">WhatsApp e Instagram já vêm ligados. Ligue outro canal só se os seus clientes usarem — enquanto estiver desligado, ele não aparece em lugar nenhum.</p>
+    <label class="xmod"><input type="checkbox" data-ch="messenger" ${chOn('messenger')?'checked':''}><span><b>Messenger</b><small>Mensagens da sua Página do Facebook, na mesma caixa. Usa a conexão do Instagram, sem passo novo.</small><small id="mgSt" class="hint"></small></span></label>
+    </div>
+   <div class="card" style="margin-top:14px" id="extras"><h3 style="margin-bottom:4px">Recursos extras</h3>
     <p class="hint" style="margin:0 0 12px">Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time.</p>
     ${[['metas','Metas e ranking','Metas da empresa, de equipes e de cada vendedor, com desafios, prêmios e modo TV.'],['jornada','Jornada do cliente','Marcos como "fez a aula", "pediu orçamento", "comprou de novo". A Nanda marca sozinha pelas conversas e o relatório mostra onde os clientes travam.']]
       .map(([k,l,h])=>`<label class="xmod"><input type="checkbox" data-mod="${k}" ${modOn(k)?'checked':''}><span><b>${l}</b><small>${h}</small></span></label>`).join('')}</div>`:''}`;
   renderWa(own);renderIg(own);
+  document.querySelectorAll('[data-ch]').forEach(x=>x.onchange=async()=>{x.disabled=true;try{const r=await api('/company/channels',{method:'PUT',body:{[x.dataset.ch]:x.checked}});ME.company.channels=r.channels;
+    const l=x.dataset.ch==='messenger'?'Messenger':x.dataset.ch;toast(x.checked?`${l} ligado. As mensagens novas chegam nas Conversas.`:`${l} desligado. Nada foi apagado.`);renderIg(own)}
+    catch(e){x.checked=!x.checked;toast(e.message)}finally{x.disabled=false}});
   document.querySelectorAll('[data-mod]').forEach(x=>x.onchange=async()=>{x.disabled=true;try{const r=await api('/company/modules',{method:'PUT',body:{[x.dataset.mod]:x.checked}});ME.company.modules=r.modules;
     const l=x.dataset.mod==='metas'?'Metas':'Jornada';toast(x.checked?`${l} ligada. Já está no menu.`:`${l} saiu do menu. Nada foi apagado.`);const y=scrollY;shell();setTimeout(()=>scrollTo(0,y),350)}catch(e){x.checked=!x.checked;toast(e.message)}x.disabled=false});document.querySelectorAll('[data-sub2]').forEach(b=>b.onclick=()=>go('assinatura'));
   if(own)$('#co').onsubmit=async ev=>{ev.preventDefault();try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(ev.target))});await refresh();toast('Dados salvos.')}catch(e){toast(e.message)}};

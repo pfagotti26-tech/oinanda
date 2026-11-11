@@ -374,15 +374,17 @@ async def fire(a, company, stages, key, contact, appt):
     ctx = await context(company, contact, appt)
     if a.get('coupon_promo_id') and '{cupom}' in (a.get('message') or '') + str((await db.templates.find_one({'id': a.get('template_id')}, {'_id': 0, 'params': 1}) or {}).get('params')):
         ctx['cupom'] = await personal_coupon(company['id'], a['coupon_promo_id'], contact['id'], f'Automação · {a["name"]}')
-    from channels import view
+    from channels import view, window_of, label as ch_label
     contact = view(contact)
+    ch = contact.get('channel') or 'whatsapp'
+    win = window_of(ch)
     li = aware(contact.get('last_in_at'))
     status, detail = 'skipped', ''
     try:
-        if li and now() - li < WINDOW:
+        if not win or (li and now() - li < win):  # canal sem janela (Telegram, e-mail) sempre pode
             await deliver(company['id'], contact, render(a['message'], ctx), None, by); status = 'sent'
-        elif contact.get('channel') == 'instagram':
-            detail = 'Instagram: fora das 24 h só uma pessoa do time pode responder'
+        elif ch != 'whatsapp':
+            detail = f'{ch_label(ch)}: fora das 24 h só uma pessoa do time pode responder'
         else:
             t = await db.templates.find_one({'id': a.get('template_id'), 'company_id': company['id']}, {'_id': 0}) if a.get('template_id') else None
             if t and t.get('status') == 'APPROVED':

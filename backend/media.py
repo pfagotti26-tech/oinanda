@@ -176,7 +176,8 @@ async def send_media(contact_id: str, file: UploadFile = File(...), caption: str
     from channels import view
     c = view(await get_contact(user, contact_id))
     li = aware(c.get('last_in_at'))
-    if c.get('channel') != 'instagram' and (not li or now() - li >= WINDOW): raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. Fora da janela, só modelo aprovado.')
+    meta = c.get('channel') in ('instagram', 'messenger')
+    if not meta and (not li or now() - li >= WINDOW): raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. Fora da janela, só modelo aprovado.')
     data = await file.read()
     if not data: raise HTTPException(400, 'Arquivo vazio.')
     if len(data) > MAX: raise HTTPException(400, 'Arquivo grande demais (máximo 16 MB).')
@@ -185,7 +186,7 @@ async def send_media(contact_id: str, file: UploadFile = File(...), caption: str
     kind = SEND_TYPES.get(mime)
     if not kind: raise HTTPException(400, 'Tipo de arquivo não aceito pelo WhatsApp. Envie foto (JPG/PNG), vídeo MP4, áudio, PDF, Word, Excel ou PowerPoint.')
     if kind == 'image' and len(data) > 5 * 1024 * 1024: raise HTTPException(400, 'Foto grande demais (máximo 5 MB).')
-    if c.get('channel') == 'instagram': return await send_ig(user, c, data, mime, kind, file.filename, caption)
+    if meta: return await send_ig(user, c, data, mime, kind, file.filename, caption, c['channel'])
     if kind == 'audio' and (voice or mime == 'audio/webm'): data, mime = to_voice(data, mime); voice = True
     n = await db.wa_numbers.find_one({'company_id': user['company_id']}, {'_id': 0})
     if not n: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
@@ -213,23 +214,24 @@ async def send_media(contact_id: str, file: UploadFile = File(...), caption: str
     msg.pop('_id', None)
     return msg
 
-async def send_ig(user, c, data, mime, kind, filename, caption):
+async def send_ig(user, c, data, mime, kind, filename, caption, ch='instagram'):
     import instagram
+    nome = 'Instagram' if ch == 'instagram' else 'Messenger'
     normal, hum = instagram.window(c)
-    if not hum: raise HTTPException(400, 'No Instagram só dá para responder até 7 dias depois da última mensagem do cliente.')
+    if not hum: raise HTTPException(400, f'No {nome} só dá para responder até 7 dias depois da última mensagem do cliente.')
     if kind == 'audio': data, mime = to_m4a(data, mime)
-    if kind == 'document' and mime != 'application/pdf': raise HTTPException(400, 'No Instagram só dá para mandar PDF como arquivo.')
+    if kind == 'document' and mime != 'application/pdf': raise HTTPException(400, f'No {nome} só dá para mandar PDF como arquivo.')
     if kind == 'image' and len(data) > 8 * 1024 * 1024: raise HTTPException(400, 'Foto grande demais (máximo 8 MB).')
     who = user.get('impersonated_by') or user['name']
     fname = (filename or 'arquivo').replace('/', '_')[:80]
-    msg = {'id': uid(), 'company_id': user['company_id'], 'contact_id': c['id'], 'channel': 'instagram', 'dir': 'out', 'type': kind, 'mime': mime, 'size': len(data),
+    msg = {'id': uid(), 'company_id': user['company_id'], 'contact_id': c['id'], 'channel': ch, 'dir': 'out', 'type': kind, 'mime': mime, 'size': len(data),
            'filename': fname if kind == 'document' else None, 'text': LABEL[kind], 'status': 'sent', 'by_id': user['id'], 'by': who, 'at': now()}
     p = path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name
-    res = await instagram.send(user['company_id'], c, {'attachment': {'type': {'document': 'file'}.get(kind, kind), 'payload': {'url': instagram.media_link(msg['id'])}}}, True)
+    res = await instagram.send(user['company_id'], c, {'attachment': {'type': {'document': 'file'}.get(kind, kind), 'payload': {'url': instagram.media_link(msg['id'])}}}, True, ch)
     msg['wa_msg_id'] = res.get('message_id')
     await db.messages.insert_one(msg.copy())
     cap = (caption or '').strip()
-    if cap: await instagram.deliver(user['company_id'], c, cap, user['id'], who)
+    if cap: await instagram.deliver(user['company_id'], c, cap, user['id'], who, ch=ch)
     upd = {'last_at': now(), 'last_text': (cap or LABEL[kind])[:200], 'last_dir': 'out'}
     if not c.get('assigned_to'): upd['assigned_to'] = user['id']
     if c.get('needs_human'): upd['needs_human'] = False
