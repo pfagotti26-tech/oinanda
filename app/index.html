@@ -897,6 +897,16 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .chb.mg,.chi.mg,.mgl{background:linear-gradient(45deg,#0695FF,#A334FA)}
 .chb.tg,.chi.tg,.tgl{background:linear-gradient(180deg,#37BBFE,#007DBB)}
 .tgstep{display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:14px;line-height:1.5;color:var(--ink2);padding:7px 0}
+.lbox{border:1px solid var(--line);border-radius:14px;background:var(--soft);padding:12px 14px;margin-bottom:8px;display:grid;gap:10px}
+.lbox .lhd{display:flex;align-items:center;gap:10px;font-size:14px}.lbox .lhd b{flex:1}
+.lq{display:flex;gap:7px;flex-wrap:wrap}
+.lq button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:6px 12px;cursor:pointer}
+.lq button:hover{border-color:var(--c);color:var(--c)}
+.lrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lrow input{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.lpend{display:grid;gap:6px;margin-bottom:8px}
+.lpend .li{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13.5px}
+.lpend .li b{color:var(--c);white-space:nowrap}.lpend .li span{flex:1;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tgstep>b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--coral-soft);color:var(--coral-ink);font-size:12.5px}.chb svg{width:10px;height:10px}
 .chi{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:4px;color:#fff;margin-right:4px;vertical-align:-2px}.chi svg{width:10px;height:10px}.chi.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
 .igl{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff}.igl svg{width:16px;height:16px}
@@ -1355,6 +1365,41 @@ async function renderIg(own){const box=$('#igc');if(!box)return;let d;try{d=awai
   if($('#igOff'))$('#igOff').onclick=async()=>{if(!await sure('Desconectar o Instagram? As conversas continuam aqui, mas não chegam mensagens novas do Direct.',{ok:'Desconectar'}))return;await api('/ig/account',{method:'DELETE'});renderIg(own)};
   $('#igF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
     try{await api('/ig/settings',{method:'PUT',body:{comment_words:f.w.value.split(',').map(x=>x.trim()).filter(Boolean),comment_dm:f.dm.value,comment_reply:f.rp.value}});toast('Salvo.')}catch(x){$('#igE').textContent=x.message}}}
+function laterWarn(c,when){
+  if(!c||['telegram','email'].includes(c.channel))return '';
+  if(!c.window_ends_at)return 'O cliente ainda não escreveu, então a mensagem só sai se ele escrever antes da hora marcada.';
+  return when>new Date(c.window_ends_at)?'Nessa hora a janela de 24 h já terá fechado. A mensagem só sai se '+(c.name||'o cliente').split(' ')[0]+' escrever de novo antes.':'' }
+function laterAt(d,h,m){const x=new Date();x.setDate(x.getDate()+d);x.setHours(h,m||0,0,0);return x}
+function laterNextMon(){const x=new Date();x.setDate(x.getDate()+((8-x.getDay())%7||7));x.setHours(9,0,0,0);return x}
+const pad2=n=>String(n).padStart(2,'0');
+const dIn=x=>x.getFullYear()+'-'+pad2(x.getMonth()+1)+'-'+pad2(x.getDate());
+const tIn=x=>pad2(x.getHours())+':'+pad2(x.getMinutes());
+async function laterBox(c){const box=$('#cvLater');if(!box)return;
+  let rows=[];try{rows=await api('/conversations/'+c.id+'/later')}catch(e){}
+  const open=CV.laterOpen&&CV.laterFor===c.id;
+  const pend=rows.length?`<div class="lpend">${rows.map(r=>`<div class="li"><b>${esc(r.local||'')}</b><span>${esc(r.text)}</span><button class="lnk danger" data-lx="${r.id}">cancelar</button></div>`).join('')}</div>`:'';
+  if(!open){box.innerHTML=pend;bindLx(c);return}
+  const d0=laterAt(1,9,0);
+  box.innerHTML=pend+`<div class="lbox"><div class="lhd"><b>Mandar esta mensagem depois</b><button type="button" class="lnk" id="lX">fechar</button></div>
+    <div class="lq"><button type="button" data-lq="h3">Daqui a 3 h</button><button type="button" data-lq="am">Amanhã 9h</button><button type="button" data-lq="seg">Segunda 9h</button></div>
+    <div class="lrow"><input type="date" id="lDate" value="${dIn(d0)}" min="${dIn(new Date())}"><input type="time" id="lTime" value="${tIn(d0)}">
+     <button type="button" class="btn sm p" id="lGo">Agendar</button></div>
+    <p class="hint" id="lWarn"></p></div>`;
+  const upd=()=>{const w=$('#lWarn'),v=new Date($('#lDate').value+'T'+($('#lTime').value||'09:00'));w.textContent=isNaN(v)?'':laterWarn(c,v)};
+  $('#lDate').onchange=upd;$('#lTime').onchange=upd;upd();
+  $('#lX').onclick=()=>{CV.laterOpen=false;laterBox(c)};
+  box.querySelectorAll('[data-lq]').forEach(b=>b.onclick=()=>{const x=b.dataset.lq==='h3'?new Date(Date.now()+3*3600e3):b.dataset.lq==='am'?laterAt(1,9,0):laterNextMon();
+    $('#lDate').value=dIn(x);$('#lTime').value=tIn(x);upd()});
+  $('#lGo').onclick=async()=>{const ta=$('#cvText'),t=(ta?.value||'').trim();
+    if(!t)return toast('Escreva a mensagem antes de agendar.');
+    const at=$('#lDate').value+'T'+($('#lTime').value||'09:00')+':00';
+    const b=$('#lGo');b.disabled=true;
+    try{await api('/conversations/'+c.id+'/later',{method:'POST',body:{text:t,at}});ta.value='';ta.dispatchEvent(new Event('input'));CV.laterOpen=false;toast('Agendada. Ela sai sozinha na hora marcada.');laterBox(c)}
+    catch(e){toast(e.message);b.disabled=false}};
+  bindLx(c);
+}
+function bindLx(c){document.querySelectorAll('[data-lx]').forEach(b=>b.onclick=async()=>{if(!await sure('Cancelar esta mensagem agendada?',{ok:'Cancelar o envio',cancel:'Deixar'}))return;
+  try{await api('/later/'+b.dataset.lx,{method:'DELETE'});toast('Agendamento cancelado.');laterBox(c)}catch(e){toast(e.message)}})}
 async function renderTg(own){const box=$('#tgc');if(!box)return;
   if(!chOn('telegram')){box.hidden=true;box.innerHTML='';return}
   box.hidden=false;let d;try{d=await api('/tg/status')}catch(e){box.innerHTML='';return}
@@ -1625,10 +1670,11 @@ function drawComposer(c,w,draft){
      :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'} ${ii('janela')}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
   else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
-   box.innerHTML=tabs+`${c.human_only?`<div class="wbar off"><i></i><span>Instagram: passou de 24 h desde a última mensagem de ${first}. Até ${fmtD(ymd(new Date(c.window_ends_at)))}, só uma pessoa do time pode responder (a Nanda não).</span></div>`:''}<div id="cvSug"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
+   box.innerHTML=tabs+`${c.human_only?`<div class="wbar off"><i></i><span>Instagram: passou de 24 h desde a última mensagem de ${first}. Até ${fmtD(ymd(new Date(c.window_ends_at)))}, só uma pessoa do time pode responder (a Nanda não).</span></div>`:''}<div id="cvSug"></div><div id="cvLater"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
      <div class="ctool"><div class="ctl">${I('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>','Mandar foto, vídeo ou arquivo','cvAttB')}<input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
       ${I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>','Gravar áudio','cvMic')}
       ${I('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>','Respostas rápidas','cvQRb')}
+      ${I('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>','Agendar para outro dia','cvLaterB')}
       ${c.ig_id&&!c.wa_id?`<button type="button" class="ib" id="cvWaB" title="Continuar no WhatsApp" aria-label="Continuar no WhatsApp" style="color:#1FAF54">${WAI.replace('stroke-width="2.2"','stroke-width="2"')}</button>`:''}
       ${CV.ai?.key_configured?`<span class="csep"></span><button type="button" class="ctg ${CV.sugOff?'':'on'}" id="cvSugT" title="${CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar'}" aria-pressed="${!CV.sugOff}"><i></i>Sugestões</button><button type="button" class="ib" id="cvSugB" title="Pedir uma sugestão agora" aria-label="Pedir sugestão da Nanda">✨</button>`:''}</div>
       <button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></div></form>`}
@@ -1643,6 +1689,8 @@ function drawComposer(c,w,draft){
       if((e.key==='Enter'||e.key==='Tab')&&items[i]){e.preventDefault();items[i].click();return}if(e.key==='Escape'){p.classList.add('hide');return}}
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#cvF').requestSubmit()}};
   if(CV.tab==='msg'&&$('#cvAttB'))attachInit(c,ta,grow);
+  if(CV.tab==='msg')laterBox(c);
+  if($('#cvLaterB'))$('#cvLaterB').onclick=()=>{CV.laterOpen=!(CV.laterOpen&&CV.laterFor===c.id);CV.laterFor=c.id;laterBox(c);if(CV.laterOpen)$('#lDate')?.focus()};
   $('#cvF').onsubmit=async ev=>{ev.preventDefault();if(CV.file)return sendFile(ta,grow);const t=ta.value.trim();if(!t)return;ta.value='';grow();
     try{if(CV.tab==='note'){await api('/conversations/'+CV.open+'/note',{method:'POST',body:{text:t}});toast('Nota salva. Só o time vê.')}
       else await api('/conversations/'+CV.open+'/send',{method:'POST',body:{text:t}});

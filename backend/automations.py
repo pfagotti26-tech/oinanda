@@ -446,6 +446,10 @@ async def loop():
             await tick()
         except Exception: log.exception('falha no envio das campanhas')
         try:
+            from later import tick as later_tick
+            await later_tick()
+        except Exception: log.exception('falha no envio das mensagens agendadas')
+        try:
             from goals import tick as goals_tick
             await goals_tick()
         except Exception: log.exception('falha nas metas')
