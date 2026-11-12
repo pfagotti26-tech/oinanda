@@ -3029,6 +3029,10 @@ async function mtGoals(){if(!MT.niche)MT.niche=await api('/goals/niche').catch((
   document.querySelectorAll('[data-gd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta meta? As divididas dela também saem.'))return;await api('/goals/'+b.dataset.gd,{method:'DELETE'});mtGoals()});
 }
 // nova meta em três perguntas, na própria página
+// número no padrão brasileiro enquanto digita: 20000 vira 20.000, e a vírgula separa os centavos
+const fmtIn=v=>v==null||v===''?'':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:2});
+const parseIn=t=>{t=String(t||'').replace(/\./g,'').replace(',','.').replace(/[^\d.]/g,'');return Number(t)||0};
+const maskIn=el=>{let t=el.value.replace(/[^\d,]/g,'');const i=t.indexOf(',');let a=i<0?t:t.slice(0,i),d=i<0?null:t.slice(i+1).replace(/,/g,'').slice(0,2);a=a.replace(/^0+(?=\d)/,'').replace(/\B(?=(\d{3})+(?!\d))/g,'.');el.value=d==null?a:a+','+d};
 async function goalForm(g,preset){
   const [team,tms,ps,n]=await Promise.all([api('/team'),api('/teams').catch(()=>[]),api('/products'),MT.niche||api('/goals/niche')]);MT.niche=n;const aw=(ME.company.gamify||{}).awards;
   const cap=w=>w.charAt(0).toUpperCase()+w.slice(1);
@@ -3053,7 +3057,7 @@ async function goalForm(g,preset){
     <p class="hint" id="gfRange" style="margin-top:8px"></p>
     <div class="form2 ${period==='custom'?'':'hide'}" id="glD" style="margin-top:10px"><div class="field"><label>Início</label><input type="date" name="start" value="${x.start||''}"></div><div class="field"><label>Fim</label><input type="date" name="end" value="${x.end||''}"></div></div></section>
    <section class="vd-c"><h4><span>3</span>Quanto, e para quem?</h4>
-    <div class="gf-num"><span id="gfPre">R$</span><input name="target" type="number" inputmode="decimal" min="0" step="any" required value="${x.target}" placeholder="0" aria-label="Valor da meta"><span id="gfSuf"></span></div>
+    <div class="gf-num"><span id="gfPre">R$</span><input name="target" type="text" inputmode="decimal" autocomplete="off" required value="${x.target?fmtIn(x.target):''}" placeholder="0" aria-label="Valor da meta"><span id="gfSuf"></span></div>
     <div class="gf-hints" id="gfH"></div><div class="gf-sug" id="gfS"></div>
     <div class="field" style="margin-top:14px"><label>Para quem</label><div class="seg gf-seg" id="glS">${[['company','Empresa toda'],['team','Uma equipe'],['user','Uma pessoa']].map(k=>`<button type="button" data-sc="${k[0]}" class="${scope===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
      <select name="team" class="${scope==='team'?'':'hide'}" style="margin-top:8px">${tms.map(t=>`<option value="${t.id}" ${x.target_id===t.id?'selected':''}>${esc(t.name)}</option>`).join('')||'<option value="">Crie equipes em Equipe</option>'}</select>
@@ -3068,14 +3072,14 @@ async function goalForm(g,preset){
   const f=$('#glF');let ht=0,hd=null;
   f.name.oninput=()=>{named=true};
   const PREV={week:'semana passada',month:'mês passado',quarter:'trimestre passado'};
-  const hints=()=>{const t=Number(f.target.value)||0,u=MTM[metric][1],out=[],prev=PREV[period]||'';
+  const hints=()=>{const t=parseIn(f.target.value),u=MTM[metric][1],out=[],prev=PREV[period]||'';
     if(hd&&hd.previous&&period!=='custom'){const parts=hd.prev_parts&&hd.prev_parts[1]?` (${num(hd.prev_parts[0])} de ${num(hd.prev_parts[1])})`:'';out.push(`<span>${cap(prev)}: <b>${mtF(hd.previous,metric)}</b>${parts}</span>`)}
     if(t&&hd&&hd.days&&['brl','num'].includes(u)&&ADDM.includes(metric))out.push(`<span>Dá <b>${u==='brl'?brl(t/hd.days):num(Math.ceil(t/hd.days*10)/10)}</b> por dia</span>`);
     $('#gfH').innerHTML=out.join('');
     const sb=$('#gfS');  // número sugerido: um pouco acima do período anterior, só enquanto o campo está vazio
     if(!g&&!f.target.value&&hd&&hd.previous&&period!=='custom'){const base=hd.previous,sug=u==='pct'?Math.min(100,Math.ceil(base+5)):u==='brl'?Math.ceil(base*1.15/100)*100:Math.ceil(base*1.15);
       sb.innerHTML=`<span>Sugestão:</span><button type="button" data-sg="${sug}">${mtF(sug,metric)}</button><small>${u==='pct'?'5 pontos':'15%'} acima d${prev.startsWith('semana')?'a':'o'} ${prev}</small>`;
-      sb.querySelector('[data-sg]').onclick=e=>{f.target.value=e.target.dataset.sg;sb.innerHTML='';hints()}}else sb.innerHTML=''};
+      sb.querySelector('[data-sg]').onclick=e=>{f.target.value=fmtIn(e.target.dataset.sg);sb.innerHTML='';hints()}}else sb.innerHTML=''};
   const load=()=>{clearTimeout(ht);ht=setTimeout(async()=>{hd=null;if(period!=='custom'){try{const q=new URLSearchParams({metric,period,scope});const tid=scope==='team'?f.team.value:scope==='user'?f.user.value:'';if(tid)q.set('target_id',tid);if(metric==='product_qty'&&f.product.value)q.set('product_id',f.product.value);hd=await api('/goals/hint?'+q)}catch(e){}}hints()},200)};
   let rate=['rate_attend','rate_close','rate_lead'].includes(metric)?metric:'rate_attend';
   const sync=()=>{metric=kind==='other'?f.metric.value:kind==='rate'?rate:kind;const u=MTM[metric][1];
@@ -3089,10 +3093,10 @@ async function goalForm(g,preset){
   f.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{rate=b.dataset.r;f.target.value='';sync()});
   f.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{period=b.dataset.p;f.querySelectorAll('[data-p]').forEach(y=>y.classList.toggle('on',y===b));sync()});
   f.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{scope=b.dataset.sc;f.querySelectorAll('[data-sc]').forEach(y=>y.classList.toggle('on',y===b));f.team.classList.toggle('hide',scope!=='team');f.user.classList.toggle('hide',scope!=='user');load()});
-  f.metric.onchange=sync;f.team.onchange=load;f.user.onchange=load;f.product.onchange=load;f.target.oninput=hints;sync();
+  f.metric.onchange=sync;f.team.onchange=load;f.user.onchange=load;f.product.onchange=load;f.target.oninput=()=>{maskIn(f.target);hints()};sync();
   const back=()=>mtView();$('#gfBack').onclick=back;
   f.onsubmit=async ev=>{ev.preventDefault();const body={name:(f.name.value||autoName()).trim(),metric,scope,target_id:scope==='team'?f.team.value:scope==='user'?f.user.value:null,period,
-      start:f.start.value||null,end:f.end.value||null,target:Number(f.target.value),floor_pct:Number(f.fl.value)||80,super_pct:Number(f.sp.value)||120,product_id:metric==='product_qty'?f.product.value:null,
+      start:f.start.value||null,end:f.end.value||null,target:parseIn(f.target.value),floor_pct:Number(f.fl.value)||80,super_pct:Number(f.sp.value)||120,product_id:metric==='product_qty'?f.product.value:null,
       award_meta:f.am?f.am.value:'',award_super:f.as?f.as.value:'',active:f.active.checked};
     if(!body.target){$('#glE').textContent='Diga o número da meta.';f.target.focus();return}
     try{await api(g?'/goals/'+g.id:'/goals',{method:g?'PUT':'POST',body});
