@@ -97,3 +97,30 @@ def test_faixas_de_horario():
     assert agenda.ranges_text([H(9), H(9, 30), H(10), H(10, 30), H(12, 30), H(15), H(15, 30), H(16), H(16, 30), H(17), H(17, 30), H(18), H(18, 30)], 30) == '09:00 às 10:30, 12:30, 15:00 às 18:30'
     assert agenda.ranges_text([H(9), H(9, 30)], 30) == '09:00 ou 09:30'
     assert agenda.ranges_text([], 30) == 'nenhum'
+
+async def fake_llm_fatos(system, messages, max_tokens=500):
+    prompts.append(system)
+    return json.dumps({'reply': 'Legal! O apto de 68 m² sai R$ 690 mil.', 'handoff': False, 'anotar': 'Compra para morar, financia Caixa, entrada R$ 200 mil + FGTS', 'valor': 690000, 'valor_item': 'Apto 2q Campeche'}), {}
+
+def test_anotacoes_e_valor_previsto(monkeypatch):
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', fake_llm_fatos)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona', 'email': 'd3@imob.com', 'password': 'senha-forte-1', 'company': 'Imob', 'segment': 'imobiliaria'})
+        c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30})
+        c.put('/api/ai/settings', json={'default_mode': 'auto'})
+        n = len(sent)
+        signed(c, inbound('vi o apto de 2 quartos no Campeche, financio pela Caixa com 200 de entrada', 'f1'))
+        assert wait(lambda: len(sent) == n + 1)
+        cid = c.get('/api/conversations').json()[0]['id']
+        assert wait(lambda: (c.get(f'/api/conversations/{cid}').json()['contact'].get('value') or 0) == 690000)
+        ct = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert 'entrada R$ 200 mil + FGTS' in ct['notes'] and '(Nanda, ' in ct['notes']
+        msgs = c.get(f'/api/conversations/{cid}').json()['messages']
+        assert any('estimou o valor previsto: R$ 690.000' in (m.get('text') or '') for m in msgs)
+        # o que já está anotado entra no prompt e não é anotado de novo; valor não é sobrescrito
+        c.patch(f'/api/contacts/{cid}', json={'value': 650000})
+        signed(c, inbound('e tem vaga de garagem?', 'f2'))
+        assert wait(lambda: len(sent) == n + 2); time.sleep(0.3)
+        assert 'entrada R$ 200 mil + FGTS' in prompts[-1] and 'ANOTAÇÕES DO CLIENTE' in prompts[-1]
+        ct = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert ct['value'] == 650000 and ct['notes'].count('entrada R$ 200 mil') == 1

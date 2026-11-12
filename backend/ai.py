@@ -71,7 +71,7 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
-def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30):
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30, notes=''):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
     if agenda_text:
@@ -108,10 +108,18 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-{ag}{extra}{origin_block(origin_opts, company)}
+{ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": ""}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": ""}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
+
+def notes_block(notes):
+    return f"""
+ANOTAÇÕES DO CLIENTE (o que o time já sabe; não pergunte de novo o que está aqui):
+{(notes or '').strip() or '(nada ainda)'}
+- "anotar": uma frase curta, só se aprendeu algo novo e útil para quem vai atender (para quem é, nome do filho, prazo, orçamento, preferência, quem indicou). Não repita o que já está anotado. Senão, "".
+- "valor": se o cliente mostrou interesse em um item do catálogo com preço, o valor estimado desse negócio em reais (número); senão null. "valor_item": o nome do item.
+"""
 
 def origin_block(opts, company):
     if not opts: return ''
@@ -131,9 +139,12 @@ def parse(text):
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
             return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
                     'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80],
-                    'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else []}
-        except ValueError: pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': []}
+                    'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else [],
+                    'anotar': str(d.get('anotar') or '').strip()[:200],
+                    'valor': float(d['valor']) if isinstance(d.get('valor'), (int, float)) and 0 < d['valor'] <= 100_000_000 else None,
+                    'valor_item': str(d.get('valor_item') or '').strip()[:60]}
+        except (ValueError, TypeError): pass
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': ''}
 
 def _img_block(r):
     """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""
@@ -213,7 +224,7 @@ async def system_for(s, company, contact=None):
     except Exception: log.exception('falha ao montar o link do whatsapp')
     try: s = {**s, '_catalog': catalog_text(await catalog_items(company['id']))}
     except Exception: log.exception('falha ao montar o catálogo')
-    return build_system(s, company, name, agenda_text, upcoming, opts, extra, step)
+    return build_system(s, company, name, agenda_text, upcoming, opts, extra, step, (contact or {}).get('notes') or '')
 
 async def think(company_id, contact):
     s = await settings_for(company_id)
@@ -307,6 +318,7 @@ async def auto_reply(company_id, contact_id, msg_id):
             await track(company_id, usage, 'replies')
             d = parse(text)
             if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+            await apply_facts(company_id, contact, d)
             return
         if mode != 'auto' or not key_ok():
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo
@@ -326,6 +338,7 @@ async def auto_reply(company_id, contact_id, msg_id):
                 d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
         if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
         await apply_origin(company_id, contact, d)
+        await apply_facts(company_id, contact, d)
         if d.get('marcos'): await suggest_marcos(company_id, contact, d['marcos'])
         if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
@@ -411,6 +424,20 @@ async def test(body: TestIn, user=Depends(managers)):
     d = parse(text)
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
+
+async def apply_facts(company_id, contact, d):
+    """O que a Nanda aprendeu vai para as Anotações do cliente e para o valor previsto, para o time não ter que reler a conversa."""
+    fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0, 'notes': 1, 'value': 1, 'sales_count': 1}) or {}
+    upd = {}
+    fact = (d.get('anotar') or '').strip().rstrip('.')
+    notes = (fresh.get('notes') or '').strip()
+    if fact and fact.lower() not in notes.lower() and len(notes) < 2500:
+        tz = agenda.tz_of(await db.companies.find_one({'id': company_id}, {'_id': 0, 'timezone': 1}) or {})
+        upd['notes'] = (notes + '\n' if notes else '') + f'• {fact} (Nanda, {now().astimezone(tz):%d/%m})'
+    if d.get('valor') and not fresh.get('value') and not fresh.get('sales_count'):
+        upd['value'] = d['valor']
+        await note(company_id, contact['id'], f'A Nanda estimou o valor previsto: {brl(d["valor"])}' + (f' · {d["valor_item"]}' if d.get('valor_item') else ''))
+    if upd: await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
 
 async def apply_origin(company_id, contact, d):
     """Grava a origem que a Nanda entendeu da conversa (no automático e nas sugestões)."""
