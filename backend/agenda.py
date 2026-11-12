@@ -70,6 +70,17 @@ async def free_slots(company, service, day_from, days, limit_per_day=None):
         if limit_per_day and d.isoformat() in out: out[d.isoformat()] = spread(out[d.isoformat()], limit_per_day)
     return out
 
+def ranges_text(ts, step):
+    """Horários livres de forma compacta e completa: "09:00 às 12:30, 15:00, 16:30 às 19:00".
+    Antes a Nanda via só 6 horários espalhados por dia e dizia "não tenho" para um horário livre."""
+    if not ts: return 'nenhum'
+    out, a, b = [], ts[0], ts[0]
+    for t in ts[1:]:
+        if (t - b) == timedelta(minutes=step): b = t; continue
+        out.append(a if a == b else (a, b)); a = b = t
+    out.append(a if a == b else (a, b))
+    return ', '.join(f'{x:%H:%M}' if not isinstance(x, tuple) else (f'{x[0]:%H:%M} ou {x[1]:%H:%M}' if (x[1] - x[0]) == timedelta(minutes=step) else f'{x[0]:%H:%M} às {x[1]:%H:%M}') for x in out)
+
 def spread(items, k):
     if len(items) <= k: return items
     return [items[round(i * (len(items) - 1) / (k - 1))] for i in range(k)]
@@ -120,8 +131,9 @@ async def nanda_context(company):
     tz = tz_of(company); today = now().astimezone(tz).date()
     lines = []
     for sv in s['services']:
-        free = await free_slots(company, sv, today, min(s.get('days_ahead') or 7, 6), limit_per_day=6)
-        days = [f'{WEEK[datetime.fromisoformat(d).weekday()]} {datetime.fromisoformat(d):%d/%m}: ' + ', '.join(f'{t:%H:%M}' for t in ts) for d, ts in free.items()]
+        free = await free_slots(company, sv, today, min(s.get('days_ahead') or 7, 6))
+        step = s.get('step') or 30
+        days = [f'{WEEK[datetime.fromisoformat(d).weekday()]} {datetime.fromisoformat(d):%d/%m}: ' + ranges_text(ts, step) for d, ts in free.items()]
         price = f', R$ {sv["price"]:.0f}'.replace('.', ',') if sv.get('price') else ''
         lines.append(f'- {sv["name"]} (id {sv["id"]}, {sv["duration"]} min{price})\n  ' + ('\n  '.join(days) if days else 'sem horários livres nos próximos dias'))
     return '\n'.join(lines), s

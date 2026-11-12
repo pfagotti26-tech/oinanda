@@ -34,4 +34,4 @@ def test_espera(monkeypatch):
         c.post(f"/api/conversations/{r['id']}/no-reply")
         r = c.get('/api/conversations').json()[0]
         assert not r['waiting'] and r['wait_from'] is None and c.get('/api/inbox/counts').json()['waiting'] == 0
-        assert c.get(f"/api/conversations/{r['id']}").json()['messages'][-1]['text'].endswith('marcou que não precisa responder')
+        assert c.get(f"/api/conversations/{r['id']}").json()['messages'][-1]['text'].endswith('tirou da fila de espera')

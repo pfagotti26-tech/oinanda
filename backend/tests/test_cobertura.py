@@ -1,0 +1,99 @@
+"""Depois do repasse a Nanda cobre o básico, e volta de verdade quando o time resolve.
+Agenda: a Nanda enxerga todos os horários livres, em faixas."""
+import os, json, hmac, hashlib, time
+os.environ.update(MONGO_URL='mock', ADMIN_EMAIL='admin@oinanda.com.br', META_APP_SECRET='segredo', WA_VERIFY_TOKEN='verif',
+                  AI_DEBOUNCE='0.05', AI_COVER_DELAY='0.2', ANTHROPIC_API_KEY='teste')
+from cryptography.fernet import Fernet
+os.environ.setdefault('SECRET_KEY', Fernet.generate_key().decode())
+from datetime import datetime
+from fastapi.testclient import TestClient
+import whatsapp, ai, agenda
+from main import app
+
+sent, prompts = [], []
+async def fake_graph(method, path, token, payload=None, params=None):
+    if path.endswith('/messages'):
+        sent.append(payload['text']['body']); return {'messages': [{'id': f'wamid.C{len(sent)}'}]}
+    if 'subscribed_apps' in path: return {'success': True}
+    return {'display_phone_number': '+55 11 95555-0000', 'verified_name': 'Escola'}
+
+async def fake_llm(system, messages, max_tokens=500):
+    prompts.append(system)
+    last = messages[-1]['content']
+    if 'desconto' in last: return json.dumps({'reply': 'Vou chamar o time para ver o desconto!', 'handoff': True, 'reason': 'desconto fora da tabela'}), {}
+    if 'ESTA CONVERSA JÁ ESTÁ COM O TIME' in system:
+        if 'endereço' in last: return json.dumps({'reply': 'Fica na Rua X, 100. O time continua com você amanhã às 7h.', 'handoff': False}), {}
+        return json.dumps({'reply': '', 'handoff': False}), {}
+    return json.dumps({'reply': 'Oi! Posso ajudar.', 'handoff': False}), {}
+
+def signed(c, body):
+    raw = json.dumps(body).encode()
+    return c.post('/api/wa/webhook', content=raw, headers={'x-hub-signature-256': 'sha256=' + hmac.new(b'segredo', raw, hashlib.sha256).hexdigest(), 'content-type': 'application/json'})
+
+def inbound(text, mid):
+    return {'entry': [{'changes': [{'field': 'messages', 'value': {'metadata': {'phone_number_id': '7770001112'},
+        'contacts': [{'wa_id': '5511977776666', 'profile': {'name': 'Rafael'}}],
+        'messages': [{'from': '5511977776666', 'id': mid, 'timestamp': str(int(time.time())), 'type': 'text', 'text': {'body': text}}]}}]}]}
+
+def wait(cond, t=3):
+    end = time.time() + t
+    while time.time() < end:
+        if cond(): return True
+        time.sleep(0.05)
+    return False
+
+def test_cobre_depois_do_repasse_e_volta(monkeypatch):
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', fake_llm)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona', 'email': 'd@escola.com', 'password': 'senha-forte-1', 'company': 'Escola', 'segment': 'escola'})
+        assert c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30}).status_code == 200
+        c.put('/api/ai/settings', json={'default_mode': 'auto'})
+        signed(c, inbound('tem desconto de 20%?', 'w1'))
+        assert wait(lambda: len(sent) == 1)
+        cid = c.get('/api/conversations').json()[0]['id']
+        assert wait(lambda: c.get('/api/conversations').json()[0].get('needs_human'))
+        conv = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert conv['ai_mode'] == 'off' and conv['ai_paused'] == 'handoff'
+        # pergunta simples com a conversa no time: a Nanda cobre, sem repassar de novo
+        signed(c, inbound('ok. qual o endereço?', 'w2'))
+        assert wait(lambda: len(sent) == 2)
+        assert 'Rua X' in sent[-1] and 'ESTA CONVERSA JÁ ESTÁ COM O TIME' in prompts[-1] and 'desconto fora da tabela' in prompts[-1]
+        conv = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert conv['needs_human'] and conv['ai_mode'] == 'off'  # continua com o time
+        # "obrigado": a Nanda fica quieta
+        signed(c, inbound('obrigado', 'w3')); time.sleep(0.6); assert len(sent) == 2
+        # se uma pessoa já respondeu, a Nanda não cobre
+        assert c.post(f'/api/conversations/{cid}/send', json={'text': 'Oi Rafael, aqui é a Dona.'}).status_code == 200
+        assert c.get(f'/api/conversations/{cid}').json()['contact']['ai_mode'] == 'off'
+        # resolvido pelo time: a Nanda volta como era (automática, padrão da empresa)
+        assert c.post(f'/api/conversations/{cid}/resolve', json={'resolved': True}).status_code == 200
+        conv = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert conv['ai_mode'] is None and not conv.get('ai_paused') and not conv['needs_human']
+        msgs = c.get(f'/api/conversations/{cid}').json()['messages']
+        assert any('devolveu a conversa para a Nanda' in (m.get('text') or '') for m in msgs)
+        n = len(sent)
+        signed(c, inbound('oi de novo, e a matrícula?', 'w4'))
+        assert wait(lambda: len(sent) == n + 1) and 'Posso ajudar' in sent[-1]
+
+def test_resume_route(monkeypatch):
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', fake_llm)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona', 'email': 'd2@escola.com', 'password': 'senha-forte-1', 'company': 'Escola 2', 'segment': 'escola'})
+        c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30})
+        c.put('/api/ai/settings', json={'default_mode': 'auto'})
+        signed(c, inbound('tem desconto?', 'r1'))
+        assert wait(lambda: c.get('/api/conversations').json() and c.get('/api/conversations').json()[0].get('needs_human'))
+        cid = c.get('/api/conversations').json()[0]['id']
+        assert c.post(f'/api/conversations/{cid}/resume').json()['ok']
+        conv = c.get(f'/api/conversations/{cid}').json()['contact']
+        assert conv['ai_mode'] is None and not conv['needs_human']
+        # pausada à mão pelo time (não foi repasse): religar também funciona
+        c.post(f'/api/conversations/{cid}/mode', json={'mode': 'off'})
+        c.post(f'/api/conversations/{cid}/resume')
+        assert c.get(f'/api/conversations/{cid}').json()['contact']['ai_mode'] is None
+
+def test_faixas_de_horario():
+    H = lambda h, m=0: datetime(2026, 11, 13, h, m)
+    assert agenda.ranges_text([H(9), H(9, 30), H(10), H(10, 30), H(12, 30), H(15), H(15, 30), H(16), H(16, 30), H(17), H(17, 30), H(18), H(18, 30)], 30) == '09:00 às 10:30, 12:30, 15:00 às 18:30'
+    assert agenda.ranges_text([H(9), H(9, 30)], 30) == '09:00 ou 09:30'
+    assert agenda.ranges_text([], 30) == 'nenhum'

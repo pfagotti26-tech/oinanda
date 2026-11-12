@@ -39,7 +39,7 @@ def wait(cond, t=3):
 
 def test_nanda(monkeypatch):
     monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', fake_llm)
-    monkeypatch.setenv('AI_DEBOUNCE', '0.05'); monkeypatch.setenv('ANTHROPIC_API_KEY', 'teste')
+    monkeypatch.setenv('AI_DEBOUNCE', '0.05'); monkeypatch.setenv('ANTHROPIC_API_KEY', 'teste'); monkeypatch.setenv('AI_COVER_DELAY', '5')  # a cobertura pós-repasse tem teste próprio
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Rita Dona', 'email': 'rita@clinica.com', 'password': 'senha-forte-1', 'company': 'Clínica Bela'})
         assert c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30}).status_code == 200
@@ -72,7 +72,7 @@ def test_nanda(monkeypatch):
         conv = c.get('/api/conversations').json()[0]
         assert conv['ai_mode'] == 'off'
         assert any(m['dir'] == 'sys' for m in c.get(f'/api/conversations/{cid}').json()['messages'])
-        # pausada: não responde mais
+        # pausada: não responde na hora (dá tempo para o time; a cobertura do básico está em test_cobertura)
         signed(c, inbound('alô?', 'wamid.L6')); time.sleep(0.3); assert len(sent) == 3
         # time responde, volta para o automático, e o pedido de atendente vai direto
         assert c.post(f'/api/conversations/{cid}/send', json={'text': 'Oi Lu, aqui é a Rita!'}).status_code == 200

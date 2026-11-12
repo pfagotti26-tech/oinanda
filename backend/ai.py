@@ -71,16 +71,17 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
-def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra=''):
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
     if agenda_text:
         ag = f"""
 AGENDA (horários livres de verdade, já descontando o que está ocupado):
 {agenda_text}
-- Ofereça no máximo 3 opções por vez, perguntando antes qual dia ou período fica melhor.
-- Só agende quando o cliente escolher um serviço e um horário DESTA lista. Aí preencha "book" e confirme na reply (serviço, dia e hora).
-- Nunca ofereça horário fora da lista. Se nenhum servir, chame o time.
+- "09:00 às 12:30" é uma faixa: qualquer início de {step} em {step} min dentro dela está livre (09:00, 09:30, 10:00...). Se o cliente pedir um horário dentro de uma faixa, pode agendar.
+- Ofereça no máximo 3 opções por vez, perguntando antes qual dia ou período fica melhor. Não liste a agenda inteira.
+- Só agende quando o cliente escolher um serviço e um horário que esteja livre AQUI. Aí preencha "book" e confirme na reply (serviço, dia e hora).
+- Nunca ofereça horário fora do que está livre. Se nenhum servir, chame o time.
 - Para cancelar ou remarcar, chame o time.
 """
         if upcoming:
@@ -178,7 +179,8 @@ async def track(company_id, usage, kind):
         {'$inc': {'input_tokens': usage.get('input_tokens', 0), 'output_tokens': usage.get('output_tokens', 0), kind: 1}}, upsert=True)
 
 async def system_for(s, company, contact=None):
-    try: agenda_text, _ = await agenda.nanda_context(company)
+    step = 30
+    try: agenda_text, ag_s = await agenda.nanda_context(company); step = (ag_s or {}).get('step') or 30
     except Exception: log.exception('falha ao montar a agenda'); agenda_text = None
     upcoming = await agenda.upcoming_for(company['id'], contact['id']) if contact and agenda_text else None
     name = (contact.get('name') or '').split(' ')[0] if contact else 'Cliente'
@@ -211,7 +213,7 @@ async def system_for(s, company, contact=None):
     except Exception: log.exception('falha ao montar o link do whatsapp')
     try: s = {**s, '_catalog': catalog_text(await catalog_items(company['id']))}
     except Exception: log.exception('falha ao montar o catálogo')
-    return build_system(s, company, name, agenda_text, upcoming, opts, extra)
+    return build_system(s, company, name, agenda_text, upcoming, opts, extra, step)
 
 async def think(company_id, contact):
     s = await settings_for(company_id)
@@ -229,7 +231,8 @@ def describe_book(company, b):
 
 # ---------- resposta automática ----------
 async def handoff(company_id, contact, reason):
-    await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'ai_mode': 'off', 'needs_human_at': now(), 'handoff_reason': reason}})
+    await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'ai_mode': 'off', 'ai_paused': 'handoff', 'ai_prev': contact.get('ai_mode'),
+                                                                   'needs_human_at': now(), 'handoff_reason': reason}})
     await note(company_id, contact['id'], f'A Nanda passou a conversa para o time · {reason or "cliente quer falar com uma pessoa"}')
     await route(company_id, contact, reason)
     try:
@@ -252,13 +255,34 @@ async def suggest_marcos(company_id, contact, ids):
         await suggest(await db.companies.find_one({'id': company_id}, {'_id': 0}), contact, ids)
     except Exception: log.exception('falha ao sugerir marcos')
 
+def cover_delay(): return float(os.environ.get('AI_COVER_DELAY', '180'))  # com a conversa no time, dá esse tempo para uma pessoa responder antes de a Nanda cobrir
+
+async def cover_block(company, contact):
+    """Instrução extra quando a conversa já está com o time: a Nanda só cobre o simples, sem mexer no assunto repassado."""
+    from inbox import next_open
+    quando = await next_open(company)
+    volta = f'a partir de {quando}' if quando else 'em breve'
+    return f"""
+ESTA CONVERSA JÁ ESTÁ COM O TIME{(' · motivo: ' + contact['handoff_reason']) if contact.get('handoff_reason') else ''}.
+- Você só cobre o que for simples e estiver no conhecimento (endereço, horário de funcionamento, formas de pagamento, dúvida rápida).
+- Não trate do motivo do repasse, não agende, não negocie, não chame o time de novo: deixe handoff false, book null e origin null.
+- Diga em uma frase que alguém do time continua com ele {volta}.
+- Se a mensagem for sobre o assunto repassado, for só um "ok/obrigado" ou precisar de uma pessoa, deixe reply vazia ("").
+"""
+
 async def auto_reply(company_id, contact_id, msg_id):
     await asyncio.sleep(debounce())
     try:
         contact = await db.contacts.find_one({'id': contact_id}, {'_id': 0})
-        if not contact or contact.get('needs_human'): return
+        if not contact: return
         s = await settings_for(company_id)
-        mode = contact.get('ai_mode') or s['default_mode']
+        cover = bool(contact.get('needs_human') or contact.get('ai_paused') == 'handoff')
+        if cover:
+            if (contact.get('ai_prev') or s['default_mode']) != 'auto': return  # antes do repasse ela não respondia sozinha: segue assim
+            await asyncio.sleep(max(0.0, cover_delay() - debounce()))
+            contact = await db.contacts.find_one({'id': contact_id}, {'_id': 0})
+            if not contact or not (contact.get('needs_human') or contact.get('ai_paused') == 'handoff'): return
+        mode = 'auto' if cover else (contact.get('ai_mode') or s['default_mode'])
         if mode == 'auto':
             from billing import has, ai_allowed
             co = await db.companies.find_one({'id': company_id}, {'_id': 0}) or {}
@@ -274,6 +298,16 @@ async def auto_reply(company_id, contact_id, msg_id):
         if await db.messages.find_one({'contact_id': contact_id, 'dir': 'out', 'at': {'$gt': last['received_at']}}): return  # alguém já respondeu
         if await db.messages.find_one({'contact_id': contact_id, 'dir': 'in', 'pending': True, 'id': {'$ne': msg_id}}): return  # áudio ainda sendo transcrito: a resposta sai quando terminar
         asks_human = bool(HUMAN_WORDS.search(last.get('text') or ''))
+        if cover:  # conversa no time: só cobre o factual, uma mensagem curta, sem repassar de novo
+            if asks_human or not key_ok(): return
+            company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+            msgs = await history(contact_id)
+            if not msgs: return
+            text, usage = await llm(await system_for(s, company, contact) + await cover_block(company, contact), msgs)
+            await track(company_id, usage, 'replies')
+            d = parse(text)
+            if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+            return
         if mode != 'auto' or not key_ok():
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo
                 await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'cliente pediu uma pessoa'}})
@@ -415,7 +449,7 @@ async def set_mode(contact_id: str, body: ModeIn, request: Request, user=Depends
     c = await get_contact(user, contact_id)
     upd = {'ai_mode': body.mode}
     if body.mode == 'auto': upd['needs_human'] = False
-    await db.contacts.update_one({'id': contact_id}, {'$set': upd})
+    await db.contacts.update_one({'id': contact_id}, {'$set': upd, '$unset': {'ai_paused': '', 'ai_prev': ''}})
     label = {'auto': 'automática', 'copilot': 'copiloto', 'off': 'pausada', None: 'padrão da empresa'}[body.mode]
     await note(user['company_id'], contact_id, f'{user.get("impersonated_by") or user["name"]} deixou a Nanda em modo {label}')
     return {'ok': True}
@@ -424,6 +458,22 @@ async def set_mode(contact_id: str, body: ModeIn, request: Request, user=Depends
 async def resolved(contact_id: str, user=Depends(current_user)):
     await get_contact(user, contact_id)
     await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False}})
+    return {'ok': True}
+
+async def resume(company_id, contact, who='o time'):
+    """A Nanda volta a atuar como antes do repasse (só quando foi ela mesma que pausou)."""
+    if contact.get('ai_paused') != 'handoff': return False
+    await db.contacts.update_one({'id': contact['id']}, {'$set': {'ai_mode': contact.get('ai_prev'), 'needs_human': False}, '$unset': {'ai_paused': '', 'ai_prev': ''}})
+    await note(company_id, contact['id'], f'{who} devolveu a conversa para a Nanda')
+    return True
+
+@router.post('/conversations/{contact_id}/resume')
+async def resume_route(contact_id: str, request: Request, user=Depends(current_user)):
+    c = await get_contact(user, contact_id)
+    if c.get('ai_paused') == 'handoff': await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
+    else:
+        await db.contacts.update_one({'id': contact_id}, {'$set': {'ai_mode': None, 'needs_human': False}})
+        await note(user['company_id'], contact_id, f'{user.get("impersonated_by") or user["name"]} religou a Nanda nesta conversa')
     return {'ok': True}
 
 # ---------- testes salvos ----------

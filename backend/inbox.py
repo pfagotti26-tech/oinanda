@@ -37,6 +37,25 @@ def wait_from(li, hours, tz):
             if t < e: return max(t, o)
     return li
 
+async def next_open(company):
+    """Texto de quando o atendimento abre de novo ("amanhã às 9h", "segunda às 9h"); None se está aberto agora ou não há horário definido."""
+    import agenda
+    from datetime import datetime, time
+    try: s = await agenda.settings_for(company)
+    except Exception: return None
+    hours = s.get('hours') if s.get('hours_set', True) else None
+    if not hours or not any(hours.values()): return None
+    tz = agenda.tz_of(company); t = now().astimezone(tz)
+    for d in range(8):
+        day = (t + timedelta(days=d)).date()
+        for a, b in sorted(hours.get(str(day.weekday())) or []):
+            o = datetime.combine(day, time.fromisoformat(a), tz); e = datetime.combine(day, time.fromisoformat(b), tz)
+            if o <= t < e: return None
+            if t < o:
+                h = f'{o:%Hh}' if o.minute == 0 else f'{o:%Hh%M}'
+                return ('hoje ' if d == 0 else 'amanhã ' if d == 1 else agenda.WEEK[day.weekday()] + ' ') + 'às ' + h
+    return None
+
 async def wait_ctx(company):
     """Horário de atendimento (o da agenda) e limite de cada equipe."""
     import agenda
@@ -129,7 +148,9 @@ async def no_reply(contact_id: str, user=Depends(current_user)):
     """Cliente mandou só "ok", "obrigado"...: sai da fila sem marcar como resolvida."""
     c = await get_contact(user, contact_id)
     await db.contacts.update_one({'id': c['id']}, {'$set': {'noreply_at': now(), 'unread': 0, 'needs_human': False}})
-    await note(user['company_id'], c['id'], f'{user.get("impersonated_by") or user["name"]} marcou que não precisa responder')
+    await note(user['company_id'], c['id'], f'{user.get("impersonated_by") or user["name"]} tirou da fila de espera')
+    from ai import resume
+    await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
     return {'ok': True}
 
 # ---------- nota interna e resolvido ----------
@@ -154,6 +175,8 @@ async def resolve(contact_id: str, body: ResolveIn, user=Depends(current_user)):
     who = user.get('impersonated_by') or user['name']
     if body.resolved:
         await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': now(), 'needs_human': False, 'unread': 0}})
+        from ai import resume
+        await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
         await note(user['company_id'], c['id'], f'{who} marcou a conversa como resolvida')
     else:
         await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': None}})
