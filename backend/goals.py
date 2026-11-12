@@ -28,6 +28,37 @@ METRICS = {
     'response': ('Tempo da 1ª resposta (min)', 'min'), 'quality': ('Nota do atendimento', 'score'),
 }
 ADDITIVE = {'revenue', 'sales', 'new_clients', 'renewals', 'upsell', 'reactivations', 'product_qty', 'appointments', 'attended', 'assisted'}
+# taxas: numerador / denominador, em %. A meta é a porcentagem a atingir (ex.: 40% das experimentais viram matrícula).
+RATES = {'rate_attend': ('attended', 'appointments'), 'rate_close': ('sales', 'attended'), 'rate_lead': ('sales', 'new_leads')}
+METRICS.update({'rate_attend': ('Comparecimento (% dos agendados que vieram)', 'pct'), 'rate_close': ('Fechamento (% dos que vieram e compraram)', 'pct'),
+                'rate_lead': ('Conversão (% dos contatos novos que compraram)', 'pct')})
+
+# ---------- vocabulário e sugestões por segmento ----------
+# 'sale' é como o ramo chama uma venda; 'first' é o caminho em destaque na primeira meta; 'suggest' são metas prontas, na ordem do funil.
+# Cada sugestão: (métrica, período, nome). O número a pessoa escolhe (com o histórico como dica).
+NICHE = {
+    'clinica':     {'sale': 'tratamento fechado', 'sales': 'tratamentos fechados', 'first': ('revenue', 'month'),
+                    'suggest': [('appointments', 'month', 'Avaliações marcadas'), ('rate_attend', 'month', 'Pacientes que vieram à avaliação'), ('rate_close', 'month', 'Avaliações que viraram tratamento')]},
+    'studio':      {'sale': 'matrícula', 'sales': 'matrículas', 'first': ('sales', 'month'),
+                    'suggest': [('appointments', 'month', 'Aulas experimentais marcadas'), ('rate_attend', 'month', 'Alunos que fizeram a aula'), ('renewals', 'month', 'Renovações de plano')]},
+    'escola':      {'sale': 'matrícula', 'sales': 'matrículas', 'first': ('sales', 'month'),
+                    'suggest': [('appointments', 'month', 'Aulas experimentais marcadas'), ('rate_close', 'month', 'Aulas que viraram matrícula'), ('renewals', 'custom', 'Rematrículas do semestre')]},
+    'salao':       {'sale': 'atendimento', 'sales': 'atendimentos', 'first': ('revenue', 'week'),
+                    'suggest': [('appointments', 'week', 'Horários marcados na semana'), ('reactivations', 'month', 'Clientes que voltaram'), ('revenue', 'week', 'Faturamento da semana')]},
+    'imobiliaria': {'sale': 'negócio fechado', 'sales': 'negócios fechados', 'first': ('sales', 'month'),
+                    'suggest': [('appointments', 'month', 'Visitas marcadas'), ('rate_attend', 'month', 'Visitas realizadas'), ('rate_close', 'month', 'Visitas que viraram negócio')]},
+    'loja':        {'sale': 'venda', 'sales': 'vendas', 'first': ('revenue', 'month'),
+                    'suggest': [('revenue', 'month', 'Faturamento do mês'), ('ticket', 'month', 'Ticket médio'), ('reactivations', 'month', 'Clientes que compraram de novo')]},
+    'servicos':    {'sale': 'contrato fechado', 'sales': 'contratos fechados', 'first': ('sales', 'month'),
+                    'suggest': [('appointments', 'month', 'Reuniões marcadas'), ('rate_attend', 'month', 'Reuniões realizadas'), ('rate_close', 'month', 'Reuniões que viraram contrato')]},
+    'restaurante': {'sale': 'pedido', 'sales': 'pedidos', 'first': ('revenue', 'week'),
+                    'suggest': [('revenue', 'week', 'Faturamento da semana'), ('sales', 'week', 'Pedidos na semana'), ('reactivations', 'month', 'Clientes que voltaram')]},
+    'lancamento':  {'sale': 'inscrição', 'sales': 'inscrições', 'first': ('revenue', 'custom'),
+                    'suggest': [('revenue', 'custom', 'Faturamento do lançamento'), ('sales', 'custom', 'Inscrições'), ('rate_lead', 'custom', 'Contatos que viraram inscrição')]},
+    'outro':       {'sale': 'venda', 'sales': 'vendas', 'first': ('revenue', 'month'),
+                    'suggest': [('revenue', 'month', 'Faturamento do mês'), ('sales', 'month', 'Vendas do mês'), ('new_clients', 'month', 'Clientes novos')]},
+}
+def niche_of(company): return NICHE.get(company.get('segment') or 'outro', NICHE['outro'])
 LOWER_BETTER = {'response'}
 DEFAULT_POINTS = {'sale': 10, 'renewal': 5, 'upsell': 5, 'reactivation': 5, 'fast_reply': 2, 'appointment': 3, 'quality': 5, 'assisted': 5, 'goal': 20, 'super': 40}
 POINT_LABELS = {'sale': 'Venda', 'renewal': 'Renovação (a mais)', 'upsell': 'Próximo produto (a mais)', 'reactivation': 'Cliente reativado (a mais)',
@@ -65,9 +96,15 @@ class Agg:
     def __init__(self):
         self.revenue = 0.0; self.sales = 0.0; self.count = 0; self.new_clients = 0.0; self.renewals = 0.0; self.upsell = 0.0; self.reactivations = 0.0
         self.qty = {}; self.appointments = 0; self.attended = 0; self.assisted = 0; self.replies = []; self.quality = []; self.points = 0.0
-        self.fast = 0; self.q9 = 0
+        self.fast = 0; self.q9 = 0; self.new_leads = 0
+
+    def rate(self, metric):
+        num, den = RATES[metric]
+        d = getattr(self, den); n = getattr(self, num)
+        return round(100 * n / d, 1) if d else None
 
     def value(self, metric, product_id=None):
+        if metric in RATES: return self.rate(metric)
         if metric == 'ticket': return round(self.revenue / self.sales, 2) if self.sales else 0
         if metric == 'product_qty': return round(self.qty.get(product_id, 0), 2)
         if metric == 'response': return round(median(self.replies), 1) if self.replies else None
@@ -111,6 +148,7 @@ async def compute(company, t0, t1):
         if ap.get('by_id'): A(ap['by_id']).points += pts['appointment']
     from reports import first_reply_minutes
     cids = [c['id'] for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': t0, '$lt': t1}}, {'_id': 0, 'id': 1}).to_list(5000)]
+    A('_all').new_leads = len(cids)
     for _, (m, by_id, is_ai) in (await first_reply_minutes(cid, cids)).items():
         if is_ai: continue
         A('_all').replies.append(m)
@@ -137,7 +175,7 @@ async def team_agg(aggs, team):
     for m in team.get('member_ids') or []:
         x = aggs.get(m)
         if not x: continue
-        for f in ('revenue', 'sales', 'new_clients', 'renewals', 'upsell', 'reactivations', 'appointments', 'attended', 'assisted', 'points', 'fast', 'q9'):
+        for f in ('revenue', 'sales', 'new_clients', 'renewals', 'upsell', 'reactivations', 'appointments', 'attended', 'assisted', 'points', 'fast', 'q9', 'new_leads'):
             setattr(a, f, getattr(a, f) + getattr(x, f))
         a.replies += x.replies; a.quality += x.quality
         for k, v in x.qty.items(): a.qty[k] = a.qty.get(k, 0) + v
@@ -146,7 +184,7 @@ async def team_agg(aggs, team):
 # ---------- metas ----------
 class GoalIn(BaseModel):
     name: str = Field(min_length=2, max_length=60)
-    metric: Literal['revenue', 'sales', 'ticket', 'new_clients', 'renewals', 'upsell', 'reactivations', 'product_qty', 'appointments', 'attended', 'assisted', 'response', 'quality']
+    metric: Literal['revenue', 'sales', 'ticket', 'new_clients', 'renewals', 'upsell', 'reactivations', 'product_qty', 'appointments', 'attended', 'assisted', 'response', 'quality', 'rate_attend', 'rate_close', 'rate_lead']
     scope: Literal['company', 'team', 'user'] = 'company'
     target_id: Optional[str] = None
     period: Literal['week', 'month', 'quarter', 'custom'] = 'month'
@@ -165,6 +203,8 @@ async def check_goal_in(user, b: GoalIn):
     if b.scope == 'user' and not await db.users.find_one({'id': b.target_id, 'company_id': user['company_id']}): raise HTTPException(400, 'Escolha a pessoa.')
     if b.metric == 'product_qty' and not await db.products.find_one({'id': b.product_id, 'company_id': user['company_id']}): raise HTTPException(400, 'Escolha o item.')
     if b.period == 'custom' and not (b.start and b.end and b.end >= b.start): raise HTTPException(400, 'Informe início e fim.')
+    if b.metric in RATES and b.target > 100: raise HTTPException(400, 'Uma taxa vai até 100%.')
+    if b.metric == 'rate_lead' and b.scope != 'company': raise HTTPException(400, 'A conversão de contatos novos é da empresa toda (o contato ainda não tem dono quando chega).')
 
 def progress(g, agg_val, a, b, t0, t1):
     t = now()
@@ -175,6 +215,9 @@ def progress(g, agg_val, a, b, t0, t1):
     else: pct = round(100 * v / g['target'], 1)
     level = 'super' if pct >= g['super_pct'] else 'meta' if pct >= 100 else 'minimo' if pct >= g['floor_pct'] else 'abaixo'
     out = {'value': v, 'pct': pct, 'level': level, 'elapsed': round(100 * el, 1), 'days_left': max(0, (t1 - max(t, t0)).days), 'start': a.isoformat(), 'end': b.isoformat()}
+    if g['metric'] in RATES:
+        out['on_track'] = v is not None and pct >= 100 - 10 * (1 - el)  # taxa: no ritmo quando perto do alvo, com folga no começo
+        out['num'], out['den'] = RATES[g['metric']]
     if g['metric'] in ADDITIVE and v is not None:
         out['projection'] = round(v / el, 2) if el >= 0.25 else None  # no começo do período a projeção engana
         out['projection_pct'] = round(100 * out['projection'] / g['target'], 1) if out['projection'] is not None else None
@@ -248,6 +291,32 @@ async def list_goals(user=Depends(managers)):
     rows = await evaluate(user['company'], [g for g in gs if g.get('active', True)])
     by = {r['id']: r for r in rows}
     return [by.get(g['id'], g) for g in gs]
+
+@router.get('/goals/niche')
+async def niche(user=Depends(current_user)):
+    """Como o ramo da empresa chama uma venda, o caminho em destaque e as metas sugeridas."""
+    n = niche_of(user['company'])
+    return {'sale': n['sale'], 'sales': n['sales'], 'first': {'metric': n['first'][0], 'period': n['first'][1]},
+            'suggest': [{'metric': m, 'period': p, 'name': nm, 'unit': METRICS[m][1]} for m, p, nm in n['suggest']],
+            'metrics': {k: v[0] for k, v in METRICS.items()}}
+
+@router.get('/goals/hint')
+async def hint(metric: str = 'revenue', period: str = 'month', scope: str = 'company', target_id: Optional[str] = None, product_id: Optional[str] = None, user=Depends(managers)):
+    """Ajuda na hora de escolher o número: quanto foi feito no período anterior e quantos dias tem o período atual."""
+    if metric not in METRICS or period not in ('week', 'month', 'quarter'): return {'previous': None, 'days': None}
+    co = user['company']
+    a, b, t0, t1, _ = period_range(co, period)
+    pa, pb, p0, p1, _ = period_range(co, period, at=t0 - timedelta(days=1))
+    aggs = await compute(co, p0, p1)
+    if scope == 'user': agg = aggs.get(target_id, Agg())
+    elif scope == 'team':
+        t = await db.teams.find_one({'id': target_id, 'company_id': co['id']}, {'_id': 0}) or {}
+        agg = await team_agg(aggs, t)
+    else: agg = aggs.get('_all', Agg())
+    out = {'previous': agg.value(metric, product_id), 'days': (b - a).days + 1, 'start': a.isoformat(), 'end': b.isoformat(),
+           'prev_start': pa.isoformat(), 'prev_end': pb.isoformat()}
+    if metric in RATES: out['prev_parts'] = [getattr(agg, RATES[metric][0]), getattr(agg, RATES[metric][1])]
+    return out
 
 @router.post('/goals')
 async def add_goal(body: GoalIn, request: Request, user=Depends(managers)):
@@ -407,6 +476,36 @@ async def achievements_of(company, uid_):
             'renewer': x.renewals >= 10, 'lightning': x.fast >= 50, 'loved': x.q9 >= 10, 'team_player': x.assisted >= 10, 'goal_hitter': hits >= 3}
     return [{'key': k, 'name': v[0], 'desc': v[1], 'done': have[k]} for k, v in ACHIEVEMENTS.items()]
 
+FUNNEL = ['appointments', 'rate_attend', 'rate_close', 'sales']  # marcou → veio → fechou
+
+def funnels_of(company, rows):
+    """Metas encadeadas (mesmo dono e período) viram um funil: marcados → vieram → fecharam, com a taxa entre as etapas.
+    Só quando há pelo menos duas etapas; as metas continuam nos cartões normais."""
+    from collections import defaultdict
+    groups = defaultdict(dict)
+    for r in rows:
+        if r['metric'] in FUNNEL: groups[(r['scope'], r.get('target_id'), r['period'], r.get('key'))][r['metric']] = r
+    out = []
+    for (scope, tid, period, key), gs in groups.items():
+        if len(gs) < 2: continue
+        any_r = next(iter(gs.values()))
+        # números reais do período (a taxa traz numerador e denominador; a meta de agendamentos traz o total)
+        appt = gs.get('appointments', {}).get('value')
+        att = clo = None
+        ra, rc = gs.get('rate_attend'), gs.get('rate_close')
+        sl = gs.get('sales', {}).get('value')
+        steps = [{'metric': 'appointments', 'label': 'Marcados', 'value': appt, 'goal': gs.get('appointments')}]
+        steps.append({'metric': 'rate_attend', 'label': 'Vieram', 'rate': ra['value'] if ra else None, 'goal': ra})
+        steps.append({'metric': 'rate_close', 'label': 'Fecharam', 'rate': rc['value'] if rc else None, 'goal': rc, 'value': sl})
+        weakest = None
+        for st in steps[1:]:
+            g = st.get('goal')
+            if g and g.get('pct') is not None and (weakest is None or g['pct'] < weakest['pct']): weakest = {'metric': st['metric'], 'pct': g['pct']}
+        out.append({'scope': scope, 'target_id': tid, 'owner_name': any_r.get('owner_name'), 'period': period, 'start': any_r['start'], 'end': any_r['end'],
+                    'days_left': any_r['days_left'], 'steps': [{k: v for k, v in st.items() if k != 'goal'} | ({'goal_id': st['goal']['id'], 'target': st['goal']['target'], 'pct': st['goal']['pct'], 'level': st['goal']['level'], 'on_track': st['goal'].get('on_track')} if st.get('goal') else {}) for st in steps],
+                    'weakest': weakest, 'goal_ids': [g['id'] for g in gs.values()]})
+    return out
+
 @router.get('/goals/board')
 async def board(user=Depends(current_user)):
     company = user['company']; s = settings_of(company)
@@ -425,6 +524,7 @@ async def board(user=Depends(current_user)):
         rows = [r for r in rows if vis(r)]
         out['goals'] = rows
         out['my_goals'] = [r for r in rows if r['scope'] == 'user' and r['target_id'] == user['id']]
+        out['funnels'] = funnels_of(company, rows)
     if s['game']:
         a, b, t0, t1, _ = period_range(company, 'month')
         aggs = await compute(company, t0, t1)

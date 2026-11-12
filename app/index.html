@@ -1086,6 +1086,52 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
   .lkr .lka{justify-content:flex-start!important;flex-wrap:wrap;gap:6px 8px!important;margin-top:6px}
   .lkr .lka .lnk{border:1px solid var(--line);border-radius:999px;padding:5px 11px;text-decoration:none;font-size:12.5px;background:#fff}
 }
+.mt-cfl{margin-left:2px}#mtCfg{display:inline-flex;align-items:center;gap:4px}#mtCfg svg{width:16px;height:16px;flex:none}#mtCfg.on{border-color:var(--c);color:var(--c)}
+.mt-start{max-width:640px;margin:8px auto 0;text-align:center;display:grid;gap:12px}.mt-start h2{font-size:24px;letter-spacing:-.02em}.mt-start>p{color:var(--ink2);font-size:14.5px}
+.mt-pick,.gf-cards{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px}.gf-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mt-pick button,.gf-cards button{display:grid;gap:4px;justify-items:start;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.gf-cards button{padding:14px}
+.mt-pick button:hover,.gf-cards button:hover{border-color:var(--c)}.gf-cards button.on{border-color:var(--c);background:var(--soft);box-shadow:0 0 0 3px rgba(232,96,63,.12)}
+.mt-pick i,.gf-cards i{font-style:normal;font-weight:800;font-size:15px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:var(--c2);margin-bottom:6px}
+.gf-cards i{width:32px;height:32px;font-size:13.5px;border-radius:9px;margin-bottom:2px}.gf-cards button.on i{background:var(--c);color:#fff}
+.mt-pick b{font-size:16.5px}.gf-cards b{font-size:14.5px}.mt-pick span,.gf-cards span{font-size:13px;color:var(--ink2);line-height:1.35}
+.gf{display:grid;gap:12px;max-width:720px}.gf h2{font-size:22px;letter-spacing:-.02em;margin:2px 0 2px}.gf #gfBack{justify-self:start}
+.gf h4{display:flex;align-items:center;gap:10px;font-size:15.5px;margin-bottom:12px}.gf h4 span{width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--c2);font-size:12.5px;display:grid;place-items:center;flex:none}
+.gf-seg{display:flex;flex-wrap:wrap}.gf-seg button{flex:1;min-width:0;white-space:nowrap}
+.gf-num{display:flex;align-items:center;gap:10px;border:1.5px solid #DCD2C9;border-radius:14px;padding:6px 14px;background:#fff}.gf-num:focus-within{border-color:var(--c);box-shadow:0 0 0 3px rgba(232,96,63,.12)}
+.gf-num span{font-weight:700;color:var(--ink2);font-size:16px;white-space:nowrap}.gf-num input{flex:1;min-width:0;border:0!important;outline:0;box-shadow:none!important;background:transparent;font:inherit;font-size:26px;font-weight:700;padding:6px 0;font-variant-numeric:tabular-nums}
+.gf-hints{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin-top:8px;min-height:18px}.gf-hints b{color:var(--ink)}
+.gf-more>summary{cursor:pointer;font-weight:700;font-size:14.5px;list-style:none;display:flex;gap:8px;align-items:baseline}.gf-more>summary::-webkit-details-marker{display:none}
+.gf-more>summary::before{content:"+";color:var(--c);font-weight:700;width:14px}.gf-more[open]>summary::before{content:"–"}.gf-more .field,.gf-more .form2{margin-top:10px}
+.gf-go{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(251,248,245,0),var(--bg,#FBF8F5) 35%);padding:10px 0 4px}
+.gcards{display:none;gap:10px}.gcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px}
+.gc-h{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.gc-h b{display:block;font-size:15px}.gc-h small{color:var(--ink2);font-size:12.5px}
+.gc-v{display:flex;gap:8px;align-items:baseline}.gc-v b{font-size:20px;font-variant-numeric:tabular-nums}.gc-v span{color:var(--ink2);font-size:13px}
+.gc-a{display:flex;gap:8px;flex-wrap:wrap}
+.swt{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #F3EEE9;cursor:pointer}.swt>span{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.swt b{font-size:15px}.swt small{color:var(--ink2);font-size:13px;line-height:1.4}
+.swt input{position:absolute;opacity:0;width:0;height:0}.swt i{flex:none;width:44px;height:26px;border-radius:999px;background:#D8D0C8;position:relative;transition:background .15s}
+.swt i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.swt input:checked+i{background:var(--ok)}.swt input:checked+i::after{transform:translateX(18px)}.swt input:focus-visible+i{outline:2px solid var(--c);outline-offset:2px}
+.per-f{display:flex;gap:6px;margin:0 0 12px}.per-f button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:6px 13px;cursor:pointer}.per-f button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+@media (max-width:760px){
+  .mt-cfl{display:none}.mt-pick{grid-template-columns:1fr}.gf-cards{grid-template-columns:1fr}.gf-cards button{grid-template-columns:32px 1fr;column-gap:12px;align-items:center;padding:12px}.gf-cards i{grid-row:1/span 2;margin:0}
+  .gt-d{display:none!important}.gcards{display:grid}.mc-rk{grid-template-columns:1fr!important}.mt-start h2{font-size:21px}
+}
+.mt-pick button{position:relative}.mt-pick button.rec{border-color:var(--c)}.mt-pick button em{position:absolute;top:-10px;left:14px;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--c);color:#fff;border-radius:999px;padding:3px 9px}
+.mt-sug{text-align:left;margin-top:8px}.mt-sug h3{font-size:14px;color:var(--ink2);margin:0 0 8px;font-weight:600}
+.mt-sugl{display:grid;gap:8px}.mt-sugl button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer;font:inherit}
+.mt-sugl button:hover{border-color:var(--c)}.mt-sugl b{font-size:14.5px}.mt-sugl span{font-size:12.5px;color:var(--ink2)}
+.gf-cards.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gf-sug{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink2)}.gf-sug:empty{display:none}
+.gf-sug button{font:inherit;font-weight:700;font-size:13.5px;border:1px dashed var(--c);color:var(--c2);background:var(--soft);border-radius:999px;padding:5px 12px;cursor:pointer}.gf-sug small{font-size:12px}
+.seg.dim{opacity:.5;pointer-events:none}
+.fn-grid{display:grid;gap:12px;margin-bottom:14px}
+.fn-row{display:flex;align-items:stretch;gap:6px;margin-top:4px}
+.fn-s{flex:1;min-width:0;background:var(--soft);border-radius:12px;padding:10px 12px;display:grid;gap:1px;align-content:start;position:relative;border:1.5px solid transparent}
+.fn-s small{font-size:11.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;font-weight:700}.fn-s b{font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.fn-s span{font-size:12.5px;color:var(--ink2)}
+.fn-s.off b{color:var(--bad)}.fn-s.weak{border-color:var(--bad);background:#FFF3F1}.fn-s em{font-style:normal;font-size:11px;font-weight:800;color:var(--bad);margin-top:3px}
+.fn-ar{align-self:center;color:var(--ink3);font-size:18px;flex:none}
+@media (max-width:760px){.gf-cards.four{grid-template-columns:1fr}.fn-row{flex-direction:column;gap:4px}.fn-ar{transform:rotate(90deg);align-self:flex-start;margin-left:18px;line-height:1}.fn-s{grid-template-columns:1fr auto;align-items:center}.fn-s b{grid-row:1/span 2;grid-column:2;font-size:20px}.fn-s em{grid-column:1}}
 </style>
 </head>
 <body>
@@ -1271,7 +1317,7 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Campanhas no WhatsApp','clientes',()=>{CL.tab='camp';return go('clientes')},m],
   ['Relatório de renovação e upsell','clientes',()=>{CL.tab='ren';return go('clientes')},m],
   ['Minhas metas e ranking','metas',()=>{MT.tab='painel';return go('metas')}],
-  ['Criar meta','metas',()=>{MT.tab='metas';return go('metas').then(()=>goalForm(null))},m],
+  ['Criar meta','metas',()=>{MT.tab='painel';return go('metas').then(()=>goalForm(null))},m],
   ['Criar desafio','metas',()=>{MT.tab='desafios';return go('metas').then(()=>challengeForm())},m],
   ['Modo TV (ranking e metas)','metas',()=>go('metas').then(()=>mtTv())],
   ['Agendar horário','agenda',()=>go('agenda').then(()=>bookModal({},()=>VIEWS.agenda()))],
@@ -2881,44 +2927,74 @@ async function oppDetail(op){const d=FN.pd,mgr=isMgr();const team=mgr?await api(
 
 /* metas, prêmios e gamificação */
 const MT={tab:'painel',data:null,tv:null};
-const MTM={revenue:['Faturamento','brl'],sales:['Número de vendas','num'],ticket:['Ticket médio','brl'],new_clients:['Clientes novos (primeira compra)','num'],renewals:['Renovações','num'],
+const MTM={revenue:['Faturamento','brl'],sales:['Número de vendas','num'],rate_attend:['Comparecimento','pct'],rate_close:['Fechamento','pct'],rate_lead:['Conversão de contatos novos','pct'],ticket:['Ticket médio','brl'],new_clients:['Clientes novos (primeira compra)','num'],renewals:['Renovações','num'],
   upsell:['Vendas de próximo produto','num'],reactivations:['Clientes reativados','num'],product_qty:['Unidades de um item','num'],appointments:['Agendamentos','num'],attended:['Comparecimentos','num'],
   assisted:['Oportunidades passadas que viraram venda','num'],response:['Tempo da 1ª resposta (minutos, quanto menor melhor)','min'],quality:['Nota do atendimento (0 a 10)','score'],points:['Pontos','num']};
-const mtF=(v,m)=>v==null?'—':MTM[m][1]==='brl'?brl(v):MTM[m][1]==='min'?num(v)+' min':MTM[m][1]==='score'?String(v).replace('.',','):num(v);
+const ADDM=['revenue','sales','new_clients','renewals','upsell','reactivations','product_qty','appointments','attended','assisted'];
+const cap=t=>t?t[0].toUpperCase()+t.slice(1):'';const mtL=m=>m==='sales'&&MT.niche?cap(MT.niche.sales):MTM[m][0];
+const mtF=(v,m)=>v==null?'—':MTM[m][1]==='pct'?num(v)+'%':MTM[m][1]==='brl'?brl(v):MTM[m][1]==='min'?num(v)+' min':MTM[m][1]==='score'?String(v).replace('.',','):num(v);
 const LVL={abaixo:['abaixo do mínimo','bad'],minimo:['mínimo','warn'],meta:['meta batida','ok'],super:['supermeta!','ok']};
 const gamOn=()=>{const g=ME.company.gamify||{};return !!(g.goals||g.game||g.awards)};
 function goalCard(g,big){const fl=g.floor_pct,sp=g.super_pct,scale=Math.max(sp,g.pct)*1.05;const at=x=>Math.min(100,100*x/scale);
-  return `<div class="gl-c ${big?'big':''} lv-${g.level}"><div class="gl-h"><div><b>${esc(g.name)}</b><span>${esc(g.owner_name||'')} · ${esc(MTM[g.metric][0])}${g.product_name?' · '+esc(g.product_name):''}</span></div><span class="pill ${LVL[g.level][1]}">${LVL[g.level][0]}</span></div>
+  return `<div class="gl-c ${big?'big':''} lv-${g.level}"><div class="gl-h"><div><b>${esc(g.name)}</b><span>${esc(g.owner_name||'')} · ${esc(mtL(g.metric))}${g.product_name?' · '+esc(g.product_name):''}</span></div><span class="pill ${g.level==='abaixo'&&g.on_track?'ok':LVL[g.level][1]}">${g.level==='abaixo'&&g.on_track?'no ritmo':LVL[g.level][0]}</span></div>
    <div class="gl-v"><b>${mtF(g.value,g.metric)}</b><span>de ${mtF(g.target,g.metric)}</span><em>${num(g.pct)}%</em></div>
    <div class="gl-bar"><i style="width:${at(g.pct)}%"></i><span class="gk" style="left:${at(fl)}%" title="mínimo ${fl}%"></span><span class="gk gm" style="left:${at(100)}%" title="meta"></span><span class="gk gs" style="left:${at(sp)}%" title="supermeta ${sp}%"></span></div>
-   <div class="gl-f">${g.per_day!=null&&g.pct<100&&g.days_left>0?`<span>Faltam <b>${mtF(Math.max(0,g.target-(g.value||0)),g.metric)}</b> · <b>${mtF(g.per_day,g.metric)}</b> por dia</span>`:g.pct>=100?'<span>🎉 Meta batida</span>':''}
+   <div class="gl-f">${g.per_day!=null&&g.pct<100&&g.days_left>0?`<span>${Math.max(0,g.target-(g.value||0))===1&&MTM[g.metric][1]==='num'?'Falta':'Faltam'} <b>${mtF(Math.max(0,g.target-(g.value||0)),g.metric)}</b>${MTM[g.metric][1]==='num'&&g.per_day<1?'':` · <b>${MTM[g.metric][1]==='num'?num(Math.ceil(g.per_day)):mtF(g.per_day,g.metric)}</b> por dia`}</span>`:g.pct>=100?'<span>🎉 Meta batida</span>':''}
     ${g.projection_pct!=null&&g.pct<100?`<span class="${g.on_track?'ok':'bad'}">${g.on_track?'No ritmo':'Abaixo do ritmo'} · projeção ${num(g.projection_pct)}%</span>`:''}<span class="hint">${g.days_left?g.days_left+' dias restantes':'último dia'}</span></div>
    ${g.award_meta||g.award_super?`<div class="gl-aw">🏆 ${g.award_meta?`Meta: ${esc(g.award_meta)}`:''}${g.award_meta&&g.award_super?' · ':''}${g.award_super?`Supermeta: ${esc(g.award_super)}`:''}</div>`:''}</div>`}
-function mtHead(){const mgr=isMgr();const tabs=[['painel','Painel'],...(mgr?[['metas','Metas']]:[]),['desafios','Desafios'],['premios','Prêmios'],...(mgr?[['config','Configurar']]:[])];
-  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Metas da empresa, das equipes e de cada pessoa, com prêmios e ranking.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}</div></div>
-   <nav class="utabs">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
+function funnelCard(f){const st=f.steps,w=f.weakest;const per={week:'semana',month:'mês',quarter:'trimestre',custom:'período'}[f.period];
+  const box=(x,i)=>{const isW=w&&w.metric===x.metric,has=x.goal_id!=null;
+    const main=x.rate!=null?num(x.rate)+'%':x.value!=null?num(x.value):'—';
+    const sub=x.metric==='appointments'?(has?`meta ${num(x.target)}`:'sem meta'):x.metric==='rate_close'&&x.value!=null?`${num(x.value)} fecharam${has?' · meta '+num(x.target)+'%':''}`:(has?`meta ${num(x.target)}%`:'sem meta');
+    return `${i?'<span class="fn-ar">→</span>':''}<div class="fn-s ${isW?'weak':''} ${has&&x.on_track===false?'off':''}"><small>${x.label}</small><b>${main}</b><span>${sub}</span>${isW?'<em>etapa mais fraca</em>':''}</div>`};
+  return `<div class="gl-c fn-c"><div class="gl-h"><div><b>${esc(f.owner_name||'Empresa')}</b><span>Funil do ${per}${f.days_left?` · ${f.days_left} dias restantes`:''}</span></div>${w?`<span class="pill ${w.pct>=100?'ok':w.pct>=80?'warn':'bad'}">${w.pct>=100?'tudo no alvo':'atenção em '+{rate_attend:'comparecimento',rate_close:'fechamento'}[w.metric]}</span>`:''}</div>
+   <div class="fn-row">${st.map(box).join('')}</div></div>`}
+function mtHead(){const mgr=isMgr(),g=ME.company.gamify||{};
+  const tabs=gamOn()?[['painel','Painel'],...(mgr&&g.goals?[['metas','Metas']]:[]),['desafios','Desafios'],...(g.awards?[['premios','Prêmios']]:[])]:[];
+  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Metas da empresa, das equipes e de cada pessoa, com prêmios e ranking.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}
+    ${mgr?`<button class="btn sm ${MT.tab==='config'?'on':''}" id="mtCfg" title="Configurar metas, prêmios e ranking" aria-label="Configurar" style="white-space:nowrap">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 10h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/>')}<span class="mt-cfl"> Configurar</span></button>`:''}</div></div>
+   ${tabs.length&&MT.tab!=='config'?`<nav class="utabs">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</nav>`:''}`}
 async function mtView(){
-  const mgr=isMgr();if(!gamOn()&&mgr&&MT.tab!=='config')MT.tab='config';
+  const mgr=isMgr(),g=ME.company.gamify||{};
+  if(MT.tab==='metas'&&!g.goals)MT.tab='painel';if(MT.tab==='premios'&&!g.awards)MT.tab='painel';
   $('#page').innerHTML=mtHead()+'<div id="mtB"><div class="empty">Carregando...</div></div>';
   document.querySelectorAll('[data-mtt]').forEach(b=>b.onclick=()=>{MT.tab=b.dataset.mtt;syncUrl();mtView()});
   if($('#mtTv'))$('#mtTv').onclick=mtTv;
-  if(!gamOn()&&!mgr){$('#mtB').innerHTML='<div class="aempty"><div><b>Metas ainda não estão ligadas</b><p>Peça para o dono ou gestor ligar em Metas › Configurar.</p></div></div>';return}
-  if(MT.tab==='config')return mtConfig();if(MT.tab==='metas')return mtGoals();if(MT.tab==='desafios')return mtChallenges();if(MT.tab==='premios')return mtAwards();
+  if($('#mtCfg'))$('#mtCfg').onclick=()=>{MT.tab=MT.tab==='config'?'painel':'config';syncUrl();mtView()};
+  if(MT.tab==='config'&&mgr)return mtConfig();
+  if(!gamOn()){if(!mgr){$('#mtB').innerHTML='<div class="aempty"><div><b>Metas ainda não estão ligadas</b><p>Peça para o dono ou gestor criar a primeira meta.</p></div></div>';return}return mtStart()}
+  if(MT.tab==='metas')return mtGoals();if(MT.tab==='desafios')return mtChallenges();if(MT.tab==='premios')return mtAwards();
   return mtBoard();
 }
-async function mtBoard(){
+// primeira vez: em vez de configuração, a pergunta que importa
+async function mtStart(){
+  const n=MT.niche=MT.niche||await api('/goals/niche');
+  const ex={revenue:'Ex.: R$ 12.000 no mês',sales:`Ex.: 20 ${n.sales} no mês`};
+  const first=n.first.metric;
+  $('#mtB').innerHTML=`<div class="mt-start"><h2>Qual é a sua meta ${n.first.period==='week'?'desta semana':'deste mês'}?</h2><p>Escolha como quer medir. Dá para mudar depois e criar outras para a semana, para uma equipe ou para cada pessoa.</p>
+    <div class="mt-pick">${[['revenue','R$','Vender um valor',ex.revenue],['sales','#',`Fazer um número de ${n.sales}`,ex.sales]].sort((a,b)=>(a[0]===first?-1:b[0]===first?1:0)).map(k=>`<button type="button" data-m="${k[0]}" class="${k[0]===first?'rec':''}">${k[0]===first?'<em>Mais comum no seu ramo</em>':''}<i>${k[1]}</i><b>${k[2]}</b><span>${k[3]}</span></button>`).join('')}</div>
+    <div class="mt-sug"><h3>Ou comece por uma meta do seu ramo</h3><div class="mt-sugl">${n.suggest.map((x,i)=>`<button type="button" data-s="${i}"><b>${esc(x.name)}</b><span>${x.unit==='pct'?'meta em %':x.unit==='brl'?'meta em R$':'meta em quantidade'} · ${{week:'toda semana',month:'todo mês',quarter:'todo trimestre',custom:'datas'}[x.period]}</span></button>`).join('')}</div></div>
+    <p class="hint">Prêmios, pontos e ranking são opcionais e ficam em Configurar.</p></div>`;
+  document.querySelectorAll('.mt-pick [data-m]').forEach(b=>b.onclick=()=>goalForm(null,{metric:b.dataset.m,period:n.first.period==='custom'?'month':n.first.period}));
+  document.querySelectorAll('.mt-sugl [data-s]').forEach(b=>b.onclick=()=>{const x=n.suggest[+b.dataset.s];goalForm(null,{metric:x.metric,period:x.period,name:x.name})});
+}
+async function mtBoard(){if(!MT.niche)MT.niche=await api('/goals/niche').catch(()=>null);
   const b=MT.data=await api('/goals/board');const s=b.settings;
   if(!b.enabled){$('#mtB').innerHTML='<div class="aempty"><div><b>Nada ligado ainda</b></div></div>';return}
-  const mine=b.my_goals||[],others=(b.goals||[]).filter(g=>!mine.includes(g)&&!(g.scope==='user'&&g.target_id===ME.user.id));
+  const kinds=[...new Set((b.goals||[]).map(g=>g.period))];if(MT.per&&!kinds.includes(MT.per))MT.per=null;
+  const pf=g=>!MT.per||g.period===MT.per;
+  const mine=(b.my_goals||[]).filter(pf),others=(b.goals||[]).filter(g=>pf(g)&&!(b.my_goals||[]).includes(g)&&!(g.scope==='user'&&g.target_id===ME.user.id));
   const comp=others.filter(g=>g.scope==='company'),tms=others.filter(g=>g.scope==='team'),ppl=others.filter(g=>g.scope==='user');
   const medal=i=>`<span class="md">${['🥇','🥈','🥉'][i]||`<small class="rk-n">${i+1}º</small>`}</span>`;
   $('#mtB').innerHTML=`<div class="mt-g"><div class="mt-main">
+    ${s.goals&&kinds.length>1?`<div class="per-f">${[[null,'Todas'],['week','Semana'],['month','Mês'],['quarter','Trimestre'],['custom','Datas']].filter(k=>!k[0]||kinds.includes(k[0])).map(k=>`<button type="button" data-per="${k[0]||''}" class="${(MT.per||null)===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>`:''}
+    ${s.goals&&(b.funnels||[]).filter(f=>pf(f)).length?`<h3 class="sec">Funil</h3><div class="fn-grid">${b.funnels.filter(f=>pf(f)).map(funnelCard).join('')}</div>`:''}
     ${s.goals?`${mine.length?`<h3 class="sec">Minhas metas</h3><div class="gl-grid">${mine.map(g=>goalCard(g,true)).join('')}</div>`:''}
      ${comp.length?`<h3 class="sec">Empresa</h3><div class="gl-grid">${comp.map(g=>goalCard(g)).join('')}</div>`:''}
      ${tms.length?`<h3 class="sec">Equipes</h3><div class="gl-grid">${tms.map(g=>goalCard(g)).join('')}</div>`:''}
      ${ppl.length?`<h3 class="sec">Pessoas</h3><div class="gl-grid">${ppl.map(g=>goalCard(g)).join('')}</div>`:''}
      ${!(b.goals||[]).length?`<div class="aempty"><div><b>Nenhuma meta ainda</b><p>${isMgr()?'Crie a primeira em Metas: por exemplo, faturamento do mês da empresa e de cada equipe.':'Quando o gestor criar metas, elas aparecem aqui.'}</p></div>${isMgr()?'<button class="btn p" id="mtFirst">Criar meta</button>':''}</div>`:''}`:''}
-    ${(b.challenges||[]).length?`<h3 class="sec">Desafios</h3><div class="gl-grid">${b.challenges.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(MTM[c.metric][0])} · até ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award):''}</span></div><span class="pill ${c.state==='valendo'?'ok':'grey'}">${c.state}</span></div>
+    ${(b.challenges||[]).length?`<h3 class="sec">Desafios</h3><div class="gl-grid">${b.challenges.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(mtL(c.metric))} · até ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award):''}</span></div><span class="pill ${c.state==='valendo'?'ok':'grey'}">${c.state}</span></div>
       <div class="rk">${c.rows.slice(0,5).map((r,i)=>`<div class="rk-r ${r.id===ME.user.id?'me':''}">${medal(i)}<span class="nm">${esc(r.name)}</span><b>${mtF(r.value,c.metric)}</b></div>`).join('')}</div></div>`).join('')}</div>`:''}
    </div><aside class="mt-side">
     ${s.game&&b.level?`<div class="vd-c lv-c"><div class="lv-b lv-${nrm(b.level.name)}">${{Bronze:'🥉',Prata:'🥈',Ouro:'🥇',Diamante:'💎'}[b.level.name]}</div><div><span class="hint">Seu nível</span><b>${b.level.name}</b><small>${num(b.level.points)} pontos nos últimos 12 meses</small>
@@ -2929,49 +3005,100 @@ async function mtBoard(){
      <div class="vd-c"><div class="hd"><h3>Conquistas</h3><span class="hint">${b.achievements.filter(a=>a.done).length} de ${b.achievements.length}</span></div><div class="ach">${b.achievements.map(a=>`<div class="ac ${a.done?'on':''}" title="${esc(a.desc)}"><i>${a.done?'★':'☆'}</i><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></div>`).join('')}</div></div>`:''}
     ${s.awards&&(b.awards||[]).length?`<div class="vd-c"><div class="hd"><h3>Prêmios recentes</h3></div>${b.awards.slice(0,5).map(a=>`<div class="aw-r"><span>🏆 <b>${esc(a.text)}</b><small>${esc(a.owner_name||'')} · ${esc(a.goal)} · ${a.level==='super'?'supermeta':a.level==='meta'?'meta':esc(a.level)}</small></span><span class="pill ${a.status==='delivered'?'grey':'ok'}">${a.status==='delivered'?'entregue':'conquistado'}</span></div>`).join('')}</div>`:''}
    </aside></div>`;
-  if($('#mtFirst'))$('#mtFirst').onclick=()=>{MT.tab='metas';syncUrl();mtView().then(()=>goalForm(null))};
+  if($('#mtFirst'))$('#mtFirst').onclick=()=>goalForm(null);
+  document.querySelectorAll('[data-per]').forEach(x=>x.onclick=()=>{MT.per=x.dataset.per||null;mtBoard()});
 }
-async function mtGoals(){
+async function mtGoals(){if(!MT.niche)MT.niche=await api('/goals/niche').catch(()=>null);
   const gs=await api('/goals');const top=gs.filter(g=>!g.parent_id);
+  const per=g=>({week:'Toda semana',month:'Todo mês',quarter:'Todo trimestre',custom:fmtD(g.start)+' a '+fmtD(g.end)}[g.period]);
+  const can=g=>g.scope==='team'&&['revenue','sales','new_clients','renewals','upsell','reactivations','product_qty','appointments','attended','assisted'].includes(g.metric);
   $('#mtB').innerHTML=`<div class="ls-top"><span class="ls-sum" style="margin:0">${gs.length} ${gs.length===1?'meta':'metas'}</span><button class="btn sm p" id="glNew" style="margin-left:auto">+ Nova meta</button></div>
-   ${top.length?`<div class="vd-c ls-t" style="display:block"><table class="vtb"><thead><tr><th>Meta</th><th>Para</th><th>Período</th><th class="n">Alvo</th><th class="n">Agora</th><th></th></tr></thead><tbody>
-    ${top.map(g=>{const kids=gs.filter(k=>k.parent_id===g.id);return `<tr><td><b>${esc(g.name)}</b><small>${esc(MTM[g.metric][0])}</small></td><td>${esc(g.owner_name)}${kids.length?`<small>dividida entre ${kids.length}</small>`:''}</td>
-      <td>${{week:'Semana',month:'Mês',quarter:'Trimestre',custom:fmtD(g.start)+'–'+fmtD(g.end)}[g.period]}</td><td class="n">${mtF(g.target,g.metric)}</td>
+   ${top.length?`<div class="vd-c ls-t gt-d" style="display:block"><table class="vtb"><thead><tr><th>Meta</th><th>Para</th><th>Período</th><th class="n">Alvo</th><th class="n">Agora</th><th></th></tr></thead><tbody>
+    ${top.map(g=>{const kids=gs.filter(k=>k.parent_id===g.id);return `<tr><td><b>${esc(g.name)}</b><small>${esc(mtL(g.metric))}</small></td><td>${esc(g.owner_name)}${kids.length?`<small>dividida entre ${kids.length}</small>`:''}</td>
+      <td>${per(g)}</td><td class="n">${mtF(g.target,g.metric)}</td>
       <td class="n">${g.pct!=null?`<span class="pill ${LVL[g.level][1]}">${num(g.pct)}%</span>`:'<span class="hint">pausada</span>'}</td>
-      <td class="n" style="white-space:nowrap">${g.scope==='team'&&['revenue','sales','new_clients','renewals','upsell','reactivations','product_qty','appointments','attended','assisted'].includes(g.metric)?`<button class="lnk" data-gs="${g.id}">dividir</button> `:''}<button class="lnk" data-ge="${g.id}">editar</button> <button class="lnk" data-gd="${g.id}">apagar</button></td></tr>`}).join('')}</tbody></table></div>`
-    :'<div class="aempty"><div><b>Nenhuma meta ainda</b><p>Comece pelo faturamento do mês da empresa. Depois crie metas por equipe e divida entre as pessoas.</p></div></div>'}`;
-  $('#glNew').onclick=()=>goalForm(null);
+      <td class="n" style="white-space:nowrap">${can(g)?`<button class="lnk" data-gs="${g.id}">dividir</button> `:''}<button class="lnk" data-ge="${g.id}">editar</button> <button class="lnk" data-gd="${g.id}">apagar</button></td></tr>`}).join('')}</tbody></table></div>
+    <div class="gcards">${top.map(g=>{const kids=gs.filter(k=>k.parent_id===g.id);return `<div class="gcard"><div class="gc-h"><div><b>${esc(g.name)}</b><small>${esc(g.owner_name)} · ${per(g)}${kids.length?` · dividida entre ${kids.length}`:''}</small></div>
+       ${g.pct!=null?`<span class="pill ${LVL[g.level][1]}">${num(g.pct)}%</span>`:'<span class="pill grey">pausada</span>'}</div>
+      <div class="gc-v"><b>${mtF(g.value,g.metric)}</b><span>de ${mtF(g.target,g.metric)}</span></div>
+      <div class="gc-a">${can(g)?`<button class="btn sm" data-gs="${g.id}">Dividir</button>`:''}<button class="btn sm" data-ge="${g.id}">Editar</button><button class="btn sm" data-gd="${g.id}">Apagar</button></div></div>`}).join('')}</div>`
+    :'<div class="aempty"><div><b>Nenhuma meta ainda</b><p>Comece pela meta do mês da empresa. Depois crie por equipe e divida entre as pessoas.</p><button class="btn sm p" id="glNew2" style="margin-top:12px">Criar a primeira meta</button></div></div>'}`;
+  $('#glNew').onclick=()=>goalForm(null);if($('#glNew2'))$('#glNew2').onclick=()=>goalForm(null);
   document.querySelectorAll('[data-ge]').forEach(b=>b.onclick=()=>goalForm(gs.find(g=>g.id===b.dataset.ge)));
   document.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>splitForm(gs.find(g=>g.id===b.dataset.gs)));
   document.querySelectorAll('[data-gd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta meta? As divididas dela também saem.'))return;await api('/goals/'+b.dataset.gd,{method:'DELETE'});mtGoals()});
 }
-async function goalForm(g){
-  const [team,tms,ps]=await Promise.all([api('/team'),api('/teams').catch(()=>[]),api('/products')]);const aw=(ME.company.gamify||{}).awards;
-  const x=g||{name:'',metric:'revenue',scope:'company',target_id:null,period:'month',target:'',floor_pct:80,super_pct:120,product_id:null,award_meta:'',award_super:'',active:true};
-  const o=overlay(`<form class="modal" id="glF"><div class="fm-hd"><h2>${g?'Editar meta':'Nova meta'}</h2><button type="button" class="x">×</button></div>
-   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="60" value="${esc(x.name)}" placeholder="Ex.: Faturamento de novembro"></div>
-   <div class="field"><label>O que medir</label><select name="metric">${Object.entries(MTM).filter(([k])=>k!=='points').map(([k,v])=>`<option value="${k}" ${x.metric===k?'selected':''}>${v[0]}</option>`).join('')}</select></div>
-   <div class="field ${x.metric==='product_qty'?'':'hide'}" id="glP"><label>Item</label><select name="product">${ps.map(p=>`<option value="${p.id}" ${x.product_id===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
-   <div class="field"><label>Para quem</label><div class="seg" id="glS">${[['company','Empresa'],['team','Equipe'],['user','Pessoa']].map(k=>`<button type="button" data-sc="${k[0]}" class="${x.scope===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
-    <select name="team" class="${x.scope==='team'?'':'hide'}" style="margin-top:8px">${tms.map(t=>`<option value="${t.id}" ${x.target_id===t.id?'selected':''}>${esc(t.name)}</option>`).join('')||'<option value="">Crie equipes em Equipe</option>'}</select>
-    <select name="user" class="${x.scope==='user'?'':'hide'}" style="margin-top:8px">${team.filter(u=>u.active).map(u=>`<option value="${u.id}" ${x.target_id===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div>
-   <div class="form2"><div class="field"><label>Período</label><select name="period">${[['week','Toda semana'],['month','Todo mês'],['quarter','Todo trimestre'],['custom','Datas específicas']].map(p=>`<option value="${p[0]}" ${x.period===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></div>
-    <div class="field"><label id="glTL">Meta</label><input name="target" type="number" min="0" step="any" required value="${x.target}" placeholder="Ex.: 50000"></div></div>
-   <div class="form2 ${x.period==='custom'?'':'hide'}" id="glD"><div class="field"><label>Início</label><input type="date" name="start" value="${x.start||''}"></div><div class="field"><label>Fim</label><input type="date" name="end" value="${x.end||''}"></div></div>
-   <div class="row pf-v">Degraus: mínimo <input type="number" name="fl" min="10" max="100" value="${x.floor_pct}">% · supermeta <input type="number" name="sp" min="100" max="500" value="${x.super_pct}">%</div>
-   ${aw?`<div class="form2"><div class="field"><label>Prêmio ao bater a meta <span class="hint">(opcional)</span></label><input name="am" maxlength="120" value="${esc(x.award_meta||'')}" placeholder="Ex.: bônus de R$ 300"></div>
-    <div class="field"><label>Prêmio da supermeta <span class="hint">(opcional)</span></label><input name="as" maxlength="120" value="${esc(x.award_super||'')}" placeholder="Ex.: folga na sexta"></div></div>`:''}
-   <label class="ckl"><input type="checkbox" name="active" ${x.active!==false?'checked':''}> Ativa</label>
-   <div class="row"><button class="btn p">Salvar meta</button><span class="err" id="glE"></span></div></form>`);
-  const f=o.querySelector('#glF');let scope=x.scope;
-  const sync=()=>{$('#glP').classList.toggle('hide',f.metric.value!=='product_qty');$('#glD').classList.toggle('hide',f.period.value!=='custom');
-    $('#glTL').textContent='Meta'+({brl:' (R$)',min:' (minutos)',score:' (nota)'}[MTM[f.metric.value][1]]||'')};
-  f.metric.onchange=sync;f.period.onchange=sync;sync();
-  o.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{scope=b.dataset.sc;o.querySelectorAll('[data-sc]').forEach(y=>y.classList.toggle('on',y===b));f.team.classList.toggle('hide',scope!=='team');f.user.classList.toggle('hide',scope!=='user')});
-  f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,metric:f.metric.value,scope,target_id:scope==='team'?f.team.value:scope==='user'?f.user.value:null,period:f.period.value,
-      start:f.start.value||null,end:f.end.value||null,target:Number(f.target.value),floor_pct:Number(f.fl.value)||80,super_pct:Number(f.sp.value)||120,product_id:f.metric.value==='product_qty'?f.product.value:null,
+// nova meta em três perguntas, na própria página
+async function goalForm(g,preset){
+  const [team,tms,ps,n]=await Promise.all([api('/team'),api('/teams').catch(()=>[]),api('/products'),MT.niche||api('/goals/niche')]);MT.niche=n;const aw=(ME.company.gamify||{}).awards;
+  const cap=w=>w.charAt(0).toUpperCase()+w.slice(1);
+  const x=g||{name:'',metric:'revenue',scope:'company',target_id:null,period:'month',target:'',floor_pct:80,super_pct:120,product_id:null,award_meta:'',award_super:'',active:true,...(preset||{})};
+  let metric=x.metric,period=x.period,scope=x.scope,named=!!g||!!(preset&&preset.name),kind=['revenue','sales'].includes(metric)?metric:['rate_attend','rate_close','rate_lead'].includes(metric)?'rate':'other';
+  const RATE_HELP={rate_attend:'De cada 100 que marcam, quantos vêm?',rate_close:'De cada 100 que vêm, quantos fecham?',rate_lead:'De cada 100 contatos novos, quantos compram?'};
+  const MON=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const d2=x=>String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0');
+  const range=()=>{const n=new Date();if(period==='week'){const a=new Date(n);a.setDate(n.getDate()-((n.getDay()+6)%7));const b=new Date(a);b.setDate(a.getDate()+6);return `De ${d2(a)} a ${d2(b)}, e recomeça toda segunda.`}
+    if(period==='month')return `Todo o mês de ${MON[n.getMonth()]}, e recomeça no dia 1º.`;
+    if(period==='quarter'){const q=Math.floor(n.getMonth()/3);return `De ${MON[q*3]} a ${MON[q*3+2]}, e recomeça a cada trimestre.`}return 'Vale só entre as datas que você escolher.'};
+  const autoName=()=>{const base={revenue:'Faturamento',sales:cap(n.sales),rate_attend:'Comparecimento',rate_close:'Fechamento',rate_lead:'Conversão'}[metric]||MTM[metric][0].split(' (')[0];const d=new Date();
+    return base+({week:' da semana',month:' de '+MON[d.getMonth()],quarter:' do trimestre',custom:''}[period])};
+  $('#mtB').innerHTML=`<form class="gf" id="glF"><button type="button" class="lnk" id="gfBack">← Voltar</button><h2>${g?'Editar meta':'Nova meta'}</h2>
+   <section class="vd-c"><h4><span>1</span>O que você quer bater?</h4>
+    <div class="gf-cards four">${[['revenue','R$','Valor vendido','Quanto entrou em reais'],['sales','#',cap(n.sales),'Quantidade no período'],['rate','%','Taxa de conversão','De cada 100 que marcam ou vêm, quantos fecham'],['other','…','Outra coisa','Agendamentos, clientes novos, renovações']].map(k=>`<button type="button" data-k="${k[0]}" class="${kind===k[0]?'on':''}"><i>${k[1]}</i><b>${k[2]}</b><span>${k[3]}</span></button>`).join('')}</div>
+    <div class="field ${kind==='rate'?'':'hide'}" id="gfR" style="margin-top:12px"><label>Qual taxa</label><div class="seg gf-seg" id="gfRs">${[['rate_attend','Comparecimento'],['rate_close','Fechamento'],['rate_lead','Contato → '+n.sale.split(' ')[0]]].map(k=>`<button type="button" data-r="${k[0]}" class="${metric===k[0]?'on':''}">${k[1]}</button>`).join('')}</div><p class="hint" id="gfRh" style="margin-top:6px"></p></div>
+    <div class="field ${kind==='other'?'':'hide'}" id="gfO" style="margin-top:12px"><label>O que medir</label><select name="metric">${Object.entries(MTM).filter(([k])=>!['points','revenue','sales','rate_attend','rate_close','rate_lead'].includes(k)).map(([k,v])=>`<option value="${k}" ${x.metric===k?'selected':''}>${v[0]}</option>`).join('')}</select></div>
+    <div class="field hide" id="glP" style="margin-top:12px"><label>Item</label><select name="product">${ps.map(p=>`<option value="${p.id}" ${x.product_id===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div></section>
+   <section class="vd-c"><h4><span>2</span>Em quanto tempo?</h4>
+    <div class="seg gf-seg" id="gfPer">${[['week','Semana'],['month','Mês'],['quarter','Trimestre'],['custom','Datas']].map(p=>`<button type="button" data-p="${p[0]}" class="${period===p[0]?'on':''}">${p[1]}</button>`).join('')}</div>
+    <p class="hint" id="gfRange" style="margin-top:8px"></p>
+    <div class="form2 ${period==='custom'?'':'hide'}" id="glD" style="margin-top:10px"><div class="field"><label>Início</label><input type="date" name="start" value="${x.start||''}"></div><div class="field"><label>Fim</label><input type="date" name="end" value="${x.end||''}"></div></div></section>
+   <section class="vd-c"><h4><span>3</span>Quanto, e para quem?</h4>
+    <div class="gf-num"><span id="gfPre">R$</span><input name="target" type="number" inputmode="decimal" min="0" step="any" required value="${x.target}" placeholder="0" aria-label="Valor da meta"><span id="gfSuf"></span></div>
+    <div class="gf-hints" id="gfH"></div><div class="gf-sug" id="gfS"></div>
+    <div class="field" style="margin-top:14px"><label>Para quem</label><div class="seg gf-seg" id="glS">${[['company','Empresa toda'],['team','Uma equipe'],['user','Uma pessoa']].map(k=>`<button type="button" data-sc="${k[0]}" class="${scope===k[0]?'on':''}">${k[1]}</button>`).join('')}</div>
+     <select name="team" class="${scope==='team'?'':'hide'}" style="margin-top:8px">${tms.map(t=>`<option value="${t.id}" ${x.target_id===t.id?'selected':''}>${esc(t.name)}</option>`).join('')||'<option value="">Crie equipes em Equipe</option>'}</select>
+     <select name="user" class="${scope==='user'?'':'hide'}" style="margin-top:8px">${team.filter(u=>u.active).map(u=>`<option value="${u.id}" ${x.target_id===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div></section>
+   <details class="vd-c gf-more"><summary>Mais opções <span class="hint">nome, mínimo, supermeta${aw?' e prêmio':''}</span></summary>
+    <div class="field" style="margin-top:12px"><label>Nome da meta</label><input name="name" minlength="2" maxlength="60" value="${esc(x.name)}"></div>
+    <div class="form2"><div class="field"><label>Mínimo aceitável (% da meta)</label><input type="number" name="fl" min="10" max="100" value="${x.floor_pct}"></div><div class="field"><label>Supermeta (% da meta)</label><input type="number" name="sp" min="100" max="500" value="${x.super_pct}"></div></div>
+    ${aw?`<div class="form2"><div class="field"><label>Prêmio ao bater a meta</label><input name="am" maxlength="120" value="${esc(x.award_meta||'')}" placeholder="Ex.: bônus de R$ 300"></div>
+     <div class="field"><label>Prêmio da supermeta</label><input name="as" maxlength="120" value="${esc(x.award_super||'')}" placeholder="Ex.: folga na sexta"></div></div>`:''}
+    <label class="ckl"><input type="checkbox" name="active" ${x.active!==false?'checked':''}> Meta ativa</label></details>
+   <div class="row gf-go"><button class="btn p">Salvar meta</button><span class="err" id="glE"></span></div></form>`;
+  const f=$('#glF');let ht=0,hd=null;
+  f.name.oninput=()=>{named=true};
+  const PREV={week:'semana passada',month:'mês passado',quarter:'trimestre passado'};
+  const hints=()=>{const t=Number(f.target.value)||0,u=MTM[metric][1],out=[],prev=PREV[period]||'';
+    if(hd&&hd.previous&&period!=='custom'){const parts=hd.prev_parts&&hd.prev_parts[1]?` (${num(hd.prev_parts[0])} de ${num(hd.prev_parts[1])})`:'';out.push(`<span>${cap(prev)}: <b>${mtF(hd.previous,metric)}</b>${parts}</span>`)}
+    if(t&&hd&&hd.days&&['brl','num'].includes(u)&&ADDM.includes(metric))out.push(`<span>Dá <b>${u==='brl'?brl(t/hd.days):num(Math.ceil(t/hd.days*10)/10)}</b> por dia</span>`);
+    $('#gfH').innerHTML=out.join('');
+    const sb=$('#gfS');  // número sugerido: um pouco acima do período anterior, só enquanto o campo está vazio
+    if(!g&&!f.target.value&&hd&&hd.previous&&period!=='custom'){const base=hd.previous,sug=u==='pct'?Math.min(100,Math.ceil(base+5)):u==='brl'?Math.ceil(base*1.15/100)*100:Math.ceil(base*1.15);
+      sb.innerHTML=`<span>Sugestão:</span><button type="button" data-sg="${sug}">${mtF(sug,metric)}</button><small>${u==='pct'?'5 pontos':'15%'} acima d${prev.startsWith('semana')?'a':'o'} ${prev}</small>`;
+      sb.querySelector('[data-sg]').onclick=e=>{f.target.value=e.target.dataset.sg;sb.innerHTML='';hints()}}else sb.innerHTML=''};
+  const load=()=>{clearTimeout(ht);ht=setTimeout(async()=>{hd=null;if(period!=='custom'){try{const q=new URLSearchParams({metric,period,scope});const tid=scope==='team'?f.team.value:scope==='user'?f.user.value:'';if(tid)q.set('target_id',tid);if(metric==='product_qty'&&f.product.value)q.set('product_id',f.product.value);hd=await api('/goals/hint?'+q)}catch(e){}}hints()},200)};
+  let rate=['rate_attend','rate_close','rate_lead'].includes(metric)?metric:'rate_attend';
+  const sync=()=>{metric=kind==='other'?f.metric.value:kind==='rate'?rate:kind;const u=MTM[metric][1];
+    $('#gfO').classList.toggle('hide',kind!=='other');$('#gfR').classList.toggle('hide',kind!=='rate');$('#glP').classList.toggle('hide',metric!=='product_qty');$('#glD').classList.toggle('hide',period!=='custom');
+    if(kind==='rate'){$('#gfRh').textContent=RATE_HELP[rate];f.querySelectorAll('[data-r]').forEach(y=>y.classList.toggle('on',y.dataset.r===rate))}
+    if(metric==='rate_lead'&&scope!=='company'){scope='company';f.querySelectorAll('[data-sc]').forEach(y=>y.classList.toggle('on',y.dataset.sc==='company'));f.team.classList.add('hide');f.user.classList.add('hide')}
+    $('#glS').classList.toggle('dim',metric==='rate_lead');
+    $('#gfPre').textContent=u==='brl'?'R$':'';$('#gfPre').classList.toggle('hide',u!=='brl');$('#gfSuf').textContent={num:metric==='sales'?n.sales:'',min:'minutos',score:'de nota',pct:'%'}[u]||'';
+    $('#gfRange').textContent=range();if(!named)f.name.value=autoName();load()};
+  f.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;f.querySelectorAll('[data-k]').forEach(y=>y.classList.toggle('on',y===b));f.target.value='';sync()});
+  f.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{rate=b.dataset.r;f.target.value='';sync()});
+  f.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{period=b.dataset.p;f.querySelectorAll('[data-p]').forEach(y=>y.classList.toggle('on',y===b));sync()});
+  f.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{scope=b.dataset.sc;f.querySelectorAll('[data-sc]').forEach(y=>y.classList.toggle('on',y===b));f.team.classList.toggle('hide',scope!=='team');f.user.classList.toggle('hide',scope!=='user');load()});
+  f.metric.onchange=sync;f.team.onchange=load;f.user.onchange=load;f.product.onchange=load;f.target.oninput=hints;sync();
+  const back=()=>mtView();$('#gfBack').onclick=back;
+  f.onsubmit=async ev=>{ev.preventDefault();const body={name:(f.name.value||autoName()).trim(),metric,scope,target_id:scope==='team'?f.team.value:scope==='user'?f.user.value:null,period,
+      start:f.start.value||null,end:f.end.value||null,target:Number(f.target.value),floor_pct:Number(f.fl.value)||80,super_pct:Number(f.sp.value)||120,product_id:metric==='product_qty'?f.product.value:null,
       award_meta:f.am?f.am.value:'',award_super:f.as?f.as.value:'',active:f.active.checked};
-    try{await api(g?'/goals/'+g.id:'/goals',{method:g?'PUT':'POST',body});o.remove();toast('Meta salva.');mtGoals()}catch(e){$('#glE').textContent=e.message}};
+    if(!body.target){$('#glE').textContent='Diga o número da meta.';f.target.focus();return}
+    try{await api(g?'/goals/'+g.id:'/goals',{method:g?'PUT':'POST',body});
+      const gm=ME.company.gamify||{};if(!gm.goals){const s=await api('/goals/settings');ME.company.gamify=await api('/goals/settings',{method:'PUT',body:{goals:true,awards:s.awards,game:s.game,ranking:s.ranking,points:s.points}});MT.tab='painel';toast('Meta criada. Acompanhe pelo painel.');shell();return go('metas')}
+      toast('Meta salva.');MT.tab=MT.tab==='painel'?'painel':'metas';mtView()}catch(e){$('#glE').textContent=e.message}};
+  scrollTo({top:0});
 }
 async function splitForm(g){
   const [tms,team]=await Promise.all([api('/teams'),api('/team')]);const t=tms.find(x=>x.id===g.target_id)||{member_ids:[]};const P=Object.fromEntries(team.map(u=>[u.id,u]));
@@ -2988,7 +3115,7 @@ async function splitForm(g){
 async function mtChallenges(){
   const cs=await api('/challenges');const mgr=isMgr();const medal=i=>`<span class="md">${['🥇','🥈','🥉'][i]||`<small class="rk-n">${i+1}º</small>`}</span>`;
   $('#mtB').innerHTML=`${mgr?'<div class="ls-top"><span class="hint">Competições com prazo e prêmio para os primeiros.</span><button class="btn sm p" id="chNew" style="margin-left:auto">+ Novo desafio</button></div>':''}
-   ${cs.length?`<div class="gl-grid">${cs.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(MTM[c.metric][0])} · ${fmtD(c.start)} a ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award)+(c.winners>1?` (${c.winners} primeiros)`:''):''}</span></div><span class="pill ${c.state==='valendo'?'ok':c.state==='agendado'?'blue':'grey'}">${c.state}</span></div>
+   ${cs.length?`<div class="gl-grid">${cs.map(c=>`<div class="gl-c"><div class="gl-h"><div><b>${esc(c.name)}</b><span>${esc(mtL(c.metric))} · ${fmtD(c.start)} a ${fmtD(c.end)}${c.award?' · 🏆 '+esc(c.award)+(c.winners>1?` (${c.winners} primeiros)`:''):''}</span></div><span class="pill ${c.state==='valendo'?'ok':c.state==='agendado'?'blue':'grey'}">${c.state}</span></div>
      <div class="rk">${c.rows.slice(0,8).map((r,i)=>`<div class="rk-r ${r.id===ME.user.id?'me':''}">${medal(i)}<span class="nm">${esc(r.name)}</span><b>${mtF(r.value,c.metric)}</b></div>`).join('')}</div>
      ${mgr?`<div class="bt" style="display:flex;justify-content:flex-end"><button class="lnk" data-chd="${c.id}">apagar</button></div>`:''}</div>`).join('')}</div>`
     :'<div class="aempty"><div><b>Nenhum desafio ainda</b><p>Ex.: "Quem vender mais planos anuais até sexta ganha um vale-jantar".</p></div></div>'}`;
@@ -3017,16 +3144,19 @@ async function mtAwards(){
 }
 async function mtConfig(){
   const s=await api('/goals/settings');
-  $('#mtB').innerHTML=`<form id="mcF" class="grid" style="gap:12px;max-width:820px">
-   <div class="vd-c"><h3 class="sec" style="margin-top:0">O que ligar</h3><p class="hint" style="margin:0 0 10px">Ligue só o que faz sentido para o seu time. Dá para mudar quando quiser.</p>
-    ${[['goals','Metas','Metas da empresa, das equipes e de cada pessoa, com ritmo e projeção.'],['awards','Prêmios','Prêmio ao bater meta ou vencer desafio. O gestor marca quando entregar.'],['game','Pontos, ranking e conquistas','Pontos por ações reais, níveis, conquistas e ranking do mês.']].map(k=>`<label class="mc-t"><input type="checkbox" name="${k[0]}" ${s[k[0]]?'checked':''}><span><b>${k[1]}</b><small>${k[2]}</small></span></label>`).join('')}</div>
-   <div class="vd-c"><h3 class="sec" style="margin-top:0">Quem vê o ranking</h3><div class="modes" style="grid-template-columns:repeat(3,1fr)">${[['all','Todos veem tudo','Ranking completo para o time.'],['podium','Só o pódio','Atendentes veem os 3 primeiros e a própria posição.'],['self','Cada um vê só a sua','Só a própria posição. Gestor vê tudo.']].map(k=>`<label><input type="radio" name="ranking" value="${k[0]}" ${s.ranking===k[0]?'checked':''}><b>${k[1]}</b>${k[2]}</label>`).join('')}</div></div>
-   <div class="vd-c"><h3 class="sec" style="margin-top:0">Pontos</h3><p class="hint" style="margin:0 0 10px">Só contam ações reais. Venda cancelada tira os pontos. Em venda dividida, cada um ganha a parte do seu percentual.</p>
-    <div class="pt-g">${Object.entries(s.labels).map(([k,l])=>`<label><span>${esc(l)}</span><input type="number" min="0" max="1000" name="pt_${k}" value="${s.points[k]}"></label>`).join('')}</div></div>
-   <div class="row"><button class="btn p">Salvar</button><span class="err" id="mcE"></span></div></form>`;
-  $('#mcF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;const points=Object.fromEntries(Object.keys(s.labels).map(k=>[k,Number(f['pt_'+k].value)||0]));
-    try{const r=await api('/goals/settings',{method:'PUT',body:{goals:f.goals.checked,awards:f.awards.checked,game:f.game.checked,ranking:f.ranking.value,points}});ME.company.gamify=r;toast('Salvo.');
-      shell()}catch(e){$('#mcE').textContent=e.message}};
+  const save=async(patch,msg)=>{Object.assign(s,patch);try{const r=await api('/goals/settings',{method:'PUT',body:{goals:s.goals,awards:s.awards,game:s.game,ranking:s.ranking,points:s.points}});ME.company.gamify=r;toast(msg||'Salvo.');return true}catch(e){toast(e.message);return false}};
+  const draw=()=>{$('#mtB').innerHTML=`<div class="grid mcf" style="gap:12px;max-width:760px"><button type="button" class="lnk" id="mcBack" style="justify-self:start">← Voltar para Metas</button>
+   <div class="vd-c"><h3 class="sec" style="margin-top:0">O que usar</h3><p class="hint" style="margin:0 0 6px">Ligue só o que faz sentido para o seu time. Muda na hora e nada é apagado ao desligar.</p>
+    ${[['goals','Metas','Da empresa, das equipes e de cada pessoa, com ritmo e projeção.'],['awards','Prêmios','Prêmio ao bater meta ou vencer desafio. O gestor marca quando entregar.'],['game','Pontos, ranking e conquistas','Pontos por ações reais, níveis e ranking do mês.']].map(k=>`<label class="swt"><span><b>${k[1]}</b><small>${k[2]}</small></span><input type="checkbox" data-on="${k[0]}" ${s[k[0]]?'checked':''}><i></i></label>`).join('')}</div>
+   ${s.game?`<div class="vd-c"><h3 class="sec" style="margin-top:0">Quem vê o ranking</h3><div class="modes mc-rk">${[['all','Todos veem tudo','Ranking completo para o time.'],['podium','Só o pódio','Atendentes veem os 3 primeiros e a própria posição.'],['self','Cada um vê só a sua','Só a própria posição. O gestor vê tudo.']].map(k=>`<label><input type="radio" name="ranking" value="${k[0]}" ${s.ranking===k[0]?'checked':''}><b>${k[1]}</b>${k[2]}</label>`).join('')}</div></div>
+   <details class="vd-c gf-more"><summary>Ajustar pontos <span class="hint">quanto vale cada ação</span></summary><p class="hint" style="margin:10px 0">Só contam ações reais. Venda cancelada tira os pontos. Em venda dividida, cada um ganha a parte do seu percentual.</p>
+    <div class="pt-g">${Object.entries(s.labels).map(([k,l])=>`<label><span>${esc(l)}</span><input type="number" min="0" max="1000" data-pt="${k}" value="${s.points[k]}"></label>`).join('')}</div></details>`:''}</div>`;
+   $('#mcBack').onclick=()=>{MT.tab='painel';syncUrl();mtView()};
+   document.querySelectorAll('[data-on]').forEach(x=>x.onchange=async()=>{const k=x.dataset.on,l={goals:'Metas',awards:'Prêmios',game:'Pontos e ranking'}[k];x.disabled=true;
+     if(await save({[k]:x.checked},x.checked?`${l}: ligado.`:`${l}: desligado. Nada foi apagado.`)){const y=scrollY;shell();MT.tab='config';await go('metas');scrollTo(0,y)}else{x.checked=!x.checked;x.disabled=false}});
+   document.querySelectorAll('.mc-rk input').forEach(x=>x.onchange=()=>save({ranking:x.value},'Ranking atualizado.'));
+   document.querySelectorAll('[data-pt]').forEach(x=>x.onchange=()=>save({points:{...s.points,[x.dataset.pt]:Math.max(0,Math.min(1000,Number(x.value)||0))}},'Pontos atualizados.'))};
+  draw();
 }
 async function mtTv(){
   document.body.classList.add('tv');try{await document.documentElement.requestFullscreen()}catch(e){}
