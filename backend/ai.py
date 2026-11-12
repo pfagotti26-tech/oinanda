@@ -40,8 +40,10 @@ def brl(v): return f'R$ {v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X
 
 async def catalog_items(company_id):
     """Itens ativos do Catálogo: a fonte oficial de preços que a Nanda usa."""
-    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1}).sort('name', 1).to_list(300)
-    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days')} for r in rows]
+    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1, 'service_id': 1}).sort('name', 1).to_list(300)
+    # serviço da agenda sem preço: já aparece na AGENDA; aqui só confundiria ("preço sob consulta" ao lado de "aula experimental grátis")
+    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days')} for r in rows
+            if not (r.get('service_id') and r.get('price') is None)]
 
 def catalog_text(items):
     out = []
@@ -71,7 +73,7 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
-def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30, notes=''):
+def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30, notes='', stages=None, stage_id=None):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
     if agenda_text:
@@ -108,10 +110,21 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-{ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}
+{ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}{stage_block(stages, stage_id)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": ""}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
+
+def stage_block(stages, stage_id):
+    """Etapas abertas do funil, para a Nanda mover o cliente quando a conversa chega lá (ex.: link enviado, orçamento enviado)."""
+    if not stages: return ''
+    opened = [x for x in stages if x.get('kind') == 'open']
+    if len(opened) < 2: return ''
+    cur = next((x for x in stages if x['id'] == stage_id), None) or opened[0]
+    return f"""
+ETAPAS DO FUNIL, nesta ordem: {' → '.join(f"{x['id']} ({x['name']})" for x in opened)}. O cliente está em: {cur['name']}.
+- "etapa": o id da etapa quando a conversa claramente chegou nela (ex.: você mandou o link ou o orçamento, o cliente respondeu o que qualifica). Só para frente, e nunca a etapa de fechado/perdido: isso é o time que marca. Senão null.
+"""
 
 def notes_block(notes):
     return f"""
@@ -142,9 +155,10 @@ def parse(text):
                     'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else [],
                     'anotar': str(d.get('anotar') or '').strip()[:200],
                     'valor': float(d['valor']) if isinstance(d.get('valor'), (int, float)) and 0 < d['valor'] <= 100_000_000 else None,
-                    'valor_item': str(d.get('valor_item') or '').strip()[:60]}
+                    'valor_item': str(d.get('valor_item') or '').strip()[:60],
+                    'etapa': str(d['etapa'])[:24] if isinstance(d.get('etapa'), str) and d.get('etapa') else None}
         except (ValueError, TypeError): pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': ''}
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None}
 
 def _img_block(r):
     """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""
@@ -224,7 +238,12 @@ async def system_for(s, company, contact=None):
     except Exception: log.exception('falha ao montar o link do whatsapp')
     try: s = {**s, '_catalog': catalog_text(await catalog_items(company['id']))}
     except Exception: log.exception('falha ao montar o catálogo')
-    return build_system(s, company, name, agenda_text, upcoming, opts, extra, step, (contact or {}).get('notes') or '')
+    stages = None
+    try:
+        from funnel import stages_for
+        stages = await stages_for(company) if contact else None
+    except Exception: log.exception('falha ao montar as etapas')
+    return build_system(s, company, name, agenda_text, upcoming, opts, extra, step, (contact or {}).get('notes') or '', stages, (contact or {}).get('stage'))
 
 async def think(company_id, contact):
     s = await settings_for(company_id)
@@ -339,6 +358,7 @@ async def auto_reply(company_id, contact_id, msg_id):
         if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
         await apply_origin(company_id, contact, d)
         await apply_facts(company_id, contact, d)
+        await apply_stage(company_id, contact, d, s['name'] + ' (IA)')
         if d.get('marcos'): await suggest_marcos(company_id, contact, d['marcos'])
         if d['handoff']: await handoff(company_id, contact, d['reason'])
     except Exception:
@@ -438,6 +458,22 @@ async def apply_facts(company_id, contact, d):
         upd['value'] = d['valor']
         await note(company_id, contact['id'], f'A Nanda estimou o valor previsto: {brl(d["valor"])}' + (f' · {d["valor_item"]}' if d.get('valor_item') else ''))
     if upd: await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
+
+async def apply_stage(company_id, contact, d, by_name):
+    """Move só para frente, só entre etapas abertas, e nunca em cima de uma etapa mais avançada que o time já marcou."""
+    if not d.get('etapa'): return
+    try:
+        from funnel import stages_for, move_stage
+        company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+        stages = await stages_for(company)
+        ids = [x['id'] for x in stages]
+        fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
+        cur = fresh.get('stage') or ids[0]
+        if d['etapa'] not in ids or cur not in ids: return
+        target = next(x for x in stages if x['id'] == d['etapa'])
+        if target.get('kind') != 'open' or ids.index(d['etapa']) <= ids.index(cur): return
+        await move_stage(company, fresh, d['etapa'], by_name, stages)
+    except Exception: log.exception('falha ao mover a etapa sugerida pela Nanda')
 
 async def apply_origin(company_id, contact, d):
     """Grava a origem que a Nanda entendeu da conversa (no automático e nas sugestões)."""

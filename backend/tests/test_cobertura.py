@@ -124,3 +124,36 @@ def test_anotacoes_e_valor_previsto(monkeypatch):
         assert 'entrada R$ 200 mil + FGTS' in prompts[-1] and 'ANOTAÇÕES DO CLIENTE' in prompts[-1]
         ct = c.get(f'/api/conversations/{cid}').json()['contact']
         assert ct['value'] == 650000 and ct['notes'].count('entrada R$ 200 mil') == 1
+
+def test_etapa_sugerida_e_catalogo_sem_servico_sem_preco(monkeypatch):
+    stages_seen = {}
+    async def llm_etapa(system, messages, max_tokens=500):
+        prompts.append(system)
+        import re
+        m = re.search(r'ETAPAS DO FUNIL, nesta ordem: (.*?)\. O cliente', system)
+        ids = re.findall(r'(\w{6,}) \(', m.group(1)) if m else []
+        stages_seen['ids'] = ids
+        last = messages[-1]['content']
+        if 'link' in last: return json.dumps({'reply': 'Aqui está o link!', 'handoff': False, 'etapa': ids[2]}), {}
+        if 'voltar' in last: return json.dumps({'reply': 'Ok', 'handoff': False, 'etapa': ids[0]}), {}
+        return json.dumps({'reply': 'Oi!', 'handoff': False, 'etapa': 'won'}), {}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', llm_etapa)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona', 'email': 'd4@info.com', 'password': 'senha-forte-1', 'company': 'Curso', 'segment': 'lancamento'})
+        c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30})
+        c.put('/api/ai/settings', json={'default_mode': 'auto', 'offer': 'Conversa de apresentação grátis.'})
+        c.get('/api/products')  # sincroniza o serviço da agenda no catálogo
+        n = len(sent)
+        signed(c, inbound('oi, quero saber do curso', 'e1'))
+        assert wait(lambda: len(sent) == n + 1)
+        assert 'preço sob consulta' not in prompts[-1] and 'ETAPAS DO FUNIL' in prompts[-1] and 'Novo lead' in prompts[-1]
+        cid = c.get('/api/conversations').json()[0]['id']
+        time.sleep(0.3); assert c.get(f'/api/conversations/{cid}').json()['contact'].get('stage') in (None, stages_seen['ids'][0])  # "won" ignorado
+        signed(c, inbound('manda o link', 'e2'))
+        assert wait(lambda: len(sent) == n + 2)
+        assert wait(lambda: c.get(f'/api/conversations/{cid}').json()['contact'].get('stage') == stages_seen['ids'][2])
+        msgs = c.get(f'/api/conversations/{cid}').json()['messages']
+        assert any('Nanda (IA) moveu para Link enviado' in (m.get('text') or '') for m in msgs)
+        signed(c, inbound('quero voltar', 'e3'))  # para trás: não move
+        assert wait(lambda: len(sent) == n + 3); time.sleep(0.3)
+        assert c.get(f'/api/conversations/{cid}').json()['contact']['stage'] == stages_seen['ids'][2]
