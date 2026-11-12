@@ -272,7 +272,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   .hero .wrap,.row,.calc,.ba{grid-template-columns:1fr}
   .row.flip .txt{order:0}
   .pic{width:min(88%,340px);margin-top:10px}
-  .float{font-size:12.5px;padding:9px 12px 9px 10px;gap:9px}.float .ic{width:32px;height:32px}.float span{max-width:170px}.float time{display:none}
+  .float{font-size:12.5px;padding:9px 12px 9px 10px;gap:9px}.float .ic{width:32px;height:32px}.float span{max-width:205px}.float time{display:none}
   .feed{left:-10%;right:-4%;top:40%;bottom:6%}.feed:not(.live) .float:nth-child(1){transform:translateY(-110px)}.feed:not(.live) .float:nth-child(2){transform:translate(14px,-55px)}
   br.m{display:inline}br.dsk{display:none}
   .tzk{left:10px;top:10px;font-size:12.5px;padding:7px 12px 7px 8px}.tzk i{width:22px;height:22px}
@@ -615,7 +615,11 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     }
     function start(){feed.classList.add('live');all('.float',feed).forEach(function(c,k){c.style.setProperty('--x',XS[k%XS.length]+'px')});n=3;layout();
       (function loop(){arrive();setTimeout(loop,1500+Math.random()*1300)})()}
-    addEventListener('resize',layout);
+    // a pilha nunca entra debaixo da faixa escura: mede onde a faixa começa e ancora 14px acima
+    function anchor(){var pic=feed.parentElement.getBoundingClientRect(),band=document.querySelector('.band .wrap')||document.querySelector('.band');if(!band)return;
+      var over=pic.bottom-band.getBoundingClientRect().top;feed.style.bottom=over>-14?Math.round(over+14)+'px':''}
+    anchor();addEventListener('load',anchor);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(anchor);
+    addEventListener('resize',function(){anchor();layout()});
     setTimeout(start,3200);
   })();
   // exemplo do segmento: a Nanda "digita" antes de a mensagem aparecer
