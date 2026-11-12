@@ -1067,6 +1067,15 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .og-t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:9px;font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
 .og-u{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;background:var(--warnsoft);color:var(--warn);border-radius:12px;padding:11px 14px;font-size:13px}
 @media (max-width:860px){.og-cols{grid-template-columns:1fr}}
+@media (max-width:640px){
+  /* lista de primeiros passos: o texto usa a largura toda e o botão desce para baixo dele */
+  .steps{gap:8px}
+  .step{display:grid;grid-template-columns:26px minmax(0,1fr);gap:4px 12px;padding:12px 14px;border-radius:14px}
+  .step .n{width:26px;height:26px;font-size:13px;grid-row:1/span 2;align-self:start}
+  .step b{font-size:15px;line-height:1.3}.step p{font-size:13.5px;line-height:1.45;margin-top:2px}
+  .step .btn,.step .pill{grid-column:2;margin:6px 0 0;justify-self:start}
+  .card:has(>.steps){padding:12px}
+}
 </style>
 </head>
 <body>
