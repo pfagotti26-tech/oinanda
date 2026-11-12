@@ -90,4 +90,4 @@ def test_nanda(monkeypatch):
         assert 'R$ 180' in t['reply']
         u = c.get('/api/ai/settings').json()['usage']
         assert u['replies'] >= 2 and u['suggestions'] == 1 and u['tests'] == 1
-        assert ai.parse('lixo sem json') == {'reply': 'lixo sem json', 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None}
+        assert ai.parse('lixo sem json') == {'reply': 'lixo sem json', 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}

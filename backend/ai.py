@@ -112,8 +112,9 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 
 {ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}{stage_block(stages, stage_id)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null}}
-Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!")."""
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
+Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
+"urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
 
 def stage_block(stages, stage_id):
     """Etapas abertas do funil, para a Nanda mover o cliente quando a conversa chega lá (ex.: link enviado, orçamento enviado)."""
@@ -156,9 +157,10 @@ def parse(text):
                     'anotar': str(d.get('anotar') or '').strip()[:200],
                     'valor': float(d['valor']) if isinstance(d.get('valor'), (int, float)) and 0 < d['valor'] <= 100_000_000 else None,
                     'valor_item': str(d.get('valor_item') or '').strip()[:60],
-                    'etapa': str(d['etapa'])[:24] if isinstance(d.get('etapa'), str) and d.get('etapa') else None}
+                    'etapa': str(d['etapa'])[:24] if isinstance(d.get('etapa'), str) and d.get('etapa') else None,
+                    'urgente': bool(d.get('urgente')) and bool(d.get('handoff'))}
         except (ValueError, TypeError): pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None}
+    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}
 
 def _img_block(r):
     """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""
@@ -260,15 +262,15 @@ def describe_book(company, b):
     except Exception: return b.get('start')
 
 # ---------- resposta automática ----------
-async def handoff(company_id, contact, reason):
+async def handoff(company_id, contact, reason, urgent=False):
     await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'ai_mode': 'off', 'ai_paused': 'handoff', 'ai_prev': contact.get('ai_mode'),
-                                                                   'needs_human_at': now(), 'handoff_reason': reason}})
-    await note(company_id, contact['id'], f'A Nanda passou a conversa para o time · {reason or "cliente quer falar com uma pessoa"}')
+                                                                   'needs_human_at': now(), 'handoff_reason': reason, 'handoff_urgent': bool(urgent)}})
+    await note(company_id, contact['id'], ('🚨 URGENTE · ' if urgent else '') + f'A Nanda passou a conversa para o time · {reason or "cliente quer falar com uma pessoa"}')
     await route(company_id, contact, reason)
     try:
         from push import later, on_handoff
         fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
-        later(on_handoff(company_id, fresh, reason))
+        later(on_handoff(company_id, fresh, reason, urgent))
     except Exception: log.exception('falha no aviso de repasse')
 
 async def route(company_id, contact, reason):
@@ -360,7 +362,7 @@ async def auto_reply(company_id, contact_id, msg_id):
         await apply_facts(company_id, contact, d)
         await apply_stage(company_id, contact, d, s['name'] + ' (IA)')
         if d.get('marcos'): await suggest_marcos(company_id, contact, d['marcos'])
-        if d['handoff']: await handoff(company_id, contact, d['reason'])
+        if d['handoff']: await handoff(company_id, contact, d['reason'], d.get('urgente'))
     except Exception:
         log.exception('falha na resposta automática')
         try: await note(company_id, contact_id, 'A Nanda não conseguiu responder agora. Alguém do time precisa assumir.')
@@ -526,7 +528,7 @@ async def resolved(contact_id: str, user=Depends(current_user)):
 async def resume(company_id, contact, who='o time'):
     """A Nanda volta a atuar como antes do repasse (só quando foi ela mesma que pausou)."""
     if contact.get('ai_paused') != 'handoff': return False
-    await db.contacts.update_one({'id': contact['id']}, {'$set': {'ai_mode': contact.get('ai_prev'), 'needs_human': False}, '$unset': {'ai_paused': '', 'ai_prev': ''}})
+    await db.contacts.update_one({'id': contact['id']}, {'$set': {'ai_mode': contact.get('ai_prev'), 'needs_human': False, 'handoff_urgent': False}, '$unset': {'ai_paused': '', 'ai_prev': ''}})
     await note(company_id, contact['id'], f'{who} devolveu a conversa para a Nanda')
     return True
 

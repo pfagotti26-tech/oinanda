@@ -124,9 +124,9 @@ async def on_transfer(user_id, contact, by_name, reason):
     await send_user(user_id, f'{(by_name or "Alguém").split(" ")[0]} transferiu {contact.get("name")} para você', short(reason) or 'Toque para abrir a conversa.',
                     f'/conversas/{contact["id"]}', 'c-' + contact['id'])
 
-async def on_handoff(company_id, contact, reason):
+async def on_handoff(company_id, contact, reason, urgent=False):
     for u in await recipients(company_id, contact):
-        await send_user(u, f'{contact.get("name")} quer falar com alguém do time', short(reason) or 'A Nanda passou a conversa para o time.',
+        await send_user(u, ('🚨 URGENTE: ' if urgent else '') + f'{contact.get("name")} quer falar com alguém do time', short(reason) or 'A Nanda passou a conversa para o time.',
                         f'/conversas/{contact["id"]}', 'c-' + contact['id'])
 
 async def late_tick():

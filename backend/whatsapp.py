@@ -368,6 +368,7 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
     elif kind in ('cliente', 'inativo'): qq['sales_count'] = {'$gt': 0}
     if origin: qq['origin'] = None if origin == '_none' else origin
     rows = await db.contacts.find(qq, {'_id': 0}).sort('last_at', -1).to_list(300)
+    rows.sort(key=lambda r: 0 if r.get('needs_human') and r.get('handoff_urgent') else 1)  # urgente primeiro, o resto na ordem de chegada
     if kind in ('cliente', 'inativo'):
         from origins import status_of
         days = user['company'].get('inactive_days')
@@ -464,7 +465,7 @@ async def note(company_id, contact_id, text):
 async def send(contact_id: str, body: SendIn, request: Request, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
     msg = await deliver(user['company_id'], c, body.text, user['id'], user.get('impersonated_by') or user['name'], assign_to=user['id'])
-    if c.get('needs_human'): await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False}})
+    if c.get('needs_human'): await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False, 'handoff_urgent': False}})
     if ON_HUMAN_SEND: await ON_HUMAN_SEND(user, c)
     return msg
 

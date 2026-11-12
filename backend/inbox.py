@@ -147,7 +147,7 @@ async def del_quick(rid: str, user=Depends(current_user)):
 async def no_reply(contact_id: str, user=Depends(current_user)):
     """Cliente mandou só "ok", "obrigado"...: sai da fila sem marcar como resolvida."""
     c = await get_contact(user, contact_id)
-    await db.contacts.update_one({'id': c['id']}, {'$set': {'noreply_at': now(), 'unread': 0, 'needs_human': False}})
+    await db.contacts.update_one({'id': c['id']}, {'$set': {'noreply_at': now(), 'unread': 0, 'needs_human': False, 'handoff_urgent': False}})
     await note(user['company_id'], c['id'], f'{user.get("impersonated_by") or user["name"]} tirou da fila de espera')
     from ai import resume
     await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
@@ -174,7 +174,7 @@ async def resolve(contact_id: str, body: ResolveIn, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
     who = user.get('impersonated_by') or user['name']
     if body.resolved:
-        await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': now(), 'needs_human': False, 'unread': 0}})
+        await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': now(), 'needs_human': False, 'unread': 0, 'handoff_urgent': False}})
         from ai import resume
         await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
         await note(user['company_id'], c['id'], f'{who} marcou a conversa como resolvida')

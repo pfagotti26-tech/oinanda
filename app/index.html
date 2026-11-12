@@ -161,6 +161,7 @@ pre{white-space:pre-wrap;font-size:11.5px;color:var(--ink2);max-height:160px;ove
 .m.sys{align-self:center;background:#FFF6DF;color:#7A5A12;font-size:12px;font-weight:500;box-shadow:none;border-radius:999px;padding:4px 12px;max-width:85%;text-align:center}
 .m.out.ai{background:#FFE8DF}.m.out.ai .by{color:var(--c2)}
 .human{background:#FDECEC;color:var(--bad);font-size:13px;font-weight:600;padding:9px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #F3CFCF}
+.human.urg{background:var(--bad);color:#fff;border-bottom-color:var(--bad)}.human.urg .lnk{color:#fff}.bd2.red.urg{background:var(--bad);color:#fff;font-weight:700}
 .human .lnk,.paused .lnk{margin-left:auto;white-space:nowrap;font-weight:700}.paused{background:#FFF4E5;color:#8A5A00;font-size:13px;font-weight:600;padding:9px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #F3E0BF}
 .human .btn{margin-left:auto}
 .cv-it .hn{background:var(--badsoft);color:var(--bad);font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 7px}
@@ -1579,7 +1580,7 @@ async function cvList(){
     <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
     <span class="cb"><span class="r1"><b>${esc(c.name)}</b><time class="${un?'nw':''}">${hm(c.last_at)}</time></span>
      <span class="r2">${c.last_dir==='out'?'<em>Você:</em> ':''}${esc(c.last_text||'')}</span>
-     <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?'<span class="bd2 red">pediu atendente</span>':w==='off'?'<span class="bd2 grey">chegou fora do horário</span>':w?`<span class="bd2 ${w}">esperando ${waitTxt(c)}</span>`:''}
+     <span class="r3">${c.assigned_to===ME.user.id&&c.transfer_seen===false?`<span class="bd2 tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="stg" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="tmp" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.needs_human?`<span class="bd2 red ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'pediu atendente'}</span>`:w==='off'?'<span class="bd2 grey">chegou fora do horário</span>':w?`<span class="bd2 ${w}">esperando ${waitTxt(c)}</span>`:''}
       <span class="sp"></span>${un?`<span class="nb">${c.unread}</span>`:''}${c.assigned_name&&c.assigned_to!==ME.user.id?`<span class="ow" title="Responsável: ${esc(c.assigned_name)}">${initials(c.assigned_name)}</span>`:''}</span></span></button>`}).join('')
    :`<div class="empty">${CV.q?'Nenhuma conversa encontrada para essa busca.':CV.filter==='waiting'?'Ninguém esperando resposta agora.':CV.filter==='mine'?'Nenhuma conversa com você.':'Nenhuma conversa ainda.<br>Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.'}</div>`;
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
@@ -1638,7 +1639,7 @@ async function cvChat(full){
   const box=$('#cvChat');if(!box||!CV.open)return;
   let d;try{d=await api('/conversations/'+CV.open)}catch(e){if(e.status===404){toast('Conversa não encontrada.');return closeConv()}throw e}
   const c=d.contact;CV.c=c;const me=ME.user,mgr=['owner','manager'].includes(me.role);
-  const sig=[d.messages.length,(d.messages.at(-1)||{}).id,d.messages.map(m=>m.status||'').join(''),c.window_open,c.needs_human,c.ai_mode,c.ai_paused,c.stage,c.assigned_to,c.resolved_at,c.value].join('|');
+  const sig=[d.messages.length,(d.messages.at(-1)||{}).id,d.messages.map(m=>m.status||'').join(''),c.window_open,c.needs_human,c.handoff_urgent,c.ai_mode,c.ai_paused,c.stage,c.assigned_to,c.resolved_at,c.value].join('|');
   if(!full&&sig===CV.sig){const w=winInfo(c),el=$('#cvWin');if(el&&w)el.innerHTML=`<i class="${w.cls}"></i>Janela aberta · ${w.txt}`;return}
   if(!full&&(CV.rec||[...document.querySelectorAll('#cvMsgs audio,#cvMsgs video')].some(x=>!x.paused)))return;  // gravando ou ouvindo: não redesenha agora
   CV.sig=sig;
@@ -1660,7 +1661,7 @@ async function cvChat(full){
       <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}${mode===k?' ✓':''}<small>${MODE_SHORT[k]}</small></button>`).join('')}</div><button data-mn="tr">Transferir</button><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
      <button class="ib pn-t ${CV.panel?'on':''}" id="cvPan" aria-label="Painel do cliente" title="Painel do cliente">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}</button>
     </div></div>
-   ${c.needs_human?`<div class="human">🙋 ${first} quer falar com alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}<button type="button" class="lnk" id="cvGiveBack" title="A Nanda volta a atuar como antes nesta conversa">Devolver para a Nanda</button></div>`
+   ${c.needs_human?`<div class="human ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 <b>Urgente</b> · ':'🙋 '}${first} quer falar com alguém do time${c.handoff_reason?' · '+esc(c.handoff_reason):''}<button type="button" class="lnk" id="cvGiveBack" title="A Nanda volta a atuar como antes nesta conversa">Devolver para a Nanda</button></div>`
      :c.ai_mode==='off'?`<div class="paused">⏸ Nanda pausada nesta conversa${c.ai_paused==='handoff'?' desde que passou para o time':''}. Ela só cobre o básico (endereço, horário) enquanto o time não responde.<button type="button" class="lnk" id="cvGiveBack">Religar a Nanda</button></div>`:''}
    <div class="msgs" id="cvMsgs">${msgsHtml(d.messages)}</div>
    <div class="cmp" id="cvCmp"></div>`;
@@ -2258,7 +2259,7 @@ async function drawBoard(local){
      <div class="tp"><span class="av">${initials(c.name)}</span><span class="nm"><b>${esc(c.name)}</b><small>${c.last_at?'há '+ago(c.last_at):''}${c.ad?' · anúncio':''}</small></span></div>
      <button class="mv" data-mv="${c.id}" title="Mover de etapa" aria-label="Mover de etapa">⇄</button>
      ${c.last_text?`<span class="pv ${c.last_dir==='in'?'in':''}">${c.last_dir==='out'?'Você: ':''}${esc(c.last_text)}</span>`:''}
-     <div class="ft">${c.needs_human?'<span class="bd red">pediu atendente</span>':''}${c.last_dir==='in'&&!c.needs_human?'<span class="bd c">esperando resposta</span>':''}${st?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.unread&&c.last_dir==='in'?`<span class="bd c">${c.unread} nova${c.unread>1?'s':''}</span>`:''}
+     <div class="ft">${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'pediu atendente'}</span>`:''}${c.last_dir==='in'&&!c.needs_human?'<span class="bd c">esperando resposta</span>':''}${st?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.unread&&c.last_dir==='in'?`<span class="bd c">${c.unread} nova${c.unread>1?'s':''}</span>`:''}
       ${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}
       <span class="own ${own?'':'none'}" title="${own?'Responsável: '+esc(own):'Sem responsável'}">${own?initials(own):'?'}</span></div></div>`};
   kb.innerHTML=d.stages.map((s,i)=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.value||0),0);const col=stColor(s,i);

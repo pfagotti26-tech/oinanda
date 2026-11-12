@@ -157,3 +157,29 @@ def test_etapa_sugerida_e_catalogo_sem_servico_sem_preco(monkeypatch):
         signed(c, inbound('quero voltar', 'e3'))  # para trás: não move
         assert wait(lambda: len(sent) == n + 3); time.sleep(0.3)
         assert c.get(f'/api/conversations/{cid}').json()['contact']['stage'] == stages_seen['ids'][2]
+
+def test_repasse_urgente(monkeypatch):
+    pushes = []
+    async def llm_urg(system, messages, max_tokens=500):
+        last = messages[-1]['content']
+        if 'inchado' in last: return json.dumps({'reply': 'Vou chamar a Dra. agora.', 'handoff': True, 'reason': 'reação após procedimento', 'urgente': True}), {}
+        return json.dumps({'reply': 'Vou chamar o time.', 'handoff': True, 'reason': 'desconto', 'urgente': True}), {}  # urgente sem motivo real: vale o que o modelo disse só com handoff
+    import push
+    async def fake_send(user_id, title, body, url='/conversas', tag=None): pushes.append(title)
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(ai, 'llm', llm_urg); monkeypatch.setattr(push, 'send_user', fake_send)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona', 'email': 'd5@cli.com', 'password': 'senha-forte-1', 'company': 'Clínica', 'segment': 'clinica'})
+        c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30})
+        c.put('/api/ai/settings', json={'default_mode': 'auto'})
+        n = len(sent)
+        signed(c, inbound('meu lábio está inchado e roxo', 'u1'))
+        assert wait(lambda: len(sent) == n + 1)
+        assert wait(lambda: c.get('/api/conversations').json()[0].get('handoff_urgent') is True)
+        msgs = c.get('/api/conversations').json()
+        cid = msgs[0]['id']
+        assert any('🚨 URGENTE' in (m.get('text') or '') for m in c.get(f'/api/conversations/{cid}').json()['messages'])
+        # resolver limpa a urgência
+        c.post(f'/api/conversations/{cid}/resolve', json={'resolved': True})
+        assert c.get(f'/api/conversations/{cid}').json()['contact']['handoff_urgent'] is False
+        # parse: urgente só vale com handoff
+        assert ai.parse('{"reply":"x","handoff":false,"urgente":true}')['urgente'] is False
