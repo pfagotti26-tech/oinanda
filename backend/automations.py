@@ -34,7 +34,7 @@ TRIGGERS = {'stage_enter': 'Entrou na etapa', 'no_reply': 'Sem resposta do clien
             'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra', 'after_milestone': 'Depois de atingir um marco da jornada'}
 GRACE = timedelta(hours=24)  # depois do momento certo, ainda tenta por 24 h (ex.: servidor reiniciando, fora do horário)
 QUIET = (8, 21)
-VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'data': '12/11', 'hora': '09:00',
+VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'profissional': 'Léo', 'data': '12/11', 'hora': '09:00',
         'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10'}
 
 # ---------- variáveis ----------
@@ -48,7 +48,7 @@ async def context(company, contact, appt=None):
         appt = up[0] if up else None
     name = (contact.get('name') or '').strip()
     first = name.split(' ')[0] if name and not name.isdigit() else ''
-    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': ''}
+    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'profissional': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': ''}
     hs = [x for x in contact.get('holdings') or [] if x.get('expires_at')]
     if hs:  # o item que vence primeiro (ou o que venceu por último)
         fut = [x for x in hs if aware(x['expires_at']) >= now()]
@@ -57,7 +57,7 @@ async def context(company, contact, appt=None):
     if appt and appt.get('_extra'): ctx.update(appt['_extra']); appt = None
     if appt:
         t = aware(appt['start']).astimezone(tz)
-        ctx.update(servico=appt.get('service_name') or '', data=f'{agenda.WEEK[t.weekday()]} {t:%d/%m}', hora=f'{t:%H:%M}')
+        ctx.update(servico=appt.get('service_name') or '', profissional=appt.get('pro_name') or '', data=f'{agenda.WEEK[t.weekday()]} {t:%d/%m}', hora=f'{t:%H:%M}')
     return ctx
 
 # ---------- modelos (templates da Meta) ----------

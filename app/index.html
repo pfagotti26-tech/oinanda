@@ -710,7 +710,7 @@ body.tv .app{display:none}.tvw{position:fixed;inset:0;background:#17212B;color:#
 .dc.closed{cursor:default}
 .nowl{position:absolute;left:0;right:0;height:2px;background:#D93B2B;z-index:3}.nowl::before{content:'';position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:#D93B2B}
 .ghost{position:absolute;left:3px;right:3px;border:1.5px dashed var(--c);border-radius:8px;background:rgba(232,96,63,.06);color:var(--c2);font-size:11.5px;font-weight:700;padding:3px 7px;pointer-events:none;z-index:1}
-.ev{position:absolute;z-index:2;text-align:left;border-radius:8px;padding:4px 8px;background:var(--soft);border-left:4px solid var(--c);color:var(--ink);overflow:hidden;font-size:12px;line-height:1.3;box-shadow:0 1px 2px rgba(23,33,43,.08)}
+.ev{position:absolute;z-index:2;text-align:left;border-radius:8px;padding:4px 8px;background:var(--soft);border-left:4px solid var(--pc,var(--c));color:var(--ink);overflow:hidden;font-size:12px;line-height:1.3;box-shadow:0 1px 2px rgba(23,33,43,.08)}
 .ev:hover{box-shadow:0 6px 14px -6px rgba(23,33,43,.35);z-index:4}
 .ev b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ev span{display:block;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -728,7 +728,7 @@ body.tv .app{display:none}.tvw{position:fixed;inset:0;background:#17212B;color:#
 .wstrip button.today span,.wstrip button.today b{color:var(--c2)}
 .wstrip button.on{background:var(--c);border-color:var(--c)}.wstrip button.on span,.wstrip button.on b,.wstrip button.on i{color:#fff}
 .wstrip button.closed:not(.on){opacity:.5}
-.cal.one .cal-hd{display:none}
+.cal.one .cal-hd{display:none}.cal.one.bypro .cal-hd{display:grid}
 .fab{display:none}.ag-bar .gear{display:none}
 @media (max-width:860px){
  .ag-hd:has(#agB){display:none}.ag-hd>div:first-child{display:none}.ag-hd .tools{margin-left:0}.ag-bar .gear{display:inline-flex;order:5}
@@ -1134,6 +1134,16 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .fn-s.off b{color:var(--bad)}.fn-s.weak{border-color:var(--bad);background:#FFF3F1}.fn-s em{font-style:normal;font-size:11px;font-weight:800;color:var(--bad);margin-top:3px}
 .fn-ar{align-self:center;color:var(--ink3);font-size:18px;flex:none}
 @media (max-width:760px){.gf-cards.four{grid-template-columns:1fr}.fn-row{flex-direction:column;gap:4px}.fn-ar{transform:rotate(90deg);align-self:flex-start;margin-left:18px;line-height:1}.fn-s{grid-template-columns:1fr auto;align-items:center}.fn-s b{grid-row:1/span 2;grid-column:2;font-size:20px}.fn-s em{grid-column:1}}
+
+/* profissionais da agenda */
+.ag-pf{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 10px}.ag-pf button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ag-pf button i{width:9px;height:9px;border-radius:50%;background:var(--pc,#999)}.ag-pf button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cal-hd .dh.ph{cursor:default;gap:3px}.cal-hd .dh.ph i{width:10px;height:10px;border-radius:50%;background:var(--pc)}.cal-hd .dh.ph .pn{font-size:14px;width:auto;height:auto;border-radius:0;font-weight:700}
+.pro-c{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:8px;background:#fff}.pro-h{display:grid;grid-template-columns:12px 1fr 1fr auto auto;gap:8px;align-items:center}
+.pro-h .dot{width:12px;height:12px;border-radius:50%;background:var(--pc)}.pro-h input,.pro-h select{border:1px solid #DCD2C9;border-radius:10px;padding:7px 10px;font:inherit;font-size:14px;min-width:0}
+.pro-sv{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.pro-sv .chip input{display:none}.pro-sv .chip{cursor:pointer}
+.pro-hr{display:grid;gap:8px;font-size:13px}.hrs.sm{font-size:12.5px}.hrs.sm input[type=time]{padding:4px 6px;font-size:12.5px}
+@media(max-width:760px){.pro-h{grid-template-columns:12px 1fr auto auto}.pro-h select{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -1975,26 +1985,31 @@ async function bookModal(pre,after){
    ${pre.contact?'':`<div class="field"><label>Cliente</label><select name="contact_id" required><option value="">Escolha...</option>${contacts.map(c=>`<option value="${c.id}">${esc(c.name)} · +${esc(c.wa_id)}</option>`).join('')}</select><span class="hint">Cliente novo? Adicione primeiro no Funil.</span></div>`}
    <div class="form2"><div class="field"><label>Serviço</label><select name="service_id">${cfg.services.map(v=>`<option value="${v.id}">${esc(v.name)} (${v.duration} min)</option>`).join('')}</select></div>
     <div class="field"><label>Dia</label><input type="date" name="date" value="${pre.date||ymd(new Date())}" required></div></div>
+   ${(cfg.pros||[]).some(p=>p.active!==false)?`<div class="field"><label>Com quem</label><select name="pro_id"><option value="">Quem estiver livre</option></select></div>`:''}
    <div class="field"><label>Horários livres</label><div class="slots" id="bkS"></div></div>
    ${canForce?'<div class="field"><label>Ou encaixe num horário específico</label><input type="time" name="ftime" style="max-width:150px"></div>':''}
    <div class="field"><label>Observação</label><input name="notes" maxlength="300"></div>
    <div class="row"><button class="btn p">Agendar</button><span class="err" id="bkE"></span></div></form>`,true);
   const f=o.querySelector('#bkF');let pick=null;
+  const prosOf=()=>(cfg.pros||[]).filter(p=>p.active!==false&&(!(p.services||[]).length||p.services.includes(f.service_id.value)));
+  const fillPros=()=>{if(!f.pro_id)return;const cur=f.pro_id.value;f.pro_id.innerHTML='<option value="">Quem estiver livre</option>'+prosOf().map(p=>`<option value="${p.id}" ${p.id===(pre.pro_id||cur)?'selected':''}>${esc(p.name)}</option>`).join('')};
+  fillPros();
   const load=async()=>{pick=null;const box=o.querySelector('#bkS');box.innerHTML='<span class="hint">Carregando...</span>';
-    try{const sl=await api(`/agenda/slots?service_id=${f.service_id.value}&date=${f.date.value}`);
+    try{const sl=await api(`/agenda/slots?service_id=${f.service_id.value}&date=${f.date.value}${f.pro_id&&f.pro_id.value?'&pro_id='+f.pro_id.value:''}`);
       box.innerHTML=sl.length?sl.map(t=>`<button type="button" data-t="${t}">${t}</button>`).join(''):'<span class="hint">Nenhum horário livre nesse dia.</span>';
       box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pick=b.dataset.t;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))})}catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
-  f.service_id.onchange=load;f.date.onchange=load;await load();
+  f.service_id.onchange=()=>{fillPros();load()};f.date.onchange=load;if(f.pro_id)f.pro_id.onchange=load;await load();
   if(pre.time){const b=o.querySelector(`#bkS [data-t="${pre.time}"]`);if(b)b.click();else if(f.ftime){f.ftime.value=pre.time;o.querySelector('#bkS').insertAdjacentHTML('afterbegin',`<span class="hint" style="width:100%">${pre.time} não está entre os horários livres. Dá para marcar como encaixe (campo abaixo) ou escolher outro.</span>`)}}
   f.onsubmit=async ev=>{ev.preventDefault();const ft=f.ftime?.value;const time=ft||pick;if(!time)return o.querySelector('#bkE').textContent='Escolha um horário.';
-    const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft};
+    const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft,pro_id:f.pro_id?f.pro_id.value||null:null};
     try{const ap=await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after(ap)}catch(e){o.querySelector('#bkE').textContent=e.message}};
 }
 function apptModal(a,after){
   const st=[['scheduled','Agendado'],['confirmed','Confirmado'],['done','Compareceu'],['no_show','Faltou'],['canceled','Cancelado']];
   const d=new Date(a.start);
   const o=overlay(`<div class="modal"><div class="row"><h2 style="font-size:20px">${esc(a.contact_name)}</h2><button class="x">×</button></div>
-   <p style="color:var(--ink2);margin-top:-6px">${esc(a.service_name)} · ${WEEKD[(d.getDay()+6)%7]} ${d.toLocaleDateString('pt-BR')} às ${a.start.slice(11,16)} · agendado por ${esc(a.by||'')}</p>
+   <p style="color:var(--ink2);margin-top:-6px">${esc(a.service_name)} · ${WEEKD[(d.getDay()+6)%7]} ${d.toLocaleDateString('pt-BR')} às ${a.start.slice(11,16)}${a.pro_name?' · com '+esc(a.pro_name):''} · agendado por ${esc(a.by||'')}</p>
+   ${(AG.cfg?.pros||[]).some(p=>p.active!==false)?`<div class="field"><label>Com quem</label><select id="apPro"><option value="">sem profissional</option>${(AG.cfg.pros||[]).filter(p=>p.active!==false||p.id===a.pro_id).map(p=>`<option value="${p.id}" ${p.id===a.pro_id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>`:''}
    <div class="field"><label>Situação</label><div class="chips">${st.map(x=>`<button class="chip ${a.status===x[0]?'on':''}" data-st="${x[0]}">${x[1]}</button>`).join('')}</div></div>
    <div class="field"><label>Remarcar</label><div class="row"><input type="date" id="rmD" value="${a.start.slice(0,10)}" style="border:1px solid #DCD2C9;border-radius:10px;padding:8px"><input type="time" id="rmT" value="${a.start.slice(11,16)}" style="border:1px solid #DCD2C9;border-radius:10px;padding:8px"><button class="btn sm" id="rmGo">Remarcar</button></div></div>
    <div class="field"><label>Observação</label><input id="apN" value="${esc(a.notes||'')}"></div>
@@ -2003,6 +2018,7 @@ function apptModal(a,after){
   o.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>go2({status:b.dataset.st}));
   o.querySelector('#rmGo').onclick=()=>go2({date:o.querySelector('#rmD').value,time:o.querySelector('#rmT').value});
   o.querySelector('#apS').onclick=()=>go2({notes:o.querySelector('#apN').value});
+  if(o.querySelector('#apPro'))o.querySelector('#apPro').onchange=e=>go2({pro_id:e.target.value});
   o.querySelector('#apC').onclick=()=>{o.remove();CV.open=a.contact_id;go('conversas')};
 }
 const HH=52;
@@ -2025,7 +2041,12 @@ async function drawWeek(scroll){
   const days=week?[0,1,2,3,4,5,6].map(i=>{const d=new Date(w);d.setDate(d.getDate()+i);return d}):[w];
   const mon=monday(AG.day),sun=new Date(mon);sun.setDate(sun.getDate()+6);
   const qa=week?w:mon,qb=week?days[6]:sun;
-  const list=await api(`/appointments?start=${ymd(qa)}&end=${ymd(qb)}`);
+  const all=await api(`/appointments?start=${ymd(qa)}&end=${ymd(qb)}`);
+  const PR=(cfg.pros||[]).filter(p=>p.active!==false);const PC=Object.fromEntries((cfg.pros||[]).map(p=>[p.id,p.color||'#999']));
+  if(AG.pro&&!PR.some(p=>p.id===AG.pro))AG.pro=null;
+  const list=AG.pro?all.filter(a=>a.pro_id===AG.pro):all;
+  const pf=$('#agPf');if(pf){pf.classList.toggle('hide',!PR.length);pf.innerHTML=PR.length?`<button class="${!AG.pro?'on':''}" data-pro="">Todos</button>`+PR.map(p=>`<button class="${AG.pro===p.id?'on':''}" data-pro="${p.id}" style="--pc:${p.color}"><i></i>${esc(p.name)}</button>`).join(''):'';
+    pf.querySelectorAll('[data-pro]').forEach(b=>b.onclick=()=>{AG.pro=b.dataset.pro||null;drawWeek(false)})}
   const todayK=ymd(new Date());
   const ws=$('#wstrip');
   if(ws){ws.classList.toggle('hide',week);if(!week){const wd=[0,1,2,3,4,5,6].map(i=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d});
@@ -2050,15 +2071,20 @@ async function drawWeek(scroll){
   shown.forEach(a=>{lo=Math.min(lo,toMin(a.start.slice(11,16)));hi=Math.max(hi,toMin(a.end.slice(11,16))||1440)});
   if(lo>=hi){lo=8*60;hi=20*60}lo=Math.floor(lo/60)*60;hi=Math.min(24*60,Math.ceil(hi/60)*60);
   const H=(hi-lo)/60*HH,px=m=>(m-lo)/60*HH;
-  const cols=days.map(d=>{const k=ymd(d),wd=(d.getDay()+6)%7,open=cfg.hours[String(wd)]||[];const items=shown.filter(a=>a.start.slice(0,10)===k);return {d,k,wd,open,items,closed:!open.length&&!items.length,past:k<todayK,today:k===todayK}});
+  const byPro=!week&&PR.length>1&&!AG.pro&&innerWidth>=860;
+  const cols=byPro?(()=>{const d=days[0],k=ymd(d),wd=(d.getDay()+6)%7;const base=cfg.hours[String(wd)]||[];const items=shown.filter(a=>a.start.slice(0,10)===k);
+      const pc=PR.map(p=>({d,k,wd,open:(p.hours||cfg.hours)[String(wd)]||[],items:items.filter(a=>a.pro_id===p.id),pro:p,closed:!((p.hours||cfg.hours)[String(wd)]||[]).length&&!items.some(a=>a.pro_id===p.id),past:k<todayK,today:k===todayK}));
+      const rest=items.filter(a=>!PR.some(p=>p.id===a.pro_id));if(rest.length)pc.push({d,k,wd,open:base,items:rest,pro:{name:'Sem profissional',color:'#999',id:''},closed:false,past:k<todayK,today:k===todayK});return pc})()
+    :days.map(d=>{const k=ymd(d),wd=(d.getDay()+6)%7,ph=AG.pro&&(PR.find(p=>p.id===AG.pro)||{}).hours,open=(ph||cfg.hours)[String(wd)]||[];const items=shown.filter(a=>a.start.slice(0,10)===k);return {d,k,wd,open,items,closed:!open.length&&!items.length,past:k<todayK,today:k===todayK}});
   const tmpl='56px '+cols.map(c=>c.closed&&week?'64px':'minmax(0,1fr)').join(' ');
   const card=g=>{const a=g.a,top=px(g.s),h=Math.max(22,px(g.e)-top-2),w=100/g.n;
-    return `<button class="ev ${a.status} ${h<40?'sm':''}" data-a="${a.id}" style="top:${top}px;height:${h}px;left:calc(${g.lane*w}% + 3px);width:calc(${w}% - 6px)" title="${esc(a.start.slice(11,16)+' '+a.contact_name+' · '+a.service_name+' · '+a.status_label)}">
-      <b>${a.start.slice(11,16)} ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${!week?' · '+esc(a.status_label||'')+(a.contact_phone?' · '+esc(fmtPhone(a.contact_phone)):''):''}</span>${!week&&a.notes?`<span>${esc(a.notes)}</span>`:''}${a.by&&/IA/.test(a.by)?'<em>Nanda</em>':''}</button>`};
-  box.innerHTML=`<div class="cal ${week?'cw':'one'}"><div class="cal-hd" style="grid-template-columns:${tmpl}"><span></span>${cols.map(c=>`<button class="dh ${c.today?'today':''} ${c.past?'past':''}" data-day="${c.k}" title="Ver o dia"><span>${WEEKD[c.wd]}</span><b>${c.d.getDate()}</b>${c.closed?'<small>fechado</small>':c.items.length?`<small>${(n=>n+(n===1?' marcado':' marcados'))(c.items.filter(a=>a.status!=='canceled').length)}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>
+    return `<button class="ev ${a.status} ${h<40?'sm':''}" data-a="${a.id}" style="top:${top}px;height:${h}px;left:calc(${g.lane*w}% + 3px);width:calc(${w}% - 6px)${a.pro_id&&PC[a.pro_id]?`;--pc:${PC[a.pro_id]}`:''}" title="${esc(a.start.slice(11,16)+' '+a.contact_name+' · '+a.service_name+(a.pro_name?' · com '+a.pro_name:'')+' · '+a.status_label)}">
+      <b>${a.start.slice(11,16)} ${esc(a.contact_name)}</b><span>${esc(a.service_name)}${a.pro_name&&!byPro?' · '+esc(a.pro_name):''}${!week?' · '+esc(a.status_label||'')+(a.contact_phone?' · '+esc(fmtPhone(a.contact_phone)):''):''}</span>${!week&&a.notes?`<span>${esc(a.notes)}</span>`:''}${a.by&&/IA/.test(a.by)?'<em>Nanda</em>':''}</button>`};
+  box.innerHTML=`<div class="cal ${week?'cw':'one'} ${byPro?'bypro':''}"><div class="cal-hd" style="grid-template-columns:${tmpl}"><span></span>${cols.map(c=>byPro?`<div class="dh ph" style="--pc:${c.pro.color}"><i></i><b class="pn">${esc(c.pro.name)}</b>${c.closed?'<small>folga</small>':c.items.length?`<small>${(n=>n+(n===1?' marcado':' marcados'))(c.items.filter(a=>a.status!=='canceled').length)}</small>`:'<small>livre</small>'}</div>`
+    :`<button class="dh ${c.today?'today':''} ${c.past?'past':''}" data-day="${c.k}" title="Ver o dia"><span>${WEEKD[c.wd]}</span><b>${c.d.getDate()}</b>${c.closed?'<small>fechado</small>':c.items.length?`<small>${(n=>n+(n===1?' marcado':' marcados'))(c.items.filter(a=>a.status!=='canceled').length)}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>
    <div class="cal-sc" id="calSc"><div class="cal-gr" style="grid-template-columns:${tmpl};height:${H}px">
     <div class="tm">${Array.from({length:(hi-lo)/60},(_,i)=>`<span style="top:${i*HH}px">${hhmm(lo+i*60)}</span>`).join('')}</div>
-    ${cols.map(c=>`<div class="dc ${c.past?'past':''} ${c.today?'today':''} ${c.closed?'closed':''}" data-k="${c.k}" data-wd="${c.wd}">
+    ${cols.map(c=>`<div class="dc ${c.past?'past':''} ${c.today?'today':''} ${c.closed?'closed':''}" data-k="${c.k}" data-wd="${c.wd}" ${c.pro?`data-pro="${c.pro.id}"`:''}>
       ${c.open.map(([x,y])=>`<div class="op" style="top:${px(toMin(x))}px;height:${px(toMin(y))-px(toMin(x))}px"></div>`).join('')}
       ${c.today&&now.getHours()*60+now.getMinutes()>=lo&&now.getHours()*60+now.getMinutes()<=hi?`<div class="nowl" style="top:${px(now.getHours()*60+now.getMinutes())}px"></div>`:''}
       ${lanes(c.items).map(card).join('')}<div class="ghost hide"></div></div>`).join('')}
@@ -2074,16 +2100,19 @@ async function drawWeek(scroll){
     const at=e=>{const r=dc.getBoundingClientRect();return Math.max(lo,Math.min(hi-stepM,lo+Math.floor(((e.clientY-r.top)/HH*60)/stepM)*stepM))};
     dc.onmousemove=e=>{if(e.target.closest('.ev')||dc.classList.contains('closed')){gh.classList.add('hide');return}const m=at(e);gh.classList.remove('hide');gh.style.top=px(m)+'px';gh.style.height=(stepM/60*HH-2)+'px';gh.textContent='+ '+hhmm(m)};
     dc.onmouseleave=()=>gh.classList.add('hide');
-    dc.onclick=e=>{if(e.target.closest('.ev'))return;if(dc.classList.contains('closed'))return toast('Fechado nesse dia. Dá para mudar o horário em Configurar.');const m=at(e);if(dc.dataset.k<todayK)return toast('Esse dia já passou.');bookModal({date:dc.dataset.k,time:hhmm(m)},drawWeek)}});
+    dc.onclick=e=>{if(e.target.closest('.ev'))return;if(dc.classList.contains('closed'))return toast(dc.dataset.pro!=null?'Folga nesse dia.':'Fechado nesse dia. Dá para mudar o horário em Configurar.');const m=at(e);if(dc.dataset.k<todayK)return toast('Esse dia já passou.');bookModal({date:dc.dataset.k,time:hhmm(m),pro_id:dc.dataset.pro||AG.pro||null},drawWeek)}});
 }
 async function drawAgCfg(){
   const box=$('#agBody');const cfg=await agCfg();if(!STAGES)STAGES=await api('/funnel/stages');
   const own=ME.user.role==='owner';const g=cfg.google;
-  const svcs=cfg.services.map(v=>({...v}));const hours=JSON.parse(JSON.stringify(cfg.hours));
+  const svcs=cfg.services.map(v=>({...v}));const hours=JSON.parse(JSON.stringify(cfg.hours));const pros=(cfg.pros||[]).map(p=>({...p,services:[...(p.services||[])],hours:p.hours?JSON.parse(JSON.stringify(p.hours)):null}));
+  const team=(await api('/team').catch(()=>[])).filter(u=>u.active!==false);
   box.innerHTML=`<div class="grid g2" style="align-items:start"><div class="grid">
     <div class="card"><h3 style="margin-bottom:4px">Serviços</h3><p class="hint" style="margin-bottom:12px">O que dá para agendar. Vagas = quantas pessoas no mesmo horário (aula em grupo).</p>
      <div class="svrow hint" style="margin-bottom:4px"><span>Nome</span><span>Minutos</span><span>Vagas</span><span>Preço (R$)</span><span></span></div><div id="svL" class="grid" style="gap:8px"></div>
      <button class="btn sm" id="svAdd" style="margin-top:10px">+ Serviço</button></div>
+    <div class="card"><h3 style="margin-bottom:4px">Profissionais <span class="hint" style="font-weight:500">(opcional)</span></h3><p class="hint" style="margin-bottom:12px">Para quem tem equipe: barbeiros, profissionais da clínica, professores. Cada um com seu horário e seus serviços. A Nanda marca com quem está livre, ou com quem o cliente pedir.</p>
+     <div id="prL" class="grid" style="gap:10px"></div><button class="btn sm" id="prAdd" style="margin-top:10px">+ Profissional</button></div>
     <div class="card"><h3 style="margin-bottom:12px">A Nanda e a agenda</h3>
      <label class="row" style="gap:8px;font-weight:500"><input type="checkbox" id="nb" ${cfg.nanda_books?'checked':''}> A Nanda oferece horários e agenda sozinha</label>
      <p class="hint" style="margin:4px 0 12px">No modo copiloto ela só sugere; quem confirma é o time.</p>
@@ -2104,9 +2133,28 @@ async function drawAgCfg(){
     $('#hrs').querySelectorAll('[data-h]').forEach(x=>x.onchange=()=>hours[x.dataset.h][x.dataset.j][x.dataset.k]=x.value);
     $('#hrs').querySelectorAll('[data-hx]').forEach(x=>x.onclick=()=>{const [i,j]=x.dataset.hx.split(':');hours[i].splice(j,1);drawH()});
     $('#hrs').querySelectorAll('[data-ha]').forEach(x=>x.onclick=()=>{const i=x.dataset.ha;(hours[i]=hours[i]||[]).push(hours[i].length?['14:00','18:00']:['09:00','18:00']);drawH()})};
-  drawS();drawH();
-  $('#svAdd').onclick=()=>{svcs.push({name:'Novo serviço',duration:60,capacity:1,price:null});drawS()};
-  $('#agSave').onclick=async()=>{try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,
+  // editor de horário reaproveitado pelos profissionais
+  const hoursHtml=(h,pre)=>WEEKD.map((d,i)=>{const r=h[String(i)]||[];return `<b>${d}</b><div class="rg">${r.map((x,j)=>`<input type="time" data-${pre}h="${i}" data-j="${j}" data-k="0" value="${x[0]}"> às <input type="time" data-${pre}h="${i}" data-j="${j}" data-k="1" value="${x[1]}"><button class="btn sm" data-${pre}hx="${i}:${j}">×</button>`).join('')}${r.length?'':'<span class="hint">folga</span>'}<button class="btn sm" data-${pre}ha="${i}">+</button></div>`}).join('');
+  const PAL=['#2A9D8F','#E76F51','#5B7DB1','#C77DFF','#E9A23B','#3A86FF','#8AC926','#FF6B9D'];
+  const drawP=()=>{$('#prL').innerHTML=pros.map((p,i)=>`<div class="pro-c" style="--pc:${p.color||PAL[i%PAL.length]}"><div class="pro-h"><i class="dot"></i><input data-pf="name" data-i="${i}" value="${esc(p.name)}" placeholder="Nome" maxlength="40">
+      <select data-pf="user_id" data-i="${i}" title="Alguém do time? Conta nas metas por pessoa"><option value="">só o nome (sem login)</option>${team.map(u=>`<option value="${u.id}" ${p.user_id===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select>
+      <label class="row" style="gap:4px;font-size:13px;white-space:nowrap" title="Inativo não entra na agenda nem na Nanda"><input type="checkbox" data-pf="active" data-i="${i}" ${p.active!==false?'checked':''}> ativo</label><button class="btn sm" data-pdel="${i}" aria-label="Remover">×</button></div>
+     <div class="pro-sv"><span class="hint">Faz:</span>${svcs.map(v=>`<label class="chip ${!p.services.length||p.services.includes(v.id)?'on':''}"><input type="checkbox" data-psv="${i}" value="${v.id}" ${!p.services.length||p.services.includes(v.id)?'checked':''}>${esc(v.name)}</label>`).join('')}</div>
+     <div class="pro-hr"><label class="row" style="gap:6px"><input type="checkbox" data-pown="${i}" ${p.hours?'checked':''}> Horário próprio</label>${p.hours?`<div class="hrs sm">${hoursHtml(p.hours,'p'+i)}</div>`:'<span class="hint">segue o horário de funcionamento</span>'}</div></div>`).join('');
+    const L=$('#prL');
+    L.querySelectorAll('[data-pf]').forEach(x=>x.oninput=x.onchange=()=>{const p=pros[x.dataset.i];p[x.dataset.pf]=x.type==='checkbox'?x.checked:x.value||null});
+    L.querySelectorAll('[data-pdel]').forEach(x=>x.onclick=()=>{pros.splice(x.dataset.pdel,1);drawP()});
+    L.querySelectorAll('[data-psv]').forEach(x=>x.onchange=()=>{const p=pros[x.dataset.psv];const on=[...L.querySelectorAll(`[data-psv="${x.dataset.psv}"]`)].filter(y=>y.checked).map(y=>y.value);p.services=on.length===svcs.filter(v=>v.id).length?[]:on;drawP()});
+    L.querySelectorAll('[data-pown]').forEach(x=>x.onchange=()=>{const p=pros[x.dataset.pown];p.hours=x.checked?JSON.parse(JSON.stringify(hours)):null;drawP()});
+    pros.forEach((p,i)=>{if(!p.hours)return;const pre='p'+i;
+      L.querySelectorAll(`[data-${pre}h]`).forEach(x=>x.onchange=()=>p.hours[x.dataset[pre+'h']][x.dataset.j][x.dataset.k]=x.value);
+      L.querySelectorAll(`[data-${pre}hx]`).forEach(x=>x.onclick=()=>{const [a,b]=x.dataset[pre+'hx'].split(':');p.hours[a].splice(b,1);drawP()});
+      L.querySelectorAll(`[data-${pre}ha]`).forEach(x=>x.onclick=()=>{const a=x.dataset[pre+'ha'];(p.hours[a]=p.hours[a]||[]).push(p.hours[a].length?['14:00','18:00']:['09:00','18:00']);drawP()})})};
+  drawS();drawH();drawP();
+  $('#svAdd').onclick=()=>{svcs.push({name:'Novo serviço',duration:60,capacity:1,price:null});drawS();drawP()};
+  $('#prAdd').onclick=()=>{pros.push({name:'',services:[],hours:null,active:true,color:PAL[pros.length%PAL.length]});drawP();const last=$('#prL').querySelector('.pro-c:last-child input[data-pf=name]');if(last)last.focus()};
+  $('#agSave').onclick=async()=>{if(pros.some(p=>!(p.name||'').trim()))return $('#agE').textContent='Dê um nome a cada profissional (ou remova a linha).';
+    try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,pros:pros.map(p=>({id:p.id,name:p.name,user_id:p.user_id||null,color:p.color||null,services:p.services,hours:p.hours,active:p.active!==false})),
     nanda_books:$('#nb').checked,stage_on_book:$('#sob').value,min_notice_hours:Number($('#mn').value),days_ahead:Number($('#da').value),step:Number($('#stp').value)}});toast('Agenda salva.');$('#agE').textContent=''}catch(e){$('#agE').textContent=e.message}};
   if($('#gOn'))$('#gOn').onclick=async()=>{try{location.href=(await api('/google/connect',{method:'POST'})).url}catch(e){toast(e.message)}};
   if($('#gOff'))$('#gOff').onclick=async()=>{if(!await sure('Desconectar o Google Agenda?'))return;await api('/google',{method:'DELETE'});drawAgCfg()};
@@ -2167,7 +2215,7 @@ const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':
 function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
   return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
     before_appt:`${t} antes do horário marcado`,appt_no_show:`${t} depois de uma falta`,appt_done:`${t} depois do atendimento`,after_milestone:`${a.hours?t+' depois':'Assim que'} de atingir um marco da jornada`}[a.trigger]||a.trigger}
-const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',data:'dia do horário',hora:'hora do horário',produto:'item da carteira',vencimento:'data de vencimento',cupom:'cupom individual'};
+const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',profissional:'quem atende (se a agenda tiver profissionais)',data:'dia do horário',hora:'hora do horário',produto:'item da carteira',vencimento:'data de vencimento',cupom:'cupom individual'};
 const hlv=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>`<b style="color:var(--c2)" title="${VARS_TXT[k]||''}">${VARS_TXT[k]?'['+VARS_TXT[k]+']':m}</b>`);
 function varChips(ta){return `<div class="vars">${Object.entries(VARS_TXT).map(([k,v])=>`<button type="button" data-var="${k}" title="${v}">{${k}}</button>`).join('')}</div>`}
 function bindVars(o,ta){o.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.var+'}';const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length})}
@@ -3440,7 +3488,7 @@ const VIEWS={
    <div class="ag-bar"><div class="seg"><button class="${AG.view==='dia'?'on':''}" data-vw="dia">Dia</button><button class="${AG.view==='semana'?'on':''}" data-vw="semana">Semana</button></div>
     <button class="btn sm nav" id="agP" aria-label="Anterior">‹</button><button class="btn sm nav" id="agN" aria-label="Próximo">›</button><b id="agRange"></b><button class="btn sm" id="agT">Hoje</button>${canManage?'<button class="btn sm nav gear" id="agG" aria-label="Configurar agenda" title="Configurar">⚙</button>':''}
     <span class="ag-leg"><i class="scheduled"></i>agendado<i class="confirmed"></i>confirmado<i class="done"></i>compareceu<i class="no_show"></i>faltou</span></div>
-   <div class="wstrip" id="wstrip"></div>`:''}<div id="agBody"></div>${AG.tab==='semana'?'<button class="fab" id="agFab" aria-label="Agendar">+</button>':''}`;
+   <div class="ag-pf hide" id="agPf"></div><div class="wstrip" id="wstrip"></div>`:''}<div id="agBody"></div>${AG.tab==='semana'?'<button class="fab" id="agFab" aria-label="Agendar">+</button>':''}`;
   if($('#agFab'))$('#agFab').onclick=()=>bookModal({date:ymd(AG.view==='dia'?AG.day:new Date())},drawWeek);
   if($('#agCfgB'))$('#agCfgB').onclick=()=>{AG.tab=AG.tab==='config'?'semana':'config';syncUrl();VIEWS.agenda()};
   if($('#agG'))$('#agG').onclick=()=>{AG.tab='config';syncUrl();VIEWS.agenda()};

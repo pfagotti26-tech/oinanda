@@ -5,7 +5,7 @@ etapas do funil, serviço da agenda, exemplo para ensinar a Nanda e automações
 Para incluir um nicho novo, basta acrescentar uma entrada em NICHES.
 
 Nas receitas, a etapa é indicada por um pedaço do nome (ex.: 'marcad'), resolvida nas etapas da empresa.
-Variáveis das mensagens: {primeiro_nome}, {nome}, {empresa}, {servico}, {data}, {hora}.
+Variáveis das mensagens: {primeiro_nome}, {nome}, {empresa}, {servico}, {profissional}, {data}, {hora}.
 """
 from fastapi import APIRouter
 

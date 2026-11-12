@@ -112,7 +112,7 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 
 {ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}{stage_block(stages, stage_id)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
 
@@ -151,6 +151,7 @@ def parse(text):
         try:
             d = json.loads(m.group(0))
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
+            if b: b = {'service_id': str(b['service_id'])[:24], 'start': str(b['start'])[:19], 'pro_id': (str(b['pro_id'])[:24] if b.get('pro_id') else None)}
             return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
                     'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80],
                     'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else [],
@@ -354,7 +355,9 @@ async def auto_reply(company_id, contact_id, msg_id):
         if d['book']:
             company = await db.companies.find_one({'id': company_id}, {'_id': 0})
             try:
-                await agenda.book(company, contact, d['book']['service_id'], datetime.fromisoformat(d['book']['start']), None, s['name'] + ' (IA)')
+                a = await agenda.book(company, contact, d['book']['service_id'], datetime.fromisoformat(d['book']['start']), None, s['name'] + ' (IA)', pro_id=d['book'].get('pro_id'))
+                if a.get('pro_name') and a['pro_name'].lower() not in (d['reply'] or '').lower():
+                    d['reply'] = (d['reply'] or '').rstrip() + f' Seu horário fica com {a["pro_name"]}.'
             except (HTTPException, ValueError):
                 d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
         if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
