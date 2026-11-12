@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oi Nanda — CRM e automação de vendas pelo WhatsApp com IA</title>
 <link rel="icon" href="/favicon.png">
-<meta property="og:title" content="Oi Nanda — pare de perder venda por demora no WhatsApp">
+<meta property="og:title" content="Oi Nanda — pare de perder vendas por demora no WhatsApp">
 <meta property="og:description" content="CRM de vendas pelo WhatsApp e Instagram, com IA. Responde em segundos, marca horário e passa para o seu time quem está pronto. 14 dias grátis, sem cartão.">
 <meta property="og:image" content="/og.png">
 <meta name="description" content="Oi Nanda é o CRM de vendas pelo WhatsApp e Instagram com IA: a Nanda responde 24h, agenda e passa para o seu time quem está pronto para fechar. 14 dias grátis, sem cartão.">
@@ -78,14 +78,18 @@ nav .btn{padding:11px 20px;font-size:15px}
 .sh2{position:absolute;right:0;top:10%;width:26%;aspect-ratio:1;border-radius:50%;border:14px solid var(--coral)}
 .sh3{position:absolute;left:-4%;bottom:14%;width:18%;aspect-ratio:1;border-radius:26% 26% 26% 6%;background:#F4C46A;transform:rotate(-8deg)}
 .float{position:absolute;z-index:2;background:#fff;border-radius:18px;box-shadow:0 18px 44px rgba(23,33,43,.16);padding:12px 16px;display:flex;gap:11px;align-items:center;font-size:14.5px;line-height:1.3;white-space:nowrap;text-align:left}
-.float b{display:block;font-weight:800}.float span{color:var(--ink2)}
+.float b{display:block;font-weight:800}.feed .float span{color:#3D4854}.feed .float time{color:#6B7783}.float span{color:var(--ink2);display:block;max-width:250px;overflow:hidden;text-overflow:ellipsis}
 .float .ic{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--wa)}
 .float .ic svg{width:22px;height:22px}
-.float.a{left:-14%;top:33%;animation:bob 5s ease-in-out infinite}
-.float.b{right:-12%;top:56%;animation:bob 5s ease-in-out -2.5s infinite}
-.float.b .ic{background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px}
-.float.c{left:-8%;bottom:13%;animation:bob 6s ease-in-out -1.2s infinite}
-.float.c .ic{background:var(--coral-soft);font-size:18px}
+.feed{position:absolute;left:-16%;right:8%;bottom:15%;top:28%;z-index:2;pointer-events:none}
+.feed .float{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.7);box-shadow:0 14px 36px rgba(23,33,43,.13);position:absolute;left:0;bottom:0;max-width:100%;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s ease;will-change:transform}
+.feed .float.inn{animation:fin .5s cubic-bezier(.2,.8,.2,1) both}.feed .float.out{opacity:0;transition:transform .33s ease,opacity .3s ease}
+.feed:not(.live) .float:nth-child(1){transform:translateY(-150px)}.feed:not(.live) .float:nth-child(2){transform:translate(30px,-75px)}
+.float .ic.ok{background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px}
+.float .ic.sale{background:#FFF1E8;font-size:18px}.float .ic.cal{background:var(--coral-soft);font-size:18px}.float .ic.goal{background:#EEF3FF;font-size:18px}
+.float time{font-size:11.5px;color:#9AA7B4;margin-left:6px;align-self:flex-start;font-variant-numeric:tabular-nums}
+@keyframes fin{from{opacity:0;transform:translate(var(--x,0),28px) scale(.92)}to{opacity:1;transform:translate(var(--x,0),var(--y,0))}}
+.pic .ex{position:absolute;right:4%;bottom:2%;z-index:3;font-size:11px;letter-spacing:.3px;text-transform:uppercase;color:#9AA7B4;background:rgba(255,255,255,.75);padding:3px 8px;border-radius:999px}
 @keyframes bob{50%{transform:translateY(-8px)}}
 
 /* faixa de confiança */
@@ -268,8 +272,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   .hero .wrap,.row,.calc,.ba{grid-template-columns:1fr}
   .row.flip .txt{order:0}
   .pic{width:min(88%,340px);margin-top:10px}
-  .float{font-size:12.5px;padding:9px 12px 9px 10px;gap:9px}.float .ic{width:32px;height:32px}
-  .float.a{left:-9%;top:44%}.float.b{right:-9%;top:70%}.float.c{display:none}
+  .float{font-size:12.5px;padding:9px 12px 9px 10px;gap:9px}.float .ic{width:32px;height:32px}.float span{max-width:170px}.float time{display:none}
+  .feed{left:-10%;right:-4%;top:40%;bottom:6%}.feed:not(.live) .float:nth-child(1){transform:translateY(-110px)}.feed:not(.live) .float:nth-child(2){transform:translate(14px,-55px)}
   br.m{display:inline}br.dsk{display:none}
   .tzk{left:10px;top:10px;font-size:12.5px;padding:7px 12px 7px 8px}.tzk i{width:22px;height:22px}
   .row .txt p{font-size:17px}.row li{font-size:16px}
@@ -282,7 +286,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
       .steps,.plans{grid-template-columns:1fr}
   .segs{grid-template-columns:1fr 1fr}
 }
-@media (min-width:901px) and (max-width:1180px){.float.a{left:-20%;top:38%}.float.b{top:60%}.float.b{right:-2%}.float.c{left:-6%}}
+@media (min-width:901px) and (max-width:1180px){.feed{left:-22%}}
 @media (max-width:520px){
   h1{font-size:clamp(27px,8.6vw,34px)}
   .proof{font-size:13px;gap:6px 10px;justify-content:space-between}.proof span{white-space:nowrap}.proof span::before{margin-right:5px}
@@ -303,14 +307,14 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 .js .rv.in{opacity:1;transform:none}
 .js .sw .wd{display:inline-block;opacity:0;transform:translateY(.32em);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--w,0)*42ms + var(--d,0ms))}
 .js .sw.in .wd{opacity:1;transform:none}
-.js .hero .float,.js .hero .pic img,.js .hero .sh1,.js .hero .sh2,.js .hero .sh3{opacity:0;transition:opacity .6s ease}
+.js .hero .feed,.js .hero .pic img,.js .hero .sh1,.js .hero .sh2,.js .hero .sh3{opacity:0;transition:opacity .6s ease}
 .js .hero.in .pic img,.js .hero.in .sh1{opacity:1;transition-delay:.25s}
 .js .hero.in .sh2,.js .hero.in .sh3{opacity:1;transition-delay:.6s}
-.js .hero.in .float.a{opacity:1;transition-delay:1s}.js .hero.in .float.b{opacity:1;transition-delay:1.9s}.js .hero.in .float.c{opacity:1;transition-delay:2.7s}
+.js .hero.in .feed{opacity:1;transition-delay:1s}
 .bub.typing{color:transparent;position:relative}
 .bub.typing::after{content:"";position:absolute;left:16px;top:50%;width:34px;height:8px;margin-top:-4px;background:radial-gradient(circle,#9AA7B4 3.5px,transparent 4px) 0 0/13px 8px repeat-x;animation:dots 1s steps(4) infinite}
 @keyframes dots{0%{clip-path:inset(0 100% 0 0)}25%{clip-path:inset(0 66% 0 0)}50%{clip-path:inset(0 33% 0 0)}75%,100%{clip-path:inset(0 0 0 0)}}
-@media (prefers-reduced-motion:reduce){.tzp{animation:none}.float{animation:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
+@media (prefers-reduced-motion:reduce){.tzp{animation:none}.float{animation:none}.feed .float{transition:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
 </style>
 <script>(function(){var d=document.documentElement;if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;d.classList.add('js');setTimeout(function(){if(!window.__rv)d.classList.remove('js')},2500)})()</script>
 </head>
@@ -328,7 +332,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 <header class="hero" id="topo"><div class="wrap">
   <div class="copy">
     <span class="tag"><i><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></i><span>CRM com IA para WhatsApp e Instagram<span class="dk"> · API oficial da Meta</span></span></span>
-    <h1>Pare de <em class="hl">perder&nbsp;venda</em> <br>por&nbsp;demora <br class="m">no&nbsp;WhatsApp.</h1>
+    <h1>Pare de <em class="hl">perder&nbsp;vendas</em> <br>por&nbsp;demora <br class="m">no&nbsp;WhatsApp.</h1>
     <p class="lead">A Nanda responde em segundos, marca o horário e chama o seu time na hora de fechar. Você atende quem está na sua frente sem deixar ninguém esperando.</p>
     <div class="acts">
       <a class="btn p" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a>
@@ -339,9 +343,12 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   <div class="pic">
     <span class="sh1"></span><span class="sh2"></span><span class="sh3"></span>
     <img src="shots/nanda.webp" alt="Dona de negócio sorrindo, tranquila com o atendimento em dia" width="900" height="1773">
-    <div class="float a"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></span><div><b>Helena</b><span>Quanto custa a limpeza de pele?</span></div></div>
-    <div class="float b"><span class="ic">✓</span><div><b>Respondido em 8&nbsp;s</b><span>Avaliação marcada · qui, 14h</span></div></div>
-    <div class="float c"><span class="ic">📅</span><div><b>Agenda de amanhã</b><span>6 horários confirmados</span></div></div>
+    <div class="feed" id="feed" aria-hidden="true">
+     <div class="float"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></span><div><b>Helena</b><span>Quanto custa a limpeza de pele?</span></div><time>08:52</time></div>
+     <div class="float"><span class="ic ok">✓</span><div><b>Respondido em 8&nbsp;s</b><span>Avaliação marcada · qui, 14h</span></div><time>08:52</time></div>
+     <div class="float"><span class="ic sale">🛍</span><div><b>Venda · R$ 389</b><span>Juliana Mendes · matrícula de inglês</span></div><time>09:14</time></div>
+    </div>
+    <span class="ex">exemplo de um dia</span>
   </div>
 </div></header>
 <div class="band"><div class="wrap">
@@ -572,6 +579,45 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
       if(el.classList.contains('bub'))typing(el)})},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
   all('.rv, .sw').forEach(function(e){io.observe(e)});
   requestAnimationFrame(function(){requestAnimationFrame(function(){var h=document.querySelector('.hero');if(h)h.classList.add('in')})});
+  // o dia de um negócio chegando como notificações: cada cartela entra por baixo, empurra as outras e a mais antiga some
+  (function(){
+    var feed=document.getElementById('feed');if(!feed||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+    var WA='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg>';
+    var F=[
+      ['msg','Carlos','tem horário hoje com o Léo?','09:31'],['ok','Agendado · 15h com o Léo','Corte + barba · R$ 85','09:31'],
+      ['sale','Venda · R$ 1.200','Patrícia Reis · toxina botulínica','10:05'],['msg','Bianca','tem o vestido midi no 42?','10:22'],
+      ['sale','Venda · R$ 259','Bianca Alves · vestido midi Clara','10:40'],['cal','Agenda de amanhã','6 horários confirmados','11:00'],
+      ['msg','Marcelo','o apto do Campeche ainda está disponível?','11:18'],['ok','Visita marcada · sáb, 10h','Marcelo Santos · com o corretor Marcos','11:19'],
+      ['sale','Venda · R$ 997','Thiago Nunes · Método Voz Segura','12:07'],['goal','Meta do mês: 78%','faltam 4 matrículas','13:00'],
+      ['msg','Fernanda','ainda tem a condição do anúncio?','14:26'],['sale','Venda · R$ 450','Fernanda Castro · pacote 4 limpezas','15:02'],
+      ['ok','Lembrete enviado','Rafael · aula experimental amanhã, 19h','16:00'],['sale','Venda · R$ 180','Camila Duarte · limpeza de pele','16:48'],
+      ['msg','Paula','quero remarcar pra sexta','17:15'],['ok','Remarcado · sex, 10h','Paula Ribeiro · drenagem','17:16'],
+      ['sale','Venda · R$ 2.400','Ana Souza · plano anual','18:30'],['ok','Dia fechado','11 vendas · R$ 7.390','19:02'],
+      ['msg','Helena','Quanto custa a limpeza de pele?','08:52'],['ok','Respondido em 8 s','Avaliação marcada · qui, 14h','08:52'],['sale','Venda · R$ 389','Juliana Mendes · matrícula de inglês','09:14']];
+    var ICO={msg:'<span class="ic">'+WA+'</span>',ok:'<span class="ic ok">✓</span>',sale:'<span class="ic sale">🛍</span>',cal:'<span class="ic cal">📅</span>',goal:'<span class="ic goal">🎯</span>'};
+    var hero=document.querySelector('.hero'),i=0,n=0,paused=false,GAP=10;
+    var MAX=3,XS=[0,26,8];
+    hero.addEventListener('mouseenter',function(){paused=true});hero.addEventListener('mouseleave',function(){paused=false});
+    function layout(){var cards=all('.float:not(.out)',feed),y=0;for(var k=cards.length-1;k>=0;k--){var c=cards[k];c.style.setProperty('--y',(-y)+'px');c.style.transform='translate('+c.style.getPropertyValue('--x')+','+(-y)+'px)';y+=c.offsetHeight+GAP}}
+    function add(){
+      var f=F[i%F.length];i++;
+      var c=document.createElement('div');c.className='float inn';c.style.setProperty('--x',XS[n%XS.length]+'px');n++;
+      c.innerHTML=ICO[f[0]]+'<div><b>'+f[1]+'</b><span>'+f[2]+'</span></div><time>'+f[3]+'</time>';
+      feed.appendChild(c);layout();setTimeout(function(){c.classList.remove('inn')},520);
+    }
+    function arrive(){
+      if(paused||document.hidden||!hero.classList.contains('in'))return;
+      var cards=all('.float:not(.out)',feed);
+      if(cards.length<MAX)return add();
+      // nunca mais de três na tela: a mais antiga some primeiro, só depois a nova entra
+      var old=cards[0];old.classList.add('out');old.style.transform='translate('+old.style.getPropertyValue('--x')+','+(parseFloat(old.style.getPropertyValue('--y'))-40)+'px)';
+      setTimeout(function(){old.remove();add()},330);
+    }
+    function start(){feed.classList.add('live');all('.float',feed).forEach(function(c,k){c.style.setProperty('--x',XS[k%XS.length]+'px')});n=3;layout();
+      (function loop(){arrive();setTimeout(loop,1500+Math.random()*1300)})()}
+    addEventListener('resize',layout);
+    setTimeout(start,3200);
+  })();
   // exemplo do segmento: a Nanda "digita" antes de a mensagem aparecer
   function typing(b){if(b._t)return;b._t=1;b.classList.add('typing');setTimeout(function(){b.classList.remove('typing');b._t=0},1100)}
   all('.sgp:not([hidden]) .bub').forEach(function(b){io.observe(b)});
