@@ -210,7 +210,7 @@ async def ingest(value):
         upd = {'wa_id': wa_id} if contact.get('wa_id') != wa_id else {}  # guarda o número do jeito que a Meta manda
         if ad and not contact.get('ad'): upd['ad'] = ad
         if STOP.match(text or '') and not contact.get('opt_out'):
-            upd['opt_out'] = True
+            upd['opt_out'] = True; upd['opt_out_at'] = at
             await note(cid, contact['id'], 'O cliente pediu para não receber mensagens automáticas. Automações e modelos ficam desligados para ele.')
         if not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at')): upd['last_in_at'] = at
         if not aware(contact.get('wa_last_in_at')) or at >= aware(contact.get('wa_last_in_at')): upd.update(on_inbound_set(contact, 'whatsapp', at))

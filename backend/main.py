@@ -148,6 +148,8 @@ from telegram import router as telegram_router
 app.include_router(telegram_router, prefix="/api")
 from later import router as later_router
 app.include_router(later_router, prefix="/api")
+from metacost import router as metacost_router
+app.include_router(metacost_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

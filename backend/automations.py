@@ -117,6 +117,8 @@ class TemplateIn(BaseModel):
     body: str = Field(min_length=10, max_length=1000)
     category: Literal['UTILITY', 'MARKETING'] = 'MARKETING'
 
+OPT_OUT_FOOTER = 'Responda SAIR para não receber mais promoções'
+
 async def create_template(company_id, label, body, category):
     text, params = to_meta(body)
     n = await number_of(company_id)
@@ -124,9 +126,12 @@ async def create_template(company_id, label, body, category):
     name = f'{slug}_{secrets.token_hex(2)}'
     comp = {'type': 'BODY', 'text': text}
     if params: comp['example'] = {'body_text': [[VARS[p] for p in params]]}
+    comps = [comp]
+    footer = OPT_OUT_FOOTER if category == 'MARKETING' else None  # promoção sempre ensina a sair: menos bloqueio, número mais saudável
+    if footer: comps.append({'type': 'FOOTER', 'text': footer})
     res = await whatsapp.graph('POST', f'/{n["waba_id"]}/message_templates', decrypt(n['token_enc']),
-                               {'name': name, 'language': 'pt_BR', 'category': category, 'components': [comp]})
-    t = {'id': uid(), 'company_id': company_id, 'name': name, 'language': 'pt_BR', 'label': label.strip(), 'body': body.strip(), 'params': params,
+                               {'name': name, 'language': 'pt_BR', 'category': category, 'components': comps})
+    t = {'id': uid(), 'company_id': company_id, 'name': name, 'language': 'pt_BR', 'label': label.strip(), 'body': body.strip(), 'params': params, 'footer': footer,
          'category': res.get('category') or category, 'status': res.get('status') or 'PENDING', 'meta_id': res.get('id'), 'created_at': now()}
     await db.templates.insert_one(t.copy())
     return tpl_out(t)
