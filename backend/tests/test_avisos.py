@@ -119,3 +119,17 @@ def test_cliente_escolhe_os_avisos(monkeypatch):
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
         c.portal.call(notices.tick)
         assert 'Faltam 3 dias do teste da Studio Cinco' not in subjects('p5@av.com')
+
+def test_avisos_saem_pelo_numero_da_conta_do_oi_nanda():
+    """Sem variáveis no servidor: vale o WhatsApp conectado na conta do admin."""
+    import whatsapp
+    with mk() as a:
+        r = a.post('/api/auth/login', json={'email': 'admin@oinanda.com.br', 'password': 'senha-forte-1'})
+        if r.status_code != 200: a.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'senha-forte-1', 'company': 'Oi Nanda', 'segment': 'outro'})
+        cid = a.get('/api/auth/me').json()['company']['id']
+        assert a.get('/api/admin/notices').json()['wa_ready'] is False
+        a.portal.call(lambda: db.wa_numbers.insert_one({'company_id': cid, 'phone_number_id': '555', 'waba_id': '777', 'status': 'connected', 'token_enc': whatsapp.encrypt('tok'), 'display_phone': '+55 11 97575-4765'}))
+        assert a.get('/api/admin/notices').json()['wa_ready'] is True
+        p = a.portal.call(notices.platform)
+        assert p['phone'] == '555' and p['waba'] == '777' and p['token'] == 'tok'
+        a.portal.call(lambda: db.wa_numbers.delete_many({'company_id': cid}))

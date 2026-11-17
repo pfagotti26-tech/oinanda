@@ -222,7 +222,7 @@ async def notices_get(user=Depends(admin)):
     for k in N.DEFS:
         tpl = await db.notice_templates.find_one({'key': k}, {'_id': 0}, sort=[('version', -1)])
         items.append(notice_out(k, on[k], await N.texts(k), bool(custom.get(k)), tpl))
-    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': N.wa_ready()}
+    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': await N.wa_ready()}
 
 @router.put('/admin/notices')
 async def notices_put(body: dict, request: Request, user=Depends(admin)):
@@ -295,7 +295,7 @@ async def notice_test(key: str, user=Depends(admin)):
 async def notices_wa_submit(request: Request, user=Depends(admin)):
     """Manda para aprovação da Meta os textos de WhatsApp que ainda não foram enviados."""
     import notices as N
-    if not N.wa_ready(): raise HTTPException(400, 'O número do Oi Nanda ainda não está conectado para enviar avisos.')
+    if not await N.wa_ready(): raise HTTPException(400, 'O número do Oi Nanda ainda não está conectado para enviar avisos.')
     out = []
     for k, n in N.DEFS.items():
         if 'w' in n['ch']: out.append((await N.wa_submit(k, (await N.texts(k))['wa']))['status'])
@@ -330,7 +330,7 @@ async def attention(kind: str = '', user=Depends(admin)):
     far = n + timedelta(days=3650)
     out.sort(key=lambda x: (x['urgency'], x['when'] or far))
     counts = {k: sum(1 for x in out if x['kind'] == k) for k in ('refused', 'trial_soon', 'no_whatsapp', 'ai_near')}
-    return {'items': [x for x in out if not kind or x['kind'] == kind], 'counts': counts, 'total': len(out), 'wa_ready': N.wa_ready()}
+    return {'items': [x for x in out if not kind or x['kind'] == kind], 'counts': counts, 'total': len(out), 'wa_ready': await N.wa_ready()}
 
 REASONS = {'cc_rejected_insufficient_amount': 'sem limite', 'cc_rejected_bad_filled_date': 'validade incorreta', 'cc_rejected_bad_filled_security_code': 'código de segurança incorreto',
            'cc_rejected_bad_filled_card_number': 'número do cartão incorreto', 'cc_rejected_card_disabled': 'cartão bloqueado', 'cc_rejected_call_for_authorize': 'o banco pede autorização',
