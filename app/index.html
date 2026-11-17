@@ -1167,6 +1167,103 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .cp-roi{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--line);padding-top:10px}.cp-roi>div{background:var(--bg);border-radius:12px;padding:8px 11px;display:grid}.cp-roi span{font-size:12px;color:var(--ink3)}.cp-roi b{font-size:17px;font-weight:800}.cp-roi small{font-size:11.5px;color:var(--ink3)}.cp-roi .ok{background:var(--oksoft)}.cp-roi .ok b,.cp-roi .ok small{color:var(--ok);font-weight:700}
 .pr-c .nums .okn b{color:var(--ok)}
 @media(max-width:760px){.mi-how{grid-template-columns:1fr}.hl-h{grid-template-columns:auto 1fr}.hl-why{grid-column:1/-1;justify-self:start}.bk-n{grid-template-columns:1fr 1fr 1fr}}
+/* ---------- admin: visão geral, financeiro, clientes e ficha ---------- */
+.page:has(.ad){max-width:1240px}
+.ad{display:flex;flex-direction:column;gap:18px}
+.ad h1{font-weight:600}
+.ad h2{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.ad .card{min-width:0}
+.ad-head{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.ad-head .sub{margin:4px 0 0}
+.ad-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ad-dd{font:inherit;font-size:13.5px;font-weight:500;display:inline-flex;align-items:center;gap:9px;padding:8px 15px;min-height:42px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.ad-dd span{color:var(--ink2);font-weight:400}
+.ad-dd svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ad-dd[aria-expanded="true"]{border-color:var(--ink)}
+.ad-dd.flat{border:0;background:transparent;padding-left:6px;padding-right:6px}
+.ad-cnt{background:var(--c);color:#fff;font-size:11.5px;font-weight:600;min-width:19px;height:19px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center}
+.ad-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ad-chk{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:8px;cursor:pointer}
+.ad-chk input{width:17px;height:17px;padding:0;accent-color:var(--c)}
+.ad-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.ad-box[hidden]{display:none}
+.ad-per{max-width:380px;padding:10px;gap:2px}
+.ad-op{font:inherit;font-size:14px;text-align:left;display:flex;align-items:center;gap:11px;padding:0 12px;min-height:40px;border-radius:11px;border:0;background:transparent;color:var(--ink);cursor:pointer;width:100%}
+.ad-op i{width:15px;height:15px;border-radius:50%;border:1.5px solid #B9C2CB;flex:none}
+.ad-op.on{background:var(--tint);color:var(--c2);font-weight:600}
+.ad-op.on i{border:5px solid var(--c)}
+.ad-cus{border-top:1px solid var(--line);margin:6px 4px 0;padding:12px 8px 4px;display:flex;flex-direction:column;gap:10px}
+.ad-cus>span{font-size:12.5px;color:var(--ink2)}
+.ad-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ad-fl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--ink2);min-width:0}
+.ad-fl input,.ad-fl select,.ad-fl textarea{font:inherit;font-size:14px;color:var(--ink);border:1px solid #DCD2C9;border-radius:12px;padding:9px 12px;background:#fff;width:100%;min-width:0;outline:0}
+.ad-fl input:focus,.ad-fl select:focus,.ad-fl textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
+.ad-fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ad-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ad-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ad-kpi{display:flex;flex-direction:column;gap:5px}
+.ad-kpi span{font-size:12.5px;color:var(--ink2)}
+.ad-kpi b{font-size:28px;font-weight:600;letter-spacing:-.8px;line-height:1.15;font-variant-numeric:tabular-nums}
+.ad-kpi small{font-size:12.5px;color:var(--ink2)}
+.ad-up{color:var(--ok);font-weight:600}.ad-dn{color:var(--bad);font-weight:600}
+.ad-cols{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;align-items:start}
+.ad-cols.even{grid-template-columns:1fr 1fr}
+.ad-cols.fin{grid-template-columns:1.7fr 1fr}
+.ad-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ad-li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.ad-li:last-child{border-bottom:0}
+.ad-li>div{flex:1;min-width:0}
+.ad-li small,.ad small.m{display:block;font-size:12.5px;color:var(--ink2);font-weight:400}
+.ad-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.ad-meter{height:8px;background:#F4EEE9;border-radius:999px;min-width:90px}
+.ad-meter i{display:block;height:8px;border-radius:999px;background:var(--c)}
+.ad-plan{display:grid;grid-template-columns:104px 1fr 120px;align-items:center;gap:12px;font-size:13.5px}
+.ad-plan span:last-child{text-align:right;color:var(--ink2)}
+.ad-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ad-trio span{display:block;font-size:12.5px;color:var(--ink2)}
+.ad-trio b{font-size:21px;font-weight:600;letter-spacing:-.5px}
+.ad-tabs{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ad-tab{font:inherit;font-size:13px;font-weight:500;padding:7px 14px;min-height:38px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+.ad-tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.ad-search{font:inherit;font-size:13.5px;padding:9px 15px;min-height:42px;border-radius:999px;border:1px solid var(--line);background:#fff;width:250px;max-width:100%;outline:0}
+.ad-scroll{overflow-x:auto}
+.ad table td small{color:var(--ink2)}
+.ad table th{color:var(--ink2)}
+.ad tr.go{cursor:pointer}
+.ad tr.go:hover td{background:var(--tint)}
+.ad-sw{position:relative;width:40px;height:24px;flex:none}
+.ad-sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;padding:0;cursor:pointer;margin:0}
+.ad-sw input{z-index:1}
+.ad-sw i{pointer-events:none;position:absolute;inset:0;border-radius:999px;background:#C9D2DA;transition:background .15s}
+.ad-sw i::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+.ad-sw input:checked+i{background:#0A7C62}
+.ad-sw input:checked+i::after{left:19px}
+.ad-dl{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:13.5px;margin:0}
+.ad-dl dt{color:var(--ink2)}
+.ad-dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.ad-note{font-size:13.5px;border-top:1px solid var(--line);padding-top:11px;display:flex;gap:10px}
+.ad-note>div{flex:1}
+.ad-tip{font-size:13px;color:var(--warn);background:var(--warnsoft);padding:10px 14px;border-radius:14px}
+.ad-tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--warnsoft);color:var(--warn)}
+.ad-chart{width:100%;height:auto;display:block}
+.ad-back{font-size:13.5px;color:var(--c2);background:none;border:0;padding:0;cursor:pointer;align-self:flex-start}
+@media (max-width:900px){.ad-kpis{grid-template-columns:1fr 1fr}.ad-cols,.ad-cols.even,.ad-cols.fin{grid-template-columns:1fr}.ad-fgrid{grid-template-columns:1fr 1fr}.ad-dl{grid-template-columns:1fr}.ad-right{margin-left:0}}
+
+.ad small.m{border:0;background:none;padding:0;box-shadow:none;border-radius:0;max-width:none}
+.ad a.btn{color:var(--ink);text-decoration:none}
+.ad-nt{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;border:1px solid transparent;font-size:14px;font-weight:500;cursor:pointer}
+.ad-nt>div{flex:1;min-width:0}.ad-nt small{display:block;font-size:12.5px;color:var(--ink2);font-weight:400}
+.ad-nt.on{background:var(--tint);border-color:var(--soft)}
+.ad-var{font:inherit;font-size:12.5px;padding:4px 10px;min-height:32px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+.ad-wa{background:#EFEAE2 radial-gradient(#E6DFD5 1px,transparent 1.2px);background-size:14px 14px;border:1px solid #E4DDD3;border-radius:18px;padding:16px 14px 16px 20px}
+.ad-bb{background:#fff;border-radius:0 14px 14px 14px;box-shadow:0 1px 2px rgba(0,0,0,.12);font-size:13.5px;line-height:1.5;max-width:340px}
+.ad-bb .tx{padding:11px 13px 9px;display:flex;flex-direction:column;gap:5px}.ad-bb b{font-weight:600}.ad-bb small{font-size:12px;color:#6B7785}
+.ad-bb .cta{border-top:1px solid #EEE9E2;padding:10px;text-align:center;color:#2F67B1;font-weight:500}
+.ad-mailhead{background:#fff;border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;padding:11px 14px;font-size:12.5px;color:var(--ink2)}
+.ad-mailhead b{display:block;color:var(--ink);font-weight:600;font-size:13px}
+.ad-mail{width:100%;height:640px;border:1px solid var(--line);border-radius:0 0 16px 16px;background:#F7F2EC}
+.ad-box>.ad-cols .ad-mail{border-radius:16px}
+@media (max-width:900px){.ad-cols[style]{grid-template-columns:1fr!important}}
 </style>
 </head>
 <body>
@@ -1328,7 +1425,7 @@ const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversa
   atividade:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   jornada:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
-  'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
+  'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-financeiro':'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/>','a-avisos':'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2H4.500zM10 20h4"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
 const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','metas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
 const NAVG={get(){try{return JSON.parse(localStorage.getItem('navg')||'[]')}catch(e){return []}},
@@ -1383,7 +1480,7 @@ function gSearchInit(){
   q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(items.length-1,sel+1);draw()}else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(0,sel-1);draw()}else if(e.key==='Enter'){e.preventDefault();pick(sel)}else if(e.key==='Escape'){close();q.blur()}};
 }
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gQ')){e.preventDefault();const sd=document.querySelector('.side');if(innerWidth<=860){sd.classList.add('open')}if(document.querySelector('.app.mini')){document.querySelector('.app').classList.remove('mini')}$('#gQ').focus()}});
-const ADMIN_NAV=[['a-visao','Visão geral'],['a-clientes','Clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
+const ADMIN_NAV=[['a-visao','Visão geral'],['a-financeiro','Financeiro'],['a-clientes','Clientes'],['a-avisos','Avisos'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
   const canManage=['owner','manager'].includes(u.role);
@@ -1410,7 +1507,7 @@ function shell(){
      :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${u.role==='owner'?'<button class="lnk" data-sub>Ver planos e assinar</button>':''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
-  document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
+  document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>{if(b.dataset.v.startsWith('a-')){AD.open=null;AD.popen=AD.fopen=false;AD.f={}}go(b.dataset.v)});
   document.querySelectorAll('.ng>h6').forEach(h=>{const g=h.parentNode,hit=()=>{const shut=NAVG.toggle(g.dataset.g);g.classList.toggle('shut',shut);h.setAttribute('aria-expanded',String(!shut));h.title=(shut?'Abrir ':'Recolher ')+h.textContent.trim()};
     h.onclick=hit;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit()}}});
   if($('#navX'))$('#navX').onclick=()=>{document.querySelector('.side').classList.remove('open');go('empresa').then(()=>setTimeout(()=>{const x=$('#extras');if(x){x.scrollIntoView({block:'center'});x.classList.add('flash')}},350))};
@@ -1427,7 +1524,7 @@ function shell(){
 }
 let POLL=null;
 function pathFor(v){
-  if(v==='inicio')return '/';if(v.startsWith('a-'))return '/admin/'+v.slice(2);
+  if(v==='inicio')return '/';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='fila')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
   let p='/'+v;
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
@@ -1440,9 +1537,10 @@ function pathFor(v){
 function readPath(){
   const parts=location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
   if(!parts.length)return 'inicio';
-  if(parts[0]==='admin')return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao';
+  if(parts[0]==='admin'){AD.open=parts[1]==='clientes'?(parts[2]||null):null;if(parts[1]==='avisos')AD.av.tab=['textos','enviados'].includes(parts[2])?parts[2]:'fila';return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao'}
   const v=parts[0];
   if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
+  if(v==='empresa'&&parts[1]==='avisos')return 'avisos-conta';
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
@@ -3450,6 +3548,208 @@ async function originEdit(c,after){
     try{await api('/contacts/'+c.id+'/origin',{method:'PUT',body:{origin:f.origin.value||null,detail:f.detail.value,referred_by_id:ind?refId:null,referred_by_name:ind&&!refId?f.ref.value||null:null}});ov.remove();toast('Origem salva.');after&&after()}catch(e){$('#oeE').textContent=e.message}};
 }
 
+/* ---------- admin: visão geral, financeiro, clientes, ficha e avisos ---------- */
+const AD={per:'mes',start:'',end:'',f:{},fopen:false,popen:false,tab:'',q:'',open:null,ptab:'',sort:'recent',av:{tab:'fila',kind:'',open:null,key:'refused',ch:'wa',ed:'wa'}};
+const AD_PER=[['hoje','Hoje'],['7d','Últimos 7 dias'],['30d','Últimos 30 dias'],['mes','Este mês'],['mes_ant','Mês passado'],['90d','Últimos 90 dias'],['ano','Este ano'],['custom','Personalizado']];
+const AD_KIND={paying:['Pagante','ok'],courtesy:['Cortesia','grey'],trial:['Em teste','warn'],readonly:['Só leitura','grey'],suspended:['Suspensa','bad']};
+const AD_PAY={paid:['paga','ok'],pending:['pendente','warn'],refused:['recusada','bad'],cancelled:['cancelada','grey'],scheduled:['a vencer','grey']};
+const adIso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+function adRange(){const t=new Date(),d=n=>{const x=new Date();x.setDate(x.getDate()-n);return x};
+ if(AD.per==='custom'&&AD.start&&AD.end)return[AD.start,AD.end];
+ if(AD.per==='hoje')return[adIso(t),adIso(t)];if(AD.per==='7d')return[adIso(d(6)),adIso(t)];if(AD.per==='30d')return[adIso(d(29)),adIso(t)];if(AD.per==='90d')return[adIso(d(89)),adIso(t)];
+ if(AD.per==='mes_ant')return[adIso(new Date(t.getFullYear(),t.getMonth()-1,1)),adIso(new Date(t.getFullYear(),t.getMonth(),0))];
+ if(AD.per==='ano')return[adIso(new Date(t.getFullYear(),0,1)),adIso(t)];
+ return[adIso(new Date(t.getFullYear(),t.getMonth(),1)),adIso(t)]}
+function adQS(extra={}){const[s,e]=adRange();const p=new URLSearchParams({start:s,end:e});Object.entries({...AD.f,...extra}).forEach(([k,v])=>{if(v!==''&&v!=null)p.set(k,v)});return p.toString()}
+const adD=v=>v?new Date(v).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'—';
+const adPerLabel=()=>{if(AD.per==='custom'){const[s,e]=adRange();return day(s+'T12:00')+' a '+day(e+'T12:00')}return AD_PER.find(x=>x[0]===AD.per)[1]};
+const adCal='<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',adFun='<svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+/* barra de período e filtros: tudo dentro da página, sem janela por cima */
+function adBar(fields,right=''){
+ const n=fields.filter(f=>AD.f[f.k]).length;
+ return `<div class="ad-bar"><button class="ad-dd" id="adP" aria-expanded="${AD.popen}">${adCal}${esc(adPerLabel())}</button>
+  ${fields.length?`<button class="ad-dd" id="adF" aria-expanded="${AD.fopen}">${adFun}Filtros${n?`<span class="ad-cnt">${n}</span>`:''}</button>`:''}
+  ${n?'<button class="ad-dd flat" id="adFx">Limpar</button>':''}<div class="ad-right">${right}</div></div>
+  <div class="ad-box ad-per" ${AD.popen?'':'hidden'}>${AD_PER.map(([k,l])=>`<button class="ad-op ${AD.per===k?'on':''}" data-per="${k}"><i></i>${l}</button>`).join('')}
+   <div class="ad-cus" ${AD.per==='custom'?'':'hidden'}><span>Escolha as datas</span><div class="ad-two"><label class="ad-fl">De<input type="date" id="adS" value="${esc(AD.start)}"></label><label class="ad-fl">Até<input type="date" id="adE" value="${esc(AD.end)}"></label></div>
+   <button class="btn p sm" id="adOk">Aplicar</button></div></div>
+  <div class="ad-box" ${AD.fopen?'':'hidden'}><div class="ad-fgrid">${fields.map(f=>`<label class="ad-fl">${f.l}${f.o?`<select data-f="${f.k}">${f.o.map(([v,l])=>`<option value="${v}" ${(AD.f[f.k]||'')===v?'selected':''}>${l}</option>`).join('')}</select>`:`<input data-f="${f.k}" type="${f.t||'text'}" value="${esc(AD.f[f.k]||'')}" placeholder="${f.p||''}">`}</label>`).join('')}</div>
+   <div class="ad-acts"><button class="btn p sm" id="adFok">Aplicar filtros</button><button class="btn sm" id="adFc">Fechar</button></div></div>`}
+function adBind(draw){
+ const on=(s,f)=>{const e=$(s);if(e)e.onclick=f};
+ on('#adP',()=>{AD.popen=!AD.popen;AD.fopen=false;draw()});on('#adF',()=>{AD.fopen=!AD.fopen;AD.popen=false;draw()});
+ on('#adFx',()=>{AD.f={};draw()});on('#adFc',()=>{AD.fopen=false;draw()});
+ on('#adFok',()=>{document.querySelectorAll('[data-f]').forEach(i=>AD.f[i.dataset.f]=i.value.trim());AD.fopen=false;draw()});
+ on('#adOk',()=>{const s=$('#adS').value,e=$('#adE').value;if(!s||!e)return toast('Escolha as duas datas.');AD.start=s;AD.end=e;AD.popen=false;draw()});
+ document.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{AD.per=b.dataset.per;if(AD.per!=='custom')AD.popen=false;draw()})}
+const AD_FP={k:'plan',l:'Plano',o:[['','Todos'],['essencial','Essencial'],['profissional','Profissional'],['equipe','Equipe']]},AD_FS=()=>({k:'segment',l:'Segmento',o:[['','Todos'],...Object.entries(SEG)]}),AD_FC={k:'cycle',l:'Cobrança',o:[['','Todas'],['monthly','Mensal'],['annual','Anual']]};
+const adPill=(k,M)=>`<span class="pill ${M[k]?.[1]||'grey'}">${M[k]?.[0]||k}</span>`;
+const adDelta=(a,b)=>b?`<span class="${a>=b?'ad-up':'ad-dn'}">${a>=b?'+':''}${Math.round(100*(a-b)/b)}%</span> ante o período anterior`:'sem base no período anterior';
+function adOpen(id){AD.open=id;go('a-clientes')}
+function adAttRow(x,full){
+ const col={refused:'#C98A00',trial_soon:'#E8603F',no_whatsapp:'#7A8794',ai_near:'#E8603F'}[x.kind];
+ const when=x.kind==='refused'&&x.when?`prazo ${adD(x.when)}`:x.kind==='trial_soon'?`teste até ${adD(x.when)}`:x.kind==='no_whatsapp'?`criada em ${adD(x.when)}`:'';
+ return `<div class="ad-li"><i class="ad-dot" style="background:${col}"></i><div><a href="#" data-co="${x.company_id}"><b style="font-weight:600">${esc(x.company)}</b></a> <span style="color:var(--ink2)">· ${esc(x.title)}</span>
+  <small>${esc(x.detail)}${when?' · '+when:''}${full&&x.owner?' · '+esc(x.owner):''}</small>${full&&x.noticed_at?`<small style="color:var(--ok)">Avisado em ${dt(x.noticed_at)} por ${esc(x.noticed_by)}</small>`:''}</div>
+  ${full?`<button class="btn sm" data-av="${x.company_id}|${x.notice}">${x.noticed_at?'Enviar de novo':'Enviar aviso'}</button>`:''}</div>`}
+async function adVisao(){
+ const[o,at]=await Promise.all([api('/admin/overview?'+adQS()),api('/admin/attention')]);
+ const max=Math.max(1,...o.revenue_months.map(m=>m.total)),bw=100/o.revenue_months.length;
+ $('#page').innerHTML=`<div class="ad"><div class="ad-head"><div><h1>Visão geral</h1><p class="sub">Como está o Oi Nanda como negócio.</p></div></div>
+  ${adBar([AD_FP,AD_FS(),AD_FC])}
+  <div class="ad-kpis"><div class="card ad-kpi"><span>Receita mensal recorrente</span><b>${brl(o.mrr)}</b><small>${o.paying} ${o.paying===1?'pagante':'pagantes'}</small></div>
+   <div class="card ad-kpi"><span>Recebido no período</span><b>${brl(o.received)}</b><small>${adDelta(o.received,o.received_prev)}</small></div>
+   <div class="card ad-kpi"><span>Novos pagantes</span><b>${o.new_paying}</b><small>${adDelta(o.new_paying,o.new_paying_prev)}</small></div>
+   <div class="card ad-kpi"><span>Em teste</span><b>${o.trial}</b><small>${o.trial_soon} ${o.trial_soon===1?'acaba':'acabam'} em 3 dias</small></div></div>
+  <div class="ad-cols"><div class="ad-col">
+   <div class="card"><h2>Precisa da sua atenção</h2>${at.items.length?at.items.slice(0,4).map(x=>adAttRow(x)).join('')+`<div style="padding-top:12px"><button class="btn sm" id="adAll">Ver ${at.total===1?'o aviso':'os '+at.total+' avisos'}</button></div>`:'<div class="empty">Nada pendente agora.</div>'}</div>
+   <div class="card"><h2>Recebido por mês</h2><svg class="ad-chart" viewBox="0 0 100 34" role="img" aria-label="Recebido nos últimos meses">${o.revenue_months.map((m,i)=>{const h=Math.max(.6,24*m.total/max);return `<rect x="${i*bw+bw*.2}" y="${26-h}" width="${bw*.6}" height="${h}" rx="1" fill="${i===o.revenue_months.length-1?'#E8603F':'#F3C9BB'}"><title>${m.label}: ${brl(m.total)}</title></rect><text x="${i*bw+bw/2}" y="32" font-size="2.6" text-anchor="middle" fill="#4B5968">${m.label}</text>`}).join('')}</svg></div></div>
+  <div class="ad-col"><div class="card"><h2>Pagantes por plano</h2><div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">${o.plans.map(p=>`<div class="ad-plan"><span>${esc(p.name)}</span><div class="ad-meter"><i style="width:${o.paying?Math.round(100*p.count/o.paying):0}%"></i></div><span>${p.count} · ${brl(p.mrr)}</span></div>`).join('')}</div></div>
+   <div class="card"><h2>Do teste para o plano</h2><div class="ad-trio" style="margin-top:10px"><div><span>Testes encerrados</span><b>${o.conversion.ended}</b></div><div><span>Viraram pagantes</span><b>${o.conversion.converted}</b></div><div><span>Conversão</span><b>${o.conversion.pct==null?'—':o.conversion.pct+'%'}</b></div></div></div>
+   <div class="card"><h2>Uso</h2><div class="ad-trio" style="margin-top:10px"><div><span>Contas ativas na semana</span><b>${o.usage.active_week} de ${o.usage.accounts}</b></div><div><span>Respostas da Nanda no mês</span><b>${o.usage.ai_replies.toLocaleString('pt-BR')}</b></div><div><span>Custo da IA no mês</span><b>${o.usage.ai_cost==null?'—':brl2(o.usage.ai_cost)}</b></div></div>${o.usage.ai_cost==null?'<small class="m" style="margin-top:8px">O custo aparece quando o preço da IA for informado na configuração do servidor.</small>':''}</div>
+   <div class="card"><h2>Contas</h2><div class="ad-trio" style="margin-top:10px"><div><span>Cortesia</span><b>${o.courtesy}</b></div><div><span>Só leitura</span><b>${o.readonly}</b></div><div><span>Suspensas</span><b>${o.suspended}</b></div></div></div></div></div></div>`;
+ adBind(adVisao);if($('#adAll'))$('#adAll').onclick=()=>{AD.av.tab='fila';go('a-avisos')};
+ document.querySelectorAll('[data-co]').forEach(a=>a.onclick=e=>{e.preventDefault();adOpen(a.dataset.co)})}
+async function adFin(){
+ const p=await api('/admin/payments?'+adQS({status:AD.ptab,sort:AD.sort==='value'?'value':'recent'})),t=p.totals,c=p.counts,all=c.paid+c.pending+c.refused+c.cancelled+c.scheduled;
+ const tabs=[['','Todas',all],['paid','Pagas',c.paid],['open','A receber',c.pending+c.scheduled],['refused','Recusadas',c.refused],['cancelled','Canceladas',c.cancelled]];
+ $('#page').innerHTML=`<div class="ad"><div class="ad-head"><div><h1>Financeiro</h1><p class="sub">Cobranças das assinaturas, pelo Mercado Pago.</p></div></div>
+  ${adBar([AD_FP,AD_FC,AD_FS(),{k:'date_by',l:'Data considerada',o:[['','Vencimento'],['paid','Pagamento']]},{k:'q',l:'Empresa',p:'nome'},{k:'vmin',l:'Valor mínimo',t:'number'},{k:'vmax',l:'Valor máximo',t:'number'}],`<button class="btn sm" id="adSync">Conferir no Mercado Pago</button><a class="btn sm" href="/api/admin/payments?${adQS({status:AD.ptab})}&fmt=csv">Baixar planilha</a>`)}
+  ${p.ready?'':'<div class="ad-tip">O Mercado Pago ainda não está configurado neste servidor. As cobranças aparecem aqui assim que a chave for informada.</div>'}
+  <div class="ad-kpis"><div class="card ad-kpi"><span>Recebido</span><b>${brl2(t.received)}</b><small>${t.received_n} ${t.received_n===1?'cobrança':'cobranças'}</small></div>
+   <div class="card ad-kpi"><span>A receber</span><b>${brl2(t.to_receive)}</b><small>${t.to_receive_n} no período</small></div>
+   <div class="card ad-kpi"><span>Recusado</span><b>${brl2(t.refused)}</b><small>${t.refused_n} ${t.refused_n===1?'cobrança':'cobranças'}</small></div>
+   <div class="card ad-kpi"><span>Cancelamentos</span><b>${t.cancellations}</b><small>no período</small></div></div>
+  <div class="ad-cols fin"><div class="card"><div class="ad-bar" style="margin-bottom:8px"><div class="ad-tabs">${tabs.map(([k,l,n])=>`<button class="ad-tab ${AD.ptab===k?'on':''}" data-pt="${k}">${l} ${n}</button>`).join('')}</div>
+    <div class="ad-right"><select class="btn sm" id="adSort"><option value="recent">Mais recentes</option><option value="value" ${AD.sort==='value'?'selected':''}>Maior valor</option></select></div></div>
+   <div class="ad-scroll">${p.rows.length?`<table><thead><tr><th>Empresa</th><th>Plano</th><th>Vencimento</th><th>Valor</th><th>Situação</th></tr></thead><tbody>${p.rows.map(r=>`<tr class="go" data-co="${r.company_id}"><td><b style="font-weight:600">${esc(r.company)}</b><small>${esc(SEG[r.segment]||'')}</small></td><td>${esc(PLAN[r.plan]||'—')}<small>${r.cycle==='annual'?'anual':'mensal'}</small></td><td>${day(r.due)}${r.paid_at?`<small>paga em ${adD(r.paid_at)}</small>`:''}</td><td>${brl2(r.amount)}</td><td>${adPill(r.status,AD_PAY)}${r.status==='refused'&&r.attempt?`<small>tentativa ${r.attempt}</small>`:''}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhuma cobrança neste período com estes filtros.</div>'}</div></div>
+   <div class="ad-col"><div class="card"><h2>Próximos 7 dias</h2>${p.upcoming.length?p.upcoming.map(u=>`<div class="ad-li"><div><a href="#" data-co="${u.company_id}">${esc(u.company)}</a><small>${esc(PLAN[u.plan]||'')}</small></div><div style="text-align:right;flex:none">${brl2(u.amount)}<small>${adD(u.due)}</small></div></div>`).join(''):'<div class="empty">Nenhuma cobrança prevista.</div>'}</div>
+    <div class="card"><h2>Avisos ao cliente</h2><p class="sub" style="margin:6px 0 12px">Renovação, pagamento e recusa saem sozinhos, por WhatsApp e e-mail.</p><button class="btn sm" id="adTx">Ver e editar os textos</button></div></div></div></div>`;
+ adBind(adFin);
+ document.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{AD.ptab=b.dataset.pt;adFin()});$('#adSort').onchange=e=>{AD.sort=e.target.value;adFin()};
+ $('#adSync').onclick=async e=>{e.target.disabled=true;e.target.textContent='Conferindo…';try{const r=await api('/admin/payments/sync',{method:'POST'});toast('Cobranças conferidas.')}catch(x){toast(x.message)}adFin()};
+ $('#adTx').onclick=()=>{AD.av.tab='textos';go('a-avisos')};
+ document.querySelectorAll('[data-co]').forEach(a=>a.onclick=e=>{e.preventDefault();adOpen(a.dataset.co)})}
+async function adClientes(){
+ const p=new URLSearchParams({tab:AD.tab,q:AD.q,sort:AD.sort==='value'?'recent':AD.sort,limit:200});Object.entries(AD.f).forEach(([k,v])=>{if(v&&['plan','segment','wa','ai'].includes(k))p.set(k,v)});
+ if(AD.f.by){const[s,e]=adRange();p.set('by',AD.f.by);p.set('start',s);p.set('end',e)}
+ const r=await api('/admin/companies?'+p),c=r.counts;
+ const tabs=[['','Todas',c.all],['paying','Pagantes',c.paying],['trial','Em teste',c.trial],['courtesy','Cortesia',c.courtesy],['readonly','Só leitura',c.readonly],['suspended','Suspensas',c.suspended]];
+ const when=x=>x.kind==='trial'?`teste até ${adD(x.trial_ends_at)}`:x.kind==='paying'?(x.cancelled?`cancelada, ativa até ${adD(x.paid_until)}`:`próxima em ${adD(x.next_payment)}`):x.kind==='courtesy'?(x.courtesy_until?`até ${adD(x.courtesy_until)}`:'sem data de fim'):'';
+ $('#page').innerHTML=`<div class="ad"><div class="ad-head"><div><h1>Clientes</h1><p class="sub">${r.total} ${r.total===1?'empresa':'empresas'} nesta lista.</p></div></div>
+  ${adBar([AD_FP,AD_FS(),{k:'wa',l:'WhatsApp',o:[['','Todos'],['yes','Conectado'],['no','Sem conectar']]},{k:'ai',l:'Uso da Nanda',o:[['','Todos'],['high','Acima de 80%'],['none','Sem uso']]},{k:'by',l:'Período vale para',o:[['','Não filtrar por data'],['created','Cadastro'],['trial_end','Fim do teste'],['last_use','Último uso']]}],`<input class="ad-search" id="adQ" placeholder="Buscar empresa, responsável ou e-mail" value="${esc(AD.q)}"><a class="btn sm" href="/api/admin/companies.csv?${p}">Baixar planilha</a>`)}
+  <div class="ad-bar"><div class="ad-tabs">${tabs.map(([k,l,n])=>`<button class="ad-tab ${AD.tab===k?'on':''}" data-ct="${k}">${l} ${n}</button>`).join('')}</div>
+   <div class="ad-right"><select class="btn sm" id="adSort"><option value="recent">Mais recentes</option><option value="use" ${AD.sort==='use'?'selected':''}>Mais uso da Nanda</option><option value="trial_end" ${AD.sort==='trial_end'?'selected':''}>Teste acabando</option><option value="name" ${AD.sort==='name'?'selected':''}>Nome</option></select></div></div>
+  <div class="card"><div class="ad-scroll">${r.rows.length?`<table><thead><tr><th>Empresa</th><th>Responsável</th><th>Situação</th><th>Plano</th><th>Nanda no mês</th><th>WhatsApp</th><th>Último uso</th></tr></thead><tbody>${r.rows.map(x=>`<tr class="go" data-co="${x.id}"><td><b style="font-weight:600">${esc(x.name)}</b>${x.internal?' <span class="ad-tag">sua conta</span>':''}<small>${esc(SEG[x.segment]||'')} · ${x.users} ${x.users===1?'usuário':'usuários'}</small></td>
+    <td>${esc(x.owner?.name||'—')}<small>${esc(x.owner?.email||'')}</small></td><td>${adPill(x.kind,AD_KIND)}${x.refused?'<small style="color:var(--warn)">cobrança recusada</small>':''}</td><td>${esc(PLAN[x.plan]||'—')}<small>${when(x)}</small></td>
+    <td>${x.ai_limit?`<div class="ad-meter" style="max-width:110px"><i style="width:${Math.min(100,Math.round(100*x.ai_used/x.ai_limit))}%"></i></div><small>${x.ai_used} de ${x.ai_limit}</small>`:'—'}</td><td>${x.wa?'<span class="pill ok">conectado</span>':'<span class="pill grey">sem conectar</span>'}</td><td>${x.last_use?adD(x.last_use):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhuma empresa com estes filtros.</div>'}</div></div></div>`;
+ adBind(adClientes);
+ document.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{AD.tab=b.dataset.ct;adClientes()});$('#adSort').onchange=e=>{AD.sort=e.target.value;adClientes()};
+ let tm;$('#adQ').oninput=e=>{clearTimeout(tm);tm=setTimeout(async()=>{AD.q=e.target.value;await adClientes();const i=$('#adQ');i.focus();i.setSelectionRange(i.value.length,i.value.length)},350)};
+ document.querySelectorAll('[data-co]').forEach(a=>a.onclick=()=>adOpen(a.dataset.co))}
+async function adFicha(){
+ let c,log;try{[c,log]=await Promise.all([api('/admin/companies/'+AD.open),api('/admin/notices/log?limit=20&company_id='+AD.open)])}catch(e){AD.open=null;toast(e.message);return go('a-clientes')}
+ const b=c.billing||{},patch=async(body,msg)=>{try{await api('/admin/companies/'+c.id,{method:'PATCH',body});toast(msg);adFicha()}catch(e){toast(e.message)}};
+ const sit=c.kind==='trial'?`Teste até ${day(c.trial_ends_at)}`:c.kind==='paying'?(c.cancelled?`Cancelada. Segue ativa até ${day(c.paid_until)}`:`Próxima cobrança em ${day(c.next_payment)}`):c.kind==='courtesy'?(c.courtesy_until?`Cortesia até ${day(c.courtesy_until)}`:'Cortesia sem data de fim'):c.kind==='suspended'?'Acesso suspenso por você':'Sem plano ativo: a conta só consulta';
+ $('#page').innerHTML=`<div class="ad"><button class="ad-back" id="adBack">‹ Clientes</button>
+  <div class="ad-head"><div><h1>${esc(c.name)} ${adPill(c.kind,AD_KIND)}</h1><p class="sub">${esc(SEG[c.segment]||'')} · cliente desde ${day(c.created_at)} · ${esc(sit)}</p></div>
+   <div class="ad-right"><button class="btn sm" id="adEnter">Entrar na conta</button><button class="btn sm" id="adMsg">Enviar aviso</button><button class="btn sm ${c.status==='active'?'danger':''}" id="adSus">${c.status==='active'?'Suspender':'Reativar'}</button></div></div>
+  <div class="ad-box" id="adSusBox" hidden><div>Suspender esta conta? A equipe dela perde o acesso na hora. Dá para reativar depois.</div><div class="ad-acts"><button class="btn p sm" id="adSusOk">Suspender agora</button><button class="btn sm" id="adSusNo">Voltar</button></div></div>
+  <div class="ad-box" id="adMsgBox" hidden><div class="ad-two"><label class="ad-fl">Aviso<select id="adMk"></select></label><label class="ad-fl">Enviar por<select id="adMc"><option value="both">WhatsApp e e-mail</option><option value="email">Só e-mail</option><option value="wa">Só WhatsApp</option></select></label></div>
+   <div id="adMp" style="font-size:13px;color:var(--ink2)"></div><div class="ad-acts"><button class="btn p sm" id="adMok">Enviar agora</button><button class="btn sm" id="adMno">Fechar</button></div></div>
+  ${c.refused?`<div class="ad-tip">A última cobrança, de ${brl2(c.refused.amount)}, não passou. Vencimento em ${day(c.refused.due)}.</div>`:''}
+  <div class="ad-cols even"><div class="ad-col">
+   <div class="card"><h2>Assinatura</h2><dl class="ad-dl" style="margin-top:12px"><dt>Plano</dt><dd>${esc(PLAN[c.plan]||'Nenhum')}${b.cycle?` · ${b.cycle==='annual'?'anual':'mensal'}`:''}</dd><dt>Valor</dt><dd>${b.amount?brl2(b.amount):'—'}</dd><dt>Assinante desde</dt><dd>${day(b.since)}</dd><dt>Pago até</dt><dd>${day(b.paid_until)}</dd><dt>Teste</dt><dd>${day(c.trial?.start)} a ${day(c.trial?.end)}</dd><dt>Usuários</dt><dd>${c.users} de ${c.users_limit||'—'}</dd></dl>
+    <div class="ad-acts" style="margin-top:14px"><button class="btn sm" id="adFree">Dar dias grátis</button><button class="btn sm" id="adCor">Liberar plano de cortesia</button></div>
+    <div class="ad-box" id="adFreeBox" hidden style="margin-top:12px"><label class="ad-fl">Quantos dias a mais de teste<input type="number" id="adFd" min="1" max="60" value="7"></label><div class="ad-acts"><button class="btn p sm" id="adFok2">Estender o teste</button><button class="btn sm" data-x="adFreeBox">Fechar</button></div></div>
+    <div class="ad-box" id="adCorBox" hidden style="margin-top:12px"><div class="ad-two"><label class="ad-fl">Plano<select id="adCp"><option value="essencial">Essencial</option><option value="profissional">Profissional</option><option value="equipe">Equipe</option></select></label><label class="ad-fl">Por quantos dias<input type="number" id="adCd" min="1" max="730" value="30"></label></div><div class="ad-acts"><button class="btn p sm" id="adCok">Liberar sem cobrança</button><button class="btn sm" data-x="adCorBox">Fechar</button></div></div></div>
+   <div class="card"><h2>Cobranças</h2>${c.payments.length?`<div class="ad-scroll"><table><thead><tr><th>Vencimento</th><th>Valor</th><th>Situação</th></tr></thead><tbody>${c.payments.map(p=>`<tr><td>${day(p.due)}</td><td>${brl2(p.amount)}</td><td>${adPill(p.status,AD_PAY)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Nenhuma cobrança ainda.</div>'}</div>
+   <div class="card"><h2>Avisos enviados</h2>${log.length?log.map(l=>`<div class="ad-li"><div>${esc(l.name)}<small>${esc(l.subject)}</small></div><div style="text-align:right;flex:none"><small>${dt(l.at)}</small><small>${l.wa&&l.email?'WhatsApp e e-mail':l.wa?'WhatsApp':l.email?'e-mail':'não saiu'}${l.manual?' · manual':''}</small></div></div>`).join(''):'<div class="empty">Nenhum aviso enviado ainda.</div>'}</div></div>
+  <div class="ad-col">
+   <div class="card"><h2>Dados do cliente</h2><dl class="ad-dl" style="margin-top:12px"><dt>Responsável</dt><dd>${esc(c.owner?.name||'—')}</dd><dt>E-mail</dt><dd>${esc(c.owner?.email||'—')}</dd><dt>Telefone</dt><dd>${esc(c.phone||'—')}</dd><dt>Razão social</dt><dd>${esc(c.legal_name||'—')}</dd><dt>CNPJ</dt><dd>${esc(c.cnpj||'—')}</dd><dt>Endereço</dt><dd>${esc(c.address||'—')}</dd><dt>Contrato</dt><dd>${c.contract_url?`<a href="${esc(c.contract_url)}" target="_blank" rel="noopener">Abrir contrato</a>`:'—'}</dd><dt>Termos de uso</dt><dd>${c.terms?.at?`aceitos em ${dt(c.terms.at)} · versão ${esc(c.terms.version||'1')}`:'sem registro'}</dd></dl>
+    <div class="ad-acts" style="margin-top:14px"><button class="btn sm" id="adEd">Editar dados</button></div>
+    <div class="ad-box" id="adEdBox" hidden style="margin-top:12px"><div class="ad-two">${[['phone','Telefone'],['cnpj','CNPJ'],['legal_name','Razão social'],['address','Endereço']].map(([k,l])=>`<label class="ad-fl">${l}<input data-ed="${k}" value="${esc(c[k]||'')}"></label>`).join('')}</div><label class="ad-fl">Link do contrato assinado<input data-ed="contract_url" value="${esc(c.contract_url||'')}" placeholder="https://"></label><div class="ad-acts"><button class="btn p sm" id="adEok">Salvar</button><button class="btn sm" data-x="adEdBox">Fechar</button></div></div></div>
+   <div class="card"><h2>Uso</h2><div class="ad-trio" style="margin-top:10px"><div><span>Conversas no período</span><b>${c.usage.conversations}</b></div><div><span>Respostas da Nanda</span><b>${c.ai_used} de ${c.ai_limit||'—'}</b></div><div><span>Último uso</span><b>${c.last_use?adD(c.last_use):'—'}</b></div></div>
+    <dl class="ad-dl" style="margin-top:14px"><dt>WhatsApp</dt><dd>${c.channels.whatsapp.connected?'conectado · '+esc(c.channels.whatsapp.phone||''):'sem conectar'}</dd><dt>Instagram</dt><dd>${c.channels.instagram.connected?'conectado · @'+esc(c.channels.instagram.username||''):'sem conectar'}</dd></dl></div>
+   <div class="card"><h2>Suas anotações</h2><div class="ad-acts" style="margin:10px 0"><input class="ad-search" id="adNt" style="flex:1;width:auto" placeholder="Escreva uma anotação sobre este cliente"><button class="btn sm" id="adNok">Guardar</button></div>
+    ${c.notes.map(n=>`<div class="ad-note"><div>${esc(n.text)}<small class="m">${esc(n.by||'')} · ${dt(n.at)}</small></div><button class="btn sm" data-nd="${n.id}">Apagar</button></div>`).join('')||'<div class="empty">Nenhuma anotação.</div>'}</div></div></div></div>`;
+ const tg=(btn,box)=>{$('#'+btn).onclick=()=>{$('#'+box).hidden=!$('#'+box).hidden}};
+ $('#adBack').onclick=()=>{AD.open=null;go('a-clientes')};
+ $('#adEnter').onclick=async()=>{await api('/admin/companies/'+c.id+'/enter',{method:'POST'});VIEW='inicio';await boot()};
+ $('#adSus').onclick=()=>c.status==='active'?($('#adSusBox').hidden=false):patch({status:'active'},'Conta reativada.');
+ $('#adSusOk').onclick=()=>patch({status:'suspended'},'Conta suspensa.');$('#adSusNo').onclick=()=>{$('#adSusBox').hidden=true};
+ tg('adFree','adFreeBox');tg('adCor','adCorBox');tg('adEd','adEdBox');document.querySelectorAll('[data-x]').forEach(x=>x.onclick=()=>{$('#'+x.dataset.x).hidden=true});
+ $('#adFok2').onclick=()=>patch({extend_trial_days:+$('#adFd').value||7},'Teste estendido.');
+ $('#adCok').onclick=()=>patch({plan:$('#adCp').value,courtesy_days:+$('#adCd').value||30},'Plano liberado como cortesia.');
+ $('#adEok').onclick=()=>{const body={};document.querySelectorAll('[data-ed]').forEach(i=>body[i.dataset.ed]=i.value.trim());patch(body,'Dados salvos.')};
+ $('#adNok').onclick=async()=>{const t=$('#adNt').value.trim();if(!t)return;await api('/admin/companies/'+c.id+'/notes',{method:'POST',body:{text:t}});adFicha()};
+ document.querySelectorAll('[data-nd]').forEach(x=>x.onclick=async()=>{await api('/admin/companies/'+c.id+'/notes/'+x.dataset.nd,{method:'DELETE'});adFicha()});
+ $('#adMsg').onclick=async()=>{const bx=$('#adMsgBox');bx.hidden=!bx.hidden;if(bx.hidden)return;const n=await api('/admin/notices');$('#adMk').innerHTML=n.items.map(i=>`<option value="${i.key}">${esc(i.name)}</option>`).join('');$('#adMp').textContent=n.wa_ready?'Vai para '+(c.owner?.name||'o responsável')+'.':'O WhatsApp do Oi Nanda ainda não está conectado para avisos: por enquanto sai só o e-mail.'};
+ $('#adMno').onclick=()=>{$('#adMsgBox').hidden=true};
+ $('#adMok').onclick=async()=>{try{const r=await api('/admin/companies/'+c.id+'/notify',{method:'POST',body:{key:$('#adMk').value,channel:$('#adMc').value}});toast(r.wa&&r.email?'Enviado por WhatsApp e e-mail.':r.wa?'Enviado por WhatsApp.':r.email?'Enviado por e-mail.':'Não saiu: envio ainda não configurado.');adFicha()}catch(e){toast(e.message)}}}
+/* avisos: a fila do que pede atenção, os textos automáticos e o que já saiu */
+const adWa=(title,text,btn,reply)=>`<div class="ad-wa"><div class="ad-bb"><div class="tx"><b>${esc(title)}</b><div>${esc(text).replace(/\*([^*]+)\*/g,'<b>$1</b>')}</div><small>Oi Nanda · avisos da sua conta</small></div><div class="cta">${esc(btn)}</div>${reply?`<div class="cta">${esc(reply)}</div>`:''}</div></div>`;
+async function adAvisos(){
+ const A=AD.av,head=`<div class="ad-head"><div><h1>Avisos</h1><p class="sub">O que pede uma ação sua e o que o Oi Nanda manda sozinho para os clientes.</p></div></div>
+  <div class="ad-tabs">${[['fila','Precisa de atenção'],['textos','Textos automáticos'],['enviados','Enviados']].map(([k,l])=>`<button class="ad-tab ${A.tab===k?'on':''}" data-at="${k}">${l}</button>`).join('')}</div>`;
+ const tabs=()=>document.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>{A.tab=b.dataset.at;A.open=null;syncUrl();adAvisos()});
+ if(A.tab==='enviados'){const log=await api('/admin/notices/log?limit=200');
+  $('#page').innerHTML=`<div class="ad">${head}<div class="card"><div class="ad-scroll">${log.length?`<table><thead><tr><th>Quando</th><th>Empresa</th><th>Aviso</th><th>Canal</th></tr></thead><tbody>${log.map(l=>`<tr class="go" data-co="${l.company_id}"><td>${dt(l.at)}</td><td>${esc(l.company||'')}</td><td>${esc(l.name)}<small>${esc(l.subject)}</small></td><td>${l.wa&&l.email?'WhatsApp e e-mail':l.wa?'WhatsApp':l.email?'e-mail':'não saiu'}${l.manual?'<small>enviado por você</small>':''}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum aviso enviado ainda.</div>'}</div></div></div>`;
+  tabs();document.querySelectorAll('[data-co]').forEach(a=>a.onclick=()=>adOpen(a.dataset.co));return}
+ if(A.tab==='textos'){const n=await api('/admin/notices');if(!n.items.find(i=>i.key===A.key))A.key=n.items[0].key;const v=await api('/admin/notices/'+A.key);if(!v.whatsapp)A.ed='email';
+  const st={APPROVED:['aprovado pela Meta','ok'],PENDING:['em análise na Meta','warn'],REJECTED:['recusado pela Meta','bad'],DRAFT:['ainda não enviado à Meta','grey']}[v.wa_status]||['ainda não enviado à Meta','grey'];
+  $('#page').innerHTML=`<div class="ad">${head}
+   ${n.email_ready?'':'<div class="ad-tip">O envio de e-mail ainda não está configurado neste servidor. Os avisos ficam registrados, mas não saem.</div>'}
+   ${n.wa_ready?'<div class="ad-box" style="flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:240px;font-size:13.5px">Cada texto de WhatsApp precisa da aprovação da Meta antes do primeiro envio.</div><button class="btn sm" id="adWsub">Enviar textos para aprovação</button></div>':''}
+   ${n.wa_ready?'':'<div class="ad-tip">O número do Oi Nanda ainda não está conectado para avisos. Até lá, tudo sai só por e-mail. Os textos de WhatsApp já podem ser preparados aqui.</div>'}
+   <div class="ad-cols" style="grid-template-columns:330px 1fr"><div class="card" style="padding:10px">${n.items.map(i=>`<div class="ad-nt ${i.key===A.key?'on':''}" data-nk="${i.key}"><div>${esc(i.name)}<small>${esc(i.when)} · ${i.whatsapp?'WhatsApp e e-mail':'só e-mail'}</small></div><label class="ad-sw" title="${i.on?'Ligado':'Desligado'}"><input type="checkbox" data-sw="${i.key}" ${i.on?'checked':''} aria-label="Ligar ou desligar ${esc(i.name)}"><i></i></label></div>`).join('')}</div>
+   <div class="card"><div class="ad-bar"><h2>${esc(v.name)}</h2><div class="ad-right">${v.whatsapp?`<div class="ad-tabs"><button class="ad-tab ${A.ed==='wa'?'on':''}" data-ed2="wa">WhatsApp</button><button class="ad-tab ${A.ed==='email'?'on':''}" data-ed2="email">E-mail</button></div>`:''}</div></div>
+    <div class="ad-cols even" style="margin-top:14px"><div class="ad-col">
+     ${A.ed==='wa'?`<div><span class="pill ${st[1]}">${st[0]}</span></div><label class="ad-fl">Mensagem no WhatsApp<textarea id="adTw" rows="7">${esc(v.wa)}</textarea></label>
+      <small class="m">Mudou o texto? A Meta revisa de novo antes de liberar. Enquanto isso, continua saindo o texto aprovado.${v.wa_error?' Motivo da recusa: '+esc(v.wa_error):''}</small>`
+     :`<label class="ad-fl">Assunto<input id="adTs" value="${esc(v.subject)}"></label><label class="ad-fl">Linha que aparece ao lado do assunto<input id="adTp" value="${esc(v.pre)}"></label><label class="ad-fl">Título<input id="adTt" value="${esc(v.title)}"></label><label class="ad-fl">Mensagem<textarea id="adTb" rows="6">${esc(v.body)}</textarea></label>`}
+     <div><small class="m" style="margin-bottom:6px">Campos que são trocados pelos dados de cada cliente</small><div class="ad-tabs">${v.vars.map(x=>`<button class="ad-var" data-var="{${x}}">{${x}}</button>`).join('')}</div></div>
+     <div class="ad-acts"><button class="btn p sm" id="adTok">Salvar</button><button class="btn sm" id="adTtest">Enviar teste para mim</button>${v.custom?'<button class="btn sm" id="adTrst">Voltar ao texto padrão</button>':''}</div></div>
+    <div class="ad-col"><small class="m">Como o cliente recebe, com dados de exemplo</small>${A.ed==='wa'?adWa(v.preview.wa_title,v.preview.wa,v.button,v.reply):`<div class="ad-mailhead"><b>${esc(v.preview.subject)}</b>${esc(v.preview.pre)}</div><iframe class="ad-mail" title="Prévia do e-mail" sandbox srcdoc="${esc(v.preview.html)}"></iframe>`}</div></div></div></div></div>`;
+  tabs();let last=null;document.querySelectorAll('#adTw,#adTs,#adTp,#adTt,#adTb').forEach(i=>i.onfocus=()=>last=i);
+  document.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const i=last||$('#adTw')||$('#adTb');const s=i.selectionStart??i.value.length;i.value=i.value.slice(0,s)+b.dataset.var+i.value.slice(i.selectionEnd??s);i.focus()});
+  document.querySelectorAll('[data-nk]').forEach(b=>b.onclick=e=>{if(e.target.closest('.ad-sw'))return;A.key=b.dataset.nk;adAvisos()});
+  document.querySelectorAll('[data-sw]').forEach(i=>i.onchange=async()=>{await api('/admin/notices',{method:'PUT',body:{[i.dataset.sw]:i.checked}});toast(i.checked?'Aviso ligado.':'Aviso desligado.')});
+  document.querySelectorAll('[data-ed2]').forEach(b=>b.onclick=()=>{A.ed=b.dataset.ed2;adAvisos()});
+  $('#adTok').onclick=async()=>{const body=A.ed==='wa'?{wa:$('#adTw').value}:{subject:$('#adTs').value,pre:$('#adTp').value,title:$('#adTt').value,body:$('#adTb').value};try{await api('/admin/notices/'+A.key,{method:'PUT',body});toast('Texto salvo.');adAvisos()}catch(e){toast(e.message)}};
+  $('#adTtest').onclick=async()=>{const r=await api('/admin/notices/'+A.key+'/test',{method:'POST'});toast(r.sent?'Teste enviado para '+r.to+'.':'O e-mail não saiu: envio ainda não configurado.')};
+  if($('#adWsub'))$('#adWsub').onclick=async e=>{e.target.disabled=true;try{const r=await api('/admin/notices/whatsapp/submit',{method:'POST'});toast(r.submitted+' textos enviados para a Meta.')}catch(x){toast(x.message)}adAvisos()};
+  if($('#adTrst'))$('#adTrst').onclick=async()=>{await api('/admin/notices/'+A.key,{method:'DELETE'});toast('Voltou ao texto padrão.');adAvisos()};return}
+ const at=await api('/admin/attention'),c=at.counts,items=at.items.filter(x=>!A.kind||x.kind===A.kind);
+ const kinds=[['','Todos',at.total],['refused','Cobrança recusada',c.refused],['trial_soon','Teste acabando',c.trial_soon],['no_whatsapp','Sem WhatsApp',c.no_whatsapp],['ai_near','Nanda no limite',c.ai_near]];
+ let comp='';if(A.open){const[cid,key]=A.open.split('|'),x=at.items.find(i=>i.company_id===cid&&i.notice===key);if(x){const v=await api('/admin/notices/'+key);const ch=at.wa_ready&&v.whatsapp?A.ch:'email';
+  comp=`<div class="ad-box" id="adComp"><div class="ad-bar"><h2>Enviar aviso para ${esc(x.company)}</h2><div class="ad-right"><button class="btn sm" id="adCx">Fechar</button></div></div>
+   <div class="ad-cols even"><div class="ad-col"><div class="ad-bar"><span style="font-size:13px;color:var(--ink2)">Enviar por</span><div class="ad-tabs">${at.wa_ready&&v.whatsapp?`<button class="ad-tab ${ch==='wa'?'on':''}" data-ch="wa">WhatsApp</button><button class="ad-tab ${ch==='both'?'on':''}" data-ch="both">WhatsApp e e-mail</button>`:''}<button class="ad-tab ${ch==='email'?'on':''}" data-ch="email">E-mail</button></div></div>
+    <div style="font-size:13.5px">Para ${esc(x.owner||'o responsável')}${ch==='email'?', '+esc(x.email||''):', '+esc(x.phone||'')+'. Sai do número do Oi Nanda.'}</div>
+    <div style="font-size:13px;color:var(--ink2)">É o aviso "${esc(v.name)}", com os dados desta conta. Para mudar o texto, use a aba Textos automáticos.${at.wa_ready?'':' O WhatsApp do Oi Nanda ainda não está conectado para avisos: por enquanto sai por e-mail.'}</div>
+    <div class="ad-acts"><button class="btn p sm" id="adCok2">Enviar agora</button></div></div>
+   <div class="ad-col"><small class="m">Prévia com dados de exemplo</small>${ch==='email'?`<iframe class="ad-mail" title="Prévia do e-mail" sandbox srcdoc="${esc(v.preview.html)}"></iframe>`:adWa(v.preview.wa_title,v.preview.wa,v.button,v.reply)}</div></div></div>`;A._ch=ch}}
+ $('#page').innerHTML=`<div class="ad">${head}<div class="ad-tabs">${kinds.map(([k,l,n])=>`<button class="ad-tab ${A.kind===k?'on':''}" data-ak="${k}">${l} ${n}</button>`).join('')}</div>
+  ${comp}<div class="card">${items.length?items.map(x=>adAttRow(x,true)).join(''):'<div class="empty">Nada pendente aqui.</div>'}</div></div>`;
+ tabs();document.querySelectorAll('[data-ak]').forEach(b=>b.onclick=()=>{A.kind=b.dataset.ak;adAvisos()});
+ document.querySelectorAll('[data-co]').forEach(a=>a.onclick=e=>{e.preventDefault();adOpen(a.dataset.co)});
+ document.querySelectorAll('[data-av]').forEach(b=>b.onclick=async()=>{A.open=b.dataset.av;await adAvisos();$('#adComp')?.scrollIntoView({behavior:'smooth',block:'nearest'})});
+ document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{A.ch=b.dataset.ch;adAvisos()});
+ if($('#adCx'))$('#adCx').onclick=()=>{A.open=null;adAvisos()};
+ if($('#adCok2'))$('#adCok2').onclick=async()=>{const[cid,key]=A.open.split('|');try{const r=await api('/admin/companies/'+cid+'/notify',{method:'POST',body:{key,channel:A._ch}});toast(r.wa&&r.email?'Enviado por WhatsApp e e-mail.':r.wa?'Enviado por WhatsApp.':r.email?'Enviado por e-mail.':'Não saiu: envio ainda não configurado.');A.open=null;adAvisos()}catch(e){toast(e.message)}}}
+/* o cliente escolhe os avisos que recebe do Oi Nanda */
+async function avisosConta(){
+ if(ME.user.role!=='owner'){$('#page').innerHTML='<h1>Avisos do Oi Nanda</h1><div class="card"><p class="note">Só o dono da conta escolhe os avisos.</p></div>';return}
+ const p=await api('/company/notices');
+ $('#page').innerHTML=`<div class="ad" style="max-width:720px"><button class="ad-back" id="avB">‹ Empresa</button><div><h1>Avisos do Oi Nanda</h1><p class="sub">Escolha o que você quer receber sobre a sua conta e por onde.</p></div>
+  <div class="card"><h2>Por onde avisar</h2><div class="ad-nt" style="cursor:default;padding-left:0"><div>WhatsApp<small>Mensagem curta, do número do Oi Nanda</small></div><label class="ad-sw"><input type="checkbox" id="avW" ${p.whatsapp?'checked':''} aria-label="Receber avisos pelo WhatsApp"><i></i></label></div>
+   <label class="ad-fl" style="max-width:300px;margin:4px 0 14px">Celular que recebe os avisos<input id="avP" value="${esc(p.phone)}" placeholder="(11) 91234-5678"></label>
+   <div class="ad-nt" style="cursor:default;padding-left:0"><div>E-mail<small>${esc(p.email||'')} · sempre ligado, é o registro da sua conta</small></div></div></div>
+  <div class="card"><h2>Avisos que você pode desligar</h2>${p.optional.map(o=>`<div class="ad-nt" style="cursor:default;padding-left:0"><div>${esc(o.name)}<small>${esc(o.when)}</small></div><label class="ad-sw"><input type="checkbox" data-opt="${o.key}" ${o.on?'checked':''} aria-label="${esc(o.name)}"><i></i></label></div>`).join('')}</div>
+  <div class="card"><h2>Avisos que sempre chegam</h2><p class="sub" style="margin:6px 0 0">São os que protegem o seu atendimento: ${esc(p.always.join(', '))}.</p></div>
+  <div class="ad-acts"><button class="btn p" id="avS">Salvar</button></div></div>`;
+ $('#avB').onclick=()=>go('empresa');
+ $('#avS').onclick=async()=>{try{await api('/company/notices',{method:'PUT',body:{whatsapp:$('#avW').checked,phone:$('#avP').value,off:[...document.querySelectorAll('[data-opt]')].filter(i=>!i.checked).map(i=>i.dataset.opt)}});toast('Avisos salvos.')}catch(e){toast(e.message)}}}
 const VIEWS={
  metas:()=>mtView(),
  vendas:()=>vdView(),
@@ -3755,30 +4055,11 @@ const VIEWS={
    ${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.actor)}${r.impersonated_by?'<small>suporte Oi Nanda</small>':''}</td><td>${esc(r.action)}${r.target?`<small>${esc(r.target)}</small>`:''}</td><td><small>${esc(r.ip||'')}</small></td></tr>`).join('')}
    </tbody></table>`:'<div class="empty">Nada registrado ainda.</div>'}</div>`;
  },
- async 'a-visao'(){
-  const s=await api('/admin/stats');
-  const tile=(l,v)=>`<div class="card stat"><span>${l}</span><b>${v}</b></div>`;
-  $('#page').innerHTML=`<h1>Visão geral</h1><p class="sub">Todas as contas do Oi Nanda.</p>
-   <div class="grid g4">${tile('Empresas',s.companies)}${tile('Em teste',s.trial)}${tile('Pagantes',s.paying)}${tile('Novas na semana',s.new_week)}
-   ${tile('Ativas',s.active)}${tile('Suspensas',s.suspended)}${tile('Usuários',s.users)}${tile('Erros nas últimas 24 h',s.errors_day)}</div>`;
- },
- async 'a-clientes'(){
-  const list=await api('/admin/companies');
-  $('#page').innerHTML=`<h1>Clientes</h1><p class="sub">${list.length} ${list.length===1?'empresa':'empresas'}.</p>
-   <div class="card">${list.length?`<table><thead><tr><th>Empresa</th><th>Dono</th><th>Plano</th><th>Situação</th><th>Criada</th><th></th></tr></thead><tbody>
-   ${list.map(c=>`<tr><td><b>${esc(c.name)}</b><small>${esc(SEG[c.segment]||'')} · ${c.users} ${c.users===1?'usuário':'usuários'}</small></td>
-    <td>${esc(c.owner?.name||'—')}<small>${esc(c.owner?.email||'')} · último acesso ${dt(c.owner?.last_login_at)}</small></td>
-    <td><select data-plan="${c.id}" class="btn sm">${Object.entries(PLAN).map(([k,v])=>`<option value="${k}" ${k===c.plan?'selected':''}>${v}</option>`).join('')}</select>
-     ${c.plan==='trial'?`<small>teste até ${day(c.trial_ends_at)}</small>`:''}</td>
-    <td>${c.status==='active'?'<span class="pill ok">ativa</span>':'<span class="pill bad">suspensa</span>'}</td>
-    <td>${day(c.created_at)}</td>
-    <td style="text-align:right;white-space:nowrap">${c.plan==='trial'?`<button class="btn sm" data-ext="${c.id}">+7 dias</button> `:''}<button class="btn sm" data-enter="${c.id}">Entrar</button> <button class="btn sm ${c.status==='active'?'danger':''}" data-st="${c.id}" data-to="${c.status==='active'?'suspended':'active'}">${c.status==='active'?'Suspender':'Reativar'}</button></td></tr>`).join('')}
-   </tbody></table>`:'<div class="empty">Nenhuma empresa ainda.</div>'}</div>`;
-  document.querySelectorAll('[data-enter]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.enter+'/enter',{method:'POST'});VIEW='inicio';await boot()});
-  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=async()=>{if(b.dataset.to==='suspended'&&!await sure('Suspender esta conta? O time dela perde o acesso na hora.'))return;await api('/admin/companies/'+b.dataset.st,{method:'PATCH',body:{status:b.dataset.to}});VIEWS['a-clientes']()});
-  document.querySelectorAll('[data-ext]').forEach(b=>b.onclick=async()=>{await api('/admin/companies/'+b.dataset.ext,{method:'PATCH',body:{extend_trial_days:7}});toast('Teste estendido em 7 dias.');VIEWS['a-clientes']()});
-  document.querySelectorAll('[data-plan]').forEach(s=>s.onchange=async()=>{await api('/admin/companies/'+s.dataset.plan,{method:'PATCH',body:{plan:s.value}});toast('Plano alterado.');if(s.dataset.plan===ME.company.id){await refresh();shell()}else VIEWS['a-clientes']()});
- },
+ 'avisos-conta':avisosConta,
+ 'a-visao':adVisao,
+ 'a-financeiro':adFin,
+ 'a-clientes':()=>AD.open?adFicha():adClientes(),
+ 'a-avisos':adAvisos,
  async 'a-atividade'(){
   const rows=await api('/admin/audit');
   $('#page').innerHTML=`<h1>Atividade geral</h1><p class="sub">Últimos 300 registros de todas as contas.</p>
@@ -3792,6 +4073,9 @@ const VIEWS={
    <div class="card">${rows.length?rows.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${esc(r.error)}</b><small style="display:block;color:var(--ink3)">${dt(r.at)} · ${esc(r.method)} ${esc(r.path)}</small><pre>${esc(r.trace)}</pre></div>`).join(''):'<div class="empty">Nenhum erro registrado.</div>'}</div>`;
  }
 };
+{const emp=VIEWS.empresa;VIEWS.empresa=async()=>{await emp();if(ME.user.role!=='owner'||!$('#page'))return;
+ $('#page').insertAdjacentHTML('beforeend','<div class="card" style="margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:1;min-width:220px"><h3>Avisos do Oi Nanda</h3><p class="sub" style="margin:4px 0 0">Cobrança, fim do teste e uso da Nanda: escolha o que receber e por onde.</p></div><button class="btn sm" id="goAv">Escolher meus avisos</button></div>');
+ $('#goAv').onclick=()=>go('avisos-conta')}}
 async function drawTeams(people,canManage){
   const box=$('#tmL');if(!box)return;const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
   const P=Object.fromEntries(people.map(p=>[p.id,p]));

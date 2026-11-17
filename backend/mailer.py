@@ -76,28 +76,32 @@ async def send_invite(member, by_name, company_name):
                       plain('Você foi convidado', paras, ('Criar minha senha', link)))
 
 async def send_welcome(user, company):
-    paras = [f'Oi, {first(user.get("name"))}! Que bom ter a <b>{html.escape(company.get("name") or "")}</b> aqui.',
-             'Você tem 14 dias grátis, sem cartão. O primeiro passo é conectar o WhatsApp da empresa: leva uns 5 minutos e as conversas começam a aparecer na hora.',
-             'Depois disso, vale ensinar a Nanda sobre o seu negócio (preços, horários, serviços) em <b>Nanda (IA)</b>. Ela usa isso para sugerir as respostas.']
-    return await send(user['email'], 'Bem-vindo ao Oi Nanda', layout('Bem-vindo ao Oi Nanda', paras, ('Conectar o WhatsApp', APP + '/empresa'),
-                      'Qualquer dúvida, é só responder este e-mail.'), plain('Bem-vindo ao Oi Nanda', paras, ('Conectar o WhatsApp', APP + '/empresa')))
+    import notices
+    return await notices.deliver(company, 'welcome', once='welcome')
+
+# ---------- avisos automáticos: os textos, o WhatsApp e as regras ficam em notices.py ----------
+def money(v): return 'R$ ' + f'{float(v or 0):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+
+async def owner_of(company):
+    return await db.users.find_one({'company_id': company['id'], 'role': 'owner', 'active': True}, {'_id': 0})
+
+async def notices():
+    import notices as N
+    return await N.toggles()
+
+async def payment_notice(company, pay):
+    """Cobrança paga ou recusada: avisa o responsável uma vez por situação."""
+    import notices as N
+    from billing import GRACE_DAYS
+    due = pay.get('due'); v = {'valor': money(pay['amount'])}
+    if pay['status'] == 'paid':
+        return await N.deliver(company, 'paid', {**v, 'data': N.day(pay.get('paid_at') or due)}, once=f'paid:{pay["id"]}')
+    return await N.deliver(company, 'refused', {**v, 'prazo': N.day(N.aware(due) + timedelta(days=GRACE_DAYS)) if due else ''}, once=f'refused:{pay["id"]}')
+
+async def charge_tick():
+    import notices as N
+    await N.tick()
 
 async def trial_tick():
-    """Aviso 3 dias antes do fim do teste e no dia em que acaba (uma vez cada)."""
-    for kind, lo, hi in (('trial_3d', timedelta(days=2), timedelta(days=3)), ('trial_end', timedelta(days=-2), timedelta(0))):
-        rows = await db.companies.find({'plan': 'trial', f'mail_{kind}': {'$ne': True},
-                                        'trial_ends_at': {'$gt': now() + lo, '$lte': now() + hi}}, {'_id': 0}).to_list(200)
-        for c in rows:
-            await db.companies.update_one({'id': c['id']}, {'$set': {f'mail_{kind}': True}})
-            owner = await db.users.find_one({'company_id': c['id'], 'role': 'owner', 'active': True}, {'_id': 0})
-            if not owner: continue
-            if kind == 'trial_3d':
-                paras = [f'Oi, {first(owner.get("name"))}!', 'Faltam 3 dias para acabar o teste grátis da <b>' + html.escape(c.get('name') or '') + '</b> no Oi Nanda.',
-                         'Para continuar atendendo sem parar, escolha um plano. Nada do que você cadastrou se perde.']
-                await send(owner['email'], 'Seu teste do Oi Nanda acaba em 3 dias', layout('Faltam 3 dias', paras, ('Ver planos', APP + '/assinatura')),
-                           plain('Faltam 3 dias', paras, ('Ver planos', APP + '/assinatura')))
-            else:
-                paras = [f'Oi, {first(owner.get("name"))}!', 'O teste grátis acabou e a conta ficou só para leitura: as conversas e os clientes continuam lá, mas não dá para responder pelo Oi Nanda.',
-                         'Escolha um plano e tudo volta a funcionar na hora.']
-                await send(owner['email'], 'Seu teste do Oi Nanda acabou', layout('O teste acabou', paras, ('Escolher um plano', APP + '/assinatura')),
-                           plain('O teste acabou', paras, ('Escolher um plano', APP + '/assinatura')))
+    import notices as N
+    await N.tick()
