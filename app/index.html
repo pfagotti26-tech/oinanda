@@ -1264,6 +1264,76 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .ad-mail{width:100%;height:640px;border:1px solid var(--line);border-radius:0 0 16px 16px;background:#F7F2EC}
 .ad-box>.ad-cols .ad-mail{border-radius:16px}
 @media (max-width:900px){.ad-cols[style]{grid-template-columns:1fr!important}}
+
+/* ---------- conectar o WhatsApp: passo a passo ---------- */
+#wa:has(.wz){padding:0;overflow:hidden}
+.wz{display:flex;min-height:500px}
+.wz h2{margin:0;font-size:25px;font-weight:600;letter-spacing:-.6px;line-height:1.2}
+.wz p{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.wz-l{flex:1.15;padding:28px 28px 24px;display:flex;flex-direction:column;gap:17px;min-width:0}
+.wz-r{flex:1;background:var(--tint);padding:28px 24px;display:flex;flex-direction:column;gap:13px;justify-content:center;min-width:0}
+.wz-r.g{background:#EAF7F2}.wz-r.y{background:#FFF9EA}
+.wz-st{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink3)}
+.wz-st span{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.wz-st i{width:22px;height:22px;border-radius:50%;background:#F3EDE7;color:var(--ink2);font-style:normal;font-weight:600;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center}
+.wz-st .on{color:var(--ink);font-weight:600}.wz-st .on i{background:var(--c);color:#fff}
+.wz-st .ok{color:var(--ok)}.wz-st .ok i{background:var(--oksoft);color:var(--ok)}
+.wz-st u{flex:1;height:1px;background:var(--line);text-decoration:none}
+.wz-q{font-size:15px;font-weight:600}
+.wz-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wz-cd{font:inherit;text-align:left;border:1px solid #E6DCD3;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.4;position:relative;background:#fff;cursor:pointer;color:var(--ink)}
+.wz-cd.on{border-color:var(--c);background:var(--tint);box-shadow:0 0 0 3px var(--soft)}
+.wz-cd .ic{width:40px;height:40px;border-radius:13px;background:#F3EDE7;color:var(--ink2);display:inline-flex;align-items:center;justify-content:center}
+.wz-cd.on .ic{background:var(--c);color:#fff}
+.wz-cd b{font-weight:600;font-size:14.5px}.wz-cd small{color:var(--ink2);font-size:12.5px}
+.wz-cd .tk{position:absolute;right:12px;top:12px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;display:none;align-items:center;justify-content:center}
+.wz-cd.on .tk{display:inline-flex}
+.wz svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wz svg.s{width:16px;height:16px}
+.wz-bt{font:inherit;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--c);color:#fff;font-weight:600;font-size:15px;padding:14px 20px;border-radius:999px;border:1px solid var(--c);cursor:pointer;text-decoration:none}
+.wz-bt:hover{background:var(--c2)}
+.wz-bt.g{background:#fff;color:var(--ink);border-color:#DCD2C9;font-weight:500}.wz-bt.g:hover{border-color:var(--ink3);background:#fff}
+.wz-bt.sm{padding:9px 16px;font-size:13.5px}
+.wz-bt[disabled]{background:#F1E9E2;border-color:#F1E9E2;color:#A39A92;cursor:default}
+.wz-ln{font:inherit;font-size:13px;color:var(--c2);background:none;border:0;padding:0;cursor:pointer;text-align:left;text-decoration:underline;align-self:flex-start}
+.wz-ft{margin-top:auto;display:flex;flex-direction:column;gap:14px}
+.wz-hp{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--ink2)}.wz-hp span{flex:1}
+.wz-cap{font-size:12px;font-weight:600;letter-spacing:.2px;color:#9E3A22}
+.wz-r.g .wz-cap{color:var(--ok)}.wz-r.y .wz-cap{color:var(--warn)}
+.wz-nd{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:11px 13px;font-size:13.5px;line-height:1.35}
+.wz-nd>span{width:34px;height:34px;border-radius:11px;background:#FEF0EA;color:var(--c2);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.wz-nd small{display:block;color:var(--ink2);font-size:12px}
+.wz-il{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px}
+.wz-ph{width:64px;height:108px;border-radius:16px;border:3px solid var(--ink);background:#fff;padding:8px 6px;display:flex;flex-direction:column;gap:5px}
+.wz-ph i{display:block;height:9px;border-radius:5px;background:#E6EBF0;width:70%}.wz-ph i.r{background:#CDEFD8;align-self:flex-end;width:60%}
+.wz-dots{display:flex;gap:5px}.wz-dots i{width:6px;height:6px;border-radius:50%;background:#F3B7A4}
+.wz-lg{width:74px;height:74px;border-radius:24px 24px 24px 8px;background:var(--c);color:#fff;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:center;line-height:1}
+.wz-safe{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--ok);background:#EAF7F2;border-radius:14px;padding:12px 14px}
+.wz-ms{background:#fff;border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 1px 2px rgba(23,33,43,.05)}
+.wz-ms>i{width:26px;height:26px;border-radius:50%;background:var(--c);color:#fff;font-style:normal;font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.wz-ms>div{flex:1;font-size:13.5px;line-height:1.35}.wz-ms small{display:block;color:var(--ink2);font-size:12px}
+.wz-mk{width:132px;height:78px;flex:none;border-radius:12px;border:1px solid #E3E8EE;background:#F6F8FA;padding:9px;display:flex;flex-direction:column;gap:6px;justify-content:center;font-size:10px;line-height:1.3;color:var(--ink2)}
+.wz-mk b{display:block;background:#1877F2;color:#fff;border-radius:6px;padding:5px;text-align:center;font-weight:600}
+.wz-mk .o{border:1px solid #D5DCE4;border-radius:6px;padding:4px 6px;background:#fff}
+.wz-mk .o.s{border-color:#1877F2;box-shadow:0 0 0 2px #D8E8FD;color:var(--ink);font-weight:600}
+.wz-ck{display:flex;flex-direction:column;gap:2px}
+.wz-ck div{display:flex;gap:12px;align-items:center;font-size:14.5px;padding:9px 0}
+.wz-ck i{width:24px;height:24px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;background:var(--oksoft);color:var(--ok)}
+.wz-ck .w{font-weight:600}.wz-ck .w i{background:transparent}
+.wz-ck .n{color:var(--ink3)}.wz-ck .n i{background:#F3EDE7}
+.wz-sp{display:block;width:16px;height:16px;border-radius:50%;border:2.5px solid #F3C9BB;border-top-color:var(--c);animation:wzsp .9s linear infinite}
+@keyframes wzsp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.wz-sp{animation:none}}
+.wz-er{border:1px solid #F0DDB0;background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5}
+.wz-er b{font-weight:600;display:flex;align-items:center;gap:8px;color:var(--warn)}
+.wz-er ol{margin:0;padding-left:18px;color:var(--ink2);font-size:13.5px}
+.wz-okc{width:60px;height:60px;border-radius:20px;background:var(--oksoft);color:var(--ok);display:inline-flex;align-items:center;justify-content:center}
+.wz-okc svg{width:30px;height:30px}
+.wz-num{background:var(--bg);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:10px}
+.wz-num b{font-weight:600;font-size:16px}.wz-num small{display:block;font-size:12.5px;color:var(--ink2)}
+.wz-ib{background:#fff;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(23,33,43,.06);font-size:13.5px}
+.wz-bb{align-self:flex-start;background:#F1F4F7;border-radius:4px 14px 14px 14px;padding:8px 12px}
+@media (max-width:860px){.wz{flex-direction:column}.wz-two{grid-template-columns:1fr}.wz-l{padding:22px 18px}.wz-r{padding:22px 18px}.wz-mk{display:none}}
 </style>
 </head>
 <body>
@@ -1643,46 +1713,102 @@ async function renderTg(own){const box=$('#tgc');if(!box)return;
   if($('#tgOff'))$('#tgOff').onclick=async()=>{if(!await sure('Desconectar o Telegram? As conversas continuam aqui, mas não chegam mensagens novas.',{ok:'Desconectar'}))return;
     await api('/tg/account',{method:'DELETE'});renderTg(own)};
 }
+/* ---------- conectar o WhatsApp: passo a passo ---------- */
+const WZ={step:1,pick:null,unsure:false,err:null,phase:'',just:false};
+const WZI={fb:'<circle cx="12" cy="12" r="9"/><path d="M13 21v-7h2.500l.5-3H13V9.500c0-1 .5-1.500 1.500-1.500H16V5.200h-2c-2.200 0-3.500 1.400-3.500 3.600V11H8v3h2.500v7"/>',phone:'<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',novo:'<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M12 9v6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',check:'<path d="M5 12.500l4.500 4.500L19 7.500"/>',chat:'<path d="M20 11.500a8 8 0 0 1-11.800 7L4 20l1.500-4.200A8 8 0 1 1 20 11.500z"/>',qr:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 14h2M14 18h2M18 18h2v2"/>',shield:'<path d="M12 3 5 6v5.500c0 4.500 3 7.500 7 9 4-1.500 7-4.500 7-9V6z"/><path d="M9 12l2 2 4-4"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.200v.1"/>',spark:'<path d="M12 3.500l1.900 5.100 5.100 1.900-5.100 1.900L12 17.500l-1.900-5.100L5 10.500l5.100-1.900z"/>'};
+const wzi=(k,c='')=>`<svg viewBox="0 0 24 24" class="${c}" aria-hidden="true">${WZI[k]}</svg>`;
+const wzSteps=n=>`<div class="wz-st">${['Preparar','Conectar na Meta','Testar'].map((l,k)=>`<span class="${k+1<n?'ok':k+1===n?'on':''}"><i>${k+1<n?'✓':k+1}</i>${l}</span>${k<2?'<u></u>':''}`).join('')}</div>`;
+const wzHelp=()=>`<div class="wz-hp"><span>Travou? A gente conecta junto com você.</span><a class="wz-bt g sm" target="_blank" rel="noopener" href="https://wa.me/5511975754765?text=${encodeURIComponent('Oi! Preciso de ajuda para conectar o WhatsApp da '+ME.company.name+' no Oi Nanda.')}">${wzi('chat','s')}Quero ajuda</a></div>`;
+/* o aviso técnico da Meta vira uma frase e um caminho */
+function wzError(msg){const m=String(msg||'').toLowerCase();
+ if(/already|j[áa] (est[áa]|foi)|in use|registered|outra conta|another/.test(m))return{t:'Este número já está ligado a outra conta',d:'Acontece quando ele foi cadastrado antes em outra ferramenta. Para liberar:',s:['Abra o Gerenciador do WhatsApp na Meta.','Remova o número da conta antiga.','Volte aqui e tente de novo.']};
+ if(/two.?step|pin|duas etapas/.test(m))return{t:'O número está com a confirmação em duas etapas ligada',d:'A Meta pede que ela seja desligada antes de conectar:',s:['No Gerenciador do WhatsApp, abra o número.','Desligue a confirmação em duas etapas.','Volte aqui e tente de novo.']};
+ if(/bloqueador|adblock|abrir a meta/.test(m))return{t:'A janela da Meta não abriu',d:'Algum bloqueador do navegador impediu. Para resolver:',s:['Desative o bloqueador de anúncios neste site.','Permita janelas da Meta, se o navegador perguntar.','Tente de novo.']};
+ if(/cancel|fechad|closed/.test(m))return{t:'A conexão parou antes do fim',d:'A janela da Meta foi fechada ou o passo foi cancelado. Nada foi alterado.',s:['Clique em Tentar de novo.','Siga as três telas até aparecer a confirmação.']};
+ if(/não devolveu o número|so a conta|só a conta/.test(m))return{t:'Faltou escolher o número',d:'A conta foi escolhida, mas o número não. Para concluir:',s:['Abra a tela da Meta de novo.','Na segunda tela, escolha também o número de telefone.']};
+ return{t:'A Meta não concluiu a conexão',d:msg?('O aviso que veio de lá: '+msg):'Não veio uma explicação da Meta.',s:['Tente de novo em alguns minutos.','Se repetir, peça ajuda e a gente conecta com você.']}}
 async function renderWa(own){
   const n=await api('/wa/number');const box=$('#wa');if(!box)return;
-  if(n){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
+  if(n&&!WZ.just){box.innerHTML=`<h3 style="margin-bottom:8px">WhatsApp</h3><p><span class="pill ok">conectado</span> <b>${esc(n.display_phone||'')}</b> · ${esc(n.verified_name||'')}</p>
     <p style="color:var(--ink2);font-size:13px;margin-top:6px">Qualidade: ${esc(n.quality||'—')} · conectado em ${day(n.connected_at)}${n.mode==='coexistence'?' · continua funcionando no app do celular':''}</p>
-    ${n.token_kind==='business'&&n.token_expires_at&&(new Date(n.token_expires_at)-Date.now())<10*864e5?`<p class="note" style="margin-top:10px">O acesso à Meta vence em ${day(n.token_expires_at)}. Clique em Desconectar e conecte de novo com "Entrar com a Meta".</p>`:''}
+    ${n.token_kind==='business'&&n.token_expires_at&&(new Date(n.token_expires_at)-Date.now())<10*864e5?`<p class="note" style="margin-top:10px">O acesso à Meta vence em ${day(n.token_expires_at)}. Clique em Desconectar e conecte de novo.</p>`:''}
     ${n.register_error?`<p class="note" style="margin-top:10px">A Meta não ativou o número na API (${esc(n.register_error)}). Fale com o suporte.</p>`:''}
     ${n.webhook&&n.webhook!=='ok'?`<p class="note" style="margin-top:10px">Aviso: não foi possível inscrever o recebimento de mensagens (${esc(n.webhook)}). Fale com o suporte.</p>`:''}
     ${own?'<button class="btn sm danger" id="waOff" style="margin-top:12px">Desconectar</button>':''}`;
-    if(own)$('#waOff').onclick=async()=>{if(!await sure('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});renderWa(own)};return}
+    if(own)$('#waOff').onclick=async()=>{if(!await sure('Desconectar o WhatsApp? As mensagens novas deixam de chegar no painel.'))return;await api('/wa/number',{method:'DELETE'});Object.assign(WZ,{step:1,pick:null,err:null,just:false});renderWa(own)};return}
   const es=await api('/wa/signup-config').catch(()=>({enabled:false}));
-  box.innerHTML=`<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3>
-   ${es.enabled&&own?`<p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Entre com a sua conta do Facebook e escolha o número. <b>Já usa o WhatsApp Business no celular?</b> Escolha "conectar o app WhatsApp Business existente": o celular continua funcionando e as conversas dos últimos 6 meses vêm junto.</p>
-   <button class="btn p" id="esGo">Entrar com a Meta</button> <span class="err" id="esE" style="margin-left:8px"></span>
-   <details style="margin-top:16px"><summary style="cursor:pointer;font-size:13px;color:var(--ink2);font-weight:600">Conectar manualmente (avançado)</summary><div style="margin-top:12px">`
-    :`<p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">A conexão é feita com os dados do número na Meta (o suporte do Oi Nanda pode fazer por você).</p><div>`}
-   ${own?`<form id="waf" class="form2"><div class="field"><label>ID do número de telefone</label><input name="phone_number_id" required inputmode="numeric"></div>
+  const manual=`<form id="waf" class="form2"><div class="field"><label>ID do número de telefone</label><input name="phone_number_id" required inputmode="numeric"></div>
    <div class="field"><label>ID da conta do WhatsApp Business</label><input name="waba_id" required inputmode="numeric"></div>
    <div class="field" style="grid-column:1/-1"><label>Token de acesso</label><input name="token" type="password" required autocomplete="off"></div>
-   <div><button class="btn p">Conectar</button></div><div class="err" id="wae" style="align-self:center"></div></form>`:'<p class="note">Só o dono da conta conecta o WhatsApp.</p>'}</div>${es.enabled&&own?'</details>':''}`;
-  if($('#esGo'))$('#esGo').onclick=()=>metaSignup(es,own);
-  if(own)$('#waf').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#wae').textContent='Conectando...';
-    try{await api('/wa/connect',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});toast('WhatsApp conectado.');renderWa(own)}catch(e){$('#wae').textContent=e.message;b.disabled=false}};
+   <div><button class="btn p">Conectar</button></div><div class="err" id="wae" style="align-self:center"></div></form>`;
+  const bindManual=()=>{if($('#waf'))$('#waf').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;$('#wae').textContent='Conectando...';
+    try{await api('/wa/connect',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});toast('WhatsApp conectado.');renderWa(own)}catch(e){$('#wae').textContent=e.message;b.disabled=false}}};
+  if(!own){box.innerHTML='<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3><p class="note">Só o dono da conta conecta o WhatsApp.</p>';return}
+  if(!es.enabled){box.innerHTML=`<h3 style="margin-bottom:6px">Conectar o WhatsApp</h3><p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">A conexão é feita com os dados do número na Meta (o suporte do Oi Nanda pode fazer por você).</p>${manual}`;bindManual();return}
+  const draw=()=>renderWa(own);let L='',R='';
+  if(WZ.step===4&&n){const got=n.last_in_at&&new Date(n.last_in_at)>new Date(n.connected_at);
+   L=`${wzSteps(4)}<span class="wz-okc">${wzi('check')}</span><div><h2>WhatsApp conectado</h2><p style="margin-top:6px">As conversas da ${esc(ME.company.name)} já chegam no Oi Nanda.${n.mode==='coexistence'?' O celular continua funcionando normalmente.':''}</p></div>
+    <div class="wz-num"><div><small>Número conectado</small><b>${esc(n.display_phone||'')}</b></div><span class="pill ok">funcionando</span></div>
+    <div class="wz-ft"><button class="wz-bt" id="wzNanda">${wzi('spark','s')}Próximo passo: ensinar a Nanda</button><button class="wz-bt g" id="wzCv">Ver minhas conversas</button></div>`;
+   R=`<div class="wz-cap">Faça um teste agora</div><p style="font-size:13.5px;color:var(--ink)">De outro celular, mande um “oi” para o seu número. Ele aparece aqui em segundos.</p>
+    <div class="wz-ib">${got?`<span class="wz-bb">Chegou a primeira mensagem 👋</span><span style="color:var(--ok);font-weight:600">Tudo certo. Ela já está nas suas Conversas.</span>`:`<div style="display:flex;gap:10px;align-items:center;color:var(--ink2)"><i class="wz-sp"></i>Esperando a primeira mensagem…</div>`}</div>`;
+   box.innerHTML=`<div class="wz"><div class="wz-l">${L}</div><div class="wz-r g">${R}</div></div>`;
+   $('#wzNanda').onclick=()=>{WZ.just=false;go('nanda')};$('#wzCv').onclick=()=>{WZ.just=false;go('conversas')};
+   if(!got){clearTimeout(WZ.t);WZ.t=setTimeout(()=>{if($('#wa .wz')&&WZ.step===4)draw()},4000)}return}
+  if(WZ.step===3){const saving=WZ.phase==='saving',coex=WZ.pick==='coex';
+   L=`${wzSteps(2)}<div><h2>${WZ.err?'Não deu desta vez':'Quase lá'}</h2><p style="margin-top:6px">${WZ.err?'Nada foi alterado no seu número. Veja ao lado o que aconteceu e como resolver.':'Pode deixar esta tela aberta. Ela avança sozinha quando a Meta confirmar.'}</p></div>
+    ${WZ.err?'':`<div class="wz-ck"><div class="${saving?'':'w'}"><i>${saving?wzi('check','s'):'<span class="wz-sp"></span>'}</i>${saving?'Você concluiu na Meta':'Aguardando você terminar na Meta…'}</div><div class="${saving?'w':'n'}"><i>${saving?'<span class="wz-sp"></span>':''}</i>${coex?'Ligando o número e trazendo as conversas':'Ligando o número ao Oi Nanda'}</div></div>`}
+    <div class="wz-ft">${saving?'':`<button class="wz-bt ${WZ.err?'':'g'}" id="wzAgain">${WZ.err?'Tentar de novo':'A janela da Meta fechou? Abrir de novo'}</button>`}${WZ.err?'<button class="wz-ln" id="wzBack" style="align-self:center">Voltar e mudar a resposta</button>':''}${wzHelp()}</div>`;
+   if(WZ.err){const x=wzError(WZ.err);R=`<div class="wz-cap">O que aconteceu</div><div class="wz-er"><b>${wzi('alert','s')}${esc(x.t)}</b><span style="font-size:13.5px">${esc(x.d)}</span><ol>${x.s.map(v=>`<li>${esc(v)}</li>`).join('')}</ol></div>`}
+   else R=`<div class="wz-cap">Enquanto isso</div><div class="wz-nd"><span>${wzi('phone')}</span><div>Fique com o celular por perto<small>${coex?'a Meta pede para apontar a câmera para um QR code':'a Meta manda um código por SMS ou ligação'}</small></div></div><div class="wz-nd"><span>${wzi('shield')}</span><div>Sua senha fica com a Meta<small>o Oi Nanda só recebe a autorização do número</small></div></div>`;
+   box.innerHTML=`<div class="wz"><div class="wz-l">${L}</div><div class="wz-r ${WZ.err?'y':''}">${R}</div></div>`;
+   if($('#wzAgain'))$('#wzAgain').onclick=()=>metaSignup(es,own);if($('#wzBack'))$('#wzBack').onclick=()=>{Object.assign(WZ,{step:1,err:null});draw()};return}
+  if(WZ.step===2){const coex=WZ.pick==='coex';
+   L=`${wzSteps(2)}<div><h2>Agora é na tela da Meta</h2><p style="margin-top:6px">Ela abre numa janela da própria Meta. São três telas rápidas, e ao lado está o que escolher em cada uma.</p></div>
+    <div class="wz-safe">${wzi('shield')}<span>É a conexão oficial. O Oi Nanda não vê a sua senha e você pode desconectar quando quiser.</span></div>
+    <div class="wz-nd" style="background:var(--bg)"><span>${wzi('phone')}</span><div>${coex?'Deixe o celular desbloqueado':'Deixe o celular por perto'}<small>${coex?'você vai usar a câmera dele na terceira tela':'o código de confirmação chega nele'}</small></div></div>
+    <div class="wz-ft"><button class="wz-bt" id="wzOpen">Abrir a tela da Meta</button><button class="wz-ln" id="wzBack" style="align-self:center">Voltar e mudar a resposta</button>${wzHelp()}</div>`;
+   R=`<div class="wz-cap">O que vai aparecer</div>
+    <div class="wz-ms"><i>1</i><div>Entre com o seu Facebook<small>o login de quem administra a empresa</small></div><div class="wz-mk"><span>Continuar como você</span><b>Continuar</b></div></div>
+    <div class="wz-ms"><i>2</i><div>${coex?'Escolha “Conectar o app WhatsApp Business existente”':'Escolha a empresa e informe o número'}<small>${coex?'para quem já usa o número no celular':'pode criar a conta de WhatsApp na hora'}</small></div><div class="wz-mk">${coex?'<span class="o s">Conectar o app existente</span><span class="o">Usar um número novo</span>':'<span class="o">Nome da empresa</span><span class="o s">+55 número</span>'}</div></div>
+    <div class="wz-ms"><i>3</i><div>${coex?'Aponte o celular para o QR code':'Digite o código que chega no celular'}<small>${coex?'no WhatsApp Business: Configurações › Aparelhos conectados':'por SMS ou ligação, em poucos segundos'}</small></div><div class="wz-mk" style="align-items:center;color:var(--ink)">${coex?'<svg viewBox="0 0 24 24" style="width:44px;height:44px">'+WZI.qr+'</svg>':'<span class="o s" style="letter-spacing:3px;font-size:13px">4 8 1 5 9 2</span>'}</div></div>`;
+   box.innerHTML=`<div class="wz"><div class="wz-l">${L}</div><div class="wz-r">${R}</div></div>`;
+   $('#wzOpen').onclick=()=>metaSignup(es,own);$('#wzBack').onclick=()=>{WZ.step=1;draw()};return}
+  L=`${wzSteps(1)}<div><h2>Vamos conectar o seu WhatsApp</h2><p style="margin-top:6px">É por ele que as conversas chegam e a Nanda atende.</p></div>
+   <div class="wz-q" id="wzQ">Você já atende por este número no celular?</div>
+   <div class="wz-two" role="group" aria-labelledby="wzQ"><button class="wz-cd ${WZ.pick==='coex'?'on':''}" data-pick="coex" aria-pressed="${WZ.pick==='coex'}"><span class="tk">${wzi('check','s')}</span><span class="ic">${wzi('phone')}</span><b>Sim, já uso</b><small>O celular continua funcionando e as conversas recentes vêm junto.</small></button>
+    <button class="wz-cd ${WZ.pick==='new'?'on':''}" data-pick="new" aria-pressed="${WZ.pick==='new'}"><span class="tk">${wzi('check','s')}</span><span class="ic">${wzi('novo')}</span><b>Não, é um número novo</b><small>Você confirma o número por SMS ou ligação.</small></button></div>
+   <button class="wz-ln" id="wzUns">Não sei qual é o meu caso</button>
+   ${WZ.unsure?`<div class="wz-nd" style="background:var(--bg);align-items:flex-start"><div><b style="font-weight:600">Olhe o aplicativo que você abre para atender neste número</b><small style="margin-top:4px">É o <b>WhatsApp Business</b> (ícone com a letra B)? Escolha “Sim, já uso”.</small><small style="margin-top:4px">É o WhatsApp comum? Passe o número para o WhatsApp Business antes, que é gratuito e mantém as conversas, e depois volte aqui.</small><small style="margin-top:4px">O número ainda não tem WhatsApp? Escolha “Não, é um número novo”.</small></div></div>`:''}
+   <div class="wz-ft"><button class="wz-bt" id="wzNext" ${WZ.pick?'':'disabled'}>Continuar</button>${wzHelp()}</div>
+   <details><summary style="cursor:pointer;font-size:12.5px;color:var(--ink3)">Conectar manualmente (avançado)</summary><div style="margin-top:12px">${manual}</div></details>`;
+  R=`<div class="wz-il" aria-hidden="true"><div class="wz-ph"><i></i><i class="r"></i><i></i><i class="r"></i></div><div class="wz-dots"><i></i><i></i><i></i><i></i></div><div class="wz-lg">oi<br>Nanda</div></div>
+   <div class="wz-cap">Tenha em mãos</div>
+   <div class="wz-nd"><span>${wzi('fb')}</span><div>Login do Facebook<small>de quem administra a empresa</small></div></div>
+   <div class="wz-nd"><span>${wzi('phone')}</span><div>O celular do número<small>por perto, para confirmar</small></div></div>
+   <div class="wz-nd"><span>${wzi('clock')}</span><div>Uns 5 minutos<small>dá para pausar e voltar depois</small></div></div>`;
+  box.innerHTML=`<div class="wz"><div class="wz-l">${L}</div><div class="wz-r">${R}</div></div>`;
+  document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{WZ.pick=b.dataset.pick;draw()});
+  $('#wzUns').onclick=()=>{WZ.unsure=!WZ.unsure;draw()};$('#wzNext').onclick=()=>{if(!WZ.pick)return;WZ.step=2;draw()};bindManual();
 }
 function loadFB(appId){return new Promise((ok,bad)=>{if(window.FB)return ok();window.fbAsyncInit=()=>{FB.init({appId,autoLogAppEvents:true,xfbml:false,version:'v21.0'});ok()};
   const sc=document.createElement('script');sc.src='https://connect.facebook.net/pt_BR/sdk.js';sc.async=true;sc.defer=true;sc.crossOrigin='anonymous';sc.onerror=()=>bad(new Error('Não deu para abrir a Meta. Desative o bloqueador de anúncios e tente de novo.'));document.body.appendChild(sc)})}
 async function metaSignup(es,own){
-  const e=$('#esE');e.textContent='Abrindo a Meta...';
-  try{await loadFB(es.app_id)}catch(x){e.textContent=x.message;return}
+  const draw=()=>renderWa(own),fail=m=>{Object.assign(WZ,{step:3,err:m,phase:''});draw()};
+  Object.assign(WZ,{step:3,err:null,phase:'meta'});await draw();
+  try{await loadFB(es.app_id)}catch(x){return fail(x.message)}
   let info=null,code=null,done=false;
-  const finish=async()=>{if(done||!info||!code)return;done=true;e.textContent='Conectando...';
-    try{await api('/wa/signup',{method:'POST',body:{code,waba_id:info.waba_id,phone_number_id:info.phone_number_id,coexistence:info.coex}});toast(info.coex?'WhatsApp conectado. O celular continua funcionando e as conversas antigas estão chegando.':'WhatsApp conectado.');renderWa(own)}
-    catch(x){e.textContent=x.message}};
-  const onMsg=ev=>{if(!/facebook\.com$/.test(new URL(ev.origin).hostname))return;let d;try{d=JSON.parse(ev.data)}catch(_){return}
+  const finish=async()=>{if(done||!info||!code)return;done=true;WZ.phase='saving';await draw();
+    try{await api('/wa/signup',{method:'POST',body:{code,waba_id:info.waba_id,phone_number_id:info.phone_number_id,coexistence:info.coex}});Object.assign(WZ,{step:4,just:true,phase:''});draw()}
+    catch(x){fail(x.message)}};
+  const onMsg=ev=>{let h='';try{h=new URL(ev.origin).hostname}catch(_){return}if(!/facebook\.com$/.test(h))return;let d;try{d=JSON.parse(ev.data)}catch(_){return}
     if(d.type!=='WA_EMBEDDED_SIGNUP')return;
     if(String(d.event).startsWith('FINISH')){const x=d.data||{};info={waba_id:x.waba_id,phone_number_id:x.phone_number_id,coex:d.event==='FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'};
-      if(!info.phone_number_id){e.textContent='A Meta não devolveu o número. Se você escolheu só a conta, conecte de novo escolhendo o número.';done=true;return}finish()}
-    else if(d.event==='CANCEL'||d.event==='ERROR'){const x=d.data||{};e.textContent=x.error_message?('A Meta avisou: '+x.error_message):'Conexão cancelada antes do fim.';done=true}};
-  window.addEventListener('message',onMsg);
-  FB.login(r=>{if(r.authResponse&&r.authResponse.code){code=r.authResponse.code;finish()}else if(!done){e.textContent='Conexão cancelada.'}},
-    {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
+      if(!info.phone_number_id){done=true;return fail('A Meta não devolveu o número. Só a conta foi escolhida.')}finish()}
+    else if(d.event==='CANCEL'||d.event==='ERROR'){const x=d.data||{};done=true;fail(x.error_message||'Conexão cancelada antes do fim.')}};
+  if(WZ.onMsg)window.removeEventListener('message',WZ.onMsg);WZ.onMsg=onMsg;window.addEventListener('message',onMsg);
+  FB.login(r=>{if(r.authResponse&&r.authResponse.code){code=r.authResponse.code;finish()}else if(!done){done=true;fail('Conexão cancelada: a janela foi fechada.')}},
+    {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:WZ.pick==='new'?{setup:{}}:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
 let CV={filter:'all',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:''};
 try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
