@@ -1,5 +1,5 @@
 """API do Oi Nanda — etapa 1: contas, empresas, equipe, admin, auditoria e saúde do sistema."""
-import secrets, logging
+import os, secrets, logging
 from contextlib import asynccontextmanager
 from datetime import timedelta, timezone
 from typing import Optional
@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from core import (db, client, now, iso, uid, digest, client_ip, hash_password, verify_password, public_user, audit,
                   log_error, current_user, managers, owners, admin, ADMIN_EMAIL, ORIGINS, TRIAL_DAYS, COOKIE, ROLES)
-from whatsapp import router as wa_router
+from whatsapp import router as wa_router, aware
 from ai import router as ai_router
 from funnel import router as funnel_router
 from agenda import router as agenda_router
@@ -210,8 +210,11 @@ async def signup(body: Signup, request: Request, response: Response):
     doc = await throttle(key, limit=5, minutes=60)
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
+    # conta nova nasce em modo demonstração; os 14 dias grátis começam ao cadastrar o cartão (SIGNUP_MODE=trial: teste antigo, sem cartão)
+    start = {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True} if os.environ.get('SIGNUP_MODE') == 'trial' else {'plan': 'demo'}
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
-               'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now(),
+               **start, 'status': 'active', 'created_at': now(), 'notice_wa': body.wa_optin,
+               'wa_optin': {'on': body.wa_optin, 'at': now(), 'ip': client_ip(request), 'text': 'Quero receber pelo WhatsApp os avisos da minha conta e dicas para vender mais.'},
                'modules': {'metas': False, 'jornada': False}, 'channels': {},
                'terms': {'at': now(), 'ip': client_ip(request), 'version': TERMS_VERSION}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
@@ -318,11 +321,12 @@ async def logout(request: Request, response: Response):
 @app.get('/api/auth/me')
 async def me(user=Depends(current_user)):
     c = user['company']
-    trial_left = max(0, (c['trial_ends_at'] - now()).days + 1) if c['plan'] == 'trial' else None
-    from billing import limits
+    from billing import limits, card_trial
+    end = card_trial(c) or (aware(c.get('trial_ends_at')) if c.get('plan') == 'trial' and c.get('trial_ends_at') else None)
+    trial_left = max(0, (end - now()).days + 1) if end else None
     lim = limits(c)
     if lim['state'] != 'trial': trial_left = None
-    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'roles': ROLES, 'access': lim}
+    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'roles': ROLES, 'access': lim}
 
 @app.post('/api/auth/password')
 async def change_password(body: PasswordChange, request: Request, response: Response, user=Depends(current_user)):

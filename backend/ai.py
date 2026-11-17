@@ -53,13 +53,24 @@ def catalog_text(items):
         out.append(f"- {r['name']}" + (f" ({r['category']})" if r['category'] else '') + ': ' + ' · '.join(bits))
     return '\n'.join(out)
 
+def cached(system):
+    """Prompt da Nanda com cache: o começo (regras, conhecimento, catálogo) se repete a cada resposta e fica guardado por 5 minutos,
+    custando 10% na leitura. Partes que mudam a cada conversa (agenda, ficha do cliente) vêm depois do marcador CACHE_SPLIT."""
+    if not isinstance(system, str): return system
+    head, sep, tail = system.partition(CACHE_SPLIT)
+    blocks = [{'type': 'text', 'text': head, 'cache_control': {'type': 'ephemeral'}}]
+    if tail.strip(): blocks.append({'type': 'text', 'text': tail})
+    return blocks
+
+CACHE_SPLIT = '\n<<<fim-da-parte-fixa>>>\n'
+
 async def llm(system, messages, max_tokens=500):
     """Chamada ao Claude. Isolada para os testes substituírem. Devolve (texto, uso)."""
     key = os.environ.get('ANTHROPIC_API_KEY')
     if not key: raise HTTPException(400, 'A chave de IA ainda não foi configurada no servidor.')
     async with httpx.AsyncClient(timeout=45) as c:
         r = await c.post('https://api.anthropic.com/v1/messages', headers={'x-api-key': key, 'anthropic-version': '2023-06-01'},
-                         json={'model': os.environ.get('AI_MODEL', 'claude-haiku-5-5'), 'max_tokens': max_tokens, 'system': system, 'messages': messages})
+                         json={'model': os.environ.get('AI_MODEL', 'claude-haiku-5-5'), 'max_tokens': max_tokens, 'system': cached(system), 'messages': messages})
     data = r.json() if r.content else {}
     if r.status_code >= 400:
         raise HTTPException(502, 'A IA recusou: ' + ((data.get('error') or {}).get('message') or f'erro {r.status_code}'))
@@ -88,10 +99,10 @@ AGENDA (horários livres de verdade, já descontando o que está ocupado):
 """
         if upcoming:
             ag += 'Este cliente já tem agendado: ' + '; '.join(f"{a['service_name']} {agenda.WEEK[agenda.aware(a['start']).astimezone(tz).weekday()]} {agenda.aware(a['start']).astimezone(tz):%d/%m %H:%M}" for a in upcoming) + '\n'
-    return f"""Hoje é {agenda.WEEK[t.weekday()]} {t:%d/%m/%Y}, {t:%H:%M}.
-Você é {s['name']}, assistente de atendimento e vendas do negócio "{company['name']}" no WhatsApp.
+    # parte fixa primeiro (fica no cache da IA); o que muda a cada conversa vem depois do marcador
+    fixed = f"""Você é {s['name']}, assistente de atendimento e vendas do negócio "{company['name']}" no WhatsApp.
 Fale em português do Brasil, num tom {TONES.get(s['tone'], TONES['proximo'])}. Mensagens curtas (até 3 frases), como no WhatsApp.
-O cliente se chama {contact_name or 'cliente'}; use o primeiro nome com naturalidade.
+Use o primeiro nome do cliente com naturalidade.
 
 O QUE VOCÊ SABE SOBRE O NEGÓCIO (única fonte de verdade):
 <conhecimento>
@@ -110,11 +121,14 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-{ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}{stage_block(stages, stage_id)}
 Responda SOMENTE com um JSON, sem nada antes ou depois:
 {{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
+    now_part = f"""Hoje é {agenda.WEEK[t.weekday()]} {t:%d/%m/%Y}, {t:%H:%M}.
+O cliente se chama {contact_name or 'cliente'}.
+{ag}{extra}{origin_block(origin_opts, company)}{notes_block(notes)}{stage_block(stages, stage_id)}"""
+    return fixed + CACHE_SPLIT + now_part
 
 def stage_block(stages, stage_id):
     """Etapas abertas do funil, para a Nanda mover o cliente quando a conversa chega lá (ex.: link enviado, orçamento enviado)."""
@@ -201,13 +215,15 @@ async def history(contact_id, limit=20):
         if all(b['type'] == 'text' for b in m['content']): m['content'] = '\n'.join(b['text'] for b in m['content'])
     return msgs
 
-async def track(company_id, usage, kind):
+async def track(company_id, usage, kind, contact_id=None):
     month = now().strftime('%Y-%m')
     await db.ai_usage.update_one({'company_id': company_id, 'month': month},
-        {'$inc': {'input_tokens': usage.get('input_tokens', 0), 'output_tokens': usage.get('output_tokens', 0), kind: 1}}, upsert=True)
+        {'$inc': {'input_tokens': usage.get('input_tokens', 0), 'output_tokens': usage.get('output_tokens', 0),
+                  'cache_read_tokens': usage.get('cache_read_input_tokens') or 0, 'cache_write_tokens': usage.get('cache_creation_input_tokens') or 0, kind: 1}}, upsert=True)
     try:
         import notices, billing
-        await notices.ai_mark(company_id, await billing.ai_used(company_id))
+        if kind == 'replies' and await billing.count_atend(company_id, contact_id): await notices.ai_mark(company_id)
+        elif kind == 'suggestions': await notices.ai_mark(company_id)
     except Exception: log.exception('falha no aviso de uso da Nanda')
 
 async def system_for(s, company, contact=None):
@@ -323,12 +339,12 @@ async def auto_reply(company_id, contact_id, msg_id):
         if mode == 'auto':
             from billing import has, ai_allowed
             co = await db.companies.find_one({'id': company_id}, {'_id': 0}) or {}
-            if not has(co, 'auto') or not await ai_allowed(co):
-                mode = 'copilot'  # plano sem Nanda automática, só leitura ou respostas do mês esgotadas
+            if not has(co, 'auto') or not await ai_allowed(co, 'auto', contact_id):
+                mode = 'copilot'  # plano sem Nanda automática, só leitura ou atendimentos do mês esgotados: ela passa a sugerir
                 month = now().strftime('%Y-%m')
                 if has(co, 'auto') and co.get('ai_limit_noted') != month:
                     await db.companies.update_one({'id': company_id}, {'$set': {'ai_limit_noted': month}})
-                    await note(company_id, contact_id, 'As respostas da Nanda deste mês acabaram. Ela volta no mês que vem ou ao mudar de plano em Empresa › Assinatura.')
+                    await note(company_id, contact_id, 'Os atendimentos da Nanda deste mês acabaram. Ela segue sugerindo as respostas para o time. Para ela voltar a atender sozinha, adicione um pacote em Empresa › Assinatura.')
         # o horário da Meta vem em segundos; a ordem real é a de chegada no servidor
         last = (await db.messages.find({'contact_id': contact_id, 'dir': 'in'}, {'_id': 0}).sort('received_at', -1).to_list(1) or [None])[0]
         if not last or last['id'] != msg_id: return  # chegou mensagem mais nova: a resposta sai na vez dela
@@ -336,12 +352,12 @@ async def auto_reply(company_id, contact_id, msg_id):
         if await db.messages.find_one({'contact_id': contact_id, 'dir': 'in', 'pending': True, 'id': {'$ne': msg_id}}): return  # áudio ainda sendo transcrito: a resposta sai quando terminar
         asks_human = bool(HUMAN_WORDS.search(last.get('text') or ''))
         if cover:  # conversa no time: só cobre o factual, uma mensagem curta, sem repassar de novo
-            if asks_human or not key_ok(): return
+            if mode != 'auto' or asks_human or not key_ok(): return
             company = await db.companies.find_one({'id': company_id}, {'_id': 0})
             msgs = await history(contact_id)
             if not msgs: return
             text, usage = await llm(await system_for(s, company, contact) + await cover_block(company, contact), msgs)
-            await track(company_id, usage, 'replies')
+            await track(company_id, usage, 'replies', contact_id)
             d = parse(text)
             if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
             await apply_facts(company_id, contact, d)
@@ -355,7 +371,7 @@ async def auto_reply(company_id, contact_id, msg_id):
             await deliver(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', None, s['name'] + ' (IA)')
             return await handoff(company_id, contact, 'cliente pediu uma pessoa')
         d, usage = await think(company_id, contact)
-        await track(company_id, usage, 'replies')
+        await track(company_id, usage, 'replies', contact_id)
         if d['book']:
             company = await db.companies.find_one({'id': company_id}, {'_id': 0})
             try:
@@ -445,7 +461,13 @@ async def example(user=Depends(current_user)):
 @router.post('/ai/test')
 async def test(body: TestIn, user=Depends(managers)):
     """Conversa de teste no painel: nada vai para o WhatsApp."""
+    from billing import ai_allowed
+    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
     s = await settings_for(user['company_id'])
+    if not s['taught']:  # ainda não ensinou: a Nanda conversa com o exemplo do ramo (modo demonstração e primeiros passos)
+        from niches import niche
+        ex = niche(user['company'].get('segment'))['ai']
+        s = {**s, **{k: v for k, v in ex.items() if not (s.get(k) or '').strip()}}
     msgs = to_llm(body.messages)
     if not msgs: raise HTTPException(400, 'Escreva uma mensagem como cliente.')
     text, usage = await llm(await system_for(s, user['company']), msgs)
@@ -504,7 +526,7 @@ async def suggest(contact_id: str, cached: bool = False, user=Depends(current_us
         if c.get('sug_for') == last and c.get('sug'): return c['sug']
         if not key_ok(): return {'reply': '', 'handoff': False, 'reason': '', 'book': None}
     from billing import ai_allowed
-    if not await ai_allowed(user['company']): raise HTTPException(402, 'As respostas da Nanda deste mês acabaram. Mude de plano em Empresa › Assinatura para continuar.')
+    if not await ai_allowed(user['company'], 'sug'): raise HTTPException(402, 'As sugestões da Nanda deste mês acabaram. Mude de plano em Empresa › Assinatura para continuar.')
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
     if d.get('marcos'): await suggest_marcos(user['company_id'], c, d['marcos'])

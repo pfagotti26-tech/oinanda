@@ -61,17 +61,21 @@ async def base():
         if bad and ok and aware(ok['due']) >= aware(bad['due']): bad = None
         if kind != 'paying': bad = None
         out.append({'c': c, 'kind': 'suspended' if c.get('status') == 'suspended' else kind, 'plan': lim['plan'], 'lim': lim, 'owner': owner,
-                    'users': sum(1 for u in us if u.get('active', True)), 'last_use': last, 'ai_used': (a.get('replies') or 0) + (a.get('suggestions') or 0),
-                    'ai_in': a.get('input_tokens') or 0, 'ai_out': a.get('output_tokens') or 0, 'wa': wa.get(c['id']), 'refused': bad,
+                    'users': sum(1 for u in us if u.get('active', True)), 'last_use': last, 'ai_used': (a.get('atend') or 0) if lim.get('atend') else (a.get('suggestions') or 0),
+                    'ai_in': a.get('input_tokens') or 0, 'ai_out': a.get('output_tokens') or 0, 'ai_cr': a.get('cache_read_tokens') or 0, 'ai_cw': a.get('cache_write_tokens') or 0,
+                    'ai_real': ai_cost(a.get('input_tokens') or 0, a.get('output_tokens') or 0, a.get('cache_read_tokens') or 0, a.get('cache_write_tokens') or 0), 'wa': wa.get(c['id']), 'refused': bad,
                     'cancelled': kind == 'paying' and b.get('status') == 'cancelled', 'mrr': monthly_value(c),
                     'internal': bool(owner and ADMIN_EMAIL and owner['email'] == ADMIN_EMAIL)})
     return out
 
-def ai_cost(tokens_in, tokens_out):
-    """Custo de IA em reais. Só calcula se os preços estiverem no .env (AI_PRICE_IN, AI_PRICE_OUT em dólar por milhão de tokens, AI_USD_BRL)."""
-    try: pin, pout, fx = float(os.environ['AI_PRICE_IN']), float(os.environ['AI_PRICE_OUT']), float(os.environ['AI_USD_BRL'])
-    except (KeyError, ValueError): return None
-    return round((tokens_in * pin + tokens_out * pout) / 1_000_000 * fx, 2)
+def ai_cost(tokens_in, tokens_out, cache_read=0, cache_write=0):
+    """Custo real de IA em reais. Preços em dólar por milhão de tokens (padrão: Claude Haiku 5.5; troque no .env com AI_PRICE_IN,
+    AI_PRICE_OUT, AI_PRICE_CACHE_READ, AI_PRICE_CACHE_WRITE e AI_USD_BRL)."""
+    e = os.environ.get
+    try: pin, pout, pcr, pcw, fx = (float(e('AI_PRICE_IN', '0.10')), float(e('AI_PRICE_OUT', '0.50')), float(e('AI_PRICE_CACHE_READ', '0.01')),
+                                   float(e('AI_PRICE_CACHE_WRITE', '0.125')), float(e('AI_USD_BRL', '5.4')))
+    except ValueError: return None
+    return round((tokens_in * pin + tokens_out * pout + cache_read * pcr + cache_write * pcw) / 1_000_000 * fx, 2)
 
 def match(r, plan='', segment='', cycle=''):
     c = r['c']
@@ -87,7 +91,8 @@ def row_out(r):
             'trial_ends_at': c.get('trial_ends_at') if r['kind'] == 'trial' else None, 'next_payment': b.get('next_payment') if r['kind'] == 'paying' else None,
             'paid_until': b.get('paid_until'), 'amount': b.get('amount'), 'cycle': b.get('cycle'), 'cancelled': r['cancelled'],
             'refused': {'due': r['refused']['due'], 'amount': r['refused']['amount'], 'detail': r['refused'].get('detail')} if r['refused'] else None,
-            'courtesy_until': (c.get('courtesy') or {}).get('until'), 'last_use': r['last_use'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'],
+            'courtesy_until': (c.get('courtesy') or {}).get('until'), 'last_use': r['last_use'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'], 'ai_cost': r['ai_real'],
+            'ai_margin': round((b.get('amount') or 0) - (r['ai_real'] or 0), 2) if r['kind'] == 'paying' and (b.get('cycle') or 'monthly') == 'monthly' else None,
             'wa': bool(r['wa'] and r['wa'].get('status') == 'connected'), 'status': c.get('status')}
 
 # ---------- visão geral ----------
@@ -121,6 +126,7 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
             k = (d.astimezone(SP).year, d.astimezone(SP).month)
             if k in tot: tot[k] += p['amount']
     tin, tout = sum(r['ai_in'] for r in rows), sum(r['ai_out'] for r in rows)
+    tcr, tcw = sum(r['ai_cr'] for r in rows), sum(r['ai_cw'] for r in rows)
     refused = [r for r in rows if r['refused']]
     return {'period': {'start': t0, 'end': t1 - timedelta(seconds=1), 'prev_start': p0, 'prev_end': p1 - timedelta(seconds=1)},
             'mrr': round(sum(r['mrr'] for r in rows), 2), 'paying': len(paying), 'courtesy': sum(1 for r in rows if r['kind'] == 'courtesy'),
@@ -135,7 +141,7 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
                           'ai_near': {'count': sum(1 for r in live if r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai'])}},
             'plans': [{'plan': k, 'name': PLANS[k]['name'], 'count': sum(1 for r in paying if r['plan'] == k), 'mrr': round(sum(r['mrr'] for r in paying if r['plan'] == k), 2)} for k in PLANS],
             'usage': {'accounts': len(live), 'active_week': sum(1 for r in live if r['last_use'] and r['last_use'] >= week),
-                      'ai_replies': sum(r['ai_used'] for r in rows), 'ai_cost': ai_cost(tin, tout)}}
+                      'ai_replies': sum(r['ai_used'] for r in rows), 'ai_cost': ai_cost(tin, tout, tcr, tcw)}}
 
 @router.get('/admin/stats')
 async def stats(user=Depends(admin)):
@@ -421,12 +427,15 @@ async def company_file(company_id: str, start: Optional[str] = None, end: Option
     while d < t1: months.add(d.astimezone(SP).strftime('%Y-%m')); d += timedelta(days=1)
     usage = await db.ai_usage.find({'company_id': company_id, 'month': {'$in': sorted(months)}}, {'_id': 0}).to_list(60)
     tin, tout = sum(u.get('input_tokens') or 0 for u in usage), sum(u.get('output_tokens') or 0 for u in usage)
+    tcr, tcw = sum(u.get('cache_read_tokens') or 0 for u in usage), sum(u.get('cache_write_tokens') or 0 for u in usage)
     return {**row_out(r), 'phone': c.get('phone'), 'legal_name': c.get('legal_name'), 'cnpj': c.get('cnpj'), 'address': c.get('address'), 'contract_url': c.get('contract_url'),
             'timezone': c.get('timezone'), 'users_limit': r['lim']['users'], 'terms': c.get('terms'),
             'billing': {k: b.get(k) for k in ('plan', 'cycle', 'extra_users', 'status', 'amount', 'next_payment', 'paid_until', 'email', 'since', 'cancelled_at')},
             'courtesy': c.get('courtesy'), 'trial': {'start': c.get('created_at'), 'end': c.get('trial_ends_at')},
             'usage': {'conversations': await db.contacts.count_documents({'company_id': company_id, 'last_at': {'$gte': t0, '$lt': t1}}),
-                      'ai_replies': sum((u.get('replies') or 0) + (u.get('suggestions') or 0) for u in usage), 'ai_cost': ai_cost(tin, tout)},
+                      'ai_replies': sum((u.get('replies') or 0) + (u.get('suggestions') or 0) for u in usage), 'ai_cost': ai_cost(tin, tout, tcr, tcw),
+                      'atend': sum(u.get('atend') or 0 for u in usage), 'suggestions': sum(u.get('suggestions') or 0 for u in usage),
+                      'packs': await db.ai_packs.count_documents({'company_id': company_id, 'month': {'$in': sorted(months)}})},
             'channels': {'whatsapp': {'connected': bool(r['wa'] and r['wa'].get('status') == 'connected'), 'phone': (r['wa'] or {}).get('display_phone')},
                          'instagram': {'connected': bool(ig), 'username': (ig or {}).get('username')}},
             'payments': await db.payments.find({'company_id': company_id}, {'_id': 0}).sort('due', -1).to_list(36),

@@ -103,7 +103,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert o['mrr'] == 297 and o['paying'] == 1 and o['trial'] == 1 and o['received'] == 297  # a conta do admin fica fora
         assert o['plans'][1] == {'plan': 'profissional', 'name': 'Profissional', 'count': 1, 'mrr': 297}
         assert o['revenue_months'][-1]['total'] == 297 and len(o['revenue_months']) == 6
-        assert o['attention']['refused']['count'] == 0 and o['usage']['ai_cost'] is None
+        assert o['attention']['refused']['count'] == 0 and o['usage']['ai_cost'] == 0
         st = a.get('/api/admin/stats').json(); assert st['paying'] == 1 and st['companies'] == 3
         # financeiro
         ini, fim = (now() - timedelta(days=3)).strftime('%Y-%m-%d'), (now() + timedelta(days=40)).strftime('%Y-%m-%d')
@@ -126,7 +126,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert a.get('/api/admin/companies?by=created&start=2020-01-01&end=2020-01-02').json()['rows'] == []
         assert 'Barbearia Dom' in a.get('/api/admin/companies.csv').text
         bella = next(x for x in l['rows'] if x['name'] == 'Clínica Bella'); dom = next(x for x in l['rows'] if x['name'] == 'Barbearia Dom')
-        assert bella['kind'] == 'paying' and bella['ai_limit'] == 2000 and dom['kind'] == 'trial' and dom['trial_ends_at']
+        assert bella['kind'] == 'paying' and bella['ai_limit'] == 600 and dom['kind'] == 'trial' and dom['trial_ends_at']
         # ficha
         d = a.get(f'/api/admin/companies/{bella["id"]}').json()
         assert d['phone'] == '11 90000-0000' and d['terms']['version'] == '1' and d['terms']['at'] and d['billing']['amount'] == 297
@@ -150,7 +150,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         a.portal.call(vence)
         assert a.get(f'/api/admin/companies/{dom["id"]}').json()['kind'] == 'readonly'
         # avisos automáticos
-        nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 14 and all(nn['notices'].values())
+        nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 17 and all(nn['notices'].values())
         assert a.put('/api/admin/notices', json={'paid': False}).json()['notices']['paid'] is False
 
 def test_aviso_de_cobranca_chegando(monkeypatch):

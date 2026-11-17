@@ -69,6 +69,8 @@ async def status(user=Depends(current_user)):
 
 @router.get('/ig/connect')
 async def connect(user=Depends(owners)):
+    from billing import require_live
+    require_live(user, 'conectar o Instagram')
     if not ready(): raise HTTPException(503, 'O Instagram ainda não foi configurado no servidor.')
     state = secrets.token_urlsafe(24)
     await db.oauth_states.insert_one({'state': state, 'kind': 'ig', 'company_id': user['company_id'], 'user_id': user['id'], 'expires_at': now() + timedelta(minutes=15)})
