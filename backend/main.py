@@ -129,6 +129,8 @@ import notices as _notices
 app.include_router(_notices.router, prefix='/api')
 app.include_router(ai_router, prefix='/api')
 app.include_router(funnel_router, prefix='/api')
+import contacts as _contacts
+app.include_router(_contacts.router, prefix='/api')
 app.include_router(agenda_router, prefix='/api')
 app.include_router(gcal_router, prefix='/api')
 app.include_router(niches_router, prefix='/api')

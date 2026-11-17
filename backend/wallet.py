@@ -167,9 +167,9 @@ def match(c, r: Rule, ctx):
         return last is not None
     return True
 
-async def run_segment(user, rules):
+async def seg_ctx(user, rules):
+    """O que as regras precisam saber além do próprio contato (etapas, promoções usadas, marcos da jornada)."""
     from funnel import stages_for
-    from inbox import visible_q
     company = user['company']
     stages = await stages_for(company)
     ctx = {'inactive_days': company.get('inactive_days'), 'first_stage': stages[0]['id'] if stages else None, 'promo_users': {}}
@@ -186,6 +186,11 @@ async def run_segment(user, rules):
         for c in await db.contacts.find({'company_id': company['id'], 'sales_count': {'$gt': 0}, 'holdings': {'$exists': False}}, {'_id': 0, 'id': 1}).to_list(20000):
             products = products or await products_map(company['id'])
             await refresh_holdings(company['id'], c['id'], products)
+    return ctx
+
+async def run_segment(user, rules):
+    from inbox import visible_q
+    ctx = await seg_ctx(user, rules)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
                                                     'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1}).to_list(50000)
     return [c for c in rows if all(match(c, r, ctx) for r in rules)]
