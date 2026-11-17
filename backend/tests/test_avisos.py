@@ -82,12 +82,12 @@ def test_uso_da_nanda_textos_e_whatsapp(monkeypatch):
         r = a.post('/api/auth/login', json={'email': 'admin@oinanda.com.br', 'password': 'senha-forte-1'})
         if r.status_code != 200: a.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'senha-forte-1', 'company': 'Oi Nanda', 'segment': 'outro'})
         v = a.get('/api/admin/notices/refused'); assert v.status_code == 200, v.text
-        # 80% e 100% das respostas do teste (1000)
-        c.portal.call(lambda: notices.ai_mark(cid, 799)); assert not [s for s in subjects('p4@av.com') if 'Nanda' in s]
-        c.portal.call(lambda: notices.ai_mark(cid, 800)); c.portal.call(lambda: notices.ai_mark(cid, 800))
-        assert subjects('p4@av.com').count('A Nanda já respondeu 800 vezes este mês') == 1
-        c.portal.call(lambda: notices.ai_mark(cid, 1000))
-        assert 'A Nanda usou as 1.000 respostas do mês' in subjects('p4@av.com')
+        # 80% e 100% dos atendimentos do teste (plano Equipe: 2000)
+        c.portal.call(lambda: notices.ai_mark(cid, 1599)); assert not [s for s in subjects('p4@av.com') if 'Nanda' in s]
+        c.portal.call(lambda: notices.ai_mark(cid, 1600)); c.portal.call(lambda: notices.ai_mark(cid, 1600))
+        assert subjects('p4@av.com').count('A Nanda já atendeu 1.600 clientes este mês') == 1
+        c.portal.call(lambda: notices.ai_mark(cid, 2000))
+        assert 'A Nanda usou os 2.000 atendimentos do mês' in subjects('p4@av.com')
         assert notices.WA_SENT == []  # sem modelo aprovado, o WhatsApp não sai
         # admin edita o texto; campo desconhecido é recusado
         v = a.get('/api/admin/notices/refused').json()
@@ -112,7 +112,7 @@ def test_cliente_escolhe_os_avisos(monkeypatch):
     with mk() as c:
         cid = signup(c, 'p5@av.com', 'Studio Cinco')
         p = c.get('/api/company/notices').json()
-        assert p['whatsapp'] and len(p['optional']) == 6 and 'Cobrança recusada' in p['always']
+        assert p['whatsapp'] and len(p['optional']) == 8 and 'Cobrança recusada' in p['always']
         assert c.put('/api/company/notices', json={'phone': '123'}).status_code == 400
         p = c.put('/api/company/notices', json={'whatsapp': False, 'off': ['trial_3d', 'refused'], 'phone': '11 98888-7777'}).json()
         assert not p['whatsapp'] and [o['key'] for o in p['optional'] if not o['on']] == ['trial_3d']  # recusada não dá para desligar

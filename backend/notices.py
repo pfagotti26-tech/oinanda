@@ -22,10 +22,21 @@ def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa
 
 SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
 DEFS = {
- 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{empresa}, sua conta está pronta', 'Três passos e a Nanda começa a atender com você.',
-    'Que bom ter a {empresa} aqui', '{primeiro_nome}, você tem 14 dias grátis, sem cartão. Em três passos a Nanda já atende com você.', ('Conectar o WhatsApp', '/empresa'),
-    '{primeiro_nome}, a conta da *{empresa}* está pronta. São *14 dias grátis*, sem cartão. O primeiro passo é conectar o WhatsApp da empresa, leva uns 5 minutos.',
-    fig=('14 dias', 'de teste grátis, sem cartão'), steps=[(0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços'), (0, 'Chamar a equipe', 'cada um com seu acesso')], always=True),
+ 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{empresa}, sua conta está pronta', 'Converse com a Nanda e veja como ela atenderia seus clientes.',
+    'Que bom ter a {empresa} aqui', '{primeiro_nome}, a Nanda já está pronta para conversar com você do jeito que atenderia seus clientes. Quando quiser, ative os 14 dias grátis e conecte o WhatsApp.', ('Conhecer a Nanda', '/comecar'),
+    '{primeiro_nome}, a conta da *{empresa}* está pronta. Converse com a Nanda como se fosse um cliente seu e, quando quiser, ative os *14 dias grátis*. Cancela quando quiser.',
+    fig=('14 dias', 'grátis · cancele quando quiser'), steps=[(0, 'Conversar com a Nanda', 'veja como ela atende'), (0, 'Ativar os 14 dias grátis', 'hoje não é cobrado nada'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos')], always=True),
+ 'activate': D('Lembrete para ativar', '1 dia depois do cadastro, se ainda não ativou', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda da {empresa} está esperando', 'Ative os 14 dias grátis e ela começa a atender no seu WhatsApp.',
+    'A Nanda está pronta para atender', '{primeiro_nome}, ativando os 14 dias grátis ela começa a atender no WhatsApp da {empresa}. Hoje não é cobrado nada, a gente avisa 3 dias antes do fim e dá para cancelar com um clique.', ('Ativar meus 14 dias', '/ativar'),
+    '{primeiro_nome}, a Nanda da *{empresa}* está pronta. Ativando os *14 dias grátis*, ela começa a atender no seu WhatsApp. Hoje não é cobrado nada e dá para cancelar quando quiser.',
+    steps=[(1, 'Conta criada', ''), (2, 'Ativar os 14 dias grátis', 'hoje R$ 0,00'), (0, 'Conectar o WhatsApp', 'uns 5 minutos')], second='Ficou alguma dúvida? É só responder', reply='Tenho uma dúvida'),
+ 'trial_card_3d': D('Teste com cartão acaba em 3 dias', '3 dias antes da primeira mensalidade', 'we', 'i', 'Teste grátis', 'clock', 'Seu teste grátis termina em {data}', 'A primeira mensalidade entra no cartão em {data}.',
+    'Faltam 3 dias de teste', '{primeiro_nome}, em {data} entra a primeira mensalidade de {valor} no cartão cadastrado e a Nanda segue atendendo sem intervalo. Se não quiser continuar, cancele antes em Empresa › Assinatura, é um clique.', ('Ver assinatura', SUB),
+    '{primeiro_nome}, o teste grátis da {empresa} termina em *{data}*. Nesse dia entra a primeira mensalidade de *{valor}* no cartão. Para cancelar, é um clique em Empresa › Assinatura.',
+    fig=('{valor}', 'em {data} · primeira mensalidade'), rows=[('Plano', '{plano}'), ('Cancelar', 'um clique, sem multa')], always=True),
+ 'ai_pack': D('Pacote extra automático', 'quando entra um pacote automático da Nanda', 'e', 'i', 'Uso da Nanda', 'spark', 'Entrou um pacote extra de 500 atendimentos', 'A Nanda segue atendendo sozinha. {valor} na próxima mensalidade.',
+    'A Nanda segue atendendo', '{primeiro_nome}, os atendimentos do mês acabaram e, como você deixou ligado, entrou um pacote de mais 500. O valor de {valor} vem na próxima mensalidade.', ('Ver uso da Nanda', SUB),
+    fig=('+500', 'atendimentos da Nanda este mês'), rows=[('Valor', '{valor} na próxima mensalidade'), ('Para desligar', 'Empresa › Assinatura')]),
  'wa_missing': D('WhatsApp ainda não conectado', '1 e 3 dias depois do cadastro, se não conectou', 'we', 'i', 'Falta um passo', 'chat', 'Falta um passo para a Nanda atender', 'Conectar o WhatsApp leva uns 5 minutos.',
     'Falta só conectar o WhatsApp', '{primeiro_nome}, sem o WhatsApp conectado as conversas não chegam e a Nanda não tem como ajudar.', ('Conectar agora', '/empresa'),
     '{primeiro_nome}, falta só um passo: conectar o WhatsApp da *{empresa}*. Leva uns 5 minutos. Se travar, responde aqui que eu acompanho.',
@@ -64,21 +75,21 @@ DEFS = {
  'cancelled': D('Cancelamento confirmado', 'quando o cliente cancela', 'e', 'n', 'Cancelamento confirmado', 'bye', 'Cancelamento confirmado', 'Sem novas cobranças. A conta segue ativa até {data}.',
     'Assinatura cancelada', '{primeiro_nome}, cancelamos a assinatura da {empresa}, como você pediu. Se mudar de ideia, é só reativar.', ('Reativar assinatura', SUB),
     fig=('{data}', 'a conta segue ativa até esta data'), rows=[('Novas cobranças', 'nenhuma')], second='Quer contar o motivo? É só responder', ghost=True, always=True),
- 'ai_80': D('Nanda em 80% do plano', 'ao usar 80% das respostas do mês', 'we', 'i', 'Uso da Nanda', 'spark', 'A Nanda já respondeu {usadas} vezes este mês', 'Atendimento movimentado na {empresa}.',
-    'A Nanda está trabalhando bastante', '{primeiro_nome}, sinal de atendimento movimentado. Para a Nanda seguir respondendo até o fim do mês, dá para subir de plano. A mudança vale na hora.', ('Ver planos', SUB),
-    '{primeiro_nome}, a Nanda já respondeu *{usadas} das {limite}* mensagens do plano este mês. Para ela seguir até o fim do mês, dá para subir de plano.',
-    fig=('80%', 'das respostas do mês já usadas'), bar=(80, 100, '{usadas} de {limite} respostas', 'zera no dia 1º')),
- 'ai_100': D('Nanda chegou ao limite', 'ao usar 100% das respostas do mês', 'we', 'a', 'Uso da Nanda', 'spark', 'A Nanda usou as {limite} respostas do mês', 'As conversas seguem chegando para a sua equipe.',
-    'A Nanda usou todas as respostas do mês', '{primeiro_nome}, ela parou de responder sozinha. As conversas seguem chegando normalmente para a sua equipe. Subindo de plano, ela volta na hora.', ('Ver planos', SUB),
-    '{primeiro_nome}, a Nanda usou as *{limite} respostas* do mês e parou de responder sozinha. As conversas seguem chegando para a equipe. Subindo de plano, ela volta na hora.',
-    fig=('100%', 'das respostas do mês usadas'), bar=(100, 100, '{limite} de {limite} respostas', 'zera no dia 1º'), always=True),
+ 'ai_80': D('Nanda em 80% do plano', 'ao usar 80% dos atendimentos do mês', 'we', 'i', 'Uso da Nanda', 'spark', 'A Nanda já atendeu {usadas} clientes este mês', 'Atendimento movimentado na {empresa}.',
+    'A Nanda está trabalhando bastante', '{primeiro_nome}, sinal de atendimento movimentado. Para ela seguir atendendo sozinha até o fim do mês, dá para adicionar um pacote de 500 atendimentos por R$ 59 ou deixar o pacote automático ligado.', ('Ver uso da Nanda', SUB),
+    '{primeiro_nome}, a Nanda já atendeu *{usadas} dos {limite}* atendimentos do plano este mês. Para ela seguir sozinha até o fim do mês, dá para adicionar um pacote em Empresa › Assinatura.',
+    fig=('80%', 'dos atendimentos do mês já usados'), bar=(80, 100, '{usadas} de {limite} atendimentos', 'zera no dia 1º')),
+ 'ai_100': D('Nanda chegou ao limite', 'ao usar 100% dos atendimentos do mês', 'we', 'a', 'Uso da Nanda', 'spark', 'A Nanda usou os {limite} atendimentos do mês', 'Ela segue sugerindo as respostas para a sua equipe.',
+    'A Nanda passou a sugerir as respostas', '{primeiro_nome}, os atendimentos do mês acabaram. Ela não parou: segue sugerindo as respostas para a sua equipe enviar. Com um pacote de 500 atendimentos por R$ 59, ela volta a atender sozinha na hora.', ('Adicionar pacote', SUB),
+    '{primeiro_nome}, a Nanda usou os *{limite} atendimentos* do mês. Ela segue sugerindo as respostas para a equipe. Com um pacote de 500 por R$ 59, volta a atender sozinha na hora.',
+    fig=('100%', 'dos atendimentos do mês usados'), bar=(100, 100, '{limite} de {limite} atendimentos', 'zera no dia 1º'), always=True),
  'wa_down': D('WhatsApp desconectou', 'quando o número da empresa cai', 'we', 'a', 'Precisa de atenção', 'chat', 'O WhatsApp da {empresa} desconectou', 'Reconectar leva poucos minutos.',
     'O WhatsApp desconectou', '{primeiro_nome}, enquanto estiver desconectado, mensagens novas não aparecem no Oi Nanda.', ('Reconectar', '/empresa'),
     '{primeiro_nome}, o WhatsApp da {empresa} *desconectou* do Oi Nanda às {hora}. Mensagens novas não aparecem até reconectar. Leva poucos minutos.',
     rows=[('Número', '{numero}'), ('Desconectou', 'hoje, {hora}')], reply='Quero ajuda', always=True),
 }
 EDIT = ('subject', 'pre', 'title', 'body', 'wa')
-OPTIONAL = ('wa_missing', 'trial_3d', 'trial_1d', 'charge_3d', 'paid', 'ai_80')  # o cliente pode desligar; os demais sempre chegam
+OPTIONAL = ('wa_missing', 'activate', 'trial_3d', 'trial_1d', 'charge_3d', 'paid', 'ai_80', 'ai_pack')  # o cliente pode desligar; os demais sempre chegam
 
 def fill(text, v):
     return re.sub(r'\{(\w+)\}', lambda m: str(v.get(m.group(1), m.group(0))), text or '')
@@ -272,14 +283,26 @@ async def tick():
             await deliver(c, 'trial_1d', {**v, 'bar_now': total - 1, 'bar_total': total, 'bar_label': f'Dia {total - 1} de {total}'}, once='trial_1d')
         elif left <= timedelta(0) and not c.get('mail_trial_end'):
             await deliver(c, 'trial_end', v, once='trial_end')
-    # WhatsApp ainda não conectado: 1 e 3 dias depois do cadastro
-    for c in await db.companies.find({'plan': 'trial', 'created_at': {'$gt': n - timedelta(days=5), '$lte': n - timedelta(days=1)}}, {'_id': 0}).to_list(500):
+    # criou a conta e não ativou os 14 dias: um lembrete gentil no dia seguinte
+    for c in await db.companies.find({'plan': 'demo', 'created_at': {'$gt': n - timedelta(days=3), '$lte': n - timedelta(days=1)}}, {'_id': 0}).to_list(500):
+        await deliver(c, 'activate', {}, once='activate_1')
+    # teste com cartão: 3 dias antes da primeira mensalidade
+    from billing import PLANS
+    for c in await db.companies.find({'billing.trial_until': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)}, 'billing.status': 'active'}, {'_id': 0}).to_list(500):
+        b = c['billing']; P = PLANS.get(b.get('plan')) or {}
+        await deliver(c, 'trial_card_3d', {'data': day(b['trial_until']), 'valor': money(b.get('amount') or 0), 'plano': P.get('name', '') + (', anual' if b.get('cycle') == 'annual' else ', mensal')},
+                      once='trial_card_3d:' + str(b.get('sub_id')))
+    # WhatsApp ainda não conectado: 1 e 3 dias depois de começar o teste
+    trials = await db.companies.find({'$or': [{'plan': 'trial', 'created_at': {'$gt': n - timedelta(days=5), '$lte': n - timedelta(days=1)}},
+                                              {'billing.trial_until': {'$gt': n}, 'billing.since': {'$gt': n - timedelta(days=5), '$lte': n - timedelta(days=1)}}]}, {'_id': 0}).to_list(500)
+    for c in trials:
         if await db.wa_numbers.find_one({'company_id': c['id']}, {'_id': 1}): continue
-        age = n - aware(c['created_at'])
+        age = n - aware((c.get('billing') or {}).get('since') if (c.get('billing') or {}).get('trial_until') else c['created_at'])
         if age < timedelta(days=2): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_1')
         elif timedelta(days=3) <= age < timedelta(days=4): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_3')
-    # renovação em 3 dias
-    for c in await db.companies.find({'billing.status': 'active', 'billing.next_payment': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)}}, {'_id': 0}).to_list(500):
+    # renovação em 3 dias (a primeira, depois do teste, tem aviso próprio)
+    for c in await db.companies.find({'billing.status': 'active', 'billing.next_payment': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)},
+                                      'billing.trial_until': {'$not': {'$gt': n}}}, {'_id': 0}).to_list(500):
         await deliver(c, 'charge_3d', {'data': day(c['billing']['next_payment'])}, once='charge_3d:' + day(c['billing']['next_payment']))
     # cobrança recusada que segue sem pagar: último aviso e pausa
     for p in await db.payments.find({'status': 'refused', 'due': {'$gt': n - timedelta(days=GRACE_DAYS + 3), '$lte': n - timedelta(days=GRACE_DAYS - 1)}}, {'_id': 0}).to_list(500):
@@ -289,18 +312,18 @@ async def tick():
         if n < limit: await deliver(c, 'last_call', v, once='last_call:' + str(p['id']))
         elif plan_of(c)[0] == 'readonly': await deliver(c, 'paused', v, once='paused:' + str(p['id']))
 
-AI_MARKS = None
-async def ai_mark(company_id, used):
-    """Chamado a cada resposta da Nanda: avisa uma vez ao chegar em 80% e em 100% do mês."""
-    global AI_MARKS
-    from billing import PLANS, TRIAL_AI, limits
-    if AI_MARKS is None:
-        lims = {p['ai'] for p in PLANS.values()} | {TRIAL_AI}; AI_MARKS = lims | {int(l * 0.8) for l in lims}
-    if used not in AI_MARKS: return
-    c = await db.companies.find_one({'id': company_id}, {'_id': 0}); lim = limits(c)['ai'] if c else 0
+async def ai_mark(company_id, used=None):
+    """Chamado a cada atendimento novo (ou sugestão, no Essencial): avisa uma vez ao chegar em 80% e em 100% do mês."""
+    from billing import ai_used, quota, limits
+    c = await db.companies.find_one({'id': company_id}, {'_id': 0})
+    if not c: return
+    lim = (await quota(c)) or limits(c)['sug']
+    used = await ai_used(company_id) if used is None else used
     if not lim or used not in (lim, int(lim * 0.8)): return
     f = lambda x: f'{x:,}'.replace(',', '.')
-    await deliver(c, 'ai_100' if used == lim else 'ai_80', {'usadas': f(used), 'limite': f(lim), 'bar_now': used, 'bar_total': lim}, once=('ai_100:' if used == lim else 'ai_80:') + now().strftime('%Y-%m'))
+    m = now().strftime('%Y-%m')
+    await deliver(c, 'ai_100' if used == lim else 'ai_80', {'usadas': f(used), 'limite': f(lim), 'bar_now': used, 'bar_total': lim},
+                  once=('ai_100:' if used == lim else 'ai_80:') + m + ':' + str(lim))
 
 async def check_numbers():
     """Confere se o WhatsApp de cada empresa ainda responde na Meta. Se o acesso caiu, marca e avisa o responsável."""

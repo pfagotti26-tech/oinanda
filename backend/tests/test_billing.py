@@ -51,7 +51,7 @@ def test_planos(monkeypatch):
         assert r.status_code == 402 and 'plano Equipe' in r.json()['detail']
         assert c.post('/api/goals', json={'name': 'Meta X', 'metric': 'revenue', 'scope': 'company', 'target': 10}).status_code == 402
         co = c.portal.call(lambda: db.companies.find_one({'name': 'Loja B'}, {'_id': 0}))
-        assert not billing.has(co, 'auto') and billing.has(co, 'automacoes') and billing.limits(co)['ai'] == 300
+        assert not billing.has(co, 'auto') and billing.has(co, 'automacoes') and billing.limits(co)['ai'] == 1000
         # troca de plano: cancela a antiga quando a nova for paga
         c.post('/api/billing/subscribe', json={'plan': 'equipe', 'cycle': 'monthly', 'email': 'db@x.com'})
         assert ('PUT', '/preapproval/sub1', {'status': 'cancelled'}) in calls

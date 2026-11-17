@@ -59,6 +59,8 @@ class ConnectIn(BaseModel):
 
 @router.post('/tg/connect')
 async def connect(body: ConnectIn, request: Request, user=Depends(owners)):
+    from billing import require_live
+    require_live(user, 'conectar o Telegram')
     """Recebe o token do bot do @BotFather, confere com o Telegram e registra o webhook."""
     token = body.token.strip()
     me = await tg(token, 'getMe')
