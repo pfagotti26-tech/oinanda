@@ -1,0 +1,298 @@
+"""Avisos do Oi Nanda para o responsável de cada conta: e-mail e WhatsApp.
+
+Cada aviso tem um texto padrão (DEFS) que o admin pode editar em Avisos. O e-mail sai pelo Resend (mailer.send).
+O WhatsApp sai do número do próprio Oi Nanda (PLATFORM_WA_PHONE_ID, PLATFORM_WA_TOKEN, PLATFORM_WA_WABA_ID) e só com
+modelo aprovado pela Meta. Sem essas chaves, ou sem modelo aprovado, o aviso vai só por e-mail.
+"""
+import os, re, html, logging
+from datetime import timedelta, timezone
+from zoneinfo import ZoneInfo
+from core import db, now, uid
+import mailer
+
+log = logging.getLogger('notices')
+APP = mailer.APP
+SP = ZoneInfo('America/Sao_Paulo')
+TONES = {'i': ('#FEF0EA', '#9E3A22', '#E8603F'), 'g': ('#DDF4EC', '#0A5C50', '#0A7C62'), 'a': ('#FBF0D6', '#7A5600', '#C98A00'), 'n': ('#EEF1F4', '#3F4C59', '#7A8794')}
+VARS = {'primeiro_nome': 'Paula', 'empresa': 'Studio Vita', 'valor': 'R$ 297,00', 'data': '20/11', 'prazo': '24/11', 'plano': 'Profissional, mensal',
+        'proxima': '20/12', 'usadas': '1.600', 'limite': '2.000', 'numero': '(11) 90000-0002', 'hora': '11:20', 'dia': '11'}
+
+def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa=None, **k):
+    return dict(name=name, when=when, ch=ch, tone=tone, eyebrow=eyebrow, icon=icon, subject=subject, pre=pre, title=title, body=body, button=button, wa=wa, **k)
+
+SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
+DEFS = {
+ 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{empresa}, sua conta está pronta', 'Três passos e a Nanda começa a atender com você.',
+    'Que bom ter a {empresa} aqui', '{primeiro_nome}, você tem 14 dias grátis, sem cartão. Em três passos a Nanda já atende com você.', ('Conectar o WhatsApp', '/empresa'),
+    '{primeiro_nome}, a conta da *{empresa}* está pronta. São *14 dias grátis*, sem cartão. O primeiro passo é conectar o WhatsApp da empresa, leva uns 5 minutos.',
+    fig=('14 dias', 'de teste grátis, sem cartão'), steps=[(0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços'), (0, 'Chamar a equipe', 'cada um com seu acesso')], always=True),
+ 'wa_missing': D('WhatsApp ainda não conectado', '1 e 3 dias depois do cadastro, se não conectou', 'we', 'i', 'Falta um passo', 'chat', 'Falta um passo para a Nanda atender', 'Conectar o WhatsApp leva uns 5 minutos.',
+    'Falta só conectar o WhatsApp', '{primeiro_nome}, sem o WhatsApp conectado as conversas não chegam e a Nanda não tem como ajudar.', ('Conectar agora', '/empresa'),
+    '{primeiro_nome}, falta só um passo: conectar o WhatsApp da *{empresa}*. Leva uns 5 minutos. Se travar, responde aqui que eu acompanho.',
+    steps=[(1, 'Conta criada', ''), (2, 'Conectar o WhatsApp da empresa', 'uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços')], second='Prefere ajuda? É só responder este e-mail', reply='Quero ajuda'),
+ 'trial_3d': D('Teste acaba em 3 dias', '3 dias antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Faltam 3 dias do teste da {empresa}', 'Escolha um plano e continue sem intervalo.',
+    'Faltam 3 dias de teste', '{primeiro_nome}, para continuar atendendo sem intervalo, é só escolher um plano. Nada do que você cadastrou se perde.', ('Ver planos', PLANS_URL),
+    '{primeiro_nome}, faltam *3 dias* do teste da {empresa}. Escolhendo um plano até *{data}*, o atendimento segue sem intervalo.',
+    fig=('3 dias', 'de teste grátis pela frente'), bar=(11, 14, 'Dia 11 de 14', 'termina em {data}')),
+ 'trial_1d': D('Teste acaba amanhã', '1 dia antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Amanhã termina o teste da {empresa}', 'Suas conversas e contatos continuam como estão.',
+    'O teste termina amanhã', '{primeiro_nome}, escolhendo um plano hoje, a Nanda segue atendendo sem intervalo. Conversas, contatos e respostas continuam como estão.', ('Escolher meu plano', PLANS_URL),
+    '{primeiro_nome}, o teste da {empresa} termina *amanhã, {data}*. Escolhendo um plano hoje, a Nanda segue atendendo sem intervalo.',
+    fig=('Amanhã', '{data} é o último dia do teste'), bar=(13, 14, 'Dia 13 de 14', 'termina em {data}')),
+ 'trial_end': D('Teste acabou', 'no dia em que o teste termina', 'we', 'n', 'Conta em consulta', 'pause', 'O teste da {empresa} terminou', 'Está tudo guardado. Escolha um plano e volte a atender.',
+    'O teste terminou', '{primeiro_nome}, a conta ficou só para consulta: dá para ver tudo, mas não para responder. Com um plano, o atendimento volta na hora.', ('Escolher meu plano', PLANS_URL),
+    '{primeiro_nome}, o teste da {empresa} terminou hoje. Está *tudo guardado*. Com um plano, o atendimento volta na hora.',
+    rows=[('Conversas e contatos', 'guardados'), ('Respostas da Nanda', 'guardadas'), ('Atendimento', 'volta ao escolher o plano')]),
+ 'charge_3d': D('Renovação em 3 dias', '3 dias antes de cada cobrança', 'we', 'i', 'Lembrete', 'card', 'Sua assinatura renova em {data}', '{valor} no cartão cadastrado. Não precisa fazer nada.',
+    'Renovação em 3 dias', '{primeiro_nome}, não precisa fazer nada. É só um lembrete da próxima cobrança.', ('Ver assinatura', SUB),
+    '{primeiro_nome}, a assinatura da {empresa} renova em *{data}*: *{valor}* no cartão cadastrado. Não precisa fazer nada.',
+    fig=('{valor}', 'em {data} · no cartão cadastrado'), rows=[('Plano', '{plano}')], second='Trocar o cartão'),
+ 'paid': D('Pagamento confirmado', 'quando a cobrança é paga', 'e', 'g', 'Pagamento confirmado', 'check', 'Recebemos seu pagamento de {valor}', 'Tudo certo com a assinatura da {empresa}.',
+    'Recebemos seu pagamento', '{primeiro_nome}, está tudo certo. A Nanda segue atendendo com você.', ('Ver assinatura', SUB),
+    fig=('{valor}', 'pago em {data}'), rows=[('Plano', '{plano}'), ('Próxima cobrança', '{proxima}')], always=True),
+ 'refused': D('Cobrança recusada', 'quando o cartão não passa', 'we', 'a', 'Precisa de atenção', 'card', 'A cobrança de {valor} não passou', 'Confira o cartão para a Nanda seguir atendendo.',
+    'A cobrança não passou', '{primeiro_nome}, isso acontece: limite, cartão vencido ou bloqueio do banco. Vale conferir o cartão ou trocar por outro.', ('Conferir o cartão', SUB),
+    '{primeiro_nome}, a cobrança de *{valor}* da {empresa} não passou no cartão. O atendimento segue normal até *{prazo}*. Vale conferir o cartão.',
+    fig=('{valor}', 'não passou no cartão cadastrado'), rows=[('Nova tentativa', 'nos próximos dias'), ('Atendimento garantido até', '{prazo}')], reply='Falar com o suporte', always=True),
+ 'last_call': D('Último aviso antes de pausar', '1 dia antes do fim do prazo, se segue sem pagar', 'we', 'a', 'Precisa de atenção', 'clock', 'Amanhã é o último dia para acertar', 'Trocar o cartão leva um minuto.',
+    'O prazo termina amanhã', '{primeiro_nome}, a cobrança ainda não passou. Depois de amanhã a conta fica só para consulta até o pagamento entrar.', ('Trocar o cartão', SUB),
+    '{primeiro_nome}, a cobrança de *{valor}* ainda não passou. O prazo vai até *amanhã, {prazo}*. Trocar o cartão leva um minuto.',
+    fig=('Amanhã, {prazo}', 'último dia para acertar {valor}'), foot='Se já acertou, pode desconsiderar.', reply='Falar com o suporte', always=True),
+ 'paused': D('Conta pausada', 'quando o prazo acaba sem pagamento', 'we', 'n', 'Conta em consulta', 'pause', 'A conta da {empresa} está em pausa', 'Nada foi apagado. O atendimento volta com o pagamento.',
+    'A conta está em pausa', '{primeiro_nome}, como a cobrança não passou, a conta ficou só para consulta. Assim que o pagamento entrar, o atendimento volta sozinho.', ('Regularizar agora', SUB),
+    '{primeiro_nome}, a conta da {empresa} ficou *só para consulta* porque a cobrança não passou. Nada foi apagado. O atendimento volta assim que o pagamento entrar.',
+    fig=('{valor}', 'em aberto'), rows=[('Seus dados', 'guardados'), ('Atendimento', 'volta com o pagamento')], reply='Falar com o suporte', always=True),
+ 'cancelled': D('Cancelamento confirmado', 'quando o cliente cancela', 'e', 'n', 'Cancelamento confirmado', 'bye', 'Cancelamento confirmado', 'Sem novas cobranças. A conta segue ativa até {data}.',
+    'Assinatura cancelada', '{primeiro_nome}, cancelamos a assinatura da {empresa}, como você pediu. Se mudar de ideia, é só reativar.', ('Reativar assinatura', SUB),
+    fig=('{data}', 'a conta segue ativa até esta data'), rows=[('Novas cobranças', 'nenhuma')], second='Quer contar o motivo? É só responder', ghost=True, always=True),
+ 'ai_80': D('Nanda em 80% do plano', 'ao usar 80% das respostas do mês', 'we', 'i', 'Uso da Nanda', 'spark', 'A Nanda já respondeu {usadas} vezes este mês', 'Atendimento movimentado na {empresa}.',
+    'A Nanda está trabalhando bastante', '{primeiro_nome}, sinal de atendimento movimentado. Para a Nanda seguir respondendo até o fim do mês, dá para subir de plano. A mudança vale na hora.', ('Ver planos', SUB),
+    '{primeiro_nome}, a Nanda já respondeu *{usadas} das {limite}* mensagens do plano este mês. Para ela seguir até o fim do mês, dá para subir de plano.',
+    fig=('80%', 'das respostas do mês já usadas'), bar=(80, 100, '{usadas} de {limite} respostas', 'zera no dia 1º')),
+ 'ai_100': D('Nanda chegou ao limite', 'ao usar 100% das respostas do mês', 'we', 'a', 'Uso da Nanda', 'spark', 'A Nanda usou as {limite} respostas do mês', 'As conversas seguem chegando para a sua equipe.',
+    'A Nanda usou todas as respostas do mês', '{primeiro_nome}, ela parou de responder sozinha. As conversas seguem chegando normalmente para a sua equipe. Subindo de plano, ela volta na hora.', ('Ver planos', SUB),
+    '{primeiro_nome}, a Nanda usou as *{limite} respostas* do mês e parou de responder sozinha. As conversas seguem chegando para a equipe. Subindo de plano, ela volta na hora.',
+    fig=('100%', 'das respostas do mês usadas'), bar=(100, 100, '{limite} de {limite} respostas', 'zera no dia 1º'), always=True),
+ 'wa_down': D('WhatsApp desconectou', 'quando o número da empresa cai', 'we', 'a', 'Precisa de atenção', 'chat', 'O WhatsApp da {empresa} desconectou', 'Reconectar leva poucos minutos.',
+    'O WhatsApp desconectou', '{primeiro_nome}, enquanto estiver desconectado, mensagens novas não aparecem no Oi Nanda.', ('Reconectar', '/empresa'),
+    '{primeiro_nome}, o WhatsApp da {empresa} *desconectou* do Oi Nanda às {hora}. Mensagens novas não aparecem até reconectar. Leva poucos minutos.',
+    rows=[('Número', '{numero}'), ('Desconectou', 'hoje, {hora}')], reply='Quero ajuda', always=True),
+}
+EDIT = ('subject', 'pre', 'title', 'body', 'wa')
+
+def fill(text, v):
+    return re.sub(r'\{(\w+)\}', lambda m: str(v.get(m.group(1), m.group(0))), text or '')
+
+def money(v): return mailer.money(v)
+def day(d):
+    if not d: return ''
+    if getattr(d, 'tzinfo', 1) is None: d = d.replace(tzinfo=timezone.utc)
+    return d.astimezone(SP).strftime('%d/%m')
+
+async def toggles():
+    d = await db.settings.find_one({'id': 'notices'}, {'_id': 0}) or {}
+    return {k: d.get(k, True) for k in DEFS}
+
+async def texts(key):
+    """Texto em uso: o padrão com o que o admin mudou por cima."""
+    d = await db.settings.find_one({'id': 'notice_texts'}, {'_id': 0}) or {}
+    return {**{f: DEFS[key][f] for f in EDIT}, **{f: v for f, v in (d.get(key) or {}).items() if f in EDIT and v}}
+
+# ---------- e-mail ----------
+def email_html(key, t, v):
+    n = DEFS[key]; bg, fg, dot = TONES[n['tone']]; e = html.escape; F = lambda s: e(fill(s, v))
+    out = [f'<img src="{APP}/mail/{n["icon"]}-{n["tone"]}.png" width="52" height="52" alt="" style="display:block;border:0;border-radius:16px">',
+           f'<div style="font-size:12px;font-weight:600;color:{fg};margin:14px 0 4px">{e(n["eyebrow"])}</div>',
+           f'<h1 style="margin:0 0 14px;font-size:21px;line-height:1.25;font-weight:600;color:#17212B">{F(t["title"])}</h1>']
+    if n.get('fig'):
+        bar = ''
+        if n.get('bar'):
+            a, b, l, r = n['bar']; a, b = v.get('bar_now', a), v.get('bar_total', b); pct = max(0, min(100, round(100 * a / b))) if b else 0
+            bar = (f'<div style="height:8px;border-radius:99px;background:#fff;margin-top:12px;overflow:hidden"><div style="height:8px;width:{pct}%;background:{dot};border-radius:99px"></div></div>'
+                   f'<table role="presentation" width="100%" style="margin-top:6px;font-size:12.5px;color:#4B5968"><tr><td style="font-weight:600;color:#17212B">{F(v.get("bar_label") or l)}</td><td align="right">{F(r)}</td></tr></table>')
+        out.append(f'<div style="background:{bg};border-radius:14px;padding:14px 16px;margin:0 0 14px"><div style="font-size:28px;line-height:1.15;font-weight:600;color:#17212B">{F(n["fig"][0])}</div>'
+                   f'<div style="font-size:12.5px;color:#4B5968;margin-top:2px">{F(n["fig"][1])}</div>{bar}</div>')
+    out += [f'<p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:#2B2622">{F(p)}</p>' for p in t['body'].split('\n') if p.strip()]
+    if n.get('steps'):
+        for i, (st, a, b) in enumerate(n['steps'], 1):
+            c = ('#DDF4EC', '#0A5C50', '✓') if st == 1 else ('#E8603F', '#fff', i) if st == 2 else ('#F3EDE7', '#4B5968', i)
+            out.append(f'<table role="presentation" style="margin:0 0 10px"><tr><td valign="top" style="padding-right:10px"><div style="width:22px;height:22px;line-height:22px;border-radius:50%;text-align:center;font-size:11.5px;font-weight:600;background:{c[0]};color:{c[1]}">{c[2]}</div></td>'
+                       f'<td style="font-size:13.5px;line-height:1.35;color:#2B2622">{e(a)}' + (f'<br><span style="font-size:12px;color:#6B7785">{e(b)}</span>' if b else '') + '</td></tr></table>')
+    for a, b in n.get('rows') or []:
+        if not fill(b, v).strip(): continue
+        out.append(f'<table role="presentation" width="100%" style="border-top:1px solid #EFE8E1;font-size:13px"><tr><td style="padding:9px 0;color:#4B5968">{e(a)}</td><td align="right" style="padding:9px 0;font-weight:600;color:#17212B">{F(b)}</td></tr></table>')
+    link = APP + n['button'][1]; ghost = n.get('ghost')
+    out.append(f'<a href="{link}" style="display:block;text-align:center;margin-top:16px;padding:14px 18px;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;'
+               + ('background:#fff;color:#17212B;border:1px solid #DCD2C9' if ghost else 'background:#E8603F;color:#fff') + f'">{e(n["button"][0])}</a>')
+    if n.get('second'): out.append(f'<p style="margin:12px 0 0;text-align:center;font-size:12.5px"><a href="{link}" style="color:#C44A2C">{e(n["second"])}</a></p>')
+    if n.get('foot'): out.append(f'<p style="margin:12px 0 0;text-align:center;font-size:12px;color:#6B7785">{e(n["foot"])}</p>')
+    return (f'<!doctype html><html lang="pt-BR"><body style="margin:0;background:#F7F2EC;font-family:Helvetica,Arial,sans-serif">'
+            f'<div style="display:none;max-height:0;overflow:hidden;opacity:0">{F(t["pre"])}</div>'
+            f'<div style="max-width:520px;margin:0 auto;padding:28px 16px"><div style="text-align:center;font-weight:600;font-size:18px;color:#E8603F;margin-bottom:16px">Oi Nanda</div>'
+            f'<div style="background:#fff;border-radius:18px;padding:26px 22px 22px;border:1px solid #EDE5DC">{"".join(out)}</div>'
+            f'<p style="font-size:12px;line-height:1.5;color:#7A716A;text-align:center;margin:16px 8px 0">Paulo, do Oi Nanda. Para falar comigo, é só responder.<br>'
+            f'Você recebe este aviso por ser responsável pela conta {e(str(v.get("empresa", "")))}. <a href="{APP}/empresa/avisos" style="color:#7A716A">Escolher meus avisos</a></p></div></body></html>')
+
+def email_text(key, t, v):
+    n = DEFS[key]; L = [fill(t['title'], v), '']
+    if n.get('fig'): L += [fill(n['fig'][0], v) + ' ' + fill(n['fig'][1], v), '']
+    L += [fill(t['body'], v), ''] + [f'{a}: {fill(b, v)}' for a, b in n.get('rows') or []]
+    return '\n'.join(L + ['', f'{n["button"][0]}: {APP}{n["button"][1]}'])
+
+def wa_text(t, v, mark=True):
+    s = fill(t.get('wa') or '', v)
+    return s if mark else s.replace('*', '')
+
+# ---------- WhatsApp (número do Oi Nanda) ----------
+def wa_ready(): return bool(os.environ.get('PLATFORM_WA_PHONE_ID') and os.environ.get('PLATFORM_WA_TOKEN'))
+
+def wa_params(text):
+    """Texto com {variaveis} -> corpo do modelo da Meta ({{1}}, {{2}}...) e a ordem das variáveis."""
+    order = []
+    def rep(m):
+        if m.group(1) not in order: order.append(m.group(1))
+        return '{{%d}}' % (order.index(m.group(1)) + 1)
+    return re.sub(r'\{(\w+)\}', rep, text), order
+
+async def wa_template(key):
+    """Último modelo aprovado deste aviso (o texto novo só entra depois de a Meta aprovar)."""
+    return await db.notice_templates.find_one({'key': key, 'status': 'APPROVED'}, {'_id': 0}, sort=[('version', -1)])
+
+async def wa_submit(key, text):
+    """Manda o texto para aprovação da Meta. Devolve o registro do modelo (status PENDING) ou None se o número não está configurado."""
+    waba = os.environ.get('PLATFORM_WA_WABA_ID')
+    last = await db.notice_templates.find_one({'key': key}, {'_id': 0}, sort=[('version', -1)])
+    if last and last['text'] == text: return last
+    doc = {'id': uid(), 'key': key, 'version': (last or {}).get('version', 0) + 1, 'text': text, 'status': 'DRAFT', 'at': now()}
+    doc['name'] = f'aviso_{key}_v{doc["version"]}'
+    if wa_ready() and waba:
+        n = DEFS[key]; body, order = wa_params(text)
+        comps = [{'type': 'HEADER', 'format': 'TEXT', 'text': re.sub(r'\{\w+\}', '', n['title']).strip()[:60]},
+                 {'type': 'BODY', 'text': body, **({'example': {'body_text': [[VARS.get(k, k) for k in order]]}} if order else {})},
+                 {'type': 'FOOTER', 'text': 'Oi Nanda · avisos da sua conta'},
+                 {'type': 'BUTTONS', 'buttons': [{'type': 'URL', 'text': n['button'][0][:25], 'url': APP + n['button'][1]}] + ([{'type': 'QUICK_REPLY', 'text': n['reply'][:25]}] if n.get('reply') else [])}]
+        try:
+            import whatsapp
+            r = await whatsapp.graph('POST', f'/{waba}/message_templates', os.environ['PLATFORM_WA_TOKEN'], {'name': doc['name'], 'language': 'pt_BR', 'category': 'UTILITY', 'components': comps})
+            doc.update(status=(r.get('status') or 'PENDING').upper(), meta_id=r.get('id'))
+        except Exception as ex:
+            doc.update(status='REJECTED', error=str(getattr(ex, 'detail', ex))[:300])
+    await db.notice_templates.insert_one({**doc})
+    return doc
+
+async def wa_refresh():
+    """Confere na Meta os modelos que ainda esperam aprovação."""
+    if not wa_ready(): return
+    import whatsapp
+    for t in await db.notice_templates.find({'status': {'$in': ['PENDING', 'IN_APPEAL']}, 'meta_id': {'$ne': None}}, {'_id': 0}).to_list(100):
+        try:
+            r = await whatsapp.graph('GET', f'/{t["meta_id"]}', os.environ['PLATFORM_WA_TOKEN'], params={'fields': 'status'})
+            if r.get('status') and r['status'].upper() != t['status']: await db.notice_templates.update_one({'id': t['id']}, {'$set': {'status': r['status'].upper()}})
+        except Exception: log.info('não conferiu o modelo %s', t['name'])
+
+WA_SENT = []  # nos testes: o que teria saído pelo WhatsApp
+async def wa_send(phone, tpl, v):
+    _, order = wa_params(tpl['text'])
+    payload = {'messaging_product': 'whatsapp', 'to': phone, 'type': 'template', 'template': {'name': tpl['name'], 'language': {'code': 'pt_BR'},
+               'components': [{'type': 'body', 'parameters': [{'type': 'text', 'text': str(v.get(k, ''))} for k in order]}] if order else []}}
+    if os.environ.get('MONGO_URL') == 'mock': WA_SENT.append({'to': phone, 'name': tpl['name'], 'vars': {k: v.get(k) for k in order}}); return True
+    try:
+        import whatsapp
+        await whatsapp.graph('POST', f'/{os.environ["PLATFORM_WA_PHONE_ID"]}/messages', os.environ['PLATFORM_WA_TOKEN'], payload); return True
+    except Exception as ex:
+        log.warning('aviso por WhatsApp não saiu (%s): %s', tpl['name'], getattr(ex, 'detail', ex)); return False
+
+# ---------- envio ----------
+async def base_vars(company, owner):
+    b = company.get('billing') or {}
+    from billing import PLANS
+    plan = PLANS.get(b.get('plan') or company.get('plan') or '', {}).get('name', '')
+    return {'primeiro_nome': (owner.get('name') or '').split(' ')[0] or 'Olá', 'empresa': company.get('name') or '',
+            'valor': money(b.get('amount')), 'plano': (plan + (', anual' if b.get('cycle') == 'annual' else ', mensal')) if plan else '', 'data': '', 'prazo': '', 'proxima': day(b.get('next_payment'))}
+
+def quiet():
+    if os.environ.get('MONGO_URL') == 'mock': return False  # os testes rodam a qualquer hora
+    h = now().astimezone(SP).hour
+    return h < 8 or h >= 20
+
+async def deliver(company, key, v=None, once=None, manual=False, only=None):
+    """Manda o aviso `key` ao responsável da conta. `once` evita repetir (mesma chave = mesmo aviso).
+
+    Avisos que não são urgentes respeitam o horário (8h às 20h) e o limite de um por dia: devolve None e o próximo ciclo tenta de novo.
+    """
+    n = DEFS[key]
+    if not manual:
+        if not (await toggles()).get(key): return False
+        if once and await db.notice_log.find_one({'company_id': company['id'], 'once': once}): return False
+        if not n.get('always'):
+            if quiet(): return None
+            if await db.notice_log.find_one({'company_id': company['id'], 'manual': {'$ne': True}, 'soft': True, 'at': {'$gte': now() - timedelta(hours=20)}}): return None
+    owner = await mailer.owner_of(company)
+    if not owner: return False
+    v = {**await base_vars(company, owner), **(v or {})}; t = await texts(key)
+    mail = wa = False
+    if only in (None, 'email'):
+        mail = await mailer.send(owner['email'], fill(t['subject'], v), email_html(key, t, v), email_text(key, t, v))
+    if only in (None, 'wa') and 'w' in n['ch'] and wa_ready() and company.get('notice_wa') is not False:
+        from channels import norm_phone
+        phone = norm_phone(owner.get('wa_phone') or company.get('phone') or ''); tpl = await wa_template(key)
+        if phone and tpl: wa = await wa_send(phone, tpl, v)
+    await db.notice_log.insert_one({'id': uid(), 'company_id': company['id'], 'company': company.get('name'), 'key': key, 'name': n['name'], 'subject': fill(t['subject'], v),
+                                    'to': owner['email'], 'email': bool(mail), 'wa': bool(wa), 'once': once, 'manual': manual, 'soft': not n.get('always'), 'at': now()})
+    return True
+
+# ---------- gatilhos ----------
+def aware(d): return d.replace(tzinfo=timezone.utc) if d is not None and d.tzinfo is None else d
+
+async def tick():
+    """Roda junto das automações: avisos que dependem do tempo (teste, cobrança, prazo, WhatsApp sem conectar)."""
+    from billing import GRACE_DAYS, plan_of
+    n = now()
+    for c in await db.companies.find({'plan': 'trial', 'trial_ends_at': {'$gt': n - timedelta(days=2), '$lte': n + timedelta(days=3)}}, {'_id': 0}).to_list(500):
+        end = aware(c['trial_ends_at']); left = end - n; v = {'data': day(end)}
+        total = max(1, round((end - aware(c.get('created_at') or end - timedelta(days=14))).total_seconds() / 86400))
+        if timedelta(days=2) < left <= timedelta(days=3) and not c.get('mail_trial_3d'):
+            await deliver(c, 'trial_3d', {**v, 'bar_now': total - 3, 'bar_total': total, 'bar_label': f'Dia {total - 3} de {total}'}, once='trial_3d')
+        elif timedelta(0) < left <= timedelta(days=1):
+            await deliver(c, 'trial_1d', {**v, 'bar_now': total - 1, 'bar_total': total, 'bar_label': f'Dia {total - 1} de {total}'}, once='trial_1d')
+        elif left <= timedelta(0) and not c.get('mail_trial_end'):
+            await deliver(c, 'trial_end', v, once='trial_end')
+    # WhatsApp ainda não conectado: 1 e 3 dias depois do cadastro
+    for c in await db.companies.find({'plan': 'trial', 'created_at': {'$gt': n - timedelta(days=5), '$lte': n - timedelta(days=1)}}, {'_id': 0}).to_list(500):
+        if await db.wa_numbers.find_one({'company_id': c['id']}, {'_id': 1}): continue
+        age = n - aware(c['created_at'])
+        if age < timedelta(days=2): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_1')
+        elif timedelta(days=3) <= age < timedelta(days=4): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_3')
+    # renovação em 3 dias
+    for c in await db.companies.find({'billing.status': 'active', 'billing.next_payment': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)}}, {'_id': 0}).to_list(500):
+        await deliver(c, 'charge_3d', {'data': day(c['billing']['next_payment'])}, once='charge_3d:' + day(c['billing']['next_payment']))
+    # cobrança recusada que segue sem pagar: último aviso e pausa
+    for p in await db.payments.find({'status': 'refused', 'due': {'$gt': n - timedelta(days=GRACE_DAYS + 3), '$lte': n - timedelta(days=GRACE_DAYS - 1)}}, {'_id': 0}).to_list(500):
+        c = await db.companies.find_one({'id': p['company_id']}, {'_id': 0})
+        if not c or await db.payments.find_one({'company_id': c['id'], 'status': 'paid', 'due': {'$gte': p['due']}}): continue
+        limit = aware(p['due']) + timedelta(days=GRACE_DAYS); v = {'valor': money(p['amount']), 'prazo': day(limit)}
+        if n < limit: await deliver(c, 'last_call', v, once='last_call:' + str(p['id']))
+        elif plan_of(c)[0] == 'readonly': await deliver(c, 'paused', v, once='paused:' + str(p['id']))
+
+AI_MARKS = None
+async def ai_mark(company_id, used):
+    """Chamado a cada resposta da Nanda: avisa uma vez ao chegar em 80% e em 100% do mês."""
+    global AI_MARKS
+    from billing import PLANS, TRIAL_AI, limits
+    if AI_MARKS is None:
+        lims = {p['ai'] for p in PLANS.values()} | {TRIAL_AI}; AI_MARKS = lims | {int(l * 0.8) for l in lims}
+    if used not in AI_MARKS: return
+    c = await db.companies.find_one({'id': company_id}, {'_id': 0}); lim = limits(c)['ai'] if c else 0
+    if not lim or used not in (lim, int(lim * 0.8)): return
+    f = lambda x: f'{x:,}'.replace(',', '.')
+    await deliver(c, 'ai_100' if used == lim else 'ai_80', {'usadas': f(used), 'limite': f(lim), 'bar_now': used, 'bar_total': lim}, once=('ai_100:' if used == lim else 'ai_80:') + now().strftime('%Y-%m'))
+
+async def check_numbers():
+    """Confere se o WhatsApp de cada empresa ainda responde na Meta. Se o acesso caiu, marca e avisa o responsável."""
+    import whatsapp
+    for w in await db.wa_numbers.find({'status': 'connected'}, {'_id': 0}).to_list(2000):
+        try: await whatsapp.graph('GET', f'/{w["phone_number_id"]}', whatsapp.decrypt(w['token_enc']), params={'fields': 'id'})
+        except Exception as ex:
+            if getattr(ex, 'status_code', 0) not in (400, 401, 403) or 'token' not in str(getattr(ex, 'detail', '')).lower(): continue
+            await db.wa_numbers.update_one({'company_id': w['company_id']}, {'$set': {'status': 'disconnected', 'disconnected_at': now()}})
+            c = await db.companies.find_one({'id': w['company_id']}, {'_id': 0})
+            if c: await deliver(c, 'wa_down', {'numero': w.get('display_phone') or '', 'hora': now().astimezone(SP).strftime('%H:%M')}, once='wa_down:' + now().strftime('%Y-%m-%d'))

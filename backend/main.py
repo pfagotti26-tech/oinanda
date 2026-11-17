@@ -37,6 +37,7 @@ from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, Company
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 log = logging.getLogger('oinanda')
+TERMS_VERSION = os.environ.get('TERMS_VERSION', '1')  # versão dos Termos de Uso aceita no cadastro (troque no .env quando os termos mudarem)
 # o httpx registra a URL inteira de cada chamada (com tokens e chaves na query): nunca no log
 for _n in ('httpx', 'httpcore'): logging.getLogger(_n).setLevel(logging.WARNING)
 
@@ -103,6 +104,11 @@ async def lifespan(app):
     await db.journey.create_index([('company_id', 1), ('contact_id', 1)])
     await db.push_subs.create_index('endpoint', unique=True)
     await db.push_subs.create_index('user_id')
+    await db.payments.create_index('id', unique=True)
+    await db.payments.create_index([('company_id', 1), ('due', -1)])
+    await db.admin_notes.create_index([('company_id', 1), ('at', -1)])
+    await db.notice_log.create_index([('company_id', 1), ('at', -1)])
+    await db.notice_templates.create_index([('key', 1), ('version', -1)])
     # contas em teste quando os planos chegaram: ganham 14 dias a partir de hoje, para ninguém cair em "só leitura" de surpresa
     for c in await db.companies.find({'plan': 'trial', 'trial_v2': {'$ne': True}}, {'_id': 0, 'id': 1, 'trial_ends_at': 1}).to_list(10000):
         end = max(c.get('trial_ends_at') or now(), now() + timedelta(days=TRIAL_DAYS)) if c.get('trial_ends_at') and c['trial_ends_at'].tzinfo else now() + timedelta(days=TRIAL_DAYS)
@@ -150,6 +156,8 @@ from later import router as later_router
 app.include_router(later_router, prefix="/api")
 from metacost import router as metacost_router
 app.include_router(metacost_router, prefix="/api")
+from adminapi import router as admin_router
+app.include_router(admin_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):
@@ -202,7 +210,8 @@ async def signup(body: Signup, request: Request, response: Response):
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
                'plan': 'trial', 'status': 'active', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True, 'created_at': now(),
-               'modules': {'metas': False, 'jornada': False}, 'channels': {}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
+               'modules': {'metas': False, 'jornada': False}, 'channels': {},
+               'terms': {'at': now(), 'ip': client_ip(request), 'version': TERMS_VERSION}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
     user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
             'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
     await db.companies.insert_one(company.copy())
@@ -420,42 +429,6 @@ async def company_audit(user=Depends(managers)):
     return await db.audit.find({'company_id': user['company_id']}, {'_id': 0, 'expires_at': 0}).sort('at', -1).to_list(200)
 
 # ---------- admin da plataforma ----------
-@app.get('/api/admin/stats')
-async def admin_stats(user=Depends(admin)):
-    week = now() - timedelta(days=7)
-    return {'companies': await db.companies.count_documents({}),
-            'active': await db.companies.count_documents({'status': 'active'}),
-            'trial': await db.companies.count_documents({'plan': 'trial'}),
-            'paying': await db.companies.count_documents({'plan': {'$in': ['oferta', 'completo', 'rede']}}),
-            'suspended': await db.companies.count_documents({'status': 'suspended'}),
-            'users': await db.users.count_documents({}),
-            'new_week': await db.companies.count_documents({'created_at': {'$gte': week}}),
-            'errors_day': await db.errors.count_documents({'at': {'$gte': now() - timedelta(days=1)}})}
-
-@app.get('/api/admin/companies')
-async def admin_companies(user=Depends(admin)):
-    companies = await db.companies.find({}, {'_id': 0}).sort('created_at', -1).to_list(1000)
-    for c in companies:
-        c['users'] = await db.users.count_documents({'company_id': c['id']})
-        owner = await db.users.find_one({'company_id': c['id'], 'role': 'owner'}, {'_id': 0, 'name': 1, 'email': 1, 'last_login_at': 1})
-        c['owner'] = owner
-    return companies
-
-@app.patch('/api/admin/companies/{company_id}')
-async def admin_update_company(company_id: str, body: AdminCompanyUpdate, request: Request, user=Depends(admin)):
-    company = await db.companies.find_one({'id': company_id}, {'_id': 0})
-    if not company: raise HTTPException(404, 'Empresa não encontrada.')
-    changes = {k: v for k, v in body.model_dump(exclude_none=True).items() if k in ('status', 'plan', 'note')}
-    if body.extend_trial_days:
-        changes['trial_ends_at'] = max(company['trial_ends_at'], now()) + timedelta(days=body.extend_trial_days)
-    if changes:
-        await db.companies.update_one({'id': company_id}, {'$set': changes})
-        if changes.get('status') == 'suspended':
-            ids = [u['id'] for u in await db.users.find({'company_id': company_id}, {'id': 1}).to_list(1000)]
-            await db.sessions.delete_many({'user_id': {'$in': ids}})
-        await audit(request, {**user, 'company_id': company_id}, 'Admin alterou a conta', ', '.join(changes), company_id)
-    return await db.companies.find_one({'id': company_id}, {'_id': 0})
-
 @app.post('/api/admin/companies/{company_id}/enter')
 async def admin_enter(company_id: str, request: Request, response: Response, user=Depends(admin)):
     company = await db.companies.find_one({'id': company_id}, {'_id': 0})

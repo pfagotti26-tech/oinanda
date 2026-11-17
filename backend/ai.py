@@ -205,6 +205,10 @@ async def track(company_id, usage, kind):
     month = now().strftime('%Y-%m')
     await db.ai_usage.update_one({'company_id': company_id, 'month': month},
         {'$inc': {'input_tokens': usage.get('input_tokens', 0), 'output_tokens': usage.get('output_tokens', 0), kind: 1}}, upsert=True)
+    try:
+        import notices, billing
+        await notices.ai_mark(company_id, await billing.ai_used(company_id))
+    except Exception: log.exception('falha no aviso de uso da Nanda')
 
 async def system_for(s, company, contact=None):
     step = 30

@@ -34,7 +34,7 @@ def test_fluxo_completo():
         a.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'admin-forte-1', 'company': 'Oi Nanda'})
         assert a.get('/api/auth/me').json()['user']['is_admin']
         st = a.get('/api/admin/stats').json(); assert st['companies'] == 2
-        comps = a.get('/api/admin/companies').json()
+        comps = a.get('/api/admin/companies').json()['rows']
         studio = next(x for x in comps if x['name'] == 'Studio Forma'); assert studio['users'] == 2
         assert a.post(f'/api/admin/companies/{studio["id"]}/enter').status_code == 200
         me = a.get('/api/auth/me').json(); assert me['company']['name'] == 'Studio Forma' and me['user']['impersonated_by'] == 'Paulo'
