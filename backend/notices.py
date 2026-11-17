@@ -144,7 +144,19 @@ def wa_text(t, v, mark=True):
     return s if mark else s.replace('*', '')
 
 # ---------- WhatsApp (número do Oi Nanda) ----------
-def wa_ready(): return bool(os.environ.get('PLATFORM_WA_PHONE_ID') and os.environ.get('PLATFORM_WA_TOKEN'))
+async def platform():
+    """Número que manda os avisos: o WhatsApp conectado na conta do próprio Oi Nanda (a do admin).
+    As variáveis PLATFORM_WA_* continuam valendo, se alguém preferir informar à mão."""
+    if os.environ.get('PLATFORM_WA_PHONE_ID') and os.environ.get('PLATFORM_WA_TOKEN'):
+        return {'phone': os.environ['PLATFORM_WA_PHONE_ID'], 'token': os.environ['PLATFORM_WA_TOKEN'], 'waba': os.environ.get('PLATFORM_WA_WABA_ID')}
+    from core import ADMIN_EMAIL
+    me = await db.users.find_one({'email': ADMIN_EMAIL, 'role': 'owner'}, {'_id': 0, 'company_id': 1}) if ADMIN_EMAIL else None
+    w = await db.wa_numbers.find_one({'company_id': me['company_id'], 'status': 'connected'}, {'_id': 0}) if me else None
+    if not w or not w.get('token_enc'): return None
+    import whatsapp
+    return {'phone': w['phone_number_id'], 'token': whatsapp.decrypt(w['token_enc']), 'waba': w.get('waba_id'), 'display': w.get('display_phone')}
+
+async def wa_ready(): return bool(await platform())
 
 def wa_params(text):
     """Texto com {variaveis} -> corpo do modelo da Meta ({{1}}, {{2}}...) e a ordem das variáveis."""
@@ -160,12 +172,12 @@ async def wa_template(key):
 
 async def wa_submit(key, text):
     """Manda o texto para aprovação da Meta. Devolve o registro do modelo (status PENDING) ou None se o número não está configurado."""
-    waba = os.environ.get('PLATFORM_WA_WABA_ID')
+    P = await platform(); waba = (P or {}).get('waba')
     last = await db.notice_templates.find_one({'key': key}, {'_id': 0}, sort=[('version', -1)])
     if last and last['text'] == text: return last
     doc = {'id': uid(), 'key': key, 'version': (last or {}).get('version', 0) + 1, 'text': text, 'status': 'DRAFT', 'at': now()}
     doc['name'] = f'aviso_{key}_v{doc["version"]}'
-    if wa_ready() and waba:
+    if P and waba:
         n = DEFS[key]; body, order = wa_params(text)
         comps = [{'type': 'HEADER', 'format': 'TEXT', 'text': re.sub(r'\{\w+\}', '', n['title']).strip()[:60]},
                  {'type': 'BODY', 'text': body, **({'example': {'body_text': [[VARS.get(k, k) for k in order]]}} if order else {})},
@@ -173,7 +185,7 @@ async def wa_submit(key, text):
                  {'type': 'BUTTONS', 'buttons': [{'type': 'URL', 'text': n['button'][0][:25], 'url': APP + n['button'][1]}] + ([{'type': 'QUICK_REPLY', 'text': n['reply'][:25]}] if n.get('reply') else [])}]
         try:
             import whatsapp
-            r = await whatsapp.graph('POST', f'/{waba}/message_templates', os.environ['PLATFORM_WA_TOKEN'], {'name': doc['name'], 'language': 'pt_BR', 'category': 'UTILITY', 'components': comps})
+            r = await whatsapp.graph('POST', f'/{waba}/message_templates', P['token'], {'name': doc['name'], 'language': 'pt_BR', 'category': 'UTILITY', 'components': comps})
             doc.update(status=(r.get('status') or 'PENDING').upper(), meta_id=r.get('id'))
         except Exception as ex:
             doc.update(status='REJECTED', error=str(getattr(ex, 'detail', ex))[:300])
@@ -182,11 +194,12 @@ async def wa_submit(key, text):
 
 async def wa_refresh():
     """Confere na Meta os modelos que ainda esperam aprovação."""
-    if not wa_ready(): return
+    P = await platform()
+    if not P: return
     import whatsapp
     for t in await db.notice_templates.find({'status': {'$in': ['PENDING', 'IN_APPEAL']}, 'meta_id': {'$ne': None}}, {'_id': 0}).to_list(100):
         try:
-            r = await whatsapp.graph('GET', f'/{t["meta_id"]}', os.environ['PLATFORM_WA_TOKEN'], params={'fields': 'status'})
+            r = await whatsapp.graph('GET', f'/{t["meta_id"]}', P['token'], params={'fields': 'status'})
             if r.get('status') and r['status'].upper() != t['status']: await db.notice_templates.update_one({'id': t['id']}, {'$set': {'status': r['status'].upper()}})
         except Exception: log.info('não conferiu o modelo %s', t['name'])
 
@@ -198,7 +211,8 @@ async def wa_send(phone, tpl, v):
     if os.environ.get('MONGO_URL') == 'mock': WA_SENT.append({'to': phone, 'name': tpl['name'], 'vars': {k: v.get(k) for k in order}}); return True
     try:
         import whatsapp
-        await whatsapp.graph('POST', f'/{os.environ["PLATFORM_WA_PHONE_ID"]}/messages', os.environ['PLATFORM_WA_TOKEN'], payload); return True
+        P = await platform()
+        await whatsapp.graph('POST', f'/{P["phone"]}/messages', P['token'], payload); return True
     except Exception as ex:
         log.warning('aviso por WhatsApp não saiu (%s): %s', tpl['name'], getattr(ex, 'detail', ex)); return False
 
@@ -234,7 +248,7 @@ async def deliver(company, key, v=None, once=None, manual=False, only=None):
     mail = wa = False
     if only in (None, 'email'):
         mail = await mailer.send(owner['email'], fill(t['subject'], v), email_html(key, t, v), email_text(key, t, v))
-    if only in (None, 'wa') and 'w' in n['ch'] and wa_ready() and company.get('notice_wa') is not False:
+    if only in (None, 'wa') and 'w' in n['ch'] and company.get('notice_wa') is not False and await wa_ready():
         from channels import norm_phone
         phone = norm_phone(company.get('notice_phone') or owner.get('wa_phone') or company.get('phone') or ''); tpl = await wa_template(key)
         if phone and tpl: wa = await wa_send(phone, tpl, v)
