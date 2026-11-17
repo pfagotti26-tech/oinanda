@@ -1233,7 +1233,8 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .ad tr.go:hover td{background:var(--tint)}
 .ad-sw{position:relative;width:40px;height:24px;flex:none}
 .ad-sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;padding:0;cursor:pointer;margin:0}
-.ad-sw i{position:absolute;inset:0;border-radius:999px;background:#C9D2DA;transition:background .15s}
+.ad-sw input{z-index:1}
+.ad-sw i{pointer-events:none;position:absolute;inset:0;border-radius:999px;background:#C9D2DA;transition:background .15s}
 .ad-sw i::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
 .ad-sw input:checked+i{background:#0A7C62}
 .ad-sw input:checked+i::after{left:19px}
@@ -1523,7 +1524,7 @@ function shell(){
 }
 let POLL=null;
 function pathFor(v){
-  if(v==='inicio')return '/';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='fila')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
+  if(v==='inicio')return '/';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='fila')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
   let p='/'+v;
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
@@ -1539,6 +1540,7 @@ function readPath(){
   if(parts[0]==='admin'){AD.open=parts[1]==='clientes'?(parts[2]||null):null;if(parts[1]==='avisos')AD.av.tab=['textos','enviados'].includes(parts[2])?parts[2]:'fila';return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao'}
   const v=parts[0];
   if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
+  if(v==='empresa'&&parts[1]==='avisos')return 'avisos-conta';
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
@@ -3698,6 +3700,7 @@ async function adAvisos(){
   const st={APPROVED:['aprovado pela Meta','ok'],PENDING:['em análise na Meta','warn'],REJECTED:['recusado pela Meta','bad'],DRAFT:['ainda não enviado à Meta','grey']}[v.wa_status]||['ainda não enviado à Meta','grey'];
   $('#page').innerHTML=`<div class="ad">${head}
    ${n.email_ready?'':'<div class="ad-tip">O envio de e-mail ainda não está configurado neste servidor. Os avisos ficam registrados, mas não saem.</div>'}
+   ${n.wa_ready?'<div class="ad-box" style="flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:240px;font-size:13.5px">Cada texto de WhatsApp precisa da aprovação da Meta antes do primeiro envio.</div><button class="btn sm" id="adWsub">Enviar textos para aprovação</button></div>':''}
    ${n.wa_ready?'':'<div class="ad-tip">O número do Oi Nanda ainda não está conectado para avisos. Até lá, tudo sai só por e-mail. Os textos de WhatsApp já podem ser preparados aqui.</div>'}
    <div class="ad-cols" style="grid-template-columns:330px 1fr"><div class="card" style="padding:10px">${n.items.map(i=>`<div class="ad-nt ${i.key===A.key?'on':''}" data-nk="${i.key}"><div>${esc(i.name)}<small>${esc(i.when)} · ${i.whatsapp?'WhatsApp e e-mail':'só e-mail'}</small></div><label class="ad-sw" title="${i.on?'Ligado':'Desligado'}"><input type="checkbox" data-sw="${i.key}" ${i.on?'checked':''} aria-label="Ligar ou desligar ${esc(i.name)}"><i></i></label></div>`).join('')}</div>
    <div class="card"><div class="ad-bar"><h2>${esc(v.name)}</h2><div class="ad-right">${v.whatsapp?`<div class="ad-tabs"><button class="ad-tab ${A.ed==='wa'?'on':''}" data-ed2="wa">WhatsApp</button><button class="ad-tab ${A.ed==='email'?'on':''}" data-ed2="email">E-mail</button></div>`:''}</div></div>
@@ -3715,6 +3718,7 @@ async function adAvisos(){
   document.querySelectorAll('[data-ed2]').forEach(b=>b.onclick=()=>{A.ed=b.dataset.ed2;adAvisos()});
   $('#adTok').onclick=async()=>{const body=A.ed==='wa'?{wa:$('#adTw').value}:{subject:$('#adTs').value,pre:$('#adTp').value,title:$('#adTt').value,body:$('#adTb').value};try{await api('/admin/notices/'+A.key,{method:'PUT',body});toast('Texto salvo.');adAvisos()}catch(e){toast(e.message)}};
   $('#adTtest').onclick=async()=>{const r=await api('/admin/notices/'+A.key+'/test',{method:'POST'});toast(r.sent?'Teste enviado para '+r.to+'.':'O e-mail não saiu: envio ainda não configurado.')};
+  if($('#adWsub'))$('#adWsub').onclick=async e=>{e.target.disabled=true;try{const r=await api('/admin/notices/whatsapp/submit',{method:'POST'});toast(r.submitted+' textos enviados para a Meta.')}catch(x){toast(x.message)}adAvisos()};
   if($('#adTrst'))$('#adTrst').onclick=async()=>{await api('/admin/notices/'+A.key,{method:'DELETE'});toast('Voltou ao texto padrão.');adAvisos()};return}
  const at=await api('/admin/attention'),c=at.counts,items=at.items.filter(x=>!A.kind||x.kind===A.kind);
  const kinds=[['','Todos',at.total],['refused','Cobrança recusada',c.refused],['trial_soon','Teste acabando',c.trial_soon],['no_whatsapp','Sem WhatsApp',c.no_whatsapp],['ai_near','Nanda no limite',c.ai_near]];
@@ -3733,6 +3737,19 @@ async function adAvisos(){
  document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{A.ch=b.dataset.ch;adAvisos()});
  if($('#adCx'))$('#adCx').onclick=()=>{A.open=null;adAvisos()};
  if($('#adCok2'))$('#adCok2').onclick=async()=>{const[cid,key]=A.open.split('|');try{const r=await api('/admin/companies/'+cid+'/notify',{method:'POST',body:{key,channel:A._ch}});toast(r.wa&&r.email?'Enviado por WhatsApp e e-mail.':r.wa?'Enviado por WhatsApp.':r.email?'Enviado por e-mail.':'Não saiu: envio ainda não configurado.');A.open=null;adAvisos()}catch(e){toast(e.message)}}}
+/* o cliente escolhe os avisos que recebe do Oi Nanda */
+async function avisosConta(){
+ if(ME.user.role!=='owner'){$('#page').innerHTML='<h1>Avisos do Oi Nanda</h1><div class="card"><p class="note">Só o dono da conta escolhe os avisos.</p></div>';return}
+ const p=await api('/company/notices');
+ $('#page').innerHTML=`<div class="ad" style="max-width:720px"><button class="ad-back" id="avB">‹ Empresa</button><div><h1>Avisos do Oi Nanda</h1><p class="sub">Escolha o que você quer receber sobre a sua conta e por onde.</p></div>
+  <div class="card"><h2>Por onde avisar</h2><div class="ad-nt" style="cursor:default;padding-left:0"><div>WhatsApp<small>Mensagem curta, do número do Oi Nanda</small></div><label class="ad-sw"><input type="checkbox" id="avW" ${p.whatsapp?'checked':''} aria-label="Receber avisos pelo WhatsApp"><i></i></label></div>
+   <label class="ad-fl" style="max-width:300px;margin:4px 0 14px">Celular que recebe os avisos<input id="avP" value="${esc(p.phone)}" placeholder="(11) 91234-5678"></label>
+   <div class="ad-nt" style="cursor:default;padding-left:0"><div>E-mail<small>${esc(p.email||'')} · sempre ligado, é o registro da sua conta</small></div></div></div>
+  <div class="card"><h2>Avisos que você pode desligar</h2>${p.optional.map(o=>`<div class="ad-nt" style="cursor:default;padding-left:0"><div>${esc(o.name)}<small>${esc(o.when)}</small></div><label class="ad-sw"><input type="checkbox" data-opt="${o.key}" ${o.on?'checked':''} aria-label="${esc(o.name)}"><i></i></label></div>`).join('')}</div>
+  <div class="card"><h2>Avisos que sempre chegam</h2><p class="sub" style="margin:6px 0 0">São os que protegem o seu atendimento: ${esc(p.always.join(', '))}.</p></div>
+  <div class="ad-acts"><button class="btn p" id="avS">Salvar</button></div></div>`;
+ $('#avB').onclick=()=>go('empresa');
+ $('#avS').onclick=async()=>{try{await api('/company/notices',{method:'PUT',body:{whatsapp:$('#avW').checked,phone:$('#avP').value,off:[...document.querySelectorAll('[data-opt]')].filter(i=>!i.checked).map(i=>i.dataset.opt)}});toast('Avisos salvos.')}catch(e){toast(e.message)}}}
 const VIEWS={
  metas:()=>mtView(),
  vendas:()=>vdView(),
@@ -4038,6 +4055,7 @@ const VIEWS={
    ${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.actor)}${r.impersonated_by?'<small>suporte Oi Nanda</small>':''}</td><td>${esc(r.action)}${r.target?`<small>${esc(r.target)}</small>`:''}</td><td><small>${esc(r.ip||'')}</small></td></tr>`).join('')}
    </tbody></table>`:'<div class="empty">Nada registrado ainda.</div>'}</div>`;
  },
+ 'avisos-conta':avisosConta,
  'a-visao':adVisao,
  'a-financeiro':adFin,
  'a-clientes':()=>AD.open?adFicha():adClientes(),
@@ -4055,6 +4073,9 @@ const VIEWS={
    <div class="card">${rows.length?rows.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${esc(r.error)}</b><small style="display:block;color:var(--ink3)">${dt(r.at)} · ${esc(r.method)} ${esc(r.path)}</small><pre>${esc(r.trace)}</pre></div>`).join(''):'<div class="empty">Nenhum erro registrado.</div>'}</div>`;
  }
 };
+{const emp=VIEWS.empresa;VIEWS.empresa=async()=>{await emp();if(ME.user.role!=='owner'||!$('#page'))return;
+ $('#page').insertAdjacentHTML('beforeend','<div class="card" style="margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:1;min-width:220px"><h3>Avisos do Oi Nanda</h3><p class="sub" style="margin:4px 0 0">Cobrança, fim do teste e uso da Nanda: escolha o que receber e por onde.</p></div><button class="btn sm" id="goAv">Escolher meus avisos</button></div>');
+ $('#goAv').onclick=()=>go('avisos-conta')}}
 async function drawTeams(people,canManage){
   const box=$('#tmL');if(!box)return;const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
   const P=Object.fromEntries(people.map(p=>[p.id,p]));

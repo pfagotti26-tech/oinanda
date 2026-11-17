@@ -78,6 +78,7 @@ DEFS = {
     rows=[('Número', '{numero}'), ('Desconectou', 'hoje, {hora}')], reply='Quero ajuda', always=True),
 }
 EDIT = ('subject', 'pre', 'title', 'body', 'wa')
+OPTIONAL = ('wa_missing', 'trial_3d', 'trial_1d', 'charge_3d', 'paid', 'ai_80')  # o cliente pode desligar; os demais sempre chegam
 
 def fill(text, v):
     return re.sub(r'\{(\w+)\}', lambda m: str(v.get(m.group(1), m.group(0))), text or '')
@@ -226,6 +227,7 @@ async def deliver(company, key, v=None, once=None, manual=False, only=None):
         if not n.get('always'):
             if quiet(): return None
             if await db.notice_log.find_one({'company_id': company['id'], 'manual': {'$ne': True}, 'soft': True, 'at': {'$gte': now() - timedelta(hours=20)}}): return None
+    if not manual and key in (company.get('notice_off') or []): return False
     owner = await mailer.owner_of(company)
     if not owner: return False
     v = {**await base_vars(company, owner), **(v or {})}; t = await texts(key)
@@ -234,7 +236,7 @@ async def deliver(company, key, v=None, once=None, manual=False, only=None):
         mail = await mailer.send(owner['email'], fill(t['subject'], v), email_html(key, t, v), email_text(key, t, v))
     if only in (None, 'wa') and 'w' in n['ch'] and wa_ready() and company.get('notice_wa') is not False:
         from channels import norm_phone
-        phone = norm_phone(owner.get('wa_phone') or company.get('phone') or ''); tpl = await wa_template(key)
+        phone = norm_phone(company.get('notice_phone') or owner.get('wa_phone') or company.get('phone') or ''); tpl = await wa_template(key)
         if phone and tpl: wa = await wa_send(phone, tpl, v)
     await db.notice_log.insert_one({'id': uid(), 'company_id': company['id'], 'company': company.get('name'), 'key': key, 'name': n['name'], 'subject': fill(t['subject'], v),
                                     'to': owner['email'], 'email': bool(mail), 'wa': bool(wa), 'once': once, 'manual': manual, 'soft': not n.get('always'), 'at': now()})
@@ -296,3 +298,39 @@ async def check_numbers():
             await db.wa_numbers.update_one({'company_id': w['company_id']}, {'$set': {'status': 'disconnected', 'disconnected_at': now()}})
             c = await db.companies.find_one({'id': w['company_id']}, {'_id': 0})
             if c: await deliver(c, 'wa_down', {'numero': w.get('display_phone') or '', 'hora': now().astimezone(SP).strftime('%H:%M')}, once='wa_down:' + now().strftime('%Y-%m-%d'))
+
+# ---------- o cliente escolhe os avisos que recebe (Empresa › Avisos do Oi Nanda) ----------
+from typing import Optional, List
+from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
+from core import owners, audit
+router = APIRouter()
+
+def prefs_out(company, owner):
+    off = company.get('notice_off') or []
+    return {'whatsapp': company.get('notice_wa') is not False, 'phone': company.get('notice_phone') or company.get('phone') or '', 'email': (owner or {}).get('email'),
+            'optional': [{'key': k, 'name': DEFS[k]['name'], 'when': DEFS[k]['when'], 'on': k not in off} for k in OPTIONAL],
+            'always': [DEFS[k]['name'] for k in DEFS if k not in OPTIONAL and k != 'welcome']}
+
+@router.get('/company/notices')
+async def prefs_get(user=Depends(owners)):
+    return prefs_out(user['company'], user)
+
+class PrefsIn(BaseModel):
+    whatsapp: Optional[bool] = None
+    phone: Optional[str] = Field(default=None, max_length=30)
+    off: Optional[List[str]] = None
+
+@router.put('/company/notices')
+async def prefs_put(body: PrefsIn, request: Request, user=Depends(owners)):
+    from channels import norm_phone
+    ch = {}
+    if body.whatsapp is not None: ch['notice_wa'] = body.whatsapp
+    if body.phone is not None:
+        if body.phone.strip() and not norm_phone(body.phone): raise HTTPException(400, 'Confira o número: DDD + celular, ex.: (11) 91234-5678.')
+        ch['notice_phone'] = body.phone.strip()
+    if body.off is not None: ch['notice_off'] = [k for k in body.off if k in OPTIONAL]
+    if ch:
+        await db.companies.update_one({'id': user['company_id']}, {'$set': ch})
+        await audit(request, user, 'Mudou os avisos que recebe do Oi Nanda')
+    return prefs_out(await db.companies.find_one({'id': user['company_id']}, {'_id': 0}), user)

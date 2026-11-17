@@ -106,3 +106,16 @@ def test_uso_da_nanda_textos_e_whatsapp(monkeypatch):
         assert a.post('/api/admin/notices/refused/test').json()['to'] == 'admin@oinanda.com.br'
         assert a.delete('/api/admin/notices/refused').json()['custom'] is False
         assert a.put('/api/admin/notices', json={'paid': False}).json()['notices']['paid'] is False
+
+def test_cliente_escolhe_os_avisos(monkeypatch):
+    subs, _ = fake(monkeypatch); mailer.SENT.clear()
+    with mk() as c:
+        cid = signup(c, 'p5@av.com', 'Studio Cinco')
+        p = c.get('/api/company/notices').json()
+        assert p['whatsapp'] and len(p['optional']) == 6 and 'Cobrança recusada' in p['always']
+        assert c.put('/api/company/notices', json={'phone': '123'}).status_code == 400
+        p = c.put('/api/company/notices', json={'whatsapp': False, 'off': ['trial_3d', 'refused'], 'phone': '11 98888-7777'}).json()
+        assert not p['whatsapp'] and [o['key'] for o in p['optional'] if not o['on']] == ['trial_3d']  # recusada não dá para desligar
+        c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
+        c.portal.call(notices.tick)
+        assert 'Faltam 3 dias do teste da Studio Cinco' not in subjects('p5@av.com')

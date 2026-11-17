@@ -125,6 +125,8 @@ async def lifespan(app):
 
 app = FastAPI(title='Oi Nanda', lifespan=lifespan, docs_url=None, redoc_url=None)
 app.include_router(wa_router, prefix='/api')
+import notices as _notices
+app.include_router(_notices.router, prefix='/api')
 app.include_router(ai_router, prefix='/api')
 app.include_router(funnel_router, prefix='/api')
 app.include_router(agenda_router, prefix='/api')
