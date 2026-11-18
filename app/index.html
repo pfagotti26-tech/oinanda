@@ -1337,6 +1337,226 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .sb-ai{margin-top:14px}#sbPack{white-space:nowrap;flex:none}.sb-aih{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.sb-aih h3{margin:0 0 4px}
 .sb-auto{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.sb-auto label{display:grid;gap:2px;font-size:14px}.sb-auto select{max-width:260px}
 @media(max-width:700px){.sb-aih,.sb-auto{flex-direction:column;align-items:stretch}.sb-auto select{max-width:none}}
+.nz{max-width:1240px;padding-bottom:70px}.nz [hidden]{display:none!important}
+.nz-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.nz-hd h1{margin:0}
+.nz-st{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 14px;white-space:nowrap}
+.nz-st b{display:block;font-size:14px}.nz-st small{display:block;font-size:12px;color:var(--ink3)}.nz-st small b{display:inline;font-size:12px;color:var(--ink2)}
+.nz-dot{width:10px;height:10px;border-radius:50%;background:#2E9E5B;box-shadow:0 0 0 4px #DDF4EC;flex:none}.nz-dot.copilot{background:#3B7DD8;box-shadow:0 0 0 4px #E3EEFB}.nz-dot.off{background:#A0A9B3;box-shadow:0 0 0 4px #EEF1F4}
+.nz-warn{background:var(--warnsoft);border:1px solid #EFD9A6;color:var(--warn);border-radius:14px;padding:10px 14px;font-size:13.5px;margin-bottom:14px}
+.nz-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;align-items:start}
+.nz-l{display:grid;gap:10px}
+.nz-prog{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:grid;gap:10px}
+.nz-pt b{display:block;font-size:15px}.nz-pt span{font-size:13px;color:var(--ink2)}
+.nz-bar{height:8px;border-radius:8px;background:#F1ECE7;overflow:hidden}.nz-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--c),#F19A6B);transition:width .4s}
+.nz-prog .btn{justify-self:start}
+.nz-s{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:box-shadow .2s}
+.nz-s.open{box-shadow:0 18px 40px -30px rgba(23,33,43,.35);border-color:#E7DAD0}
+.nz-sh{width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) 26px 18px;gap:12px;align-items:center;padding:14px 18px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.nz-sh:hover{background:#FDFBF9}.nz-ic{width:38px;height:38px;border-radius:12px;background:var(--tint);display:grid;place-items:center;font-style:normal;font-size:17px}
+.nz-sh b{display:block;font-size:15px}.nz-sh small{display:block;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nz-sh small.miss{color:#B5651D}
+.nz-sh em{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;border:1.5px dashed #D8CFC7}.nz-sh em.ok{border:0;background:var(--oksoft);color:var(--ok)}
+.nz-sh svg{width:18px;height:18px;color:var(--ink3);transition:transform .2s}.nz-s.open .nz-sh svg{transform:rotate(180deg)}
+.nz-sb{padding:4px 18px 20px 68px;display:grid;gap:16px}
+.nz-f{display:grid;gap:6px}.nz-f>label,.nz-fl label{font-size:13px;font-weight:700;color:var(--ink)}
+.nz-fl{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nz-f input,.nz-f textarea{border:1.5px solid #E2D9D1;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;background:#FDFCFB;color:var(--ink);resize:vertical;line-height:1.45;width:100%}
+.nz-f input:focus,.nz-f textarea:focus{outline:0;border-color:var(--c);background:#fff;box-shadow:0 0 0 4px rgba(232,96,63,.1)}
+.nz-f textarea::placeholder,.nz-f input::placeholder{color:#B3AAA2}
+.nz-ex{background:none;border:0;padding:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--c2);cursor:pointer}.nz-ex:hover{text-decoration:underline}
+.nz-2{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px}
+.nz-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nz-modes label{position:relative;border:1.5px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;display:grid;gap:3px;align-content:start;transition:.15s;background:#fff}
+.nz-modes label:hover{border-color:#E8C7B9}.nz-modes label.on{border-color:var(--c);background:var(--tint);box-shadow:0 0 0 4px rgba(232,96,63,.08)}
+.nz-modes label.lock{opacity:.6;cursor:not-allowed}
+.nz-modes input{position:absolute;opacity:0;pointer-events:none}.nz-modes i{font-style:normal;font-size:18px}.nz-modes b{font-size:14px}.nz-modes span{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.nz-seg{display:flex;background:#F4F0EC;border-radius:12px;padding:4px;gap:4px}
+.nz-seg label{flex:1;text-align:center;font-size:13px;font-weight:600;color:var(--ink2);padding:8px 6px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.nz-seg label.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.12)}.nz-seg input{display:none}
+.nz-cat{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg);display:grid;gap:8px}
+.nz-cat label{font-size:13px;font-weight:700}.nz-cat ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.nz-cat li{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0;border-bottom:1px dashed var(--line)}.nz-cat li:last-child{border:0}.nz-cat li i{color:var(--ink3);font-weight:500}
+.nz-cat p{margin:0;font-size:13px;color:var(--ink2)}
+.nz-r{position:sticky;top:16px}
+.nz-play{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 40px -32px rgba(23,33,43,.4)}
+.nz-tabs{display:flex;gap:4px;padding:6px;border-bottom:1px solid var(--line);background:#FBF8F5}
+.nz-tabs button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer}
+.nz-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.1)}.nz-tabs span{background:var(--soft);color:var(--c2);border-radius:999px;padding:0 7px;font-size:11.5px;margin-left:4px}
+#nzChat{padding:12px;display:grid;gap:10px}
+.nz-msgs{background:#EFE7DE;border-radius:14px;padding:12px;display:grid;gap:7px;align-content:end;height:min(46vh,420px);overflow-y:auto}
+.nz-msgs .ob-m{font-size:13.5px;max-width:85%}.nz-msgs .ob-m:not(:last-child),.ob-chat .ob-m:not(:last-child){animation:none}
+.nz-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13px;max-width:280px;line-height:1.5}
+#nzTests .nz-empty{color:var(--ink3);padding:20px 0}
+.nz-chips{display:flex;gap:6px;flex-wrap:wrap}.nz-chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-chips button:hover{border-color:var(--c);color:var(--c2)}
+.nz-comp{display:grid;gap:8px}.nz-comp textarea{border:1.5px solid #E2D9D1;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;resize:none;min-height:46px;max-height:120px;width:100%}
+.nz-comp textarea:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.1)}.nz-comp .btn{width:100%;justify-content:center;padding:12px;border-radius:12px}
+.nz-pf{display:flex;gap:14px;align-items:center}.nz-pf .hint{margin-right:auto;font-size:12px}
+#nzTests{padding:14px;display:grid;gap:10px}.nz-th{display:flex;gap:12px;align-items:flex-start}.nz-th p{margin:0}
+.nz-save{position:sticky;bottom:18px;justify-self:center;z-index:30;margin-top:6px;background:#17212B;color:#fff;border-radius:16px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 20px 40px -14px rgba(23,33,43,.55);font-size:14px;animation:obIn .25s ease both}
+.nz-save .btn:not(.p){background:transparent;color:#fff;border-color:#3A4651}
+@media(max-width:1100px){.nz-grid{grid-template-columns:1fr}.nz-r{position:static}}
+@media(max-width:700px){.nz-hd{flex-direction:column}.nz-st{white-space:normal}.nz-modes{grid-template-columns:1fr}.nz-2{grid-template-columns:1fr}.nz-sb{padding:4px 14px 18px}.nz-sh{padding:12px 14px;grid-template-columns:34px minmax(0,1fr) 24px 16px;gap:10px}.nz-ic{width:34px;height:34px}
+ .nz-save{bottom:76px;justify-self:stretch}.nz-save span{flex:1;font-size:13px}}
+.banner .bn-tx{min-width:0}.banner .bn-ac{margin-left:auto;display:flex;align-items:center;gap:16px;white-space:nowrap}.banner .bn-ac .btn,.banner .bn-ac .lnk{margin:0}
+.nz-mt{display:none}
+.nz-sh{grid-template-columns:30px minmax(0,1fr) 18px!important}
+.nz-sh em{width:30px!important;height:30px!important;border:0!important;background:#F2EEEA;color:var(--ink2);font-size:13px!important}
+.nz-s.open .nz-sh em:not(.ok){background:var(--c);color:#fff}
+.nz-sh em.ok{background:var(--oksoft)!important;color:var(--ok)!important}
+.nz-sb{padding-left:60px}
+@media(max-width:1100px){
+ .nz-mt{display:flex;position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0 10px;margin:0 0 4px;gap:6px}
+ .nz-mt button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 8px;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer}
+ .nz-mt button.on{border-color:var(--c);background:var(--tint);color:var(--c2)}
+ .nz-grid.mt-l .nz-r,.nz-grid.mt-r .nz-l{display:none}
+ .nz-msgs{height:52vh}
+}
+@media(max-width:700px){
+ .banner.demo{flex-direction:column;align-items:stretch;gap:10px;padding:12px 16px;font-weight:500;line-height:1.4}.banner.demo .bn-ac{margin:0;justify-content:space-between}
+ .banner.demo .bn-ac .btn{flex:1;justify-content:center;padding:10px 14px}
+ .nz-hd{flex-direction:row!important;gap:10px;margin-bottom:6px}.nz-hd h1{font-size:26px}.nz-hd .sub{font-size:13.5px}.nz-st{align-self:flex-start;padding:6px 11px;white-space:nowrap!important}.nz-st small{display:none}
+ .nz-sb{padding:4px 14px 18px}.nz-sh{grid-template-columns:30px minmax(0,1fr) 16px!important}
+}
+.jz{max-width:880px;padding-bottom:80px}.jz [hidden]{display:none!important}
+.jz-hd h1{margin:0}.jz-hd .sub{margin-top:6px}
+.jz-how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 22px}
+.jz-how>div{display:flex;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:12.5px;color:var(--ink2);line-height:1.4}
+.jz-how i{font-style:normal;font-size:18px}.jz-how b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+.jz-list{position:relative;display:grid;gap:10px}
+.jz-list:before{content:'';position:absolute;left:21px;top:22px;bottom:22px;width:2px;background:repeating-linear-gradient(var(--line) 0 6px,transparent 6px 10px)}
+.jz-it{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;position:relative}
+.jz-dot{width:44px;height:44px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-size:19px;z-index:1;margin-top:4px}
+.jz-it.open .jz-dot{border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
+.jz-it.off .jz-dot{filter:grayscale(1);opacity:.5}.jz-it.off .jz-tx b{color:var(--ink3)}
+.jz-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:box-shadow .2s}
+.jz-it.open .jz-card{border-color:#E7DAD0;box-shadow:0 18px 40px -30px rgba(23,33,43,.35)}
+.jz-row{width:100%;display:flex;align-items:center;gap:12px;padding:13px 16px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.jz-row:hover{background:#FDFBF9}.jz-tx{flex:1;min-width:0}.jz-tx b{display:block;font-size:15px}
+.jz-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.jz-tag{font-size:12px;color:var(--ink2);background:#F4F0EC;border-radius:999px;padding:3px 9px}.jz-tag.a{background:#E7F1FC;color:#24548F}.jz-tag.n{background:var(--soft);color:var(--c2)}.jz-tag.off{background:#EEF1F4;color:#6B7680}
+.jz-edit{font-size:13px;font-weight:700;color:var(--c2);flex:none}
+.jz-ed{border-top:1px solid var(--line);padding:16px 18px 18px;display:grid;gap:18px;background:#FFFDFB}
+.jz-q{display:grid;gap:8px}.jz-q>label,.jz-sw label{font-size:13.5px;font-weight:700;color:var(--ink)}
+.jz-sub{font-size:12.5px;font-weight:600;color:var(--ink2)}.jz-q textarea{resize:vertical;line-height:1.4}.jz-q input,.jz-q textarea,.jz-q select,.jz-when select{border:1.5px solid #E2D9D1;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;color:var(--ink);width:100%}
+.jz-q input:focus,.jz-q textarea:focus,.jz-q select:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.1)}
+.jz-nm{display:flex;gap:8px}.jz-ic{width:46px;flex:none;border:1.5px solid #E2D9D1;border-radius:12px;background:#fff;font-size:19px;cursor:pointer}
+.jz-icons{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff}.jz-icons button{width:38px;height:38px;border:0;border-radius:10px;background:#F7F3EF;font-size:18px;cursor:pointer}.jz-icons button:hover{background:var(--soft)}
+.jz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jz-opts button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 13px;text-align:left;font:inherit;cursor:pointer;display:grid;gap:2px}
+.jz-opts button b{font-size:13.5px}.jz-opts button span{font-size:12.5px;color:var(--ink2)}.jz-opts button.on{border-color:var(--c);background:var(--tint);box-shadow:0 0 0 4px rgba(232,96,63,.08)}
+.jz-when{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.jz-when>span{font-size:13.5px;color:var(--ink2)}.jz-when select{width:auto;flex:1;min-width:180px}
+.jz-sw{display:flex;justify-content:space-between;gap:12px;align-items:center}.jz-sw small{display:block;font-size:12.5px;color:var(--ink2)}
+.jz-eft{display:flex;align-items:center;gap:12px;padding-top:4px;border-top:1px dashed var(--line);padding-top:14px}
+.jz-on{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600}.jz-mv{display:flex;gap:4px;margin-left:auto}
+.jz-rm{background:none;border:0;font:inherit;font-size:13px;font-weight:700;color:var(--bad);cursor:pointer}
+.jz-ft{display:flex;align-items:center;gap:16px;margin:14px 0 0 56px}
+.jz-add{border:1.5px dashed #D8CFC7;background:#fff;border-radius:14px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink2);cursor:pointer}.jz-add:hover{border-color:var(--c);color:var(--c2)}
+.jz-save{position:sticky;bottom:18px;justify-self:center;display:flex;width:max-content;margin:16px auto 0;z-index:30}
+@media(max-width:700px){.jz-how{grid-template-columns:1fr;gap:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 0}.jz-how>div{border:0;border-radius:0;padding:8px 12px;align-items:center}.jz-how>div+div{border-top:1px solid var(--line)}.jz-how b{display:inline;margin-right:4px}.jz-how i{font-size:16px}.jz-when>span{display:none}.jz-when select{min-width:0;width:100%;flex:1 1 100%}
+ .jz-it{grid-template-columns:34px minmax(0,1fr);gap:10px}.jz-dot{width:34px;height:34px;font-size:15px}.jz-list:before{left:16px}
+ .jz-opts{grid-template-columns:1fr}.jz-ed{padding:14px}.jz-eft{flex-wrap:wrap}.jz-mv{margin-left:0}.jz-eft .btn{margin-left:auto}
+ .jz-ft{margin-left:44px;flex-direction:column;align-items:flex-start}.jz-save{bottom:76px;width:auto}.jz-edit{display:none}}
+.jz-sum{font-size:13.5px;color:var(--ink2);margin:-8px 0 14px 56px}.jz-sum b{color:var(--ink)}
+.jz-row{padding:0!important;gap:0!important;cursor:default!important}.jz-row:hover{background:none!important}
+.jz-hit{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:13px 6px 13px 16px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:18px 0 0 18px}.jz-hit:hover .jz-tx b{color:var(--c2)}
+.jz-cnt{display:grid;justify-items:end;flex:none;padding-right:6px;gap:3px}.jz-cnt em{display:block;width:84px;height:5px;border-radius:5px;background:#F1ECE7;overflow:hidden}.jz-cnt em i{display:block;height:100%;background:linear-gradient(90deg,var(--c),#F19A6B);border-radius:5px}.jz-cnt b{font-size:20px;letter-spacing:-.4px;line-height:1.1}.jz-cnt small{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.jz-row .tg{flex:none;margin:0 6px}
+.jz-grip{flex:none;width:34px;align-self:stretch;display:grid;place-items:center;color:#C9BFB6;cursor:grab;font-size:13px;letter-spacing:-2px;user-select:none}.jz-grip:hover{color:var(--ink2)}
+.jz-it.drag{opacity:.4}.jz-it.over .jz-card{border-color:var(--c);box-shadow:0 0 0 3px rgba(232,96,63,.15)}
+.jz-pick{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px;justify-items:start}.jz-pick b{font-size:14px}
+.jz-pick>div{display:flex;flex-wrap:wrap;gap:8px}.jz-pick>div button{border:1px solid var(--line);background:#FBF8F5;border-radius:999px;padding:8px 13px;font:inherit;font-size:13px;cursor:pointer}.jz-pick>div button:hover{border-color:var(--c);background:var(--tint)}
+.jz-pick>div button.new{border-style:dashed;background:#fff;font-weight:700;color:var(--c2)}
+.jz-ft{align-items:flex-start!important}
+@media(max-width:700px){.jz-sum{margin-left:0}.jz-grip{display:none}.jz-cnt b{font-size:17px}.jz-cnt small,.jz-cnt em{display:none}.jz-hit{padding-left:12px}}
+.jz-per{margin:-6px 0 16px 56px;display:grid;gap:10px;transition:opacity .2s}.jz-per.busy{opacity:.55}
+.jz-pt{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.jz-pn{font-size:14px;color:var(--ink2)}.jz-pn b{color:var(--ink)}
+.jz-seg{display:flex;background:#F1ECE7;border-radius:12px;padding:3px;gap:2px}
+.jz-seg button{border:0;background:none;border-radius:9px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.jz-seg button svg{width:14px;height:14px}.jz-seg button:hover{color:var(--ink)}.jz-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.12)}
+.jz-cus{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;animation:obIn .2s ease both}
+.jz-cus label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2)}.jz-cus>span{font-size:13px;color:var(--ink3)}
+.jz-cus input{border:1.5px solid #E2D9D1;border-radius:10px;padding:7px 10px;font:inherit;font-size:13.5px;color:var(--ink);background:#FDFCFB}
+.jz-cus input:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 3px rgba(232,96,63,.1)}
+.jz-qk{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}.jz-qk button{border:1px solid var(--line);background:#FBF8F5;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.jz-qk button:hover{border-color:var(--c);color:var(--c2)}
+.jz-pe{margin:0;font-size:13px;color:var(--ink3)}
+@media(max-width:700px){.jz-per{margin-left:0}.jz-seg{width:100%;overflow-x:auto;scrollbar-width:none}.jz-seg button{flex:1 0 auto;padding:7px 10px}
+ .jz-pl{display:none}.jz-seg{overflow:visible}.jz-seg button{flex:1 1 auto;justify-content:center;padding:8px 6px}
+ .jz-cus{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.jz-cus label{display:grid;gap:4px;min-width:0}.jz-cus input{width:100%;min-width:0;padding:7px 8px}.jz-cus>span{align-self:end;padding-bottom:9px}.jz-qk{grid-column:1/-1;margin:0}}
+.jz-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.jz-sty{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font:inherit;cursor:pointer;text-align:left;flex:none}
+.jz-sty:hover{border-color:#E8C7B9}.jz-sty i{font-style:normal;font-size:20px}.jz-sty span{font-size:13.5px;font-weight:700;color:var(--ink)}.jz-sty small{display:block;font-size:11.5px;font-weight:600;color:var(--ink3)}
+.jz-sty em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--c2);margin-left:6px}
+.jz-idle{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 16px 14px;font-size:12.5px;color:#8A520F;background:#FFF6E5;border:1px solid #F6E2BC;border-radius:12px;padding:8px 12px}
+.jz-idle span{flex:1;min-width:200px}.jz-idle button{border:0;background:#fff;border-radius:8px;padding:5px 10px;font:inherit;font-size:12.5px;font-weight:700;color:#8A520F;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06)}.jz-idle button:hover{background:#FFEBC7}
+.jz-pk{max-width:980px}.jz-pk h1{margin:6px 0 0}.jz-pk .sub{max-width:640px}
+.jz-eyb{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c2)}
+.jz-back{display:block;margin-bottom:14px}
+.jz-pkg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.jz-pc{position:relative;text-align:left;font:inherit;color:inherit;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:5px;align-content:start;cursor:pointer;transition:.15s}
+.jz-pc:hover{border-color:#E8C7B9;transform:translateY(-1px)}.jz-pc.on{border-color:var(--c);background:linear-gradient(180deg,#FFF6F2,#fff 60%);box-shadow:0 0 0 4px rgba(232,96,63,.1)}
+.jz-pc>i{font-style:normal;font-size:26px;width:48px;height:48px;border-radius:14px;background:var(--tint);display:grid;place-items:center;margin-bottom:6px}
+.jz-pc b{font-size:17px;letter-spacing:-.2px}.jz-pd{font-size:13.5px;color:var(--ink2)}.jz-pc small{font-size:12.5px;color:var(--ink3)}
+.jz-rd{position:absolute;top:20px;right:20px;width:22px;height:22px;border-radius:50%;border:2px solid #CFC6BE}.jz-pc.on .jz-rd{border-color:var(--c);background:var(--c);box-shadow:inset 0 0 0 4px #fff}
+.jz-rec{position:absolute;top:-11px;left:18px;background:var(--ok);color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px}
+.jz-chain{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.jz-chain span{font-size:12px;font-weight:600;background:#F4F0EC;color:var(--ink2);border-radius:999px;padding:4px 9px}.jz-pc.on .jz-chain span{background:var(--soft);color:var(--c2)}
+.jz-chain em{font-style:normal;color:#C9BFB6;font-weight:700}
+.jz-pkf{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;flex-wrap:wrap}.jz-pkf p{margin:0;max-width:520px}.jz-pkf .btn{padding:13px 24px;border-radius:14px}
+@media(max-width:700px){.jz-hd{flex-direction:column}.jz-pkg{grid-template-columns:1fr}.jz-pc{padding:16px}.jz-pkf{position:sticky;bottom:72px;background:var(--bg);padding:10px 0}.jz-pkf .btn{width:100%}}
+.jz-leg{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 22px;font-size:13px;color:var(--ink3)}.jz-leg span{display:flex;align-items:center;gap:6px}.jz-leg i{font-style:normal}.jz-leg b{color:var(--ink2);font-weight:700}
+.jz-pn{font-size:14px!important;color:var(--ink3)!important}.jz-pn b{color:var(--ink)!important}
+.jz-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jz-kpi>div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:2px}
+.jz-kpi small{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.jz-kpi b{font-size:28px;letter-spacing:-.8px;line-height:1.15}.jz-kpi span{font-size:12.5px;color:var(--ink2)}.jz-kpi em{font-style:normal;font-weight:700;color:var(--ink)}
+.jz-kpi .ok b{color:var(--ok)}.jz-kpi .warn{background:#FFFAF2;border-color:#F6E2BC}.jz-kpi .warn b{color:#B4661A}
+.jz-list{gap:26px!important}
+.jz-conv{position:absolute;left:22px;top:-21px;transform:translateX(-50%);z-index:2;font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.jz-conv.g{color:#0A6B57;border-color:#BFE3D6;background:#F2FBF7}.jz-conv.a{color:#9A5B12;border-color:#F3D9A9;background:#FFF8EC}.jz-conv.r{color:#B03A25;border-color:#F3C3B8;background:#FFF3F0}
+.jz-card{border-color:#EFE7E0!important;box-shadow:0 1px 2px rgba(23,33,43,.03)}
+.jz-tag{background:transparent!important;padding:0!important;font-weight:600}.jz-tag.a{color:#2F5F96!important}.jz-tag.n{color:var(--c2)!important}.jz-tag.off{color:#7A8794!important}
+.jz-tags{gap:4px 14px!important}
+@media(max-width:700px){.jz-kpi{grid-template-columns:1fr 1fr}.jz-kpi .warn{grid-column:1/-1}.jz-kpi b{font-size:24px}.jz-conv{left:17px}.jz-leg{font-size:12.5px;gap:6px 14px}}
+.hm{max-width:1120px;display:grid;gap:18px}.hm>div:empty{display:none}.hm-mini{display:none}
+.hm-hero{display:flex;gap:28px;align-items:center;justify-content:space-between;padding:28px 30px;border-radius:24px;background:radial-gradient(120% 140% at 100% 0%,#FFE1D4 0%,#FFF1EA 45%,#FFFDFB 100%);border:1px solid #F6DCD1}
+.hm-hl{flex:1;min-width:0;display:grid;gap:8px}.hm-hi{font-size:14px;font-weight:700;color:var(--c2)}
+.hm-hero h1{margin:0;font-size:28px;line-height:1.18;letter-spacing:-.7px;max-width:620px}.hm-hero p{margin:0;color:var(--ink2);font-size:15px}
+.hm-next{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;padding:14px 16px;margin-top:10px;box-shadow:0 18px 40px -26px rgba(196,74,44,.45);max-width:640px}
+.hm-next>i{font-style:normal;font-size:24px;width:48px;height:48px;border-radius:14px;background:var(--tint);display:grid;place-items:center;flex:none}
+.hm-next>span{flex:1;min-width:0;display:grid}.hm-next small{font-size:12px;font-weight:700;color:var(--c2);text-transform:uppercase;letter-spacing:.04em}.hm-next b{font-size:16px}.hm-next em{font-style:normal;font-size:13px;color:var(--ink2)}
+.hm-next .btn{flex:none;padding:12px 18px;border-radius:12px}
+.hm-ring{position:relative;width:132px;height:132px;flex:none}.hm-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.hm-ring circle{fill:none;stroke-width:8}.hm-ring .bg{stroke:#F6DCD1}.hm-ring .fg{stroke:var(--c);stroke-linecap:round;transition:stroke-dashoffset .8s}
+.hm-ring>span{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:12px;color:var(--ink2);line-height:1.2}.hm-ring b{font-size:30px;letter-spacing:-1px;color:var(--ink)}.hm-ring b small{font-size:15px;color:var(--ink3)}
+.hm-now{display:flex;gap:10px;flex-wrap:wrap}
+.hm-al{flex:1;min-width:260px;display:flex;align-items:center;gap:12px;border-radius:16px;padding:12px 16px;border:1px solid;font:inherit;text-align:left;cursor:pointer;background:#fff}
+.hm-al b{font-size:22px;letter-spacing:-.5px;min-width:26px}.hm-al span{flex:1;font-size:14px}.hm-al em{font-style:normal;font-weight:700;font-size:13.5px;white-space:nowrap}
+.hm-al.a{border-color:#F6E2BC;background:#FFFAF0;color:#7A4A0C}.hm-al.r{border-color:#F3C3B8;background:#FFF4F1;color:#9E2B1E}.hm-al.g{border-color:#BFE3D6;background:#F2FBF7;color:#0A5C50;cursor:default}
+.hm-sec{display:grid;gap:12px}.hm-sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.hm-sh h2{margin:0;font-size:18px;letter-spacing:-.3px}.hm-tag{font-size:12.5px;color:var(--ink3)}
+.hm-val{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.hm-val>div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:3px}
+.hm-val i{font-style:normal;font-size:20px;width:38px;height:38px;border-radius:12px;background:var(--tint);display:grid;place-items:center;margin-bottom:6px}
+.hm-val small{font-size:12.5px;color:var(--ink2);font-weight:600}.hm-val b{font-size:30px;letter-spacing:-1px;line-height:1.1}.hm-val span{font-size:12.5px;color:var(--ink3)}
+.hm-demo{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px 24px;overflow:hidden}
+.hm-dl b{font-size:18px;letter-spacing:-.3px}.hm-dl p{margin:8px 0 16px;color:var(--ink2);font-size:14.5px;line-height:1.5}
+.hm-dr{background:#EFE7DE;border-radius:18px;padding:16px;display:grid;gap:8px}.hm-dr .ob-m{font-size:13px;animation:none}
+.hm-chip{justify-self:center;background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--ok);box-shadow:0 6px 16px -8px rgba(23,33,43,.3)}
+.hm-steps{background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 18px}
+.hm-st{display:flex;align-items:center;gap:14px;padding:13px 0}.hm-st+.hm-st{border-top:1px solid #F3EDE7}
+.hm-st>i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:#F2EEEA;color:var(--ink2);flex:none}
+.hm-st.ok>i{background:var(--oksoft);color:var(--ok)}.hm-st.nx>i{background:var(--c);color:#fff;box-shadow:0 0 0 4px rgba(232,96,63,.15)}
+.hm-st>span{flex:1;min-width:0;display:grid}.hm-st b{font-size:14.5px}.hm-st em{font-style:normal;font-size:13px;color:var(--ink2)}
+.hm-st.ok b{color:var(--ink3);text-decoration:line-through;text-decoration-color:#CFC6BE}.hm-st.ok em{color:var(--ink3)}
+.hm-st>small{font-size:12px;color:var(--ink3);white-space:nowrap}
+.hm-faq details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 16px}.hm-faq details+details{margin-top:-4px}
+.hm-faq summary{cursor:pointer;padding:13px 0;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between}.hm-faq summary::after{content:'+';color:var(--ink3);font-weight:600}
+.hm-faq details[open] summary::after{content:'−'}.hm-faq p{margin:0 0 14px;color:var(--ink2);font-size:13.5px;line-height:1.5}
+.hm-mi{max-width:860px!important}.hm-mi .mi{border:0;box-shadow:none;padding:0}
+@media(max-width:900px){.hm-val{grid-template-columns:1fr 1fr}.hm-demo{grid-template-columns:1fr}}
+@media(max-width:700px){.hm-hero{padding:20px 18px}.hm-ring{display:none}.hm-hi{display:flex;justify-content:space-between;align-items:center;gap:8px}.hm-mini{display:inline-block;font-size:11.5px;font-weight:700;color:var(--c2);background:#fff;border-radius:999px;padding:3px 9px}
+ .hm-now{flex-direction:column}.hm-al{width:100%}
+ .hm-hero h1{font-size:23px}.hm-next{flex-wrap:wrap}.hm-next .btn{width:100%;justify-content:center}.hm-val b{font-size:24px}.hm-val>div{padding:13px}
+ .hm-st{flex-wrap:wrap}.hm-st>span{flex:1 1 calc(100% - 50px)}.hm-st>small{display:none}.hm-st .btn{margin-left:44px}.hm-demo{padding:18px}.hm-al{min-width:0}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -1816,7 +2036,7 @@ function shell(){
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
-     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial">Modo demonstração: explore à vontade. Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></div>`
+     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
      :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${ME.card_trial?` A primeira mensalidade entra em ${obDay(ME.card_trial)}.`:''}${u.role==='owner'?`<button class="lnk" data-sub>${ME.card_trial?'Ver assinatura':'Ver planos e assinar'}</button>`:''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
@@ -4285,53 +4505,101 @@ const VIEWS={
   POLL=setInterval(async()=>{if(VIEW!=='conversas'||document.hidden)return;try{await cvList();cvCounts();if(CV.open)await cvChat(false)}catch(e){}},4000);
  },
  async nanda(){
-  const [s,tests,ex]=await Promise.all([api('/ai/settings'),api('/ai/tests').catch(()=>[]),api('/ai/example').catch(()=>({}))]);const u=s.usage||{};
-  const F=[['about','Sobre o negócio','O que é, onde fica, para quem atende.',3],['offer','Condições, pacotes e observações de preço','Formas de pagamento, parcelamento, pacotes, descontos. Os valores em si ficam no Catálogo.',3],
-    ['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','Perguntas para entender o cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3],
-    ['rules','Regras do negócio','O que ela nunca deve fazer ou prometer.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam para o time sozinhos.',2]];
-  if(s.knowledge)F.push(['knowledge','Outras informações','O texto que você já tinha ensinado. Pode ir distribuindo nos campos acima.',6]);
-  const cat=s.catalog||[];
-  const catBox=`<div class="field"><label>O que vende e quanto custa</label><div class="ai-cat">${cat.length?`<ul>${cat.slice(0,12).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<span class="hint">sem preço</span>'}</b></li>`).join('')}</ul>${cat.length>12?`<p class="hint">e mais ${cat.length-12} itens</p>`:''}`:'<p class="hint" style="margin:0">Seu catálogo ainda está vazio. Cadastre os serviços e preços uma vez só: a Nanda usa os mesmos valores das vendas.</p>'}
-    <button type="button" class="btn sm" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
-    <span class="hint">A Nanda lê os preços direto do Catálogo (Vendas › Catálogo). Mudou lá, ela já fala o valor novo. Item sem preço ela não informa: chama o time.</span></div>`;
-  const fld=([k,l,h,r])=>(k==='offer'?catBox:'')+`<div class="field"><label>${l}</label><textarea name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(s[k]||'')}</textarea><span class="hint">${h}</span></div>`;
-  $('#page').innerHTML=`<h1>Nanda (IA)</h1><p class="sub">O que a Nanda sabe sobre o ${esc(ME.company.name)}, como ela fala e quando chama o time.</p>
-   ${s.key_configured?'':'<div class="note" style="margin-bottom:14px;border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)"><b>A IA ainda não foi ativada no servidor.</b> Dá para preencher tudo agora; ela começa a responder assim que a ativação for feita.</div>'}
-   <div class="ai-wrap"><form class="card grid" id="aiF" style="gap:16px">
-    <div class="field"><label>Como a Nanda atua nas conversas novas</label><div class="modes">
-      ${[['copilot','Copiloto','Sugere respostas; o time revisa e envia.'],['auto','Automática','Responde sozinha e chama o time quando precisa.'],['off','Pausada','Não responde nem sugere.']].map(m=>`<label><input type="radio" name="default_mode" value="${m[0]}" ${s.default_mode===m[0]?'checked':''}><b>${m[1]}</b>${m[2]}</label>`).join('')}
-    </div><span class="hint">Dá para mudar conversa por conversa. Quando alguém do time responde, a Nanda sai de cena naquela conversa.</span></div>
-    <div class="form2"><div class="field"><label>Nome da assistente</label><input name="name" value="${esc(s.name)}" minlength="2" maxlength="30"></div>
-     <div class="field"><label>Jeito de falar</label><select name="tone">${[['proximo','Próximo e direto'],['descontraido','Descontraído'],['formal','Mais formal']].map(t=>`<option value="${t[0]}" ${s.tone===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select></div></div>
-    <div class="row"><h3 class="sec" style="margin:0">O que ela precisa saber</h3><button type="button" class="btn sm" id="aiEx" style="margin-left:auto">Preencher com exemplo de ${esc((SEGS[ME.company.segment]||'negócio').toLowerCase())}</button></div>
-    <div class="field"><label>Objetivo da conversa</label><input name="goal" value="${esc(s.goal||'')}" maxlength="1000" placeholder="${esc(ex.goal||'')}"><span class="hint">O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra...</span></div>
-    ${F.map(fld).join('')}
-    <div class="row"><button class="btn p">Salvar</button><span class="err" id="aiE"></span>
-     <span style="margin-left:auto;font-size:12.5px;color:var(--ink3)">Este mês: ${u.replies||0} respostas · ${u.suggestions||0} sugestões · ${u.tests||0} testes</span></div>
-   </form>
-   <div class="grid" style="gap:14px;align-content:start"><div class="card play"><div class="hd"><b>Teste a ${esc(s.name)}</b><span class="pill grey">não envia nada</span><button class="btn sm" id="plS" style="margin-left:auto" title="Guarda esta situação para conferir sempre">Salvar teste</button><button class="btn sm" id="plR">Limpar</button></div>
-    <div class="msgs" id="plM"></div>
-    <form class="comp" id="plF"><textarea id="plT" rows="1" placeholder="Oi, quanto custa?"></textarea><button class="btn p">Enviar</button></form></div>
-    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Testes salvos</h3><button class="btn sm p" id="tsRun" style="margin-left:auto">Rodar todos</button></div>
-     <p class="hint" style="margin:4px 0 10px">Situações que a Nanda precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><div id="tsL" class="grid" style="gap:8px"></div></div></div></div>`;
-  $('#aiF').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('.btn.p');b.disabled=true;$('#aiE').textContent='';
-    try{await api('/ai/settings',{method:'PUT',body:Object.fromEntries(new FormData(ev.target))});toast('Nanda atualizada.')}catch(e){$('#aiE').textContent=e.message}b.disabled=false};
-  $('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
-  $('#aiEx').onclick=()=>{let n=0;['goal',...F.map(f=>f[0])].forEach(k=>{const el=$('#aiF')[k];if(el&&!el.value.trim()&&ex[k]){el.value=ex[k];n++}});toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+  const [s,tests,ex,ua]=await Promise.all([api('/ai/settings'),api('/ai/tests').catch(()=>[]),api('/ai/example').catch(()=>({})),api('/billing/ai').catch(()=>null)]);const u=s.usage||{};
+  const cat=s.catalog||[],segName=(SEGS[ME.company.segment]||'negócio').toLowerCase();
+  const MODES=[['auto','Atende sozinha','Responde, agenda e chama o time quando precisa.','⚡'],['copilot','Copiloto','Sugere a resposta e o time revisa antes de enviar.','✍️'],['off','Pausada','Não responde nem sugere.','⏸']];
+  const TONES=[['proximo','Próximo e direto'],['descontraido','Descontraído'],['formal','Mais formal']];
+  // seções: [id, título, ícone, campos, pronto?]
+  const SEC=[
+   ['jeito','Como ela atende','💬',[],()=>true],
+   ['negocio','O seu negócio','🏪',[['about','Sobre o negócio','O que é, onde fica e para quem atende.',3],['goal','Objetivo da conversa','O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra.',1]],v=>v.about&&v.goal],
+   ['precos','Preços e condições','🏷️',[['offer','Condições de pagamento e pacotes','Parcelamento, pacotes, descontos. Os valores ficam no Catálogo.',3]],v=>cat.length||v.offer],
+   ['duvidas','Dúvidas e perguntas','❓',[['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','O que ela pergunta ao cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3]],v=>v.faq],
+   ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam sozinhos.',2]],v=>v.rules||v.handoff]];
+  if(s.knowledge)SEC.push(['outras','Outras informações','📎',[['knowledge','Texto que você já tinha ensinado','Pode ir distribuindo nas seções acima.',6]],v=>true]);
+  const V={};['name','tone','default_mode','about','goal','offer','faq','qualify','rules','handoff','knowledge'].forEach(k=>V[k]=s[k]||'');
+  let saved=JSON.stringify(V),open=null,MT='l';
+  const done=()=>SEC.filter(x=>x[0]!=='outras'&&x[4](V)).length,total=SEC.filter(x=>x[0]!=='outras').length;
+  if(!open)open=(SEC.find(x=>!x[4](V))||SEC[0])[0];
+  const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
+  const fieldH=([k,l,h,r])=>`<div class="nz-f"><div class="nz-fl"><label for="nz_${k}">${l}</label>${ex[k]&&!V[k].trim()?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</div>
+    ${r===1?`<input id="nz_${k}" name="${k}" value="${esc(V[k])}" maxlength="1000" placeholder="${esc(ex[k]||'')}">`:`<textarea id="nz_${k}" name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(V[k])}</textarea>`}<span class="hint">${h}</span></div>`;
+  const catH=()=>`<div class="nz-cat"><div class="nz-fl"><label>O que vende e quanto custa</label><button type="button" class="nz-ex" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
+    ${cat.length?`<ul>${cat.slice(0,8).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<i>sem preço</i>'}</b></li>`).join('')}</ul>${cat.length>8?`<p class="hint">e mais ${cat.length-8} itens</p>`:''}`
+    :'<p>Ainda vazio. Cadastre serviços e preços uma vez só: a Nanda usa os mesmos valores das vendas.</p>'}<span class="hint">Item sem preço ela não informa: chama o time.</span></div>`;
+  const body=id=>{if(id==='jeito')return `<div class="nz-modes">${MODES.map(m=>{const lock=m[0]==='auto'&&ME.access&&!(ME.access.features||[]).includes('auto');return `<label class="${V.default_mode===m[0]?'on':''} ${lock?'lock':''}"><input type="radio" name="default_mode" value="${m[0]}" ${V.default_mode===m[0]?'checked':''} ${lock?'disabled':''}><i>${m[3]}</i><b>${m[1]}</b><span>${lock?'Faz parte do plano Profissional.':m[2]}</span></label>`}).join('')}</div>
+     <p class="hint" style="margin:-4px 0 0">Vale para conversas novas. Dá para mudar conversa por conversa, e quando alguém do time responde ela sai de cena.</p>
+     <div class="nz-2"><div class="nz-f"><label for="nz_name">Nome dela</label><input id="nz_name" name="name" value="${esc(V.name)}" minlength="2" maxlength="30"></div>
+      <div class="nz-f"><label>Jeito de falar</label><div class="nz-seg">${TONES.map(t=>`<label class="${V.tone===t[0]?'on':''}"><input type="radio" name="tone" value="${t[0]}" ${V.tone===t[0]?'checked':''}>${t[1]}</label>`).join('')}</div></div></div>`;
+    const S=SEC.find(x=>x[0]===id);return (id==='precos'?catH():'')+S[3].map(fieldH).join('')};
+  const summary=x=>{if(x[0]==='jeito')return `${esc(V.name||'Nanda')} · ${modeOf(V.default_mode)[1]} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]}`;
+    if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'item':'itens'} no Catálogo${V.offer?' · condições preenchidas':''}`;
+    const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
+  const nf=n=>Number(n||0).toLocaleString('pt-BR');
+  const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
+  const draw=()=>{const d=done(),m=modeOf(V.default_mode);
+   $('#page').innerHTML=`<div class="nz">
+    <div class="nz-hd"><div><h1>Nanda (IA)</h1><p class="sub">Ensine o que ela precisa saber e teste como ela responde.</p></div>
+     <div class="nz-st"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span></div></div>
+    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Ensinar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
+    ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
+    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
+     <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Agora teste com perguntas reais dos seus clientes.':'Preencha cada parte. Quanto mais ela souber, menos ela chama o time.'}</span></div>
+      <div class="nz-bar"><i style="width:${Math.round(100*d/total)}%"></i></div>
+      ${d===total?'<button type="button" class="btn sm p" id="nzTry">Testar agora</button>':''}${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">Preencher o que falta com exemplo de ${esc(segName)}</button>`:''}</div>
+     ${SEC.map((x,i)=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
+      <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      ${isO?`<div class="nz-sb">${body(x[0])}</div>`:''}</section>`}).join('')}
+     <div class="nz-save" id="nzSave" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="nzUndo">Descartar</button><button type="button" class="btn sm p" id="nzOk">Salvar</button></div>
+    </form>
+    <aside class="nz-r"><div class="nz-play"><div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
+      <div id="nzChat"><div class="nz-msgs" id="plM"></div>
+       <div class="nz-chips">${(OB_ASK[ME.company.segment]||OB_ASK.outro).map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
+       <form class="nz-comp" id="plF"><textarea id="plT" rows="1" placeholder="Escreva como se fosse um cliente..." aria-label="Mensagem de teste"></textarea><button class="btn p" type="submit">Enviar mensagem</button></form>
+       <div class="nz-pf"><span class="hint">Não envia nada.</span><button type="button" class="nz-ex" id="plS">Salvar como teste</button><button type="button" class="nz-ex" id="plR">Limpar</button></div></div>
+      <div id="nzTests" hidden><div class="nz-th"><p class="hint">Situações que ela precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><button class="btn sm p" id="tsRun" type="button">Rodar todos</button></div><div id="tsL" class="grid" style="gap:8px"></div></div>
+     </div></aside></div>
+    </div>`;
+   bind()};
+  const dirty=()=>JSON.stringify(V)!==saved;
+  const showSave=()=>{const b=$('#nzSave');if(b)b.hidden=!dirty()};
+  const save=async quiet=>{const b=$('#nzOk');if(b)b.disabled=true;try{await api('/ai/settings',{method:'PUT',body:V});saved=JSON.stringify(V);if(!quiet)toast('Nanda atualizada.');showSave();return true}catch(e){toast(e.message);return false}finally{if(b)b.disabled=false}};
+  const refreshHead=()=>{const keep=[...document.querySelectorAll('.nz-s.open textarea,.nz-s.open input')].find(e=>e===document.activeElement);
+   SEC.forEach(x=>{const el=document.querySelector(`.nz-s[data-s="${x[0]}"]`);if(!el)return;const ok=x[4](V);el.querySelector('.nz-sh small').className=ok?'':'miss';el.querySelector('.nz-sh small').innerHTML=summary(x);const em=el.querySelector('.nz-sh em');em.className=ok?'ok':'';em.textContent=ok?'✓':em.dataset.n});
+   const d=done();$('.nz-pt b').textContent=d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`;$('.nz-bar i').style.width=Math.round(100*d/total)+'%';showSave();return keep};
+  function bind(){
+   const f=$('#aiF');
+   f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};
+   f.onchange=e=>{const t=e.target;if(t.type==='radio'){V[t.name]=t.value;t.closest('div').querySelectorAll('label').forEach(l=>l.classList.toggle('on',l.contains(t)&&t.checked));refreshHead();if(t.name==='default_mode'){const m=modeOf(V.default_mode);$('.nz-st b').textContent=m[1];$('.nz-dot').className='nz-dot '+V.default_mode}}};
+   document.querySelectorAll('.nz-sh').forEach(h=>h.onclick=()=>{const id=h.parentNode.dataset.s;open=open===id?null:id;draw();const el=document.querySelector(`.nz-s[data-s="${id}"]`);if(open&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start',behavior:'smooth'})});
+   document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const k=b.dataset.ex;V[k]=ex[k];draw();toast('Exemplo colocado. Troque pelos dados do seu negócio.')});
+   if($('#aiCat'))$('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
+   if($('#aiEx'))$('#aiEx').onclick=()=>{let n=0;SEC.forEach(x=>x[3].forEach(([k])=>{if(!V[k].trim()&&ex[k]){V[k]=ex[k];n++}}));open=(SEC.find(x=>!x[4](V))||SEC[1])[0];draw();toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+   if($('#nzTry'))$('#nzTry').onclick=()=>{if(innerWidth<=1100)document.querySelector('[data-mt=r]').click();else $('#plT').focus()};
+   $('#nzOk').onclick=()=>save();$('#nzUndo').onclick=()=>{Object.assign(V,JSON.parse(saved));draw()};showSave();
+   document.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{MT=b.dataset.mt;document.querySelectorAll('[data-mt]').forEach(x=>x.classList.toggle('on',x===b));$('.nz-grid').className='nz-grid mt-'+MT;scrollTo({top:0,behavior:'smooth'})});
+   document.querySelectorAll('.nz-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nz-tabs button').forEach(x=>x.classList.toggle('on',x===b));$('#nzChat').hidden=b.dataset.t!=='chat';$('#nzTests').hidden=b.dataset.t==='chat'});
+   drawTests(tests);playBind()}
   const EXP={reply:'Responder sozinha',handoff:'Chamar o time',book:'Agendar'};
-  const drawTests=list=>{$('#tsL').innerHTML=list.length?list.map(t=>`<div class="tst"><span><b>${esc(t.name)}</b> <span class="hint">· esperado: ${EXP[t.expect]}${t.contains?' · citar "'+esc(t.contains)+'"':''}${t.not_contains?' · sem "'+esc(t.not_contains)+'"':''}</span></span>
+  const drawTests=list=>{const L=$('#tsL');if(!L)return;L.innerHTML=list.length?list.map(t=>`<div class="tst"><span><b>${esc(t.name)}</b> <span class="hint">· esperado: ${EXP[t.expect]}${t.contains?' · citar "'+esc(t.contains)+'"':''}${t.not_contains?' · sem "'+esc(t.not_contains)+'"':''}</span></span>
      <span class="row" style="gap:6px">${t.last?`<span class="pill ${t.last.ok?'ok':'bad'}">${t.last.ok?'passou':'falhou'}</span>`:'<span class="pill grey">não rodado</span>'}<button class="btn sm" data-tdel="${t.id}" title="Apagar">×</button></span>
-     ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="hint">Converse no teste acima e clique em "Salvar teste" para guardar a situação.</div>';
-    document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});drawTests(await api('/ai/tests'))})};
-  drawTests(tests);
-  $('#tsRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{const r=await api('/ai/tests/run',{method:'POST'});drawTests(r.tests);toast(`${r.passed} de ${r.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'};
-  const hist=[];const box=$('#plM');
-  const draw=()=>{box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)}</div>`:`<div class="m ${m.dir==='in'?'in':'out ai'}">${esc(m.text)}</div>`).join(''):'<div class="m sys">Escreva como se fosse um cliente. Salve antes para ela usar o que você ensinou.</div>';box.scrollTop=box.scrollHeight};
-  draw();
-  $('#plR').onclick=()=>{hist.length=0;draw()};
-  $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
+     ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="nz-empty">Converse em "Testar conversa" e toque em "Salvar como teste" para guardar a situação.</div>';
+    document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});tests.splice(0,tests.length,...await api('/ai/tests'));drawTests(tests)});
+    const r=$('#tsRun');if(r)r.onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{if(dirty())await save(true);const x=await api('/ai/tests/run',{method:'POST'});tests.splice(0,tests.length,...x.tests);drawTests(tests);toast(`${x.passed} de ${x.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'}};
+  const hist=[];
+  const drawChat=typing=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(V.name||'Nanda')}</b>`:''}${esc(m.text)}</div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
+    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Ao testar, o que está nesta tela é salvo e ela já usa.</div>`;box.scrollTop=box.scrollHeight};
+  function playBind(){drawChat(false);const ta=$('#plT');
+   const send=async t=>{t=(t||'').trim();if(!t)return;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
+    try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')})}
+    catch(e){hist.push({dir:'sys',text:e.message})}drawChat(false)};
+   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
+   ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
+   document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
+   $('#plR').onclick=()=>{hist.length=0;drawChat(false)};
+   $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
     if(last<0)return toast('Escreva pelo menos uma mensagem como cliente.');const msgs=real.slice(0,last+1);
-    const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar teste</h2><button type="button" class="x">×</button></div>
+    const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar como teste</h2><button type="button" class="x">×</button></div>
      <p class="hint">A última mensagem do cliente: "${esc(msgs[msgs.length-1].text)}"</p>
      <div class="field"><label>Nome do teste</label><input name="name" required minlength="2" maxlength="80" value="${esc(msgs[msgs.length-1].text.slice(0,60))}"></div>
      <div class="field"><label>O que a Nanda deve fazer</label><div class="chips">${Object.entries(EXP).map(([k,v],i)=>`<label class="chip"><input type="radio" name="expect" value="${k}" ${i===0?'checked':''}> ${v}</label>`).join('')}</div></div>
@@ -4339,29 +4607,56 @@ const VIEWS={
       <div class="field"><label>Não pode citar</label><input name="not_contains" maxlength="300" placeholder="desconto"></div></div>
      <div class="row"><button class="btn p">Salvar</button><span class="err" id="tsE"></span></div></form>`,true);
     o.querySelector('#tsF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
-      try{await api('/ai/tests',{method:'POST',body:{...f,messages:msgs.map(m=>({dir:m.dir,text:m.text}))}});o.remove();toast('Teste salvo.');drawTests(await api('/ai/tests'))}catch(x){o.querySelector('#tsE').textContent=x.message}}};
-  $('#plT').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#plF').requestSubmit()}};
-  $('#plF').onsubmit=async ev=>{ev.preventDefault();const t=$('#plT').value.trim();if(!t)return;$('#plT').value='';hist.push({dir:'in',text:t});hist.push({dir:'sys',text:'digitando...'});draw();
-    try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});hist.pop();if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela agendaria '+(r.book_label||'')+' (no teste nada é agendado)'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o time · '+(r.reason||'')})}
-    catch(e){hist.pop();hist.push({dir:'sys',text:e.message})}draw()};
+     try{await api('/ai/tests',{method:'POST',body:{...f,messages:msgs.map(m=>({dir:m.dir,text:m.text}))}});o.remove();toast('Teste salvo.');tests.splice(0,tests.length,...await api('/ai/tests'));const tb=document.querySelector('[data-t=tests]');tb.innerHTML=`Testes salvos <span>${tests.length}</span>`;drawTests(tests)}catch(x){o.querySelector('#tsE').textContent=x.message}}}}
+  draw();
  },
  async inicio(){
-  const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);const au=['owner','manager'].includes(u.role)?await api('/automations').catch(()=>null):null;
-  $('#page').innerHTML=`<h1>Oi, ${esc(u.name.split(' ')[0])}!</h1><p class="sub">Vamos deixar a Nanda pronta para atender o ${esc(ME.company.name)}.</p><div id="inPush"></div>${num?'<div id="inCost"></div>':''}<div id="inMeta"></div>
-   ${sm?`<div class="grid g4" style="margin-bottom:14px">
-    <button class="card stat" data-to="conversas" style="text-align:left"><span>Esperando resposta</span><b>${sm.waiting}</b></button>
-    <button class="card stat" data-to="conversas" style="text-align:left"><span>Pediram atendente</span><b style="color:${sm.needs_human?'var(--bad)':'inherit'}">${sm.needs_human}</b></button>
-    <button class="card stat" data-to="funil" style="text-align:left"><span>Contatos novos no mês</span><b>${sm.new_contacts}</b></button>
-    <button class="card stat" data-to="funil" style="text-align:left"><span>Vendas no mês</span><b>${sm.won}${sm.won_value?` <small style="font-size:14px;color:var(--ok)">${brl(sm.won_value)}</small>`:''}</b></button></div>`:''}
-   <div class="card"><div class="steps">
-    <div class="step done"><span class="n">✓</span><div><b>Conta criada</b><p>Sua empresa já está no Oi Nanda.</p></div></div>
-    <div class="step ${num?'done':''}"><span class="n">${num?'✓':'2'}</span><div><b>Conectar o WhatsApp</b><p>${num?'Conectado: '+esc(num.display_phone||''):'Pela API oficial da Meta, junto com o app que você já usa.'}</p></div>${num?'':'<button class="btn sm" data-to="empresa">Conectar</button>'}</div>
-    <div class="step ${ai&&ai.taught?'done':''}"><span class="n">${ai&&ai.taught?'✓':'3'}</span><div><b>Ensinar a Nanda sobre o seu negócio</b><p>Preços, horários e o jeito de falar. Depois ela responde sozinha ou sugere respostas para o time.</p></div>${ai&&ai.taught?'':'<button class="btn sm" data-to="nanda">Ensinar</button>'}</div>
-    ${au?`<div class="step ${au.items.some(a=>a.active)?'done':''}"><span class="n">${au.items.some(a=>a.active)?'✓':'4'}</span><div><b>Ligar lembretes e retomadas</b><p>Mensagens automáticas para reduzir falta e recuperar quem parou de responder.</p></div>${au.items.some(a=>a.active)?'':'<button class="btn sm" data-to="automacoes">Ver sugestões</button>'}</div>`:''}
-    <div class="step ${team.length>1?'done':''}"><span class="n">${team.length>1?'✓':au?'5':'4'}</span><div><b>Convide seu time</b><p>Se mais alguém atende, cada pessoa com seu acesso e sua fila de conversas. Pode pular se é só você.</p></div>${team.length>1?'':'<button class="btn sm" data-to="equipe">Convidar</button>'}</div>
-   </div></div>`;
-  inicioMeta();pushNudge();if(num)metaIntro();
+  const u=ME.user,mgr=['owner','manager'].includes(u.role),own=u.role==='owner';
+  const [team,num,ai,sm,au]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),mgr?api('/automations').catch(()=>null):null]);
+  const demo=ME.access&&ME.access.state==='demo',first=esc(u.name.split(' ')[0]),co=esc(ME.company.name);
+  const talked=ai&&((ai.usage||{}).tests>0||ai.taught);
+  const S=[['nanda','Conversar com a Nanda','Veja como ela responderia os seus clientes.','1 min','💬',talked,'Conversar agora',()=>comecarView()],
+    ['ensinar','Ensinar preços e horários','O que ela precisa saber para responder certo.','10 min','🧠',ai&&ai.taught,'Ensinar a Nanda',()=>go('nanda')],
+    ...(demo&&own?[['ativar','Ativar os 14 dias grátis','Hoje não é cobrado nada. Cancele quando quiser.','2 min','🎁',false,'Ativar agora',()=>ativarView()]]:[]),
+    ['wa','Conectar o WhatsApp','O número que seus clientes já conhecem, pelo canal oficial.','5 min','📱',!!num,'Conectar',()=>go('empresa')],
+    ...(au?[['lembretes','Ligar lembretes automáticos','Confirmação de horário e retomada de quem sumiu.','1 min','⏰',au.items.some(a=>a.active),'Ver sugestões',()=>go('automacoes')]]:[]),
+    ['time','Chamar o seu time','Cada pessoa com o seu acesso. Pode pular se é só você.','2 min','👥',team.length>1,'Convidar',()=>go('equipe')]];
+  const steps=mgr?S:S.filter(x=>x[0]==='nanda');const done=steps.filter(x=>x[5]).length+1,total=steps.length+1,next=steps.find(x=>!x[5]);
+  const pct=Math.round(100*done/total),R=34,C=2*Math.PI*R,ready=steps.filter(x=>['nanda','ensinar','ativar','wa'].includes(x[0])).every(x=>x[5]);
+  const N=(sm&&sm.nanda)||{},nf=x=>Number(x||0).toLocaleString('pt-BR');
+  const val=[['💬','Clientes atendidos pela Nanda',nf(N.people),N.replies?`${nf(N.replies)} respostas enviadas`:'conversas que ela cuidou'],
+    ['🌙','Respostas fora do horário',nf(N.after_hours),'enquanto você descansava'],
+    ['📅','Horários marcados por ela',nf(N.appts),'direto na sua agenda'],
+    ['💰','Vendas no mês',nf(sm&&sm.won),sm&&sm.won_value?brl(sm.won_value)+' fechados':'registradas no funil']];
+  $('#page').innerHTML=`<div class="hm">
+   <section class="hm-hero"><div class="hm-hl">
+     <span class="hm-hi">Oi, ${first} 👋${mgr&&next?`<span class="hm-mini">${done} de ${total} passos prontos</span>`:''}</span>
+     <h1>${!ready?`Falta pouco para a Nanda atender os seus clientes.`:`A Nanda está cuidando do seu atendimento.`}</h1>
+     <p>${!ready?'Cada passo leva poucos minutos e a gente te guia em todos.':'Ela responde na hora, marca horários e chama o seu time quando precisa.'}</p>
+     ${next?`<div class="hm-next"><i>${next[4]}</i><span><small>${ready?'Para render ainda mais':'Próximo passo'} · ${next[3]}</small><b>${next[1]}</b><em>${next[2]}</em></span><button class="btn p" id="hmGo">${next[6]} →</button></div>`:''}</div>
+    ${mgr?`<div class="hm-ring" title="${done} de ${total} passos prontos"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${R}" class="bg"/><circle cx="40" cy="40" r="${R}" class="fg" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct/100)}"/></svg><span><b>${done}<small>/${total}</small></b>passos prontos</span></div>`:''}</section>
+   <div id="inPush"></div><div id="inMeta"></div>
+   ${sm&&(sm.waiting||sm.needs_human)?`<div class="hm-now">${sm.needs_human?`<button class="hm-al r" data-to="conversas"><b>${sm.needs_human}</b><span>${sm.needs_human===1?'cliente pediu':'clientes pediram'} para falar com alguém do time</span><em>Atender →</em></button>`:''}
+     ${sm.waiting?`<button class="hm-al a" data-to="conversas"><b>${sm.waiting}</b><span>${sm.waiting===1?'conversa esperando':'conversas esperando'} resposta</span><em>Responder →</em></button>`:''}</div>`
+    :num?'<div class="hm-now"><div class="hm-al g"><b>✓</b><span>Tudo em dia. Nenhum cliente esperando.</span></div></div>':''}
+   <section class="hm-sec"><div class="hm-sh"><h2>O que a Nanda fez por você este mês</h2>${num?'':'<span class="hm-tag">começa a contar quando o WhatsApp estiver conectado</span>'}</div>
+    ${num||N.people?`<div class="hm-val">${val.map(v=>`<div><i>${v[0]}</i><small>${v[1]}</small><b>${v[2]}</b><span>${v[3]}</span></div>`).join('')}</div>`
+    :`<div class="hm-demo"><div class="hm-dl"><b>Ela já está pronta para conversar com os seus clientes.</b><p>Responde em segundos, marca o horário na sua agenda e chama o seu time quando o cliente está pronto para fechar. Faça uma pergunta como se fosse um cliente e veja.</p><button class="btn p" id="hmTry">Conversar com a Nanda</button></div>
+      <div class="hm-dr" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Oi! Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div></div></div>`}</section>
+   ${next&&mgr&&!ready?`<section class="hm-sec"><div class="hm-sh"><h2>Primeiros passos</h2><span class="hm-tag">${done} de ${total} prontos</span></div><div class="hm-steps">
+     <div class="hm-st ok"><i>✓</i><span><b>Conta criada</b><em>Sua empresa já está no Oi Nanda.</em></span></div>
+     ${steps.map((x,i)=>`<div class="hm-st ${x[5]?'ok':x===next?'nx':''}"><i>${x[5]?'✓':i+2}</i><span><b>${x[1]}</b><em>${x[2]}</em></span>${x[5]?'':`<small>${x[3]}</small><button class="btn sm ${x===next?'p':''}" data-st="${i}">${x[6]}</button>`}</div>`).join('')}</div></section>`:''}
+   <section class="hm-sec hm-faq"><div class="hm-sh"><h2>Dúvidas rápidas</h2></div>
+    <details><summary>Vou continuar usando o WhatsApp no celular?</summary><p>Sim. A Nanda entra junto com o app que você já usa. Você responde pelo celular quando quiser e tudo fica no mesmo histórico.</p></details>
+    <details><summary>Como a Nanda sabe o que responder?</summary><p>Ela usa só o que você ensinou em Nanda (IA): preços, horários, regras. O que não souber, ela passa para o seu time, sem inventar.</p></details>
+    <details id="hmCost"><summary>O WhatsApp oficial tem algum custo?</summary><p>Responder quem te chama é grátis, sempre. A Meta só cobra quando você inicia uma conversa, como em lembretes e promoções, e a gente mostra o valor antes de enviar. <button type="button" class="lnk" id="hmCostMore">Ver como funciona</button></p></details>
+   </section></div>`;
+  if($('#hmGo'))$('#hmGo').onclick=()=>next[7]();
+  if($('#hmTry'))$('#hmTry').onclick=()=>comecarView();
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>steps[+b.dataset.st][7]());
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+  $('#hmCostMore').onclick=async()=>{let r;try{r=await api('/meta/rates')}catch(e){return toast(e.message)}overlay(`<div class="modal hm-mi"><button type="button" class="x" style="float:right">×</button>${metaIntroHtml(r,false)}</div>`,true)};
+  inicioMeta();pushNudge();
  },
  async equipe(){
   const team=await api('/team');const u=ME.user;const canManage=['owner','manager'].includes(u.role);
@@ -4583,39 +4878,133 @@ async function jnFull(box,id){let JF=box._jf||(box._jf={cats:null});
 /* configuração dos marcos */
 let JS=null;
 const JNRULE_TXT={manual:'Não (marcação manual)',created:'Quando o contato entra',stage:'Quando entra numa etapa do funil',appt_booked:'Quando agenda um serviço',appt_done:'Quando comparece a um serviço',sale:'Quando compra'};
+const JN_AUTO={created:['Quando o contato chega','Primeira mensagem ou cadastro'],stage:['Quando entra numa etapa do funil',''],appt_booked:['Quando agenda',''],appt_done:['Quando comparece',''],sale:['Quando compra','']};
+const JN_SUGG=[['Indicou alguém','🎁'],['Voltou a comprar','🔁'],['Pagou o sinal','💳'],['Deixou avaliação','⭐'],['Renovou o plano','✅'],['Pediu para cancelar','📞']];
+const JN_ICONS=['👋','💬','📄','🤝','🛍️','📅','✅','⭐','🔁','🎁','💳','📍','🎉','❤️','🏆','📞'];
 VIEWS.jornada=async function(){
   if(!isMgr())return go('inicio');
-  const d=await api('/journey/settings');JS={...d,ms:JSON.parse(JSON.stringify(d.milestones))};
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Jornada do cliente</h1><p class="sub">Os marcos que importam no seu negócio. Eles aparecem na conversa, nos detalhes do cliente, no relatório de jornada, nos segmentos e nas automações.</p></div>
-   <div class="tools"><button class="btn" id="jsReset">Voltar ao padrão</button><button class="btn p" id="jsSave">Salvar</button></div></div>
-   <div class="note" style="margin-bottom:14px"><b>Como funciona:</b> todo marco pode ser marcado pelo time a qualquer momento. Escolha também se ele é registrado sozinho (quando entra numa etapa, agenda, comparece ou compra) e se a Nanda pode sugerir quando perceber na conversa. A sugestão da Nanda só vale depois que alguém do time confirma.</div>
-   <div class="js-hd"><span></span><span>Marco</span><span>Registro automático</span><span>Detalhe</span><span>Sugestão</span></div><div id="jsList"></div><button class="btn add" id="jsAdd" style="margin-top:10px">+ Adicionar marco</button><span class="err" id="jsE"></span>`;
-  jsDraw();
-  $('#jsAdd').onclick=()=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:'',icon:'⭐',active:true,rule:{type:'manual'},nanda:false,hint:''});jsDraw();const ins=$('#jsList').querySelectorAll('[data-f=name]');ins[ins.length-1].focus()};
-  $('#jsSave').onclick=async e=>{const b=e.target;b.disabled=true;$('#jsE').textContent='';
-    try{await api('/journey/settings',{method:'PUT',body:{milestones:JS.ms.map(m=>({...m,rule:{...m.rule,stage_id:m.rule.stage_id||null,service_id:m.rule.service_id||null,product_id:m.rule.product_id||null}}))}});toast('Marcos salvos.');VIEWS.jornada()}
-    catch(x){$('#jsE').textContent=x.message;toast(x.message);b.disabled=false}};
-  $('#jsReset').onclick=async()=>{if(!await sure('Voltar aos marcos sugeridos para o seu tipo de negócio? Os registros manuais continuam guardados.',{ok:'Voltar ao padrão'}))return;await api('/journey/settings/reset',{method:'POST'});toast('Marcos do padrão.');VIEWS.jornada()}};
-function jsDraw(){const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
-  $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'};
-   const extra=r.type==='stage'?sel('stage_id',JS.stages,r.stage_id,'Escolha a etapa'):['appt_booked','appt_done'].includes(r.type)?sel('service_id',JS.services,r.service_id,'Qualquer serviço'):r.type==='sale'?sel('product_id',JS.products,r.product_id,'Qualquer compra'):'<span class="js-na">—</span>';
-   return `<div class="js-c ${m.active?'':'off'}" data-i="${i}"><div class="js-row"><span class="js-n">${i+1}</span><input class="js-ic" data-f="icon" maxlength="4" value="${esc(m.icon||'')}" aria-label="Ícone">
-     <input class="js-nm" data-f="name" maxlength="40" value="${esc(m.name)}" placeholder="Nome do marco. Ex.: Pediu orçamento" aria-label="Nome">
-     <select data-f="type" aria-label="Registro automático">${Object.entries(JNRULE_TXT).map(([k,v])=>`<option value="${k}" ${r.type===k?'selected':''}>${v}</option>`).join('')}</select>
-     <span class="js-ex">${extra}</span>
-     <button type="button" class="js-nd ${m.nanda?'on':''}" data-f="nanda" aria-pressed="${!!m.nanda}" title="A Nanda sugere quando perceber na conversa">${NI.nanda}Nanda</button>
-     <span class="js-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} aria-label="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} aria-label="Descer">↓</button></span>
-     <button type="button" class="tg ${m.active?'on':''}" data-f="active" role="switch" aria-checked="${m.active}" aria-label="Ligar ou desligar"></button><button type="button" class="sm-x" data-rm aria-label="Tirar marco">×</button></div>
-    ${m.nanda||r.type==='sale'?`<div class="js-r2">${m.nanda?`<label class="js-hint"><span>${NI.nanda} A Nanda sugere quando</span><input data-f="hint" maxlength="200" value="${esc(m.hint||'')}" placeholder="Ex.: o cliente pergunta preço ou pede orçamento"></label>`:''}
-     ${r.type==='sale'?`<label class="ck"><input type="checkbox" data-f="won_stage" ${r.won_stage!==false?'checked':''}> Contar também quem foi para a etapa de ganho sem venda lançada</label>`:''}</div>`:''}</div>`}).join('');
-  $('#jsList').querySelectorAll('.js-c').forEach(card=>{const i=+card.dataset.i,m=JS.ms[i];
+  let per;try{per=JSON.parse(localStorage.getItem('oinanda.jzPer')||'null')}catch(e){}per=per||{k:'30'};
+  const t90=new Date(),f90=new Date();f90.setDate(t90.getDate()-89);
+  const [d,rp,r90]=await Promise.all([api('/journey/settings'),api('/reports/journey?'+jzQ(per)).catch(()=>null),api(`/reports/journey?start=${ymd(f90)}&end=${ymd(t90)}`).catch(()=>null)]);
+  JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:'',adding:false,per};jzSet(rp);JS.saved=JSON.stringify(JS.ms);
+  JS.idle=r90&&r90.total>=15?new Set(r90.steps.filter(x=>!x.reached).map(x=>x.id)):new Set();
+  if(!d.style&&!d.custom)return jzPick(true);
+  $('#page').innerHTML=`<div class="jz">
+   <div class="jz-hd"><div><h1>Jornada do cliente</h1><p class="sub">Os momentos que mostram em que ponto cada cliente está. Aparecem na conversa, na ficha, nos relatórios e nas automações.</p></div>
+    <button type="button" class="jz-sty" id="jzSty">${(()=>{const st=(JS.styles||[]).find(x=>x.key===JS.style);return st?`<i>${st.icon}</i><span><small>Jeito de vender</small>${esc(st.title)}</span>`:'<i>🧭</i><span><small>Jeito de vender</small>Escolher</span>'})()}<em>Trocar</em></button></div>
+   <div class="jz-leg"><span><i>✋</i><b>O time marca</b> à mão, na conversa</span><span><i>⚙️</i><b>Registra sozinho</b> quando agenda, comparece ou compra</span><span><i>✨</i><b>A Nanda sugere</b> e o time confirma</span></div>
+   <div class="jz-per" id="jzPer"></div>
+   <div class="jz-list" id="jsList"></div>
+   <div class="jz-ft"><div id="jsAddBox"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button></div><button type="button" class="nz-ex" id="jsReset">Montar de novo pelo jeito de vender</button></div>
+   <div class="nz-save jz-save" id="jsBar" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="jsUndo">Descartar</button><button type="button" class="btn sm p" id="jsSave">Salvar</button></div></div>`;
+  jzPerDraw();jsDraw();
+  $('#jzSty').onclick=()=>jzPick(false);
+  const addMs=(name,icon)=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:name||'',icon:icon||'⭐',active:true,rule:{type:'manual'},nanda:!!name,hint:''});JS.open=JS.ms.length-1;addBox(false);jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f='+(name?'hint':'name')+']');if(n){n.focus();n.scrollIntoView({block:'center',behavior:'smooth'})}},50)};
+  const addBox=on=>{const have=new Set(JS.ms.map(m=>(m.name||'').toLowerCase()));const sg=JN_SUGG.filter(x=>!have.has(x[0].toLowerCase()));
+    $('#jsAddBox').innerHTML=on?`<div class="jz-pick"><b>Qual momento você quer acompanhar?</b><div>${sg.map(x=>`<button type="button" data-sg="${esc(x[0])}" data-sgi="${x[1]}">${x[1]} ${esc(x[0])}</button>`).join('')}<button type="button" class="new" data-sg="">+ Criar outro</button></div><button type="button" class="nz-ex" id="jsAddX">Cancelar</button></div>`:'<button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button>';
+    if(on){document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>addMs(b.dataset.sg,b.dataset.sgi));$('#jsAddX').onclick=()=>addBox(false)}else $('#jsAdd').onclick=()=>addBox(true)};
+  addBox(false);
+  $('#jsSave').onclick=async e=>{const b=e.target;const bad=JS.ms.findIndex(m=>(m.name||'').trim().length<2);if(bad>=0){JS.open=bad;jsDraw();return toast('Dê um nome a cada marco.')}
+    const st=JS.ms.findIndex(m=>m.rule&&m.rule.type==='stage'&&!m.rule.stage_id);if(st>=0){JS.open=st;jsDraw();return toast('Escolha a etapa do funil desse marco.')}
+    b.disabled=true;try{await api('/journey/settings',{method:'PUT',body:{milestones:JS.ms.map(m=>({...m,rule:{...m.rule,stage_id:m.rule.stage_id||null,service_id:m.rule.service_id||null,product_id:m.rule.product_id||null}}))}});toast('Jornada salva.');VIEWS.jornada()}
+    catch(x){toast(x.message);b.disabled=false}};
+  $('#jsUndo').onclick=()=>{JS.ms=JSON.parse(JS.saved);JS.open=null;jsDraw()};
+  $('#jsReset').onclick=()=>jzPick(false)};
+const JZ_PER=[['7','7 dias'],['30','30 dias'],['90','90 dias'],['mes','Este mês'],['custom','Personalizado']];
+function jzRange(p){const e=new Date(),s=new Date();if(p.k==='custom'&&p.start&&p.end)return {start:p.start,end:p.end};
+  if(p.k==='mes'){s.setDate(1);return {start:ymd(s),end:ymd(e)}}s.setDate(e.getDate()-(+p.k||30)+1);return {start:ymd(s),end:ymd(e)}}
+function jzQ(p){const r=jzRange(p);return 'start='+r.start+'&end='+r.end}
+function jzSet(rp){JS.steps=rp&&rp.total?rp.steps:[];JS.rp=rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null;JS.total=rp?rp.total:0;JS.range=jzRange(JS.per)}
+function jzPerDraw(){$('#jzPer').classList.remove('busy');const p=JS.per,r=JS.range,dd=x=>{const [y,m,d]=x.split('-');return `${d}/${m}${y!==String(new Date().getFullYear())?'/'+y.slice(2):''}`};
+  const lbl=p.k==='mes'?'neste mês':p.k==='custom'?`de ${dd(r.start)} a ${dd(r.end)}`:`nos últimos ${p.k} dias`;
+  const n=x=>Number(x).toLocaleString('pt-BR'),pc=x=>String(Math.round(x*10)/10).replace('.',',')+'%';
+  const st=JS.steps||[],saleM=JS.ms.find(m=>m.active&&m.rule&&m.rule.type==='sale'),sale=saleM&&st.find(x=>x.id===saleM.id);
+  const lastI=sale?st.indexOf(sale):st.length-1;
+  let worst=null;st.forEach((x,i)=>{if(i&&i<=lastI&&x.from_prev!=null&&(x.base||0)>=5&&(!worst||x.from_prev<worst.from_prev))worst={...x,prev:st[i-1].name}});
+  const kpi=JS.total?`<div class="jz-kpi"><div><small>Chegaram</small><b>${n(JS.total)}</b><span>clientes novos</span></div>
+    ${sale?`<div class="ok"><small>${esc(sale.name)}</small><b>${n(sale.reached)}</b><span>${pc(100*sale.reached/JS.total)} dos que chegaram</span></div>`:''}
+    ${worst?`<div class="warn"><small>Onde mais perde</small><b>${pc(100-worst.from_prev)}</b><span>param entre <em>${esc(worst.prev)}</em> e <em>${esc(worst.name)}</em></span></div>`:''}</div>`:'';
+  $('#jzPer').innerHTML=`<div class="jz-pt"><span class="jz-pn">Resultado <b>${lbl}</b></span>
+    <div class="jz-seg" role="tablist">${JZ_PER.map(([k,l])=>`<button type="button" class="${p.k===k?'on':''}" data-per="${k}">${k==='custom'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>':''}<span class="${k==='custom'?'jz-pl':''}">${l}</span></button>`).join('')}</div></div>
+   ${p.k==='custom'?`<div class="jz-cus"><label>De<input type="date" id="jzS" value="${r.start}" max="${ymd(new Date())}"></label><label>até<input type="date" id="jzE" value="${r.end}" max="${ymd(new Date())}"></label>
+     <div class="jz-qk">${[['Ontem',1,1],['Mês passado','mp'],['Últimos 6 meses',182],['Este ano','ano']].map(([l,a,b])=>`<button type="button" data-qk="${a}" data-qb="${b||''}">${l}</button>`).join('')}</div></div>`:''}
+   ${kpi}${JS.total?'':'<p class="jz-pe">Nenhum cliente chegou nesse período. Quando chegarem, cada marco mostra quantos passaram por ele.</p>'}`;
+  const load=async np=>{JS.per=np;try{localStorage.setItem('oinanda.jzPer',JSON.stringify(np))}catch(e){}$('#jzPer').classList.add('busy');
+    try{jzSet(await api('/reports/journey?'+jzQ(np)))}catch(e){toast(e.message)}jzPerDraw();jsDraw()};
+  document.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{const k=b.dataset.per;if(k==='custom'){const r=JS.range;return load({k,start:r.start,end:r.end})}load({k})});
+  const cs=$('#jzS'),ce=$('#jzE');if(cs){const ch=()=>{let a=cs.value,b=ce.value;if(!a||!b)return;if(a>b)[a,b]=[b,a];load({k:'custom',start:a,end:b})};cs.onchange=ch;ce.onchange=ch}
+  document.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>{const t=new Date(),q=b.dataset.qk;let a,e2;
+    if(q==='mp'){a=new Date(t.getFullYear(),t.getMonth()-1,1);e2=new Date(t.getFullYear(),t.getMonth(),0)}else if(q==='ano'){a=new Date(t.getFullYear(),0,1);e2=t}
+    else if(q==='1'){a=new Date(t);a.setDate(t.getDate()-1);e2=a}else{a=new Date(t);a.setDate(t.getDate()-(+q)+1);e2=t}
+    load({k:'custom',start:ymd(a),end:ymd(e2)})})}
+async function jzPick(first){
+  const sts=JS.styles||[],sg=JS.suggested;let pick=JS.style||sg;const seg=(SEGS[ME.company.segment]||'').toLowerCase();
+  const draw=()=>{$('#page').innerHTML=`<div class="jz jz-pk">
+   ${first?'':'<button type="button" class="nz-ex jz-back" id="pkX">← Voltar para a jornada</button>'}
+   <span class="jz-eyb">${first?'Antes de começar':'Trocar o jeito de vender'}</span>
+   <h1>Como o seu cliente costuma comprar?</h1>
+   <p class="sub">Escolha o jeito mais parecido com o seu negócio. A jornada já vem montada, com os nomes dos serviços que você cadastrou, e dá para ajustar cada marco depois.</p>
+   <div class="jz-pkg">${sts.map(x=>`<button type="button" class="jz-pc ${pick===x.key?'on':''}" data-st="${x.key}" aria-pressed="${pick===x.key}">
+     ${x.key===sg?`<span class="jz-rec">Comum em ${esc(seg||'seu ramo')}</span>`:''}<span class="jz-rd"></span>
+     <i>${x.icon}</i><b>${esc(x.title)}</b><span class="jz-pd">${esc(x.desc)}</span><small>${esc(x.ex)}</small>
+     <span class="jz-chain">${x.preview.map((n,j)=>`${j?'<em>›</em>':''}<span>${esc(n)}</span>`).join('')}</span></button>`).join('')}</div>
+   <div class="jz-pkf">${!first?'<p class="hint">Os marcos atuais serão trocados por estes. O que o time já marcou em cada cliente continua guardado.</p>':'<p class="hint">Você pode trocar quando quiser em Jornada › Jeito de vender.</p>'}
+    <button type="button" class="btn p" id="pkOk">Usar essa jornada</button></div></div>`;
+   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{pick=b.dataset.st;draw()});
+   if($('#pkX'))$('#pkX').onclick=()=>VIEWS.jornada();
+   $('#pkOk').onclick=async e=>{e.target.disabled=true;try{await api('/journey/settings/style',{method:'POST',body:{style:pick}});toast('Jornada montada. Ajuste o que quiser.');VIEWS.jornada()}catch(x){toast(x.message);e.target.disabled=false}}};
+  draw()}
+function jsAutoTxt(r){const nm=(l,id)=>(l.find(x=>x.id===id)||{}).name;
+  if(r.type==='stage')return r.stage_id?`quando entra em “${esc(nm(JS.stages,r.stage_id)||'etapa')}”`:'quando entra numa etapa (escolha qual)';
+  if(r.type==='appt_booked')return 'quando agenda'+(r.service_id?` ${esc(nm(JS.services,r.service_id)||'')}`:'');
+  if(r.type==='appt_done')return 'quando comparece'+(r.service_id?` a ${esc(nm(JS.services,r.service_id)||'')}`:'');
+  if(r.type==='sale')return 'quando compra'+(r.product_id?` ${esc(nm(JS.products,r.product_id)||'')}`:'');
+  if(r.type==='created')return 'quando o contato chega';return ''}
+function jsDraw(){
+  const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
+  const cnt=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!r||!m.active)return '';return `<span class="jz-cnt"><b>${r.reached.toLocaleString('pt-BR')}</b><em><i style="width:${Math.round(100*r.reached/Math.max(1,JS.total))}%"></i></em><small>${r.reached===1?'cliente':'clientes'}</small></span>`};
+  const conv=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!i||!r||!m.active||r.from_prev==null)return '';const v=r.from_prev;return `<span class="jz-conv ${v>=60?'g':v>=30?'a':'r'}" title="${Math.round(v)}% dos que passaram pelo marco anterior chegaram aqui">↓ ${Math.round(v)}%</span>`};
+  $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'},isO=JS.open===i,auto=r.type!=='manual';
+   const tags=`${auto?`<span class="jz-tag a">⚙️ Sozinho ${jsAutoTxt(r)}</span>`:'<span class="jz-tag">✋ O time marca</span>'}${m.nanda?'<span class="jz-tag n">✨ Nanda sugere</span>':''}${m.active?'':'<span class="jz-tag off">Desligado</span>'}`;
+   const ed=isO?`<div class="jz-ed">
+     <div class="jz-q"><label>Nome do marco</label><div class="jz-nm"><button type="button" class="jz-ic" id="jzIc" aria-label="Trocar ícone">${esc(m.icon||'⭐')}</button><input data-f="name" maxlength="40" value="${esc(m.name)}" placeholder="Ex.: Pediu orçamento"></div>
+      <div class="jz-icons" id="jzIcons" hidden>${JN_ICONS.map(x=>`<button type="button" data-icon="${x}">${x}</button>`).join('')}</div></div>
+     <div class="jz-q"><label>Como esse marco é registrado?</label>
+      <div class="jz-opts"><button type="button" class="${!auto?'on':''}" data-type="manual"><b>Só o time marca</b><span>Alguém marca na conversa quando acontece.</span></button>
+       <button type="button" class="${auto?'on':''}" data-type="${auto?r.type:'stage'}"><b>Registra sozinho</b><span>O sistema marca quando algo acontece.</span></button></div>
+      ${auto?`<div class="jz-when"><span>Registrar</span><select data-f="type">${Object.entries(JNRULE_TXT).filter(([k])=>k!=='manual').map(([k,v])=>`<option value="${k}" ${r.type===k?'selected':''}>${v.toLowerCase()}</option>`).join('')}</select>
+        ${r.type==='stage'?sel('stage_id',JS.stages,r.stage_id,'Escolha a etapa'):['appt_booked','appt_done'].includes(r.type)?sel('service_id',JS.services,r.service_id,'Qualquer serviço'):r.type==='sale'?sel('product_id',JS.products,r.product_id,'Qualquer produto'):''}</div>
+       ${r.type==='sale'?`<label class="ck"><input type="checkbox" data-f="won_stage" ${r.won_stage!==false?'checked':''}> Contar também quem foi para a etapa de ganho sem venda lançada</label>`:''}`:''}</div>
+     <div class="jz-q"><div class="jz-sw"><span><label>A Nanda pode sugerir esse marco?</label><small>Ela avisa quando perceber na conversa e o time confirma.</small></span><button type="button" class="tg ${m.nanda?'on':''}" data-f="nanda" role="switch" aria-checked="${!!m.nanda}" aria-label="Nanda sugere"></button></div>
+      ${m.nanda?`<label class="jz-sub">Quando ela deve sugerir?</label><textarea data-f="hint" rows="2" maxlength="200" placeholder="Ex.: o cliente pergunta preço ou pede orçamento">${esc(m.hint||'')}</textarea>`:''}</div>
+     <div class="jz-eft"><label class="jz-on"><button type="button" class="tg ${m.active?'on':''}" data-f="active" role="switch" aria-checked="${m.active}" aria-label="Ligado"></button>${m.active?'Ligado':'Desligado'}</label>
+      <span class="jz-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} title="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} title="Descer">↓</button></span>
+      <button type="button" class="jz-rm" data-rm>Tirar marco</button><button type="button" class="btn sm" data-close>Pronto</button></div></div>`:'';
+   return `<div class="jz-it ${m.active?'':'off'} ${isO?'open':''}" data-i="${i}">${conv(m,i)}<span class="jz-dot">${esc(m.icon||'•')}</span>
+     <div class="jz-card"><div class="jz-row"><button type="button" class="jz-hit" data-tog><span class="jz-tx"><b>${esc(m.name||'Marco sem nome')}</b><span class="jz-tags">${tags}</span></span>${cnt(m,i)}</button>
+      <button type="button" class="tg sm ${m.active?'on':''}" data-qa role="switch" aria-checked="${m.active}" title="${m.active?'Desligar':'Ligar'} este marco"></button>
+      <span class="jz-grip" draggable="true" title="Arraste para mudar a ordem" aria-hidden="true">⋮⋮</span></div>
+     ${m.active&&m.id&&JS.idle&&JS.idle.has(m.id)&&!isO?`<div class="jz-idle"><span>Ninguém passou por aqui em 90 dias. Seu negócio tem essa etapa?</span><button type="button" data-ren>Renomear</button><button type="button" data-off>Desligar</button></div>`:''}${ed}</div></div>`}).join('');
+  const dirty=JSON.stringify(JS.ms)!==JS.saved;$('#jsBar').hidden=!dirty;
+  $('#jsList').querySelectorAll('.jz-it').forEach(card=>{const i=+card.dataset.i,m=JS.ms[i];m.rule=m.rule||{type:'manual'};
+    card.querySelector('[data-tog]').onclick=()=>{JS.open=JS.open===i?null:i;jsDraw()};
+    card.querySelector('[data-qa]').onclick=()=>{m.active=!m.active;jsDraw()};
+    const rn=card.querySelector('[data-ren]');if(rn)rn.onclick=()=>{JS.open=i;jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f=name]');if(n){n.focus();n.select()}},30)};
+    const of=card.querySelector('[data-off]');if(of)of.onclick=()=>{m.active=false;jsDraw();toast('Marco desligado. Salve para confirmar.')};
+    const g=card.querySelector('.jz-grip');g.ondragstart=e=>{JS.drag=i;e.dataTransfer.effectAllowed='move';e.dataTransfer.setDragImage(card,20,20);card.classList.add('drag')};g.ondragend=()=>card.classList.remove('drag');
+    card.ondragover=e=>{if(JS.drag==null)return;e.preventDefault();card.classList.add('over')};card.ondragleave=()=>card.classList.remove('over');
+    card.ondrop=e=>{e.preventDefault();const from=JS.drag;JS.drag=null;if(from==null||from===i)return jsDraw();const [x]=JS.ms.splice(from,1);JS.ms.splice(i,0,x);JS.open=null;jsDraw()};
+    const c=card.querySelector('[data-close]');if(c)c.onclick=()=>{JS.open=null;jsDraw()};
+    card.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{m.rule.type=b.dataset.type;jsDraw()});
+    card.querySelectorAll('[data-icon]').forEach(b=>b.onclick=()=>{m.icon=b.dataset.icon;jsDraw()});
+    const ic=card.querySelector('#jzIc');if(ic)ic.onclick=()=>{const p=$('#jzIcons');p.hidden=!p.hidden};
     card.querySelectorAll('[data-f]').forEach(el=>{const f=el.dataset.f;
-      const set=()=>{if(f==='active'){m.active=!m.active;jsDraw();return}if(f==='nanda'){m.nanda=!m.nanda;jsDraw();return}
-        if(['type','stage_id','service_id','product_id','won_stage'].includes(f)){m.rule=m.rule||{type:'manual'};m.rule[f]=el.type==='checkbox'?el.checked:el.value;if(f==='type')jsDraw();return}
-        m[f]=el.type==='checkbox'?el.checked:el.value;if(f==='nanda')jsDraw()};
+      const set=()=>{if(f==='active'){m.active=!m.active;return jsDraw()}if(f==='nanda'){m.nanda=!m.nanda;return jsDraw()}
+        if(['type','stage_id','service_id','product_id','won_stage'].includes(f)){m.rule[f]=el.type==='checkbox'?el.checked:el.value;if(f==='type'){delete m.rule.stage_id;delete m.rule.service_id;delete m.rule.product_id}return jsDraw()}
+        m[f]=el.value;card.querySelector('.jz-tx b').textContent=m.name||'Marco sem nome';$('#jsBar').hidden=JSON.stringify(JS.ms)===JS.saved};
       if(el.tagName==='BUTTON')el.onclick=set;else if(el.type==='checkbox'||el.tagName==='SELECT')el.onchange=set;else el.oninput=set});
-    card.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const j=i+Number(b.dataset.mv);[JS.ms[i],JS.ms[j]]=[JS.ms[j],JS.ms[i]];jsDraw()});
-    card.querySelector('[data-rm]').onclick=async()=>{if(!await sure(`Tirar o marco "${m.name||'sem nome'}"? Os registros manuais dele ficam guardados.`,{ok:'Tirar'}))return;JS.ms.splice(i,1);jsDraw()}})}
+    card.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const j=i+Number(b.dataset.mv);[JS.ms[i],JS.ms[j]]=[JS.ms[j],JS.ms[i]];JS.open=j;jsDraw()});
+    const rm=card.querySelector('[data-rm]');if(rm)rm.onclick=async()=>{if(!await sure(`Tirar o marco "${m.name||'sem nome'}"? O que o time já marcou fica guardado.`,{ok:'Tirar'}))return;JS.ms.splice(i,1);JS.open=null;jsDraw()}})}
 /* relatório de jornada */
 async function rpJourney(){const box=$('#rpBody');
   const end=new Date(),start=new Date();start.setDate(end.getDate()-RP.days+1);const iso=d=>ymd(d);

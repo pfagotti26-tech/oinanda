@@ -5,6 +5,7 @@ Etapas têm um tipo: 'open' (em andamento), 'won' (ganhou) ou 'lost' (perdeu).
 Contato sem etapa definida conta como a primeira etapa.
 """
 import re
+from datetime import timezone
 from typing import Optional, List, Literal
 from fastapi import APIRouter, Request, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -149,7 +150,17 @@ async def summary(user=Depends(current_user)):
     won_rows = await db.contacts.find({**q, 'stage': {'$in': won}, 'won_at': {'$gte': start}}, {'_id': 0, 'value': 1}).to_list(5000)
     waiting = await db.contacts.count_documents({**q, 'last_dir': 'in'})
     human = await db.contacts.count_documents({**q, 'needs_human': True})
-    return {'new_contacts': new, 'won': len(won_rows), 'won_value': sum(r.get('value') or 0 for r in won_rows), 'waiting': waiting, 'needs_human': human}
+    # o que a Nanda fez no mês: clientes atendidos, respostas fora do horário comercial, horários que ela marcou
+    from agenda import tz_of
+    tz = tz_of(user['company'])
+    ia = {**q, 'dir': 'out', 'by': {'$regex': r'\(IA\)$'}, 'at': {'$gte': start}}
+    outs = await db.messages.find(ia, {'_id': 0, 'at': 1, 'contact_id': 1}).to_list(50000)
+    def late(d):
+        d = d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+        h = d.astimezone(tz); return h.hour < 8 or h.hour >= 20 or h.weekday() == 6
+    appts = await db.appointments.count_documents({**q, 'by': {'$regex': r'\(IA\)$'}, 'created_at': {'$gte': start}})
+    return {'new_contacts': new, 'won': len(won_rows), 'won_value': sum(r.get('value') or 0 for r in won_rows), 'waiting': waiting, 'needs_human': human,
+            'nanda': {'people': len({m['contact_id'] for m in outs}), 'replies': len(outs), 'after_hours': sum(1 for m in outs if late(m['at'])), 'appts': appts}}
 
 @router.get('/funnel/stages')
 async def get_stages(user=Depends(current_user)):
