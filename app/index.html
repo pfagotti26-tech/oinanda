@@ -1337,6 +1337,65 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .sb-ai{margin-top:14px}#sbPack{white-space:nowrap;flex:none}.sb-aih{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.sb-aih h3{margin:0 0 4px}
 .sb-auto{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.sb-auto label{display:grid;gap:2px;font-size:14px}.sb-auto select{max-width:260px}
 @media(max-width:700px){.sb-aih,.sb-auto{flex-direction:column;align-items:stretch}.sb-auto select{max-width:none}}
+.nz{max-width:1240px;padding-bottom:70px}.nz [hidden]{display:none!important}
+.nz-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.nz-hd h1{margin:0}
+.nz-st{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 14px;white-space:nowrap}
+.nz-st b{display:block;font-size:14px}.nz-st small{display:block;font-size:12px;color:var(--ink3)}.nz-st small b{display:inline;font-size:12px;color:var(--ink2)}
+.nz-dot{width:10px;height:10px;border-radius:50%;background:#2E9E5B;box-shadow:0 0 0 4px #DDF4EC;flex:none}.nz-dot.copilot{background:#3B7DD8;box-shadow:0 0 0 4px #E3EEFB}.nz-dot.off{background:#A0A9B3;box-shadow:0 0 0 4px #EEF1F4}
+.nz-warn{background:var(--warnsoft);border:1px solid #EFD9A6;color:var(--warn);border-radius:14px;padding:10px 14px;font-size:13.5px;margin-bottom:14px}
+.nz-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;align-items:start}
+.nz-l{display:grid;gap:10px}
+.nz-prog{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:grid;gap:10px}
+.nz-pt b{display:block;font-size:15px}.nz-pt span{font-size:13px;color:var(--ink2)}
+.nz-bar{height:8px;border-radius:8px;background:#F1ECE7;overflow:hidden}.nz-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--c),#F19A6B);transition:width .4s}
+.nz-prog .btn{justify-self:start}
+.nz-s{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:box-shadow .2s}
+.nz-s.open{box-shadow:0 18px 40px -30px rgba(23,33,43,.35);border-color:#E7DAD0}
+.nz-sh{width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) 26px 18px;gap:12px;align-items:center;padding:14px 18px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.nz-sh:hover{background:#FDFBF9}.nz-ic{width:38px;height:38px;border-radius:12px;background:var(--tint);display:grid;place-items:center;font-style:normal;font-size:17px}
+.nz-sh b{display:block;font-size:15px}.nz-sh small{display:block;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nz-sh small.miss{color:#B5651D}
+.nz-sh em{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;border:1.5px dashed #D8CFC7}.nz-sh em.ok{border:0;background:var(--oksoft);color:var(--ok)}
+.nz-sh svg{width:18px;height:18px;color:var(--ink3);transition:transform .2s}.nz-s.open .nz-sh svg{transform:rotate(180deg)}
+.nz-sb{padding:4px 18px 20px 68px;display:grid;gap:16px}
+.nz-f{display:grid;gap:6px}.nz-f>label,.nz-fl label{font-size:13px;font-weight:700;color:var(--ink)}
+.nz-fl{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nz-f input,.nz-f textarea{border:1.5px solid #E2D9D1;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;background:#FDFCFB;color:var(--ink);resize:vertical;line-height:1.45;width:100%}
+.nz-f input:focus,.nz-f textarea:focus{outline:0;border-color:var(--c);background:#fff;box-shadow:0 0 0 4px rgba(232,96,63,.1)}
+.nz-f textarea::placeholder,.nz-f input::placeholder{color:#B3AAA2}
+.nz-ex{background:none;border:0;padding:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--c2);cursor:pointer}.nz-ex:hover{text-decoration:underline}
+.nz-2{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px}
+.nz-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nz-modes label{position:relative;border:1.5px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;display:grid;gap:3px;align-content:start;transition:.15s;background:#fff}
+.nz-modes label:hover{border-color:#E8C7B9}.nz-modes label.on{border-color:var(--c);background:var(--tint);box-shadow:0 0 0 4px rgba(232,96,63,.08)}
+.nz-modes label.lock{opacity:.6;cursor:not-allowed}
+.nz-modes input{position:absolute;opacity:0;pointer-events:none}.nz-modes i{font-style:normal;font-size:18px}.nz-modes b{font-size:14px}.nz-modes span{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.nz-seg{display:flex;background:#F4F0EC;border-radius:12px;padding:4px;gap:4px}
+.nz-seg label{flex:1;text-align:center;font-size:13px;font-weight:600;color:var(--ink2);padding:8px 6px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.nz-seg label.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.12)}.nz-seg input{display:none}
+.nz-cat{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg);display:grid;gap:8px}
+.nz-cat label{font-size:13px;font-weight:700}.nz-cat ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.nz-cat li{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0;border-bottom:1px dashed var(--line)}.nz-cat li:last-child{border:0}.nz-cat li i{color:var(--ink3);font-weight:500}
+.nz-cat p{margin:0;font-size:13px;color:var(--ink2)}
+.nz-r{position:sticky;top:16px}
+.nz-play{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 40px -32px rgba(23,33,43,.4)}
+.nz-tabs{display:flex;gap:4px;padding:6px;border-bottom:1px solid var(--line);background:#FBF8F5}
+.nz-tabs button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer}
+.nz-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.1)}.nz-tabs span{background:var(--soft);color:var(--c2);border-radius:999px;padding:0 7px;font-size:11.5px;margin-left:4px}
+#nzChat{padding:12px;display:grid;gap:10px}
+.nz-msgs{background:#EFE7DE;border-radius:14px;padding:12px;display:grid;gap:7px;align-content:end;height:min(46vh,420px);overflow-y:auto}
+.nz-msgs .ob-m{font-size:13.5px;max-width:85%}
+.nz-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13px;max-width:280px;line-height:1.5}
+#nzTests .nz-empty{color:var(--ink3);padding:20px 0}
+.nz-chips{display:flex;gap:6px;flex-wrap:wrap}.nz-chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-chips button:hover{border-color:var(--c);color:var(--c2)}
+.nz-comp{display:grid;gap:8px}.nz-comp textarea{border:1.5px solid #E2D9D1;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;resize:none;min-height:46px;max-height:120px;width:100%}
+.nz-comp textarea:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.1)}.nz-comp .btn{width:100%;justify-content:center;padding:12px;border-radius:12px}
+.nz-pf{display:flex;gap:14px;align-items:center}.nz-pf .hint{margin-right:auto;font-size:12px}
+#nzTests{padding:14px;display:grid;gap:10px}.nz-th{display:flex;gap:12px;align-items:flex-start}.nz-th p{margin:0}
+.nz-save{position:sticky;bottom:18px;justify-self:center;z-index:30;margin-top:6px;background:#17212B;color:#fff;border-radius:16px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 20px 40px -14px rgba(23,33,43,.55);font-size:14px;animation:obIn .25s ease both}
+.nz-save .btn:not(.p){background:transparent;color:#fff;border-color:#3A4651}
+@media(max-width:1100px){.nz-grid{grid-template-columns:1fr}.nz-r{position:static}}
+@media(max-width:700px){.nz-hd{flex-direction:column}.nz-st{white-space:normal}.nz-modes{grid-template-columns:1fr}.nz-2{grid-template-columns:1fr}.nz-sb{padding:4px 14px 18px}.nz-sh{padding:12px 14px;grid-template-columns:34px minmax(0,1fr) 24px 16px;gap:10px}.nz-ic{width:34px;height:34px}
+ .nz-save{bottom:76px;justify-self:stretch}.nz-save span{flex:1;font-size:13px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4285,53 +4344,98 @@ const VIEWS={
   POLL=setInterval(async()=>{if(VIEW!=='conversas'||document.hidden)return;try{await cvList();cvCounts();if(CV.open)await cvChat(false)}catch(e){}},4000);
  },
  async nanda(){
-  const [s,tests,ex]=await Promise.all([api('/ai/settings'),api('/ai/tests').catch(()=>[]),api('/ai/example').catch(()=>({}))]);const u=s.usage||{};
-  const F=[['about','Sobre o negócio','O que é, onde fica, para quem atende.',3],['offer','Condições, pacotes e observações de preço','Formas de pagamento, parcelamento, pacotes, descontos. Os valores em si ficam no Catálogo.',3],
-    ['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','Perguntas para entender o cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3],
-    ['rules','Regras do negócio','O que ela nunca deve fazer ou prometer.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam para o time sozinhos.',2]];
-  if(s.knowledge)F.push(['knowledge','Outras informações','O texto que você já tinha ensinado. Pode ir distribuindo nos campos acima.',6]);
-  const cat=s.catalog||[];
-  const catBox=`<div class="field"><label>O que vende e quanto custa</label><div class="ai-cat">${cat.length?`<ul>${cat.slice(0,12).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<span class="hint">sem preço</span>'}</b></li>`).join('')}</ul>${cat.length>12?`<p class="hint">e mais ${cat.length-12} itens</p>`:''}`:'<p class="hint" style="margin:0">Seu catálogo ainda está vazio. Cadastre os serviços e preços uma vez só: a Nanda usa os mesmos valores das vendas.</p>'}
-    <button type="button" class="btn sm" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
-    <span class="hint">A Nanda lê os preços direto do Catálogo (Vendas › Catálogo). Mudou lá, ela já fala o valor novo. Item sem preço ela não informa: chama o time.</span></div>`;
-  const fld=([k,l,h,r])=>(k==='offer'?catBox:'')+`<div class="field"><label>${l}</label><textarea name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(s[k]||'')}</textarea><span class="hint">${h}</span></div>`;
-  $('#page').innerHTML=`<h1>Nanda (IA)</h1><p class="sub">O que a Nanda sabe sobre o ${esc(ME.company.name)}, como ela fala e quando chama o time.</p>
-   ${s.key_configured?'':'<div class="note" style="margin-bottom:14px;border-color:#EFD9A6;background:var(--warnsoft);color:var(--warn)"><b>A IA ainda não foi ativada no servidor.</b> Dá para preencher tudo agora; ela começa a responder assim que a ativação for feita.</div>'}
-   <div class="ai-wrap"><form class="card grid" id="aiF" style="gap:16px">
-    <div class="field"><label>Como a Nanda atua nas conversas novas</label><div class="modes">
-      ${[['copilot','Copiloto','Sugere respostas; o time revisa e envia.'],['auto','Automática','Responde sozinha e chama o time quando precisa.'],['off','Pausada','Não responde nem sugere.']].map(m=>`<label><input type="radio" name="default_mode" value="${m[0]}" ${s.default_mode===m[0]?'checked':''}><b>${m[1]}</b>${m[2]}</label>`).join('')}
-    </div><span class="hint">Dá para mudar conversa por conversa. Quando alguém do time responde, a Nanda sai de cena naquela conversa.</span></div>
-    <div class="form2"><div class="field"><label>Nome da assistente</label><input name="name" value="${esc(s.name)}" minlength="2" maxlength="30"></div>
-     <div class="field"><label>Jeito de falar</label><select name="tone">${[['proximo','Próximo e direto'],['descontraido','Descontraído'],['formal','Mais formal']].map(t=>`<option value="${t[0]}" ${s.tone===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select></div></div>
-    <div class="row"><h3 class="sec" style="margin:0">O que ela precisa saber</h3><button type="button" class="btn sm" id="aiEx" style="margin-left:auto">Preencher com exemplo de ${esc((SEGS[ME.company.segment]||'negócio').toLowerCase())}</button></div>
-    <div class="field"><label>Objetivo da conversa</label><input name="goal" value="${esc(s.goal||'')}" maxlength="1000" placeholder="${esc(ex.goal||'')}"><span class="hint">O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra...</span></div>
-    ${F.map(fld).join('')}
-    <div class="row"><button class="btn p">Salvar</button><span class="err" id="aiE"></span>
-     <span style="margin-left:auto;font-size:12.5px;color:var(--ink3)">Este mês: ${u.replies||0} respostas · ${u.suggestions||0} sugestões · ${u.tests||0} testes</span></div>
-   </form>
-   <div class="grid" style="gap:14px;align-content:start"><div class="card play"><div class="hd"><b>Teste a ${esc(s.name)}</b><span class="pill grey">não envia nada</span><button class="btn sm" id="plS" style="margin-left:auto" title="Guarda esta situação para conferir sempre">Salvar teste</button><button class="btn sm" id="plR">Limpar</button></div>
-    <div class="msgs" id="plM"></div>
-    <form class="comp" id="plF"><textarea id="plT" rows="1" placeholder="Oi, quanto custa?"></textarea><button class="btn p">Enviar</button></form></div>
-    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Testes salvos</h3><button class="btn sm p" id="tsRun" style="margin-left:auto">Rodar todos</button></div>
-     <p class="hint" style="margin:4px 0 10px">Situações que a Nanda precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><div id="tsL" class="grid" style="gap:8px"></div></div></div></div>`;
-  $('#aiF').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('.btn.p');b.disabled=true;$('#aiE').textContent='';
-    try{await api('/ai/settings',{method:'PUT',body:Object.fromEntries(new FormData(ev.target))});toast('Nanda atualizada.')}catch(e){$('#aiE').textContent=e.message}b.disabled=false};
-  $('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
-  $('#aiEx').onclick=()=>{let n=0;['goal',...F.map(f=>f[0])].forEach(k=>{const el=$('#aiF')[k];if(el&&!el.value.trim()&&ex[k]){el.value=ex[k];n++}});toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+  const [s,tests,ex,ua]=await Promise.all([api('/ai/settings'),api('/ai/tests').catch(()=>[]),api('/ai/example').catch(()=>({})),api('/billing/ai').catch(()=>null)]);const u=s.usage||{};
+  const cat=s.catalog||[],segName=(SEGS[ME.company.segment]||'negócio').toLowerCase();
+  const MODES=[['auto','Atende sozinha','Responde, agenda e chama o time quando precisa.','⚡'],['copilot','Copiloto','Sugere a resposta e o time revisa antes de enviar.','✍️'],['off','Pausada','Não responde nem sugere.','⏸']];
+  const TONES=[['proximo','Próximo e direto'],['descontraido','Descontraído'],['formal','Mais formal']];
+  // seções: [id, título, ícone, campos, pronto?]
+  const SEC=[
+   ['jeito','Como ela atende','💬',[],()=>true],
+   ['negocio','O seu negócio','🏪',[['about','Sobre o negócio','O que é, onde fica e para quem atende.',3],['goal','Objetivo da conversa','O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra.',1]],v=>v.about&&v.goal],
+   ['precos','Preços e condições','🏷️',[['offer','Condições de pagamento e pacotes','Parcelamento, pacotes, descontos. Os valores ficam no Catálogo.',3]],v=>cat.length||v.offer],
+   ['duvidas','Dúvidas e perguntas','❓',[['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','O que ela pergunta ao cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3]],v=>v.faq],
+   ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam sozinhos.',2]],v=>v.rules||v.handoff]];
+  if(s.knowledge)SEC.push(['outras','Outras informações','📎',[['knowledge','Texto que você já tinha ensinado','Pode ir distribuindo nas seções acima.',6]],v=>true]);
+  const V={};['name','tone','default_mode','about','goal','offer','faq','qualify','rules','handoff','knowledge'].forEach(k=>V[k]=s[k]||'');
+  let saved=JSON.stringify(V),open=null;
+  const done=()=>SEC.filter(x=>x[0]!=='outras'&&x[4](V)).length,total=SEC.filter(x=>x[0]!=='outras').length;
+  if(!open)open=(SEC.find(x=>!x[4](V))||SEC[0])[0];
+  const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
+  const fieldH=([k,l,h,r])=>`<div class="nz-f"><div class="nz-fl"><label for="nz_${k}">${l}</label>${ex[k]&&!V[k].trim()?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</div>
+    ${r===1?`<input id="nz_${k}" name="${k}" value="${esc(V[k])}" maxlength="1000" placeholder="${esc(ex[k]||'')}">`:`<textarea id="nz_${k}" name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(V[k])}</textarea>`}<span class="hint">${h}</span></div>`;
+  const catH=()=>`<div class="nz-cat"><div class="nz-fl"><label>O que vende e quanto custa</label><button type="button" class="nz-ex" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
+    ${cat.length?`<ul>${cat.slice(0,8).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<i>sem preço</i>'}</b></li>`).join('')}</ul>${cat.length>8?`<p class="hint">e mais ${cat.length-8} itens</p>`:''}`
+    :'<p>Ainda vazio. Cadastre serviços e preços uma vez só: a Nanda usa os mesmos valores das vendas.</p>'}<span class="hint">Item sem preço ela não informa: chama o time.</span></div>`;
+  const body=id=>{if(id==='jeito')return `<div class="nz-modes">${MODES.map(m=>{const lock=m[0]==='auto'&&ME.access&&!(ME.access.features||[]).includes('auto');return `<label class="${V.default_mode===m[0]?'on':''} ${lock?'lock':''}"><input type="radio" name="default_mode" value="${m[0]}" ${V.default_mode===m[0]?'checked':''} ${lock?'disabled':''}><i>${m[3]}</i><b>${m[1]}</b><span>${lock?'Faz parte do plano Profissional.':m[2]}</span></label>`}).join('')}</div>
+     <p class="hint" style="margin:-4px 0 0">Vale para conversas novas. Dá para mudar conversa por conversa, e quando alguém do time responde ela sai de cena.</p>
+     <div class="nz-2"><div class="nz-f"><label for="nz_name">Nome dela</label><input id="nz_name" name="name" value="${esc(V.name)}" minlength="2" maxlength="30"></div>
+      <div class="nz-f"><label>Jeito de falar</label><div class="nz-seg">${TONES.map(t=>`<label class="${V.tone===t[0]?'on':''}"><input type="radio" name="tone" value="${t[0]}" ${V.tone===t[0]?'checked':''}>${t[1]}</label>`).join('')}</div></div></div>`;
+    const S=SEC.find(x=>x[0]===id);return (id==='precos'?catH():'')+S[3].map(fieldH).join('')};
+  const summary=x=>{if(x[0]==='jeito')return `${esc(V.name||'Nanda')} · ${modeOf(V.default_mode)[1]} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]}`;
+    if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'item':'itens'} no Catálogo${V.offer?' · condições preenchidas':''}`;
+    const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
+  const nf=n=>Number(n||0).toLocaleString('pt-BR');
+  const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
+  const draw=()=>{const d=done(),m=modeOf(V.default_mode);
+   $('#page').innerHTML=`<div class="nz">
+    <div class="nz-hd"><div><h1>Nanda (IA)</h1><p class="sub">O que ela sabe sobre o ${esc(ME.company.name)}, como fala e quando chama o time.</p></div>
+     <div class="nz-st"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span></div></div>
+    ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
+    <div class="nz-grid"><form id="aiF" class="nz-l" novalidate>
+     <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Teste com perguntas reais dos seus clientes.':'Quanto mais ela souber, menos ela chama o time.'}</span></div>
+      <div class="nz-bar"><i style="width:${Math.round(100*d/total)}%"></i></div>
+      ${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">Preencher o que falta com exemplo de ${esc(segName)}</button>`:''}</div>
+     ${SEC.map(x=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
+      <button type="button" class="nz-sh" aria-expanded="${isO}"><i class="nz-ic">${x[2]}</i><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><em class="${ok?'ok':''}">${ok?'✓':''}</em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      ${isO?`<div class="nz-sb">${body(x[0])}</div>`:''}</section>`}).join('')}
+     <div class="nz-save" id="nzSave" hidden><span>Você tem alterações não salvas</span><button type="button" class="btn sm" id="nzUndo">Descartar</button><button type="button" class="btn sm p" id="nzOk">Salvar</button></div>
+    </form>
+    <aside class="nz-r"><div class="nz-play"><div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
+      <div id="nzChat"><div class="nz-msgs" id="plM"></div>
+       <div class="nz-chips">${(OB_ASK[ME.company.segment]||OB_ASK.outro).map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
+       <form class="nz-comp" id="plF"><textarea id="plT" rows="1" placeholder="Escreva como se fosse um cliente..." aria-label="Mensagem de teste"></textarea><button class="btn p" type="submit">Enviar mensagem</button></form>
+       <div class="nz-pf"><span class="hint">Não envia nada.</span><button type="button" class="nz-ex" id="plS">Salvar como teste</button><button type="button" class="nz-ex" id="plR">Limpar</button></div></div>
+      <div id="nzTests" hidden><div class="nz-th"><p class="hint">Situações que ela precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><button class="btn sm p" id="tsRun" type="button">Rodar todos</button></div><div id="tsL" class="grid" style="gap:8px"></div></div>
+     </div></aside></div>
+    </div>`;
+   bind()};
+  const dirty=()=>JSON.stringify(V)!==saved;
+  const showSave=()=>{const b=$('#nzSave');if(b)b.hidden=!dirty()};
+  const save=async quiet=>{const b=$('#nzOk');if(b)b.disabled=true;try{await api('/ai/settings',{method:'PUT',body:V});saved=JSON.stringify(V);if(!quiet)toast('Nanda atualizada.');showSave();return true}catch(e){toast(e.message);return false}finally{if(b)b.disabled=false}};
+  const refreshHead=()=>{const keep=[...document.querySelectorAll('.nz-s.open textarea,.nz-s.open input')].find(e=>e===document.activeElement);
+   SEC.forEach(x=>{const el=document.querySelector(`.nz-s[data-s="${x[0]}"]`);if(!el)return;const ok=x[4](V);el.querySelector('.nz-sh small').className=ok?'':'miss';el.querySelector('.nz-sh small').innerHTML=summary(x);const em=el.querySelector('.nz-sh em');em.className=ok?'ok':'';em.textContent=ok?'✓':''});
+   const d=done();$('.nz-pt b').textContent=d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`;$('.nz-bar i').style.width=Math.round(100*d/total)+'%';showSave();return keep};
+  function bind(){
+   const f=$('#aiF');
+   f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};
+   f.onchange=e=>{const t=e.target;if(t.type==='radio'){V[t.name]=t.value;t.closest('div').querySelectorAll('label').forEach(l=>l.classList.toggle('on',l.contains(t)&&t.checked));refreshHead();if(t.name==='default_mode'){const m=modeOf(V.default_mode);$('.nz-st b').textContent=m[1];$('.nz-dot').className='nz-dot '+V.default_mode}}};
+   document.querySelectorAll('.nz-sh').forEach(h=>h.onclick=()=>{const id=h.parentNode.dataset.s;open=open===id?null:id;draw();const el=document.querySelector(`.nz-s[data-s="${id}"]`);if(open&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start',behavior:'smooth'})});
+   document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const k=b.dataset.ex;V[k]=ex[k];draw();toast('Exemplo colocado. Troque pelos dados do seu negócio.')});
+   if($('#aiCat'))$('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
+   if($('#aiEx'))$('#aiEx').onclick=()=>{let n=0;SEC.forEach(x=>x[3].forEach(([k])=>{if(!V[k].trim()&&ex[k]){V[k]=ex[k];n++}}));open=(SEC.find(x=>!x[4](V))||SEC[1])[0];draw();toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+   $('#nzOk').onclick=()=>save();$('#nzUndo').onclick=()=>{Object.assign(V,JSON.parse(saved));draw()};showSave();
+   document.querySelectorAll('.nz-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nz-tabs button').forEach(x=>x.classList.toggle('on',x===b));$('#nzChat').hidden=b.dataset.t!=='chat';$('#nzTests').hidden=b.dataset.t==='chat'});
+   drawTests(tests);playBind()}
   const EXP={reply:'Responder sozinha',handoff:'Chamar o time',book:'Agendar'};
-  const drawTests=list=>{$('#tsL').innerHTML=list.length?list.map(t=>`<div class="tst"><span><b>${esc(t.name)}</b> <span class="hint">· esperado: ${EXP[t.expect]}${t.contains?' · citar "'+esc(t.contains)+'"':''}${t.not_contains?' · sem "'+esc(t.not_contains)+'"':''}</span></span>
+  const drawTests=list=>{const L=$('#tsL');if(!L)return;L.innerHTML=list.length?list.map(t=>`<div class="tst"><span><b>${esc(t.name)}</b> <span class="hint">· esperado: ${EXP[t.expect]}${t.contains?' · citar "'+esc(t.contains)+'"':''}${t.not_contains?' · sem "'+esc(t.not_contains)+'"':''}</span></span>
      <span class="row" style="gap:6px">${t.last?`<span class="pill ${t.last.ok?'ok':'bad'}">${t.last.ok?'passou':'falhou'}</span>`:'<span class="pill grey">não rodado</span>'}<button class="btn sm" data-tdel="${t.id}" title="Apagar">×</button></span>
-     ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="hint">Converse no teste acima e clique em "Salvar teste" para guardar a situação.</div>';
-    document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});drawTests(await api('/ai/tests'))})};
-  drawTests(tests);
-  $('#tsRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{const r=await api('/ai/tests/run',{method:'POST'});drawTests(r.tests);toast(`${r.passed} de ${r.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'};
-  const hist=[];const box=$('#plM');
-  const draw=()=>{box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="m sys">${esc(m.text)}</div>`:`<div class="m ${m.dir==='in'?'in':'out ai'}">${esc(m.text)}</div>`).join(''):'<div class="m sys">Escreva como se fosse um cliente. Salve antes para ela usar o que você ensinou.</div>';box.scrollTop=box.scrollHeight};
-  draw();
-  $('#plR').onclick=()=>{hist.length=0;draw()};
-  $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
+     ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="nz-empty">Converse em "Testar conversa" e toque em "Salvar como teste" para guardar a situação.</div>';
+    document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});tests.splice(0,tests.length,...await api('/ai/tests'));drawTests(tests)});
+    const r=$('#tsRun');if(r)r.onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{if(dirty())await save(true);const x=await api('/ai/tests/run',{method:'POST'});tests.splice(0,tests.length,...x.tests);drawTests(tests);toast(`${x.passed} de ${x.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'}};
+  const hist=[];
+  const drawChat=typing=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(V.name||'Nanda')}</b>`:''}${esc(m.text)}</div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
+    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Ao testar, o que está nesta tela é salvo e ela já usa.</div>`;box.scrollTop=box.scrollHeight};
+  function playBind(){drawChat(false);const ta=$('#plT');
+   const send=async t=>{t=(t||'').trim();if(!t)return;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
+    try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')})}
+    catch(e){hist.push({dir:'sys',text:e.message})}drawChat(false)};
+   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
+   ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
+   document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
+   $('#plR').onclick=()=>{hist.length=0;drawChat(false)};
+   $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
     if(last<0)return toast('Escreva pelo menos uma mensagem como cliente.');const msgs=real.slice(0,last+1);
-    const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar teste</h2><button type="button" class="x">×</button></div>
+    const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar como teste</h2><button type="button" class="x">×</button></div>
      <p class="hint">A última mensagem do cliente: "${esc(msgs[msgs.length-1].text)}"</p>
      <div class="field"><label>Nome do teste</label><input name="name" required minlength="2" maxlength="80" value="${esc(msgs[msgs.length-1].text.slice(0,60))}"></div>
      <div class="field"><label>O que a Nanda deve fazer</label><div class="chips">${Object.entries(EXP).map(([k,v],i)=>`<label class="chip"><input type="radio" name="expect" value="${k}" ${i===0?'checked':''}> ${v}</label>`).join('')}</div></div>
@@ -4339,11 +4443,8 @@ const VIEWS={
       <div class="field"><label>Não pode citar</label><input name="not_contains" maxlength="300" placeholder="desconto"></div></div>
      <div class="row"><button class="btn p">Salvar</button><span class="err" id="tsE"></span></div></form>`,true);
     o.querySelector('#tsF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
-      try{await api('/ai/tests',{method:'POST',body:{...f,messages:msgs.map(m=>({dir:m.dir,text:m.text}))}});o.remove();toast('Teste salvo.');drawTests(await api('/ai/tests'))}catch(x){o.querySelector('#tsE').textContent=x.message}}};
-  $('#plT').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#plF').requestSubmit()}};
-  $('#plF').onsubmit=async ev=>{ev.preventDefault();const t=$('#plT').value.trim();if(!t)return;$('#plT').value='';hist.push({dir:'in',text:t});hist.push({dir:'sys',text:'digitando...'});draw();
-    try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});hist.pop();if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela agendaria '+(r.book_label||'')+' (no teste nada é agendado)'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o time · '+(r.reason||'')})}
-    catch(e){hist.pop();hist.push({dir:'sys',text:e.message})}draw()};
+     try{await api('/ai/tests',{method:'POST',body:{...f,messages:msgs.map(m=>({dir:m.dir,text:m.text}))}});o.remove();toast('Teste salvo.');tests.splice(0,tests.length,...await api('/ai/tests'));const tb=document.querySelector('[data-t=tests]');tb.innerHTML=`Testes salvos <span>${tests.length}</span>`;drawTests(tests)}catch(x){o.querySelector('#tsE').textContent=x.message}}}}
+  draw();
  },
  async inicio(){
   const team=await api('/team');const num=await api('/wa/number');const u=ME.user;const ai=await api('/ai/settings').catch(()=>null);const sm=await api('/funnel/summary').catch(()=>null);const au=['owner','manager'].includes(u.role)?await api('/automations').catch(()=>null):null;
