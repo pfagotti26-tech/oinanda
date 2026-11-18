@@ -1503,6 +1503,20 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .jz-chain em{font-style:normal;color:#C9BFB6;font-weight:700}
 .jz-pkf{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;flex-wrap:wrap}.jz-pkf p{margin:0;max-width:520px}.jz-pkf .btn{padding:13px 24px;border-radius:14px}
 @media(max-width:700px){.jz-hd{flex-direction:column}.jz-pkg{grid-template-columns:1fr}.jz-pc{padding:16px}.jz-pkf{position:sticky;bottom:72px;background:var(--bg);padding:10px 0}.jz-pkf .btn{width:100%}}
+.jz-leg{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 22px;font-size:13px;color:var(--ink3)}.jz-leg span{display:flex;align-items:center;gap:6px}.jz-leg i{font-style:normal}.jz-leg b{color:var(--ink2);font-weight:700}
+.jz-pn{font-size:14px!important;color:var(--ink3)!important}.jz-pn b{color:var(--ink)!important}
+.jz-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jz-kpi>div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:2px}
+.jz-kpi small{font-size:12px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.jz-kpi b{font-size:28px;letter-spacing:-.8px;line-height:1.15}.jz-kpi span{font-size:12.5px;color:var(--ink2)}.jz-kpi em{font-style:normal;font-weight:700;color:var(--ink)}
+.jz-kpi .ok b{color:var(--ok)}.jz-kpi .warn{background:#FFFAF2;border-color:#F6E2BC}.jz-kpi .warn b{color:#B4661A}
+.jz-list{gap:26px!important}
+.jz-conv{position:absolute;left:22px;top:-21px;transform:translateX(-50%);z-index:2;font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.jz-conv.g{color:#0A6B57;border-color:#BFE3D6;background:#F2FBF7}.jz-conv.a{color:#9A5B12;border-color:#F3D9A9;background:#FFF8EC}.jz-conv.r{color:#B03A25;border-color:#F3C3B8;background:#FFF3F0}
+.jz-card{border-color:#EFE7E0!important;box-shadow:0 1px 2px rgba(23,33,43,.03)}
+.jz-tag{background:transparent!important;padding:0!important;font-weight:600}.jz-tag.a{color:#2F5F96!important}.jz-tag.n{color:var(--c2)!important}.jz-tag.off{color:#7A8794!important}
+.jz-tags{gap:4px 14px!important}
+@media(max-width:700px){.jz-kpi{grid-template-columns:1fr 1fr}.jz-kpi .warn{grid-column:1/-1}.jz-kpi b{font-size:24px}.jz-conv{left:17px}.jz-leg{font-size:12.5px;gap:6px 14px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4808,10 +4822,7 @@ VIEWS.jornada=async function(){
   $('#page').innerHTML=`<div class="jz">
    <div class="jz-hd"><div><h1>Jornada do cliente</h1><p class="sub">Os momentos que mostram em que ponto cada cliente está. Aparecem na conversa, na ficha, nos relatórios e nas automações.</p></div>
     <button type="button" class="jz-sty" id="jzSty">${(()=>{const st=(JS.styles||[]).find(x=>x.key===JS.style);return st?`<i>${st.icon}</i><span><small>Jeito de vender</small>${esc(st.title)}</span>`:'<i>🧭</i><span><small>Jeito de vender</small>Escolher</span>'})()}<em>Trocar</em></button></div>
-   <div class="jz-how">
-    <div><i>✋</i><span><b>O time marca</b>Qualquer marco pode ser marcado à mão, na conversa.</span></div>
-    <div><i>⚙️</i><span><b>Registro sozinho</b>Quando o cliente entra numa etapa, agenda, comparece ou compra.</span></div>
-    <div><i>✨</i><span><b>A Nanda sugere</b>Ela percebe na conversa e o time só confirma.</span></div></div>
+   <div class="jz-leg"><span><i>✋</i><b>O time marca</b> à mão, na conversa</span><span><i>⚙️</i><b>Registra sozinho</b> quando agenda, comparece ou compra</span><span><i>✨</i><b>A Nanda sugere</b> e o time confirma</span></div>
    <div class="jz-per" id="jzPer"></div>
    <div class="jz-list" id="jsList"></div>
    <div class="jz-ft"><div id="jsAddBox"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button></div><button type="button" class="nz-ex" id="jsReset">Montar de novo pelo jeito de vender</button></div>
@@ -4833,14 +4844,21 @@ const JZ_PER=[['7','7 dias'],['30','30 dias'],['90','90 dias'],['mes','Este mês
 function jzRange(p){const e=new Date(),s=new Date();if(p.k==='custom'&&p.start&&p.end)return {start:p.start,end:p.end};
   if(p.k==='mes'){s.setDate(1);return {start:ymd(s),end:ymd(e)}}s.setDate(e.getDate()-(+p.k||30)+1);return {start:ymd(s),end:ymd(e)}}
 function jzQ(p){const r=jzRange(p);return 'start='+r.start+'&end='+r.end}
-function jzSet(rp){JS.rp=rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null;JS.total=rp?rp.total:0;JS.range=jzRange(JS.per)}
+function jzSet(rp){JS.steps=rp&&rp.total?rp.steps:[];JS.rp=rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null;JS.total=rp?rp.total:0;JS.range=jzRange(JS.per)}
 function jzPerDraw(){$('#jzPer').classList.remove('busy');const p=JS.per,r=JS.range,dd=x=>{const [y,m,d]=x.split('-');return `${d}/${m}${y!==String(new Date().getFullYear())?'/'+y.slice(2):''}`};
   const lbl=p.k==='mes'?'neste mês':p.k==='custom'?`de ${dd(r.start)} a ${dd(r.end)}`:`nos últimos ${p.k} dias`;
-  $('#jzPer').innerHTML=`<div class="jz-pt"><span class="jz-pn">${JS.total?`<b>${JS.total.toLocaleString('pt-BR')} ${JS.total===1?'cliente chegou':'clientes chegaram'}</b> ${lbl}`:`<b>Nenhum cliente chegou</b> ${lbl}`}</span>
+  const n=x=>Number(x).toLocaleString('pt-BR'),pc=x=>String(Math.round(x*10)/10).replace('.',',')+'%';
+  const st=JS.steps||[],saleM=JS.ms.find(m=>m.active&&m.rule&&m.rule.type==='sale'),sale=saleM&&st.find(x=>x.id===saleM.id);
+  const lastI=sale?st.indexOf(sale):st.length-1;
+  let worst=null;st.forEach((x,i)=>{if(i&&i<=lastI&&x.from_prev!=null&&(x.base||0)>=5&&(!worst||x.from_prev<worst.from_prev))worst={...x,prev:st[i-1].name}});
+  const kpi=JS.total?`<div class="jz-kpi"><div><small>Chegaram</small><b>${n(JS.total)}</b><span>clientes novos</span></div>
+    ${sale?`<div class="ok"><small>${esc(sale.name)}</small><b>${n(sale.reached)}</b><span>${pc(100*sale.reached/JS.total)} dos que chegaram</span></div>`:''}
+    ${worst?`<div class="warn"><small>Onde mais perde</small><b>${pc(100-worst.from_prev)}</b><span>param entre <em>${esc(worst.prev)}</em> e <em>${esc(worst.name)}</em></span></div>`:''}</div>`:'';
+  $('#jzPer').innerHTML=`<div class="jz-pt"><span class="jz-pn">Resultado <b>${lbl}</b></span>
     <div class="jz-seg" role="tablist">${JZ_PER.map(([k,l])=>`<button type="button" class="${p.k===k?'on':''}" data-per="${k}">${k==='custom'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>':''}<span class="${k==='custom'?'jz-pl':''}">${l}</span></button>`).join('')}</div></div>
    ${p.k==='custom'?`<div class="jz-cus"><label>De<input type="date" id="jzS" value="${r.start}" max="${ymd(new Date())}"></label><label>até<input type="date" id="jzE" value="${r.end}" max="${ymd(new Date())}"></label>
      <div class="jz-qk">${[['Ontem',1,1],['Mês passado','mp'],['Últimos 6 meses',182],['Este ano','ano']].map(([l,a,b])=>`<button type="button" data-qk="${a}" data-qb="${b||''}">${l}</button>`).join('')}</div></div>`:''}
-   ${JS.total?'':'<p class="jz-pe">Quando os clientes chegarem nesse período, cada marco mostra quantos passaram por ele.</p>'}`;
+   ${kpi}${JS.total?'':'<p class="jz-pe">Nenhum cliente chegou nesse período. Quando chegarem, cada marco mostra quantos passaram por ele.</p>'}`;
   const load=async np=>{JS.per=np;try{localStorage.setItem('oinanda.jzPer',JSON.stringify(np))}catch(e){}$('#jzPer').classList.add('busy');
     try{jzSet(await api('/reports/journey?'+jzQ(np)))}catch(e){toast(e.message)}jzPerDraw();jsDraw()};
   document.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{const k=b.dataset.per;if(k==='custom'){const r=JS.range;return load({k,start:r.start,end:r.end})}load({k})});
@@ -4874,7 +4892,8 @@ function jsAutoTxt(r){const nm=(l,id)=>(l.find(x=>x.id===id)||{}).name;
   if(r.type==='created')return 'quando o contato chega';return ''}
 function jsDraw(){
   const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
-  const cnt=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!r||!m.active)return '';return `<span class="jz-cnt"><b>${r.reached.toLocaleString('pt-BR')}</b><em><i style="width:${Math.round(100*r.reached/Math.max(1,JS.total))}%"></i></em><small>${!i?'clientes':r.from_prev!=null?`${String(r.from_prev).replace('.',',')}% do anterior`:'&nbsp;'}</small></span>`};
+  const cnt=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!r||!m.active)return '';return `<span class="jz-cnt"><b>${r.reached.toLocaleString('pt-BR')}</b><em><i style="width:${Math.round(100*r.reached/Math.max(1,JS.total))}%"></i></em><small>${r.reached===1?'cliente':'clientes'}</small></span>`};
+  const conv=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!i||!r||!m.active||r.from_prev==null)return '';const v=r.from_prev;return `<span class="jz-conv ${v>=60?'g':v>=30?'a':'r'}" title="${Math.round(v)}% dos que passaram pelo marco anterior chegaram aqui">↓ ${Math.round(v)}%</span>`};
   $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'},isO=JS.open===i,auto=r.type!=='manual';
    const tags=`${auto?`<span class="jz-tag a">⚙️ Sozinho ${jsAutoTxt(r)}</span>`:'<span class="jz-tag">✋ O time marca</span>'}${m.nanda?'<span class="jz-tag n">✨ Nanda sugere</span>':''}${m.active?'':'<span class="jz-tag off">Desligado</span>'}`;
    const ed=isO?`<div class="jz-ed">
@@ -4891,7 +4910,7 @@ function jsDraw(){
      <div class="jz-eft"><label class="jz-on"><button type="button" class="tg ${m.active?'on':''}" data-f="active" role="switch" aria-checked="${m.active}" aria-label="Ligado"></button>${m.active?'Ligado':'Desligado'}</label>
       <span class="jz-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} title="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} title="Descer">↓</button></span>
       <button type="button" class="jz-rm" data-rm>Tirar marco</button><button type="button" class="btn sm" data-close>Pronto</button></div></div>`:'';
-   return `<div class="jz-it ${m.active?'':'off'} ${isO?'open':''}" data-i="${i}"><span class="jz-dot">${esc(m.icon||'•')}</span>
+   return `<div class="jz-it ${m.active?'':'off'} ${isO?'open':''}" data-i="${i}">${conv(m,i)}<span class="jz-dot">${esc(m.icon||'•')}</span>
      <div class="jz-card"><div class="jz-row"><button type="button" class="jz-hit" data-tog><span class="jz-tx"><b>${esc(m.name||'Marco sem nome')}</b><span class="jz-tags">${tags}</span></span>${cnt(m,i)}</button>
       <button type="button" class="tg sm ${m.active?'on':''}" data-qa role="switch" aria-checked="${m.active}" title="${m.active?'Desligar':'Ligar'} este marco"></button>
       <span class="jz-grip" draggable="true" title="Arraste para mudar a ordem" aria-hidden="true">⋮⋮</span></div>
