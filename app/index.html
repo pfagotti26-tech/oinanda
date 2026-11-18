@@ -1383,7 +1383,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.1)}.nz-tabs span{background:var(--soft);color:var(--c2);border-radius:999px;padding:0 7px;font-size:11.5px;margin-left:4px}
 #nzChat{padding:12px;display:grid;gap:10px}
 .nz-msgs{background:#EFE7DE;border-radius:14px;padding:12px;display:grid;gap:7px;align-content:end;height:min(46vh,420px);overflow-y:auto}
-.nz-msgs .ob-m{font-size:13.5px;max-width:85%}
+.nz-msgs .ob-m{font-size:13.5px;max-width:85%}.nz-msgs .ob-m:not(:last-child),.ob-chat .ob-m:not(:last-child){animation:none}
 .nz-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13px;max-width:280px;line-height:1.5}
 #nzTests .nz-empty{color:var(--ink3);padding:20px 0}
 .nz-chips{display:flex;gap:6px;flex-wrap:wrap}.nz-chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-chips button:hover{border-color:var(--c);color:var(--c2)}
@@ -1396,6 +1396,26 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 @media(max-width:1100px){.nz-grid{grid-template-columns:1fr}.nz-r{position:static}}
 @media(max-width:700px){.nz-hd{flex-direction:column}.nz-st{white-space:normal}.nz-modes{grid-template-columns:1fr}.nz-2{grid-template-columns:1fr}.nz-sb{padding:4px 14px 18px}.nz-sh{padding:12px 14px;grid-template-columns:34px minmax(0,1fr) 24px 16px;gap:10px}.nz-ic{width:34px;height:34px}
  .nz-save{bottom:76px;justify-self:stretch}.nz-save span{flex:1;font-size:13px}}
+.banner .bn-tx{min-width:0}.banner .bn-ac{margin-left:auto;display:flex;align-items:center;gap:16px;white-space:nowrap}.banner .bn-ac .btn,.banner .bn-ac .lnk{margin:0}
+.nz-mt{display:none}
+.nz-sh{grid-template-columns:30px minmax(0,1fr) 18px!important}
+.nz-sh em{width:30px!important;height:30px!important;border:0!important;background:#F2EEEA;color:var(--ink2);font-size:13px!important}
+.nz-s.open .nz-sh em:not(.ok){background:var(--c);color:#fff}
+.nz-sh em.ok{background:var(--oksoft)!important;color:var(--ok)!important}
+.nz-sb{padding-left:60px}
+@media(max-width:1100px){
+ .nz-mt{display:flex;position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0 10px;margin:0 0 4px;gap:6px}
+ .nz-mt button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 8px;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer}
+ .nz-mt button.on{border-color:var(--c);background:var(--tint);color:var(--c2)}
+ .nz-grid.mt-l .nz-r,.nz-grid.mt-r .nz-l{display:none}
+ .nz-msgs{height:52vh}
+}
+@media(max-width:700px){
+ .banner.demo{flex-direction:column;align-items:stretch;gap:10px;padding:12px 16px;font-weight:500;line-height:1.4}.banner.demo .bn-ac{margin:0;justify-content:space-between}
+ .banner.demo .bn-ac .btn{flex:1;justify-content:center;padding:10px 14px}
+ .nz-hd{flex-direction:row!important;gap:10px;margin-bottom:6px}.nz-hd h1{font-size:26px}.nz-hd .sub{font-size:13.5px}.nz-st{align-self:flex-start;padding:6px 11px;white-space:nowrap!important}.nz-st small{display:none}
+ .nz-sb{padding:4px 14px 18px}.nz-sh{grid-template-columns:30px minmax(0,1fr) 16px!important}
+}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -1875,7 +1895,7 @@ function shell(){
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
-     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial">Modo demonstração: explore à vontade. Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></div>`
+     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
      :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${ME.card_trial?` A primeira mensalidade entra em ${obDay(ME.card_trial)}.`:''}${u.role==='owner'?`<button class="lnk" data-sub>${ME.card_trial?'Ver assinatura':'Ver planos e assinar'}</button>`:''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
@@ -4357,7 +4377,7 @@ const VIEWS={
    ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam sozinhos.',2]],v=>v.rules||v.handoff]];
   if(s.knowledge)SEC.push(['outras','Outras informações','📎',[['knowledge','Texto que você já tinha ensinado','Pode ir distribuindo nas seções acima.',6]],v=>true]);
   const V={};['name','tone','default_mode','about','goal','offer','faq','qualify','rules','handoff','knowledge'].forEach(k=>V[k]=s[k]||'');
-  let saved=JSON.stringify(V),open=null;
+  let saved=JSON.stringify(V),open=null,MT='l';
   const done=()=>SEC.filter(x=>x[0]!=='outras'&&x[4](V)).length,total=SEC.filter(x=>x[0]!=='outras').length;
   if(!open)open=(SEC.find(x=>!x[4](V))||SEC[0])[0];
   const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
@@ -4378,17 +4398,18 @@ const VIEWS={
   const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
   const draw=()=>{const d=done(),m=modeOf(V.default_mode);
    $('#page').innerHTML=`<div class="nz">
-    <div class="nz-hd"><div><h1>Nanda (IA)</h1><p class="sub">O que ela sabe sobre o ${esc(ME.company.name)}, como fala e quando chama o time.</p></div>
+    <div class="nz-hd"><div><h1>Nanda (IA)</h1><p class="sub">Ensine o que ela precisa saber e teste como ela responde.</p></div>
      <div class="nz-st"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span></div></div>
+    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Ensinar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
     ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
-    <div class="nz-grid"><form id="aiF" class="nz-l" novalidate>
-     <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Teste com perguntas reais dos seus clientes.':'Quanto mais ela souber, menos ela chama o time.'}</span></div>
+    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
+     <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Agora teste com perguntas reais dos seus clientes.':'Preencha cada parte. Quanto mais ela souber, menos ela chama o time.'}</span></div>
       <div class="nz-bar"><i style="width:${Math.round(100*d/total)}%"></i></div>
-      ${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">Preencher o que falta com exemplo de ${esc(segName)}</button>`:''}</div>
-     ${SEC.map(x=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
-      <button type="button" class="nz-sh" aria-expanded="${isO}"><i class="nz-ic">${x[2]}</i><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><em class="${ok?'ok':''}">${ok?'✓':''}</em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      ${d===total?'<button type="button" class="btn sm p" id="nzTry">Testar agora</button>':''}${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">Preencher o que falta com exemplo de ${esc(segName)}</button>`:''}</div>
+     ${SEC.map((x,i)=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
+      <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
       ${isO?`<div class="nz-sb">${body(x[0])}</div>`:''}</section>`}).join('')}
-     <div class="nz-save" id="nzSave" hidden><span>Você tem alterações não salvas</span><button type="button" class="btn sm" id="nzUndo">Descartar</button><button type="button" class="btn sm p" id="nzOk">Salvar</button></div>
+     <div class="nz-save" id="nzSave" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="nzUndo">Descartar</button><button type="button" class="btn sm p" id="nzOk">Salvar</button></div>
     </form>
     <aside class="nz-r"><div class="nz-play"><div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
       <div id="nzChat"><div class="nz-msgs" id="plM"></div>
@@ -4403,7 +4424,7 @@ const VIEWS={
   const showSave=()=>{const b=$('#nzSave');if(b)b.hidden=!dirty()};
   const save=async quiet=>{const b=$('#nzOk');if(b)b.disabled=true;try{await api('/ai/settings',{method:'PUT',body:V});saved=JSON.stringify(V);if(!quiet)toast('Nanda atualizada.');showSave();return true}catch(e){toast(e.message);return false}finally{if(b)b.disabled=false}};
   const refreshHead=()=>{const keep=[...document.querySelectorAll('.nz-s.open textarea,.nz-s.open input')].find(e=>e===document.activeElement);
-   SEC.forEach(x=>{const el=document.querySelector(`.nz-s[data-s="${x[0]}"]`);if(!el)return;const ok=x[4](V);el.querySelector('.nz-sh small').className=ok?'':'miss';el.querySelector('.nz-sh small').innerHTML=summary(x);const em=el.querySelector('.nz-sh em');em.className=ok?'ok':'';em.textContent=ok?'✓':''});
+   SEC.forEach(x=>{const el=document.querySelector(`.nz-s[data-s="${x[0]}"]`);if(!el)return;const ok=x[4](V);el.querySelector('.nz-sh small').className=ok?'':'miss';el.querySelector('.nz-sh small').innerHTML=summary(x);const em=el.querySelector('.nz-sh em');em.className=ok?'ok':'';em.textContent=ok?'✓':em.dataset.n});
    const d=done();$('.nz-pt b').textContent=d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`;$('.nz-bar i').style.width=Math.round(100*d/total)+'%';showSave();return keep};
   function bind(){
    const f=$('#aiF');
@@ -4413,7 +4434,9 @@ const VIEWS={
    document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const k=b.dataset.ex;V[k]=ex[k];draw();toast('Exemplo colocado. Troque pelos dados do seu negócio.')});
    if($('#aiCat'))$('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
    if($('#aiEx'))$('#aiEx').onclick=()=>{let n=0;SEC.forEach(x=>x[3].forEach(([k])=>{if(!V[k].trim()&&ex[k]){V[k]=ex[k];n++}}));open=(SEC.find(x=>!x[4](V))||SEC[1])[0];draw();toast(n?'Exemplo colocado nos campos vazios. Troque pelos dados do seu negócio e salve.':'Os campos já estão preenchidos.')};
+   if($('#nzTry'))$('#nzTry').onclick=()=>{if(innerWidth<=1100)document.querySelector('[data-mt=r]').click();else $('#plT').focus()};
    $('#nzOk').onclick=()=>save();$('#nzUndo').onclick=()=>{Object.assign(V,JSON.parse(saved));draw()};showSave();
+   document.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>{MT=b.dataset.mt;document.querySelectorAll('[data-mt]').forEach(x=>x.classList.toggle('on',x===b));$('.nz-grid').className='nz-grid mt-'+MT;scrollTo({top:0,behavior:'smooth'})});
    document.querySelectorAll('.nz-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nz-tabs button').forEach(x=>x.classList.toggle('on',x===b));$('#nzChat').hidden=b.dataset.t!=='chat';$('#nzTests').hidden=b.dataset.t==='chat'});
    drawTests(tests);playBind()}
   const EXP={reply:'Responder sozinha',handoff:'Chamar o time',book:'Agendar'};
