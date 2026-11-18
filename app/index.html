@@ -1467,6 +1467,21 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .jz-pick>div button.new{border-style:dashed;background:#fff;font-weight:700;color:var(--c2)}
 .jz-ft{align-items:flex-start!important}
 @media(max-width:700px){.jz-sum{margin-left:0}.jz-grip{display:none}.jz-cnt b{font-size:17px}.jz-cnt small,.jz-cnt em{display:none}.jz-hit{padding-left:12px}}
+.jz-per{margin:-6px 0 16px 56px;display:grid;gap:10px;transition:opacity .2s}.jz-per.busy{opacity:.55}
+.jz-pt{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.jz-pn{font-size:14px;color:var(--ink2)}.jz-pn b{color:var(--ink)}
+.jz-seg{display:flex;background:#F1ECE7;border-radius:12px;padding:3px;gap:2px}
+.jz-seg button{border:0;background:none;border-radius:9px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.jz-seg button svg{width:14px;height:14px}.jz-seg button:hover{color:var(--ink)}.jz-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.12)}
+.jz-cus{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;animation:obIn .2s ease both}
+.jz-cus label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2)}.jz-cus>span{font-size:13px;color:var(--ink3)}
+.jz-cus input{border:1.5px solid #E2D9D1;border-radius:10px;padding:7px 10px;font:inherit;font-size:13.5px;color:var(--ink);background:#FDFCFB}
+.jz-cus input:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 3px rgba(232,96,63,.1)}
+.jz-qk{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}.jz-qk button{border:1px solid var(--line);background:#FBF8F5;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.jz-qk button:hover{border-color:var(--c);color:var(--c2)}
+.jz-pe{margin:0;font-size:13px;color:var(--ink3)}
+@media(max-width:700px){.jz-per{margin-left:0}.jz-seg{width:100%;overflow-x:auto;scrollbar-width:none}.jz-seg button{flex:1 0 auto;padding:7px 10px}
+ .jz-pl{display:none}.jz-seg{overflow:visible}.jz-seg button{flex:1 1 auto;justify-content:center;padding:8px 6px}
+ .jz-cus{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.jz-cus label{display:grid;gap:4px;min-width:0}.jz-cus input{width:100%;min-width:0;padding:7px 8px}.jz-cus>span{align-self:end;padding-bottom:9px}.jz-qk{grid-column:1/-1;margin:0}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4763,19 +4778,19 @@ const JN_SUGG=[['Indicou alguém','🎁'],['Voltou a comprar','🔁'],['Pagou o 
 const JN_ICONS=['👋','💬','📄','🤝','🛍️','📅','✅','⭐','🔁','🎁','💳','📍','🎉','❤️','🏆','📞'];
 VIEWS.jornada=async function(){
   if(!isMgr())return go('inicio');
-  const [d,rp]=await Promise.all([api('/journey/settings'),api('/reports/journey').catch(()=>null)]);JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:'',adding:false,
-    rp:rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null,total:rp?rp.total:0};JS.saved=JSON.stringify(JS.ms);
+  let per;try{per=JSON.parse(localStorage.getItem('oinanda.jzPer')||'null')}catch(e){}per=per||{k:'30'};
+  const [d,rp]=await Promise.all([api('/journey/settings'),api('/reports/journey?'+jzQ(per)).catch(()=>null)]);JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:'',adding:false,per};jzSet(rp);JS.saved=JSON.stringify(JS.ms);
   $('#page').innerHTML=`<div class="jz">
    <div class="jz-hd"><div><h1>Jornada do cliente</h1><p class="sub">Os momentos que mostram em que ponto cada cliente está. Aparecem na conversa, na ficha, nos relatórios e nas automações.</p></div></div>
    <div class="jz-how">
     <div><i>✋</i><span><b>O time marca</b>Qualquer marco pode ser marcado à mão, na conversa.</span></div>
     <div><i>⚙️</i><span><b>Registro sozinho</b>Quando o cliente entra numa etapa, agenda, comparece ou compra.</span></div>
     <div><i>✨</i><span><b>A Nanda sugere</b>Ela percebe na conversa e o time só confirma.</span></div></div>
-   ${JS.rp?`<div class="jz-sum"><b>${JS.total.toLocaleString('pt-BR')} clientes</b> chegaram nos últimos 30 dias. Veja ao lado de cada marco quantos passaram por ele.</div>`:`<div class="jz-sum">Quando os clientes começarem a chegar, aqui aparece quantos passaram por cada marco.</div>`}
+   <div class="jz-per" id="jzPer"></div>
    <div class="jz-list" id="jsList"></div>
    <div class="jz-ft"><div id="jsAddBox"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button></div><button type="button" class="nz-ex" id="jsReset">Voltar aos marcos sugeridos</button></div>
    <div class="nz-save jz-save" id="jsBar" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="jsUndo">Descartar</button><button type="button" class="btn sm p" id="jsSave">Salvar</button></div></div>`;
-  jsDraw();
+  jzPerDraw();jsDraw();
   const addMs=(name,icon)=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:name||'',icon:icon||'⭐',active:true,rule:{type:'manual'},nanda:!!name,hint:''});JS.open=JS.ms.length-1;addBox(false);jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f='+(name?'hint':'name')+']');if(n){n.focus();n.scrollIntoView({block:'center',behavior:'smooth'})}},50)};
   const addBox=on=>{const have=new Set(JS.ms.map(m=>(m.name||'').toLowerCase()));const sg=JN_SUGG.filter(x=>!have.has(x[0].toLowerCase()));
     $('#jsAddBox').innerHTML=on?`<div class="jz-pick"><b>Qual momento você quer acompanhar?</b><div>${sg.map(x=>`<button type="button" data-sg="${esc(x[0])}" data-sgi="${x[1]}">${x[1]} ${esc(x[0])}</button>`).join('')}<button type="button" class="new" data-sg="">+ Criar outro</button></div><button type="button" class="nz-ex" id="jsAddX">Cancelar</button></div>`:'<button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button>';
@@ -4787,6 +4802,26 @@ VIEWS.jornada=async function(){
     catch(x){toast(x.message);b.disabled=false}};
   $('#jsUndo').onclick=()=>{JS.ms=JSON.parse(JS.saved);JS.open=null;jsDraw()};
   $('#jsReset').onclick=async()=>{if(!await sure('Voltar aos marcos sugeridos para o seu tipo de negócio? Os registros que o time já fez continuam guardados.',{ok:'Voltar aos sugeridos'}))return;await api('/journey/settings/reset',{method:'POST'});toast('Marcos sugeridos de volta.');VIEWS.jornada()}};
+const JZ_PER=[['7','7 dias'],['30','30 dias'],['90','90 dias'],['mes','Este mês'],['custom','Personalizado']];
+function jzRange(p){const e=new Date(),s=new Date();if(p.k==='custom'&&p.start&&p.end)return {start:p.start,end:p.end};
+  if(p.k==='mes'){s.setDate(1);return {start:ymd(s),end:ymd(e)}}s.setDate(e.getDate()-(+p.k||30)+1);return {start:ymd(s),end:ymd(e)}}
+function jzQ(p){const r=jzRange(p);return 'start='+r.start+'&end='+r.end}
+function jzSet(rp){JS.rp=rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null;JS.total=rp?rp.total:0;JS.range=jzRange(JS.per)}
+function jzPerDraw(){$('#jzPer').classList.remove('busy');const p=JS.per,r=JS.range,dd=x=>{const [y,m,d]=x.split('-');return `${d}/${m}${y!==String(new Date().getFullYear())?'/'+y.slice(2):''}`};
+  const lbl=p.k==='mes'?'neste mês':p.k==='custom'?`de ${dd(r.start)} a ${dd(r.end)}`:`nos últimos ${p.k} dias`;
+  $('#jzPer').innerHTML=`<div class="jz-pt"><span class="jz-pn">${JS.total?`<b>${JS.total.toLocaleString('pt-BR')} ${JS.total===1?'cliente chegou':'clientes chegaram'}</b> ${lbl}`:`<b>Nenhum cliente chegou</b> ${lbl}`}</span>
+    <div class="jz-seg" role="tablist">${JZ_PER.map(([k,l])=>`<button type="button" class="${p.k===k?'on':''}" data-per="${k}">${k==='custom'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>':''}<span class="${k==='custom'?'jz-pl':''}">${l}</span></button>`).join('')}</div></div>
+   ${p.k==='custom'?`<div class="jz-cus"><label>De<input type="date" id="jzS" value="${r.start}" max="${ymd(new Date())}"></label><label>até<input type="date" id="jzE" value="${r.end}" max="${ymd(new Date())}"></label>
+     <div class="jz-qk">${[['Ontem',1,1],['Mês passado','mp'],['Últimos 6 meses',182],['Este ano','ano']].map(([l,a,b])=>`<button type="button" data-qk="${a}" data-qb="${b||''}">${l}</button>`).join('')}</div></div>`:''}
+   ${JS.total?'':'<p class="jz-pe">Quando os clientes chegarem nesse período, cada marco mostra quantos passaram por ele.</p>'}`;
+  const load=async np=>{JS.per=np;try{localStorage.setItem('oinanda.jzPer',JSON.stringify(np))}catch(e){}$('#jzPer').classList.add('busy');
+    try{jzSet(await api('/reports/journey?'+jzQ(np)))}catch(e){toast(e.message)}jzPerDraw();jsDraw()};
+  document.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{const k=b.dataset.per;if(k==='custom'){const r=JS.range;return load({k,start:r.start,end:r.end})}load({k})});
+  const cs=$('#jzS'),ce=$('#jzE');if(cs){const ch=()=>{let a=cs.value,b=ce.value;if(!a||!b)return;if(a>b)[a,b]=[b,a];load({k:'custom',start:a,end:b})};cs.onchange=ch;ce.onchange=ch}
+  document.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>{const t=new Date(),q=b.dataset.qk;let a,e2;
+    if(q==='mp'){a=new Date(t.getFullYear(),t.getMonth()-1,1);e2=new Date(t.getFullYear(),t.getMonth(),0)}else if(q==='ano'){a=new Date(t.getFullYear(),0,1);e2=t}
+    else if(q==='1'){a=new Date(t);a.setDate(t.getDate()-1);e2=a}else{a=new Date(t);a.setDate(t.getDate()-(+q)+1);e2=t}
+    load({k:'custom',start:ymd(a),end:ymd(e2)})})}
 function jsAutoTxt(r){const nm=(l,id)=>(l.find(x=>x.id===id)||{}).name;
   if(r.type==='stage')return r.stage_id?`quando entra em “${esc(nm(JS.stages,r.stage_id)||'etapa')}”`:'quando entra numa etapa (escolha qual)';
   if(r.type==='appt_booked')return 'quando agenda'+(r.service_id?` ${esc(nm(JS.services,r.service_id)||'')}`:'');
