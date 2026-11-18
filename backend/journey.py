@@ -199,6 +199,37 @@ def default_milestones(company):
             _m('comprou', 'Comprou', '🏆', {'type': 'sale'})]
     return out
 
+# ---------- jeito de vender: a jornada nasce do modo como o cliente compra, não só do ramo ----------
+H_ORC = 'o cliente pergunta preço, valores, planos ou pede um orçamento'
+H_PROP = 'o time ou a Nanda manda valores, proposta ou orçamento para o cliente'
+H_VOLTOU = 'o cliente volta a marcar ou a comprar depois da primeira vez'
+H_PERG = 'o cliente pergunta sobre um produto, tamanho, cor, sabor ou disponibilidade'
+H_REN = 'o cliente renova, paga a próxima mensalidade ou continua no plano'
+STYLES = {
+    'agenda': {'title': 'Agenda antes de comprar', 'desc': 'O cliente marca um horário e decide depois do atendimento.', 'ex': 'Clínica, salão, barbearia, estética', 'icon': '📅'},
+    'orcamento': {'title': 'Pede orçamento', 'desc': 'O cliente pede preço, recebe uma proposta e fecha.', 'ex': 'Serviços, reformas, imobiliária, eventos', 'icon': '📄'},
+    'direto': {'title': 'Compra direto', 'desc': 'O cliente pergunta e já compra, sem agendar.', 'ex': 'Loja, delivery, restaurante, infoproduto', 'icon': '🛍️'},
+    'assinatura': {'title': 'Assina ou matricula', 'desc': 'O cliente conhece, entra num plano e renova.', 'ex': 'Academia, studio, escola, curso, mentoria', 'icon': '🔁'},
+}
+SUGGEST = {'clinica': 'agenda', 'salao': 'agenda', 'studio': 'assinatura', 'escola': 'assinatura', 'imobiliaria': 'orcamento', 'servicos': 'orcamento',
+           'loja': 'direto', 'restaurante': 'direto', 'lancamento': 'direto', 'outro': 'orcamento'}
+
+def style_milestones(style, sv):
+    """Marcos de cada jeito de vender. `sv` é o nome do serviço que o próprio cliente cadastrou na agenda."""
+    s = (sv or 'atendimento').strip(); low = s[0].lower() + s[1:] if s else 'atendimento'
+    e = [_m('entrou', 'Entrou', '👋', {'type': 'created'})]
+    if style == 'agenda':
+        return e + [_m('agendou', f'Agendou {low}', '📅', {'type': 'appt_booked'}), _m('compareceu', f'Fez {low}', '✅', {'type': 'appt_done'}),
+                    _m('comprou', 'Fechou', '🏆', {'type': 'sale'}), _m('voltou', 'Voltou', '🔁', {}, True, H_VOLTOU)]
+    if style == 'direto':
+        return e + [_m('perguntou', 'Perguntou sobre produto', '💬', {}, True, H_PERG), _m('comprou', 'Comprou', '🛍️', {'type': 'sale'}),
+                    _m('voltou', 'Comprou de novo', '🔁', {}, True, H_VOLTOU)]
+    if style == 'assinatura':
+        return e + [_m('agendou', f'Agendou {low}', '📅', {'type': 'appt_booked'}), _m('compareceu', f'Fez {low}', '✅', {'type': 'appt_done'}),
+                    _m('comprou', 'Matriculou', '🎓', {'type': 'sale'}), _m('renovou', 'Renovou', '🔁', {}, True, H_REN)]
+    return e + [_m('orcamento', 'Pediu orçamento', '💬', {}, True, H_ORC), _m('proposta', 'Recebeu proposta', '📄', {}, True, H_PROP),
+                _m('comprou', 'Fechou', '🏆', {'type': 'sale'})]
+
 def milestones_of(company):
     return company.get('milestones') if company.get('milestones') is not None else default_milestones(company)
 
@@ -259,7 +290,10 @@ async def get_settings(user=Depends(current_user)):
     try: services = [{'id': s['id'], 'name': s['name']} for s in (await settings_for(c)).get('services') or []]
     except Exception: services = []
     from funnel import stages_for
+    sv = services[0]['name'] if services else None
+    styles = [{'key': k, **v, 'preview': [m['name'] for m in style_milestones(k, sv)]} for k, v in STYLES.items()]
     return {'milestones': milestones_of(c), 'custom': c.get('milestones') is not None, 'rule_types': RULE_TYPES, 'services': services,
+            'style': c.get('journey_style'), 'suggested': SUGGEST.get(c.get('segment'), 'orcamento'), 'styles': styles,
             'stages': [{'id': s['id'], 'name': s['name']} for s in await stages_for(c)],
             'products': await db.products.find({'company_id': c['id'], 'active': True}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
 
@@ -280,6 +314,20 @@ async def put_settings(body: SettingsIn, request: Request, user=Depends(managers
     await db.companies.update_one({'id': user['company_id']}, {'$set': {'milestones': out}})
     await audit(request, user, 'Alterou os marcos da jornada', ', '.join(m['name'] for m in out))
     return {'ok': True, 'milestones': out}
+
+class StyleIn(BaseModel):
+    style: Literal['agenda', 'orcamento', 'direto', 'assinatura']
+
+@router.post('/journey/settings/style')
+async def set_style(body: StyleIn, request: Request, user=Depends(managers)):
+    """Monta a jornada pelo jeito de vender, com os nomes dos serviços que a empresa cadastrou. O que o time já marcou fica guardado."""
+    from agenda import settings_for
+    try: svs = (await settings_for(user['company'])).get('services') or []
+    except Exception: svs = []
+    ms = style_milestones(body.style, svs[0]['name'] if svs else None)
+    await db.companies.update_one({'id': user['company_id']}, {'$set': {'milestones': ms, 'journey_style': body.style}})
+    await audit(request, user, 'Escolheu o jeito de vender da jornada', STYLES[body.style]['title'])
+    return {'ok': True, 'milestones': ms}
 
 @router.post('/journey/settings/reset')
 async def reset_settings(request: Request, user=Depends(managers)):
