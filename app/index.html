@@ -1455,6 +1455,18 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .jz-it{grid-template-columns:34px minmax(0,1fr);gap:10px}.jz-dot{width:34px;height:34px;font-size:15px}.jz-list:before{left:16px}
  .jz-opts{grid-template-columns:1fr}.jz-ed{padding:14px}.jz-eft{flex-wrap:wrap}.jz-mv{margin-left:0}.jz-eft .btn{margin-left:auto}
  .jz-ft{margin-left:44px;flex-direction:column;align-items:flex-start}.jz-save{bottom:76px;width:auto}.jz-edit{display:none}}
+.jz-sum{font-size:13.5px;color:var(--ink2);margin:-8px 0 14px 56px}.jz-sum b{color:var(--ink)}
+.jz-row{padding:0!important;gap:0!important;cursor:default!important}.jz-row:hover{background:none!important}
+.jz-hit{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:13px 6px 13px 16px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:18px 0 0 18px}.jz-hit:hover .jz-tx b{color:var(--c2)}
+.jz-cnt{display:grid;justify-items:end;flex:none;padding-right:6px;gap:3px}.jz-cnt em{display:block;width:84px;height:5px;border-radius:5px;background:#F1ECE7;overflow:hidden}.jz-cnt em i{display:block;height:100%;background:linear-gradient(90deg,var(--c),#F19A6B);border-radius:5px}.jz-cnt b{font-size:20px;letter-spacing:-.4px;line-height:1.1}.jz-cnt small{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.jz-row .tg{flex:none;margin:0 6px}
+.jz-grip{flex:none;width:34px;align-self:stretch;display:grid;place-items:center;color:#C9BFB6;cursor:grab;font-size:13px;letter-spacing:-2px;user-select:none}.jz-grip:hover{color:var(--ink2)}
+.jz-it.drag{opacity:.4}.jz-it.over .jz-card{border-color:var(--c);box-shadow:0 0 0 3px rgba(232,96,63,.15)}
+.jz-pick{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px;justify-items:start}.jz-pick b{font-size:14px}
+.jz-pick>div{display:flex;flex-wrap:wrap;gap:8px}.jz-pick>div button{border:1px solid var(--line);background:#FBF8F5;border-radius:999px;padding:8px 13px;font:inherit;font-size:13px;cursor:pointer}.jz-pick>div button:hover{border-color:var(--c);background:var(--tint)}
+.jz-pick>div button.new{border-style:dashed;background:#fff;font-weight:700;color:var(--c2)}
+.jz-ft{align-items:flex-start!important}
+@media(max-width:700px){.jz-sum{margin-left:0}.jz-grip{display:none}.jz-cnt b{font-size:17px}.jz-cnt small,.jz-cnt em{display:none}.jz-hit{padding-left:12px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4747,21 +4759,28 @@ async function jnFull(box,id){let JF=box._jf||(box._jf={cats:null});
 let JS=null;
 const JNRULE_TXT={manual:'Não (marcação manual)',created:'Quando o contato entra',stage:'Quando entra numa etapa do funil',appt_booked:'Quando agenda um serviço',appt_done:'Quando comparece a um serviço',sale:'Quando compra'};
 const JN_AUTO={created:['Quando o contato chega','Primeira mensagem ou cadastro'],stage:['Quando entra numa etapa do funil',''],appt_booked:['Quando agenda',''],appt_done:['Quando comparece',''],sale:['Quando compra','']};
+const JN_SUGG=[['Indicou alguém','🎁'],['Voltou a comprar','🔁'],['Pagou o sinal','💳'],['Deixou avaliação','⭐'],['Renovou o plano','✅'],['Pediu para cancelar','📞']];
 const JN_ICONS=['👋','💬','📄','🤝','🛍️','📅','✅','⭐','🔁','🎁','💳','📍','🎉','❤️','🏆','📞'];
 VIEWS.jornada=async function(){
   if(!isMgr())return go('inicio');
-  const d=await api('/journey/settings');JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:''};JS.saved=JSON.stringify(JS.ms);
+  const [d,rp]=await Promise.all([api('/journey/settings'),api('/reports/journey').catch(()=>null)]);JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:'',adding:false,
+    rp:rp&&rp.total?Object.fromEntries(rp.steps.map(x=>[x.id,x])):null,total:rp?rp.total:0};JS.saved=JSON.stringify(JS.ms);
   $('#page').innerHTML=`<div class="jz">
    <div class="jz-hd"><div><h1>Jornada do cliente</h1><p class="sub">Os momentos que mostram em que ponto cada cliente está. Aparecem na conversa, na ficha, nos relatórios e nas automações.</p></div></div>
    <div class="jz-how">
     <div><i>✋</i><span><b>O time marca</b>Qualquer marco pode ser marcado à mão, na conversa.</span></div>
     <div><i>⚙️</i><span><b>Registro sozinho</b>Quando o cliente entra numa etapa, agenda, comparece ou compra.</span></div>
     <div><i>✨</i><span><b>A Nanda sugere</b>Ela percebe na conversa e o time só confirma.</span></div></div>
+   ${JS.rp?`<div class="jz-sum"><b>${JS.total.toLocaleString('pt-BR')} clientes</b> chegaram nos últimos 30 dias. Veja ao lado de cada marco quantos passaram por ele.</div>`:`<div class="jz-sum">Quando os clientes começarem a chegar, aqui aparece quantos passaram por cada marco.</div>`}
    <div class="jz-list" id="jsList"></div>
-   <div class="jz-ft"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button><button type="button" class="nz-ex" id="jsReset">Voltar aos marcos sugeridos</button></div>
+   <div class="jz-ft"><div id="jsAddBox"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button></div><button type="button" class="nz-ex" id="jsReset">Voltar aos marcos sugeridos</button></div>
    <div class="nz-save jz-save" id="jsBar" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="jsUndo">Descartar</button><button type="button" class="btn sm p" id="jsSave">Salvar</button></div></div>`;
   jsDraw();
-  $('#jsAdd').onclick=()=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:'',icon:'⭐',active:true,rule:{type:'manual'},nanda:false,hint:''});JS.open=JS.ms.length-1;jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f=name]');if(n){n.focus();n.scrollIntoView({block:'center',behavior:'smooth'})}},50)};
+  const addMs=(name,icon)=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:name||'',icon:icon||'⭐',active:true,rule:{type:'manual'},nanda:!!name,hint:''});JS.open=JS.ms.length-1;addBox(false);jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f='+(name?'hint':'name')+']');if(n){n.focus();n.scrollIntoView({block:'center',behavior:'smooth'})}},50)};
+  const addBox=on=>{const have=new Set(JS.ms.map(m=>(m.name||'').toLowerCase()));const sg=JN_SUGG.filter(x=>!have.has(x[0].toLowerCase()));
+    $('#jsAddBox').innerHTML=on?`<div class="jz-pick"><b>Qual momento você quer acompanhar?</b><div>${sg.map(x=>`<button type="button" data-sg="${esc(x[0])}" data-sgi="${x[1]}">${x[1]} ${esc(x[0])}</button>`).join('')}<button type="button" class="new" data-sg="">+ Criar outro</button></div><button type="button" class="nz-ex" id="jsAddX">Cancelar</button></div>`:'<button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button>';
+    if(on){document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>addMs(b.dataset.sg,b.dataset.sgi));$('#jsAddX').onclick=()=>addBox(false)}else $('#jsAdd').onclick=()=>addBox(true)};
+  addBox(false);
   $('#jsSave').onclick=async e=>{const b=e.target;const bad=JS.ms.findIndex(m=>(m.name||'').trim().length<2);if(bad>=0){JS.open=bad;jsDraw();return toast('Dê um nome a cada marco.')}
     const st=JS.ms.findIndex(m=>m.rule&&m.rule.type==='stage'&&!m.rule.stage_id);if(st>=0){JS.open=st;jsDraw();return toast('Escolha a etapa do funil desse marco.')}
     b.disabled=true;try{await api('/journey/settings',{method:'PUT',body:{milestones:JS.ms.map(m=>({...m,rule:{...m.rule,stage_id:m.rule.stage_id||null,service_id:m.rule.service_id||null,product_id:m.rule.product_id||null}}))}});toast('Jornada salva.');VIEWS.jornada()}
@@ -4776,6 +4795,7 @@ function jsAutoTxt(r){const nm=(l,id)=>(l.find(x=>x.id===id)||{}).name;
   if(r.type==='created')return 'quando o contato chega';return ''}
 function jsDraw(){
   const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
+  const cnt=(m,i)=>{const r=JS.rp&&m.id&&JS.rp[m.id];if(!r||!m.active)return '';return `<span class="jz-cnt"><b>${r.reached.toLocaleString('pt-BR')}</b><em><i style="width:${Math.round(100*r.reached/Math.max(1,JS.total))}%"></i></em><small>${i&&r.from_prev!=null?`${String(r.from_prev).replace('.',',')}% do anterior`:'clientes'}</small></span>`};
   $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'},isO=JS.open===i,auto=r.type!=='manual';
    const tags=`${auto?`<span class="jz-tag a">⚙️ Sozinho ${jsAutoTxt(r)}</span>`:'<span class="jz-tag">✋ O time marca</span>'}${m.nanda?'<span class="jz-tag n">✨ Nanda sugere</span>':''}${m.active?'':'<span class="jz-tag off">Desligado</span>'}`;
    const ed=isO?`<div class="jz-ed">
@@ -4793,10 +4813,16 @@ function jsDraw(){
       <span class="jz-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} title="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} title="Descer">↓</button></span>
       <button type="button" class="jz-rm" data-rm>Tirar marco</button><button type="button" class="btn sm" data-close>Pronto</button></div></div>`:'';
    return `<div class="jz-it ${m.active?'':'off'} ${isO?'open':''}" data-i="${i}"><span class="jz-dot">${esc(m.icon||'•')}</span>
-     <div class="jz-card"><button type="button" class="jz-row" data-tog><span class="jz-tx"><b>${esc(m.name||'Marco sem nome')}</b><span class="jz-tags">${tags}</span></span><span class="jz-edit">${isO?'Fechar':'Editar'}</span></button>${ed}</div></div>`}).join('');
+     <div class="jz-card"><div class="jz-row"><button type="button" class="jz-hit" data-tog><span class="jz-tx"><b>${esc(m.name||'Marco sem nome')}</b><span class="jz-tags">${tags}</span></span>${cnt(m,i)}</button>
+      <button type="button" class="tg sm ${m.active?'on':''}" data-qa role="switch" aria-checked="${m.active}" title="${m.active?'Desligar':'Ligar'} este marco"></button>
+      <span class="jz-grip" draggable="true" title="Arraste para mudar a ordem" aria-hidden="true">⋮⋮</span></div>${ed}</div></div>`}).join('');
   const dirty=JSON.stringify(JS.ms)!==JS.saved;$('#jsBar').hidden=!dirty;
   $('#jsList').querySelectorAll('.jz-it').forEach(card=>{const i=+card.dataset.i,m=JS.ms[i];m.rule=m.rule||{type:'manual'};
     card.querySelector('[data-tog]').onclick=()=>{JS.open=JS.open===i?null:i;jsDraw()};
+    card.querySelector('[data-qa]').onclick=()=>{m.active=!m.active;jsDraw()};
+    const g=card.querySelector('.jz-grip');g.ondragstart=e=>{JS.drag=i;e.dataTransfer.effectAllowed='move';e.dataTransfer.setDragImage(card,20,20);card.classList.add('drag')};g.ondragend=()=>card.classList.remove('drag');
+    card.ondragover=e=>{if(JS.drag==null)return;e.preventDefault();card.classList.add('over')};card.ondragleave=()=>card.classList.remove('over');
+    card.ondrop=e=>{e.preventDefault();const from=JS.drag;JS.drag=null;if(from==null||from===i)return jsDraw();const [x]=JS.ms.splice(from,1);JS.ms.splice(i,0,x);JS.open=null;jsDraw()};
     const c=card.querySelector('[data-close]');if(c)c.onclick=()=>{JS.open=null;jsDraw()};
     card.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{m.rule.type=b.dataset.type;jsDraw()});
     card.querySelectorAll('[data-icon]').forEach(b=>b.onclick=()=>{m.icon=b.dataset.icon;jsDraw()});
