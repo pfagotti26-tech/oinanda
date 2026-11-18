@@ -1416,6 +1416,45 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .nz-hd{flex-direction:row!important;gap:10px;margin-bottom:6px}.nz-hd h1{font-size:26px}.nz-hd .sub{font-size:13.5px}.nz-st{align-self:flex-start;padding:6px 11px;white-space:nowrap!important}.nz-st small{display:none}
  .nz-sb{padding:4px 14px 18px}.nz-sh{grid-template-columns:30px minmax(0,1fr) 16px!important}
 }
+.jz{max-width:880px;padding-bottom:80px}.jz [hidden]{display:none!important}
+.jz-hd h1{margin:0}.jz-hd .sub{margin-top:6px}
+.jz-how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 22px}
+.jz-how>div{display:flex;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:12.5px;color:var(--ink2);line-height:1.4}
+.jz-how i{font-style:normal;font-size:18px}.jz-how b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+.jz-list{position:relative;display:grid;gap:10px}
+.jz-list:before{content:'';position:absolute;left:21px;top:22px;bottom:22px;width:2px;background:repeating-linear-gradient(var(--line) 0 6px,transparent 6px 10px)}
+.jz-it{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;position:relative}
+.jz-dot{width:44px;height:44px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-size:19px;z-index:1;margin-top:4px}
+.jz-it.open .jz-dot{border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
+.jz-it.off .jz-dot{filter:grayscale(1);opacity:.5}.jz-it.off .jz-tx b{color:var(--ink3)}
+.jz-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:box-shadow .2s}
+.jz-it.open .jz-card{border-color:#E7DAD0;box-shadow:0 18px 40px -30px rgba(23,33,43,.35)}
+.jz-row{width:100%;display:flex;align-items:center;gap:12px;padding:13px 16px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.jz-row:hover{background:#FDFBF9}.jz-tx{flex:1;min-width:0}.jz-tx b{display:block;font-size:15px}
+.jz-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.jz-tag{font-size:12px;color:var(--ink2);background:#F4F0EC;border-radius:999px;padding:3px 9px}.jz-tag.a{background:#E7F1FC;color:#24548F}.jz-tag.n{background:var(--soft);color:var(--c2)}.jz-tag.off{background:#EEF1F4;color:#6B7680}
+.jz-edit{font-size:13px;font-weight:700;color:var(--c2);flex:none}
+.jz-ed{border-top:1px solid var(--line);padding:16px 18px 18px;display:grid;gap:18px;background:#FFFDFB}
+.jz-q{display:grid;gap:8px}.jz-q>label,.jz-sw label{font-size:13.5px;font-weight:700;color:var(--ink)}
+.jz-sub{font-size:12.5px;font-weight:600;color:var(--ink2)}.jz-q textarea{resize:vertical;line-height:1.4}.jz-q input,.jz-q textarea,.jz-q select,.jz-when select{border:1.5px solid #E2D9D1;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;color:var(--ink);width:100%}
+.jz-q input:focus,.jz-q textarea:focus,.jz-q select:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.1)}
+.jz-nm{display:flex;gap:8px}.jz-ic{width:46px;flex:none;border:1.5px solid #E2D9D1;border-radius:12px;background:#fff;font-size:19px;cursor:pointer}
+.jz-icons{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff}.jz-icons button{width:38px;height:38px;border:0;border-radius:10px;background:#F7F3EF;font-size:18px;cursor:pointer}.jz-icons button:hover{background:var(--soft)}
+.jz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jz-opts button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 13px;text-align:left;font:inherit;cursor:pointer;display:grid;gap:2px}
+.jz-opts button b{font-size:13.5px}.jz-opts button span{font-size:12.5px;color:var(--ink2)}.jz-opts button.on{border-color:var(--c);background:var(--tint);box-shadow:0 0 0 4px rgba(232,96,63,.08)}
+.jz-when{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.jz-when>span{font-size:13.5px;color:var(--ink2)}.jz-when select{width:auto;flex:1;min-width:180px}
+.jz-sw{display:flex;justify-content:space-between;gap:12px;align-items:center}.jz-sw small{display:block;font-size:12.5px;color:var(--ink2)}
+.jz-eft{display:flex;align-items:center;gap:12px;padding-top:4px;border-top:1px dashed var(--line);padding-top:14px}
+.jz-on{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600}.jz-mv{display:flex;gap:4px;margin-left:auto}
+.jz-rm{background:none;border:0;font:inherit;font-size:13px;font-weight:700;color:var(--bad);cursor:pointer}
+.jz-ft{display:flex;align-items:center;gap:16px;margin:14px 0 0 56px}
+.jz-add{border:1.5px dashed #D8CFC7;background:#fff;border-radius:14px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink2);cursor:pointer}.jz-add:hover{border-color:var(--c);color:var(--c2)}
+.jz-save{position:sticky;bottom:18px;justify-self:center;display:flex;width:max-content;margin:16px auto 0;z-index:30}
+@media(max-width:700px){.jz-how{grid-template-columns:1fr;gap:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 0}.jz-how>div{border:0;border-radius:0;padding:8px 12px;align-items:center}.jz-how>div+div{border-top:1px solid var(--line)}.jz-how b{display:inline;margin-right:4px}.jz-how i{font-size:16px}.jz-when>span{display:none}.jz-when select{min-width:0;width:100%;flex:1 1 100%}
+ .jz-it{grid-template-columns:34px minmax(0,1fr);gap:10px}.jz-dot{width:34px;height:34px;font-size:15px}.jz-list:before{left:16px}
+ .jz-opts{grid-template-columns:1fr}.jz-ed{padding:14px}.jz-eft{flex-wrap:wrap}.jz-mv{margin-left:0}.jz-eft .btn{margin-left:auto}
+ .jz-ft{margin-left:44px;flex-direction:column;align-items:flex-start}.jz-save{bottom:76px;width:auto}.jz-edit{display:none}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4707,39 +4746,68 @@ async function jnFull(box,id){let JF=box._jf||(box._jf={cats:null});
 /* configuração dos marcos */
 let JS=null;
 const JNRULE_TXT={manual:'Não (marcação manual)',created:'Quando o contato entra',stage:'Quando entra numa etapa do funil',appt_booked:'Quando agenda um serviço',appt_done:'Quando comparece a um serviço',sale:'Quando compra'};
+const JN_AUTO={created:['Quando o contato chega','Primeira mensagem ou cadastro'],stage:['Quando entra numa etapa do funil',''],appt_booked:['Quando agenda',''],appt_done:['Quando comparece',''],sale:['Quando compra','']};
+const JN_ICONS=['👋','💬','📄','🤝','🛍️','📅','✅','⭐','🔁','🎁','💳','📍','🎉','❤️','🏆','📞'];
 VIEWS.jornada=async function(){
   if(!isMgr())return go('inicio');
-  const d=await api('/journey/settings');JS={...d,ms:JSON.parse(JSON.stringify(d.milestones))};
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Jornada do cliente</h1><p class="sub">Os marcos que importam no seu negócio. Eles aparecem na conversa, nos detalhes do cliente, no relatório de jornada, nos segmentos e nas automações.</p></div>
-   <div class="tools"><button class="btn" id="jsReset">Voltar ao padrão</button><button class="btn p" id="jsSave">Salvar</button></div></div>
-   <div class="note" style="margin-bottom:14px"><b>Como funciona:</b> todo marco pode ser marcado pelo time a qualquer momento. Escolha também se ele é registrado sozinho (quando entra numa etapa, agenda, comparece ou compra) e se a Nanda pode sugerir quando perceber na conversa. A sugestão da Nanda só vale depois que alguém do time confirma.</div>
-   <div class="js-hd"><span></span><span>Marco</span><span>Registro automático</span><span>Detalhe</span><span>Sugestão</span></div><div id="jsList"></div><button class="btn add" id="jsAdd" style="margin-top:10px">+ Adicionar marco</button><span class="err" id="jsE"></span>`;
+  const d=await api('/journey/settings');JS={...d,ms:JSON.parse(JSON.stringify(d.milestones)),open:null,saved:''};JS.saved=JSON.stringify(JS.ms);
+  $('#page').innerHTML=`<div class="jz">
+   <div class="jz-hd"><div><h1>Jornada do cliente</h1><p class="sub">Os momentos que mostram em que ponto cada cliente está. Aparecem na conversa, na ficha, nos relatórios e nas automações.</p></div></div>
+   <div class="jz-how">
+    <div><i>✋</i><span><b>O time marca</b>Qualquer marco pode ser marcado à mão, na conversa.</span></div>
+    <div><i>⚙️</i><span><b>Registro sozinho</b>Quando o cliente entra numa etapa, agenda, comparece ou compra.</span></div>
+    <div><i>✨</i><span><b>A Nanda sugere</b>Ela percebe na conversa e o time só confirma.</span></div></div>
+   <div class="jz-list" id="jsList"></div>
+   <div class="jz-ft"><button type="button" class="jz-add" id="jsAdd">+ Adicionar marco</button><button type="button" class="nz-ex" id="jsReset">Voltar aos marcos sugeridos</button></div>
+   <div class="nz-save jz-save" id="jsBar" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="jsUndo">Descartar</button><button type="button" class="btn sm p" id="jsSave">Salvar</button></div></div>`;
   jsDraw();
-  $('#jsAdd').onclick=()=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:'',icon:'⭐',active:true,rule:{type:'manual'},nanda:false,hint:''});jsDraw();const ins=$('#jsList').querySelectorAll('[data-f=name]');ins[ins.length-1].focus()};
-  $('#jsSave').onclick=async e=>{const b=e.target;b.disabled=true;$('#jsE').textContent='';
-    try{await api('/journey/settings',{method:'PUT',body:{milestones:JS.ms.map(m=>({...m,rule:{...m.rule,stage_id:m.rule.stage_id||null,service_id:m.rule.service_id||null,product_id:m.rule.product_id||null}}))}});toast('Marcos salvos.');VIEWS.jornada()}
-    catch(x){$('#jsE').textContent=x.message;toast(x.message);b.disabled=false}};
-  $('#jsReset').onclick=async()=>{if(!await sure('Voltar aos marcos sugeridos para o seu tipo de negócio? Os registros manuais continuam guardados.',{ok:'Voltar ao padrão'}))return;await api('/journey/settings/reset',{method:'POST'});toast('Marcos do padrão.');VIEWS.jornada()}};
-function jsDraw(){const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
-  $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'};
-   const extra=r.type==='stage'?sel('stage_id',JS.stages,r.stage_id,'Escolha a etapa'):['appt_booked','appt_done'].includes(r.type)?sel('service_id',JS.services,r.service_id,'Qualquer serviço'):r.type==='sale'?sel('product_id',JS.products,r.product_id,'Qualquer compra'):'<span class="js-na">—</span>';
-   return `<div class="js-c ${m.active?'':'off'}" data-i="${i}"><div class="js-row"><span class="js-n">${i+1}</span><input class="js-ic" data-f="icon" maxlength="4" value="${esc(m.icon||'')}" aria-label="Ícone">
-     <input class="js-nm" data-f="name" maxlength="40" value="${esc(m.name)}" placeholder="Nome do marco. Ex.: Pediu orçamento" aria-label="Nome">
-     <select data-f="type" aria-label="Registro automático">${Object.entries(JNRULE_TXT).map(([k,v])=>`<option value="${k}" ${r.type===k?'selected':''}>${v}</option>`).join('')}</select>
-     <span class="js-ex">${extra}</span>
-     <button type="button" class="js-nd ${m.nanda?'on':''}" data-f="nanda" aria-pressed="${!!m.nanda}" title="A Nanda sugere quando perceber na conversa">${NI.nanda}Nanda</button>
-     <span class="js-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} aria-label="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} aria-label="Descer">↓</button></span>
-     <button type="button" class="tg ${m.active?'on':''}" data-f="active" role="switch" aria-checked="${m.active}" aria-label="Ligar ou desligar"></button><button type="button" class="sm-x" data-rm aria-label="Tirar marco">×</button></div>
-    ${m.nanda||r.type==='sale'?`<div class="js-r2">${m.nanda?`<label class="js-hint"><span>${NI.nanda} A Nanda sugere quando</span><input data-f="hint" maxlength="200" value="${esc(m.hint||'')}" placeholder="Ex.: o cliente pergunta preço ou pede orçamento"></label>`:''}
-     ${r.type==='sale'?`<label class="ck"><input type="checkbox" data-f="won_stage" ${r.won_stage!==false?'checked':''}> Contar também quem foi para a etapa de ganho sem venda lançada</label>`:''}</div>`:''}</div>`}).join('');
-  $('#jsList').querySelectorAll('.js-c').forEach(card=>{const i=+card.dataset.i,m=JS.ms[i];
+  $('#jsAdd').onclick=()=>{if(JS.ms.length>=15)return toast('Máximo de 15 marcos.');JS.ms.push({id:null,name:'',icon:'⭐',active:true,rule:{type:'manual'},nanda:false,hint:''});JS.open=JS.ms.length-1;jsDraw();setTimeout(()=>{const n=document.querySelector('.jz-ed [data-f=name]');if(n){n.focus();n.scrollIntoView({block:'center',behavior:'smooth'})}},50)};
+  $('#jsSave').onclick=async e=>{const b=e.target;const bad=JS.ms.findIndex(m=>(m.name||'').trim().length<2);if(bad>=0){JS.open=bad;jsDraw();return toast('Dê um nome a cada marco.')}
+    const st=JS.ms.findIndex(m=>m.rule&&m.rule.type==='stage'&&!m.rule.stage_id);if(st>=0){JS.open=st;jsDraw();return toast('Escolha a etapa do funil desse marco.')}
+    b.disabled=true;try{await api('/journey/settings',{method:'PUT',body:{milestones:JS.ms.map(m=>({...m,rule:{...m.rule,stage_id:m.rule.stage_id||null,service_id:m.rule.service_id||null,product_id:m.rule.product_id||null}}))}});toast('Jornada salva.');VIEWS.jornada()}
+    catch(x){toast(x.message);b.disabled=false}};
+  $('#jsUndo').onclick=()=>{JS.ms=JSON.parse(JS.saved);JS.open=null;jsDraw()};
+  $('#jsReset').onclick=async()=>{if(!await sure('Voltar aos marcos sugeridos para o seu tipo de negócio? Os registros que o time já fez continuam guardados.',{ok:'Voltar aos sugeridos'}))return;await api('/journey/settings/reset',{method:'POST'});toast('Marcos sugeridos de volta.');VIEWS.jornada()}};
+function jsAutoTxt(r){const nm=(l,id)=>(l.find(x=>x.id===id)||{}).name;
+  if(r.type==='stage')return r.stage_id?`quando entra em “${esc(nm(JS.stages,r.stage_id)||'etapa')}”`:'quando entra numa etapa (escolha qual)';
+  if(r.type==='appt_booked')return 'quando agenda'+(r.service_id?` ${esc(nm(JS.services,r.service_id)||'')}`:'');
+  if(r.type==='appt_done')return 'quando comparece'+(r.service_id?` a ${esc(nm(JS.services,r.service_id)||'')}`:'');
+  if(r.type==='sale')return 'quando compra'+(r.product_id?` ${esc(nm(JS.products,r.product_id)||'')}`:'');
+  if(r.type==='created')return 'quando o contato chega';return ''}
+function jsDraw(){
+  const sel=(f,list,v,first)=>`<select data-f="${f}">${first?`<option value="">${first}</option>`:''}${list.map(o=>`<option value="${esc(o.id)}" ${o.id===v?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`;
+  $('#jsList').innerHTML=JS.ms.map((m,i)=>{const r=m.rule||{type:'manual'},isO=JS.open===i,auto=r.type!=='manual';
+   const tags=`${auto?`<span class="jz-tag a">⚙️ Sozinho ${jsAutoTxt(r)}</span>`:'<span class="jz-tag">✋ O time marca</span>'}${m.nanda?'<span class="jz-tag n">✨ Nanda sugere</span>':''}${m.active?'':'<span class="jz-tag off">Desligado</span>'}`;
+   const ed=isO?`<div class="jz-ed">
+     <div class="jz-q"><label>Nome do marco</label><div class="jz-nm"><button type="button" class="jz-ic" id="jzIc" aria-label="Trocar ícone">${esc(m.icon||'⭐')}</button><input data-f="name" maxlength="40" value="${esc(m.name)}" placeholder="Ex.: Pediu orçamento"></div>
+      <div class="jz-icons" id="jzIcons" hidden>${JN_ICONS.map(x=>`<button type="button" data-icon="${x}">${x}</button>`).join('')}</div></div>
+     <div class="jz-q"><label>Como esse marco é registrado?</label>
+      <div class="jz-opts"><button type="button" class="${!auto?'on':''}" data-type="manual"><b>Só o time marca</b><span>Alguém marca na conversa quando acontece.</span></button>
+       <button type="button" class="${auto?'on':''}" data-type="${auto?r.type:'stage'}"><b>Registra sozinho</b><span>O sistema marca quando algo acontece.</span></button></div>
+      ${auto?`<div class="jz-when"><span>Registrar</span><select data-f="type">${Object.entries(JNRULE_TXT).filter(([k])=>k!=='manual').map(([k,v])=>`<option value="${k}" ${r.type===k?'selected':''}>${v.toLowerCase()}</option>`).join('')}</select>
+        ${r.type==='stage'?sel('stage_id',JS.stages,r.stage_id,'Escolha a etapa'):['appt_booked','appt_done'].includes(r.type)?sel('service_id',JS.services,r.service_id,'Qualquer serviço'):r.type==='sale'?sel('product_id',JS.products,r.product_id,'Qualquer produto'):''}</div>
+       ${r.type==='sale'?`<label class="ck"><input type="checkbox" data-f="won_stage" ${r.won_stage!==false?'checked':''}> Contar também quem foi para a etapa de ganho sem venda lançada</label>`:''}`:''}</div>
+     <div class="jz-q"><div class="jz-sw"><span><label>A Nanda pode sugerir esse marco?</label><small>Ela avisa quando perceber na conversa e o time confirma.</small></span><button type="button" class="tg ${m.nanda?'on':''}" data-f="nanda" role="switch" aria-checked="${!!m.nanda}" aria-label="Nanda sugere"></button></div>
+      ${m.nanda?`<label class="jz-sub">Quando ela deve sugerir?</label><textarea data-f="hint" rows="2" maxlength="200" placeholder="Ex.: o cliente pergunta preço ou pede orçamento">${esc(m.hint||'')}</textarea>`:''}</div>
+     <div class="jz-eft"><label class="jz-on"><button type="button" class="tg ${m.active?'on':''}" data-f="active" role="switch" aria-checked="${m.active}" aria-label="Ligado"></button>${m.active?'Ligado':'Desligado'}</label>
+      <span class="jz-mv"><button type="button" class="ib" data-mv="-1" ${i?'':'disabled'} title="Subir">↑</button><button type="button" class="ib" data-mv="1" ${i<JS.ms.length-1?'':'disabled'} title="Descer">↓</button></span>
+      <button type="button" class="jz-rm" data-rm>Tirar marco</button><button type="button" class="btn sm" data-close>Pronto</button></div></div>`:'';
+   return `<div class="jz-it ${m.active?'':'off'} ${isO?'open':''}" data-i="${i}"><span class="jz-dot">${esc(m.icon||'•')}</span>
+     <div class="jz-card"><button type="button" class="jz-row" data-tog><span class="jz-tx"><b>${esc(m.name||'Marco sem nome')}</b><span class="jz-tags">${tags}</span></span><span class="jz-edit">${isO?'Fechar':'Editar'}</span></button>${ed}</div></div>`}).join('');
+  const dirty=JSON.stringify(JS.ms)!==JS.saved;$('#jsBar').hidden=!dirty;
+  $('#jsList').querySelectorAll('.jz-it').forEach(card=>{const i=+card.dataset.i,m=JS.ms[i];m.rule=m.rule||{type:'manual'};
+    card.querySelector('[data-tog]').onclick=()=>{JS.open=JS.open===i?null:i;jsDraw()};
+    const c=card.querySelector('[data-close]');if(c)c.onclick=()=>{JS.open=null;jsDraw()};
+    card.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{m.rule.type=b.dataset.type;jsDraw()});
+    card.querySelectorAll('[data-icon]').forEach(b=>b.onclick=()=>{m.icon=b.dataset.icon;jsDraw()});
+    const ic=card.querySelector('#jzIc');if(ic)ic.onclick=()=>{const p=$('#jzIcons');p.hidden=!p.hidden};
     card.querySelectorAll('[data-f]').forEach(el=>{const f=el.dataset.f;
-      const set=()=>{if(f==='active'){m.active=!m.active;jsDraw();return}if(f==='nanda'){m.nanda=!m.nanda;jsDraw();return}
-        if(['type','stage_id','service_id','product_id','won_stage'].includes(f)){m.rule=m.rule||{type:'manual'};m.rule[f]=el.type==='checkbox'?el.checked:el.value;if(f==='type')jsDraw();return}
-        m[f]=el.type==='checkbox'?el.checked:el.value;if(f==='nanda')jsDraw()};
+      const set=()=>{if(f==='active'){m.active=!m.active;return jsDraw()}if(f==='nanda'){m.nanda=!m.nanda;return jsDraw()}
+        if(['type','stage_id','service_id','product_id','won_stage'].includes(f)){m.rule[f]=el.type==='checkbox'?el.checked:el.value;if(f==='type'){delete m.rule.stage_id;delete m.rule.service_id;delete m.rule.product_id}return jsDraw()}
+        m[f]=el.value;card.querySelector('.jz-tx b').textContent=m.name||'Marco sem nome';$('#jsBar').hidden=JSON.stringify(JS.ms)===JS.saved};
       if(el.tagName==='BUTTON')el.onclick=set;else if(el.type==='checkbox'||el.tagName==='SELECT')el.onchange=set;else el.oninput=set});
-    card.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const j=i+Number(b.dataset.mv);[JS.ms[i],JS.ms[j]]=[JS.ms[j],JS.ms[i]];jsDraw()});
-    card.querySelector('[data-rm]').onclick=async()=>{if(!await sure(`Tirar o marco "${m.name||'sem nome'}"? Os registros manuais dele ficam guardados.`,{ok:'Tirar'}))return;JS.ms.splice(i,1);jsDraw()}})}
+    card.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const j=i+Number(b.dataset.mv);[JS.ms[i],JS.ms[j]]=[JS.ms[j],JS.ms[i]];JS.open=j;jsDraw()});
+    const rm=card.querySelector('[data-rm]');if(rm)rm.onclick=async()=>{if(!await sure(`Tirar o marco "${m.name||'sem nome'}"? O que o time já marcou fica guardado.`,{ok:'Tirar'}))return;JS.ms.splice(i,1);JS.open=null;jsDraw()}})}
 /* relatório de jornada */
 async function rpJourney(){const box=$('#rpBody');
   const end=new Date(),start=new Date();start.setDate(end.getDate()-RP.days+1);const iso=d=>ymd(d);
