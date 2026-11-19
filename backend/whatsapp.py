@@ -351,8 +351,8 @@ async def get_contact(user, contact_id):
     return c
 
 @router.get('/conversations')
-async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', user=Depends(current_user)):
-    from inbox import waiting
+async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', sub: str = '', user=Depends(current_user)):
+    from inbox import waiting, needs_you, with_nanda, default_mode, STALE_DAYS
     qq = {'company_id': user['company_id']}
     if filter == 'mine': qq['assigned_to'] = user['id']
     elif filter == 'unassigned': qq['assigned_to'] = None
@@ -360,14 +360,25 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
     elif filter == 'team':
         from teams import my_team_ids
         qq['team_id'] = {'$in': await my_team_ids(user)}
-    if user['role'] == 'agent' and filter not in ('mine', 'unassigned'):
+    if sub == 'mine': qq['assigned_to'] = user['id']
+    elif sub == 'unassigned': qq['assigned_to'] = None
+    elif sub == 'team':
+        from teams import my_team_ids
+        qq['team_id'] = {'$in': await my_team_ids(user)}
+    elif sub == 'instagram': qq['channel'] = 'instagram'
+    elif sub == 'whatsapp': qq['channel'] = {'$in': [None, 'whatsapp']}
+    ands = []
+    if filter == 'need': ands.append({'$or': [{'needs_human': True}, {'last_dir': 'in', 'last_in_at': {'$gte': now() - timedelta(days=STALE_DAYS)}}, {'assigned_to': user['id'], 'transfer_seen': False}]})
+    elif filter == 'nanda': qq['last_at'] = {'$gte': now() - timedelta(days=STALE_DAYS)}
+    if user['role'] == 'agent' and filter not in ('mine', 'unassigned') and sub not in ('mine', 'unassigned'):
         qq['assigned_to'] = {'$in': [None, user['id']]}
     term = q.strip()
     if term:
         digits = re.sub(r'\D', '', term)
         ors = [{'name': {'$regex': re.escape(term), '$options': 'i'}}, {'tags': {'$regex': re.escape(term), '$options': 'i'}}]
         if len(digits) >= 3: ors.append({'wa_id': {'$regex': digits}})
-        qq['$or'] = ors
+        ands.append({'$or': ors})
+    if ands: qq['$and'] = ands
     if kind == 'prospect': qq['sales_count'] = {'$in': [None, 0]}
     elif kind in ('cliente', 'inativo'): qq['sales_count'] = {'$gt': 0}
     if origin: qq['origin'] = None if origin == '_none' else origin
@@ -378,6 +389,10 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         days = user['company'].get('inactive_days')
         rows = [r for r in rows if status_of(r, days) == kind]
     if filter == 'waiting': rows = [r for r in rows if waiting(r)]
+    elif filter == 'need': rows = [r for r in rows if needs_you(r, user['id'])]
+    elif filter == 'nanda':
+        dm = await default_mode(user['company_id'])
+        rows = [r for r in rows if with_nanda(r, dm)]
     from inbox import wait_ctx, wait_info
     wctx = await wait_ctx(user['company'])
     for r in rows:
@@ -455,7 +470,7 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'text', 'text': text,
            'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
     await db.messages.insert_one(msg.copy())
-    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out'}
+    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out', 'last_by': by_name}
     if assign_to and not contact.get('assigned_to'): upd['assigned_to'] = assign_to
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
     msg.pop('_id', None)

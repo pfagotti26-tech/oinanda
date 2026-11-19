@@ -31,3 +31,17 @@ def test_resposta_fora_do_formato_nunca_mostra_json():
     d = ai.parse('{"reply": "Oi **tudo** bem", "handoff": true, "reason": "pediu pessoa"}')
     assert d['reply'] == 'Oi tudo bem' and d['handoff'] and d['reason'] == 'pediu pessoa'
     assert ai.parse('Oi! Posso ajudar?')['reply'] == 'Oi! Posso ajudar?'
+
+
+def test_caixa_por_prioridade():
+    import inbox
+    t = now()
+    wait = {'last_dir': 'in', 'last_in_at': t - timedelta(hours=2)}
+    old = {'last_dir': 'in', 'last_in_at': t - timedelta(days=9)}
+    assert inbox.waiting(wait) and not inbox.waiting(old)  # depois de 7 dias sai da fila sozinha
+    assert inbox.needs_you(wait, 'u1') and not inbox.needs_you(old, 'u1')
+    assert inbox.needs_you({'needs_human': True, 'last_dir': 'out'}, 'u1')
+    assert inbox.needs_you({'assigned_to': 'u1', 'transfer_seen': False, 'last_dir': 'out'}, 'u1') and not inbox.needs_you({'assigned_to': 'u2', 'transfer_seen': False, 'last_dir': 'out'}, 'u1')
+    nz = {'last_dir': 'out', 'last_by': 'Nanda (IA)', 'last_at': t - timedelta(hours=1)}
+    assert inbox.with_nanda(nz, 'auto') and not inbox.with_nanda(nz, 'copilot') and not inbox.with_nanda({**nz, 'last_by': 'Paulo'}, 'auto')
+    assert not inbox.with_nanda({**nz, 'needs_human': True}, 'auto') and inbox.with_nanda({**nz, 'ai_mode': 'auto'}, 'copilot')

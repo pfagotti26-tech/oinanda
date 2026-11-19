@@ -461,7 +461,7 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None, ch=
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'channel': ch, 'dir': 'out', 'type': 'text', 'text': text,
            'wa_msg_id': res.get('message_id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
     await db.messages.insert_one(msg.copy())
-    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out'}
+    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out', 'last_by': by_name}
     if assign_to and not contact.get('assigned_to'): upd['assigned_to'] = assign_to
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
     msg.pop('_id', None)
