@@ -1762,6 +1762,8 @@ body:has(.nz-save) #toast{bottom:92px}
 .vd-org .og3 b{font-size:14px}.vd-org .og3 span{font-size:12px;color:var(--ink2)}.vd-org .og3 em{font-style:normal;font-weight:700;color:var(--ink)}.vd-org .og3 strong{font-size:15px;color:var(--ok)}
 .vd-tip{display:flex;gap:10px;align-items:center;margin-bottom:12px}.vd-tip>div{flex:1;font-size:13px;line-height:1.45}.vd-tip .lnk{white-space:nowrap;font-weight:700}
 @media (max-width:860px){.vd-hd2{flex-wrap:nowrap}.vd-hd2 .agt h1{display:none}.vd-hd2 .agt p{font-size:12.5px}.vd-org .og3{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:21px}.vd-sub>span{display:none}}
+.vd-bar{background:none;border:0;padding:0;margin-bottom:12px}.vd-bar .fb-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.vchart .b i{min-width:6px}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -3532,7 +3534,7 @@ function vdDonut(rows,m){
 function grpLabel(g,l){if(['day','week'].includes(g))return (g==='week'?'Semana de ':'')+fmtD(l);if(g==='month'){const [y,m]=l.split('-');return ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][+m-1]+'/'+y.slice(2)}return l}
 
 async function vdReport(){
-  const P=VD.p,mgr=isMgr();
+  const P=VD.p,mgr=isMgr();if(!VD.gset&&P.group==='seller'&&(VD.opts?.sellers||[]).length<=1){P.group='product';}VD.gset=true;
   $('#vdBody').innerHTML=`<div class="vd-bar" id="vdBar"></div><div id="vdR"><div class="empty">Carregando...</div></div>`;
   vdBar(()=>vdReport());
   const [s,e]=vdRange(P);
@@ -3547,10 +3549,10 @@ async function vdReport(){
     :P.chart==='table'?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>${GROUPS_VD.find(g=>g[0]===P.group)[1]}</th><th class="n">Valor</th><th class="n">Vendas</th><th class="n hm">Qtd.</th><th class="n hm">Ticket</th><th class="n">%</th></tr></thead><tbody>${rows.map(x=>`<tr class="ck" data-k="${esc(x.key)}"><td>${esc(grpLabel(P.group,x.label))}</td><td class="n"><b>${brl(x.value)}</b></td><td class="n">${x.count}</td><td class="n hm">${num(x.qty)}</td><td class="n hm">${brl(x.ticket)}</td><td class="n">${x.share}%</td></tr>`).join('')}</tbody></table></div>`
     :`<div class="vbr">${rows.slice(0,15).map((x,i)=>`<button data-k="${esc(x.key)}"><span class="nm"><i style="background:${x.color||PAL[i%8]}"></i>${esc(grpLabel(P.group,x.label))}</span><span class="vv">${mfmt(mval(x,m),m)}</span><span class="tr"><i style="width:${Math.max(2,100*mval(x,m)/rmx)}%;background:${x.color||PAL[i%8]}"></i></span><span class="mt">${x.count} ${x.count===1?'venda':'vendas'} · ${num(x.qty)} ${x.qty===1?'item':'itens'} · ${x.share}% do total</span></button>`).join('')}${rows.length>15?`<p class="hint" style="padding:6px 8px">+ ${rows.length-15} outros. Veja em Tabela.</p>`:''}</div>`;
   const recent=ls.items.slice(0,6);
-  $('#vdR').innerHTML=`<div class="kpis">${kpi('Faturamento',brl(t.value),vdDelta(t.value,pv.value),(t.discount?brl(t.discount)+' em descontos':'')+(pv.value?(t.discount?' · ':'')+'vs. período anterior':''))}${kpi('Vendas',num(t.count),vdDelta(t.count,pv.count))}${kpi('Ticket médio',t.ticket!=null?brl(t.ticket):'—',vdDelta(t.ticket,pv.ticket))}${kpi('Itens vendidos',num(t.qty),vdDelta(t.qty,pv.qty))}</div>
+  $('#vdR').innerHTML=`<div class="kpis">${kpi('Faturamento',brl(t.value),vdDelta(t.value,pv.value),(t.discount?brl(t.discount)+' em descontos':'')+(pv.value?(t.discount?' · ':'')+'vs. período anterior':''))}${kpi('Vendas',num(t.count),vdDelta(t.count,pv.count))}${kpi('Ticket médio',t.ticket!=null?brl(t.ticket):'—',vdDelta(t.ticket,pv.ticket))}${kpi('Clientes novos',t.new!=null?num(t.new):num(t.qty),t.new!=null?vdDelta(t.new,pv.new):'',t.new!=null?(t.repeat?`${t.repeat} ${t.repeat===1?'recompra':'recompras'}`:t.count?'nenhuma recompra':''):'itens')}</div>
    ${r.mine_only?'<p class="hint" style="margin:-2px 0 10px">Mostrando só a sua parte das vendas.</p>':''}
    ${r.pending?`<div class="note warnb" style="margin:0 0 12px;display:flex;align-items:center;gap:10px">${r.pending} ${r.pending===1?'venda aguardando':'vendas aguardando'} aprovação do gestor por causa do desconto. <button class="lnk" id="vdPend" style="margin-left:auto">ver</button></div>`:''}
-   <div class="vd-g"><div class="vd-c"><div class="hd"><h3>Faturamento ${r.bucket==='day'?'por dia':r.bucket==='week'?'por semana':'por mês'}</h3></div>
+   <div class="vd-g"><div class="vd-c"><div class="hd"><h3>Faturamento ${r.bucket==='day'?'por dia':r.bucket==='week'?'por semana':'por mês'}</h3><span class="sp"></span>${t.count?`<span class="hint">melhor ${r.bucket==='day'?'dia':r.bucket==='week'?'semana':'mês'}: <b style="color:var(--ink)">${(b=>b?sl(b.date)+' · '+brl(b.value):'')(ser.reduce((a,x)=>x.value>(a?a.value:0)?x:a,null))}</b></span>`:''}</div>
      ${t.count?`<div class="vchart"><div class="ax" style="top:0"><span>${brl(mx)}</span></div><div class="ax" style="top:calc((100% - 20px) / 2)"><span>${brl(mx/2)}</span></div><div class="ax" style="bottom:20px;border:0"><span>R$ 0</span></div>
       ${ser.map((x,i)=>`<div class="b" title="${sl(x.date)}: ${brl2(x.value)} · ${x.count} ${x.count===1?'venda':'vendas'}" style="--h:${Math.round(100*x.value/mx)}%"><i style="height:${Math.round(100*x.value/mx)}%"></i><em>${brl(x.value)}</em><span>${i%every===0?sl(x.date):''}</span></div>`).join('')}</div>`
       :`<div class="aempty" style="margin:0"><div><b>Nenhuma venda no período</b><p>Registre vendas pelo botão acima, pela conversa ou movendo o card para a etapa de venda no Funil.</p></div></div>`}</div>
@@ -3563,7 +3565,7 @@ async function vdReport(){
      <div class="og3">${org.rows.filter(x=>x.id!=='_none').slice(0,3).map(x=>`<button type="button" class="ck" data-src="${esc(x.id)}"><b>${esc(x.name)}</b><span><em>${x.contacts}</em> ${x.contacts===1?'contato':'contatos'} · <em>${x.clients}</em> ${x.clients===1?'cliente':'clientes'}${x.conversion!=null&&x.clients?' · '+String(x.conversion).replace('.',',')+'%':''}</span><strong>${brl(x.value)}</strong></button>`).join('')||'<p class="hint">Nenhum contato com origem conhecida no período.</p>'}</div>
      ${org.total&&org.known<org.total?`<p class="hint" style="margin-top:8px">${org.total-org.known} ${org.total-org.known===1?'contato':'contatos'} sem origem (${Math.round(100*(org.total-org.known)/org.total)}%). Use links rastreáveis e deixe a Nanda perguntar.</p>`:''}
      ${org.referrals.length?`<h3 class="sec" style="margin-top:14px">Quem mais indica</h3><div class="vdl">${org.referrals.map(x=>`<div class="r" style="cursor:default"><b>${esc(x.name)}</b><span class="v">${x.clients} ${x.clients===1?'virou cliente':'viraram clientes'}</span><span>${x.contacts} ${x.contacts===1?'indicação':'indicações'}</span><span style="text-align:right">${brl(x.value)}</span></div>`).join('')}</div>`:''}</div>`:''}`;
-  $('#vdGrp').onchange=e=>{P.group=e.target.value;vdReport()};
+  $('#vdGrp').onchange=e=>{P.group=e.target.value;VD.gset=true;vdReport()};
   document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.metric=b.dataset.m;vdReport()});
   document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{P.chart=b.dataset.ch;vdReport()});
   const fk={seller:'seller',product:'product',category:'category',team:'team',source:'source',kind:'kind',payment:'payment',promo:'promo'}[P.group];

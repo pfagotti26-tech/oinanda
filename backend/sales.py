@@ -345,8 +345,9 @@ def bucket_of(d, start, size):
 def totals(fs):
     ids = {x['sale']['id'] for x in fs}
     v = round(sum(x['value'] for x in fs), 2)
+    first = {x['sale']['id'] for x in fs if x['sale'].get('_first')}
     return {'value': v, 'count': len(ids), 'qty': round(sum(x['qty'] for x in fs), 2), 'ticket': round(v / len(ids), 2) if ids else None,
-            'discount': round(sum(x.get('disc', 0) for x in fs), 2)}
+            'discount': round(sum(x.get('disc', 0) for x in fs), 2), 'new': len(first), 'repeat': len(ids) - len(first)}
 
 @router.get('/sales')
 async def list_sales(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
