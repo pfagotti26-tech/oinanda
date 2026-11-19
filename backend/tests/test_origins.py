@@ -48,6 +48,7 @@ def test_origem_links_e_cliente(monkeypatch):
         # prospect x cliente
         assert {x['name'] for x in c.get('/api/conversations', params={'kind': 'prospect'}).json()} == {'Bia Feira', 'Leo Ads', 'Duda Sem'}
         c.post('/api/sales', json={'contact_id': cv['Bia Feira']['id'], 'items': [{'name': 'Plano', 'price': 500}]})
+        assert c.get('/api/track-links').json()['items'][0]['clients'] == 1  # quem veio pelo link e comprou
         c.post('/api/sales', json={'contact_id': cv['Bia Feira']['id'], 'items': [{'name': 'Garrafa', 'price': 30}]})
         c.post('/api/sales', json={'contact_id': cv['Duda Sem']['id'], 'items': [{'name': 'Plano', 'price': 400}]})
         assert {x['name'] for x in c.get('/api/conversations', params={'kind': 'cliente'}).json()} == {'Bia Feira', 'Duda Sem'}

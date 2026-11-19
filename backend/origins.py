@@ -99,13 +99,13 @@ async def put_origins(body: OriginsIn, request: Request, user=Depends(managers))
     return {'origins': rows, 'ask_origin': body.ask_origin, 'inactive_days': body.inactive_days}
 
 # ---------- origem de um contato ----------
-async def set_origin(company, contact, origin, detail='', how='time', referred_by_id=None, referred_by_name=None, force=False):
+async def set_origin(company, contact, origin, detail='', how='time', referred_by_id=None, referred_by_name=None, force=False, link_id=None):
     """Grava a origem. Sem force, não troca uma origem que veio de fonte mais confiável."""
     rank = {'anuncio': 4, 'link': 3, 'time': 2, 'cliente': 1, 'nanda': 1}
     cur = contact.get('origin_by')
     if contact.get('origin') and not force and rank.get(cur, 0) > rank.get(how, 0): return False
     upd = {'origin': origin, 'origin_detail': (detail or '').strip()[:80], 'origin_by': how, 'origin_at': now(),
-           'referred_by_id': referred_by_id, 'referred_by_name': (referred_by_name or '').strip()[:60] or None}
+           'referred_by_id': referred_by_id, 'referred_by_name': (referred_by_name or '').strip()[:60] or None, 'origin_link': link_id}
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
     contact.update(upd)
     return True
@@ -120,7 +120,7 @@ class OriginSet(BaseModel):
 async def put_contact_origin(contact_id: str, body: OriginSet, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
     if body.origin is None:
-        await db.contacts.update_one({'id': c['id']}, {'$set': {'origin': None, 'origin_detail': None, 'origin_by': None, 'referred_by_id': None, 'referred_by_name': None}})
+        await db.contacts.update_one({'id': c['id']}, {'$set': {'origin': None, 'origin_detail': None, 'origin_by': None, 'referred_by_id': None, 'referred_by_name': None, 'origin_link': None}})
         return {'ok': True}
     if body.origin not in {o['id'] for o in await origins_of(user['company'])}: raise HTTPException(400, 'Origem não existe.')
     ref_name = body.referred_by_name
@@ -149,7 +149,7 @@ async def on_inbound(company_id, contact, text, ad):
         return
     link = await db.track_links.find_one({'company_id': company_id, 'code': m.group(1).lower()}, {'_id': 0})
     if not link: return
-    if await set_origin(company, contact, link['origin'], link.get('detail') or link['label'], 'link'):
+    if await set_origin(company, contact, link['origin'], link.get('detail') or link['label'], 'link', link_id=link['id']):
         await db.track_links.update_one({'id': link['id']}, {'$inc': {'contacts': 1}, '$set': {'last_contact_at': now()}})
         await note(company_id, contact['id'], f'Veio pelo link "{link["label"]}"')
 
@@ -179,7 +179,10 @@ def base_of(request): return str(request.base_url).rstrip('/').replace('http://'
 async def list_links(request: Request, user=Depends(current_user)):
     rows = await db.track_links.find({'company_id': user['company_id']}, {'_id': 0}).sort('created_at', -1).to_list(300)
     phone = await company_phone(user['company_id'])
-    return {'phone': phone, 'items': [link_out(l, base_of(request)) | {'wa': wa_url(phone, l) if phone else None} for l in rows]}
+    won = {}  # quantos contatos de cada link já compraram
+    for c in await db.contacts.find({'company_id': user['company_id'], 'origin_link': {'$in': [l['id'] for l in rows]}, 'sales_count': {'$gt': 0}}, {'_id': 0, 'origin_link': 1}).to_list(20000):
+        won[c['origin_link']] = won.get(c['origin_link'], 0) + 1
+    return {'phone': phone, 'items': [link_out(l, base_of(request)) | {'wa': wa_url(phone, l) if phone else None, 'clients': won.get(l['id'], 0)} for l in rows]}
 
 @router.post('/track-links')
 async def add_link(body: LinkIn, request: Request, user=Depends(managers)):
