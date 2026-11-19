@@ -49,8 +49,9 @@ def catalog_text(items):
     out = []
     for r in items:
         bits = [brl(r['price']) if r.get('price') is not None else 'preço sob consulta (chame o time se perguntarem)']
-        if r.get('recurring'): bits.append(f"assinatura, cobrada a cada {r.get('duration_days') or 30} dias")
-        elif r.get('duration_days'): bits.append(f"vale {r['duration_days']} dias")
+        d = r.get('duration_days'); per = {30: 'por mês', 90: 'por trimestre', 180: 'por semestre', 365: 'por ano'}.get(d)
+        if r.get('recurring'): bits[0] += ' ' + per if per and r.get('price') is not None else ''; bits.append('assinatura' + ('' if per else f', cobrada a cada {d or 30} dias'))
+        elif d: bits.append({30: 'vale 1 mês', 90: 'vale 3 meses', 180: 'vale 6 meses', 365: 'vale 1 ano'}.get(d, f'vale {d} dias'))
         out.append(f"- {r['name']}" + (f" ({r['category']})" if r['category'] else '') + ': ' + ' · '.join(bits))
     return '\n'.join(out)
 
@@ -65,7 +66,7 @@ def cached(system):
 
 CACHE_SPLIT = '\n<<<fim-da-parte-fixa>>>\n'
 
-async def llm(system, messages, max_tokens=500):
+async def llm(system, messages, max_tokens=900):
     """Chamada ao Claude. Isolada para os testes substituírem. Devolve (texto, uso)."""
     key = os.environ.get('ANTHROPIC_API_KEY')
     if not key: raise HTTPException(400, 'A chave de IA ainda não foi configurada no servidor.')
@@ -122,7 +123,7 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Se perguntarem se você é robô, diga com naturalidade que é a assistente virtual do {company['name']} e que pode chamar alguém do time.
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
-Responda SOMENTE com um JSON, sem nada antes ou depois:
+Responda SOMENTE com um JSON, sem nada antes ou depois (comece direto com a chave de abertura). O texto da reply é mensagem de WhatsApp: sem markdown, sem asteriscos, curto.
 {{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
@@ -160,11 +161,35 @@ COMO O CLIENTE CONHECEU O NEGÓCIO (ainda não sabemos):
 - Se a resposta não se encaixar em nenhum, use "outro" com o que ele disse no detalhe.
 """
 
+def clean_reply(t):
+    """Texto que vai para o cliente: sem negrito de markdown (no WhatsApp aparece como asteriscos) e sem sobra de JSON."""
+    t = re.sub(r'\*\*(.+?)\*\*', r'\1', t or '', flags=re.S)
+    return re.sub(r'\n{3,}', '\n\n', t).strip()
+
+def salvage(text):
+    """A resposta veio fora do formato (texto solto antes do JSON, ou JSON cortado no meio): aproveita o que dá, sem nunca mostrar JSON ao cliente."""
+    text = text or ''
+    cut = re.search(r'```|\{\s*"reply"', text)
+    before = text[:cut.start()].strip() if cut else text.strip()
+    m = re.search(r'"reply"\s*:\s*"((?:[^"\\]|\\.)*)("?)', text, re.S)
+    inside = ''
+    if m:
+        raw = m.group(1)
+        if not m.group(2): raw = re.sub(r'\\$', '', raw)  # cortado no meio de um escape
+        try: inside = json.loads('"' + raw + '"')
+        except ValueError: inside = raw.replace('\\n', '\n').replace('\\"', '"')
+        if not m.group(2): inside = re.sub(r'[^.!?…]*$', '', inside).strip() or inside  # cortado: fica até a última frase inteira
+    h = re.search(r'"handoff"\s*:\s*true', text)
+    reply = before if len(before) >= len(inside) else inside
+    if not h and re.search(r'\bvou chamar\b|chamar (algu[eé]m|o time)', reply, re.I): h = True  # avisou que ia chamar e o JSON não chegou
+    return reply, bool(h), (re.search(r'"reason"\s*:\s*"([^"]{0,200})', text) or [None, ''])[1]
+
 def parse(text):
     m = re.search(r'\{.*\}', text or '', re.S)
     if m:
         try:
             d = json.loads(m.group(0))
+            d['reply'] = clean_reply(str(d.get('reply') or ''))
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
             if b: b = {'service_id': str(b['service_id'])[:24], 'start': str(b['start'])[:19], 'pro_id': (str(b['pro_id'])[:24] if b.get('pro_id') else None)}
             return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
@@ -176,7 +201,8 @@ def parse(text):
                     'etapa': str(d['etapa'])[:24] if isinstance(d.get('etapa'), str) and d.get('etapa') else None,
                     'urgente': bool(d.get('urgente')) and bool(d.get('handoff'))}
         except (ValueError, TypeError): pass
-    return {'reply': (text or '').strip(), 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}
+    reply, hand, reason = salvage(text)
+    return {'reply': clean_reply(reply), 'handoff': hand, 'reason': reason, 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}
 
 def _img_block(r):
     """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""

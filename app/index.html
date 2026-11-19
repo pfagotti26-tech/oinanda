@@ -1563,7 +1563,7 @@ div.hm{max-width:1120px;display:grid;gap:18px}.hm>div:empty{display:none}.hm-min
 .nzw-h{display:grid;gap:6px}.nzw-h b{font-size:15px}.nzw-h span{font-size:12.5px;color:var(--ink2)}.nzw-n{font-size:12px!important;font-weight:800;color:var(--c2)!important;text-transform:uppercase;letter-spacing:.04em}
 .nzw-bar{height:5px;border-radius:5px;background:#F6E3DA;overflow:hidden}.nzw-bar i{display:block;height:100%;background:var(--c);border-radius:5px;transition:width .3s}
 .nzw-q{font-size:16px;font-weight:700;letter-spacing:-.2px}
-.nzw input{border:1.5px solid #E2D9D1;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;background:#fff;width:100%}.nzw input:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}.nzw input.bad{border-color:var(--bad)}
+.nzw input,.nzw textarea{border:1.5px solid #E2D9D1;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;background:#fff;width:100%}.nzw textarea{resize:none;line-height:1.45;display:block;overflow:auto}.nzw textarea:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}.nzw textarea.bad{border-color:var(--bad)}.nzw input:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}.nzw input.bad{border-color:var(--bad)}
 .nzw-ft{display:flex;align-items:center;gap:10px}.nzw-sp{flex:1}.nzw-ft .btn.p{margin-left:auto}
 .nzw-pv{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.55;color:var(--ink)}
 .nz-qc{display:flex;flex-wrap:wrap;gap:6px}.nz-qc button{border:1px dashed #E2D2C7;background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-qc button:hover{border-style:solid;border-color:var(--c);color:var(--c2);background:var(--tint)}
@@ -1629,6 +1629,8 @@ div.hm{max-width:1120px;display:grid;gap:18px}.hm>div:empty{display:none}.hm-min
  .ci-again{width:100%}.ci-ft .sp{display:none}.ci-ft .btn.p{flex:1;justify-content:center}}
 .ci-rec{margin-top:12px;padding:11px 14px}
 @media(min-width:861px) and (max-height:760px){.ci-ft{padding:9px 26px}.ci-ft .btn{padding:8px 18px;font-size:14px}.ci-hd{padding-top:18px}}
+.nz-f textarea{field-sizing:content;min-height:80px;max-height:460px}
+body:has(.nz-save) #toast{bottom:92px}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -1723,6 +1725,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const dt=v=>v?new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
 const day=v=>v?new Date(v).toLocaleDateString('pt-BR'):'—';
 const initials=n=>(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+['input','focusin'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target;if(t&&t.matches&&t.matches('.nz-f textarea')&&!(window.CSS&&CSS.supports('field-sizing','content'))){t.style.height='auto';t.style.height=Math.min(Math.max(t.scrollHeight+4,80),460)+'px'}}));
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
 async function api(path,opt={}){
   const r=await fetch('/api'+path,{method:opt.method||'GET',headers:opt.body?{'Content-Type':'application/json'}:{},body:opt.body?JSON.stringify(opt.body):undefined,credentials:'same-origin'});
@@ -1931,11 +1934,12 @@ function nzWizard(box,W,A,onDone){
     :`<div class="nzw-h">${W.title?`<b class="nzw-t">${esc(W.title)}</b>`:''}<span class="nzw-n">Pergunta ${i+1} de ${W.q.length}</span><div class="nzw-bar"><i style="width:${Math.round(100*i/W.q.length)}%"></i></div></div>
      <label class="nzw-q" for="wzIn">${esc(q[1])}</label>
      ${q[3]?`<div class="nzw-ch">${q[3].map(c=>`<button type="button" data-wc="${esc(c)}" class="${(A[q[0]]||'').toLowerCase().includes(c.toLowerCase())?'on':''}">${esc(c)}</button>`).join('')}</div>`:''}
-     <input id="wzIn" value="${esc(A[q[0]]||'')}" placeholder="Ex.: ${esc(q[2])}" maxlength="300" autocomplete="off">
+     <textarea id="wzIn" rows="1" placeholder="Ex.: ${esc(q[2])}" maxlength="1500" autocomplete="off">${esc(A[q[0]]||'')}</textarea>
      <div class="nzw-ft">${i?'<button type="button" class="nz-ex" data-wb>← Voltar</button>':'<button type="button" class="nz-ex" data-wx>Cancelar</button>'}<span class="nzw-sp"></span>${i||!W.req?'<button type="button" class="btn sm" data-wsk>Pular</button>':''}<button type="button" class="btn sm p" data-wn>${i===W.q.length-1?'Ver o texto':'Próxima'} →</button></div>`}</div>`;
-   const inp=box.querySelector('#wzIn');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();box.querySelector('[data-wn]').click()}}}
+   const inp=box.querySelector('#wzIn');if(inp){const gr=()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight+3,220)+'px'};gr();inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length);inp.oninput=gr;inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();box.querySelector('[data-wn]').click()}};
+     inp.addEventListener('beforeinput',e=>{if(e.data&&/\S/.test(e.data)&&inp.selectionStart===inp.value.length&&(q[3]||[]).some(c=>inp.value.toLowerCase().endsWith(c.toLowerCase())))inp.value+=', '})}
    box.querySelectorAll('[data-wc]').forEach(c=>c.onclick=()=>{const v=c.dataset.wc,cur=inp.value.trim();const has=cur.toLowerCase().includes(v.toLowerCase());
-     inp.value=has?cur.split(/,\s*/).filter(x=>x.toLowerCase()!==v.toLowerCase()).join(', '):(cur?cur+', ':'')+v;c.classList.toggle('on',!has);inp.focus()});
+     inp.value=has?cur.split(/,\s*/).filter(x=>x.toLowerCase()!==v.toLowerCase()).join(', '):(cur?cur+', ':'')+v;c.classList.toggle('on',!has);inp.focus();inp.dispatchEvent(new Event('input'))});
    const save=()=>{if(inp)A[q[0]]=inp.value.trim().replace(/[.\s]+$/,'')};
    const b=s=>box.querySelector(s);
    if(b('[data-wn]'))b('[data-wn]').onclick=()=>{save();if(!i&&W.req&&!A[q[0]]){inp.focus();inp.classList.add('bad');return}i++;draw()};

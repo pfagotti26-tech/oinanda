@@ -20,3 +20,14 @@ def test_assinatura_nao_vence():
     assert [o['product_id'] for o in offers] == ['b']
     txt = ai.catalog_text([{'name': 'Plano Pro', 'category': 'Planos', 'price': 297, 'duration_days': 30, 'recurring': True}])
     assert 'assinatura' in txt and 'vale 30 dias' not in txt
+
+
+def test_resposta_fora_do_formato_nunca_mostra_json():
+    t = 'Sobre desconto, vou chamar o Paulo. Não fazemos disparo para lista comprada.\n\n{"reply": "Sobre desconto, não tenho essa condição aqui, então vou chamar o Paulo, do nosso time, para'
+    d = ai.parse(t)
+    assert '{' not in d['reply'] and 'reply' not in d['reply'] and d['reply'].startswith('Sobre desconto') and d['handoff']
+    d = ai.parse('{"reply": "O **Plano Pro** custa R$ 297. Posso te explicar mais sobre ele e tamb')
+    assert d['reply'] == 'O Plano Pro custa R$ 297.'
+    d = ai.parse('{"reply": "Oi **tudo** bem", "handoff": true, "reason": "pediu pessoa"}')
+    assert d['reply'] == 'Oi tudo bem' and d['handoff'] and d['reason'] == 'pediu pessoa'
+    assert ai.parse('Oi! Posso ajudar?')['reply'] == 'Oi! Posso ajudar?'
