@@ -328,6 +328,15 @@ LABEL = {'image': '📷 Foto', 'video': '🎬 Vídeo', 'audio': '🎤 Áudio', '
          'ig_reel': '🎬 Compartilhou um reel', 'reel': '🎬 Compartilhou um reel', 'ig_post': '🔗 Compartilhou um post', 'like_heart': '❤️'}
 KIND = {'image': 'image', 'video': 'video', 'audio': 'audio', 'file': 'document'}
 
+def shared_card(payload):
+    """Cartão compartilhado no Direct (tipo "template"): post, produto, link ou resposta a anúncio. Devolve (texto, link)."""
+    g = (payload or {}).get('generic')
+    els = g.get('elements') if isinstance(g, dict) else g if isinstance(g, list) else []
+    e = (els[0] if els and isinstance(els[0], dict) else g if isinstance(g, dict) else {}) or {}
+    title = str(e.get('title') or '').strip()
+    url = (e.get('default_action') or {}).get('url') or e.get('url') or next((b.get('url') for b in e.get('buttons') or [] if isinstance(b, dict) and b.get('url')), None)
+    return ('🔗 ' + title[:150] if title else '🔗 Compartilhou um conteúdo'), url
+
 async def profile(a, sid, ch='instagram'):
     f = 'name,profile_pic' if ch == 'messenger' else 'name,username,profile_pic'
     try: return await ig('GET', f'/{sid}', decrypt(a['token_enc']), {'fields': f})
@@ -370,17 +379,24 @@ async def ingest(a, m, ch='instagram'):
     att = (msg.get('attachments') or [{}])[0] if msg.get('attachments') else None
     t = (att or {}).get('type')
     text = msg.get('text') or LABEL.get(t, '📎 Anexo' if att else '')
-    if att and t not in LABEL:  # tipo novo: guarda o formato para conferir depois
+    card_url = None
+    if t == 'template':
+        card, card_url = shared_card((att or {}).get('payload'))
+        text = msg.get('text') or card
+    if att and t not in LABEL:  # tipo novo ou cartão: guarda o formato para conferir depois
         log.info('anexo do instagram de tipo %s', t)
         try:
             from whatsapp import sample
-            await sample('ig_attachment', {'type': t, 'keys': sorted((att.get('payload') or {}).keys())})
+            pl = att.get('payload') or {}; g = pl.get('generic')
+            el = (g.get('elements') or [{}])[0] if isinstance(g, dict) and g.get('elements') else g if isinstance(g, dict) else (g[0] if isinstance(g, list) and g else {})
+            await sample('ig_attachment', {'type': t, 'keys': sorted(pl.keys()), 'generic_keys': sorted(g.keys()) if isinstance(g, dict) else type(g).__name__,
+                                           'element_keys': sorted(el.keys()) if isinstance(el, dict) else None})
         except Exception: pass
     if (msg.get('reply_to') or {}).get('story'): text = '↩️ Respondeu seu story: ' + (msg.get('text') or LABEL.get(t, ''))
     kind = KIND.get(t, 'text')
     doc = {'id': uid(), 'company_id': cid, 'contact_id': contact['id'], 'channel': ch, 'dir': 'out' if echo else 'in', 'type': kind, 'text': text,
            'wa_msg_id': mid, 'at': at, 'received_at': now()}
-    url = ((att or {}).get('payload') or {}).get('url')
+    url = ((att or {}).get('payload') or {}).get('url') or card_url
     if url and kind != 'text': doc.update(media_url=url, pending=not echo)
     elif url: doc['link'] = url  # anexo sem tipo conhecido: pelo menos dá para abrir
     if echo: doc.update(by='Instagram' if ch == 'instagram' else 'Messenger', by_id=None, status='sent')

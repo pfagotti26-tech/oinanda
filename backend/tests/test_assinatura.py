@@ -45,3 +45,12 @@ def test_caixa_por_prioridade():
     nz = {'last_dir': 'out', 'last_by': 'Nanda (IA)', 'last_at': t - timedelta(hours=1)}
     assert inbox.with_nanda(nz, 'auto') and not inbox.with_nanda(nz, 'copilot') and not inbox.with_nanda({**nz, 'last_by': 'Paulo'}, 'auto')
     assert not inbox.with_nanda({**nz, 'needs_human': True}, 'auto') and inbox.with_nanda({**nz, 'ai_mode': 'auto'}, 'copilot')
+
+
+def test_cartao_compartilhado_no_instagram():
+    import instagram
+    t, u = instagram.shared_card({'generic': {'elements': [{'title': 'Promoção de verão', 'default_action': {'url': 'https://x.com/p'}}]}})
+    assert t == '🔗 Promoção de verão' and u == 'https://x.com/p'
+    t, u = instagram.shared_card({'generic': [{'title': '', 'buttons': [{'url': 'https://y.com'}]}]})
+    assert t == '🔗 Compartilhou um conteúdo' and u == 'https://y.com'
+    assert instagram.shared_card({}) == ('🔗 Compartilhou um conteúdo', None)
