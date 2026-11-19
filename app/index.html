@@ -1568,6 +1568,12 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nzw-pv{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.55;color:var(--ink)}
 .nz-qc{display:flex;flex-wrap:wrap;gap:6px}.nz-qc button{border:1px dashed #E2D2C7;background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-qc button:hover{border-style:solid;border-color:var(--c);color:var(--c2);background:var(--tint)}
 @media(max-width:700px){.nz-fl{flex-wrap:wrap}.nzw{padding:14px}}
+.nz-sw{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#FFF3EE,#FFF9F6);border:1px dashed #F2C9B8;border-radius:14px;padding:11px 14px;font-size:13.5px;color:var(--ink2)}.nz-sw span{flex:1}.nz-sw b{color:var(--ink)}.nz-sw .btn{flex:none}
+.nz-sb.swon>.nz-f,.nz-sb.swon>.nz-cat,.nz-sb.swon>.nz-sw{display:none}
+.nzw-t{font-size:15px}.nzw-ch{display:flex;flex-wrap:wrap;gap:6px}.nzw-ch button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;color:var(--ink2);cursor:pointer}
+.nzw-ch button.on{border-color:var(--c);background:var(--tint);color:var(--c2);font-weight:700}.nzw-ch button.on:before{content:'✓ '}
+.nzw-pv small{display:block;font-size:11.5px;font-weight:800;color:var(--c2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+@media(max-width:700px){.nz-sw{flex-direction:column;align-items:stretch}.nz-sw .btn{justify-content:center}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -1823,19 +1829,61 @@ const NZ_GOAL={clinica:['Agendar uma avaliação','Agendar uma consulta','Mandar
  lancamento:['Mandar o link de compra','Tirar dúvidas e mandar o link'],outro:['Mandar orçamento','Agendar um horário','Mandar o link de compra']};
 const NZ_RULES={geral:['Não dar desconto sem falar com o time','Não prometer prazo que não está combinado','Não falar mal de concorrente'],clinica:['Não dar orientação médica','Não passar preço de procedimento sem avaliação'],
  salao:['Não marcar dois serviços longos seguidos sem confirmar'],imobiliaria:['Não confirmar disponibilidade sem checar com o corretor'],loja:['Não confirmar estoque de tamanho sem checar'],restaurante:['Não prometer tempo de entrega em dia de chuva'],escola:['Não garantir vaga sem confirmar a turma'],servicos:['Não dar parecer técnico pelo WhatsApp'],lancamento:['Não prometer resultado financeiro']};
-function nzWizard(box,nome,seg,onDone){
-  const W=NZW_Q[seg]||NZW_Q.outro,A={nome};let i=0;
-  const comp=()=>W.t(A).filter(Boolean).join(' ').replace(/\s+/g,' ').replace(/\.\./g,'.');
-  const draw=()=>{const last=i>=W.q.length;const q=W.q[i]||[];
-   box.innerHTML=`<div class="nzw">${last?`<div class="nzw-h"><b>Pronto! Veja como ficou</b><span>Pode ajustar o texto à vontade depois.</span></div><div class="nzw-pv">${esc(comp())}</div>
-     <div class="nzw-ft"><button type="button" class="nz-ex" data-wb>← Ajustar respostas</button><button type="button" class="btn sm" data-wx>Cancelar</button><button type="button" class="btn sm p" data-wok>Usar este texto</button></div>`
-    :`<div class="nzw-h"><span class="nzw-n">Pergunta ${i+1} de ${W.q.length}</span><div class="nzw-bar"><i style="width:${Math.round(100*i/W.q.length)}%"></i></div></div>
-     <label class="nzw-q" for="wzIn">${esc(q[1])}</label><input id="wzIn" value="${esc(A[q[0]]||'')}" placeholder="Ex.: ${esc(q[2])}" maxlength="300" autocomplete="off">
-     <div class="nzw-ft">${i?'<button type="button" class="nz-ex" data-wb>← Voltar</button>':'<button type="button" class="nz-ex" data-wx>Cancelar</button>'}<span class="nzw-sp"></span>${i?'<button type="button" class="btn sm" data-wsk>Pular</button>':''}<button type="button" class="btn sm p" data-wn>${i===W.q.length-1?'Ver o texto':'Próxima'} →</button></div>`}</div>`;
+/* perguntas das outras seções: pagamento, dúvidas do dia a dia, limites e passagem para o time */
+const NZ_AGENDA=['clinica','salao','studio','escola','imobiliaria','servicos','outro'];
+const NZ_EXTRA={ // dúvidas que cada ramo mais recebe
+ clinica:[['prep','O paciente precisa se preparar ou levar algo? E que cuidados vêm depois?','vir sem maquiagem; evitar sol por 7 dias depois do peeling'],['aval','A avaliação é cobrada? Quantas sessões costuma levar?','avaliação gratuita; a maioria dos tratamentos leva de 4 a 6 sessões']],
+ salao:[['dura','Quanto tempo dura cada serviço?','corte 40 min, coloração 2h, manicure 1h'],['chegada','Atende por ordem de chegada ou só com hora marcada?','só com hora marcada']],
+ studio:[['exp','Tem aula experimental? Tem taxa de matrícula?','aula experimental grátis; sem taxa de matrícula'],['repo','Como funciona a reposição de aula?','reposição em até 30 dias, avisando com 6h de antecedência']],
+ escola:[['exp','Tem aula experimental? Tem taxa de matrícula?','aula experimental grátis; matrícula de R$ 90'],['repo','Como funciona a reposição de aula e o material?','reposição em outra turma do mesmo nível; material incluso']],
+ imobiliaria:[['fin','Aceita financiamento, FGTS ou permuta?','financiamento e FGTS sim; permuta só em alguns imóveis'],['docs','O que a pessoa precisa para visitar ou alugar?','documento com foto para a visita; renda de 3x o aluguel para alugar']],
+ loja:[['troca','Como funcionam troca, devolução e retirada na loja?','troca em 30 dias com etiqueta; retirada na loja grátis'],['estoque','Como o cliente sabe se tem o tamanho ou a cor?','o time confere o estoque e responde em até 1 hora']],
+ servicos:[['orc','Como funciona o orçamento? Tem visita técnica?','orçamento grátis por foto ou visita técnica de R$ 80'],['prazo','Qual o prazo normal de entrega?','de 5 a 10 dias úteis']],
+ restaurante:[['entrega','Qual a taxa e a área de entrega? Tem pedido mínimo?','taxa de R$ 6 até 5 km; pedido mínimo de R$ 40'],['reserva','Aceitam reserva? Para quantas pessoas?','reserva para grupos a partir de 6 pessoas']],
+ lancamento:[['acesso','Como é o acesso e por quanto tempo vale?','acesso imediato por 1 ano, pelo celular ou computador'],['suporte','Tem garantia e suporte?','garantia de 7 dias; suporte por e-mail em até 24h']],
+ outro:[['comum','O que o cliente costuma perguntar antes de comprar?','se tem garantia e quanto tempo demora']]};
+function nzSecWizard(id,seg){
+  const ag=NZ_AGENDA.includes(seg);
+  if(id==='precos')return {title:'Pagamento e condições',q:[
+    ['pag','Como o cliente pode pagar?','Pix, cartão de crédito e débito',['Pix','Cartão de crédito','Cartão de débito','Dinheiro','Boleto','Link de pagamento']],
+    ['parc','Dá para parcelar? Em quantas vezes?','até 6x sem juros no cartão',['Até 3x sem juros','Até 6x sem juros','Até 10x sem juros','Não parcelamos']],
+    ['sinal',ag?'Cobram sinal para reservar o horário?':'Cobram entrada ou pagamento antecipado?','não cobramos sinal',['Não cobramos','Sinal de 30%','Pagamento antecipado']],
+    ['pac','Têm pacotes, planos ou descontos?','4 sessões com 10% de desconto; 5% no Pix'],
+    ['obj','O que os clientes mais questionam e como vocês respondem?','acham caro: explicamos que inclui retorno e garantia']],
+   t:a=>({offer:[a.pag&&`Formas de pagamento: ${a.pag}.`,a.parc&&`Parcelamento: ${a.parc}.`,a.sinal&&`${ag?'Sinal para reservar':'Pagamento'}: ${a.sinal}.`,a.pac&&`Pacotes e descontos: ${a.pac}.`,a.obj&&`Quando o cliente questiona: ${a.obj}.`]})};
+  if(id==='duvidas')return {title:'Dúvidas do dia a dia',q:[
+    ['hora','Que dias e horários vocês atendem?','segunda a sexta das 9h às 19h, sábado das 9h às 14h',['Segunda a sexta','Sábado de manhã','Sábado o dia todo','Domingo','24 horas (online)']],
+    ['fer','E em feriado?','fechado em feriados nacionais',['Fechado em feriado','Abrimos em alguns feriados','Funcionamos normalmente']],
+    ['chega',seg==='lancamento'?'Como o cliente fala com vocês fora do WhatsApp?':'Como chegar? Estacionamento, referência, acessibilidade','estacionamento conveniado ao lado; perto do metrô Moema',seg==='lancamento'?null:['Tem estacionamento','Estacionamento conveniado','Acessível para cadeirantes','Perto do metrô','Só atendemos online']],
+    ...(NZ_EXTRA[seg]||NZ_EXTRA.outro)],
+   t:a=>{const L={hora:'Horário de atendimento',fer:'Feriados',chega:seg==='lancamento'?'Outros contatos':'Como chegar',prep:'Preparo e cuidados',aval:'Avaliação e sessões',dura:'Duração dos serviços',chegada:'Agendamento',exp:'Aula experimental e matrícula',repo:'Reposição',fin:'Financiamento',docs:'Documentos',troca:'Troca e retirada',estoque:'Estoque',orc:'Orçamento',prazo:'Prazo',entrega:'Entrega',reserva:'Reservas',acesso:'Acesso',suporte:'Garantia e suporte',comum:'Dúvida comum'};
+     return {faq:Object.keys(L).filter(k=>a[k]).map(k=>`${L[k]}: ${a[k]}.`)}}};
+  if(id==='limites')return {title:'Limites e passagem para o time',q:[
+    ['regra',ag?'Qual a antecedência para marcar, e como funciona remarcar ou cancelar?':'Como funcionam pedido, troca e cancelamento?',ag?'marcar com 1 dia de antecedência; remarcar até 24h antes; falta sem aviso perde o sinal':'cancelamento até 7 dias após a compra',ag?['Remarcar até 24h antes','Tolerância de 15 min de atraso','Falta sem aviso perde o sinal']:['Cancelamento em 7 dias','Troca em 30 dias']],
+    ['nao','O que vocês NÃO fazem ou não atendem?','não atendemos convênio; não atendemos fora da cidade'],
+    ['quem','Quem do time atende quando a Nanda passa a conversa?','a Renata, de segunda a sexta das 9h às 18h'],
+    ['fora','Fora do horário, o que a Nanda deve dizer?','que o time responde no próximo horário de atendimento',['Que o time responde no próximo horário','Já deixar o horário marcado e o time confirma','Pedir o melhor horário para ligarmos']]],
+   t:a=>({rules:[a.regra&&`${ag?'Agendamento':'Pedidos'}: ${a.regra}.`,a.nao&&`Limites: ${a.nao}.`],handoff:[a.quem&&`Quem atende quando a Nanda passa a conversa: ${a.quem}.`,a.fora&&`Fora do horário, dizer ${/^(que|j[áa]|pedir)/i.test(a.fora)?a.fora.charAt(0).toLowerCase()+a.fora.slice(1):'que '+a.fora}.`]})};
+  return null}
+const NZ_FL={about:'Sobre o negócio',offer:'Condições e pacotes',faq:'Perguntas frequentes',rules:'Regras',handoff:'Quando chamar o time'};
+function nzWizard(box,W,A,onDone){
+  let i=0;
+  const comp=()=>{const r=W.t(A),o=Array.isArray(r)?{about:r}:r,out={};for(const k in o){const v=o[k].filter(Boolean);if(v.length)out[k]=(k==='about'?v.join(' '):v.join('\n')).replace(/[ \t]+/g,' ').replace(/\.\./g,'.')}return out};
+  const draw=()=>{const last=i>=W.q.length;const q=W.q[i]||[];const out=last?comp():null;
+   box.innerHTML=`<div class="nzw">${last?`<div class="nzw-h"><b>Pronto! Veja como ficou</b><span>${Object.keys(out).length?'Entra no que já está escrito, sem apagar nada. Dá para ajustar depois.':'Você pulou todas as perguntas.'}</span></div>
+     ${Object.entries(out).map(([k,v])=>`<div class="nzw-pv">${Object.keys(out).length>1||k!=='about'?`<small>${NZ_FL[k]||k}</small>`:''}${esc(v).replace(/\n/g,'<br>')}</div>`).join('')}
+     <div class="nzw-ft"><button type="button" class="nz-ex" data-wb>← Ajustar respostas</button><button type="button" class="btn sm" data-wx>Cancelar</button>${Object.keys(out).length?'<button type="button" class="btn sm p" data-wok>Usar este texto</button>':''}</div>`
+    :`<div class="nzw-h">${W.title?`<b class="nzw-t">${esc(W.title)}</b>`:''}<span class="nzw-n">Pergunta ${i+1} de ${W.q.length}</span><div class="nzw-bar"><i style="width:${Math.round(100*i/W.q.length)}%"></i></div></div>
+     <label class="nzw-q" for="wzIn">${esc(q[1])}</label>
+     ${q[3]?`<div class="nzw-ch">${q[3].map(c=>`<button type="button" data-wc="${esc(c)}" class="${(A[q[0]]||'').toLowerCase().includes(c.toLowerCase())?'on':''}">${esc(c)}</button>`).join('')}</div>`:''}
+     <input id="wzIn" value="${esc(A[q[0]]||'')}" placeholder="Ex.: ${esc(q[2])}" maxlength="300" autocomplete="off">
+     <div class="nzw-ft">${i?'<button type="button" class="nz-ex" data-wb>← Voltar</button>':'<button type="button" class="nz-ex" data-wx>Cancelar</button>'}<span class="nzw-sp"></span>${i||!W.req?'<button type="button" class="btn sm" data-wsk>Pular</button>':''}<button type="button" class="btn sm p" data-wn>${i===W.q.length-1?'Ver o texto':'Próxima'} →</button></div>`}</div>`;
    const inp=box.querySelector('#wzIn');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();box.querySelector('[data-wn]').click()}}}
+   box.querySelectorAll('[data-wc]').forEach(c=>c.onclick=()=>{const v=c.dataset.wc,cur=inp.value.trim();const has=cur.toLowerCase().includes(v.toLowerCase());
+     inp.value=has?cur.split(/,\s*/).filter(x=>x.toLowerCase()!==v.toLowerCase()).join(', '):(cur?cur+', ':'')+v;c.classList.toggle('on',!has);inp.focus()});
    const save=()=>{if(inp)A[q[0]]=inp.value.trim().replace(/[.\s]+$/,'')};
    const b=s=>box.querySelector(s);
-   if(b('[data-wn]'))b('[data-wn]').onclick=()=>{save();if(!i&&!A[q[0]]){inp.focus();inp.classList.add('bad');return}i++;draw()};
+   if(b('[data-wn]'))b('[data-wn]').onclick=()=>{save();if(!i&&W.req&&!A[q[0]]){inp.focus();inp.classList.add('bad');return}i++;draw()};
    if(b('[data-wsk]'))b('[data-wsk]').onclick=()=>{A[q[0]]='';i++;draw()};
    if(b('[data-wb]'))b('[data-wb]').onclick=()=>{save();i=last?W.q.length-1:i-1;draw()};
    if(b('[data-wx]'))b('[data-wx]').onclick=()=>onDone(null);
@@ -4593,7 +4641,8 @@ const VIEWS={
      <p class="hint" style="margin:-4px 0 0">Vale para conversas novas. Dá para mudar conversa por conversa, e quando alguém do time responde ela sai de cena.</p>
      <div class="nz-2"><div class="nz-f"><label for="nz_name">Nome dela</label><input id="nz_name" name="name" value="${esc(V.name)}" minlength="2" maxlength="30"></div>
       <div class="nz-f"><label>Jeito de falar</label><div class="nz-seg">${TONES.map(t=>`<label class="${V.tone===t[0]?'on':''}"><input type="radio" name="tone" value="${t[0]}" ${V.tone===t[0]?'checked':''}>${t[1]}</label>`).join('')}</div></div></div>`;
-    const S=SEC.find(x=>x[0]===id);return (id==='precos'?catH():'')+S[3].map(fieldH).join('')};
+    const S=SEC.find(x=>x[0]===id),sw=nzSecWizard(id,seg);
+    return (sw?`<div class="nz-sw" data-sw="${id}"><span>✨ <b>Responda algumas perguntas</b> e a gente escreve esta parte para você.</span><button type="button" class="btn sm" data-swb="${id}">Começar</button></div><div class="nz-wzb" id="swBox_${id}"></div>`:'')+(id==='precos'?catH():'')+S[3].map(fieldH).join('')};
   const summary=x=>{if(x[0]==='jeito')return `${esc(V.name||'Nanda')} · ${modeOf(V.default_mode)[1]} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]}`;
     if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'item':'itens'} no Catálogo${V.offer?' · condições preenchidas':''}`;
     const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
@@ -4632,7 +4681,10 @@ const VIEWS={
   function bind(){
    const f=$('#aiF');
    document.querySelectorAll('[data-wz]').forEach(b=>b.onclick=()=>{const k=b.dataset.wz,fld=b.closest('.nz-f'),ta=fld.querySelector('textarea');fld.classList.add('wzon');
-     nzWizard($('#wzBox'),ME.company.name,seg,txt=>{fld.classList.remove('wzon');$('#wzBox').innerHTML='';if(txt){V[k]=txt;ta.value=txt;ta.style.height=Math.max(ta.scrollHeight+4,90)+'px';refreshHead();toast('Texto pronto. Ajuste se quiser e salve.')}})});
+     nzWizard($('#wzBox'),{...(NZW_Q[seg]||NZW_Q.outro),req:true},{nome:ME.company.name},o=>{fld.classList.remove('wzon');$('#wzBox').innerHTML='';const txt=o&&o.about;if(txt){V[k]=txt;ta.value=txt;ta.style.height=Math.max(ta.scrollHeight+4,90)+'px';refreshHead();toast('Texto pronto. Ajuste se quiser e salve.')}})});
+   document.querySelectorAll('[data-swb]').forEach(b=>b.onclick=()=>{const id=b.dataset.swb,sec=b.closest('.nz-sb'),box=$('#swBox_'+id);sec.classList.add('swon');
+     nzWizard(box,nzSecWizard(id,seg),{},o=>{sec.classList.remove('swon');box.innerHTML='';if(!o)return;
+       for(const k in o){const cur=(V[k]||'').trim();V[k]=cur?cur+'\n'+o[k]:o[k];const el=$('#nz_'+k);if(el){el.value=V[k];el.style.height=Math.max(el.scrollHeight+4,80)+'px'}}refreshHead();toast('Pronto. Confira o texto e salve.')})});
    document.querySelectorAll('[data-qc]').forEach(b=>b.onclick=()=>{const k=b.dataset.qc,el=$('#nz_'+k),t=b.textContent.replace(/^\+ /,'');
      el.value=k==='goal'?t+'.':(el.value.trim()?el.value.trim()+'\n':'')+t+'.';V[k]=el.value;b.remove();refreshHead()});
    f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};
