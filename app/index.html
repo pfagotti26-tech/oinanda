@@ -3023,7 +3023,7 @@ let AG={tab:'semana',week:null,cfg:null};
 async function agCfg(){AG.cfg=await api('/agenda/settings');return AG.cfg}
 const AG_W={studio:['Aulas experimentais e avaliações','uma aula experimental'],clinica:['Consultas, avaliações e procedimentos','uma avaliação ou procedimento'],salao:['Cortes, escovas e demais atendimentos','um atendimento'],
   imobiliaria:['Visitas aos imóveis','uma visita'],escola:['Aulas experimentais e visitas','uma aula experimental'],loja:['Atendimentos e retiradas na loja','um atendimento'],servicos:['Reuniões e consultas','uma reunião'],
-  restaurante:['Reservas e encomendas','uma reserva'],lancamento:['Calls e sessões de mentoria','uma call'],outro:['Atendimentos e reuniões','um horário']};
+  restaurante:['Reservas e encomendas','uma reserva'],lancamento:['Calls e sessões de mentoria','uma call'],outro:['Atendimentos e reuniões','um atendimento ou reunião']};
 function agWords(){const w=AG_W[(ME.company&&ME.company.segment)||'outro']||AG_W.outro;return {sub:w[0]+' marcados pelo time ou pela Nanda.',ex:w[1]}}
 Object.assign(INFO,{ag_como:['Como a Agenda funciona','Você diz o que pode ser marcado e em quais horários. A Nanda passa a oferecer só os horários livres no WhatsApp e marca sozinha; o time também marca por aqui. Cada horário pode ganhar lembrete automático e, no fim, você marca se o cliente veio.']});
 async function agStart(canManage){const box=$('#agStart');if(!box||!canManage)return;let hide=false;try{hide=localStorage.getItem('oinanda.agStart')==='1'}catch(e){}if(hide)return;
