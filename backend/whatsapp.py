@@ -351,7 +351,7 @@ async def get_contact(user, contact_id):
     return c
 
 @router.get('/conversations')
-async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', sub: str = '', user=Depends(current_user)):
+async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', sub: str = '', ch: str = '', user=Depends(current_user)):
     from inbox import waiting, needs_you, with_nanda, default_mode, STALE_DAYS
     qq = {'company_id': user['company_id']}
     if filter == 'mine': qq['assigned_to'] = user['id']
@@ -365,8 +365,9 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
     elif sub == 'team':
         from teams import my_team_ids
         qq['team_id'] = {'$in': await my_team_ids(user)}
-    elif sub == 'instagram': qq['channel'] = 'instagram'
-    elif sub == 'whatsapp': qq['channel'] = {'$in': [None, 'whatsapp']}
+    ch = ch or (sub if sub in ('instagram', 'whatsapp') else '')
+    if ch == 'instagram': qq['channel'] = 'instagram'
+    elif ch == 'whatsapp': qq['channel'] = {'$in': [None, 'whatsapp']}
     ands = []
     if filter == 'need': ands.append({'$or': [{'needs_human': True}, {'last_dir': 'in', 'last_in_at': {'$gte': now() - timedelta(days=STALE_DAYS)}}, {'assigned_to': user['id'], 'transfer_seen': False}]})
     elif filter == 'nanda': qq['last_at'] = {'$gte': now() - timedelta(days=STALE_DAYS)}
