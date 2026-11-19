@@ -1724,6 +1724,15 @@ body:has(.nz-save) #toast{bottom:92px}
 .fz-more{margin:2px 0 0;border:1px dashed #D8CBBF;border-radius:10px;padding:8px;font-size:12.5px;font-weight:700;color:var(--ink2);background:none}.fz-more:hover{background:#fff;color:var(--ink)}
 @media (max-width:860px){.fz-hd{margin-bottom:8px;gap:10px;flex-wrap:nowrap}.fz-hd h1{display:none}.fz-hd #fnNew{padding:7px 13px;font-size:15px}.fz-hd .hm-m{display:none}.fz-bar{flex-wrap:nowrap;gap:8px;margin-bottom:8px}.fz-bar .srch{flex:0 0 118px}.fz-kpi{display:none}
  .fz-hd~.kb{height:calc(100dvh - 200px)}.col.fz{flex-basis:84vw;width:84vw}.fz-seg button{padding:6px 11px}}
+.col.fz{flex:1 0 272px;max-width:360px}
+.kc.fz .kq{position:absolute;top:6px;right:6px;display:flex;gap:2px;opacity:0;transition:opacity .12s}.kc.fz:hover .kq,.kc.fz:focus-within .kq{opacity:1}
+.kc.fz .kq .mv{position:static;opacity:1;width:26px;height:26px;display:grid;place-items:center;background:#fff;border:1px solid var(--line)}.kc.fz .kq .mv svg{width:14px;height:14px}
+@media (hover:none){.kc.fz .kq{display:none}}
+.fz-nav{display:none}
+@media (max-width:860px){.fz-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 8px;padding-bottom:2px}.fz-nav::-webkit-scrollbar{display:none}
+ .fz-nav button{flex:none;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:700;color:var(--ink2);background:#F1ECE7;white-space:nowrap}
+ .fz-nav i{width:8px;height:8px;border-radius:50%;background:var(--sc)}.fz-nav b{font-size:11px;color:var(--ink3)}.fz-nav button.on{background:var(--ink);color:#fff}.fz-nav button.on b{color:#C9D2DA}
+ .fz-hd~.kb{height:calc(100dvh - 236px)}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -3327,16 +3336,22 @@ async function drawBoard(local){
     const bd=`${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:wt?`<span class="bd c">esperando${c.unread?' · '+c.unread+(c.unread>1?' novas':' nova'):''}</span>`:''}${st&&!wt?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}${own?`<span class="own" title="Responsável: ${esc(own)}">${initials(own)}</span>`:''}`;
     return `<div class="kc fz ${st&&!wt?'stale':''} ${wt?'wt':''}" draggable="true" data-k="${c.id}" tabindex="0" role="button" aria-label="${esc(c.name)}">
      <div class="tp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}">${chIcon(c.channel)}</i>`:''}</span><b>${esc(dispName(c.name))}</b><time>${c.last_at?agoShort(c.last_at):''}</time></div>
-     <button class="mv" data-mv="${c.id}" title="Mover de etapa" aria-label="Mover de etapa">⇄</button>
+     <span class="kq"><button class="mv" data-oc="${c.id}" title="Abrir conversa" aria-label="Abrir conversa">${svg('<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>')}</button><button class="mv" data-mv="${c.id}" title="Mover de etapa" aria-label="Mover de etapa">⇄</button></span>
      ${lastTxt(c)?`<span class="pv ${wt?'in':''}">${by}${esc(lastTxt(c))}</span>`:''}
      ${bd?`<div class="ft">${bd}</div>`:''}</div>`};
   const LIM=30;
   kb.innerHTML=d.stages.map((s,i)=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.value||0),0);const col=stColor(s,i);
     if(s.kind==='lost'&&!FN.showLost)return `<div class="col min ${s.kind}" data-s="${s.id}" style="--sc:${col}" title="Mostrar ${esc(s.name)}"><span class="ct" style="background:#fff;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:700">${cs.length}</span><span class="vt">${esc(s.name)}</span></div>`;
+    const pri=c=>c.needs_human?0:(c.waiting??c.last_dir==='in')?1:2;cs.sort((a,b)=>pri(a)-pri(b)||(pri(a)<2?((a.last_at||'')<(b.last_at||'')?-1:1):((a.last_at||'')>(b.last_at||'')?-1:1)));
     const lim=FN.more[s.id]||LIM,shown=cs.slice(0,lim);
     return `<div class="col fz ${s.kind}" data-s="${s.id}" style="--sc:${col}"><div class="ch"><i class="dot"></i><b title="${esc(s.name)}">${esc(s.name)}</b><span class="ct">${cs.length}</span>${tot?`<span class="tv">${brl(tot)}</span>`:''}<button class="add" data-add="${s.id}" title="Adicionar contato nesta etapa">+</button>${s.kind==='lost'?'<button class="add" data-hide title="Recolher">‹</button>':''}</div>
      <div class="cards">${shown.map(card).join('')||`<div class="emp">${q||FN.f!=='all'?'Nenhum contato com esse filtro':'Arraste um card para cá'}</div>`}${cs.length>lim?`<button type="button" class="fz-more" data-more="${s.id}">Mostrar mais ${Math.min(LIM,cs.length-lim)} de ${cs.length-lim}</button>`:''}</div></div>`}).join('');
   kb.scrollLeft=sx;
+  const nav=$('#fnNav');if(nav){const vis=d.stages.filter(s=>!(s.kind==='lost'&&!FN.showLost));
+    nav.innerHTML=vis.map((s,i)=>`<button type="button" data-go="${s.id}" style="--sc:${stColor(s,d.stages.indexOf(s))}"><i></i>${esc(s.name)}<b>${cards.filter(c=>c.stage===s.id).length}</b></button>`).join('');
+    const mark=()=>{const cols=[...kb.querySelectorAll('.col')];const x=kb.scrollLeft+40;let cur=cols[0];for(const c of cols)if(c.offsetLeft-kb.offsetLeft<=x)cur=c;nav.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('on',cur&&b.dataset.go===cur.dataset.s));const on=nav.querySelector('.on');if(on)on.scrollIntoView({inline:'nearest',block:'nearest'})};
+    nav.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const c=kb.querySelector(`.col[data-s="${b.dataset.go}"]`);if(c)kb.scrollTo({left:c.offsetLeft-kb.offsetLeft,behavior:'smooth'})});
+    kb.onscroll=()=>{clearTimeout(FN.nt);FN.nt=setTimeout(mark,60)};mark()}
   if(!kb.dataset.init){kb.dataset.init=1;// no celular, abre já na primeira etapa que tem cliente
     if(innerWidth<=860){const f=[...kb.querySelectorAll('.col:not(.min)')].find(c=>c.querySelector('.kc'));if(f&&f!==kb.firstElementChild)kb.scrollLeft=f.offsetLeft-kb.offsetLeft}}
   kb.querySelectorAll('.col.min').forEach(c=>c.onclick=()=>{FN.showLost=true;drawBoard(true)});
@@ -3344,6 +3359,7 @@ async function drawBoard(local){
   kb.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>newContact(b.dataset.add));
   kb.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{const id=b.dataset.more,y=b.closest('.cards').scrollTop;FN.more[id]=(FN.more[id]||30)+30;drawBoard(true);const c=kb.querySelector(`.col[data-s="${id}"] .cards`);if(c)c.scrollTop=y});
   kb.querySelectorAll('[data-mv]').forEach(b=>b.onclick=e=>{e.stopPropagation();moveMenu(b.dataset.mv)});
+  kb.querySelectorAll('[data-oc]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.open=b.dataset.oc;CV.filter='all';CV.sub='';CV.ch='';go('conversas')});
   kb.querySelectorAll('.kc').forEach(k=>{k.onclick=()=>contactDrawer(k.dataset.k,()=>drawBoard());k.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();k.click()}};
     k.ondragstart=e=>{e.dataTransfer.setData('text/plain',k.dataset.k);e.dataTransfer.effectAllowed='move';k.classList.add('drag')};k.ondragend=()=>{k.classList.remove('drag');kb.querySelectorAll('.drop').forEach(x=>x.classList.remove('drop'))}});
   kb.querySelectorAll('.col').forEach(col=>{col.ondragover=e=>{e.preventDefault();col.classList.add('drop')};col.ondragleave=e=>{if(!col.contains(e.relatedTarget))col.classList.remove('drop')};
@@ -4890,7 +4906,7 @@ const VIEWS={
     ${canManage?`<button class="btn sm" id="fnSt" title="Renomear, criar ou reordenar as etapas">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.700 1.700 0 0 0 .3 1.800l.1.1a2 2 0 1 1-2.800 2.800l-.1-.1a1.700 1.700 0 0 0-1.800-.3 1.700 1.700 0 0 0-1 1.500V21a2 2 0 1 1-4 0v-.1a1.700 1.700 0 0 0-1.100-1.500 1.700 1.700 0 0 0-1.800.3l-.1.1a2 2 0 1 1-2.800-2.800l.1-.1a1.700 1.700 0 0 0 .3-1.800 1.700 1.700 0 0 0-1.500-1H3a2 2 0 1 1 0-4h.1a1.700 1.700 0 0 0 1.500-1.100 1.700 1.700 0 0 0-.3-1.800l-.1-.1a2 2 0 1 1 2.800-2.800l.1.1a1.700 1.700 0 0 0 1.800.3H9a1.700 1.700 0 0 0 1-1.500V3a2 2 0 1 1 4 0v.1a1.700 1.700 0 0 0 1 1.500 1.700 1.700 0 0 0 1.800-.3l.1-.1a2 2 0 1 1 2.800 2.800l-.1.1a1.700 1.700 0 0 0-.3 1.800V9a1.700 1.700 0 0 0 1.500 1H21a2 2 0 1 1 0 4h-.1a1.700 1.700 0 0 0-1.500 1z"/>')}<span class="hm-m">Etapas</span></button>`:''}<button class="btn sm p" id="fnNew" title="Novo contato">+<span class="hm-m"> Contato</span></button></div>
     <div class="fz-bar"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fnQ" placeholder="${innerWidth<=860?'Buscar':'Buscar cliente'}" title="Busca por nome, telefone ou etiqueta" value="${esc(FN.q)}"><button type="button" class="clr ${FN.q?'':'hide'}" id="fnX" aria-label="Limpar busca">×</button></label>
      <div class="fz-ch">${[['all','Todos'],['mine','Meus'],['unassigned','Sem dono'],['waiting','Esperando'],['stale','Parados']].map(f=>`<button class="${FN.f===f[0]?'on':''}" data-ff="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
-     <div class="fz-kpi" id="fnSum"></div></div>
+     <div class="fz-kpi" id="fnSum"></div></div><div class="fz-nav" id="fnNav"></div>
     <div class="kb" id="kb"></div>`;
   $('#fnQ').oninput=e=>{FN.q=e.target.value;$('#fnX').classList.toggle('hide',!FN.q);clearTimeout(FN.t);FN.t=setTimeout(()=>drawBoard(true),150)};
   $('#fnX').onclick=()=>{FN.q='';$('#fnQ').value='';$('#fnX').classList.add('hide');drawBoard(true);$('#fnQ').focus()};
