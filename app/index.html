@@ -22,7 +22,7 @@ button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 a{color:var(--c2)}
 .hide{display:none!important}
-.logo{display:inline-flex;flex-direction:column;align-items:flex-start;background:var(--c);border-radius:12px;padding:5px 11px 7px 10px;line-height:1}
+a.logo{text-decoration:none;cursor:pointer}.logo{display:inline-flex;flex-direction:column;align-items:flex-start;background:var(--c);border-radius:12px;padding:5px 11px 7px 10px;line-height:1}
 .logo i{font-style:normal;font-weight:700;font-size:10px;background:#fff;color:var(--c);border-radius:6px 6px 6px 2px;padding:1px 5px 2px;transform:rotate(-5deg);margin-bottom:2px}
 .logo b{color:#fff;font-size:20px;font-weight:700;letter-spacing:-.8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:999px;font-weight:700;font-size:14px;border:1px solid var(--line);background:#fff}
@@ -1793,6 +1793,8 @@ const OB_ASK={studio:['Quanto custa a aula?','Tem aula experimental?','Tem horá
 const OB_NOUN={clinica:['paciente','pacientes','um paciente'],studio:['aluno','alunos','um aluno'],escola:['aluno','alunos','um aluno']};
 const obNoun=s=>OB_NOUN[s]||['cliente','clientes','um cliente'];
 const obLogo='<a class="logo" href="https://oinanda.com.br/" title="Ir para o site do Oi Nanda"><i>oi</i><b>Nanda</b></a>';
+const obAppLogo='<a class="logo" href="/" data-home title="Ir para o início do Oi Nanda"><i>oi</i><b>Nanda</b></a>';
+document.addEventListener('click',e=>{const a=e.target.closest('[data-home]');if(!a||!ME||e.metaKey||e.ctrlKey)return;e.preventDefault();history.replaceState(null,'','/');VIEW='inicio';if($('#page'))go('inicio');else shell()});
 function obSteps(n){return `<div class="ob-st" aria-label="Passo ${n} de 3">${['Sua conta','Conheça a Nanda','Ativar'].map((l,i)=>`${i?'<span class="sep"></span>':''}<span class="${i+1<n?'dn':i+1===n?'on':''}"><i>${i+1<n?'✓':i+1}</i><span class="tx">${l}</span></span>`).join('')}</div>`}
 const obMoney=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const obDay=d=>new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
@@ -1859,7 +1861,7 @@ async function comecarView(){
   const did=[['⚡','Respondeu na hora','Responde em segundos, de dia ou de madrugada.'],['📅','Marcaria o horário na sua agenda','Quando o '+noun+' escolhe um horário livre.'],
     ['🙋','Chamaria o seu time','Quando o '+noun+' pede uma pessoa ou o assunto é delicado.'],['📝','Anotaria o interesse no funil','O que o '+noun+' quer, para ninguém esquecer.']];
   const on=[false,false,false,false],det=['','','',''];
-  $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obLogo}${obSteps(2)}</div><div class="body">
+  $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obAppLogo}${obSteps(2)}</div><div class="body">
    <div class="ob-card"><h1>Fale com a Nanda como se fosse ${aNoun} seu</h1>
     <p class="sub">${seg==='outro'?'Ela já veio pronta para atender o seu negócio.':`Ela já veio ajustada para <b>${esc((SEGS[seg]||SEG[seg]||'o seu ramo').toLowerCase())}</b>.`} Pergunte preço, horário ou o que ${aNoun} perguntaria. É só um teste: nada sai para o WhatsApp de ninguém.</p>
     <div class="ob-chat" id="obChat"><div class="ob-empty">Escreva abaixo ou toque numa das perguntas prontas. A Nanda responde como responderia ${aNoun} de verdade.</div></div>
@@ -1909,7 +1911,7 @@ async function ativarView(){
   const sub={essencial:'Para quem está começando',profissional:'A Nanda atendendo sozinha',equipe:'Para operação com time'};
   const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x};
   const draw=()=>{const p=P[S.plan];
-    $('#root').innerHTML=`<div class="ob ob-c"><div class="ob-top">${obLogo}${obSteps(3)}</div><div class="body">
+    $('#root').innerHTML=`<div class="ob ob-c"><div class="ob-top">${obAppLogo}${obSteps(3)}</div><div class="body">
      <h1>${offer?'Ative seus 14 dias grátis':'Escolha o seu plano'}</h1>
      <p class="sub">${offer?'Você só paga se continuar. Escolha o plano para depois do teste, dá para trocar quando quiser.':'Pagamento no cartão pelo Mercado Pago, sem fidelidade.'}</p>
      <div class="ob-plans">${['essencial','profissional','equipe'].map(k=>`<button type="button" class="ob-pl ${S.plan===k?'on':''}" data-pl="${k}">${k==='profissional'?'<span class="tag">Mais escolhido</span>':''}<span class="rd"></span>
@@ -2021,7 +2023,7 @@ function shell(){
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side">
-    <div class="sbar"><span class="logo"><i>oi</i><b>Nanda</b></span><span class="cur" id="curV"></span><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a><span class="cur" id="curV"></span><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
     <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div>
     <label class="gsr" title="Buscar (Ctrl K)">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="gQ" placeholder="Buscar ou ir para…" autocomplete="off" aria-label="Buscar cliente, tela ou ação"><kbd>Ctrl K</kbd></label>
     <div class="gres" id="gRes" hidden></div>
