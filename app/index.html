@@ -1698,6 +1698,32 @@ body:has(.nz-save) #toast{bottom:92px}
 .cz-qa svg{width:14px;height:14px}.cz-qa:hover{background:var(--oksoft)}
 @media (hover:hover){.ci.cz:hover .cz-qa{display:inline-flex}.ci.cz:hover .cz-rt{visibility:hidden}}
 .cv.lmin .cz-qa{display:none!important}
+/* funil: cabeçalho enxuto e cards compactos */
+.fz-hd{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}.fz-hd h1{font-size:26px;margin:0}.fz-hd .sp{flex:1}.fz-hd .btn svg{width:15px;height:15px}
+.fz-seg{display:inline-flex;background:#EFE8E1;border-radius:11px;padding:3px}.fz-seg button{padding:6px 14px;border-radius:9px;font-weight:700;font-size:13px;color:var(--ink2)}.fz-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.fz-sub{color:var(--ink2);font-size:13.5px;margin:-4px 0 12px}
+.fz-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}.fz-bar .srch{flex:0 1 240px;min-width:160px}.fz-bar .srch input{padding-top:8px;padding-bottom:8px}
+.fz-ch{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.fz-ch::-webkit-scrollbar{display:none}
+.fz-ch button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}.fz-ch button:hover{border-color:#E2CFC4}
+.fz-ch button.on{background:var(--ink);border-color:var(--ink);color:#fff}.fz-ch i{font-style:normal;font-size:11px;font-weight:800;background:#F1ECE7;color:var(--ink2);border-radius:999px;padding:0 6px;min-width:18px;text-align:center}.fz-ch i:empty{display:none}
+.fz-ch button.on i{background:rgba(255,255,255,.2);color:#fff}.fz-ch button.warn i{background:var(--warnsoft);color:var(--warn)}
+.fz-kpi{margin-left:auto;display:flex;gap:16px;font-size:12.5px;color:var(--ink2);white-space:nowrap}.fz-kpi b{color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}.fz-kpi .ok b{color:var(--ok)}
+.fz-hd~.kb{height:calc(100vh - 200px)}
+.col.fz{flex:0 0 272px;width:272px;border-top:0;background:#F4EFE9}
+.col.fz .ch{padding:12px 10px 8px 14px;gap:7px}.col.fz .ch .dot{width:9px;height:9px;border-radius:50%;background:var(--sc);flex:none}.col.fz .ch b{font-size:13.5px}
+.col.fz .ch .tv{font-size:12px;font-weight:700;color:var(--ok);white-space:nowrap}.col.fz .ch .add{opacity:.5}.col.fz:hover .ch .add{opacity:1}
+.col.fz .cards{gap:6px;padding:0 8px 10px}
+.kc.fz{padding:9px 10px;border-radius:12px}.kc.fz .tp{display:flex;align-items:center;gap:8px;padding-right:0}
+.kc.fz .av{width:26px;height:26px;font-size:10px;position:relative}.kc.fz .av .chb{position:absolute;right:-4px;bottom:-4px;width:13px;height:13px;border-width:1.5px}
+.kc.fz .tp b{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kc.fz .tp time{font-size:11px;color:var(--ink3);flex:none;transition:opacity .12s}
+.kc.fz .pv{-webkit-line-clamp:1;margin-top:5px;font-size:12.5px}.kc.fz .pv em{font-style:normal;color:var(--ink3)}.kc.fz .pv em.nz{color:#7A4BC2;font-weight:700}
+.kc.fz .ft{margin-top:7px;gap:5px}.kc.fz .bd{font-size:10.5px;padding:2px 7px}.kc.fz .own{width:20px;height:20px;font-size:8.5px}
+.kc.fz .mv{top:6px;right:6px;background:#fff}.kc.fz:hover .tp time{opacity:0}
+@media (hover:none){.kc.fz .mv{opacity:0;pointer-events:none}.kc.fz .tp time{opacity:1!important}}
+.kc.fz.wt{box-shadow:inset 3px 0 0 var(--c)}.kc.fz.stale{box-shadow:inset 3px 0 0 #E0A82E}
+.fz-more{margin:2px 0 0;border:1px dashed #D8CBBF;border-radius:10px;padding:8px;font-size:12.5px;font-weight:700;color:var(--ink2);background:none}.fz-more:hover{background:#fff;color:var(--ink)}
+@media (max-width:860px){.fz-hd{margin-bottom:8px;gap:10px;flex-wrap:nowrap}.fz-hd h1{display:none}.fz-hd #fnNew{padding:7px 13px;font-size:15px}.fz-hd .hm-m{display:none}.fz-bar{flex-wrap:nowrap;gap:8px;margin-bottom:8px}.fz-bar .srch{flex:0 0 118px}.fz-kpi{display:none}
+ .fz-hd~.kb{height:calc(100dvh - 200px)}.col.fz{flex-basis:84vw;width:84vw}.fz-seg button{padding:6px 11px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -3194,7 +3220,7 @@ async function contactDrawer(id,after,tab){
     const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,opt_out:!!f.opt_out,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
     try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
 }
-let FN={f:'all',q:'',showLost:false,data:null,sum:null,pipe:'vendas'};
+let FN={f:'all',q:'',showLost:false,data:null,sum:null,pipe:'vendas',more:{}};
 let AU={tab:'lista'},RP={days:30};
 const svg=(d,c)=>`<svg viewBox="0 0 24 24"${c?` class="${c}"`:''} fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const IC={clock:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),check:svg('<path d="M20 6 9 17l-5-5"/>'),back:svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
@@ -3287,31 +3313,36 @@ async function drawBoard(local){
   const d=FN.data,me=ME.user.id;const q=FN.q.trim().toLowerCase(),qd=q.replace(/\D/g,'');
   const isStale=c=>{const st=d.stages.find(s=>s.id===c.stage);return st&&st.kind==='open'&&c.last_at&&(Date.now()-new Date(c.last_at))>STALE_D*864e5};
   const cards=d.cards.filter(c=>(!q||c.name.toLowerCase().includes(q)||(qd&&(c.wa_id||'').includes(qd))||(c.tags||[]).some(t=>t.toLowerCase().includes(q)))
-    &&(FN.f==='all'||(FN.f==='mine'&&c.assigned_to===me)||(FN.f==='unassigned'&&!c.assigned_to)||(FN.f==='waiting'&&c.last_dir==='in')||(FN.f==='stale'&&isStale(c))));
+    &&(FN.f==='all'||(FN.f==='mine'&&c.assigned_to===me)||(FN.f==='unassigned'&&!c.assigned_to)||(FN.f==='waiting'&&(c.waiting??c.last_dir==='in'))||(FN.f==='stale'&&isStale(c))));
   const openIds=d.stages.filter(s=>s.kind==='open').map(s=>s.id);
   const openCards=d.cards.filter(c=>openIds.includes(c.stage));const sm=FN.sum;
-  if($('#fnSum'))$('#fnSum').innerHTML=`<div class="s"><b>${openCards.length}</b>em andamento</div><div class="s"><b>${brl(openCards.reduce((a,c)=>a+(c.value||0),0))}</b>em negociação</div>
-    ${sm?`<div class="s ok"><b>${sm.won}${sm.won_value?' · '+brl(sm.won_value):''}</b>vendas no mês</div>`:''}<div class="s ${d.cards.filter(isStale).length?'warn':''}"><b>${d.cards.filter(isStale).length}</b>parados há ${STALE_D}+ dias</div>`;
+  const nStale=d.cards.filter(isStale).length,nWait=d.cards.filter(c=>c.waiting??c.last_dir==='in').length;
+  if($('#fnSum'))$('#fnSum').innerHTML=`<span><b>${openCards.length}</b> em andamento</span><span><b>${brl(openCards.reduce((a,c)=>a+(c.value||0),0))}</b> em negociação</span>${sm?`<span class="ok"><b>${sm.won_value?brl(sm.won_value):sm.won}</b> vendido no mês</span>`:''}`;
+  const cnt={mine:d.cards.filter(c=>c.assigned_to===me).length,unassigned:d.cards.filter(c=>!c.assigned_to).length,waiting:nWait,stale:nStale};
+  document.querySelectorAll('.fz-ch [data-ff]').forEach(b=>{const i=b.querySelector('i');if(i)i.textContent=b.dataset.ff==='waiting'||b.dataset.ff==='stale'?(cnt[b.dataset.ff]||''):'';b.classList.toggle('warn',b.dataset.ff==='stale'&&nStale>0)});
   const kb=$('#kb');if(!kb)return;const sx=kb.scrollLeft;
-  const card=c=>{const own=c.assigned_name;const st=isStale(c);
-    return `<div class="kc ${st?'stale':''}" draggable="true" data-k="${c.id}" tabindex="0" role="button" aria-label="${esc(c.name)}">
-     <div class="tp"><span class="av">${initials(c.name)}</span><span class="nm"><b>${esc(c.name)}</b><small>${c.last_at?'há '+ago(c.last_at):''}${c.ad?' · anúncio':''}</small></span></div>
+  const lastTxt=c=>c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'';
+  const card=c=>{const own=c.assigned_name;const st=isStale(c),wt=c.waiting??c.last_dir==='in';
+    const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="nz">✦ Nanda:</em> ':'<em>Você:</em> ';
+    const bd=`${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:wt?`<span class="bd c">esperando${c.unread?' · '+c.unread+(c.unread>1?' novas':' nova'):''}</span>`:''}${st&&!wt?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}${own?`<span class="own" title="Responsável: ${esc(own)}">${initials(own)}</span>`:''}`;
+    return `<div class="kc fz ${st&&!wt?'stale':''} ${wt?'wt':''}" draggable="true" data-k="${c.id}" tabindex="0" role="button" aria-label="${esc(c.name)}">
+     <div class="tp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}">${chIcon(c.channel)}</i>`:''}</span><b>${esc(dispName(c.name))}</b><time>${c.last_at?agoShort(c.last_at):''}</time></div>
      <button class="mv" data-mv="${c.id}" title="Mover de etapa" aria-label="Mover de etapa">⇄</button>
-     ${c.last_text?`<span class="pv ${c.last_dir==='in'?'in':''}">${c.last_dir==='out'?'Você: ':''}${esc(c.last_text)}</span>`:''}
-     <div class="ft">${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'pediu atendente'}</span>`:''}${c.last_dir==='in'&&!c.needs_human?'<span class="bd c">esperando resposta</span>':''}${st?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.unread&&c.last_dir==='in'?`<span class="bd c">${c.unread} nova${c.unread>1?'s':''}</span>`:''}
-      ${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}
-      <span class="own ${own?'':'none'}" title="${own?'Responsável: '+esc(own):'Sem responsável'}">${own?initials(own):'?'}</span></div></div>`};
+     ${lastTxt(c)?`<span class="pv ${wt?'in':''}">${by}${esc(lastTxt(c))}</span>`:''}
+     ${bd?`<div class="ft">${bd}</div>`:''}</div>`};
+  const LIM=30;
   kb.innerHTML=d.stages.map((s,i)=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.value||0),0);const col=stColor(s,i);
     if(s.kind==='lost'&&!FN.showLost)return `<div class="col min ${s.kind}" data-s="${s.id}" style="--sc:${col}" title="Mostrar ${esc(s.name)}"><span class="ct" style="background:#fff;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:700">${cs.length}</span><span class="vt">${esc(s.name)}</span></div>`;
-    return `<div class="col ${s.kind}" data-s="${s.id}" style="--sc:${col}"><div class="ch"><b title="${esc(s.name)}">${esc(s.name)}</b><span class="ct">${cs.length}</span><button class="add" data-add="${s.id}" title="Adicionar contato nesta etapa">+</button>${s.kind==='lost'?'<button class="add" data-hide title="Recolher">‹</button>':''}</div>
-     <div class="cvl">${tot?brl(tot):s.kind==='won'?'':'&nbsp;'}</div>
-     <div class="cards">${cs.map(card).join('')||`<div class="emp">${q||FN.f!=='all'?'Nenhum contato com esse filtro':'Arraste um card para cá'}</div>`}</div></div>`}).join('');
+    const lim=FN.more[s.id]||LIM,shown=cs.slice(0,lim);
+    return `<div class="col fz ${s.kind}" data-s="${s.id}" style="--sc:${col}"><div class="ch"><i class="dot"></i><b title="${esc(s.name)}">${esc(s.name)}</b><span class="ct">${cs.length}</span>${tot?`<span class="tv">${brl(tot)}</span>`:''}<button class="add" data-add="${s.id}" title="Adicionar contato nesta etapa">+</button>${s.kind==='lost'?'<button class="add" data-hide title="Recolher">‹</button>':''}</div>
+     <div class="cards">${shown.map(card).join('')||`<div class="emp">${q||FN.f!=='all'?'Nenhum contato com esse filtro':'Arraste um card para cá'}</div>`}${cs.length>lim?`<button type="button" class="fz-more" data-more="${s.id}">Mostrar mais ${Math.min(LIM,cs.length-lim)} de ${cs.length-lim}</button>`:''}</div></div>`}).join('');
   kb.scrollLeft=sx;
   if(!kb.dataset.init){kb.dataset.init=1;// no celular, abre já na primeira etapa que tem cliente
     if(innerWidth<=860){const f=[...kb.querySelectorAll('.col:not(.min)')].find(c=>c.querySelector('.kc'));if(f&&f!==kb.firstElementChild)kb.scrollLeft=f.offsetLeft-kb.offsetLeft}}
   kb.querySelectorAll('.col.min').forEach(c=>c.onclick=()=>{FN.showLost=true;drawBoard(true)});
   kb.querySelectorAll('[data-hide]').forEach(b=>b.onclick=()=>{FN.showLost=false;drawBoard(true)});
   kb.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>newContact(b.dataset.add));
+  kb.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{const id=b.dataset.more,y=b.closest('.cards').scrollTop;FN.more[id]=(FN.more[id]||30)+30;drawBoard(true);const c=kb.querySelector(`.col[data-s="${id}"] .cards`);if(c)c.scrollTop=y});
   kb.querySelectorAll('[data-mv]').forEach(b=>b.onclick=e=>{e.stopPropagation();moveMenu(b.dataset.mv)});
   kb.querySelectorAll('.kc').forEach(k=>{k.onclick=()=>contactDrawer(k.dataset.k,()=>drawBoard());k.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();k.click()}};
     k.ondragstart=e=>{e.dataTransfer.setData('text/plain',k.dataset.k);e.dataTransfer.effectAllowed='move';k.classList.add('drag')};k.ondragend=()=>{k.classList.remove('drag');kb.querySelectorAll('.drop').forEach(x=>x.classList.remove('drop'))}});
@@ -4848,23 +4879,22 @@ const VIEWS={
  async funil(){
   const canManage=['owner','manager'].includes(ME.user.role);
   if(FN.pipe==='posvenda'){
-   $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Renovações, próximo produto e reativação de quem já é cliente.</p></div>
-    <div class="tools">${canManage?'<button class="btn sm p" id="fnFromSeg">+ A partir de um público</button>':''}</div></div>
-    <nav class="utabs"><button data-pp="vendas">Vendas</button><button class="on" data-pp="posvenda">Pós-venda</button></nav>
+   $('#page').innerHTML=`<div class="fz-hd"><h1>Funil</h1><div class="fz-seg" role="tablist"><button data-pp="vendas" role="tab" aria-selected="false">Vendas</button><button class="on" data-pp="posvenda" role="tab" aria-selected="true">Pós-venda</button></div><span class="sp"></span>
+    ${canManage?'<button class="btn sm p" id="fnFromSeg">+ A partir de um público</button>':''}</div>
+    <p class="fz-sub">Renovações, próximo produto e reativação de quem já é cliente.</p>
     <div class="fn-sum" id="fnSum"></div><div class="fn-bar" id="fnBar"></div><div class="kb" id="kb"></div>`;
    document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{FN.pipe=b.dataset.pp;syncUrl();VIEWS.funil()});
    if($('#fnFromSeg'))$('#fnFromSeg').onclick=()=>{CL.tab='seg';go('clientes')};
    return fnPost()}
-  $('#page').innerHTML=`<div class="fhd"><div><h1>Funil</h1><p class="sub">Cada card é um cliente. Arraste entre as etapas ou use ⇄ para mover.</p></div>
-    <div class="tools">${canManage?'<button class="btn sm" id="fnSt">Editar etapas</button>':''}<button class="btn sm p" id="fnNew">+ Contato</button></div></div>
-    <nav class="utabs"><button class="on" data-pp="vendas">Vendas</button><button data-pp="posvenda">Pós-venda</button></nav>
-    <div class="fn-sum" id="fnSum"></div>
-    <div class="fn-bar"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fnQ" placeholder="${innerWidth<=860?'Buscar':'Buscar cliente, telefone ou etiqueta'}" value="${esc(FN.q)}"><button type="button" class="clr ${FN.q?'':'hide'}" id="fnX" aria-label="Limpar busca">×</button></label>
-     ${[['all','Todos'],['mine','Meus'],['unassigned','Sem dono'],['waiting','Esperando resposta'],['stale','Parados']].map(f=>`<button class="chip ${FN.f===f[0]?'on':''}" data-ff="${f[0]}">${f[1]}</button>`).join('')}</div>
+  $('#page').innerHTML=`<div class="fz-hd"><h1>Funil</h1><div class="fz-seg" role="tablist"><button class="on" data-pp="vendas" role="tab" aria-selected="true">Vendas</button><button data-pp="posvenda" role="tab" aria-selected="false">Pós-venda</button></div><span class="sp"></span>
+    ${canManage?`<button class="btn sm" id="fnSt" title="Renomear, criar ou reordenar as etapas">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.700 1.700 0 0 0 .3 1.800l.1.1a2 2 0 1 1-2.800 2.800l-.1-.1a1.700 1.700 0 0 0-1.800-.3 1.700 1.700 0 0 0-1 1.500V21a2 2 0 1 1-4 0v-.1a1.700 1.700 0 0 0-1.100-1.500 1.700 1.700 0 0 0-1.800.3l-.1.1a2 2 0 1 1-2.800-2.800l.1-.1a1.700 1.700 0 0 0 .3-1.800 1.700 1.700 0 0 0-1.500-1H3a2 2 0 1 1 0-4h.1a1.700 1.700 0 0 0 1.500-1.100 1.700 1.700 0 0 0-.3-1.800l-.1-.1a2 2 0 1 1 2.800-2.800l.1.1a1.700 1.700 0 0 0 1.800.3H9a1.700 1.700 0 0 0 1-1.500V3a2 2 0 1 1 4 0v.1a1.700 1.700 0 0 0 1 1.500 1.700 1.700 0 0 0 1.800-.3l.1-.1a2 2 0 1 1 2.800 2.800l-.1.1a1.700 1.700 0 0 0-.3 1.800V9a1.700 1.700 0 0 0 1.500 1H21a2 2 0 1 1 0 4h-.1a1.700 1.700 0 0 0-1.500 1z"/>')}<span class="hm-m">Etapas</span></button>`:''}<button class="btn sm p" id="fnNew" title="Novo contato">+<span class="hm-m"> Contato</span></button></div>
+    <div class="fz-bar"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fnQ" placeholder="${innerWidth<=860?'Buscar':'Buscar cliente'}" title="Busca por nome, telefone ou etiqueta" value="${esc(FN.q)}"><button type="button" class="clr ${FN.q?'':'hide'}" id="fnX" aria-label="Limpar busca">×</button></label>
+     <div class="fz-ch">${[['all','Todos'],['mine','Meus'],['unassigned','Sem dono'],['waiting','Esperando'],['stale','Parados']].map(f=>`<button class="${FN.f===f[0]?'on':''}" data-ff="${f[0]}">${f[1]}<i></i></button>`).join('')}</div>
+     <div class="fz-kpi" id="fnSum"></div></div>
     <div class="kb" id="kb"></div>`;
   $('#fnQ').oninput=e=>{FN.q=e.target.value;$('#fnX').classList.toggle('hide',!FN.q);clearTimeout(FN.t);FN.t=setTimeout(()=>drawBoard(true),150)};
   $('#fnX').onclick=()=>{FN.q='';$('#fnQ').value='';$('#fnX').classList.add('hide');drawBoard(true);$('#fnQ').focus()};
-  document.querySelectorAll('[data-ff]').forEach(b=>b.onclick=()=>{FN.f=b.dataset.ff;document.querySelectorAll('[data-ff]').forEach(x=>x.classList.toggle('on',x===b));drawBoard(true)});
+  document.querySelectorAll('[data-ff]').forEach(b=>b.onclick=()=>{FN.f=FN.f===b.dataset.ff&&b.dataset.ff!=='all'?'all':b.dataset.ff;document.querySelectorAll('[data-ff]').forEach(x=>x.classList.toggle('on',x.dataset.ff===FN.f));FN.more={};drawBoard(true)});
   if($('#fnSt'))$('#fnSt').onclick=stagesEditor;$('#fnNew').onclick=()=>newContact();
   document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{FN.pipe=b.dataset.pp;syncUrl();VIEWS.funil()});
   await drawBoard();

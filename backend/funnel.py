@@ -48,7 +48,8 @@ async def stages_for(company):
     return fresh.get('stages') or st
 
 CARD_FIELDS = {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'value': 1, 'tags': 1, 'assigned_to': 1, 'last_at': 1, 'last_text': 1,
-               'last_dir': 1, 'needs_human': 1, 'unread': 1, 'stage_at': 1, 'created_at': 1, 'source': 1, 'last_in_at': 1, 'ad': 1}
+               'last_dir': 1, 'needs_human': 1, 'unread': 1, 'stage_at': 1, 'created_at': 1, 'source': 1, 'last_in_at': 1, 'ad': 1,
+               'last_by': 1, 'channel': 1, 'handoff_urgent': 1, 'resolved_at': 1, 'noreply_at': 1}
 
 @router.get('/funnel')
 async def funnel(mine: bool = False, user=Depends(current_user)):
@@ -62,6 +63,9 @@ async def funnel(mine: bool = False, user=Depends(current_user)):
     for r in rows:
         if r.get('stage') not in ids: r['stage'] = ids[0]
         r['assigned_name'] = names.get(r.get('assigned_to'))
+        from inbox import waiting
+        r['waiting'] = waiting(r)
+        for k in ('resolved_at', 'noreply_at'): r.pop(k, None)
         li = aware(r.pop('last_in_at', None))
         from channels import window_of
         w = window_of(r.get('channel'))
