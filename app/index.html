@@ -2555,7 +2555,7 @@ function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir
      <span class="r2">${pv}</span>${tags?`<span class="r3">${tags}</span>`:''}</span>
     <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span>${canRes?`<span class="cz-qa" role="button" tabindex="-1" data-qr="${c.id}" title="Marcar como resolvida (sai da fila)">${IC.check}Resolver</span>`:''}</button>`}
 const dispName=n=>{n=String(n||'');const L=n.replace(/[^A-Za-zÀ-ÿ]/g,'');if(L.length<4||L!==L.toUpperCase())return n;
-  return n.toLowerCase().replace(/(^|[\s'(\-/])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/\b(D[aeo]s?|E)\b/g,w=>w.toLowerCase()).replace(/^./,x=>x.toUpperCase())};
+  return n.toLowerCase().replace(/(^|[\s'(\-/])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/\b(D[aeo]s?|E|Com|Em|Para)\b/g,w=>w.toLowerCase()).replace(/(^|\s)(\p{L}{1,2})(?=\s|$)/gu,(m,a,w)=>/^(d[aeo]s?|e|em|ao|a|o)$/i.test(w)?m:a+w.toUpperCase()).replace(/^./,x=>x.toUpperCase())};
 const agoShort=v=>{const m=(Date.now()-new Date(v))/6e4;return m<1?'agora':m<60?Math.floor(m)+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+(m<2880?' dia':' dias')};
 async function cvList(){cvNorm();
   CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.ch?'&ch='+CV.ch:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
