@@ -26,7 +26,7 @@ class ProductIn(BaseModel):
     name: str = Field(min_length=2, max_length=80)
     category: str = Field(default='', max_length=40)
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
-    kind: Literal['produto', 'servico'] = 'servico'
+    kind: Literal['produto', 'servico', 'plano'] = 'servico'
     active: bool = True
     duration_days: Optional[int] = Field(default=None, ge=1, le=3650)  # validade: plano, módulo, assinatura
     next_ids: List[str] = Field(default_factory=list, max_length=10)     # o que oferecer depois
