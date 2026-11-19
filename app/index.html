@@ -1627,6 +1627,8 @@ div.hm{max-width:1120px;display:grid;gap:18px}.hm>div:empty{display:none}.hm-min
 .ci-sum{display:none}.ci-again{display:flex!important;align-items:center;gap:7px;font-size:13px;color:var(--ink2);cursor:pointer;margin:0}.ci-again input{width:auto!important;margin:0;accent-color:var(--c)}
 @media(max-width:860px){.ci-pv{display:none}.ci-ft{flex-wrap:wrap}.ci-sum{display:flex;align-items:baseline;gap:7px;width:100%;min-width:0;white-space:nowrap}.ci-sum b{font-size:14px;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}.ci-sum span{font-size:12.5px;color:var(--ink2);flex:none}.ci-ft{gap:8px 10px}
  .ci-again{width:100%}.ci-ft .sp{display:none}.ci-ft .btn.p{flex:1;justify-content:center}}
+.ci-rec{margin-top:12px;padding:11px 14px}
+@media(min-width:861px) and (max-height:760px){.ci-ft{padding:9px 26px}.ci-ft .btn{padding:8px 18px;font-size:14px}.ci-hd{padding-top:18px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -2794,7 +2796,7 @@ async function cvPanel(c){
   if($('#pnVal')){$('#pnVal').oninput=e=>maskIn(e.target);$('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:parseIn(e.target.value)},'Valor salvo.')}
   if(c.sales_count)api('/contacts/'+c.id+'/wallet').then(w=>{const box=$('#pnWal');if(!box)return;
     const ST={ativo:['ativo','ok'],vence_logo:['vence logo','warn'],vencido:['venceu','bad']};
-    box.innerHTML=(w.items.length?`<div class="wl-has">${w.items.map(x=>`<div class="wl-i"><span><b>${esc(x.name)}</b><small>${x.expires_at?(x.state==='vencido'?'venceu em ':'até ')+fmtD(ymd(new Date(x.expires_at))):x.count>1?x.count+' compras':'comprou em '+fmtD(ymd(new Date(x.last_at)))}</small></span><span class="pill ${ST[x.state][1]}">${ST[x.state][0]}</span></div>`).join('')}</div>`:'')
+    box.innerHTML=(w.items.length?`<div class="wl-has">${w.items.map(x=>`<div class="wl-i"><span><b>${esc(x.name)}</b><small>${x.recurring?'assinatura · desde '+fmtD(ymd(new Date(x.first_at))):x.expires_at?(x.state==='vencido'?'venceu em ':'até ')+fmtD(ymd(new Date(x.expires_at))):x.count>1?x.count+' compras':'comprou em '+fmtD(ymd(new Date(x.last_at)))}</small></span><span class="pill ${ST[x.state][1]}">${ST[x.state][0]}</span></div>`).join('')}</div>`:'')
       +(w.offers.length?`<div class="wl-off"><span class="wl-t">Pode comprar</span>${w.offers.map((o,i)=>`<div class="wl-o"><span><b>${esc(o.name)}</b><small>${o.why==='renovar'?'renovação':o.why==='voltar'?'voltar a ter':'próximo passo depois de '+esc(o.from)}${o.price!=null?' · '+brl(o.price):''}</small></span><button class="lnk" data-of="${i}">oferecer</button><button class="lnk" data-ov="${i}">vender</button></div>`).join('')}</div>`:'');
     box.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const o=w.offers[+b.dataset.of],t=$('#cvText'),first=c.name.split(' ')[0];if(!t)return;
       t.value=o.why==='renovar'?`Oi, ${first}! Seu ${o.name} vence em breve. Quer que eu já deixe a renovação garantida pra você?`:o.why==='voltar'?`Oi, ${first}! Sentimos sua falta. Quer voltar com o ${o.name}? Posso te passar as condições de agora.`:`Oi, ${first}! Como você já fez o ${o.from}, o próximo passo natural é o ${o.name}. Quer que eu te conte como funciona?`;
@@ -3392,11 +3394,11 @@ async function vdList(){
 async function vdProducts(){
   const mgr=isMgr();const all=await api('/products');const cc={};all.forEach(p=>{const c=p.category||'';cc[c]=(cc[c]||0)+1});
   const cl=Object.keys(cc).filter(Boolean).sort((a,b)=>cc[b]-cc[a]||a.localeCompare(b));if(VD.pcat!=null&&!(VD.pcat in cc))VD.pcat=null;
-  const ps=VD.pcat==null?all:all.filter(p=>(p.category||'')===VD.pcat);
+  const ps=(VD.pcat==null?all:all.filter(p=>(p.category||'')===VD.pcat)).slice().sort((a,b)=>(!a.category-!b.category)||(a.category||'').localeCompare(b.category||'')||((a.price==null)-(b.price==null))||((a.price||0)-(b.price||0))||a.name.localeCompare(b.name));
   const fl=cl.length>1||(cl.length&&cc[''])?`<div class="ci-fl" role="tablist"><button type="button" class="ci-chip ${VD.pcat==null?'on':''}" data-pc="*">Todos<i>${all.length}</i></button>${cl.map(c=>`<button type="button" class="ci-chip ${VD.pcat===c?'on':''}" data-pc="${esc(c)}">${esc(c)}<i>${cc[c]}</i></button>`).join('')}${cc['']?`<button type="button" class="ci-chip ${VD.pcat===''?'on':''}" data-pc="">Sem categoria<i>${cc['']}</i></button>`:''}</div>`:'';
   $('#vdBody').innerHTML=`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?'<button class="btn sm p" id="pdNew">+ Novo item</button>':''}</div>${fl}
    ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Validade</th><th class="hm">Oferecer depois</th><th class="n">Preço</th><th></th></tr></thead><tbody>
-   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}${p.kind==='plano'?' <span class="sx">plano</span>':p.kind==='produto'?' <span class="sx">produto</span>':''}</td><td>${p.category?esc(p.category):'<span class="hint">—</span>'}</td><td class="hm">${durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">varia</span>'}</td><td class="n">${p.active?'':'<span class="hint">fora da venda</span>'}</td></tr>`).join('')}</tbody></table></div>`
+   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}${p.kind==='plano'?' <span class="sx">plano</span>':p.kind==='produto'?' <span class="sx">produto</span>':''}</td><td>${p.category?esc(p.category):'<span class="hint">—</span>'}</td><td class="hm">${p.recurring?'a cada '+durTxt(p.duration_days||30).replace(/^1 /,'')+' <span class="sx">renova sozinho</span>':durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">varia</span>'}</td><td class="n">${p.active?'':'<span class="hint">fora da venda</span>'}</td></tr>`).join('')}</tbody></table></div>`
    :'<div class="empty">Nenhum item ainda.</div>'}</div>`;
   document.querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>{VD.pcat=b.dataset.pc==='*'?null:b.dataset.pc;vdProducts()});
   if(!mgr)return;
@@ -3416,12 +3418,13 @@ Object.assign(INFO,{
   ci_cat:['Categoria','Junta itens parecidos, como “Planos” ou “Cabelo”. Serve para filtrar o catálogo e ver nos relatórios qual grupo vende mais. É opcional.'],
   ci_price:['Preço','O valor que já vem preenchido na hora de registrar a venda (dá para mudar em cada venda). Se o preço muda a cada cliente, escolha “Varia”.'],
   ci_val:['Validade','Quanto tempo o plano ou pacote vale depois da compra. Perto de vencer, o cliente aparece em “Renovar” e a Nanda pode lembrar ele.'],
+  ci_rec:['Assinatura que renova sozinha','Para cobrança automática (cartão recorrente, débito). O cliente continua ativo sem você registrar a renovação todo mês, não recebe aviso de vencimento e não entra em “Renovar”.'],
   ci_next:['Oferecer depois','O próximo passo natural para quem comprou este item. Aparece como sugestão de venda na carteira do cliente. Ex.: Módulo 1 → Módulo 2.'],
   ci_on:['Disponível para vender','Desligado, o item some da lista na hora de vender. As vendas antigas continuam nos relatórios.']});
 function productModal(p,ps,pre){pre=pre||{};
   const seg=(ME.company&&ME.company.segment)||'outro',ex=CI_EX[seg]||CI_EX.outro;
   const x=p||{name:'',category:pre.cat||'',price:null,kind:pre.kind||'servico',active:true,duration_days:null,next_ids:[]};
-  const S={kind:x.kind==='plano'||(x.kind!=='produto'&&x.duration_days)?'plano':x.kind==='produto'?'produto':'servico',cat:x.category||'',fixed:!p||x.price!=null,dur:x.duration_days||(p?0:30),custom:false,next:new Set(x.next_ids||[]),q:''};
+  const S={kind:x.kind==='plano'||(x.kind!=='produto'&&x.duration_days)?'plano':x.kind==='produto'?'produto':'servico',cat:x.category||'',fixed:!p||x.price!=null,dur:x.duration_days||(p?0:30),custom:false,next:new Set(x.next_ids||[]),q:'',rec:!!x.recurring,catAuto:!p&&!!pre.cat};
   S.custom=!!S.dur&&!CI_DUR.some(d=>d[0]===S.dur);
   const cnt={};ps.forEach(y=>{if(y.category)cnt[y.category]=(cnt[y.category]||0)+1});
   const have=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b));
@@ -3447,16 +3450,17 @@ function productModal(p,ps,pre){pre=pre||{};
      <div class="seg ci-seg"><button type="button" data-fx="1">Valor fixo</button><button type="button" data-fx="0">Varia por cliente</button></div>
      <div class="ci-money" id="ciMoney"><span>R$</span><input class="ci-in" id="ciPrice" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${x.price!=null?String(x.price.toFixed(2)).replace('.',','):''}"></div>
      <div class="ci-eq" id="ciEq" hidden></div><div class="ci-h" id="ciPriceH"></div></section>
-    <section class="ci-s" id="ciVal"><div class="ci-l">Vale por ${ii('ci_val')}</div>
+    <section class="ci-s" id="ciVal"><div class="ci-l"><span id="ciValL">Vale por</span> ${ii('ci_val')}</div>
      <div class="ci-chips" id="ciDur"></div>
      <div class="ci-row" id="ciCustom" hidden><input class="ci-in" id="ciDn" type="number" min="1" max="3650" value="${du[0]}" placeholder="Ex.: 2" style="width:96px"><select class="ci-in" id="ciDu" style="width:auto">${[['d','dias'],['m','meses'],['a','anos']].map(v=>`<option value="${v[0]}" ${du[1]===v[0]?'selected':''}>${v[1]}</option>`).join('')}</select></div>
-     <div class="ci-h">Perto de vencer, o cliente aparece em <b>Renovar</b> e a Nanda pode lembrar ele.</div></section>
+     <div class="ci-h" id="ciValH"></div>
+     <label class="ci-sw ci-rec" for="ciRec"><div><b>Assinatura que renova sozinha ${ii('ci_rec')}</b><small>Cobrança automática: não vence nem entra em Renovar.</small></div><input type="checkbox" role="switch" id="ciRec" ${x.recurring?'checked':''}></label></section>
     </div><div class="ci-b" id="ciB3"><button type="button" class="ci-bh ci-bt" id="ciB3h"><i>3</i><div><b>Depois da venda</b><small id="ciB3s"></small></div>${svg('<path d="m6 9 6 6 6-6"/>')}</button><div class="ci-bb" id="ciB3b">
     <section class="ci-s"><div class="ci-l">Depois de comprar, oferecer <span class="op">opcional</span> ${ii('ci_next')}</div>
      ${others.length>8?'<input class="ci-in ci-q" id="ciQ" placeholder="Buscar item…" autocomplete="off">':''}
      <div class="ci-chips" id="ciNext"></div>
      <div class="ci-h">${others.length?'Vira sugestão de próxima venda na carteira de quem comprou.':'Quando tiver outros itens, dá para sugerir o próximo passo aqui. Ex.: Módulo 1 → Módulo 2.'}</div></section>
-    <label class="ci-sw"><div><b>Disponível para vender ${ii('ci_on')}</b><small>Desligado, some da lista na hora de vender.</small></div><input type="checkbox" role="switch" id="ciOn" ${x.active?'checked':''}></label>
+    <label class="ci-sw" for="ciOn"><div><b>Disponível para vender ${ii('ci_on')}</b><small>Desligado, some da lista na hora de vender.</small></div><input type="checkbox" role="switch" id="ciOn" ${x.active?'checked':''}></label>
     </div></div></div>
    <aside class="ci-pv"><div class="ci-pt">Como aparece na hora de vender</div><div id="ciPv"></div>
     <ul id="ciWhere"></ul></aside></div>
@@ -3466,18 +3470,18 @@ function productModal(p,ps,pre){pre=pre||{};
   const durNow=()=>S.custom?(Number($$('#ciDn').value)||0)*({d:1,m:30,a:365}[$$('#ciDu').value]):S.dur;
   const durLbl=d=>!d?'':d%365===0?`${d/365} ${d===365?'ano':'anos'}`:d%30===0?`${d/30} ${d===30?'mês':'meses'}`:`${d} ${d===1?'dia':'dias'}`;
   const pool=()=>have.concat(sug);
-  function hint(){if(S.cat||S.noHint)return '';const nm=$$('#ciName').value,pl=pool(),pick=l=>l.map(c=>pl.find(y=>y.toLowerCase()===c.toLowerCase())).find(Boolean);
-    for(const [re,l] of CI_HINT){if(re.test(nm)){const c=pick(l);if(c)return c}}
-    return (S.kind==='produto'?pick(['Produtos']):S.kind==='plano'?pick(['Planos','Pacotes','Mensalidades']):'')||''}
+  function hint(){if((S.cat&&!S.catAuto)||S.noHint)return '';const nm=$$('#ciName').value,pl=pool(),pick=l=>l.map(c=>pl.find(y=>y.toLowerCase()===c.toLowerCase())).find(Boolean);
+    for(const [re,l] of CI_HINT){if(re.test(nm)){const c=pick(l);if(c){if(S.catAuto&&c.toLowerCase()!==S.cat.toLowerCase())S.cat=c;return S.catAuto?'':c}}}
+    if(S.cat)return '';return (S.kind==='produto'?pick(['Produtos']):S.kind==='plano'?pick(['Planos','Pacotes','Mensalidades']):'')||''}
   function cats(){const ht=hint();
     const chip=(c,cls,n)=>`<button type="button" class="ci-chip ${cls} ${S.cat.toLowerCase()===c.toLowerCase()?'on':''} ${ht===c?'ht':''}" data-c="${esc(c)}">${esc(c)}${ht===c?'<em>sugerida</em>':n?`<i>${n}</i>`:''}</button>`;
     const extra=S.cat&&!have.concat(sug).some(c=>c.toLowerCase()===S.cat.toLowerCase())?chip(S.cat,'',0):'';
     $$('#ciCats').innerHTML=(have.length||extra?`<div class="ci-sub">Suas categorias</div><div class="ci-chips">${have.map(c=>chip(c,'',cnt[c])).join('')}${extra}</div>`:'')
       +(sug.length?`<div class="ci-sub">${have.length?'Sugestões':'Sugestões para o seu negócio'}</div><div class="ci-chips">${sug.map(c=>chip(c,'sg',0)).join('')}<button type="button" class="ci-chip add" id="ciAdd">+ Outra</button></div>`:'<div class="ci-chips" style="margin-top:6px"><button type="button" class="ci-chip add" id="ciAdd">+ Outra</button></div>');
-    $$('#ciCats').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const off=S.cat.toLowerCase()===b.dataset.c.toLowerCase();S.cat=off?'':b.dataset.c;if(off)S.noHint=true;cats();pv()});
+    $$('#ciCats').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const off=S.cat.toLowerCase()===b.dataset.c.toLowerCase();S.cat=off?'':b.dataset.c;S.catAuto=false;if(off)S.noHint=true;cats();pv()});
     $$('#ciAdd').onclick=()=>{$$('#ciNew').hidden=false;$$('#ciNewIn').value='';$$('#ciNewIn').focus()};
   }
-  const newOk=()=>{const v=$$('#ciNewIn').value.trim().replace(/\s+/g,' ');if(!v)return $$('#ciNewIn').focus();S.cat=v.charAt(0).toUpperCase()+v.slice(1);$$('#ciNew').hidden=true;cats();pv()};
+  const newOk=()=>{const v=$$('#ciNewIn').value.trim().replace(/\s+/g,' ');if(!v)return $$('#ciNewIn').focus();S.cat=v.charAt(0).toUpperCase()+v.slice(1);S.catAuto=false;$$('#ciNew').hidden=true;cats();pv()};
   $$('#ciNewOk').onclick=newOk;$$('#ciNewNo').onclick=()=>{$$('#ciNew').hidden=true};
   $$('#ciNewIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();newOk()}if(e.key==='Escape'){$$('#ciNew').hidden=true}};
   function kinds(){f.querySelectorAll('[data-k]').forEach(b=>{const on=b.dataset.k===S.kind;b.classList.toggle('on',on);b.setAttribute('aria-checked',on)});
@@ -3486,38 +3490,40 @@ function productModal(p,ps,pre){pre=pre||{};
   function price(){f.querySelectorAll('[data-fx]').forEach(b=>b.classList.toggle('on',(b.dataset.fx==='1')===S.fixed));$$('#ciMoney').hidden=!S.fixed;
     $$('#ciPriceH').textContent=S.fixed?'Vem preenchido na venda. Dá para mudar em cada venda, se precisar.':'Sem preço fixo: o valor é digitado em cada venda (ex.: orçamento, sob medida).'}
   f.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{S.fixed=b.dataset.fx==='1';price();pv();if(S.fixed)$$('#ciPrice').focus()});
-  function durs(){$$('#ciDur').innerHTML=CI_DUR.concat([[0,'Não vence']]).map(d=>`<button type="button" class="ci-chip ${!S.custom&&S.dur===d[0]?'on':''}" data-d="${d[0]}">${d[1]}</button>`).join('')+`<button type="button" class="ci-chip ${S.custom?'on':''}" data-d="x">Outro prazo</button>`;
+  function durs(){if(S.rec&&!S.custom&&!S.dur)S.dur=30;$$('#ciValL').textContent=S.rec?'Cobra a cada':'Vale por';
+    $$('#ciValH').innerHTML=S.rec?'O cliente fica <b>ativo</b> enquanto for assinante. Sem aviso de vencimento.':'Perto de vencer, o cliente aparece em <b>Renovar</b> e a Nanda pode lembrar ele.';
+    $$('#ciDur').innerHTML=CI_DUR.concat(S.rec?[]:[[0,'Não vence']]).map(d=>`<button type="button" class="ci-chip ${!S.custom&&S.dur===d[0]?'on':''}" data-d="${d[0]}">${d[1]}</button>`).join('')+`<button type="button" class="ci-chip ${S.custom?'on':''}" data-d="x">Outro prazo</button>`;
     $$('#ciCustom').hidden=!S.custom;
     $$('#ciDur').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(b.dataset.d==='x'){S.custom=true;durs();$$('#ciDn').focus()}else{S.custom=false;S.dur=Number(b.dataset.d);durs()}pv()})}
   function nexts(){const q=S.q.toLowerCase(),l=others.filter(y=>!q||y.name.toLowerCase().includes(q)||S.next.has(y.id));
     $$('#ciNext').innerHTML=l.map(y=>`<button type="button" class="ci-chip ${S.next.has(y.id)?'on':''}" data-n="${y.id}" aria-pressed="${S.next.has(y.id)}">${S.next.has(y.id)?'✓ ':''}${esc(y.name)}${y.category?`<i>${esc(y.category)}</i>`:''}</button>`).join('')||(others.length?'<span class="hint">Nenhum item com esse nome.</span>':'');
     $$('#ciNext').querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const id=b.dataset.n;if(S.next.has(id))S.next.delete(id);else if(S.next.size<10)S.next.add(id);else return toast('Até 10 sugestões por item.');nexts();pv()})}
   if($$('#ciQ'))$$('#ciQ').oninput=e=>{S.q=e.target.value.trim();nexts()};
-  function pv(){const nm=$$('#ciName').value.trim(),pr=S.fixed?money():null,d=S.kind==='plano'?durNow():0,on=$$('#ciOn').checked;
+  function pv(){const nm=$$('#ciName').value.trim(),pr=S.fixed?money():null,d=S.kind==='plano'?durNow():0,on=$$('#ciOn').checked,rec=S.kind==='plano'&&S.rec&&d>0;
     const kl=CI_KIND.find(k=>k[0]===S.kind)[1],nx=[...S.next].map(i=>(others.find(y=>y.id===i)||{}).name).filter(Boolean);
     $$('#ciPv').innerHTML=`<div class="ci-card ${on?'':'off'}"><div class="ci-tags"><span>${kl}</span>${S.cat?`<span class="c">${esc(S.cat)}</span>`:''}${on?'':'<span class="x">fora da venda</span>'}</div>
       <div class="nm ${nm?'':'ph'}">${esc(nm||'Nome do item')}</div><div class="pr ${S.fixed&&pr!=null?'':'ph'}">${S.fixed?(pr!=null&&!isNaN(pr)?brl2(pr):'R$ 0,00'):'Valor na hora da venda'}</div>
-      ${S.kind==='plano'?`<div class="ln">${IC.clock}${d?'Vale '+durLbl(d)+' · avisa antes de vencer':'Não vence'}</div>`:''}
+      ${S.kind==='plano'?`<div class="ln">${IC.clock}${rec?'Assinatura · renova sozinha a cada '+durLbl(d).replace(/^1 /,''):d?'Vale '+durLbl(d)+' · avisa antes de vencer':'Não vence'}</div>`:''}
       ${nx.length?`<div class="ln">${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}Depois: ${esc(nx.join(', '))}</div>`:''}</div>`;
     const eq=S.kind==='plano'&&d>=60&&pr?`≈ ${brl2(pr/(d/30))} por mês`:'';$$('#ciEq').hidden=!eq||!S.fixed;$$('#ciEq').textContent=eq;
-    $$('#ciSum').innerHTML=`<b>${esc(nm||'Novo item')}</b><span>${[S.fixed?(pr!=null&&!isNaN(pr)?brl2(pr):''):'preço varia',S.kind==='plano'&&d?durLbl(d):'',S.cat].filter(Boolean).map(esc).join(' · ')||kl}</span>`;
+    $$('#ciSum').innerHTML=`<b>${esc(nm||'Novo item')}</b><span>${[S.fixed?(pr!=null&&!isNaN(pr)?brl2(pr):''):'preço varia',rec?'assinatura':S.kind==='plano'&&d?durLbl(d):'',S.cat].filter(Boolean).map(esc).join(' · ')||kl}</span>`;
     $$('#ciB3s').textContent=(nx.length?'Depois oferece '+nx.join(', '):'Sem próxima oferta')+' · '+(on?'disponível para vender':'fora da venda');
-    $$('#ciWhere').innerHTML=[['Na venda',' com o preço já preenchido'],S.cat?['Nos relatórios',' dentro de “'+esc(S.cat)+'”']:['Nos relatórios',' por item vendido'],S.kind==='plano'&&d?['Em Renovar',' quando estiver perto de vencer']:null,nx.length?['Na carteira',' como próxima oferta']:null].filter(Boolean).map(w=>`<li>${IC.check}<span><b>${w[0]}</b>${w[1]}</span></li>`).join('')}
+    $$('#ciWhere').innerHTML=[['Na venda',' com o preço já preenchido'],S.cat?['Nos relatórios',' dentro de “'+esc(S.cat)+'”']:['Nos relatórios',' por item vendido'],rec?['Na carteira',' como assinatura ativa']:S.kind==='plano'&&d?['Em Renovar',' quando estiver perto de vencer']:null,nx.length?['Na carteira',' como próxima oferta']:null].filter(Boolean).map(w=>`<li>${IC.check}<span><b>${w[0]}</b>${w[1]}</span></li>`).join('')}
   const NH=$$('#ciNameH').textContent;
   $$('#ciName').oninput=()=>{const n=$$('#ciName'),h=$$('#ciNameH'),nm=n.value.trim().toLowerCase();n.classList.remove('bad');h.classList.remove('bad');
-    const dup=nm&&ps.some(y=>y.id!==(p&&p.id)&&y.name.trim().toLowerCase()===nm);h.classList.toggle('warn',!!dup);h.textContent=dup?'Já existe um item com esse nome. Dá para salvar assim mesmo, mas vale conferir.':NH;if(!S.cat)cats();pv()};
+    const dup=nm&&ps.some(y=>y.id!==(p&&p.id)&&y.name.trim().toLowerCase()===nm);h.classList.toggle('warn',!!dup);h.textContent=dup?'Já existe um item com esse nome. Use um nome diferente para não confundir na venda.':NH;if(!S.cat||S.catAuto)cats();pv()};
   const b3=open=>{$$('#ciB3').classList.toggle('shut',!open);$$('#ciB3h').setAttribute('aria-expanded',open)};b3(!!p||S.next.size>0||!x.active);$$('#ciB3h').onclick=()=>b3($$('#ciB3').classList.contains('shut'));
-  $$('#ciPrice').oninput=pv;$$('#ciOn').onchange=pv;$$('#ciDn').oninput=pv;$$('#ciDu').onchange=pv;
+  $$('#ciPrice').oninput=pv;$$('#ciPrice').onblur=()=>{const v=money();if(v!=null&&!isNaN(v))$$('#ciPrice').value=v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})};$$('#ciRec').onchange=()=>{S.rec=$$('#ciRec').checked;durs();pv()};$$('#ciOn').onchange=pv;$$('#ciDn').oninput=pv;$$('#ciDu').onchange=pv;
   cats();kinds();price();durs();nexts();pv();
-  const snap=()=>JSON.stringify([S.kind,S.cat,S.fixed,$$('#ciName').value,$$('#ciPrice').value,durNow(),[...S.next],$$('#ciOn').checked]),s0=snap();
+  const snap=()=>JSON.stringify([S.kind,S.cat,S.fixed,$$('#ciName').value,$$('#ciPrice').value,durNow(),[...S.next],$$('#ciOn').checked,S.rec]),s0=snap();
   const leave=async()=>{if(snap()!==s0&&!await sure('Sair sem salvar o que você preencheu?'))return;o.remove()};
   $$('#ciCancel').onclick=leave;o.querySelector('.ov-back').onclick=leave;
   if($$('#pdDel'))$$('#pdDel').onclick=async()=>{if(!await sure('Apagar este item? Se já foi vendido, ele só fica fora da venda.'))return;const r=await api('/products/'+p.id,{method:'DELETE'});o.remove();toast(r.deactivated?'Já foi vendido: ficou fora da venda.':'Item apagado.');vdProducts()};
   f.onsubmit=async ev=>{ev.preventDefault();$$('#pdE').textContent='';
     const nm=$$('#ciName').value.trim();if(nm.length<2){$$('#ciName').classList.add('bad');const h=$$('#ciNameH');h.classList.remove('warn');h.classList.add('bad');h.textContent='Dê um nome ao item (pelo menos 2 letras).';$$('#ciName').focus();return}
     const pr=S.fixed?money():null;if(S.fixed&&(pr==null||isNaN(pr)||pr<0)){$$('#pdE').textContent=pr==null?'Informe o preço ou escolha “Varia por cliente”.':'Preço inválido.';$$('#ciPrice').focus();return}
-    const d=S.kind==='plano'?durNow():0;if(S.kind==='plano'&&S.custom&&!d){$$('#pdE').textContent='Informe o prazo de validade.';$$('#ciDn').focus();return}
-    const body={name:nm,category:S.cat,price:pr,kind:S.kind,active:$$('#ciOn').checked,duration_days:d||null,next_ids:[...S.next]};
+    const d=S.kind==='plano'?durNow():0;if(S.kind==='plano'&&(S.custom||S.rec)&&!d){$$('#pdE').textContent='Informe o prazo de validade.';$$('#ciDn').focus();return}
+    const body={name:nm,category:S.cat,price:pr,kind:S.kind,active:$$('#ciOn').checked,duration_days:d||null,next_ids:[...S.next],recurring:S.kind==='plano'&&S.rec&&d>0};
     const b=f.querySelector('.ci-ft .btn.p');b.disabled=true;
     try{await api(p?'/products/'+p.id:'/products',{method:p?'PUT':'POST',body});const again=!p&&$$('#ciAgain').checked;o.remove();toast(p?'Item salvo.':'Item cadastrado.');await vdProducts();if(again)productModal(null,await api('/products'),{kind:S.kind,cat:S.cat,again:true})}catch(e){$$('#pdE').textContent=e.message;b.disabled=false}};
 }

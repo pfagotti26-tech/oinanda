@@ -32,7 +32,8 @@ def compute_holdings(sales, products):
                                    'first_at': d, 'last_at': d, 'count': 0, 'spent': 0.0, 'expires_at': None})
             x['last_at'] = d; x['count'] += 1; x['spent'] = round(x['spent'] + (i.get('total') or 0), 2)
             dur = p.get('duration_days')
-            if dur:
+            if p.get('recurring'): x['recurring'] = True; x['expires_at'] = None  # assinatura: segue ativa, sem vencimento
+            elif dur:
                 start = max(d, x['expires_at']) if x['expires_at'] else d  # renovou antes de vencer: soma no fim
                 x['expires_at'] = start + timedelta(days=dur * max(1, int(round(i.get('qty') or 1))))
     return list(h.values())
