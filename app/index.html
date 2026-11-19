@@ -1654,6 +1654,14 @@ body:has(.nz-save) #toast{bottom:92px}
 .m .m-na{color:var(--ink3);font-size:13px}
 @media (min-width:1201px){.cv.lmin .cvt,.cv.lmin .cvsb,.cv.lmin .cz-rt,.cv.lmin .cz-g{display:none}}
 @media (max-width:700px){.hcard{flex-wrap:wrap;margin:10px 10px 0}.hcard .ht{flex-basis:calc(100% - 50px)}.hcard .btn{flex:1;justify-content:center}}
+.cv-chat{container-type:inline-size}
+.ch-top .ib.lbd .lb{display:none}
+@container (min-width:800px){.ch-top .ib.lbd{width:auto;padding:0 11px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--ink)}.ch-top .ib.lbd svg{width:16px;height:16px}.ch-top .ib.lbd .lb{display:inline}
+ .ch-top .ib.lbd.res{color:var(--ok);border-color:#BFE5D9;background:#F3FBF8}.ch-top .ib.lbd.res.on{background:var(--oksoft)}.ch-top .act{gap:6px}}
+.wclosed .wbar{margin:10px 0 0;background:none;padding:8px 0 0;border-top:1px dashed #EAD9AF;border-radius:0}
+.cv-empty .ei.ok{background:var(--oksoft);color:var(--ok)}.cv-empty .cv-tip{margin-top:16px}.cv-empty kbd{font:inherit;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--ink)}
+.cv-nt{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:14px}.cv-nt>span{font-size:20px}.cv-nt>div{flex:1}.cv-nt b{font-size:13.5px!important}.cv-nt p{margin:2px 0 0!important;font-size:12.5px;line-height:1.4;color:var(--ink2)}
+.cv-empty>div{max-width:400px!important}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -2534,11 +2542,13 @@ function fitCv(){const cv=$('.cv');if(!cv)return;const top=cv.getBoundingClientR
 addEventListener('resize',()=>{if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}});
 function openConv(id){document.querySelectorAll('.ov.incv').forEach(o=>o.remove());CV.open=id;CV.sig='';CV.tab='msg';CV.pnFor=null;CV.drafts={};syncUrl();$('.cv')?.classList.add('chat');document.querySelectorAll('.ci').forEach(x=>x.classList.toggle('on',x.dataset.c===id));cvChat(true)}
 function closeConv(){CV.open=null;syncUrl();$('.cv')?.classList.remove('chat');$('.cv')?.classList.remove('pn-open');cvEmpty();cvList()}
-function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{};
-  b.innerHTML=`<div class="cv-empty"><div><div class="ei">${IC.chat}</div><b>Escolha uma conversa</b><p>${n.waiting?`${n.waiting} ${n.waiting===1?'cliente esperando':'clientes esperando'} resposta.`:'Tudo respondido por aqui.'}</p>
-    ${n.waiting?'<button class="btn sm p" id="cvGoW">Ver quem está esperando</button>':''}<p class="hint" style="margin-top:14px">Dica: digite <b>/</b> na caixa de mensagem para usar respostas rápidas.</p>${'Notification' in window&&Notification.permission==='default'?'<button class="btn sm" id="cvNt" style="margin-top:10px">🔔 Avisar no navegador quando me transferirem conversas</button>':''}</div></div>`;
-  if($('#cvNt'))$('#cvNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Avisos ligados.':'Avisos não autorizados no navegador.')}catch(e){}cvEmpty()};
-  if($('#cvGoW'))$('#cvGoW').onclick=()=>{CV.filter='need';CV.sub='';cvTabs();cvList()};
+function cvEmpty(){const b=$('#cvChat');if(!b)return;const n=CV.counts||{},k=n.need||0;
+  b.innerHTML=`<div class="cv-empty"><div><div class="ei ${k?'':'ok'}">${k?IC.chat:IC.check}</div><b>${k?(k===1?'1 conversa precisa de você':k+' conversas precisam de você'):'Tudo em dia'}</b>
+    <p>${k?'Comece pela primeira da lista: é quem espera há mais tempo.':'Ninguém esperando por você agora. Quando um cliente escrever ou a Nanda chamar o time, aparece na lista.'}</p>
+    <div id="cvNtBox"></div><p class="hint cv-tip">Dica: digite <kbd>/</kbd> na caixa de mensagem para usar respostas rápidas.</p></div></div>`;
+  pushState().then(st=>{const x=$('#cvNtBox');if(!x||st==='on'||st==='na')return;
+    x.innerHTML=`<div class="cv-nt"><span>🔔</span><div><b>Não perca cliente esperando</b><p>${st==='denied'?'Os avisos estão bloqueados neste navegador. Libere nas permissões do site (o cadeado ao lado do endereço).':st==='ios'?'No iPhone, adicione o Oi Nanda à Tela de Início para receber avisos.':'Receba um aviso quando um cliente pedir uma pessoa ou transferirem uma conversa para você.'}</p></div>${st==='off'?'<button type="button" class="btn sm p" id="cvNt">Ativar avisos</button>':''}</div>`;
+    if($('#cvNt'))$('#cvNt').onclick=async()=>{try{await pushOn();toast('Avisos ligados neste aparelho.')}catch(e){toast(e.message)}cvEmpty()}}).catch(()=>{});
   const p=$('#cvPanel');if(p)p.innerHTML=''}
 
 const fsize=b=>!b?'':b<1048576?Math.max(1,Math.round(b/1024))+' KB':String((b/1048576).toFixed(1)).replace('.',',')+' MB';
@@ -2580,10 +2590,10 @@ async function cvChat(full){
     <div class="who"><b>${esc(c.name)}</b><span>${c.ig_id?`<i class="chi ig">${IGI}</i>`:''}${c.ig_id&&c.wa_id?`<i class="chi wa">${WAI}</i>`:''}${esc(contactSub(c))}${c.ad?' · veio do anúncio':''}</span></div>
     <div class="act">
      <label class="nsw ${mode}" title="Como a Nanda atua nesta conversa. ${MODE_DESC[mode]||''}"><span>Nanda</span><select id="cvMode"><option value="" ${!c.ai_mode?'selected':''}>${MODES[CV.ai?.default_mode||'copilot']}${innerWidth<860?'':' (padrão)'}</option>${Object.entries(MODES).map(([k,v])=>`<option value="${k}" ${c.ai_mode===k?'selected':''}>${v}</option>`).join('')}</select></label>
-     ${!c.assigned_to?'<button class="btn sm p" id="cvMine" title="A conversa passa a ser sua: você vira o responsável e recebe os avisos dela">Pegar</button>':''}
-     <button class="ib" id="cvTr" title="Transferir para outra equipe ou pessoa" aria-label="Transferir">${svg('<path d="M7 7h11l-3-3M17 17H6l3 3"/>')}</button>
-     <button class="ib hide-m" id="cvBook" title="Agendar horário" aria-label="Agendar horário">${IC.clock}</button>
-     <button class="ib hide-m ${resolved?'on':''}" id="cvRes" title="${resolved?'Resolvida · clique para reabrir':'Marcar como resolvida'}" aria-label="${resolved?'Reabrir conversa':'Marcar como resolvida'}">${IC.check}</button>
+     ${!c.assigned_to?'<button class="btn sm p" id="cvMine" '+(c.needs_human?'hidden style="display:none" ':'')+'title="A conversa passa a ser sua: você vira o responsável e recebe os avisos dela">Assumir</button>':''}
+     <button class="ib lbd" id="cvTr" title="Transferir para outra equipe ou pessoa" aria-label="Transferir">${svg('<path d="M7 7h11l-3-3M17 17H6l3 3"/>')}<span class="lb">Transferir</span></button>
+     <button class="ib lbd hide-m" id="cvBook" title="Agendar horário" aria-label="Agendar horário">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<span class="lb">Agendar</span></button>
+     <button class="ib lbd res hide-m ${resolved?'on':''}" id="cvRes" title="${resolved?'Resolvida · clique para reabrir':'Marcar como resolvida'}" aria-label="${resolved?'Reabrir conversa':'Marcar como resolvida'}">${IC.check}<span class="lb">${resolved?'Resolvida':'Resolver'}</span></button>
      <div class="mnw"><button class="ib" id="cvMore" title="Mais ações" aria-label="Mais ações" aria-haspopup="true">⋯</button>
       <div class="mn hide" id="cvMn"><div class="mn-n">${Object.entries(MODES).map(([k,v])=>`<button data-md="${k}" class="${mode===k?'on':''}">Nanda ${v.toLowerCase()}${mode===k?' ✓':''}<small>${MODE_SHORT[k]}</small></button>`).join('')}</div><button data-mn="tr">Transferir</button><button data-mn="book">Agendar</button><button data-mn="res">${resolved?'Reabrir conversa':'Marcar como resolvida'}</button>${mgr?'<button data-mn="q">Avaliar atendimento (IA)</button>':''}<button data-mn="det">Detalhes completos</button></div></div>
      <button class="ib pn-t ${CV.panel?'on':''}" id="cvPan" aria-label="Painel do cliente" title="Painel do cliente">${svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}</button>
@@ -2593,7 +2603,7 @@ async function cvChat(full){
    <div class="msgs" id="cvMsgs">${msgsHtml(d.messages)}</div>
    <div class="cmp" id="cvCmp"></div>`;
   drawComposer(c,w,draft);
-  const wc=c.needs_human?'':waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){$('#cvCmp').insertAdjacentHTML('afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?(innerWidth<860?`Chegou fora do horário`:`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`):`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR" title="Só um ok/obrigado: tira da fila sem marcar como resolvida">Tirar da fila</button></div>`);
+  const wc=c.needs_human?'':waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){const wcl=$('#cvCmp .wclosed');(wcl||$('#cvCmp')).insertAdjacentHTML(wcl?'beforeend':'afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?(innerWidth<860?`Chegou fora do horário`:`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`):`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR" title="Só um ok/obrigado: tira da fila sem marcar como resolvida">Tirar da fila</button></div>`);
     $('#cvNoR').onclick=async()=>{try{await api('/conversations/'+c.id+'/no-reply',{method:'POST'});toast('Saiu da fila de espera.');CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}}}
   if($('#cvTake'))$('#cvTake').onclick=()=>$('#cvMine')&&$('#cvMine').click();
   if($('#cvGiveBack'))$('#cvGiveBack').onclick=async()=>{try{await api('/conversations/'+c.id+'/resume',{method:'POST'});toast('A Nanda voltou a atuar nesta conversa.');CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}};
