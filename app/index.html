@@ -1782,8 +1782,7 @@ body:has(.nz-save) #toast{bottom:92px}
 .lk-bb.sm{font-size:12px;padding:7px 10px}
 .lk-tag{display:inline-flex;align-items:center;gap:6px;background:#E6F4EC;color:#1F7A50;font-size:12.5px;font-weight:600;border-radius:999px;padding:6px 12px}.lk-tag svg{width:14px;height:14px}
 .lk-tot b{color:#1F8A5B;font-weight:600}
-.lk-a .btn svg{width:14px;height:14px}.lk-a .btn.p{gap:6px}
-.lk-wt{grid-column:2/-1;font-size:12.5px;color:var(--ink3)}
+.lk-gs{display:flex;gap:18px;margin-left:24px;padding-left:20px;border-left:1px solid var(--line)}.lk-gs span{display:flex;flex-direction:column;font-size:11.5px;color:var(--ink3);line-height:1.2}.lk-gs b{font-size:17px;color:var(--ink)}.lk-gs .ok b{color:#1F8A5B}
 .lk-gd{width:980px;max-width:100%}.lk-gd>.row{gap:12px;align-items:center}.lk-gh{display:flex;flex-direction:column}.lk-gh h2{font-size:19px;margin:0}.lk-gh span{font-size:12.5px;color:var(--ink3)}
 .lk-ok{display:flex;gap:10px;align-items:flex-start;background:#E9F6EF;color:#185E3E;border-radius:12px;padding:11px 14px;font-size:13.5px}.lk-ok svg{width:18px;height:18px;flex:none;margin-top:1px}
 .lk-gg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start}
@@ -1800,17 +1799,20 @@ body:has(.nz-save) #toast{bottom:92px}
 .lk-tip{display:flex;gap:10px;background:#FFF7E8;color:#7A5A12;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.45}.lk-tip svg{width:17px;height:17px;flex:none;margin-top:1px}
 .lk-oth{margin:14px 0 0}
 .lk-f{width:760px;max-width:100%}
+.lk-th,.lk-r{display:grid;grid-template-columns:38px minmax(0,1fr) 70px 84px 96px 136px;gap:0 12px;align-items:center}
+.lk-th{padding:0 10px 8px;font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #F3EEE9}.lk-th span:nth-child(n+3):not(:last-child){text-align:center}
+.lk-l{display:flex;flex-direction:column}
+.lk-r{padding:12px 10px;border-bottom:1px solid #F3EEE9;cursor:pointer;transition:background .15s;border-radius:0}.lk-r:last-child{border-bottom:0}.lk-r:hover{background:#FBF8F5}.lk-r:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
+.lk-m{display:flex;flex-direction:column;min-width:0;gap:2px}.lk-m>b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lk-m>span{font-size:12.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lk-m>.lk-wt{color:#9A6B12}
+.lk-v{display:flex;flex-direction:column;align-items:center;line-height:1.15}.lk-v b{font-size:17px;font-weight:700;color:var(--ink)}.lk-v b.z{color:#C9BFB5}.lk-v i{display:none;font-style:normal}
+.lk-v small{font-size:11px;color:#1F8A5B;margin-top:2px;white-space:nowrap}.lk-v.ok b{color:#1F8A5B}
+.lk-cv{border:0;background:none;padding:2px 8px;border-radius:8px;cursor:pointer;font:inherit}.lk-cv b{text-decoration:underline;text-decoration-color:#E7D9CE;text-underline-offset:3px}.lk-cv:hover{background:#FDECE6}.lk-cv:hover b{color:var(--c)}
+.lk-a{display:flex;align-items:center;justify-content:flex-end;gap:8px}.lk-cp{gap:6px}.lk-cp svg{width:14px;height:14px}.lk-cp:hover{border-color:var(--c);color:var(--c)}
+.lk-go{width:28px;height:28px;display:grid;place-items:center;color:#C9BFB5;border-radius:8px}.lk-go svg{width:16px;height:16px}.lk-r:hover .lk-go{color:var(--c);background:#FDECE6}
 .lk-tot{font-size:12.5px;color:var(--ink3);margin-left:4px}
 .lk-l{display:flex;flex-direction:column;margin:0 -6px}
-.lk-r{display:grid;grid-template-columns:38px minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;padding:12px 6px;border-bottom:1px solid #F3EEE9;border-radius:10px;transition:background .6s}
-.lk-r:last-child{border-bottom:0}.lk-r.nw{background:#FFF4EE}
 .lk-ic{width:38px;height:38px;border-radius:11px;background:#F6F1EC;color:var(--ink2);display:grid;place-items:center}.lk-ic svg{width:19px;height:19px}
-.lk-m{display:flex;flex-direction:column;min-width:0;gap:1px}.lk-m>b{font-size:14.5px}.lk-m>span{font-size:12.5px;color:var(--ink3)}
-.lk-url{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;max-width:100%;margin-top:3px;border:0;background:none;padding:0;font:500 12px ui-monospace,Menlo,monospace;color:var(--ink2);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lk-url svg{width:13px;height:13px;flex:none;color:var(--ink3)}.lk-url:hover{color:var(--c)}
-.lk-n{display:flex;gap:10px}.lk-n span{display:flex;flex-direction:column;align-items:center;font-size:11.5px;color:var(--ink3);min-width:44px}.lk-n b{font-size:16px;color:var(--ink)}.lk-n .ok b{color:#1F8A5B}
-.lk-a{display:flex;gap:6px}.lk-a .lk-ed{padding:0 9px;width:32px}.lk-a .lk-ed svg{width:15px;height:15px}
-.lk-lc{grid-column:2/-1;justify-self:start;font-size:12.5px}
 .lk-sug{margin-top:12px;padding-top:14px;border-top:1px dashed var(--line)}.lk-l:empty+.lk-sug,.lk-c .hd+.lk-sug{border-top:0;padding-top:0;margin-top:4px}
 .lk-sug>p{font-size:13px;color:var(--ink3);margin:0 0 10px}
 .lk-sug>div{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
@@ -1831,9 +1833,9 @@ body:has(.nz-save) #toast{bottom:92px}
 .lk-pv .hint{margin:0}
 .lk-qri{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;width:250px;margin:4px auto 0}.lk-qri img{width:100%;display:block}
 @media (max-width:1180px){.vd-g.lk-g{grid-template-columns:1fr}}
-@media (max-width:860px){.lk-flow{grid-template-columns:1fr;padding:0 14px 14px}.lk-ar{transform:rotate(90deg);height:18px}.lk-hero>summary{padding:12px 14px;align-items:flex-start}.lk-hero summary>div>span{display:none}.lk-hi{width:34px;height:34px}.lk-gg{display:flex;flex-direction:column;gap:8px}.lk-kit{display:contents}.lk-how2{order:1;margin:10px 0 6px}.lk-ql,.lk-qrb{order:2}.lk-test{order:3}.lk-qrb img{width:96px;height:96px}.lk-fv{height:auto;padding:22px 0 4px}.lk-a .btn.p{flex:1}}
+@media (max-width:860px){.lk-flow{grid-template-columns:1fr;padding:0 14px 14px}.lk-ar{transform:rotate(90deg);height:18px}.lk-hero>summary{padding:12px 14px;align-items:flex-start}.lk-hero summary>div>span{display:none}.lk-hi{width:34px;height:34px}.lk-gs{display:none}.lk-gg{display:flex;flex-direction:column;gap:8px}.lk-kit{display:contents}.lk-how2{order:1;margin:10px 0 6px}.lk-ql,.lk-qrb{order:2}.lk-test{order:3}.lk-qrb img{width:96px;height:96px}.lk-fv{height:auto;padding:22px 0 4px}.lk-a .btn.p{flex:1}}
 @media (max-width:860px){
- .lk-r{grid-template-columns:38px minmax(0,1fr);gap:6px 12px}.lk-n,.lk-a{grid-column:2}.lk-n{gap:18px}.lk-n span{align-items:flex-start;min-width:0}
+ .lk-th{display:none}.lk-r{grid-template-columns:38px repeat(3,auto) minmax(36px,1fr);gap:6px 14px;padding:12px 4px}.lk-m{grid-column:2/5;grid-row:1}.lk-ic{grid-row:1}.lk-v{grid-row:2;flex-direction:row;align-items:baseline;gap:4px}.lk-v:nth-child(3){grid-column:2}.lk-v:nth-child(4){grid-column:3}.lk-v:nth-child(5){grid-column:4}.lk-v b{font-size:15px}.lk-v i{display:inline;font-size:12px;color:var(--ink3)}.lk-v small{display:none}.lk-cv{padding:0}.lk-a{grid-column:5;grid-row:1}.lk-cp{width:36px;height:36px;padding:0}.lk-cp span{display:none}.lk-cp svg{width:16px;height:16px}.lk-go{display:none}
  .lk-a{flex-wrap:wrap}.lk-fg{grid-template-columns:1fr}.lk-sug>div{grid-template-columns:1fr 1fr}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
@@ -4626,15 +4628,15 @@ const LK_SUG=[['Bio do Instagram','instagram','','Olá! Vim pelo Instagram.','Bi
 const LK_G={
  instagram:{t:'no Instagram',tabs:[['Bio',['No app do Instagram, abra o seu perfil e toque em <b>Editar perfil</b>.','Toque em <b>Links</b> e depois em <b>Adicionar link externo</b>.','Cole o link em <b>URL</b>. No título, escreva algo como "Fale no WhatsApp".','Toque em <b>Concluir</b>. O link aparece logo abaixo da sua bio.'],'Nos posts, chame para o link: "Link na bio para falar com a gente".'],
   ['Stories',['Crie o story e toque no ícone de <b>figurinhas</b>.','Escolha a figurinha <b>Link</b> e cole o seu link.','Em <b>Personalizar texto</b>, escreva "Chama no WhatsApp".','Publique. Quem tocar na figurinha cai direto no seu WhatsApp.'],'Salve esse story num <b>Destaque</b> para o link ficar sempre no perfil.']]},
- site:{t:'no site',tabs:[['Botão de WhatsApp',['Copie o link ao lado.','No editor do site (WordPress, Wix, Nuvemshop, Shopify...), abra o botão de WhatsApp ou crie um novo.','No endereço do botão, troque o link antigo (wa.me ou api.whatsapp.com) pelo seu link.','Publique e teste pelo celular.'],'Se outra pessoa cuida do site, mande o link para ela e peça: "troca o endereço do botão de WhatsApp por este".'],
+ site:{t:'no site',tabs:[['Botão de WhatsApp',['Copie o link desta página.','No editor do site (WordPress, Wix, Nuvemshop, Shopify...), abra o botão de WhatsApp ou crie um novo.','No endereço do botão, troque o link antigo (wa.me ou api.whatsapp.com) pelo seu link.','Publique e teste pelo celular.'],'Se outra pessoa cuida do site, mande o link para ela e peça: "troca o endereço do botão de WhatsApp por este".'],
   ['Página de contato',['Na página de contato ou no rodapé, procure onde aparece o WhatsApp.','Transforme o texto em link e cole o seu link no endereço.','Publique.'],'Um link só para o site já basta. Se quiser comparar páginas, crie um link para cada uma.']]},
  google:{t:'no Google',tabs:[['Postagem',['Pesquise o nome da sua empresa no Google, entrando com a conta que administra o perfil.','Toque em <b>Adicionar atualização</b>.','Escreva a novidade e, em <b>Adicionar botão</b>, escolha <b>Saiba mais</b>.','Cole o link e publique.'],'Postagens com foto chamam mais atenção. Faça uma nova de tempos em tempos.'],
   ['Site do perfil',['Em <b>Editar perfil</b>, abra <b>Contato</b>.','No campo <b>Site</b>, cole o link e salve.'],'Só use o campo Site se a empresa não tem site próprio: ele troca o endereço que aparece no Google.']]},
  facebook:{t:'no Facebook',tabs:[['Publicação',['Escreva o post e cole o link no texto, com uma chamada: "Fale com a gente no WhatsApp".','Publique. O link fica clicável.'],'Fixe o post no topo da Página para ele não sumir.'],
   ['Botão da Página',['Na sua Página, toque no botão de ação e em <b>Editar botão</b>.','Escolha uma opção que abre um site, como <b>Saiba mais</b>, e cole o link.','Salve.'],'']]},
  tiktok:{t:'no TikTok',tabs:[['Bio',['No perfil, toque em <b>Editar perfil</b>.','No campo <b>Site</b>, cole o link.','Salve.'],'O campo Site aparece para contas comerciais.']]},
- print:{t:'em material impresso',tabs:[['Imprimir',['Baixe o QR Code ao lado.','Coloque numa arte com uma chamada curta: "Aponte a câmera e fale com a gente no WhatsApp".','Imprima com pelo menos <b>3 cm</b> de lado.','Deixe à vista: balcão, mesa, vitrine, cardápio, embalagem ou cartão de visita.'],'Teste com a câmera do celular antes de imprimir vários.']]},
- evento:{t:'no evento',tabs:[['Banner e slide',['Baixe o QR Code ao lado.','Coloque no banner do estande ou no último slide da apresentação, bem grande.','Junto, uma chamada: "Aponte a câmera e ganhe ..." (um brinde ou condição do evento ajuda).'],'Crie um link por evento para comparar qual trouxe mais clientes.'],
+ print:{t:'em material impresso',tabs:[['Imprimir',['Baixe o QR Code desta página.','Coloque numa arte com uma chamada curta: "Aponte a câmera e fale com a gente no WhatsApp".','Imprima com pelo menos <b>3 cm</b> de lado.','Deixe à vista: balcão, mesa, vitrine, cardápio, embalagem ou cartão de visita.'],'Teste com a câmera do celular antes de imprimir vários.']]},
+ evento:{t:'no evento',tabs:[['Banner e slide',['Baixe o QR Code desta página.','Coloque no banner do estande ou no último slide da apresentação, bem grande.','Junto, uma chamada: "Aponte a câmera e ganhe ..." (um brinde ou condição do evento ajuda).'],'Crie um link por evento para comparar qual trouxe mais clientes.'],
   ['Material e crachá',['Use o QR Code em panfletos, cartões e crachás da equipe.','Para mandar por mensagem a quem você conheceu no evento, use o link.'],'']]},
  campanha:{t:'na campanha',tabs:[['E-mail e anúncio',['Cole o link no botão do e-mail, no texto da mensagem ou no anúncio.','Para material impresso da campanha, use o QR Code.'],'Um link por campanha mostra qual trouxe mais clientes.']]},
  indicacao:{t:'nas indicações',tabs:[['Para clientes',['Mande o link para os seus clientes com um pedido simples: "Se conhecer alguém que precise, manda esse link".','Quem chegar por ele entra como Indicação.'],'Para saber quem indicou, a Nanda pergunta na conversa.']]},
@@ -4654,13 +4656,13 @@ async function vdOrigins(){
      <i class="lk-ar">${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</i>
      <div class="lk-fs"><span class="lk-fn">3</span><div class="lk-fv"><span class="lk-tag">${svg('<path d="m5 12 4.5 4.5L19 7"/>')}Origem: Instagram</span></div><b>A Nanda marca a origem</b><span>e você vê quantos clientes cada link trouxe</span></div></div>`;
   const hero=`<details class="lk-hero" ${open?'open':''}><summary><span class="lk-hi">${svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>')}</span><div><b>Saiba de onde vem cada cliente</b><span>Um link (ou QR Code) para cada lugar onde você divulga. Quem chamar por ele chega no seu WhatsApp já com a origem marcada.</span></div><em class="lk-ht">Como funciona</em></summary>${flow}</details>`;
-  const row=x=>{const k=lkKind(x);return `<div class="lk-r" data-id="${x.id}"><span class="lk-ic">${lkIc(k==='print'?'qr':x.origin)}</span>
-     <div class="lk-m"><b>${esc(x.label)}</b><span>${[orgName(x.origin)!==x.label?orgName(x.origin):'',x.detail].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</span>
-</div>
-     <div class="lk-n"><span><b>${x.clicks}</b>${x.clicks===1?'clique':'cliques'}</span><span><b>${x.contacts}</b>${x.contacts===1?'conversa':'conversas'}</span><span class="${x.clients?'ok':''}"><b>${x.clients||0}</b>${(x.clients||0)===1?'cliente':'clientes'}</span></div>
-     <div class="lk-a"><button class="btn sm p" data-cp="${esc(x.short)}">${svg(LK_CP)}Copiar</button><button class="btn sm" data-gd="${x.id}">Onde colar</button>
-      <button class="btn sm lk-ed" data-qr="${x.id}" aria-label="QR Code" title="QR Code">${svg(LK_QR)}</button><button class="btn sm lk-ed" data-le="${x.id}" aria-label="Editar" title="Editar">${svg('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button></div>
-     ${x.contacts?`<button class="lnk lk-lc" data-lc="${esc(x.origin)}">${x.contacts===1?'ver a conversa':`ver as ${x.contacts} conversas`} →</button>`:!x.clicks?'<span class="lk-wt">Ainda sem cliques. Coloque o link no lugar e teste pelo celular.</span>':''}</div>`};
+  const row=x=>{const k=lkKind(x),cv=x.contacts?Math.round(100*(x.clients||0)/x.contacts):0,sub=[orgName(x.origin)!==x.label?orgName(x.origin):'',x.detail].filter(Boolean).map(esc).join(' · ');
+    return `<div class="lk-r" data-gd="${x.id}" tabindex="0" role="button" aria-label="Abrir ${esc(x.label)}"><span class="lk-ic">${lkIc(k==='print'?'qr':x.origin)}</span>
+     <div class="lk-m"><b>${esc(x.label)}</b>${!x.clicks?'<span class="lk-wt">Sem cliques ainda · coloque no lugar e teste</span>':sub?`<span>${sub}</span>`:''}</div>
+     <span class="lk-v"><b>${x.clicks}</b><i>${x.clicks===1?'clique':'cliques'}</i></span>
+     <span class="lk-v">${x.contacts?`<button class="lk-cv" data-lc="${esc(x.origin)}" title="Ver as conversas"><b>${x.contacts}</b></button>`:'<b class="z">0</b>'}<i>${x.contacts===1?'conversa':'conversas'}</i></span>
+     <span class="lk-v ${x.clients?'ok':''}"><b>${x.clients||0}</b><i>${(x.clients||0)===1?'cliente':'clientes'}</i>${x.clients?`<small>${cv}% das conversas</small>`:''}</span>
+     <div class="lk-a"><button class="btn sm lk-cp" data-cp="${esc(x.short)}">${svg(LK_CP)}<span>Copiar</span></button><span class="lk-go">${svg('<path d="m9 6 6 6-6 6"/>')}</span></div></div>`};
   const sugH=sug.length?`<div class="lk-sug"><p>${l.items.length?'Onde mais divulgar':'Escolha onde você divulga. O link fica pronto na hora, com o passo a passo para colocar.'}</p><div>${sug.map((x,k)=>`<button data-sg="${k}">${lkIc(x[1]==='outro'?'qr':x[1])}<b>${esc(x[0])}</b><span>${esc(x[4])}</span></button>`).join('')}
      <button data-sg="-1" class="nw">${svg('<path d="M12 5v14M5 12h14"/>')}<b>Outro lugar</b><span>Campanha, parceiro, folheto</span></button></div></div>`:'';
   const auto=[[true,'Links e QR Codes','pelo código no fim da mensagem'],[true,'Anúncios da Meta','os de botão de WhatsApp, com o nome do anúncio'],
@@ -4668,7 +4670,7 @@ async function vdOrigins(){
   $('#vdBody').innerHTML=`${l.phone?'':`<div class="note warnb" style="margin-bottom:12px">Os links abrem o WhatsApp da empresa, e ele ainda não está conectado. <a href="#" id="lkWa">Conectar o WhatsApp ou informar o telefone em Empresa</a>.</div>`}
    ${hero}
    <div class="vd-g og2 lk-g"><div class="vd-c lk-c"><div class="hd"><h3>Seus links</h3>${l.items.length?`<span class="lk-tot">${pl(tot.c,'clique','cliques')} · ${pl(tot.k,'conversa','conversas')} · <b>${pl(tot.w,'cliente','clientes')}</b></span>`:''}<span class="sp"></span>${l.items.length?'<button class="btn sm p" id="lkNew">+ Novo link</button>':''}</div>
-    ${l.items.length?`<div class="lk-l">${l.items.map(row).join('')}</div>`:''}${sugH}</div>
+    ${l.items.length?`<div class="lk-th"><span></span><span>Link</span><span>Cliques</span><span>Conversas</span><span>Clientes</span><span></span></div><div class="lk-l">${l.items.map(row).join('')}</div>`:''}${sugH}</div>
    <div class="vd-c lk-side"><div class="hd"><h3>Como a origem é marcada</h3></div>
     <ul class="lk-auto">${auto.map(x=>`<li class="${x[0]?'':'off'}"><i>${x[0]?svg('<path d="m5 12 4.5 4.5L19 7"/>'):''}</i><div><b>${x[1]}</b><span>${x[2]}</span></div></li>`).join('')}</ul>
     <div class="lk-or"><div class="row"><b>Lista de origens</b><span class="sp"></span><button class="lnk" id="orEd">Editar</button></div>
@@ -4680,9 +4682,8 @@ async function vdOrigins(){
   if($('#lkWa'))$('#lkWa').onclick=e=>{e.preventDefault();go('empresa')};
   document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>{const x=sug[+b.dataset.sg];linkModal(null,o,x?{label:x[0],origin:x[1],detail:x[2],message:x[3]}:null)});
   document.querySelectorAll('[data-le]').forEach(b=>b.onclick=()=>linkModal(byId(b.dataset.le),o));
-  document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=()=>lkCopy(b.dataset.cp));
-  document.querySelectorAll('[data-gd]').forEach(b=>b.onclick=()=>lkGuide(byId(b.dataset.gd),o));
-  document.querySelectorAll('[data-qr]').forEach(b=>b.onclick=()=>lkGuide(byId(b.dataset.qr),o,false,'qr'));
+  document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=e=>{e.stopPropagation();lkCopy(b.dataset.cp)});
+  document.querySelectorAll('.lk-r[data-gd]').forEach(r=>{r.onclick=e=>{if(!e.target.closest('button'))lkGuide(byId(r.dataset.gd),o)};r.onkeydown=e=>{if(e.key==='Enter'&&e.target===r)lkGuide(byId(r.dataset.gd),o)}});
   document.querySelectorAll('[data-lc]').forEach(b=>b.onclick=()=>{CV.origin=b.dataset.lc;CV.kind='';CV.open=null;CV.filter='all';go('conversas')});
   $('#orEd').onclick=()=>originsModal(o);
 }
@@ -4690,7 +4691,7 @@ async function vdOrigins(){
 function lkGuide(x,o,fresh,focus){
   const k=lkKind(x),g=LK_G[k];let tab=0;
   const file='qr-'+x.label.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.svg';
-  const ov=overlay(`<div class="modal lk-gd"><div class="row"><span class="lk-ic">${lkIc(k==='print'?'qr':x.origin)}</span><div class="lk-gh"><h2>${esc(x.label)}</h2><span>${esc(orgName(x.origin))}${x.detail?' · '+esc(x.detail):''}</span></div><span class="sp"></span><button class="btn sm" id="gdEd">Editar</button></div>
+  const ov=overlay(`<div class="modal lk-gd"><div class="row"><span class="lk-ic">${lkIc(k==='print'?'qr':x.origin)}</span><div class="lk-gh"><h2>${esc(x.label)}</h2><span>Origem: ${esc(orgName(x.origin))}${x.detail?' · '+esc(x.detail):''}</span></div>${!fresh&&x.clicks?`<div class="lk-gs"><span><b>${x.clicks}</b>${x.clicks===1?'clique':'cliques'}</span><span><b>${x.contacts}</b>${x.contacts===1?'conversa':'conversas'}</span><span class="${x.clients?'ok':''}"><b>${x.clients||0}</b>${(x.clients||0)===1?'cliente':'clientes'}</span></div>`:''}<button class="btn sm" id="gdEd" style="margin-left:auto">Editar</button></div>
     ${fresh?`<div class="lk-ok">${svg('<path d="m5 12 4.5 4.5L19 7"/>')}<div><b>Link criado.</b> Agora coloque ele ${esc(g.t)} seguindo os passos abaixo. Leva 2 minutos.</div></div>`:''}
     <div class="lk-gg"><div class="lk-kit">
       <label>Seu link</label><div class="lk-big"><code>${esc(x.short.replace(/^https?:\/\//,''))}</code><button class="btn sm p" id="gdCp">${svg(LK_CP)}Copiar</button></div>
