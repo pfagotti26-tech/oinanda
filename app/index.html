@@ -1641,7 +1641,7 @@ body:has(.nz-save) #toast{bottom:92px}
 .cz-g{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:12px 16px 5px}.cz-g b{color:var(--bad)}
 .ci.cz{align-items:center;gap:12px;padding:10px 16px;border-bottom:0}.ci.cz .r1 b{font-size:14.5px}.ci.cz .r2 em.cz-nz{color:#7A4BC2;font-weight:700}
 .ci.cz .r3{gap:7px;min-height:0;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--ink3);overflow:hidden;white-space:nowrap}
-.cz-st{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}.cz-st::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--sc,#9FB0C0);flex:none}
+.cz-st{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}.cz-st::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--sc,#9FB0C0);flex:none}
 .cz-h{background:var(--badsoft);color:var(--bad);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;white-space:nowrap;flex:none}.cz-h.urg{background:var(--bad);color:#fff}.cz-h.tr{background:#E8F0FC;color:#2F5FA8}
 .cz-ow{white-space:nowrap}
 .cz-rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;align-self:flex-start;padding-top:2px;flex:none}.cz-rt time{font-size:11.5px;color:var(--ink3)}
@@ -1691,6 +1691,13 @@ body:has(.nz-save) #toast{bottom:92px}
 .ci.cz .r3{margin-top:1px;font-size:11px}.cz-rt{gap:5px}.cz-w{font-size:11px;padding:1px 7px}.ci.cz .nb{min-width:18px;height:18px;font-size:10.5px}
 .ci.cz .r3:empty{display:none}
 @media (max-width:860px){.cvt button{font-size:13.5px}}
+.cz-why{font-style:normal;color:var(--bad);font-weight:700}
+.cz-w.old{background:#EEF1F4;color:var(--ink2);font-weight:600}
+.ci.cz{position:relative}
+.cz-qa{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:none;align-items:center;gap:5px;background:#fff;border:1px solid #BFE5D9;color:var(--ok);font-size:12px;font-weight:700;border-radius:9px;padding:5px 10px;box-shadow:0 6px 14px -8px rgba(23,33,43,.35);cursor:pointer}
+.cz-qa svg{width:14px;height:14px}.cz-qa:hover{background:var(--oksoft)}
+@media (hover:hover){.ci.cz:hover .cz-qa{display:inline-flex}.ci.cz:hover .cz-rt{visibility:hidden}}
+.cv.lmin .cz-qa{display:none!important}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -2535,13 +2542,20 @@ function cvFilterMenu(btn){const old=$('#cvFm');if(old){old.remove();return}
   setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}
 function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in',tr=c.assigned_to===ME.user.id&&c.transfer_seen===false;
   const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="cz-nz">✦ Nanda:</em> ':!c.last_by||c.last_by===ME.user.name?'<em>Você:</em> ':`<em>${esc(c.last_by.split(' ')[0])}:</em> `;
-  const rt=c.needs_human&&c.needs_human_at?`<span class="cz-w red">${agoShort(c.needs_human_at)}</span>`:w==='off'?'<span class="cz-w grey">fora do horário</span>':w?`<span class="cz-w ${w}">${waitTxt(c)}</span>`:`<time>${hm(c.last_at)}</time>`;
+  const wm=waitMin(c),old=w&&w!=='off'&&wm>=1440;
+  const rt=c.needs_human&&c.needs_human_at?`<span class="cz-w red">${agoShort(c.needs_human_at)}</span>`:w==='off'?'<span class="cz-w grey">fora do horário</span>':old?`<span class="cz-w old" title="Esperando há ${waitTxt(c)}">desde ${new Date(c.wait_from).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</span>`:w?`<span class="cz-w ${w}">${waitTxt(c)}</span>`:`<time>${hm(c.last_at)}</time>`;
+  const lt=c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'';
+  const pv=c.needs_human&&c.handoff_reason?`<em class="cz-why">Motivo:</em> ${esc(c.handoff_reason)}`:by+esc(lt);
+  const first=(STAGES||[])[0],showSt=sx&&!(first&&sx.s.id===first.id);
+  const tags=`${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${showSt?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}`;
+  const canRes=c.waiting||c.needs_human;
   return `<button class="ci cz ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
     <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
-    <span class="cb"><span class="r1"><b>${esc(c.name)}</b></span>
-     <span class="r2">${by}${esc(c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'')}</span>
-     <span class="r3">${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">· ${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}</span></span>
-    <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span></button>`}
+    <span class="cb"><span class="r1"><b>${esc(dispName(c.name))}</b></span>
+     <span class="r2">${pv}</span>${tags?`<span class="r3">${tags}</span>`:''}</span>
+    <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span>${canRes?`<span class="cz-qa" role="button" tabindex="-1" data-qr="${c.id}" title="Marcar como resolvida (sai da fila)">${IC.check}Resolver</span>`:''}</button>`}
+const dispName=n=>{n=String(n||'');const L=n.replace(/[^A-Za-zÀ-ÿ]/g,'');if(L.length<4||L!==L.toUpperCase())return n;
+  return n.toLowerCase().replace(/(^|[\s'(\-/])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/\b(D[aeo]s?|E)\b/g,w=>w.toLowerCase()).replace(/^./,x=>x.toUpperCase())};
 const agoShort=v=>{const m=(Date.now()-new Date(v))/6e4;return m<1?'agora':m<60?Math.floor(m)+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+(m<2880?' dia':' dias')};
 async function cvList(){cvNorm();
   CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.ch?'&ch='+CV.ch:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
@@ -2559,8 +2573,11 @@ async function cvList(){cvNorm();
   if($('#czAll'))$('#czAll').onclick=()=>{CV.filter='all';CV.sub='';CV.ch='';cvTabs();cvList()};
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
     el.insertAdjacentHTML('afterbegin',`<div class="cvchip"><span>${esc(lab)} <b>${CV.list.length}</b></span><button id="cvChX" aria-label="Tirar filtro">×</button></div>`);$('#cvChX').onclick=()=>{CV.origin='';CV.kind='';cvList()}}
-  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openConv(b.dataset.c));
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{const q=e.target.closest('[data-qr]');if(q){e.stopPropagation();return cvQuickRes(q.dataset.qr)}openConv(b.dataset.c)});
 }
+async function cvQuickRes(id){const c=CV.list.find(x=>x.id===id);try{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:true}})}catch(e){return toast(e.message)}
+  if(CV.open===id){CV.sig='';cvChat(false)}cvList();pollCounts();
+  undoToast(`${dispName((c&&c.name)||'Conversa').split(' ')[0]} saiu da fila.`,async()=>{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:false}});cvList();pollCounts();if(CV.open===id){CV.sig='';cvChat(false)}})}
 const CVW=(()=>{try{return JSON.parse(localStorage.getItem('cvw'))||{}}catch(e){return {}}})();
 function cvSizes(){const cv=$('.cv');if(!cv)return;
   const save=()=>{try{localStorage.setItem('cvw',JSON.stringify(CVW))}catch(e){}};
