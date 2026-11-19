@@ -1861,7 +1861,7 @@ async function comecarView(){
   const on=[false,false,false,false],det=['','','',''];
   $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obLogo}${obSteps(2)}</div><div class="body">
    <div class="ob-card"><h1>Fale com a Nanda como se fosse ${aNoun} seu</h1>
-    <p class="sub">Ela já veio ajustada para <b>${esc((SEGS[seg]||SEG[seg]||'o seu ramo').toLowerCase())}</b>. Pergunte preço, horário ou o que ${aNoun} perguntaria. É só um teste: nada sai para o WhatsApp de ninguém.</p>
+    <p class="sub">${seg==='outro'?'Ela já veio pronta para atender o seu negócio.':`Ela já veio ajustada para <b>${esc((SEGS[seg]||SEG[seg]||'o seu ramo').toLowerCase())}</b>.`} Pergunte preço, horário ou o que ${aNoun} perguntaria. É só um teste: nada sai para o WhatsApp de ninguém.</p>
     <div class="ob-chat" id="obChat"><div class="ob-empty">Escreva abaixo ou toque numa das perguntas prontas. A Nanda responde como responderia ${aNoun} de verdade.</div></div>
     <div class="ob-cmp"><textarea id="obIn" rows="1" placeholder="Escreva como se fosse ${aNoun}..." aria-label="Mensagem para a Nanda"></textarea>
      <button class="btn p big" id="obSend" type="button">Enviar mensagem</button></div>
@@ -1886,7 +1886,7 @@ async function comecarView(){
       if(r.book){on[1]=true;det[1]=(r.book_label||'Horário escolhido')+'. No teste nada é marcado.';hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'})}
       if(r.handoff){on[2]=true;det[2]=(r.reason?r.reason.charAt(0).toUpperCase()+r.reason.slice(1)+'. ':'')+'Você recebe o aviso na hora.';hist.push({dir:'sys',text:'Aqui ela chamaria alguém do seu time'})}
       if(r.anotar||r.valor||r.etapa||r.origin){on[3]=true;det[3]=r.anotar||(r.valor?'Possível venda de '+obMoney(r.valor):'Anotou no funil.')}
-    }catch(e){hist.push({dir:'sys',text:e.status===402?'As conversas de teste deste mês acabaram. Ative os 14 dias grátis para continuar.':e.message})}
+    }catch(e){hist.push({dir:'sys',text:e.status===402?'As conversas de teste deste mês acabaram. Ative os 14 dias grátis para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
     busy=false;$('#obSend').disabled=false;drawChat(false);drawDid();if(innerWidth>860)inp.focus()};
   $('#obSend').onclick=()=>send(inp.value);
   inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(inp.value)}};
