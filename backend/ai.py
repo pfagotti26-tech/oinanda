@@ -40,16 +40,17 @@ def brl(v): return f'R$ {v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X
 
 async def catalog_items(company_id):
     """Itens ativos do Catálogo: a fonte oficial de preços que a Nanda usa."""
-    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1, 'service_id': 1}).sort('name', 1).to_list(300)
+    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1, 'service_id': 1, 'recurring': 1}).sort('name', 1).to_list(300)
     # serviço da agenda sem preço: já aparece na AGENDA; aqui só confundiria ("preço sob consulta" ao lado de "aula experimental grátis")
-    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days')} for r in rows
+    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days'), 'recurring': bool(r.get('recurring'))} for r in rows
             if not (r.get('service_id') and r.get('price') is None)]
 
 def catalog_text(items):
     out = []
     for r in items:
         bits = [brl(r['price']) if r.get('price') is not None else 'preço sob consulta (chame o time se perguntarem)']
-        if r.get('duration_days'): bits.append(f"vale {r['duration_days']} dias")
+        if r.get('recurring'): bits.append(f"assinatura, cobrada a cada {r.get('duration_days') or 30} dias")
+        elif r.get('duration_days'): bits.append(f"vale {r['duration_days']} dias")
         out.append(f"- {r['name']}" + (f" ({r['category']})" if r['category'] else '') + ': ' + ' · '.join(bits))
     return '\n'.join(out)
 

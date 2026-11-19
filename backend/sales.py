@@ -30,6 +30,7 @@ class ProductIn(BaseModel):
     active: bool = True
     duration_days: Optional[int] = Field(default=None, ge=1, le=3650)  # validade: plano, módulo, assinatura
     next_ids: List[str] = Field(default_factory=list, max_length=10)     # o que oferecer depois
+    recurring: bool = False                                              # assinatura: cobra sozinha a cada período, não vence nem entra em Renovar
 
 async def sync_agenda(company):
     """Os serviços da agenda entram no catálogo (e o preço acompanha)."""
@@ -63,7 +64,7 @@ async def edit_product(pid: str, body: ProductIn, request: Request, user=Depends
     if not p: raise HTTPException(404, 'Item não encontrado.')
     upd = {**body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'next_ids': [i for i in body.next_ids if i != pid]}
     await db.products.update_one({'id': pid}, {'$set': upd})
-    if p.get('duration_days') != body.duration_days or p.get('name') != upd['name']:
+    if p.get('duration_days') != body.duration_days or p.get('name') != upd['name'] or bool(p.get('recurring')) != body.recurring:
         from wallet import recompute_product
         await recompute_product(user['company_id'], pid)
     return {**p, **upd}
