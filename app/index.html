@@ -1641,7 +1641,7 @@ body:has(.nz-save) #toast{bottom:92px}
 .cz-g{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:12px 16px 5px}.cz-g b{color:var(--bad)}
 .ci.cz{align-items:center;gap:12px;padding:10px 16px;border-bottom:0}.ci.cz .r1 b{font-size:14.5px}.ci.cz .r2 em.cz-nz{color:#7A4BC2;font-weight:700}
 .ci.cz .r3{gap:7px;min-height:0;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--ink3);overflow:hidden;white-space:nowrap}
-.cz-st{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}.cz-st::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--sc,#9FB0C0);flex:none}
+.cz-st{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}.cz-st::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--sc,#9FB0C0);flex:none}
 .cz-h{background:var(--badsoft);color:var(--bad);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;white-space:nowrap;flex:none}.cz-h.urg{background:var(--bad);color:#fff}.cz-h.tr{background:#E8F0FC;color:#2F5FA8}
 .cz-ow{white-space:nowrap}
 .cz-rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;align-self:flex-start;padding-top:2px;flex:none}.cz-rt time{font-size:11.5px;color:var(--ink3)}
@@ -1673,6 +1673,31 @@ body:has(.nz-save) #toast{bottom:92px}
 .pn-d>summary .lb{flex:1;display:flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}.pn-d textarea{width:100%;display:block}.pn-d[open]>summary{margin-bottom:9px!important}.pn-d .pn-ap{margin-bottom:6px}.pn-d>summary small{font-size:12px;color:var(--ink3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
 .pn-d>summary::after{content:'';width:7px;height:7px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);margin:-3px 3px 0 2px;transition:transform .15s;flex:none}.pn-d[open]>summary::after{transform:rotate(-135deg);margin-top:3px}
 .pn-d[open]>summary{margin-bottom:2px}.pn-d[open]>summary small{display:none}
+/* lista mais compacta */
+.cv-list{position:relative}
+@media (min-width:861px){.cv-list .hd{height:56px!important;padding:0 10px 0 12px}}
+.cv-list .hd .srch input{padding-top:8px;padding-bottom:8px}
+.cvfb{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--ink2);margin-left:6px;position:relative}.cvfb:hover{background:#F3EEE9;color:var(--ink)}.cvfb svg{width:18px;height:18px}
+.cvfb.on{background:var(--ink);color:#fff}.cvfb i{position:absolute;top:2px;right:2px;font-style:normal;font-size:10px;font-weight:800;background:var(--c);color:#fff;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;border:1.5px solid #fff}.cvfb i:empty{display:none}
+.cvfm{position:absolute;z-index:40;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px -16px rgba(23,33,43,.35);padding:8px;min-width:210px;display:grid;gap:6px;animation:obIn .15s ease both}
+.cvfm-g{display:grid;gap:1px}.cvfm-g+.cvfm-g{border-top:1px solid var(--line);padding-top:6px}.cvfm small{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:4px 10px 3px}
+.cvfm button{text-align:left;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink);display:flex;align-items:center;justify-content:space-between}.cvfm button:hover{background:#F6F2EE}.cvfm button.on{color:var(--c2)}.cvfm button.on::after{content:'✓';font-weight:800}
+.cvt{padding:0 8px;gap:0}.cvt button{padding:9px 8px 10px;flex:1 1 auto;justify-content:center}
+.cvsb{padding:8px 12px 2px;gap:6px;flex-wrap:wrap}.cvsb[hidden]{display:none!important}
+.cvsb button{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border-color:var(--ink);padding:3px 6px 3px 11px}.cvsb button span{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:12px;line-height:1}
+.cvsb button.clr{background:none;color:var(--ink2);border-color:transparent;padding:3px 6px;text-decoration:underline}
+.cz-g{padding:9px 14px 3px}
+.ci.cz{padding:8px 14px;gap:11px}.ci.cz .av{width:40px;height:40px;font-size:13px}.ci.cz .cb{gap:1px}.ci.cz .r1 b{font-size:14px}.ci.cz .r2{font-size:12.5px}
+.ci.cz .r3{margin-top:1px;font-size:11px}.cz-rt{gap:5px}.cz-w{font-size:11px;padding:1px 7px}.ci.cz .nb{min-width:18px;height:18px;font-size:10.5px}
+.ci.cz .r3:empty{display:none}
+@media (max-width:860px){.cvt button{font-size:13.5px}}
+.cz-why{font-style:normal;color:var(--bad);font-weight:700}
+.cz-w.old{background:#EEF1F4;color:var(--ink2);font-weight:600}
+.ci.cz{position:relative}
+.cz-qa{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:none;align-items:center;gap:5px;background:#fff;border:1px solid #BFE5D9;color:var(--ok);font-size:12px;font-weight:700;border-radius:9px;padding:5px 10px;box-shadow:0 6px 14px -8px rgba(23,33,43,.35);cursor:pointer}
+.cz-qa svg{width:14px;height:14px}.cz-qa:hover{background:var(--oksoft)}
+@media (hover:hover){.ci.cz:hover .cz-qa{display:inline-flex}.ci.cz:hover .cz-rt{visibility:hidden}}
+.cv.lmin .cz-qa{display:none!important}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -2481,7 +2506,7 @@ async function metaSignup(es,own){
   FB.login(r=>{if(r.authResponse&&r.authResponse.code){code=r.authResponse.code;finish()}else if(!done){done=true;fail('Conexão cancelada: a janela foi fechada.')}},
     {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:WZ.pick==='new'?{setup:{}}:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
-let CV={filter:'need',sub:'',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:''};
+let CV={filter:'need',sub:'',ch:'',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:''};
 try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
 const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 const AVC=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#C2557A','#4F8A5B','#E8603F','#7A6A58'];
@@ -2501,24 +2526,41 @@ const TMN=id=>(CV.teams||[]).find(t=>t.id===id);
 async function cvCounts(){return pollCounts()}
 function cvNorm(){const m={waiting:['need',''],mine:['all','mine'],unassigned:['all','unassigned'],team:['all','team']}[CV.filter];if(m){CV.filter=m[0];CV.sub=m[1]}if(!['need','nanda','all'].includes(CV.filter))CV.filter='need'}
 function cvTabs(){cvNorm();document.querySelectorAll('.cvt [data-f]').forEach(x=>{x.classList.toggle('on',x.dataset.f===CV.filter);x.setAttribute('aria-selected',x.dataset.f===CV.filter)});
-  const el=$('#cvSub');if(!el)return;const chs=CV.chs||new Set();
-  const L=[['','Todos'],['mine','Minhas'],...((CV.teams||[]).some(t=>t.mine)?[['team','Equipe']]:[]),...(chs.has('instagram')?[['whatsapp','WhatsApp'],['instagram','Instagram']]:[]),['unassigned','Sem dono']];
-  el.innerHTML=L.map(x=>`<button type="button" class="${CV.sub===x[0]?'on':''}" data-sb="${x[0]}">${x[1]}</button>`).join('');
-  el.querySelectorAll('[data-sb]').forEach(b=>b.onclick=()=>{CV.sub=b.dataset.sb;cvTabs();cvList()})}
+  const OW={mine:'Minhas',team:'Equipe',unassigned:'Sem dono'},CH={whatsapp:'WhatsApp',instagram:'Instagram'};
+  const fb=$('#cvFb');if(fb){const n=(CV.sub?1:0)+(CV.ch?1:0);fb.classList.toggle('on',!!n);fb.querySelector('i').textContent=n||''}
+  const el=$('#cvSub');if(!el)return;const act=[CV.sub&&['sub',OW[CV.sub]],CV.ch&&['ch',CH[CV.ch]]].filter(Boolean);
+  el.hidden=!act.length;el.innerHTML=act.map(x=>`<button type="button" data-cx="${x[0]}">${x[1]}<span aria-hidden="true">×</span></button>`).join('')+(act.length>1?'<button type="button" class="clr" data-cx="all">Limpar</button>':'');
+  el.querySelectorAll('[data-cx]').forEach(b=>b.onclick=()=>{const k=b.dataset.cx;if(k!=='ch')CV.sub='';if(k!=='sub')CV.ch='';cvTabs();cvList()})}
+function cvFilterMenu(btn){const old=$('#cvFm');if(old){old.remove();return}
+  const chs=CV.chs||new Set(),team=(CV.teams||[]).some(t=>t.mine);
+  const G=[['De quem',[['','Todas'],['mine','Minhas'],...(team?[['team','Da minha equipe']]:[]),['unassigned','Sem dono']],'sub'],...(chs.size>1||chs.has('instagram')?[['Canal',[['','Todos'],['whatsapp','WhatsApp'],['instagram','Instagram']],'ch']]:[])];
+  const m=document.createElement('div');m.id='cvFm';m.className='cvfm';m.setAttribute('role','menu');
+  m.innerHTML=G.map(g=>`<div class="cvfm-g"><small>${g[0]}</small>${g[1].map(o=>`<button type="button" role="menuitemradio" aria-checked="${CV[g[2]]===o[0]}" class="${CV[g[2]]===o[0]?'on':''}" data-k="${g[2]}" data-v="${o[0]}">${o[1]}</button>`).join('')}</div>`).join('');
+  btn.closest('.cv-list').appendChild(m);
+  const r=btn.getBoundingClientRect(),pr=btn.closest('.cv-list').getBoundingClientRect();m.style.top=(r.bottom-pr.top+6)+'px';m.style.right=Math.max(8,pr.right-r.right)+'px';
+  m.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{CV[b.dataset.k]=b.dataset.v;m.remove();cvTabs();cvList()});
+  setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}
 function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in',tr=c.assigned_to===ME.user.id&&c.transfer_seen===false;
   const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="cz-nz">✦ Nanda:</em> ':!c.last_by||c.last_by===ME.user.name?'<em>Você:</em> ':`<em>${esc(c.last_by.split(' ')[0])}:</em> `;
-  const rt=c.needs_human&&c.needs_human_at?`<span class="cz-w red">${agoShort(c.needs_human_at)}</span>`:w==='off'?'<span class="cz-w grey">fora do horário</span>':w?`<span class="cz-w ${w}">${waitTxt(c)}</span>`:`<time>${hm(c.last_at)}</time>`;
+  const wm=waitMin(c),old=w&&w!=='off'&&wm>=1440;
+  const rt=c.needs_human&&c.needs_human_at?`<span class="cz-w red">${agoShort(c.needs_human_at)}</span>`:w==='off'?'<span class="cz-w grey">fora do horário</span>':old?`<span class="cz-w old" title="Esperando há ${waitTxt(c)}">desde ${new Date(c.wait_from).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</span>`:w?`<span class="cz-w ${w}">${waitTxt(c)}</span>`:`<time>${hm(c.last_at)}</time>`;
+  const lt=c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'';
+  const pv=c.needs_human&&c.handoff_reason?`<em class="cz-why">Motivo:</em> ${esc(c.handoff_reason)}`:by+esc(lt);
+  const first=(STAGES||[])[0],showSt=sx&&!(first&&sx.s.id===first.id);
+  const tags=`${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${showSt?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}`;
+  const canRes=c.waiting||c.needs_human;
   return `<button class="ci cz ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
     <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
-    <span class="cb"><span class="r1"><b>${esc(c.name)}</b></span>
-     <span class="r2">${by}${esc(c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'')}</span>
-     <span class="r3">${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${sx?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">· ${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}</span></span>
-    <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span></button>`}
+    <span class="cb"><span class="r1"><b>${esc(dispName(c.name))}</b></span>
+     <span class="r2">${pv}</span>${tags?`<span class="r3">${tags}</span>`:''}</span>
+    <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span>${canRes?`<span class="cz-qa" role="button" tabindex="-1" data-qr="${c.id}" title="Marcar como resolvida (sai da fila)">${IC.check}Resolver</span>`:''}</button>`}
+const dispName=n=>{n=String(n||'');const L=n.replace(/[^A-Za-zÀ-ÿ]/g,'');if(L.length<4||L!==L.toUpperCase())return n;
+  return n.toLowerCase().replace(/(^|[\s'(\-/])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/\b(D[aeo]s?|E)\b/g,w=>w.toLowerCase()).replace(/^./,x=>x.toUpperCase())};
 const agoShort=v=>{const m=(Date.now()-new Date(v))/6e4;return m<1?'agora':m<60?Math.floor(m)+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+(m<2880?' dia':' dias')};
 async function cvList(){cvNorm();
-  CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
+  CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.ch?'&ch='+CV.ch:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
   const el=$('#cvItems');if(!el)return;
-  const had=(CV.chs||new Set()).size;CV.chs=CV.chs||new Set();CV.list.forEach(c=>CV.chs.add(c.channel||'whatsapp'));if(CV.chs.size!==had)cvTabs();
+  CV.chs=CV.chs||new Set();CV.list.forEach(c=>CV.chs.add(c.channel||'whatsapp'));
   let html='';
   if(CV.filter==='need'&&CV.list.length){const old=(a,b)=>(a||'9')<(b||'9')?-1:1;
     const G=[['Pediram uma pessoa',CV.list.filter(c=>c.needs_human).sort((a,b)=>(b.handoff_urgent?1:0)-(a.handoff_urgent?1:0)||old(a.needs_human_at,b.needs_human_at))],
@@ -2527,12 +2569,15 @@ async function cvList(){cvNorm();
     html=G.filter(g=>g[1].length).map(g=>`<div class="cz-g"><span>${g[0]}</span><b>${g[1].length}</b></div>`+g[1].map(cvRow).join('')).join('')}
   else html=CV.list.map(cvRow).join('');
   const none={need:['Tudo em dia','Ninguém esperando por você agora. Quando um cliente escrever ou a Nanda chamar o time, aparece aqui.'],nanda:['A Nanda não está atendendo sozinha agora',(CV.ai&&CV.ai.default_mode==='auto')?'Quando ela responder um cliente sem precisar do time, a conversa aparece aqui.':'Ela está no modo copiloto: sugere a resposta e você envia. Para ela atender sozinha, mude em Nanda (IA).'],all:['Nenhuma conversa ainda','Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.']}[CV.filter];
-  el.innerHTML=html||`<div class="cz-e">${CV.q?'<b>Nada encontrado</b><p>Nenhuma conversa para essa busca nesta aba.</p>':`${CV.filter==='need'?'<span>✓</span>':''}<b>${none[0]}</b><p>${CV.sub?'Nada neste filtro. ':''}${none[1]}</p>`}${CV.filter!=='all'&&(CV.q||CV.sub)?'<button type="button" class="lnk" id="czAll">Procurar em todas</button>':''}</div>`;
-  if($('#czAll'))$('#czAll').onclick=()=>{CV.filter='all';CV.sub='';cvTabs();cvList()};
+  el.innerHTML=html||`<div class="cz-e">${CV.q?'<b>Nada encontrado</b><p>Nenhuma conversa para essa busca nesta aba.</p>':`${CV.filter==='need'?'<span>✓</span>':''}<b>${none[0]}</b><p>${CV.sub||CV.ch?'Nada neste filtro. ':''}${none[1]}</p>`}${CV.filter!=='all'&&(CV.q||CV.sub||CV.ch)?'<button type="button" class="lnk" id="czAll">Procurar em todas</button>':''}</div>`;
+  if($('#czAll'))$('#czAll').onclick=()=>{CV.filter='all';CV.sub='';CV.ch='';cvTabs();cvList()};
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
     el.insertAdjacentHTML('afterbegin',`<div class="cvchip"><span>${esc(lab)} <b>${CV.list.length}</b></span><button id="cvChX" aria-label="Tirar filtro">×</button></div>`);$('#cvChX').onclick=()=>{CV.origin='';CV.kind='';cvList()}}
-  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openConv(b.dataset.c));
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{const q=e.target.closest('[data-qr]');if(q){e.stopPropagation();return cvQuickRes(q.dataset.qr)}openConv(b.dataset.c)});
 }
+async function cvQuickRes(id){const c=CV.list.find(x=>x.id===id);try{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:true}})}catch(e){return toast(e.message)}
+  if(CV.open===id){CV.sig='';cvChat(false)}cvList();pollCounts();
+  undoToast(`${dispName((c&&c.name)||'Conversa').split(' ')[0]} saiu da fila.`,async()=>{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:false}});cvList();pollCounts();if(CV.open===id){CV.sig='';cvChat(false)}})}
 const CVW=(()=>{try{return JSON.parse(localStorage.getItem('cvw'))||{}}catch(e){return {}}})();
 function cvSizes(){const cv=$('.cv');if(!cv)return;
   const save=()=>{try{localStorage.setItem('cvw',JSON.stringify(CVW))}catch(e){}};
@@ -4828,15 +4873,15 @@ const VIEWS={
  async conversas(){
   const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[]),orgLoad().catch(()=>null)]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
-    <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvt" role="tablist">${[['need','Precisa de você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Com a Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div><div class="cvsb" id="cvSub"></div>
+    <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome ou telefone" title="Busca por nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
+    <button type="button" class="cvfb" id="cvFb" title="Filtrar por responsável ou canal" aria-label="Filtrar" aria-haspopup="menu">${svg('<path d="M4 6h16M7 12h10M10 18h4"/>')}<i></i></button><button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvt" role="tablist">${[['need','Precisa de você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Com a Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div><div class="cvsb" id="cvSub" hidden></div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
   cvSizes();
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
   fitCv();
-  cvTabs();document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;CV.sub='';cvTabs();cvList()});
+  cvTabs();$('#cvFb').onclick=e=>cvFilterMenu(e.currentTarget);document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
   $('#cvQ').oninput=e=>{CV.q=e.target.value;$('#cvQX').classList.toggle('hide',!CV.q);clearTimeout(CV.qt);CV.qt=setTimeout(cvList,200)};
   $('#cvQX').onclick=()=>{CV.q='';$('#cvQ').value='';$('#cvQX').classList.add('hide');cvList()};
   await Promise.all([cvList(),cvCounts()]);if(CV.open)await cvChat(true);else cvEmpty();
