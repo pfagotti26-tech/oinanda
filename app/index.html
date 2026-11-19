@@ -1557,6 +1557,17 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .hm-now{flex-direction:column}.hm-al{width:100%}
  .hm-hero h1{font-size:23px}.hm-next{flex-wrap:wrap}.hm-next .btn{width:100%;justify-content:center}.hm-val b{font-size:24px}.hm-val>div{padding:13px}
  .hm-st{flex-wrap:wrap}.hm-st>span{flex:1 1 calc(100% - 50px)}.hm-st>small{display:none}.hm-st .btn{margin-left:44px}.hm-demo{padding:18px}.hm-al{min-width:0}}
+.nz-acts{display:flex;gap:14px;align-items:center}.nz-wz{color:var(--c)!important}
+.nz-f.wzon>textarea,.nz-f.wzon>.hint{display:none}
+.nzw{background:linear-gradient(180deg,#FFF6F2,#fff);border:1.5px solid #F6D7CA;border-radius:16px;padding:16px;display:grid;gap:12px;animation:obIn .25s ease both}
+.nzw-h{display:grid;gap:6px}.nzw-h b{font-size:15px}.nzw-h span{font-size:12.5px;color:var(--ink2)}.nzw-n{font-size:12px!important;font-weight:800;color:var(--c2)!important;text-transform:uppercase;letter-spacing:.04em}
+.nzw-bar{height:5px;border-radius:5px;background:#F6E3DA;overflow:hidden}.nzw-bar i{display:block;height:100%;background:var(--c);border-radius:5px;transition:width .3s}
+.nzw-q{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.nzw input{border:1.5px solid #E2D9D1;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;background:#fff;width:100%}.nzw input:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}.nzw input.bad{border-color:var(--bad)}
+.nzw-ft{display:flex;align-items:center;gap:10px}.nzw-sp{flex:1}.nzw-ft .btn.p{margin-left:auto}
+.nzw-pv{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.55;color:var(--ink)}
+.nz-qc{display:flex;flex-wrap:wrap;gap:6px}.nz-qc button{border:1px dashed #E2D2C7;background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.nz-qc button:hover{border-style:solid;border-color:var(--c);color:var(--c2);background:var(--tint)}
+@media(max-width:700px){.nz-fl{flex-wrap:wrap}.nzw{padding:14px}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -1785,6 +1796,51 @@ function passwordView(){
 }
 
 /* ---------- entrada: criar conta → conhecer a Nanda → ativar os 14 dias ---------- */
+/* "Me ajude a escrever": perguntas por ramo que montam o texto da Nanda */
+const NZW_Q={
+ clinica:{tipo:'clínica',q:[['faz','Quais tratamentos ou procedimentos vocês fazem?','harmonização facial, limpeza de pele, depilação a laser'],['onde','Onde fica a clínica?','Rua das Flores, 120, Moema, São Paulo'],['quem','Quem atende?','Dra. Ana, dermatologista, e equipe de esteticistas'],['pub','Que público mais procura vocês?','mulheres de 25 a 55 anos'],['dif','Por que escolher vocês?','avaliação gratuita, 10 anos de experiência, estacionamento no local']],
+  t:a=>[`${a.nome} é uma clínica que faz ${a.faz}.`,a.onde&&`Endereço: ${a.onde}.`,a.quem&&`O atendimento é feito por ${a.quem}.`,a.pub&&`Atende principalmente ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ salao:{tipo:'salão',q:[['faz','Quais serviços vocês fazem?','corte, coloração, escova, manicure e barba'],['onde','Onde fica o salão?','Av. Brasil, 500, Centro'],['quem','Quem são os profissionais?','Léo e Bia no cabelo, Carla nas unhas'],['pub','Quem são os seus clientes?','homens e mulheres do bairro, muitos clientes fixos'],['dif','O que faz o cliente voltar?','pontualidade, café e cerveja gelada, agenda até 21h']],
+  t:a=>[`${a.nome} faz ${a.faz}.`,a.onde&&`Endereço: ${a.onde}.`,a.quem&&`Profissionais: ${a.quem}.`,a.pub&&`Clientes: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ studio:{tipo:'studio',q:[['faz','Quais modalidades vocês oferecem?','pilates, funcional e alongamento'],['onde','Onde fica o studio?','Rua Augusta, 900, Consolação'],['como','Como funcionam as aulas?','turmas de até 3 alunos, das 6h às 21h, planos de 2x ou 3x por semana'],['pub','Quem costuma treinar com vocês?','adultos que querem sair do sedentarismo e aliviar dores'],['dif','O que diferencia o seu studio?','aula experimental grátis, professores fisioterapeutas']],
+  t:a=>[`${a.nome} é um studio de ${a.faz}.`,a.onde&&`Endereço: ${a.onde}.`,a.como&&`Como funciona: ${a.como}.`,a.pub&&`Quem treina aqui: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ escola:{tipo:'escola',q:[['faz','Quais cursos vocês oferecem?','inglês, espanhol e preparatório para intercâmbio'],['onde','Onde são as aulas?','unidade no Centro de Campinas e turmas online'],['como','Como funcionam as turmas?','turmas de até 8 alunos, 2 aulas por semana, material incluso'],['pub','Para quem são os cursos?','adolescentes a partir de 12 anos e adultos'],['dif','Por que estudar com vocês?','aula experimental grátis, professores com certificação internacional']],
+  t:a=>[`${a.nome} é uma escola de ${a.faz}.`,a.onde&&`As aulas são ${/^(online|presencia)/i.test(a.onde)?'':'em '}${a.onde}.`,a.como&&`Como funciona: ${a.como}.`,a.pub&&`Para quem: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ imobiliaria:{tipo:'imobiliária',q:[['faz','Com que tipo de imóvel vocês trabalham?','venda e locação de apartamentos e casas'],['onde','Em que região?','zona sul de São Paulo, principalmente Moema e Vila Mariana'],['faixa','Qual a faixa de valores?','venda de R$ 400 mil a R$ 2 milhões, aluguel a partir de R$ 2.500'],['pub','Quem costuma procurar vocês?','famílias buscando o primeiro imóvel e investidores'],['dif','O que diferencia o seu atendimento?','ajudamos com financiamento e FGTS, visitas também aos sábados']],
+  t:a=>[`${a.nome} trabalha com ${a.faz}.`,a.onde&&`Região: ${a.onde}.`,a.faixa&&`Valores: ${a.faixa}.`,a.pub&&`Quem nos procura: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ loja:{tipo:'loja',q:[['faz','O que a loja vende?','roupas femininas, do P ao GG'],['onde','Onde o cliente compra?','loja física na Rua Oscar Freire e envio para todo o Brasil'],['entrega','Como funcionam entrega e pagamento?','frete grátis acima de R$ 299, até 4x sem juros, troca em 30 dias'],['pub','Quem é a sua cliente?','mulheres de 25 a 45 anos que gostam de moda prática'],['dif','Por que comprar com vocês?','peças exclusivas, atendimento personalizado pelo WhatsApp']],
+  t:a=>[`${a.nome} vende ${a.faz}.`,a.onde&&`Onde comprar: ${a.onde}.`,a.entrega&&`Entrega e pagamento: ${a.entrega}.`,a.pub&&`Público: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ servicos:{tipo:'escritório',q:[['faz','Quais serviços vocês prestam?','contabilidade para pequenas empresas e MEI'],['onde','Onde vocês atendem?','escritório em Curitiba e atendimento online para todo o Brasil'],['como','Como o cliente começa?','primeira conversa sem custo, depois mensalidade fixa'],['pub','Para quem é o serviço?','pequenas empresas, MEIs e profissionais liberais'],['dif','Por que escolher vocês?','resposta no mesmo dia, 15 anos de experiência']],
+  t:a=>[`${a.nome} oferece ${a.faz}.`,a.onde&&`Atendimento: ${a.onde}.`,a.como&&`Como começar: ${a.como}.`,a.pub&&`Para quem: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ restaurante:{tipo:'restaurante',q:[['faz','Que tipo de comida vocês servem?','cozinha italiana, massas frescas e pizzas'],['onde','Onde fica e para onde entregam?','salão na Vila Madalena e delivery num raio de 5 km'],['hora','Quais são os horários?','terça a domingo, das 11h30 às 23h'],['pub','Quem costuma pedir?','famílias e casais, muito pedido no fim de semana'],['dif','O que tem de especial?','massa feita na casa, opções vegetarianas, reserva para grupos']],
+  t:a=>[`${a.nome} serve ${a.faz}.`,a.onde&&`${a.onde.charAt(0).toUpperCase()+a.onde.slice(1)}.`,a.hora&&`Horários: ${a.hora}.`,a.pub&&`Quem pede: ${a.pub}.`,a.dif&&`Especial: ${a.dif}.`]},
+ lancamento:{tipo:'curso',q:[['faz','O que você vende?','curso online de confeitaria para vender em casa'],['como','Como funciona?','aulas gravadas, encontros ao vivo toda semana e grupo de alunos'],['pub','Para quem é?','iniciantes que querem uma renda extra'],['ganho','O que a pessoa aprende ou consegue?','fazer bolos e doces para vender, precificar e conseguir os primeiros clientes'],['dif','Por que comprar com você?','garantia de 7 dias, suporte direto comigo, mais de 2 mil alunos']],
+  t:a=>[`${a.nome} vende ${a.faz}.`,a.como&&`Como funciona: ${a.como}.`,a.pub&&`Para quem é: ${a.pub}.`,a.ganho&&`O que a pessoa aprende: ${a.ganho}.`,a.dif&&`Diferenciais: ${a.dif}.`]},
+ outro:{tipo:'negócio',q:[['faz','O que você vende ou faz?','consertos de celular e acessórios'],['onde','Onde você atende?','loja no Centro, também atendo a domicílio'],['como','Como o cliente compra ou contrata?','manda foto pelo WhatsApp, recebe o orçamento e agenda'],['pub','Quem são os seus clientes?','pessoas do bairro e pequenas empresas'],['dif','Por que escolher você?','orçamento na hora, garantia de 90 dias']],
+  t:a=>[`${a.nome} ${/^(vend|faz|ofere|presta|trabalh|atend)/i.test(a.faz)?a.faz:'trabalha com '+a.faz}.`,a.onde&&`Atendimento: ${a.onde}.`,a.como&&`Como funciona: ${a.como}.`,a.pub&&`Clientes: ${a.pub}.`,a.dif&&`Diferenciais: ${a.dif}.`]}};
+const NZ_GOAL={clinica:['Agendar uma avaliação','Agendar uma consulta','Mandar orçamento'],salao:['Marcar um horário','Tirar dúvidas e marcar horário'],studio:['Agendar uma aula experimental','Fechar um plano'],escola:['Agendar uma aula experimental','Fazer a matrícula'],
+ imobiliaria:['Agendar uma visita','Entender o que a pessoa busca e chamar um corretor'],loja:['Mandar o link do produto','Fechar o pedido pelo WhatsApp'],servicos:['Marcar uma reunião','Mandar orçamento'],restaurante:['Fazer o pedido','Reservar uma mesa'],
+ lancamento:['Mandar o link de compra','Tirar dúvidas e mandar o link'],outro:['Mandar orçamento','Agendar um horário','Mandar o link de compra']};
+const NZ_RULES={geral:['Não dar desconto sem falar com o time','Não prometer prazo que não está combinado','Não falar mal de concorrente'],clinica:['Não dar orientação médica','Não passar preço de procedimento sem avaliação'],
+ salao:['Não marcar dois serviços longos seguidos sem confirmar'],imobiliaria:['Não confirmar disponibilidade sem checar com o corretor'],loja:['Não confirmar estoque de tamanho sem checar'],restaurante:['Não prometer tempo de entrega em dia de chuva'],escola:['Não garantir vaga sem confirmar a turma'],servicos:['Não dar parecer técnico pelo WhatsApp'],lancamento:['Não prometer resultado financeiro']};
+function nzWizard(box,nome,seg,onDone){
+  const W=NZW_Q[seg]||NZW_Q.outro,A={nome};let i=0;
+  const comp=()=>W.t(A).filter(Boolean).join(' ').replace(/\s+/g,' ').replace(/\.\./g,'.');
+  const draw=()=>{const last=i>=W.q.length;const q=W.q[i]||[];
+   box.innerHTML=`<div class="nzw">${last?`<div class="nzw-h"><b>Pronto! Veja como ficou</b><span>Pode ajustar o texto à vontade depois.</span></div><div class="nzw-pv">${esc(comp())}</div>
+     <div class="nzw-ft"><button type="button" class="nz-ex" data-wb>← Ajustar respostas</button><button type="button" class="btn sm" data-wx>Cancelar</button><button type="button" class="btn sm p" data-wok>Usar este texto</button></div>`
+    :`<div class="nzw-h"><span class="nzw-n">Pergunta ${i+1} de ${W.q.length}</span><div class="nzw-bar"><i style="width:${Math.round(100*i/W.q.length)}%"></i></div></div>
+     <label class="nzw-q" for="wzIn">${esc(q[1])}</label><input id="wzIn" value="${esc(A[q[0]]||'')}" placeholder="Ex.: ${esc(q[2])}" maxlength="300" autocomplete="off">
+     <div class="nzw-ft">${i?'<button type="button" class="nz-ex" data-wb>← Voltar</button>':'<button type="button" class="nz-ex" data-wx>Cancelar</button>'}<span class="nzw-sp"></span>${i?'<button type="button" class="btn sm" data-wsk>Pular</button>':''}<button type="button" class="btn sm p" data-wn>${i===W.q.length-1?'Ver o texto':'Próxima'} →</button></div>`}</div>`;
+   const inp=box.querySelector('#wzIn');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();box.querySelector('[data-wn]').click()}}}
+   const save=()=>{if(inp)A[q[0]]=inp.value.trim().replace(/[.\s]+$/,'')};
+   const b=s=>box.querySelector(s);
+   if(b('[data-wn]'))b('[data-wn]').onclick=()=>{save();if(!i&&!A[q[0]]){inp.focus();inp.classList.add('bad');return}i++;draw()};
+   if(b('[data-wsk]'))b('[data-wsk]').onclick=()=>{A[q[0]]='';i++;draw()};
+   if(b('[data-wb]'))b('[data-wb]').onclick=()=>{save();i=last?W.q.length-1:i-1;draw()};
+   if(b('[data-wx]'))b('[data-wx]').onclick=()=>onDone(null);
+   if(b('[data-wok]'))b('[data-wok]').onclick=()=>onDone(comp())};
+  draw()}
 const OB_ASK={studio:['Quanto custa a aula?','Tem aula experimental?','Tem horário à noite?'],clinica:['Vocês fazem botox? Quanto custa?','Tem horário sábado de manhã?','Quero falar com uma pessoa'],
   salao:['Quanto é corte e barba?','Tem horário hoje à tarde?','Aceita Pix?'],imobiliaria:['Tem apartamento de 2 quartos?','Aceita financiamento?','Quero agendar uma visita'],
   escola:['Quanto é a mensalidade?','Tem aula experimental?','Tem turma online?'],loja:['Tem esse vestido no M?','Qual o prazo de entrega?','Parcela no cartão?'],
@@ -4524,7 +4580,11 @@ const VIEWS={
   const done=()=>SEC.filter(x=>x[0]!=='outras'&&x[4](V)).length,total=SEC.filter(x=>x[0]!=='outras').length;
   if(!open)open=(SEC.find(x=>!x[4](V))||SEC[0])[0];
   const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
-  const fieldH=([k,l,h,r])=>`<div class="nz-f"><div class="nz-fl"><label for="nz_${k}">${l}</label>${ex[k]&&!V[k].trim()?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</div>
+  const seg=ME.company.segment||'outro';
+  const chipsFor=k=>k==='goal'?(NZ_GOAL[seg]||NZ_GOAL.outro):k==='rules'?[...(NZ_RULES[seg]||[]),...NZ_RULES.geral]:null;
+  const fieldH=([k,l,h,r])=>`<div class="nz-f" data-fk="${k}"><div class="nz-fl"><label for="nz_${k}">${l}</label><span class="nz-acts">${k==='about'?`<button type="button" class="nz-ex nz-wz" data-wz="${k}">✨ Me ajude a escrever</button>`:''}${ex[k]&&!V[k].trim()&&k!=='about'?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</span></div>
+    ${k==='about'?'<div class="nz-wzb" id="wzBox"></div>':''}
+    ${chipsFor(k)?`<div class="nz-qc">${chipsFor(k).filter(c=>!V[k].toLowerCase().includes(c.toLowerCase())).map(c=>`<button type="button" data-qc="${k}">+ ${esc(c)}</button>`).join('')}</div>`:''}
     ${r===1?`<input id="nz_${k}" name="${k}" value="${esc(V[k])}" maxlength="1000" placeholder="${esc(ex[k]||'')}">`:`<textarea id="nz_${k}" name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(V[k])}</textarea>`}<span class="hint">${h}</span></div>`;
   const catH=()=>`<div class="nz-cat"><div class="nz-fl"><label>O que vende e quanto custa</label><button type="button" class="nz-ex" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
     ${cat.length?`<ul>${cat.slice(0,8).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<i>sem preço</i>'}</b></li>`).join('')}</ul>${cat.length>8?`<p class="hint">e mais ${cat.length-8} itens</p>`:''}`
@@ -4571,6 +4631,10 @@ const VIEWS={
    const d=done();$('.nz-pt b').textContent=d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`;$('.nz-bar i').style.width=Math.round(100*d/total)+'%';showSave();return keep};
   function bind(){
    const f=$('#aiF');
+   document.querySelectorAll('[data-wz]').forEach(b=>b.onclick=()=>{const k=b.dataset.wz,fld=b.closest('.nz-f'),ta=fld.querySelector('textarea');fld.classList.add('wzon');
+     nzWizard($('#wzBox'),ME.company.name,seg,txt=>{fld.classList.remove('wzon');$('#wzBox').innerHTML='';if(txt){V[k]=txt;ta.value=txt;ta.style.height=Math.max(ta.scrollHeight+4,90)+'px';refreshHead();toast('Texto pronto. Ajuste se quiser e salve.')}})});
+   document.querySelectorAll('[data-qc]').forEach(b=>b.onclick=()=>{const k=b.dataset.qc,el=$('#nz_'+k),t=b.textContent.replace(/^\+ /,'');
+     el.value=k==='goal'?t+'.':(el.value.trim()?el.value.trim()+'\n':'')+t+'.';V[k]=el.value;b.remove();refreshHead()});
    f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};
    f.onchange=e=>{const t=e.target;if(t.type==='radio'){V[t.name]=t.value;t.closest('div').querySelectorAll('label').forEach(l=>l.classList.toggle('on',l.contains(t)&&t.checked));refreshHead();if(t.name==='default_mode'){const m=modeOf(V.default_mode);$('.nz-st b').textContent=m[1];$('.nz-dot').className='nz-dot '+V.default_mode}}};
    document.querySelectorAll('.nz-sh').forEach(h=>h.onclick=()=>{const id=h.parentNode.dataset.s;open=open===id?null:id;draw();const el=document.querySelector(`.nz-s[data-s="${id}"]`);if(open&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start',behavior:'smooth'})});
