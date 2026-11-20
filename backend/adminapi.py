@@ -421,7 +421,16 @@ async def notices_get(user=Depends(admin)):
     for k in N.DEFS:
         tpl = await db.notice_templates.find_one({'key': k}, {'_id': 0}, sort=[('version', -1)])
         items.append(notice_out(k, on[k], await N.texts(k), bool(custom.get(k)), tpl))
-    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': await N.wa_ready()}
+    since = now() - timedelta(days=30); st = {}
+    for l in await db.notice_log.find({'at': {'$gte': since}}, {'_id': 0, 'key': 1, 'email': 1, 'wa': 1, 'at': 1}).to_list(20000):
+        x = st.setdefault(l['key'], {'sent': 0, 'email': 0, 'wa': 0, 'failed': 0, 'last_at': None})
+        x['sent'] += 1; x['email'] += bool(l.get('email')); x['wa'] += bool(l.get('wa')); x['failed'] += not (l.get('email') or l.get('wa'))
+        if not x['last_at'] or aware(l['at']) > aware(x['last_at']): x['last_at'] = l['at']
+    for it in items:
+        it['stats'] = st.get(it['key'], {'sent': 0, 'email': 0, 'wa': 0, 'failed': 0, 'last_at': None})
+        it['optional'] = it['key'] in N.OPTIONAL; it['always'] = bool(N.DEFS[it['key']].get('always'))
+    tot = {k: sum(x[k] for x in st.values()) for k in ('sent', 'email', 'wa', 'failed')}
+    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': await N.wa_ready(), 'totals_30': tot}
 
 @router.put('/admin/notices')
 async def notices_put(body: dict, request: Request, user=Depends(admin)):

@@ -167,6 +167,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert a.get(f'/api/admin/companies/{dom["id"]}').json()['kind'] == 'readonly'
         # avisos automáticos
         nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 17 and all(nn['notices'].values())
+        assert nn['totals_30']['sent'] >= 1 and all('stats' in i and 'optional' in i for i in nn['items'])
         assert a.put('/api/admin/notices', json={'paid': False}).json()['notices']['paid'] is False
 
 def test_admin_funil_cancelamento_e_conta_de_teste(monkeypatch):
