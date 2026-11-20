@@ -111,38 +111,17 @@ async def texts(key):
 
 # ---------- e-mail ----------
 def email_html(key, t, v):
-    n = DEFS[key]; bg, fg, dot = TONES[n['tone']]; e = html.escape; F = lambda s: e(fill(s, v))
-    out = [f'<img src="{APP}/mail/{n["icon"]}-{n["tone"]}.png" width="52" height="52" alt="" style="display:block;border:0;border-radius:16px">',
-           f'<div style="font-size:12px;font-weight:600;color:{fg};margin:14px 0 4px">{e(n["eyebrow"])}</div>',
-           f'<h1 style="margin:0 0 14px;font-size:21px;line-height:1.25;font-weight:600;color:#17212B">{F(t["title"])}</h1>']
-    if n.get('fig'):
-        bar = ''
-        if n.get('bar'):
-            a, b, l, r = n['bar']; a, b = v.get('bar_now', a), v.get('bar_total', b); pct = max(0, min(100, round(100 * a / b))) if b else 0
-            bar = (f'<div style="height:8px;border-radius:99px;background:#fff;margin-top:12px;overflow:hidden"><div style="height:8px;width:{pct}%;background:{dot};border-radius:99px"></div></div>'
-                   f'<table role="presentation" width="100%" style="margin-top:6px;font-size:12.5px;color:#4B5968"><tr><td style="font-weight:600;color:#17212B">{F(v.get("bar_label") or l)}</td><td align="right">{F(r)}</td></tr></table>')
-        out.append(f'<div style="background:{bg};border-radius:14px;padding:14px 16px;margin:0 0 14px"><div style="font-size:28px;line-height:1.15;font-weight:600;color:#17212B">{F(n["fig"][0])}</div>'
-                   f'<div style="font-size:12.5px;color:#4B5968;margin-top:2px">{F(n["fig"][1])}</div>{bar}</div>')
-    out += [f'<p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:#2B2622">{F(p)}</p>' for p in t['body'].split('\n') if p.strip()]
-    if n.get('steps'):
-        for i, (st, a, b) in enumerate(n['steps'], 1):
-            c = ('#DDF4EC', '#0A5C50', '✓') if st == 1 else ('#E8603F', '#fff', i) if st == 2 else ('#F3EDE7', '#4B5968', i)
-            out.append(f'<table role="presentation" style="margin:0 0 10px"><tr><td valign="top" style="padding-right:10px"><div style="width:22px;height:22px;line-height:22px;border-radius:50%;text-align:center;font-size:11.5px;font-weight:600;background:{c[0]};color:{c[1]}">{c[2]}</div></td>'
-                       f'<td style="font-size:13.5px;line-height:1.35;color:#2B2622">{e(a)}' + (f'<br><span style="font-size:12px;color:#6B7785">{e(b)}</span>' if b else '') + '</td></tr></table>')
-    for a, b in n.get('rows') or []:
-        if not fill(b, v).strip(): continue
-        out.append(f'<table role="presentation" width="100%" style="border-top:1px solid #EFE8E1;font-size:13px"><tr><td style="padding:9px 0;color:#4B5968">{e(a)}</td><td align="right" style="padding:9px 0;font-weight:600;color:#17212B">{F(b)}</td></tr></table>')
-    link = APP + n['button'][1]; ghost = n.get('ghost')
-    out.append(f'<a href="{link}" style="display:block;text-align:center;margin-top:16px;padding:14px 18px;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;'
-               + ('background:#fff;color:#17212B;border:1px solid #DCD2C9' if ghost else 'background:#E8603F;color:#fff') + f'">{e(n["button"][0])}</a>')
-    if n.get('second'): out.append(f'<p style="margin:12px 0 0;text-align:center;font-size:12.5px"><a href="{link}" style="color:#C44A2C">{e(n["second"])}</a></p>')
-    if n.get('foot'): out.append(f'<p style="margin:12px 0 0;text-align:center;font-size:12px;color:#6B7785">{e(n["foot"])}</p>')
-    return (f'<!doctype html><html lang="pt-BR"><body style="margin:0;background:#F7F2EC;font-family:Helvetica,Arial,sans-serif">'
-            f'<div style="display:none;max-height:0;overflow:hidden;opacity:0">{F(t["pre"])}</div>'
-            f'<div style="max-width:520px;margin:0 auto;padding:28px 16px"><div style="text-align:center;font-weight:600;font-size:18px;color:#E8603F;margin-bottom:16px">Oi Nanda</div>'
-            f'<div style="background:#fff;border-radius:18px;padding:26px 22px 22px;border:1px solid #EDE5DC">{"".join(out)}</div>'
-            f'<p style="font-size:12px;line-height:1.5;color:#7A716A;text-align:center;margin:16px 8px 0">Paulo, do Oi Nanda. Para falar comigo, é só responder.<br>'
-            f'Você recebe este aviso por ser responsável pela conta {e(str(v.get("empresa", "")))}. <a href="{APP}/empresa/avisos" style="color:#7A716A">Escolher meus avisos</a></p></div></body></html>')
+    n = DEFS[key]; e = html.escape; F = lambda x: fill(x, v)
+    c = {'tone': n['tone'], 'icon': f'{n["icon"]}-{n["tone"]}', 'eyebrow': n['eyebrow'], 'title': F(t['title']), 'pre': F(t['pre']),
+         'body': [e(F(p)) for p in t['body'].split('\n') if p.strip()],
+         'fig': (F(n['fig'][0]), F(n['fig'][1])) if n.get('fig') else None,
+         'steps': n.get('steps'), 'rows': [(a, F(b)) for a, b in n.get('rows') or []],
+         'button': (n['button'][0], APP + n['button'][1]), 'ghost': n.get('ghost'),
+         'second': (n['second'], APP + n['button'][1]) if n.get('second') else None, 'foot': n.get('foot'),
+         'why': f'Você recebe este aviso por ser responsável pela conta {v.get("empresa", "")} no Oi Nanda.', 'prefs': True}
+    if n.get('bar'):
+        a, b, l, r = n['bar']; c['bar'] = (v.get('bar_now', a), v.get('bar_total', b), F(v.get('bar_label') or l), F(r))
+    return mailer.render(c)
 
 def email_text(key, t, v):
     n = DEFS[key]; L = [fill(t['title'], v), '']
