@@ -275,6 +275,7 @@ class Filters(BaseModel):
     status: Literal['ok', 'cancelled', 'pending', 'open', 'all'] = 'ok'
     promo: Optional[str] = None
     kind: Literal['', 'nova', 'recompra'] = ''
+    imported: Literal['', 'hide', 'only'] = ''  # vendas trazidas de planilha
 
 def period(company, f: Filters):
     tz = agenda.tz_of(company)
@@ -297,6 +298,8 @@ async def fetch(user, f: Filters, t0, t1):
     q = {'company_id': user['company_id'], 'date': {'$gte': t0, '$lt': t1}}
     if f.status == 'open': q['status'] = {'$in': ['ok', 'pending']}
     elif f.status != 'all': q['status'] = f.status
+    if f.imported == 'hide': q['imported'] = {'$ne': True}
+    elif f.imported == 'only': q['imported'] = True
     if f.promo == 'none': q['promos.0'] = {'$exists': False}
     elif f.promo: q['promos.promo_id'] = f.promo
     if user['role'] not in MGR: q['$or'] = [{'sellers.user_id': user['id']}, {'created_by': user['id']}]
@@ -354,8 +357,8 @@ def totals(fs):
 @router.get('/sales')
 async def list_sales(start: Optional[str] = None, end: Optional[str] = None, seller: Optional[str] = None, team: Optional[str] = None,
                      product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                     q: Optional[str] = None, status: str = 'open', kind: str = '', promo: Optional[str] = None, user=Depends(current_user)):
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status, kind=kind, promo=promo)
+                     q: Optional[str] = None, status: str = 'open', kind: str = '', promo: Optional[str] = None, imported: str = '', user=Depends(current_user)):
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, q=q, status=status, kind=kind, promo=promo, imported=imported)
     await migrate_legacy(user['company'])
     onames = await origin_names(user['company'])
     s0, s1, t0, t1 = period(user['company'], f)
@@ -366,10 +369,10 @@ async def list_sales(start: Optional[str] = None, end: Optional[str] = None, sel
 @router.get('/sales/report')
 async def report(start: Optional[str] = None, end: Optional[str] = None, group: str = 'seller', seller: Optional[str] = None, team: Optional[str] = None,
                  product: Optional[str] = None, category: Optional[str] = None, payment: Optional[str] = None, source: Optional[str] = None,
-                 bucket: Optional[str] = None, kind: str = '', promo: Optional[str] = None, user=Depends(current_user)):
+                 bucket: Optional[str] = None, kind: str = '', promo: Optional[str] = None, imported: str = '', user=Depends(current_user)):
     if group not in GROUPS: raise HTTPException(400, 'Agrupamento inválido.')
     if user['role'] not in MGR: seller = user['id']  # atendente vê só as próprias vendas
-    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind, promo=promo)
+    f = Filters(start=start, end=end, seller=seller, team=team, product=product, category=category, payment=payment, source=source, kind=kind, promo=promo, imported=imported)
     company = user['company']
     onames = await origin_names(company)
     await migrate_legacy(company)

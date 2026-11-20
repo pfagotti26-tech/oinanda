@@ -45,7 +45,7 @@ async def first_reply_minutes(company_id, contact_ids):
 
 async def period_totals(cid, kinds, won_ids, start, end, keep=lambda c: True):
     """Números de um período fechado, para comparar com o atual."""
-    new = [c for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular']}},
+    new = [c for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular', 'importado']}},
                                  {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
     won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
     fr = await first_reply_minutes(cid, [c['id'] for c in new])
@@ -84,7 +84,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
         if team and c.get('team_id') != team: return False
         if origin and not skip_origin and origin_key(c, onames, lnames)[0] != origin: return False
         return True
-    all_new = await db.contacts.find({'company_id': cid, 'created_at': rng, 'source': {'$nin': ['historico', 'agenda do celular']}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000)
+    all_new = await db.contacts.find({'company_id': cid, 'created_at': rng, 'source': {'$nin': ['historico', 'agenda do celular', 'importado']}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000)
     from wallet import is_agenda, IN_AT
     real = {c['id'] for c in await db.contacts.find({'company_id': cid, 'id': {'$in': [c['id'] for c in all_new]}}, {'_id': 0, 'id': 1, 'source': 1, 'sales_count': 1, **{k: 1 for k in IN_AT}}).to_list(10000) if not is_agenda(c)}
     all_new = [c for c in all_new if c['id'] in real]  # quem só veio da agenda do celular não é contato novo

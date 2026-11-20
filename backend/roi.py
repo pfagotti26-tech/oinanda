@@ -181,7 +181,7 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, user=De
     company = user['company']
     s0, s1, t0, t1 = period(company, Filters(start=start, end=end))
     names = {o['id']: o['name'] for o in await origins_of(company)}; names['_none'] = 'Não sabemos'
-    cs = await db.contacts.find({'company_id': company['id'], 'created_at': {'$gte': t0, '$lt': t1}, 'source': {'$nin': ['historico', 'agenda do celular']}},
+    cs = await db.contacts.find({'company_id': company['id'], 'created_at': {'$gte': t0, '$lt': t1}, 'source': {'$nin': ['historico', 'agenda do celular', 'importado']}},
                                 {'_id': 0, 'id': 1, 'origin': 1, 'origin_detail': 1, 'ad': 1, **BASE_FIELDS}).to_list(50000)
     own = await own_numbers(company)
     cs = [c for c in cs if in_base(c, own)]  # agenda do celular, fora da base e o número da empresa não contam

@@ -418,7 +418,7 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, origin:
     if team: q['team_id'] = team
     from wallet import is_agenda, IN_AT
     cs = await db.contacts.find(q, {'_id': 0, 'id': 1, 'origin': 1, 'ad': 1, 'assigned_to': 1, 'created_at': 1, 'source': 1, 'sales_count': 1, 'internal': 1, **{k: 1 for k in IN_AT}}).to_list(50000)
-    skip = {c['id'] for c in cs if is_agenda(c) or c.get('internal') or c.get('source') in ('historico', 'agenda do celular')}  # agenda do celular não é contato que chegou
+    skip = {c['id'] for c in cs if is_agenda(c) or c.get('internal') or c.get('source') in ('historico', 'agenda do celular', 'importado')}  # agenda do celular não é contato que chegou
     cs = [c for c in cs if c['id'] not in skip]
     if origin: cs = [c for c in cs if (c.get('origin') or ('anuncio' if c.get('ad') else '_none')) == origin]
     ids = [c['id'] for c in cs]

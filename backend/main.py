@@ -45,6 +45,8 @@ for _n in ('httpx', 'httpcore'): logging.getLogger(_n).setLevel(logging.WARNING)
 async def lifespan(app):
     await db.users.create_index('email', unique=True)
     await db.users.create_index('company_id')
+    await db.import_rows.create_index([('job_id', 1), ('n', 1)])
+    await db.import_jobs.create_index([('company_id', 1), ('created_at', -1)])
     await db.companies.create_index('id', unique=True)
     await db.sessions.create_index('token_hash', unique=True)
     await db.sessions.create_index('expires_at', expireAfterSeconds=0)
@@ -162,6 +164,8 @@ from adminapi import router as admin_router
 from profile import router as profile_router
 app.include_router(admin_router, prefix="/api")
 app.include_router(profile_router, prefix="/api")
+from importer import router as import_router
+app.include_router(import_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):
