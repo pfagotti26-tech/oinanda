@@ -121,6 +121,12 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert sm['mrr'] == 297 and sm['arr'] == 3564 and sm['paying'] == 1 and sm['ticket'] == 297 and sm['late']['n'] == 0
         assert sm['forecast']['n'] == 1 and sm['forecast']['total'] == 297 and len(sm['months']) == 12 and sm['months'][-1]['total'] == 297
         assert sm['cycles']['monthly']['n'] == 1 and sm['movement']['new'] == 297
+        assert sm['nf']['missing'] == 1 and len(sm['subs']) == 1 and sm['subs'][0]['paid_total'] == 297 and sm['goal'] is None
+        pid = next(x['id'] for x in f['rows'] if x['status'] == 'paid')
+        assert a.put(f'/api/admin/payments/{pid}/nf', json={'done': True, 'number': '000123'}).status_code == 200
+        f2 = a.get(P).json(); assert f2['summary']['nf']['missing'] == 0 and next(x for x in f2['rows'] if x['id'] == pid)['nf_number'] == '000123'
+        assert a.get(P + '&status=nf').json()['rows'] == []
+        a.put('/api/admin/platform', json={'mrr_goal': 5000}); assert a.get(P).json()['summary']['goal'] == 5000
         # clientes: abas, busca e filtros
         l = a.get('/api/admin/companies').json()
         assert l['counts'] == {'all': 2, 'paying': 1, 'courtesy': 0, 'trial': 1, 'readonly': 0, 'suspended': 0} and l['total'] == 3

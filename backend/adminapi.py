@@ -214,6 +214,7 @@ class PlatformIn(BaseModel):
     site: Optional[str] = Field(default=None, max_length=120)
     instagram: Optional[str] = Field(default=None, max_length=60)
     meta_portfolio: Optional[str] = Field(default=None, max_length=80)
+    mrr_goal: Optional[float] = Field(default=None, ge=0, le=10_000_000)
 
 @router.get('/admin/platform')
 async def platform_get(user=Depends(admin)):
@@ -222,7 +223,7 @@ async def platform_get(user=Depends(admin)):
 
 @router.put('/admin/platform')
 async def platform_put(body: PlatformIn, request: Request, user=Depends(admin)):
-    ch = {k: v.strip() for k, v in body.model_dump(exclude_none=True).items()}
+    ch = {k: (v.strip() if isinstance(v, str) else v) for k, v in body.model_dump(exclude_none=True).items()}
     if ch:
         await db.settings.update_one({'id': 'platform'}, {'$set': ch}, upsert=True)
         await audit(request, user, 'Admin alterou os dados do Oi Nanda', ', '.join(ch))
@@ -245,7 +246,7 @@ async def payments(start: Optional[str] = None, end: Optional[str] = None, date_
     for p in await db.payments.find({}, {'_id': 0}).sort('due', -1).to_list(20000):
         r = rows_c.get(p['company_id'])
         if not r or not inside(p.get(field), t0, t1): continue
-        rows.append({**{k: p.get(k) for k in ('id', 'company_id', 'plan', 'cycle', 'amount', 'status', 'due', 'paid_at', 'attempt', 'detail')},
+        rows.append({**{k: p.get(k) for k in ('id', 'company_id', 'plan', 'cycle', 'amount', 'status', 'due', 'paid_at', 'attempt', 'detail', 'nf', 'nf_number', 'nf_at')},
                      'company': r['c'].get('name'), 'segment': r['c'].get('segment')})
     if date_by == 'due':  # próximas cobranças das assinaturas ativas, ainda sem fatura no Mercado Pago
         for r in rows_c.values():
@@ -258,20 +259,21 @@ async def payments(start: Optional[str] = None, end: Optional[str] = None, date_
               'to_receive': round(sum(x['amount'] for x in base_rows if x['status'] in ('pending', 'scheduled')), 2), 'to_receive_n': sum(1 for x in base_rows if x['status'] in ('pending', 'scheduled')),
               'refused': round(sum(x['amount'] for x in base_rows if x['status'] == 'refused'), 2), 'refused_n': sum(1 for x in base_rows if x['status'] == 'refused'),
               'cancellations': sum(1 for r in rows_c.values() if inside((r['c'].get('billing') or {}).get('cancelled_at'), t0, t1))}
-    counts = {k: sum(1 for x in base_rows if x['status'] == k) for k in STATUS}
+    counts = {**{k: sum(1 for x in base_rows if x['status'] == k) for k in STATUS}, 'nf': sum(1 for x in base_rows if x['status'] == 'paid' and not x.get('nf'))}
     ql = q.strip().lower()
-    want = {'open': ('pending', 'scheduled')}.get(status, (status,) if status else None)
-    rows = [x for x in rows if (not want or x['status'] in want) and (not plan or x['plan'] == plan) and (not cycle or (x['cycle'] or 'monthly') == cycle)
+    want = {'open': ('pending', 'scheduled'), 'nf': ('paid',)}.get(status, (status,) if status else None)
+    rows = [x for x in rows if (not want or x['status'] in want) and (status != 'nf' or not x.get('nf')) and (not plan or x['plan'] == plan) and (not cycle or (x['cycle'] or 'monthly') == cycle)
             and (not segment or x['segment'] == segment) and (not ql or ql in (x['company'] or '').lower())
             and (vmin is None or x['amount'] >= vmin) and (vmax is None or x['amount'] <= vmax)]
     rows.sort(key=(lambda x: -x['amount']) if sort == 'value' else (lambda x: aware(x['due'])), reverse=sort != 'value')
     if fmt == 'csv':
         buf = io.StringIO(); w = csv.writer(buf, delimiter=';')
-        w.writerow(['Vencimento', 'Pago em', 'Cliente', 'Segmento', 'Plano', 'Ciclo', 'Valor', 'Situação'])
+        w.writerow(['Vencimento', 'Pago em', 'Cliente', 'Segmento', 'Plano', 'Ciclo', 'Valor', 'Situação', 'Nota fiscal'])
         day = lambda d: aware(d).astimezone(SP).strftime('%d/%m/%Y') if d else ''
         for x in rows:
             w.writerow([day(x['due']), day(x['paid_at']), x['company'], x['segment'], (PLANS.get(x['plan']) or {}).get('name', x['plan']),
-                        'anual' if x['cycle'] == 'annual' else 'mensal', f"{x['amount']:.2f}".replace('.', ','), STATUS.get(x['status'], x['status'])])
+                        'anual' if x['cycle'] == 'annual' else 'mensal', f"{x['amount']:.2f}".replace('.', ','), STATUS.get(x['status'], x['status']),
+                        (x.get('nf_number') or 'emitida') if x.get('nf') else ('pendente' if x['status'] == 'paid' else '')])
         return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8', headers={'Content-Disposition': 'attachment; filename="oinanda-cobrancas.csv"'})
     summary = await fin_summary(rows_c, t0, t1)
     upcoming = sorted([{'company_id': r['c']['id'], 'company': r['c'].get('name'), 'due': aware(r['c']['billing']['next_payment']), 'plan': r['c']['billing'].get('plan'),
@@ -330,6 +332,22 @@ async def fin_summary(rows_c, t0, t1):
         if d:
             k = (d.astimezone(SP).year, d.astimezone(SP).month)
             if k in tot: tot[k] += p['amount']
+    # notas fiscais: toda cobrança paga precisa de nota; mostra as que faltam
+    nf_missing = [p for p in pays if not p.get('nf')]
+    # assinaturas: quem paga (ou vai pagar) e quanto já pagou desde o começo
+    paid_by = {}
+    for p in pays: paid_by[p['company_id']] = paid_by.get(p['company_id'], 0) + p['amount']
+    subs = []
+    for r in rows:
+        b = r['c'].get('billing') or {}
+        if not b.get('sub_id') or r['kind'] not in ('paying', 'trial'): continue
+        st = 'cancelled' if b.get('status') == 'cancelled' else 'trial' if billing.card_trial(r['c']) else 'active' if r['kind'] == 'paying' else None
+        if not st: continue
+        subs.append({'company_id': r['c']['id'], 'company': r['c'].get('name'), 'plan': b.get('plan'), 'cycle': b.get('cycle') or 'monthly', 'amount': float(b.get('amount') or 0),
+                     'monthly': round(per_month(r['c']), 2), 'since': b.get('since'), 'next_payment': b.get('trial_until') if st == 'trial' else b.get('next_payment'),
+                     'paid_until': b.get('paid_until'), 'paid_total': round(paid_by.get(r['c']['id'], 0), 2), 'status': st, 'late': bool(r['refused'])})
+    subs.sort(key=lambda x: (-x['monthly'], x['company'] or ''))
+    goal = ((await db.settings.find_one({'id': 'platform'}, {'_id': 0, 'mrr_goal': 1})) or {}).get('mrr_goal')
     tin = sum(r['ai_in'] for r in rows); tout = sum(r['ai_out'] for r in rows)
     aic = ai_cost(tin, tout, sum(r['ai_cr'] for r in rows), sum(r['ai_cw'] for r in rows))
     return {'mrr': mrr, 'arr': round(mrr * 12, 2), 'paying': len(paying), 'ticket': round(mrr / len(paying), 2) if paying else 0, 'received_prev': received_prev,
@@ -340,7 +358,23 @@ async def fin_summary(rows_c, t0, t1):
             'plans': [{'plan': k, 'name': PLANS[k]['name'], 'n': sum(1 for r in paying if r['plan'] == k), 'mrr': round(sum(r['mrr'] for r in paying if r['plan'] == k), 2)} for k in PLANS],
             'months': [{'key': f'{y}-{m:02d}', 'label': MONTHS[m - 1], 'total': round(tot[(y, m)], 2)} for y, m in ms],
             'ai_cost': aic, 'margin': round(mrr - aic, 2) if aic is not None else None, 'margin_pct': round(100 * (mrr - aic) / mrr) if aic is not None and mrr else None,
-            'mp_fee_pct': float(os.environ['MP_FEE_PCT']) if os.environ.get('MP_FEE_PCT') else None}
+            'mp_fee_pct': float(os.environ['MP_FEE_PCT']) if os.environ.get('MP_FEE_PCT') else None,
+            'nf': {'missing': len(nf_missing), 'missing_total': round(sum(p['amount'] for p in nf_missing), 2)}, 'subs': subs, 'goal': goal,
+            'recovered': round(sum(p['amount'] for p in pays if inside(p.get('paid_at'), t0, t1) and (p.get('attempt') or 0) > 0), 2)}
+
+class NfIn(BaseModel):
+    done: bool
+    number: Optional[str] = Field(default=None, max_length=40)
+
+@router.put('/admin/payments/{pid}/nf')
+async def payment_nf(pid: str, body: NfIn, request: Request, user=Depends(admin)):
+    """Marca que a nota fiscal desta cobrança foi emitida (ou desfaz)."""
+    p = await db.payments.find_one({'id': pid}, {'_id': 0})
+    if not p: raise HTTPException(404, 'Cobrança não encontrada.')
+    if p['status'] != 'paid': raise HTTPException(400, 'Só cobrança paga leva nota fiscal.')
+    await db.payments.update_one({'id': pid}, {'$set': {'nf': body.done, 'nf_number': (body.number or '').strip() or None, 'nf_at': now() if body.done else None}})
+    await audit(request, {**user, 'company_id': p['company_id']}, 'Admin marcou nota fiscal' if body.done else 'Admin desmarcou nota fiscal', body.number or pid, p['company_id'])
+    return {'ok': True}
 
 @router.post('/admin/payments/sync')
 async def payments_sync(request: Request, user=Depends(admin)):
