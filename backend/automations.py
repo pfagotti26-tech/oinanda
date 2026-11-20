@@ -385,6 +385,7 @@ async def candidates(a, company, stages):
         for c in await db.contacts.find({'company_id': cid, 'opt_out': {'$ne': True}, 'holdings.expires_at': {'$gt': lo, '$lte': hi}}, {'_id': 0}).to_list(3000):
             for x in c.get('holdings') or []:
                 e = aware(x.get('expires_at'))
+                if x.get('cancelled_at'): continue  # cancelou a assinatura: aviso de vencimento não faz sentido (a retomada é com o time)
                 if e and lo < e <= hi and (not pid or x.get('product_id') == pid):
                     tz = agenda.tz_of(company)
                     out.append((f"{a['id']}:{c['id']}:{x['key']}:{e.isoformat()}", c, {'_extra': {'produto': x['name'], 'vencimento': f'{e.astimezone(tz):%d/%m}'}}))

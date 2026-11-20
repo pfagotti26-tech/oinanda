@@ -2055,6 +2055,13 @@ body:has(.nz-save) #toast{bottom:92px}
 .iw-go{margin-top:4px}
 .iw-done{text-align:center;padding:24px 10px}.iw-done>.ok{width:56px;height:56px;border-radius:50%;display:inline-grid;place-items:center;background:var(--oksoft);color:var(--ok);font-size:26px;font-weight:700}.iw-done h3{font-size:20px;margin:12px 0 6px}.iw-done p{max-width:560px;margin:0 auto 6px;color:var(--ink2)}
 @media (max-width:860px){.iw-scr{display:none}.iw-map{max-height:none;grid-template-columns:1fr 1fr;overflow:visible}.iw-c li:nth-child(n+3){display:none}.iw-ch{padding:8px}.iw-ch select{font-size:12.5px;padding:5px 6px}.iw-g{grid-template-columns:1fr}.iw-drop{min-height:180px}.iw-help ul{grid-template-columns:1fr}.iw-k{grid-template-columns:1fr 1fr}#clImp span{display:none}}
+/* assinaturas */
+.cb-sub{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 12px}.cb-sb{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 14px;font:inherit;font-size:13px;color:var(--ink2);cursor:pointer}
+.cb-sb>svg{width:16px;height:16px;color:#2F6FB5}.cb-sb b{color:var(--ink)}.cb-sb.bad b{color:var(--bad)}.cb-sb em{font-style:normal;font-weight:600;color:var(--c);font-size:12.5px}.cb-sb.on,.cb-sb:hover{border-color:var(--c)}
+.sb-w{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sb-w label{display:flex!important;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}.sb-w input{width:auto!important;margin-top:3px}.sb-w span{display:flex;flex-direction:column}.sb-w b{font-size:13.5px}.sb-w small{font-size:12px;color:var(--ink3)}.sb-w label:has(input:checked){border-color:var(--c);background:var(--tint)}
+.sb-r{display:flex;flex-wrap:wrap;gap:6px}.sb-r button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}.sb-r button.on{border-color:var(--c);background:var(--tint);color:var(--c);font-weight:600}
+.modal.sb-m{width:520px}.cf-wl>div{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) auto}.cf-wl>div>span:not(.pill){text-align:right}.wl-i small .lnk,.cf-wl .lnk{font-size:12px}
+@media (max-width:860px){.sb-w{grid-template-columns:1fr}}
 /* aviso no WhatsApp do time */
 .eq-wa{display:grid;grid-template-columns:44px minmax(0,1fr) 210px;gap:16px;align-items:start;padding:16px 18px;margin-bottom:14px}
 .eq-wai{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:#E3F6EA;color:#1E7A48}.eq-wai svg{width:22px;height:22px}
@@ -3422,8 +3429,9 @@ async function cvPanel(c){
   if($('#pnVal')){$('#pnVal').oninput=e=>maskIn(e.target);$('#pnVal').onchange=e=>patch(e.target.value===''?{value:0}:{value:parseIn(e.target.value)},'Valor salvo.')}
   if(c.sales_count)api('/contacts/'+c.id+'/wallet').then(w=>{const box=$('#pnWal');if(!box)return;
     const ST={ativo:['ativo','ok'],vence_logo:['vence logo','warn'],vencido:['venceu','bad']};
-    box.innerHTML=(w.items.length?`<div class="wl-has">${w.items.map(x=>`<div class="wl-i"><span><b>${esc(x.name)}</b><small>${x.recurring?'assinatura · desde '+fmtD(ymd(new Date(x.first_at))):x.expires_at?(x.state==='vencido'?'venceu em ':'até ')+fmtD(ymd(new Date(x.expires_at))):x.count>1?x.count+' compras':'comprou em '+fmtD(ymd(new Date(x.last_at)))}</small></span><span class="pill ${ST[x.state][1]}">${ST[x.state][0]}</span></div>`).join('')}</div>`:'')
+    box.innerHTML=(w.items.length?`<div class="wl-has">${w.items.map(x=>`<div class="wl-i"><span><b>${esc(x.name)}</b><small>${x.recurring?esc(subTxt(x))+` · <button type="button" class="lnk" data-sub="${w.items.indexOf(x)}">${x.cancelled_at?'voltou a valer':'cancelou?'}</button>`:x.expires_at?(x.state==='vencido'?'venceu em ':'até ')+fmtD(ymd(new Date(x.expires_at))):x.count>1?x.count+' compras':'comprou em '+fmtD(ymd(new Date(x.last_at)))}</small></span><span class="pill ${(x.recurring?subPill(x,ST):ST[x.state])[1]}">${(x.recurring?subPill(x,ST):ST[x.state])[0]}</span></div>`).join('')}</div>`:'')
       +(w.offers.length?`<div class="wl-off"><span class="wl-t">Pode comprar</span>${w.offers.map((o,i)=>`<div class="wl-o"><span><b>${esc(o.name)}</b><small>${o.why==='renovar'?'renovação':o.why==='voltar'?'voltar a ter':'próximo passo depois de '+esc(o.from)}${o.price!=null?' · '+brl(o.price):''}</small></span><button class="lnk" data-of="${i}">oferecer</button><button class="lnk" data-ov="${i}">vender</button></div>`).join('')}</div>`:'');
+    box.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>subAct(c.id,w.items[+b.dataset.sub],()=>{CV.pnFor=null;cvChat(true)}));
     box.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const o=w.offers[+b.dataset.of],t=$('#cvText'),first=c.name.split(' ')[0];if(!t)return;
       t.value=o.why==='renovar'?`Oi, ${first}! Seu ${o.name} vence em breve. Quer que eu já deixe a renovação garantida pra você?`:o.why==='voltar'?`Oi, ${first}! Sentimos sua falta. Quer voltar com o ${o.name}? Posso te passar as condições de agora.`:`Oi, ${first}! Como você já fez o ${o.from}, o próximo passo natural é o ${o.name}. Quer que eu te conte como funciona?`;
       t.dispatchEvent(new Event('input'));t.focus();toast('Mensagem pronta na caixa. Ajuste e envie.')});
@@ -4132,6 +4140,7 @@ Object.assign(INFO,{
   ci_cat:['Categoria','Junta itens parecidos, como “Planos” ou “Cabelo”. Serve para filtrar o catálogo e ver nos relatórios qual grupo vende mais. É opcional.'],
   ci_price:['Preço','O valor que já vem preenchido na hora de registrar a venda (dá para mudar em cada venda). Se o preço muda a cada cliente, escolha “Varia”.'],
   ci_val:['Validade','Quanto tempo o plano ou pacote vale depois da compra. Perto de vencer, o cliente aparece em “Renovar” e a Nanda pode lembrar ele.'],
+  cl_mrr:['Assinaturas ativas','Quem tem um plano marcado no Catálogo como “Assinatura que renova sozinha” e não cancelou. O valor por mês soma o preço de cada plano dividido pelo período (um anual de R$ 1.200 conta R$ 100 por mês). Quando alguém cancelar o cartão, abra o cliente e marque “cancelou” no plano: ele sai daqui e entra em “cancelaram”.'],
   ci_rec:['Assinatura que renova sozinha','Para cobrança automática (cartão recorrente, débito). O cliente continua ativo sem você registrar a renovação todo mês, não recebe aviso de vencimento e não entra em “Renovar”.'],
   ci_next:['Oferecer depois','O próximo passo natural para quem comprou este item. Aparece como sugestão de venda na carteira do cliente. Ex.: Módulo 1 → Módulo 2.'],
   ci_on:['Disponível para vender','Desligado, o item some da lista na hora de vender. As vendas antigas continuam nos relatórios.']});
@@ -4490,6 +4499,25 @@ const CF_IC={start:'<path d="M5 12h14M13 6l6 6-6 6"/>',chat:'<path d="M21 12a8 8
  stage:'<path d="M4 6h16M4 12h10M4 18h6"/>',opp:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',mile:'<path d="M5 21V4h11l-2 4 2 4H5"/>',note:'<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/>',sys:'<circle cx="12" cy="12" r="8.5"/><path d="M12 8v5M12 16h.01"/>'};
 const cfWhen=v=>{const d=new Date(v);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' · '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
 const cfAgo=v=>{if(!v)return '—';const n=Math.floor((Date.now()-new Date(v))/864e5);return n<1?'hoje':n===1?'ontem':n<30?`há ${n} dias`:n<365?`há ${Math.round(n/30)} ${Math.round(n/30)===1?'mês':'meses'}`:`há ${Math.round(n/365)} ${Math.round(n/365)===1?'ano':'anos'}`};
+/* assinatura que renova sozinha: marcar quando o cliente cancela (senão ele fica ativo para sempre) */
+function subTxt(x){if(!x.cancelled_at)return 'assinatura · desde '+fmtD(ymd(new Date(x.first_at)));const d=fmtD(ymd(new Date(x.cancelled_at)));return new Date(x.cancelled_at)>new Date()?'assinatura cancelada · vale até '+d:'assinatura cancelada em '+d}
+function subPill(x,ST){return x.cancelled_at?(new Date(x.cancelled_at)>new Date()?['cancelada','warn']:['cancelou','bad']):ST[x.state]||['','grey']}
+async function subAct(cid,x,done){
+  if(x.cancelled_at){if(!await sure(`Marcar que a assinatura ${x.name} voltou a valer? Use quando o cliente desistiu de cancelar ou a cobrança voltou.`,{ok:'Voltou a valer'}))return;
+    try{await api('/contacts/'+cid+'/subscription',{method:'POST',body:{product_id:x.product_id,cancel:false}});toast('Assinatura ativa de novo.');done()}catch(e){toast(e.message)}return}
+  const tm=new Date(Date.now()+864e5),eom=new Date(tm.getFullYear(),tm.getMonth()+1,0);
+  const o=overlay(`<form class="modal sb-m"><div class="row"><h2 style="font-size:20px">Cancelou a assinatura?</h2><button type="button" class="x">×</button></div>
+    <p class="hint" style="margin:0 0 12px"><b>${esc(x.name)}</b> · ${esc(subTxt(x))}. Marque aqui quando o cliente cancelar a cobrança: ele sai das assinaturas ativas, para de contar no valor por mês e entra em “cancelaram”, para o time tentar trazer de volta.</p>
+    <div class="field"><label>Até quando vale</label><div class="sb-w"><label><input type="radio" name="w" value="now" checked><span><b>Já parou</b><small>a partir de hoje</small></span></label><label><input type="radio" name="w" value="date"><span><b>Vale até uma data</b><small>ex.: fim do mês já pago</small></span></label></div>
+     <input type="date" name="at" min="${ymd(tm)}" value="${ymd(eom)}" style="margin-top:8px;display:none"></div>
+    <div class="field"><label>Motivo <span class="hint" style="font-weight:500">(opcional, ajuda a entender por que saem)</span></label><div class="sb-r">${['Preço','Não estava usando','Mudou de cidade','Insatisfeito','Problema de saúde','Outro'].map(r=>`<button type="button" data-r="${r}">${r}</button>`).join('')}</div>
+     <input name="reason" maxlength="200" placeholder="Escreva o motivo" style="margin-top:8px"></div>
+    <div class="row"><button class="btn p">Marcar cancelamento</button><span class="hint">Dá para desfazer depois.</span><span class="err" id="sbE"></span></div></form>`,true);
+  const f=o.querySelector('form')||o;
+  f.querySelectorAll('[name=w]').forEach(r=>r.onchange=()=>{f.at.style.display=f.w.value==='date'?'':'none'});
+  f.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{f.querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x===b));f.reason.value=b.dataset.r==='Outro'?'':b.dataset.r;if(b.dataset.r==='Outro')f.reason.focus()});
+  f.onsubmit=async e=>{e.preventDefault();const at=f.w.value==='date'?f.at.value:null;if(f.w.value==='date'&&!at)return o.querySelector('#sbE').textContent='Escolha a data.';
+    try{await api('/contacts/'+cid+'/subscription',{method:'POST',body:{product_id:x.product_id,at,reason:f.reason.value.trim()}});o.remove();toast('Cancelamento marcado.');done()}catch(x2){o.querySelector('#sbE').textContent=x2.message}}}
 async function ctProfile(id,tab){
   if(!STAGES)STAGES=await api('/funnel/stages').catch(()=>[]);
   const [p,sales,wal,aps,tl]=await Promise.all([api('/contacts/'+id+'/profile'),api('/contacts/'+id+'/sales').catch(()=>[]),api('/contacts/'+id+'/wallet').catch(()=>({items:[],offers:[]})),api('/contacts/'+id+'/appointments').catch(()=>[]),api('/contacts/'+id+'/timeline').catch(()=>({items:[]}))]);
@@ -4517,7 +4545,7 @@ async function ctProfile(id,tab){
   const draw=t=>{o.querySelectorAll('[data-cft]').forEach(b=>b.classList.toggle('on',b.dataset.cft===t));const B=o.querySelector('#cfB');
     if(t==='res'){const up=aps.filter(a=>new Date(a.start)>Date.now()&&!['canceled','no_show'].includes(a.status)).slice(-3).reverse();
       B.innerHTML=`<div class="cf-g"><div class="cf-col">
-        <div class="vd-c"><div class="hd"><h3>O que ${esc(first)} tem</h3>${ii('cl_tem')}</div>${wal.items.length?`<div class="cf-wl">${wal.items.map(x=>{const s=ST[x.state]||['','grey'];return `<div><b>${esc(x.name)}</b><span>${x.expires_at?(x.state==='vencido'?'venceu ':'vence ')+fmtD(ymd(new Date(x.expires_at))):'sem validade'}</span><span class="pill ${s[1]}">${s[0]}</span></div>`}).join('')}</div>`:`<p class="hint">${S.purchases?'Os itens comprados não têm validade cadastrada.':'Nada ainda. Quando comprar, aparece aqui o que tem e até quando vale.'}</p>`}
+        <div class="vd-c"><div class="hd"><h3>O que ${esc(first)} tem</h3>${ii('cl_tem')}</div>${wal.items.length?`<div class="cf-wl">${wal.items.map((x,i)=>{const s=x.recurring?subPill(x,ST):ST[x.state]||['','grey'];return `<div><b>${esc(x.name)}</b><span>${x.recurring?esc(subTxt(x))+` · <button type="button" class="lnk" data-sub="${i}">${x.cancelled_at?'voltou a valer':'cancelou?'}</button>`:x.expires_at?(x.state==='vencido'?'venceu ':'vence ')+fmtD(ymd(new Date(x.expires_at))):'sem validade'}</span><span class="pill ${s[1]}">${s[0]}</span></div>`}).join('')}</div>`:`<p class="hint">${S.purchases?'Os itens comprados não têm validade cadastrada.':'Nada ainda. Quando comprar, aparece aqui o que tem e até quando vale.'}</p>`}
          ${wal.offers&&wal.offers.length?`<div class="cf-of"><span>Pode oferecer agora</span>${wal.offers.map((x,i)=>`<button data-of="${i}">${esc(x.name)}${x.price!=null?' · '+brl(x.price):''}${svg('<path d="M12 5v14M5 12h14"/>')}</button>`).join('')}</div>`:''}</div>
         <div class="vd-c"><div class="hd"><h3>Últimos acontecimentos</h3><span class="sp"></span>${tl.items.length>5?'<button class="lnk" data-go="tl">ver tudo</button>':''}</div>${tl.items.length?`<ul class="cf-tl sm">${tl.items.slice(0,5).map(tlRow).join('')}</ul>`:'<p class="hint">Nada ainda.</p>'}</div></div>
        <div class="cf-col">
@@ -4541,6 +4569,7 @@ async function ctProfile(id,tab){
     B.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>draw(b.dataset.go));
     B.querySelectorAll('[data-cfs]').forEach(b=>b.onclick=()=>saleModal({contact:{id,name:p.name},onDone:()=>reload('buy')}));
     B.querySelectorAll('[data-sl]').forEach(b=>{const g=()=>saleModal({sale:sales[+b.dataset.sl],onDone:()=>reload('buy')});b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+    B.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>subAct(id,wal.items[+b.dataset.sub],()=>reload(tab)));
     B.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const x=wal.offers[+b.dataset.of];saleModal({contact:{id,name:p.name},items:[{product_id:x.product_id,name:x.name,price:x.price}],onDone:()=>reload('buy')})});
     const f=B.querySelector('#cfF');if(f){f.querySelector('#cfOr').onclick=()=>originEdit({...p},()=>reload('res'));
       f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,email:f.email.value,stage:f.stage.value,notes:f.notes.value,opt_out:f.opt_out.checked,internal:f.internal.checked,tags:f.tags.value.split(',').map(x=>x.trim()).filter(Boolean)};
@@ -4586,7 +4615,7 @@ async function msgModal(p,after){
 const CL={rules:[],seg:null,data:null,t:null,n:0,tab:'seg'};
 const CLF=[['product','Tem / já teve um item'],['category','Tem / já teve uma categoria'],['expires_in','Vence nos próximos dias'],['expired_within','Venceu e não renovou'],
   ['last_purchase','Última compra'],['purchases','Número de compras'],['spent','Total gasto'],['kind','Situação'],['origin','Origem'],['stage','Etapa do funil'],
-  ['tag','Etiqueta'],['team','Equipe'],['owner','Responsável'],['promo','Usou promoção'],['created','Chegou há'],['milestone','Marco da jornada']];
+  ['tag','Etiqueta'],['team','Equipe'],['owner','Responsável'],['promo','Usou promoção'],['created','Chegou há'],['milestone','Marco da jornada'],['sub','Assinatura']];
 const CLOPS={product:[['active','tem ativo'],['ever','já comprou'],['never','nunca comprou'],['expired','teve e venceu']],category:[['active','tem ativo'],['ever','já comprou'],['never','nunca comprou']],
   last_purchase:[['more','há mais de'],['less','nos últimos']],created:[['more','há mais de'],['less','nos últimos']],purchases:[['gte','pelo menos'],['lte','no máximo']],spent:[['gte','pelo menos R$'],['lte','no máximo R$']],
   kind:[['is','é'],['not','não é']],origin:[['is','é'],['not','não é']],stage:[['is','está em'],['not','não está em']],tag:[['is','tem'],['not','não tem']],team:[['is','é'],['not','não é']],owner:[['is','é'],['not','não é']],promo:[['is','usou'],['not','não usou']],milestone:[['ever','já atingiu'],['never','nunca atingiu'],['within','atingiu nos últimos'],['more','atingiu há mais de']]};
@@ -4599,7 +4628,7 @@ function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).lengt
   if(hm('orcamento')&&buy)t.push(['Pediram orçamento e não compraram','Nos últimos 30 dias',[{field:'milestone',op:'within',value:{id:'orcamento',days:30}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   if(hm('compareceu')&&buy)t.push([`Não compraram depois de "${hm('compareceu').name}"`,'Há mais de 3 dias',[{field:'milestone',op:'more',value:{id:'compareceu',days:3}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   return t}
-const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}],agenda:[{field:'base',op:'is',value:'agenda'}]};
+const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}],subs:[{field:'sub',op:'is',value:'active'}],subsLost:[{field:'sub',op:'is',value:'cancelled'}],agenda:[{field:'base',op:'is',value:'agenda'}]};
 const clSort=()=>CL.sort||(CL.rules.some(r=>['expires_in','expired_within'].includes(r.field))?'expiry':'recent');
 const clName=c=>{const n=dispName(c.name||'');const anon=!n||/^(instagram|messenger|whatsapp)$/i.test(n.trim());return {t:anon?(c.ig?'@'+c.ig:c.channel==='instagram'?'Contato do Instagram':'Sem nome'):n,anon}};
 const CLK={agenda:['só na agenda','grey'],prospect:['prospect','blue'],cliente:['cliente','ok'],inativo:['inativo','warn']};
@@ -4617,6 +4646,7 @@ async function clView(){
      ${tile('cliente','Clientes',ov.cliente,'já compraram','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}
      ${ov.inactive_days?tile('inativo','Inativos',ov.inativo,`sem comprar há ${ov.inactive_days}+ dias`,'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'):''}
      ${tile('due30','Vencem em 30 dias',ov.due30,'hora de oferecer a renovação','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')}</div>
+     ${ov.subs||ov.subs_lost30?`<div class="cb-sub"><button class="cb-sb ${!CL.seg&&JSON.stringify(CLQ.subs)===cur?'on':''}" data-qk="subs">${svg('<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/>')}<span><b>${num(ov.subs)} ${ov.subs===1?'assinatura ativa':'assinaturas ativas'}</b>${ov.mrr?` · ${brl(ov.mrr)} por mês`:''}</span>${ii('cl_mrr')}</button>${ov.subs_lost30?`<button class="cb-sb bad ${!CL.seg&&JSON.stringify(CLQ.subsLost)===cur?'on':''}" data-qk="subsLost"><span><b>${num(ov.subs_lost30)}</b> ${ov.subs_lost30===1?'cancelou':'cancelaram'} nos últimos 30 dias</span><em>ver quem</em></button>`:''}</div>`:''}
      ${ov.agenda?`<button class="cb-ag ${!CL.seg&&JSON.stringify(CLQ.agenda)===cur?'on':''}" data-qk="agenda">${svg('<rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16c.6-1.6 2-2.5 3.5-2.5s2.9.9 3.5 2.5"/>')}<span><b>${num(ov.agenda)}</b> contatos só na agenda do celular, que nunca falaram com a empresa. Ficam fora da base e das campanhas.</span><span class="ii" role="button" tabindex="0" data-info="cl_agenda" aria-label="O que é Só na agenda?">i</span><em>ver</em></button>`:''}`:'';
   const segName=CL.seg&&(segs.find(x=>x.id===CL.seg)||{}).name;
   let hOpen=false;try{hOpen=localStorage.getItem('clHow')!=='0'}catch(e){}
@@ -4660,6 +4690,7 @@ function clRules(){const D=CL.data;const sel=(k,list,v,extra)=>`<select data-k="
       case 'tag':ctl=ops+`<input data-k="value" value="${esc(r.value||'')}" placeholder="nome da etiqueta">`;break;
       case 'team':ctl=ops+sel('value',D.teams,r.value,'<option value="">sem equipe</option>');break;
       case 'owner':ctl=ops+sel('value',D.users,r.value,'<option value="">sem responsável</option>');break;
+      case 'sub':ctl=sel('value',[{id:'active',name:'está ativa'},{id:'cancelled',name:'cancelou'}],r.value);break;
       case 'promo':ctl=ops+sel('value',D.promos,r.value);break
       case 'milestone':{const v=r.value||{};ctl=ops+sel('mid',D.ms,v.id)+(['within','more'].includes(r.op)?`<input type="number" data-k="days" min="0" max="3650" value="${v.days??7}"><span>dias</span>`:'');break}}
     return `<div class="cl-rule" data-i="${i}">${i?'<span class="cl-e">e</span>':''}<b>${f[1]}</b>${ctl}<button class="sm-x" data-rx="${i}" aria-label="Tirar condição">×</button></div>`}).join('')||'';

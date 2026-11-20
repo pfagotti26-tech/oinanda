@@ -54,3 +54,40 @@ def test_cartao_compartilhado_no_instagram():
     t, u = instagram.shared_card({'generic': [{'title': '', 'buttons': [{'url': 'https://y.com'}]}]})
     assert t == '🔗 Compartilhou um conteúdo' and u == 'https://y.com'
     assert instagram.shared_card({}) == ('🔗 Compartilhou um conteúdo', None)
+
+
+def test_assinatura_cancelada():
+    from fastapi.testclient import TestClient
+    from main import app
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona A', 'email': 'da@x.com', 'password': 'senha-forte-1', 'company': 'Studio A', 'segment': 'studio'})
+        p = c.post('/api/products', json={'name': 'Mensal recorrente', 'price': 300, 'kind': 'plano', 'duration_days': 30, 'recurring': True}).json()
+        q = c.post('/api/products', json={'name': 'Anual recorrente', 'price': 2400, 'kind': 'plano', 'duration_days': 365, 'recurring': True}).json()
+        ids = []
+        for i, prod in enumerate([p, p, q]):
+            ct = c.post('/api/contacts', json={'name': f'Aluno {i}', 'phone': f'1198888000{i}'}).json()
+            ids.append(ct['id'])
+            r = c.post('/api/sales', json={'contact_id': ct['id'], 'date': (now() - timedelta(days=60)).date().isoformat(), 'items': [{'product_id': prod['id'], 'name': prod['name'], 'qty': 1, 'price': prod['price']}]})
+            assert r.status_code == 200, r.text
+        ov = c.get('/api/segments/overview').json()
+        assert ov['subs'] == 3 and ov['mrr'] == 300 + 300 + round(2400 * 30 / 365, 2)
+        # aluno 0 cancelou hoje: sai das assinaturas, aparece como "voltar a ter"
+        w = c.post(f'/api/contacts/{ids[0]}/subscription', json={'product_id': p['id'], 'reason': 'mudou de cidade'}).json()
+        it = w['items'][0]
+        assert it['cancelled_at'] and it['state'] == 'vencido' and [o['why'] for o in w['offers']] == ['voltar']
+        # aluno 1 cancela no fim do mês: ainda vale até lá
+        fut = (now() + timedelta(days=10)).date().isoformat()
+        w1 = c.post(f'/api/contacts/{ids[1]}/subscription', json={'product_id': p['id'], 'at': fut}).json()
+        assert w1['items'][0]['state'] == 'vence_logo'
+        ov = c.get('/api/segments/overview').json()
+        assert ov['subs'] == 2 and ov['subs_lost30'] == 1
+        # voltou: desfaz
+        w = c.post(f'/api/contacts/{ids[0]}/subscription', json={'product_id': p['id'], 'cancel': False}).json()
+        assert w['items'][0]['state'] == 'ativo' and not w['items'][0].get('cancelled_at')
+        # comprou de novo depois de cancelar: volta a valer sozinho
+        c.post(f'/api/contacts/{ids[1]}/subscription', json={'product_id': p['id']})
+        c.post('/api/sales', json={'contact_id': ids[1], 'date': (now() + timedelta(hours=1)).date().isoformat(), 'items': [{'product_id': p['id'], 'name': p['name'], 'qty': 1, 'price': 300}]})
+        w = c.get(f'/api/contacts/{ids[1]}/wallet').json()
+        assert w['items'][0]['state'] == 'ativo'
+        # item que não é assinatura não pode ser "cancelado" aqui
+        assert c.post(f'/api/contacts/{ids[0]}/subscription', json={'product_id': 'x'}).status_code == 400
