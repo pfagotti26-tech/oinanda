@@ -2055,6 +2055,15 @@ body:has(.nz-save) #toast{bottom:92px}
 .iw-go{margin-top:4px}
 .iw-done{text-align:center;padding:24px 10px}.iw-done>.ok{width:56px;height:56px;border-radius:50%;display:inline-grid;place-items:center;background:var(--oksoft);color:var(--ok);font-size:26px;font-weight:700}.iw-done h3{font-size:20px;margin:12px 0 6px}.iw-done p{max-width:560px;margin:0 auto 6px;color:var(--ink2)}
 @media (max-width:860px){.iw-scr{display:none}.iw-map{max-height:none;grid-template-columns:1fr 1fr;overflow:visible}.iw-c li:nth-child(n+3){display:none}.iw-ch{padding:8px}.iw-ch select{font-size:12.5px;padding:5px 6px}.iw-g{grid-template-columns:1fr}.iw-drop{min-height:180px}.iw-help ul{grid-template-columns:1fr}.iw-k{grid-template-columns:1fr 1fr}#clImp span{display:none}}
+/* aviso no WhatsApp do time */
+.eq-wa{display:grid;grid-template-columns:44px minmax(0,1fr) 210px;gap:16px;align-items:start;padding:16px 18px;margin-bottom:14px}
+.eq-wai{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:#E3F6EA;color:#1E7A48}.eq-wai svg{width:22px;height:22px}
+.eq-wat{min-width:0;display:flex;flex-direction:column;gap:6px}.eq-wat>b{font-size:15px}.eq-wat p{margin:0;font-size:13px;color:var(--ink2)}
+.eq-wae{background:#F0FAF4;border:1px solid #CDEBD8;border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:12.5px;color:#1F4D36;max-width:520px}
+.eq-was{display:flex;gap:8px;align-items:flex-start;font-size:12.5px!important;color:var(--ink3)!important}.eq-was .pill{flex:none}
+.eq-waa{display:flex;flex-direction:column;gap:6px;align-items:stretch;text-align:center}.eq-waa>b{font-size:22px;letter-spacing:-.5px}.eq-waa>span{font-size:12.5px;color:var(--ink3);margin-top:-6px}.eq-waa small{font-size:11.5px;color:var(--ink3);line-height:1.35}
+.eq-p small.eq-wan{display:inline-flex!important;align-items:center;gap:3px;color:#1E7A48;font-weight:600}.eq-wan svg{width:12px;height:12px}
+@media (max-width:860px){.eq-wa{grid-template-columns:40px minmax(0,1fr)}.eq-waa{grid-column:1/-1}}
 /* importação em segundo plano */
 .imp-bar{height:8px;border-radius:99px;background:#F1EBE5;overflow:hidden}.imp-bar i{display:block;height:100%;background:var(--c);border-radius:99px;transition:width .4s}
 .imp-bar.big{height:12px;max-width:420px;margin:16px auto 8px}.iw-pc{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;margin:0}
@@ -6026,7 +6035,7 @@ const VIEWS={
   inicioMeta();pushNudge();
  },
  async equipe(){
-  const team=await api('/team');const u=ME.user;const canManage=['owner','manager'].includes(u.role);
+  const [team,nt]=await Promise.all([api('/team'),api('/notify').catch(()=>null)]);const u=ME.user;const canManage=['owner','manager'].includes(u.role);
   const last=m=>[m.last_seen,m.last_login_at].filter(Boolean).sort().pop();
   const online=m=>m.active&&m.last_seen&&Date.now()-new Date(m.last_seen)<5*6e4;
   const st=m=>!m.active?['grey','desativado']:m.must_change_password?['warn','aguardando 1º acesso']:online(m)?['ok on','online agora']:['ok','ativo'];
@@ -6038,16 +6047,18 @@ const VIEWS={
   const kp=`<div class="eq-kp"><div><b>${act.length}</b><span>${act.length===1?'pessoa ativa':'pessoas ativas'}</span></div><div class="${on.length?'ok':''}"><b>${on.length}</b><span>online agora</span></div><div class="${wait.length?'warn':''}"><b>${wait.length}</b><span>aguardando 1º acesso</span></div><div><b>${off.length}</b><span>${off.length===1?'desativada':'desativadas'}</span></div></div>`;
   const row=m=>{const r=RL[m.role]||['eq-a',ME.roles[m.role]||m.role],s=st(m),l=last(m),me=m.id===u.id;
     const acts=canManage&&m.role!=='owner'&&!me?`<button class="btn sm" data-reset="${m.id}" title="Gera uma senha provisória e manda o link por e-mail">Nova senha</button><button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:'';
-    return `<div class="eq-r ${m.active?'':'off'}"><div class="eq-p"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}${online(m)?'<i class="dot"></i>':''}</span><span><b>${esc(m.name)}${me?' <small>(você)</small>':''}</b><small>${esc(m.email)}</small></span></div>
+    return `<div class="eq-r ${m.active?'':'off'}"><div class="eq-p"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}${online(m)?'<i class="dot"></i>':''}</span><span><b>${esc(m.name)}${me?' <small>(você)</small>':''}</b><small>${esc(m.email)}</small>${m.active&&m.wa_notify&&m.wa_phone?`<small class="eq-wan" title="Recebe no WhatsApp quando a Nanda ou alguém do time passa uma conversa para ele">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}recebe aviso no WhatsApp</small>`:''}</span></div>
       <span class="eq-rl ${r[0]}">${r[1]}</span><span class="pill ${s[0]}">${s[1]}</span>
       <span class="eq-la" title="${l?dt(l):''}">${l?(online(m)?'agora':'há '+agoShort(l)):'<em>nunca entrou</em>'}</span><span class="eq-ac">${acts}</span></div>`};
   $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem tem acesso ao painel do ${esc(ME.company.name)}.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Convidar pessoa</span></button>`:''}</div>
-   ${hero}${kp}<div id="invOut"></div>
+   ${hero}${kp}${nt?eqWa(nt,canManage,team):''}<div id="invOut"></div>
    <div class="vd-c eq-l"><div class="eq-lh"><span>Pessoa</span><span>Papel</span><span>Situação</span><span>Último acesso</span><span></span></div>${team.map(row).join('')}</div>
    ${team.some(m=>m.active&&!last(m)&&!m.must_change_password&&m.id!==u.id)?'<p class="note eq-tip">Quem nunca entrou continua com acesso liberado. Se a pessoa não vai usar, desative: dá para reativar quando quiser.</p>':''}
    <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
   drawTeams(team,canManage);
+  if($('#eqWaMe'))$('#eqWaMe').onclick=()=>meModal();
+  if($('#eqWaTpl'))$('#eqWaTpl').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta. A aprovação costuma sair em minutos.');VIEWS.equipe()}catch(x){toast(x.message);b.disabled=false}};
   const hw=$('#page .eq-how');hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('eqHow',hw.open?'0':'1')}catch(e){}};
   const showTemp=(name,email,temp,emailed)=>{const box=$('#invOut');box.innerHTML=`<div class="eq-ok"><span>✓</span><div>${emailed?`<b>Convite enviado para ${esc(email)}</b><p>${esc(name.split(' ')[0])} recebe um link para criar a senha (vale por 3 dias). Se o e-mail não chegar, peça para olhar o spam ou passe a senha provisória <span class="temp">${esc(temp)}</span></p>`:`<b>Acesso criado para ${esc(name.split(' ')[0])}</b><p>Mande para a pessoa: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória <span class="temp">${esc(temp)}</span>. No primeiro acesso ela cria a própria senha.</p>`}</div><button class="x" aria-label="Fechar">×</button></div>`;box.querySelector('.x').onclick=()=>box.innerHTML=''};
   if($('#eqInv'))$('#eqInv').onclick=()=>{let role='agent';
@@ -6169,6 +6180,19 @@ async function drawTeams(people,canManage){
   box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
   box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
 }
+/* aviso no WhatsApp do time: quando a Nanda passa um cliente ou alguém transfere uma conversa */
+function eqWa(n,canManage,team){const t=n.template&&n.template.status,me=(n.me||{}),tm=n.team||{on:0,total:0},mine=me.wa_notify&&me.wa_phone;
+  const st=!n.connected?['grey','WhatsApp da empresa não conectado','Os avisos saem pelo número da empresa. Conecte o WhatsApp em Empresa para ligar.']
+   :t==='APPROVED'?['ok','pronto','O modelo de aviso foi aprovado pela Meta. Cada aviso é cobrado pela Meta como mensagem de utilidade (centavos).']
+   :t==='PENDING'?['warn','em análise na Meta','O modelo de aviso costuma ser aprovado em minutos. Enquanto isso, só recebe quem mandou mensagem para o número da empresa nas últimas 24 h.']
+   :['bad','falta ativar','A Meta exige um modelo aprovado para avisar quem não falou com o número da empresa nas últimas 24 h. É uma vez só, para o time todo.'];
+  return `<div class="vd-c eq-wa"><span class="eq-wai">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/><path d="M9.5 9.5c.3 1.6 1.4 3 3 3.8l1.1-.9 1.9.8-.3 1.5c-2.9.2-6.6-3.2-6.6-6.4l1.5-.3.8 1.9z"/>')}</span>
+    <div class="eq-wat"><b>Aviso no WhatsApp quando chega cliente para o time</b><p>Quando a Nanda passa um cliente ou alguém transfere uma conversa, quem vai atender recebe no celular. Só sai se a pessoa estiver fora do painel.</p>
+     <div class="eq-wae">“Olá, João! A Nanda passou para você a conversa com Ana. Motivo: quer fechar o plano anual. Abra o Oi Nanda para responder.”</div>
+     <p class="eq-was"><span class="pill ${st[0]}">${st[1]}</span>${esc(st[2])}</p></div>
+    <div class="eq-waa"><b>${tm.on} de ${tm.total}</b><span>${tm.total===1?'pessoa recebe':'pessoas recebem'}</span>
+     ${canManage&&n.connected&&!t?'<button class="btn sm p" id="eqWaTpl">Ativar o aviso na Meta</button>':''}<button class="btn sm ${canManage&&n.connected&&!t?'':'p'}" id="eqWaMe">${mine?'Meu aviso: ligado':'Ligar o meu aviso'}</button>
+     ${tm.on<tm.total&&canManage?'<small>Cada pessoa liga o seu em “Meu status e avisos”, no menu do nome dela.</small>':''}</div></div>`}
 async function meModal(){
   const u=ME.user,canManage=['owner','manager'].includes(u.role);
   const o=overlay(`<form class="modal" id="meF" style="width:500px"><div class="row"><h2 style="font-size:20px">Seu status e avisos</h2><button type="button" class="x">×</button></div><div id="meBody"><div class="empty">Carregando…</div></div></form>`,true);
@@ -6182,8 +6206,9 @@ async function meModal(){
     <div class="field" style="margin-top:16px"><label>Outros avisos</label>
      <p class="hint" style="margin:0 0 8px">Com o painel aberto, o aviso aparece na tela.${nt==='granted'?' Notificação do navegador: <b>ligada</b>.':nt==='default'?' <button type="button" class="btn sm" id="meNt">🔔 Ligar notificação do navegador</button>':''}</p>
      <label class="ckl"><input type="checkbox" id="meSnd" ${soundOn()?'checked':''}> Tocar um som quando chegar mensagem nova (neste navegador)</label>
-     <label class="ckl"><input type="checkbox" name="wa_notify" ${me.wa_notify?'checked':''}> Avisar no meu WhatsApp quando eu estiver fora do painel</label>
+     <label class="ckl"><input type="checkbox" name="wa_notify" ${me.wa_notify?'checked':''}> Avisar no meu WhatsApp quando a Nanda ou alguém do time me passar um cliente (só quando eu estiver fora do painel)</label>
      <input name="wa_phone" inputmode="tel" placeholder="Seu celular com DDD, ex.: (11) 91234-5678" value="${me.wa_phone?esc(fmtPhone(me.wa_phone)):''}" maxlength="30">
+     ${me.wa_notify&&me.wa_phone&&n.connected?'<button type="button" class="btn sm" id="meTest" style="margin-top:8px;width:auto;align-self:flex-start">Mandar um aviso de teste para o meu celular</button>':''}
      <div id="meTpl" style="margin-top:8px">${!n.connected?'<p class="hint">O aviso sai pelo WhatsApp da empresa, que ainda não está conectado.</p>'
        :tpl==='APPROVED'?'<p class="hint"><span class="pill ok">pronto</span> O aviso sai pelo WhatsApp da empresa, por um modelo aprovado pela Meta (cobrado como mensagem de utilidade).</p>'
        :tpl==='PENDING'?'<p class="hint"><span class="pill warn">em análise na Meta</span> O modelo de aviso costuma ser aprovado em minutos. Depois disso os avisos começam a sair.</p>'
@@ -6193,6 +6218,7 @@ async function meModal(){
   pushBox($('#mePush'));
   $('#meSnd').onchange=e=>{try{localStorage.setItem('oinanda.sound',e.target.checked?'1':'0')}catch(x){}if(e.target.checked)beep()};
   if($('#meNt'))$('#meNt').onclick=async()=>{try{const r=await Notification.requestPermission();toast(r==='granted'?'Notificação ligada.':'O navegador não autorizou.')}catch(e){}o.remove();meModal()};
+  if($('#meTest'))$('#meTest').onclick=async e=>{const b=e.currentTarget;b.disabled=true;$('#meE').textContent='';try{await api('/notify/test',{method:'POST'});toast('Aviso de teste enviado. Confira o WhatsApp do seu celular.')}catch(x){$('#meE').textContent=x.message}finally{b.disabled=false}};
   if($('#meMk'))$('#meMk').onclick=async e=>{e.target.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta.');o.remove();meModal()}catch(x){$('#meE').textContent=x.message;e.target.disabled=false}};
   $('#meF').onsubmit=async e=>{e.preventDefault();const f=e.target;$('#meE').textContent='';
     try{const away=f.away.value==='1';
