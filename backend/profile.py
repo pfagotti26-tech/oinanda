@@ -39,7 +39,7 @@ async def profile(contact_id: str, user=Depends(current_user)):
     team = await db.teams.find_one({'id': raw.get('team_id')}, {'_id': 0, 'name': 1}) if raw.get('team_id') else None
     org = raw.get('origin') or ('anuncio' if raw.get('ad') else None)
     kind = status_of(raw, company.get('inactive_days'))
-    keep = ('id', 'name', 'wa_id', 'ig_username', 'email', 'tags', 'notes', 'opt_out', 'stage', 'value', 'created_at', 'origin_detail', 'referred_by_name', 'referred_by_id', 'assigned_to', 'team_id', 'channel')
+    keep = ('id', 'name', 'wa_id', 'ig_username', 'email', 'tags', 'notes', 'opt_out', 'stage', 'value', 'created_at', 'origin_detail', 'referred_by_name', 'referred_by_id', 'assigned_to', 'team_id', 'channel', 'internal')
     return {**{k: raw.get(k) for k in keep}, 'channel': c.get('channel') or 'whatsapp', 'channels': channels_of(raw), 'reply_channel': out_channel(raw),
             'kind': kind, 'kind_name': STATUS.get(kind), 'origin': org, 'origin_name': onames.get(org) if org else None,
             'owner': names.get(raw.get('assigned_to')), 'team': (team or {}).get('name'),

@@ -181,6 +181,8 @@ async def create_sale(body: SaleIn, request: Request, user=Depends(current_user)
         won = next((s for s in stages if s['kind'] == 'won'), None)
         if won and next((s['kind'] for s in stages if s['id'] == c.get('stage')), None) != 'won':
             await move_stage(user['company'], c, won['id'], who, stages)
+    sel = next((x.get('user_id') for x in sale.get('sellers') or [] if x.get('user_id')), None) or (None if user.get('impersonated_by') else user['id'])
+    if sel: await db.contacts.update_one({'id': c['id']}, {'$set': {'won_by_id': sel}})  # quem vendeu: conta no relatório quando o card não tem responsável
     await refresh_contact(user['company'], c['id'])
     if sale['status'] == 'ok':
         from opps import on_sale

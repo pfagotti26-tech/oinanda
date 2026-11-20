@@ -2032,6 +2032,11 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* relatórios: respondidos, etapa automática, contato interno */
+.rp-ans{font-weight:700;color:var(--ok)}.rp-ans.bad{color:var(--bad)}.kpi.rp-low{border-color:#F1C9C2;background:#FFFAF8}.kpi.rp-low .eh{color:var(--bad)}
+.sr-auto{display:flex;flex-direction:column;gap:4px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#FBF8F5}.sr-auto b{font-size:13.5px}.sr-auto span{font-size:12.5px;color:var(--ink2)}
+.sr-auto select{margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:13.5px;background:#fff}
+.ckl:has(small){align-items:flex-start}.ckl:has(small) input{margin-top:3px}.ckl small{display:block;font-size:12px;color:var(--ink3);font-weight:500;margin-top:2px}
 /* relatórios: período e filtros */
 .rp-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
 .rp-per{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink2)}.rp-per svg{width:15px;height:15px;color:var(--ink3)}
@@ -2155,7 +2160,7 @@ const INFO={
  rp_vendas:['Vendas','Soma das vendas fechadas no período: cards que foram para a etapa de venda do funil, com o valor informado. Ex.: 3 vendas de R$ 450 = R$ 1.350.'],
  rp_conv:['Conversão','De cada 100 pessoas que chegaram no período, quantas já compraram. Ex.: 50 contatos novos e 5 vendas = 10%. Quem ainda está negociando entra na conta quando fechar.'],
  rp_novos:['Contatos novos','Pessoas que falaram com você pela primeira vez no período, em qualquer canal. Não conta os contatos importados da agenda do celular.'],
- rp_resp:['Primeira resposta','Quanto tempo o cliente espera pela primeira resposta, do time ou da Nanda. É o tempo típico (a mediana): metade foi respondida mais rápido que isso. Até 5 min é ótimo; acima de 1 hora, muita venda esfria.'],
+ rp_resp:['Primeira resposta','Quanto tempo o cliente espera pela primeira resposta, do time ou da Nanda. É o tempo típico (a mediana): metade foi respondida mais rápido que isso. Até 5 min é ótimo; acima de 1 hora, muita venda esfria. "Respondidos" mostra quantos dos que escreveram receberam resposta: quem ficou sem resposta não entra no tempo.'],
  rp_ticket:['Ticket médio','Valor médio de cada venda no período. Sobe quando você vende planos maiores ou mais de um item.'],
  rp_ciclo:['Ciclo de venda','Quantos dias, em geral, entre a pessoa chegar e comprar. Ajuda a saber quando insistir: quem passou muito desse prazo provavelmente esfriou.'],
  rp_perd:['Perdidos','Cards que o time marcou como perdidos no período. Marcar o motivo ajuda a entender o que trava a venda.'],
@@ -3766,18 +3771,22 @@ async function drawBoard(local){
   kb.querySelectorAll('.col').forEach(col=>{col.ondragover=e=>{e.preventDefault();col.classList.add('drop')};col.ondragleave=e=>{if(!col.contains(e.relatedTarget))col.classList.remove('drop')};
     col.ondrop=e=>{e.preventDefault();col.classList.remove('drop');const id=e.dataTransfer.getData('text/plain');if(id)moveCard(id,col.dataset.s)}});
 }
-function stagesEditor(){
-  const rows=STAGES.map(s=>({...s}));
+async function stagesEditor(){
+  const rows=STAGES.map(s=>({...s}));let auto=(await api('/funnel/auto-stage').catch(()=>({stage:null}))).stage||'';
   const o=overlay(`<div class="modal"><div class="row"><h2 style="font-size:20px">Etapas do funil</h2><button class="x">×</button></div>
     <p style="color:var(--ink2);font-size:13.5px">Se apagar uma etapa, os contatos dela voltam para a primeira.</p><div id="sr" class="grid" style="gap:8px"></div>
-    <button class="btn sm" id="srAdd" style="align-self:flex-start">+ Etapa</button><div class="row"><button class="btn p" id="srSave">Salvar</button><span class="err" id="srE"></span></div></div>`,true);
+    <button class="btn sm" id="srAdd" style="align-self:flex-start">+ Etapa</button>
+    <div class="sr-auto"><b>Quando alguém do time responder um contato novo</b><span>O card sai da primeira etapa sozinho. Assim o funil mostra quem já está sendo atendido, sem ninguém precisar arrastar.</span><select id="srAuto"></select></div><div class="row"><button class="btn p" id="srSave">Salvar</button><span class="err" id="srE"></span></div></div>`,true);
   const draw=()=>{o.querySelector('#sr').innerHTML=rows.map((r,i)=>`<div class="srow"><input data-i="${i}" value="${esc(r.name)}" maxlength="40"><select data-k="${i}">${[['open','Em andamento'],['won','Ganhou'],['lost','Perdeu']].map(k=>`<option value="${k[0]}" ${r.kind===k[0]?'selected':''}>${k[1]}</option>`).join('')}</select><button class="btn sm" data-d="${i}" title="Apagar">×</button></div>`).join('');
     o.querySelectorAll('[data-i]').forEach(x=>x.oninput=()=>rows[x.dataset.i].name=x.value);
     o.querySelectorAll('[data-k]').forEach(x=>x.onchange=()=>rows[x.dataset.k].kind=x.value);
-    o.querySelectorAll('[data-d]').forEach(x=>x.onclick=()=>{rows.splice(x.dataset.d,1);draw()})};
+    o.querySelectorAll('[data-d]').forEach(x=>x.onclick=()=>{rows.splice(x.dataset.d,1);draw()});
+    const op=rows.filter(r=>r.kind==='open').slice(1).filter(r=>r.id);if(auto&&!op.some(r=>r.id===auto))auto='';
+    o.querySelector('#srAuto').innerHTML=`<option value="">Não mover sozinho</option>`+op.map(r=>`<option value="${r.id}" ${auto===r.id?'selected':''}>Mover para "${esc(r.name)}"</option>`).join('');
+    o.querySelector('#srAuto').onchange=e=>auto=e.target.value};
   draw();
   o.querySelector('#srAdd').onclick=()=>{const w=rows.findIndex(r=>r.kind!=='open');rows.splice(w<0?rows.length:w,0,{name:'Nova etapa',kind:'open'});draw()};
-  o.querySelector('#srSave').onclick=async()=>{try{await api('/funnel/stages',{method:'PUT',body:{stages:rows.map(r=>({id:r.id,name:r.name,kind:r.kind}))}});o.remove();toast('Funil atualizado.');drawBoard()}catch(e){o.querySelector('#srE').textContent=e.message}};
+  o.querySelector('#srSave').onclick=async()=>{try{await api('/funnel/stages',{method:'PUT',body:{stages:rows.map(r=>({id:r.id,name:r.name,kind:r.kind})),auto_stage:auto}});o.remove();toast('Funil atualizado.');drawBoard()}catch(e){o.querySelector('#srE').textContent=e.message}};
 }
 function newContact(pre){
   const o=overlay(`<form class="modal" id="ncF"><div class="row"><h2 style="font-size:20px">Novo contato</h2><button type="button" class="x">×</button></div>
@@ -4354,7 +4363,7 @@ async function ctProfile(id,tab){
     ['Última compra',S.last_sale_at?fmtD(ymd(new Date(S.last_sale_at))):'—',S.last_sale_at?cfAgo(S.last_sale_at):'',''],['Cliente desde',S.first_sale_at?fmtD(ymd(new Date(S.first_sale_at))):'—',S.first_sale_at?cfAgo(S.first_sale_at):'',''],
     ['Último contato',p.last_in_at?cfAgo(p.last_in_at):'—',st,p.window_open?'ok':'']];
   const o=overlay(`<div class="modal cf"><div class="cf-hd"><span class="cf-av" style="background:${avc(p.name)}">${esc(initials(nm))}</span>
-     <div class="cf-id"><div class="cf-nm"><h2>${esc(nm)}</h2><span class="pill ${K[1]}">${K[0]}</span>${p.opt_out?'<span class="pill grey">não quer mensagens automáticas</span>':''}</div><div class="cf-mt">${meta}</div></div>
+     <div class="cf-id"><div class="cf-nm"><h2>${esc(nm)}</h2>${p.internal?'<span class="pill grey">time ou teste</span>':`<span class="pill ${K[1]}">${K[0]}</span>`}${p.opt_out?'<span class="pill grey">não quer mensagens automáticas</span>':''}</div><div class="cf-mt">${meta}</div></div>
      <div class="cf-ac"><button class="btn p" id="cfMsg">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}Mandar mensagem</button><button class="btn" id="cfSale">${svg('<path d="M12 5v14M5 12h14"/>')}Registrar venda</button><button class="btn" id="cfConv" title="Abrir a conversa completa">${svg('<path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>')}Conversa</button></div></div>
     <div class="cf-kp">${kp.map(k=>`<div class="${k[3]}"><span>${k[0]}</span><b>${k[1]}</b><small>${k[2]}</small></div>`).join('')}</div>
     <nav class="utabs cf-t">${[['res','Resumo'],['buy',`Compras${sales.length?` <em>${sales.length}</em>`:''}`],['tl','Linha do tempo'],['dad','Dados']].map(t=>`<button type="button" data-cft="${t[0]}">${t[1]}</button>`).join('')}</nav>
@@ -4389,13 +4398,14 @@ async function ctProfile(id,tab){
       <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(p.stage||(STAGES[0]||{}).id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div><div class="field"><label>Etiquetas</label><input name="tags" value="${esc((p.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div></div>
       <div class="field"><label>Anotações</label><textarea name="notes" rows="5" placeholder="O que o time precisa saber sobre ${esc(first)}">${esc(p.notes||'')}</textarea></div>
       <label class="ckl"><input type="checkbox" name="opt_out" ${p.opt_out?'checked':''}> Não quer receber mensagens automáticas (campanhas e lembretes)</label>
+      <label class="ckl"><input type="checkbox" name="internal" ${p.internal?'checked':''}><span>É do time ou um teste, não é cliente<small>Fica fora de Clientes, das campanhas e dos relatórios. A conversa continua normal.</small></span></label>
       <div class="row"><button class="btn p">Salvar</button><button type="button" class="btn sm" id="cfOr" style="margin-left:auto">Mudar a origem</button><span class="err" id="cfE"></span></div></form>`;
     B.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>draw(b.dataset.go));
     B.querySelectorAll('[data-cfs]').forEach(b=>b.onclick=()=>saleModal({contact:{id,name:p.name},onDone:()=>reload('buy')}));
     B.querySelectorAll('[data-sl]').forEach(b=>{const g=()=>saleModal({sale:sales[+b.dataset.sl],onDone:()=>reload('buy')});b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
     B.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const x=wal.offers[+b.dataset.of];saleModal({contact:{id,name:p.name},items:[{product_id:x.product_id,name:x.name,price:x.price}],onDone:()=>reload('buy')})});
     const f=B.querySelector('#cfF');if(f){f.querySelector('#cfOr').onclick=()=>originEdit({...p},()=>reload('res'));
-      f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,email:f.email.value,stage:f.stage.value,notes:f.notes.value,opt_out:f.opt_out.checked,tags:f.tags.value.split(',').map(x=>x.trim()).filter(Boolean)};
+      f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,email:f.email.value,stage:f.stage.value,notes:f.notes.value,opt_out:f.opt_out.checked,internal:f.internal.checked,tags:f.tags.value.split(',').map(x=>x.trim()).filter(Boolean)};
         try{await api('/contacts/'+id,{method:'PATCH',body});toast('Dados salvos.');reload('res')}catch(e){f.querySelector('#cfE').textContent=e.message}}}};
   o.querySelectorAll('[data-cft]').forEach(b=>b.onclick=()=>draw(b.dataset.cft));draw(tab||'res');
   o.querySelector('#cfMsg').onclick=()=>msgModal(p,()=>reload('tl'));
@@ -5527,7 +5537,9 @@ const VIEWS={
     ${kpi('Vendas'+ii('rp_vendas'),t.won_value?brl(t.won_value):String(t.won),t.won_value?`${t.won} ${t.won===1?'venda':'vendas'}`:'',delta(t.won_value||t.won,pv.won_value||pv.won),!t.won?'Mova o card para a etapa de venda e informe o valor.':'')}
     ${kpi('Conversão'+ii('rp_conv'),t.conversion!=null?pct(t.conversion)+'%':'—',t.conversion!=null?`${t.won===1?'1 venda':t.won+' vendas'} de ${t.new_contacts} ${t.new_contacts===1?'contato':'contatos'}`:'',delta(t.conversion,pv.conversion,false,true),t.conversion==null?'Aparece quando chegarem contatos novos.':'')}
     ${kpi('Contatos novos'+ii('rp_novos'),t.new_contacts,t.new_contacts?'chegaram no período':'',delta(t.new_contacts,pv.new_contacts),!t.new_contacts?'Aparecem quando alguém chamar no WhatsApp ou no Instagram.':'')}
-    ${kpi('Primeira resposta'+ii('rp_resp'),fmtMin(t.first_reply_min),t.first_reply_min!=null?(t.first_reply_min<=5?'ótimo':t.first_reply_min<=30?'tempo típico':t.first_reply_min<=60?'dá para melhorar':'lento: vendas esfriam'):'',delta(t.first_reply_min,pv.first_reply_min,true),t.first_reply_min==null?'Aparece quando o time responder um contato novo.':'')}
+    ${(()=>{const w=t.wrote||0,a=t.answered||0,low=w&&a/w<.5;const tm=t.first_reply_min!=null?(t.first_reply_min<=5?'ótimo':t.first_reply_min<=30?'tempo típico':t.first_reply_min<=60?'dá para melhorar':'lento'):'';
+      return kpi('Primeira resposta'+ii('rp_resp'),fmtMin(t.first_reply_min),w?`<span class="rp-ans ${low?'bad':''}">respondidos ${a} de ${w}</span>${tm?' · '+tm:''}`:tm,delta(t.first_reply_min,pv.first_reply_min,true),
+        low?`${w-a} ${w-a===1?'pessoa ficou':'pessoas ficaram'} sem resposta. O tempo só conta quem foi respondido.`:t.first_reply_min==null?'Aparece quando o time responder um contato novo.':'').replace('<div class="kpi">',`<div class="kpi${low?' rp-low':''}">`)})()}
    </div>
    <div class="kmini"><span>Ticket médio${ii('rp_ticket')} <b>${t.ticket!=null?brl(t.ticket):'—'}</b></span><span>Ciclo de venda${ii('rp_ciclo')} <b>${t.cycle_days!=null?pct(t.cycle_days)+' dias':'—'}</b></span><span>Perdidos${ii('rp_perd')} <b>${t.lost}</b></span><span>Nota do atendimento${ii('rp_nota')} <b>${q.avg!=null?pct(q.avg):'—'}</b></span><span class="hint">${noPrev?`Sem movimento nos ${RP.days} dias anteriores para comparar`:`Setas: comparação com os ${RP.days} dias anteriores`}</span></div>
    <div class="grid g2 rp2"><div class="card"><h3 class="sec">Contatos e vendas</h3><p class="hint" style="margin:-6px 0 12px">Quantas pessoas chegaram e quantas compraram em cada ${r.bucket>1?'semana':'dia'}. Passe o mouse numa barra para ver os números.</p>${t.new_contacts||t.won?chart:'<div class="empty">Sem movimento no período.</div>'}</div>

@@ -48,3 +48,37 @@ def test_relatorio_honesto(monkeypatch):
         assert c.get(f'/api/reports/sales?start={hoje}&end={hoje}&channel=instagram').json()['totals']['new_contacts'] == 0
         assert c.get(f'/api/reports/sales?start={hoje}&end={hoje}&owner=_none').json()['totals']['new_contacts'] == 2
         assert c.get('/api/reports/sales?start=2020-13-01').status_code in (400, 422)
+
+def test_card_anda_respondidos_e_interno(monkeypatch):
+    async def fake_graph(method, path, token, payload=None, params=None):
+        if path.endswith('/messages'): return {'messages': [{'id': 'o1'}]}
+        return {'success': True, 'display_phone_number': '+55 11 97575-4765'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    async def no_ai(*a, **k): return None
+    monkeypatch.setattr(ai, 'maybe_reply', no_ai, raising=False)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona S', 'email': 'ds@x.com', 'password': 'senha-forte-1', 'company': 'Agência S', 'segment': 'outro'})
+        c.post('/api/wa/connect', json={'phone_number_id': '6660011', 'waba_id': '6660012', 'token': 'EAA' + 'q' * 30})
+        for i, n in enumerate(['Cli Um', 'Cli Dois', 'Cli Tres', 'Eu Testando']): inbound(c, f'551190000100{i}', n, 'Oi!')
+        cs = {x['name']: x for x in c.get('/api/conversations').json()}
+        st = c.get('/api/funnel/stages').json()
+        assert c.get('/api/funnel/auto-stage').json()['stage'] == st[1]['id']  # "Em conversa"
+        c.post(f'/api/conversations/{cs["Cli Um"]["id"]}/send', json={'text': 'Oi! Como posso ajudar?'})
+        f = {x['id']: x for x in c.get('/api/funnel').json()['cards']}
+        assert f[cs['Cli Um']['id']]['stage'] == st[1]['id'] and f[cs['Cli Dois']['id']].get('stage') in (None, st[0]['id'])
+        msgs = c.get(f'/api/conversations/{cs["Cli Um"]["id"]}').json()['messages']
+        assert msgs[-1]['dir'] == 'out'  # mover sozinho não polui a conversa
+        c.patch(f'/api/contacts/{cs["Eu Testando"]["id"]}', json={'internal': True})
+        r = c.get('/api/reports/sales?days=30').json()
+        assert r['totals']['new_contacts'] == 3 and r['totals']['wrote'] == 3 and r['totals']['answered'] == 1
+        assert 'Eu Testando' not in {x['name'] for x in c.post('/api/segments/preview', json={'rules': []}).json()['items']}
+        # desligar: o card não anda mais
+        c.put('/api/funnel/stages', json={'stages': [{'id': s['id'], 'name': s['name'], 'kind': s['kind']} for s in st], 'auto_stage': ''})
+        c.post(f'/api/conversations/{cs["Cli Dois"]["id"]}/send', json={'text': 'Oi!'})
+        f = {x['id']: x for x in c.get('/api/funnel').json()['cards']}
+        assert f[cs['Cli Dois']['id']].get('stage') in (None, st[0]['id'])
+        # venda fechada no funil sem responsável conta para quem fechou
+        won = next(s for s in st if s['kind'] == 'won')
+        c.patch(f'/api/contacts/{cs["Cli Tres"]["id"]}', json={'stage': won['id'], 'value': 200})
+        r = c.get('/api/reports/sales?days=30').json()
+        assert r['unassigned']['won'] == 0 and next(p for p in r['people'] if p['name'] == 'Dona S')['won'] == 1
