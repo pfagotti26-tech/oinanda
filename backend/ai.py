@@ -124,7 +124,8 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
 Responda SOMENTE com um JSON, sem nada antes ou depois (comece direto com a chave de abertura). O texto da reply é mensagem de WhatsApp: sem markdown, sem asteriscos, curto.
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false, "faltou": ""}}
+"faltou": quando o cliente perguntou algo que NÃO está no que você sabe e por isso você não respondeu ou chamou o time, escreva a dúvida como uma pergunta frequente curta e genérica, sem o nome do cliente (ex.: "Tem estacionamento?", "Atende convênio?"). Se você soube responder, ou o assunto é negociação, reclamação ou pedido de pessoa, deixe "".
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
     now_part = f"""Hoje é {agenda.WEEK[t.weekday()]} {t:%d/%m/%Y}, {t:%H:%M}.
@@ -199,10 +200,11 @@ def parse(text):
                     'valor': float(d['valor']) if isinstance(d.get('valor'), (int, float)) and 0 < d['valor'] <= 100_000_000 else None,
                     'valor_item': str(d.get('valor_item') or '').strip()[:60],
                     'etapa': str(d['etapa'])[:24] if isinstance(d.get('etapa'), str) and d.get('etapa') else None,
-                    'urgente': bool(d.get('urgente')) and bool(d.get('handoff'))}
+                    'urgente': bool(d.get('urgente')) and bool(d.get('handoff')),
+                    'faltou': str(d.get('faltou') or '').strip()[:160]}
         except (ValueError, TypeError): pass
     reply, hand, reason = salvage(text)
-    return {'reply': clean_reply(reply), 'handoff': hand, 'reason': reason, 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}
+    return {'reply': clean_reply(reply), 'handoff': hand, 'reason': reason, 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False, 'faltou': ''}
 
 def _img_block(r):
     """Foto recente do cliente vai como imagem para a Nanda enxergar (comprovante, print, foto de referência)."""
@@ -301,7 +303,34 @@ async def think(company_id, contact):
     msgs = await history(contact['id'])
     if not msgs: return parse(''), {}
     text, usage = await llm(await system_for(s, company, contact), msgs)
-    return parse(text), usage
+    d = parse(text)
+    if d.get('faltou'):
+        try: await record_gap(company_id, contact, d['faltou'])
+        except Exception: log.exception('falha ao guardar a pergunta que a Nanda não soube')
+    return d, usage
+
+def gap_key(q):
+    import unicodedata
+    t = unicodedata.normalize('NFKD', q).encode('ascii', 'ignore').decode().lower()
+    return re.sub(r'[^a-z0-9 ]', '', re.sub(r'\s+', ' ', t)).strip()
+
+async def record_gap(company_id, contact, q):
+    """Pergunta de cliente que a Nanda não sabia responder: vira uma lista para o dono ensinar (a mesma pergunta soma)."""
+    q = q.strip().rstrip('.')
+    if len(q) < 6: return
+    if not q.endswith('?'): q += '?'
+    q = q[0].upper() + q[1:]
+    key = gap_key(q)
+    g = await db.ai_gaps.find_one({'company_id': company_id, 'key': key, 'status': {'$in': ['open', 'dismissed']}}, {'_id': 0, 'id': 1, 'contacts': 1, 'status': 1})
+    if g:
+        if g['status'] == 'dismissed': return
+        upd = {'$set': {'last_at': now(), 'last_contact': contact.get('name')}, '$inc': {'count': 1}}
+        if contact['id'] in (g.get('contacts') or []): upd.pop('$inc')
+        else: upd['$push'] = {'contacts': {'$each': [contact['id']], '$slice': -20}}
+        await db.ai_gaps.update_one({'id': g['id']}, upd)
+    else:
+        await db.ai_gaps.insert_one({'id': uid(), 'company_id': company_id, 'q': q[:160], 'key': key, 'count': 1, 'contacts': [contact['id']],
+                                     'last_contact': contact.get('name'), 'first_at': now(), 'last_at': now(), 'status': 'open'})
 
 def describe_book(company, b):
     try:
@@ -669,3 +698,35 @@ async def run_tests(user=Depends(managers)):
             return {**case, 'last': res}
     out = await asyncio.gather(*[one(c) for c in cases])
     return {'passed': sum(1 for c in out if c['last']['ok']), 'total': len(out), 'tests': out}
+
+
+# ---------- o que ela não soube ----------
+@router.get('/ai/gaps')
+async def gaps(user=Depends(managers)):
+    rows = await db.ai_gaps.find({'company_id': user['company_id'], 'status': 'open'}, {'_id': 0, 'key': 0, 'contacts': 0}).sort([('count', -1), ('last_at', -1)]).to_list(30)
+    return rows
+
+class GapAnswer(BaseModel):
+    answer: str = Field(min_length=2, max_length=600)
+
+@router.post('/ai/gaps/{gid}/answer')
+async def gap_answer(gid: str, body: GapAnswer, request: Request, user=Depends(managers)):
+    """O dono responde: a pergunta e a resposta entram nas Perguntas frequentes e a Nanda passa a saber."""
+    g = await db.ai_gaps.find_one({'id': gid, 'company_id': user['company_id']}, {'_id': 0})
+    if not g: raise HTTPException(404, 'Pergunta não encontrada.')
+    s = await settings_for(user['company_id'])
+    ans = body.answer.strip()
+    if not re.search(r'[.!?]$', ans): ans += '.'
+    faq = ((s.get('faq') or '').rstrip() + '\n' + f'{g["q"]} {ans}').strip()
+    if len(faq) > 8000: raise HTTPException(400, 'As Perguntas frequentes já estão cheias. Resuma alguma antes de acrescentar.')
+    await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'faq': faq}}, upsert=True)
+    await db.ai_gaps.update_one({'id': gid}, {'$set': {'status': 'answered', 'answer': ans, 'answered_at': now(), 'answered_by': user['name']}})
+    await audit(request, user, 'Ensinou a Nanda', g['q'])
+    return {'faq': faq}
+
+@router.post('/ai/gaps/{gid}/dismiss')
+async def gap_dismiss(gid: str, user=Depends(managers)):
+    """Não é para ela responder isso (o time cuida): some da lista e não volta."""
+    r = await db.ai_gaps.update_one({'id': gid, 'company_id': user['company_id']}, {'$set': {'status': 'dismissed', 'dismissed_at': now()}})
+    if not r.matched_count: raise HTTPException(404, 'Pergunta não encontrada.')
+    return {'ok': True}
