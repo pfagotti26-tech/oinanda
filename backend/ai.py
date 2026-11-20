@@ -319,6 +319,8 @@ async def handoff(company_id, contact, reason, urgent=False):
         from push import later, on_handoff
         fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
         later(on_handoff(company_id, fresh, reason, urgent))
+        from notify import handoff_alert
+        later(handoff_alert(company_id, fresh, reason, urgent))
     except Exception: log.exception('falha no aviso de repasse')
 
 async def route(company_id, contact, reason):
@@ -393,6 +395,11 @@ async def auto_reply(company_id, contact_id, msg_id):
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo
                 await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'cliente pediu uma pessoa'}})
                 await route(company_id, contact, 'cliente pediu uma pessoa')
+                try:
+                    from push import later
+                    from notify import handoff_alert
+                    later(handoff_alert(company_id, contact, 'cliente pediu uma pessoa'))
+                except Exception: log.exception('falha no aviso de repasse')
             return
         if asks_human:
             await deliver(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', None, s['name'] + ' (IA)')

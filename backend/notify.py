@@ -1,4 +1,4 @@
-"""Aviso no WhatsApp de quem recebe uma conversa transferida.
+"""Aviso no WhatsApp de quem recebe uma conversa: transferida por alguém do time ou passada pela Nanda.
 
 Sai pelo WhatsApp da própria empresa, para o celular do vendedor. Como o vendedor quase nunca escreveu para o número
 da empresa nas últimas 24 h, a Meta exige um modelo aprovado: o gestor cria o modelo "aviso para o time" uma vez
@@ -47,7 +47,9 @@ async def get_notify(user=Depends(current_user)):
     c = await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
     t = await refresh_status(c)
     me = await db.users.find_one({'id': user['id']}, {'_id': 0, 'wa_phone': 1, 'wa_notify': 1, 'away': 1})
-    return {'connected': bool(await number(user['company_id'])), 'template': {'status': t.get('status')} if t else None, 'me': me or {}}
+    team = await db.users.find({'company_id': user['company_id'], 'active': True}, {'_id': 0, 'wa_notify': 1, 'wa_phone': 1}).to_list(500)
+    return {'connected': bool(await number(user['company_id'])), 'template': {'status': t.get('status')} if t else None, 'me': me or {},
+            'team': {'on': sum(1 for u in team if u.get('wa_notify') and u.get('wa_phone')), 'total': len(team)}}
 
 @router.post('/notify/template')
 async def make_template(user=Depends(managers)):
@@ -75,12 +77,14 @@ async def set_mine(body: MeNotify, user=Depends(current_user)):
     await db.users.update_one({'id': user['id']}, {'$set': {'wa_phone': phone, 'wa_notify': body.wa_notify}})
     return {'wa_phone': phone, 'wa_notify': body.wa_notify}
 
-async def transfer_alert(company, user_id, contact, by_name, reason):
+async def transfer_alert(company, user_id, contact, by_name, reason, test=False):
     """Manda o aviso se a pessoa pediu, não está com o painel aberto e há um jeito permitido pela Meta."""
     u = await db.users.find_one({'id': user_id, 'active': True}, {'_id': 0})
-    if not u or not u.get('wa_notify') or not u.get('wa_phone'): return 'off'
+    if not u or not u.get('wa_phone') or not (u.get('wa_notify') or test): return 'off'
     seen = aware(u.get('last_seen'))
-    if seen and now() - seen < ONLINE: return 'online'
+    if seen and now() - seen < ONLINE and not test: return 'online'
+    if not test and await db.notify_log.find_one({'user_id': user_id, 'contact_id': contact['id'], 'at': {'$gte': now() - timedelta(minutes=2)}}):
+        return 'dup'  # a Nanda passou e a equipe distribuiu para a mesma pessoa: um aviso só
     n = await number(company['id'])
     if not n: return 'no_number'
     first = (u.get('name') or '').split(' ')[0] or 'time'
@@ -99,3 +103,30 @@ async def transfer_alert(company, user_id, contact, by_name, reason):
     await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', decrypt(n['token_enc']), payload)
     await db.notify_log.insert_one({'company_id': company['id'], 'user_id': user_id, 'contact_id': contact['id'], 'kind': payload['type'], 'at': now()})
     return 'sent'
+
+async def handoff_alert(company_id, contact, reason, urgent=False):
+    """A Nanda passou a conversa para o time: avisa no WhatsApp quem vai atender (o responsável, a equipe ou quem está disponível)."""
+    from push import recipients
+    company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+    fresh = await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact
+    if not company or fresh.get('internal'): return {}
+    why = ('URGENTE: ' if urgent else '') + (reason or 'quer falar com uma pessoa')
+    out = {}
+    for uid_ in await recipients(company_id, fresh):
+        try: out[uid_] = await transfer_alert(company, uid_, fresh, 'A Nanda', why)
+        except Exception as e: log.warning('aviso de repasse no WhatsApp falhou: %s', e); out[uid_] = 'error'
+    return out
+
+TEST_MSG = {'off': 'Informe seu celular e salve antes de testar.', 'no_number': 'O WhatsApp da empresa ainda não está conectado.',
+            'no_template': 'Falta o modelo de aviso aprovado pela Meta. Enquanto isso, o aviso só chega se você tiver mandado mensagem para o número da empresa nas últimas 24 h.'}
+
+@router.post('/notify/test')
+async def test_alert(user=Depends(current_user)):
+    """Manda um aviso de exemplo para o celular de quem pediu, para conferir que chega."""
+    company = await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
+    await refresh_status(company)
+    company = await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
+    fake = {'id': 'teste-' + user['id'], 'name': 'Cliente de exemplo'}
+    r = await transfer_alert(company, user['id'], fake, 'A Nanda', 'isto é um teste do aviso', test=True)
+    if r != 'sent': raise HTTPException(400, TEST_MSG.get(r, 'Não foi possível mandar o teste.'))
+    return {'ok': True}

@@ -67,3 +67,24 @@ def test_disponibilidade_credito_e_aviso(monkeypatch):
         p = {x['name']: x for x in c.get('/api/reports/sales').json()['people']}
         assert p['Ana']['passed'] == 2 and p['Ana']['assisted'] == 1 and p['Ana']['assisted_value'] == 900
         assert p['João']['won'] == 1 and p['João']['assisted'] == 0
+        # a Nanda passa uma conversa para o time: o responsável recebe o aviso no WhatsApp (um só, mesmo se a equipe também distribuiu)
+        import ai, notify
+        c.portal.call(offline)
+        async def nanda_passa():
+            ct = await db.contacts.find_one({'id': convs['Cli Dois']}, {'_id': 0})
+            await ai.handoff(ct['company_id'], ct, 'quer fechar o plano anual', urgent=True)
+            ct = await db.contacts.find_one({'id': convs['Cli Dois']}, {'_id': 0})
+            return await notify.handoff_alert(ct['company_id'], ct, 'quer fechar o plano anual', True)
+        n_before = len(sent)
+        r = c.portal.call(nanda_passa)
+        time.sleep(0.3)
+        nova = [p for p in sent[n_before:] if p.get('to') == '5511988887777']
+        assert len(nova) == 1 and r[ids['João']] in ('sent', 'dup')
+        par = nova[0]['template']['components'][0]['parameters']
+        assert par[1]['text'] == 'A Nanda' and par[2]['text'] == 'Cli Dois' and par[3]['text'] == 'URGENTE: quer fechar o plano anual'
+        # teste do aviso: chega mesmo com o painel aberto; sem celular, explica
+        c.post('/api/auth/logout'); login(c, 'j2@x.com')
+        assert c.post('/api/notify/test').json()['ok'] and sent[-1]['to'] == '5511988887777'
+        assert c.get('/api/notify').json()['team'] == {'on': 1, 'total': 4}
+        c.post('/api/auth/logout'); login(c, 'b2@x.com')
+        assert 'celular' in c.post('/api/notify/test').json()['detail']
