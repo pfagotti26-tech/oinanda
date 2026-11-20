@@ -3585,8 +3585,8 @@ async function drawAgCfg(){
       :g.configured?`<p class="hint" style="margin-bottom:10px">Os compromissos do seu Google bloqueiam horários aqui, e cada agendamento vira um evento lá.</p>${own?'<button class="btn" id="gOn">Conectar Google Agenda</button>':'<p class="note">Só o dono da conta conecta.</p>'}`
       :'<p class="hint">A integração com o Google ainda está sendo ativada pelo Oi Nanda.</p>'}</div></div></div>
    <div class="row" style="margin-top:14px"><button class="btn p" id="agSave">Salvar agenda</button><span class="err" id="agE"></span></div>`;
-  const drawS=()=>{$('#svL').innerHTML=svcs.map((v,i)=>`<div class="svrow"><input data-f="name" data-i="${i}" value="${esc(v.name)}"><input data-f="duration" data-i="${i}" type="number" min="10" value="${v.duration}"><input data-f="capacity" data-i="${i}" type="number" min="1" value="${v.capacity||1}"><input data-f="price" data-i="${i}" type="number" min="0" value="${v.price??''}"><button class="btn sm" data-del="${i}">×</button></div>`).join('');
-    $('#svL').querySelectorAll('[data-f]').forEach(x=>x.oninput=()=>{const v=svcs[x.dataset.i];v[x.dataset.f]=x.type==='number'?(x.value===''?null:Number(x.value)):x.value});
+  const drawS=()=>{$('#svL').innerHTML=svcs.map((v,i)=>`<div class="svrow"><input data-f="name" data-i="${i}" value="${esc(v.name)}"><input data-f="duration" data-i="${i}" type="number" min="10" value="${v.duration}"><input data-f="capacity" data-i="${i}" type="number" min="1" value="${v.capacity||1}"><input data-f="price" data-i="${i}" data-money inputmode="decimal" placeholder="R$ 0,00" value="${v.price!=null?fmtIn(v.price):''}"><button class="btn sm" data-del="${i}">×</button></div>`).join('');
+    $('#svL').querySelectorAll('[data-f]').forEach(x=>x.oninput=()=>{const v=svcs[x.dataset.i];v[x.dataset.f]=x.dataset.money!=null?(x.value===''?null:parseIn(x.value)):x.type==='number'?(x.value===''?null:Number(x.value)):x.value});
     $('#svL').querySelectorAll('[data-del]').forEach(x=>x.onclick=()=>{svcs.splice(x.dataset.del,1);drawS()})};
   const drawH=()=>{$('#hrs').innerHTML=WEEKD.map((d,i)=>{const r=hours[String(i)]||[];return `<b>${d}</b><div class="rg">${r.map((x,j)=>`<input type="time" data-h="${i}" data-j="${j}" data-k="0" value="${x[0]}"> às <input type="time" data-h="${i}" data-j="${j}" data-k="1" value="${x[1]}"><button class="btn sm" data-hx="${i}:${j}">×</button>`).join('')}${r.length?'':'<span class="hint">fechado</span>'}<button class="btn sm" data-ha="${i}">+</button></div>`}).join('');
     $('#hrs').querySelectorAll('[data-h]').forEach(x=>x.onchange=()=>hours[x.dataset.h][x.dataset.j][x.dataset.k]=x.value);
@@ -3650,7 +3650,7 @@ async function contactDrawer(id,after,tab){
     <p style="color:var(--ink2);font-size:13px;margin-top:-8px">${esc(contactSub(c))} · ${c.channel==='telegram'?'veio pelo Telegram':c.channel==='messenger'?'veio pelo Messenger':c.channel==='instagram'?(c.source==='instagram_comentario'?'comentou num post do Instagram':'veio pelo Direct do Instagram'):c.ad?'veio pelo anúncio "'+esc(c.ad.headline||c.ad.source_id||'')+'"':{manual:'adicionado à mão',historico:'conversa antiga do celular','agenda do celular':'agenda do celular'}[c.source]||'veio pelo WhatsApp'} · desde ${day(c.created_at)}</p>
     <div class="field"><label>Nome</label><input name="name" value="${esc(c.name)}" required></div>
     <div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
-    <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0" step="1" value="${c.value??''}" placeholder="0"></div>
+    <div class="form2"><div class="field"><label>Valor (R$)</label><input name="value" data-money inputmode="decimal" value="${c.value?fmtIn(c.value):''}" placeholder="0,00"></div>
      <div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(c.email||'')}"></div></div>
     <div class="field"><label>Etiquetas</label><input name="tags" value="${esc((c.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div>
     <div class="field"><label>Anotações</label><textarea name="notes" rows="6" placeholder="O que o time precisa saber sobre esse cliente">${esc(c.notes||'')}</textarea></div>
@@ -3660,7 +3660,7 @@ async function contactDrawer(id,after,tab){
   o.querySelectorAll('[data-cdt]').forEach(b=>b.onclick=()=>cdTab(b.dataset.cdt));if(tab==='jornada'&&modOn('jornada'))cdTab('jornada');
   if(o.querySelector('#cdOpen'))o.querySelector('#cdOpen').onclick=()=>{o.remove();CV.open=id;go('conversas')};
   o.querySelector('#cdF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));
-    const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,opt_out:!!f.opt_out,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=Number(f.value);
+    const body={name:f.name,stage:f.stage,notes:f.notes,email:f.email,opt_out:!!f.opt_out,tags:f.tags.split(',').map(t=>t.trim()).filter(Boolean)};if(f.value!=='')body.value=parseIn(f.value);
     try{await api('/contacts/'+id,{method:'PATCH',body});o.remove();toast('Contato salvo.');after&&after()}catch(e){o.querySelector('#cdE').textContent=e.message}};
 }
 let FN={f:'all',q:'',showLost:false,data:null,sum:null,pipe:'vendas',more:{}};
@@ -3871,11 +3871,11 @@ function newContact(pre){
     <div class="field"><label>Nome</label><input name="name" required></div>
     <div class="field"><label>WhatsApp (com DDD)</label><input name="phone" required inputmode="tel" placeholder="(11) 98888-7777"></div>
     <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===pre?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
-     <div class="field"><label>Valor (R$)</label><input name="value" type="number" min="0"></div></div>
+     <div class="field"><label>Valor (R$)</label><input name="value" data-money inputmode="decimal" placeholder="0,00"></div></div>
     <div class="field"><label>Anotações</label><textarea name="notes" rows="3"></textarea></div>
     <p class="note">Para mandar a primeira mensagem para quem ainda não falou com você, a Meta exige um modelo aprovado. Depois de adicionar, abra a conversa e escolha o modelo.</p>
     <div class="row"><button class="btn p">Adicionar</button><span class="err" id="ncE"></span></div></form>`,true);
-  o.querySelector('#ncF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));if(f.value==='')delete f.value;else f.value=Number(f.value);
+  o.querySelector('#ncF').onsubmit=async ev=>{ev.preventDefault();const f=Object.fromEntries(new FormData(ev.target));if(f.value==='')delete f.value;else f.value=parseIn(f.value);
     try{await api('/contacts',{method:'POST',body:f});o.remove();toast('Contato adicionado.');drawBoard()}catch(e){o.querySelector('#ncE').textContent=e.message}};
 }
 /* ---------- vendas ---------- */
@@ -4102,7 +4102,7 @@ function productModal(p,ps,pre){pre=pre||{};
     </div><div class="ci-b"><div class="ci-bh"><i>2</i><div><b id="ciB2t">Preço</b><small id="ciB2s">Quanto custa.</small></div></div>
     <section class="ci-s"><div class="ci-l">Preço ${ii('ci_price')}</div>
      <div class="seg ci-seg"><button type="button" data-fx="1">Valor fixo</button><button type="button" data-fx="0">Varia por cliente</button></div>
-     <div class="ci-money" id="ciMoney"><span>R$</span><input class="ci-in" id="ciPrice" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${x.price!=null?String(x.price.toFixed(2)).replace('.',','):''}"></div>
+     <div class="ci-money" id="ciMoney"><span>R$</span><input class="ci-in" id="ciPrice" data-money inputmode="decimal" autocomplete="off" placeholder="0,00" value="${x.price!=null?fmtMoney(x.price):''}"></div>
      <div class="ci-eq" id="ciEq" hidden></div><div class="ci-h" id="ciPriceH"></div></section>
     <section class="ci-s" id="ciVal"><div class="ci-l"><span id="ciValL">Vale por</span> ${ii('ci_val')}</div>
      <div class="ci-chips" id="ciDur"></div>
@@ -4238,11 +4238,11 @@ async function saleModal(opt){
   const drawI=()=>{$('#smI').innerHTML=`<div class="sm-it h"><span class="sm-hd">Produto ou serviço</span><span class="sm-hd">Qtd.</span><span class="sm-hd">Preço un.</span><span class="sm-hd">Desconto</span><span class="sm-hd" style="text-align:right">Total</span><span></span></div>`+
     items.map((i,k)=>`<div class="sm-it"><input class="in" data-i="${k}" data-f="name" list="smCat" value="${esc(i.name)}" placeholder="Escolha ou digite" ${ro?'disabled':''} required>
      <input class="iq" data-i="${k}" data-f="qty" type="number" min="0.01" step="any" value="${i.qty}" ${ro?'disabled':''} aria-label="Quantidade">
-     <input class="ip" data-i="${k}" data-f="price" type="number" min="0" step="0.01" value="${i.price}" placeholder="R$" ${ro?'disabled':''} required aria-label="Preço">
-     <input class="id" data-i="${k}" data-f="discount" type="number" min="0" step="0.01" value="${i.discount||''}" placeholder="desconto R$" ${ro?'disabled':''} aria-label="Desconto">
+     <input class="ip" data-i="${k}" data-f="price" data-money inputmode="decimal" value="${i.price===''||i.price==null?'':fmtMoney(i.price)}" placeholder="R$ 0,00" ${ro?'disabled':''} required aria-label="Preço">
+     <input class="id" data-i="${k}" data-f="discount" data-money inputmode="decimal" value="${i.discount?fmtMoney(i.discount):''}" placeholder="desconto R$" ${ro?'disabled':''} aria-label="Desconto">
      <span class="t" id="smLt${k}">${brl2(lt(i))}</span>${ro||items.length<2?'<span></span>':`<button type="button" class="sm-x" data-ri="${k}" aria-label="Tirar item">×</button>`}</div>`).join('');
-    $('#smI').querySelectorAll('input').forEach(x=>x.oninput=()=>{const i=items[x.dataset.i],k=x.dataset.f;i[k]=x.value;
-      if(k==='name'){const p=active.find(y=>y.name===x.value);i.product_id=p?p.id:null;i.category=p?p.category||'':'';if(p&&p.price!=null&&(i.price===''||i.price==null)){i.price=p.price;x.closest('.sm-it').querySelector('[data-f=price]').value=p.price}}
+    $('#smI').querySelectorAll('input').forEach(x=>x.oninput=()=>{const i=items[x.dataset.i],k=x.dataset.f;i[k]=x.dataset.money!=null?(x.value===''?'':parseIn(x.value)):x.value;
+      if(k==='name'){const p=active.find(y=>y.name===x.value);i.product_id=p?p.id:null;i.category=p?p.category||'':'';if(p&&p.price!=null&&(i.price===''||i.price==null)){i.price=p.price;x.closest('.sm-it').querySelector('[data-f=price]').value=fmtMoney(p.price)}}
       $('#smLt'+x.dataset.i).textContent=brl2(lt(i));total()});
     $('#smI').querySelectorAll('[data-ri]').forEach(b=>b.onclick=()=>{items.splice(+b.dataset.ri,1);drawI();total()});total()};
   const drawS=()=>{const sum=sellers.reduce((a,s)=>a+(Number(s.pct)||0),0);
@@ -4353,7 +4353,7 @@ async function promoModal(p,tpl){
     ${sec(4,'Condições','Opcional. Deixe em branco o que não precisa.',`<div class="grid" style="gap:10px">
       <label class="ckl"><input type="checkbox" name="first" ${x.first_purchase?'checked':''}> Só na primeira compra do cliente</label>
       <label class="ckl"><input type="checkbox" name="inactive" ${x.only_inactive?'checked':''}> Só para cliente inativo (sem comprar há ${ME.company.inactive_days||90} dias)</label>
-      <div class="row pf-v">Compra mínima de R$ <input type="number" name="min" min="0" step="0.01" value="${x.min_total??''}" placeholder="—"></div>
+      <div class="row pf-v">Compra mínima de R$ <input name="min" data-money inputmode="decimal" value="${x.min_total!=null?fmtMoney(x.min_total):''}" placeholder="—"></div>
       <div class="row pf-v">Limite de <input type="number" name="mu" min="1" value="${x.max_uses??''}" placeholder="—"> usos no total e <input type="number" name="mpc" min="1" value="${x.max_per_contact??''}" placeholder="—"> por cliente</div>
       <div class="field"><label>Só para quem veio de <span class="hint">(nenhum = todos)</span></label>${chips('org',org.origins,x.origins)}</div></div>`)}
     ${sec(5,'Como entra na venda','',`<div class="modes" style="grid-template-columns:1fr 1fr">
@@ -4370,14 +4370,14 @@ async function promoModal(p,tpl){
    </div></aside></div></form>`);
   const f=o.querySelector('#prF');let kind=x.kind,scope=x.scope;
   const drawV=()=>{$('#prV').innerHTML=kind==='bxgy'?`Leve <input type="number" name="buy" min="2" max="100" value="${x.buy||3}"> e pague <input type="number" name="pay" min="1" max="99" value="${x.pay||2}">`
-    :`${kind==='percent'?'':'R$ '}<input type="number" name="value" min="0" step="${kind==='percent'?'1':'0.01'}" value="${x.value??''}" required> ${kind==='percent'?'% de desconto':kind==='fixed'?'de desconto no total dos itens':'por unidade (preço especial)'}`;setTimeout(prev)};
+    :`${kind==='percent'?'':'R$ '}${kind==='percent'?`<input type="number" name="value" min="0" max="100" step="1" value="${x.value??''}" required>`:`<input name="value" data-money inputmode="decimal" value="${x.value!=null?fmtMoney(x.value):''}" placeholder="0,00" required>`} ${kind==='percent'?'% de desconto':kind==='fixed'?'de desconto no total dos itens':'por unidade (preço especial)'}`;setTimeout(prev)};
   drawV();
   o.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;o.querySelectorAll('[data-k]').forEach(y=>y.classList.toggle('on',y===b));if(kind==='price'&&scope==='all')o.querySelector('[data-s=products]').click();drawV()});
   o.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{scope=b.dataset.s;o.querySelectorAll('[data-s]').forEach(y=>y.classList.toggle('on',y===b));$('#prScC').style.display=scope==='categories'?'':'none';$('#prScP').style.display=scope==='products'?'':'none';prev()});
   const vals=n=>[...f.querySelectorAll(`[name=${n}]:checked`)].map(i=>i.value);
   const collect=()=>({name:f.name.value,description:f.description.value,active:f.active.checked,starts:f.starts.value||null,ends:f.ends.value||null,weekdays:vals('wd').map(Number),
-      hour_from:f.hf.value||null,hour_to:f.ht.value||null,scope,categories:vals('cat'),product_ids:vals('prod'),kind,value:f.value?Number(f.value.value)||0:0,buy:f.buy?Number(f.buy.value):0,pay:f.pay?Number(f.pay.value):0,
-      first_purchase:f.first.checked,only_inactive:f.inactive.checked,min_total:f.min.value?Number(f.min.value):null,origins:vals('org'),max_uses:f.mu.value?Number(f.mu.value):null,max_per_contact:f.mpc.value?Number(f.mpc.value):null,
+      hour_from:f.hf.value||null,hour_to:f.ht.value||null,scope,categories:vals('cat'),product_ids:vals('prod'),kind,value:f.value?(f.value.dataset.money!=null?parseIn(f.value.value):Number(f.value.value)||0):0,buy:f.buy?Number(f.buy.value):0,pay:f.pay?Number(f.pay.value):0,
+      first_purchase:f.first.checked,only_inactive:f.inactive.checked,min_total:f.min.value?parseIn(f.min.value):null,origins:vals('org'),max_uses:f.mu.value?Number(f.mu.value):null,max_per_contact:f.mpc.value?Number(f.mpc.value):null,
       requires_coupon:f.rc.value==='1',stackable:f.stack.checked,nanda_offers:f.nanda.checked});
   function prev(){if(!$('#pfR'))return;const b=collect(),pn=Object.fromEntries(prods.map(y=>[y.id,y.name]));
     const v=b.kind==='percent'?`${num(b.value)}% de desconto`:b.kind==='fixed'?`${brl2(b.value)} de desconto`:b.kind==='price'?`por ${brl2(b.value)} cada`:`leve ${b.buy}, pague ${b.pay}`;
@@ -4922,6 +4922,14 @@ async function mtGoals(){if(!MT.niche)MT.niche=await api('/goals/niche').catch((
 // número no padrão brasileiro enquanto digita: 20000 vira 20.000, e a vírgula separa os centavos
 const fmtIn=v=>v==null||v===''?'':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:2});
 const parseIn=t=>{t=String(t||'').replace(/\./g,'').replace(',','.').replace(/[^\d.]/g,'');return Number(t)||0};
+// telefone no padrão brasileiro enquanto digita: (11) 98765-4321 ou (11) 3456-7890
+const fmtPhoneIn=d=>!d?'':d.length<3?'('+d:d.length<7?`(${d.slice(0,2)}) ${d.slice(2)}`:d.length<11?`(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`:`(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
+const maskPhone=(el,e)=>{let d=el.value.replace(/\D/g,'');if(d.length>11&&d.startsWith('55'))d=d.slice(2);d=d.slice(0,11);
+  if(e&&(e.inputType||'').startsWith('delete')&&el._pd===d&&d.length)d=d.slice(0,-1);  // apagou só um parêntese ou traço: apaga o número antes
+  el._pd=d;el.value=fmtPhoneIn(d)};
+document.addEventListener('input',e=>{const t=e.target;if(!(t instanceof HTMLInputElement))return;
+  if(t.dataset.money!=null)maskIn(t);else if(t.type==='tel'||t.inputMode==='tel'||t.dataset.mask==='phone')maskPhone(t,e)},true);
+const fmtMoney=v=>v==null||v===''?'':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const maskIn=el=>{let t=el.value.replace(/[^\d,]/g,'');const i=t.indexOf(',');let a=i<0?t:t.slice(0,i),d=i<0?null:t.slice(i+1).replace(/,/g,'').slice(0,2);a=a.replace(/^0+(?=\d)/,'').replace(/\B(?=(\d{3})+(?!\d))/g,'.');el.value=d==null?a:a+','+d};
 async function goalForm(g,preset){
   const [team,tms,ps,n]=await Promise.all([api('/team'),api('/teams').catch(()=>[]),api('/products'),MT.niche||api('/goals/niche')]);MT.niche=n;const aw=(ME.company.gamify||{}).awards;
@@ -5929,7 +5937,7 @@ const VIEWS={
    <div class="grid g2 em-g"><div class="card"><form id="co" class="em-f">
     <div class="field"><label>Nome do negócio</label><input name="name" value="${esc(c.name)}" maxlength="80" ${own?'':'disabled'}><small>Aparece para o time e a Nanda usa nas conversas.</small></div>
     <div class="field"><label>Segmento</label><select name="segment" ${own?'':'disabled'}>${Object.entries(SEG).map(([k,v])=>`<option value="${k}" ${k===c.segment?'selected':''}>${v}</option>`).join('')}</select><small>Muda as sugestões de funil, automações e jornada. O que você já criou não muda.</small></div>
-    <div class="field"><label>Telefone do negócio</label><input name="phone" value="${esc(c.phone)}" inputmode="tel" ${own?'':'disabled'}><small>Para os avisos do Oi Nanda. Esse número nunca entra na sua base de clientes.</small></div>
+    <div class="field"><label>Telefone do negócio</label><input name="phone" value="${esc(fmtPhone(c.phone)||c.phone||'')}" type="tel" inputmode="tel" placeholder="(11) 98765-4321" ${own?'':'disabled'}><small>Para os avisos do Oi Nanda. Esse número nunca entra na sua base de clientes.</small></div>
     ${own?'<div class="em-sv"><button class="btn p" disabled>Salvar alterações</button><span class="hint" id="coH">Tudo salvo.</span></div>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
    <div class="card em-pl" id="emPlan">${(()=>{const b=(bl&&bl.billing)||{},u=(bl&&bl.usage)||{},lm=(bl&&bl.limits)||{},stt=bl&&bl.state;
      const nm=bl&&bl.plan&&bl.plans&&bl.plans[bl.plan]?bl.plans[bl.plan].name:(PLAN[c.plan]||c.plan);
