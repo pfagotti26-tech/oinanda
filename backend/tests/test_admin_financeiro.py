@@ -129,7 +129,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         a.put('/api/admin/platform', json={'mrr_goal': 5000}); assert a.get(P).json()['summary']['goal'] == 5000
         # clientes: abas, busca e filtros
         l = a.get('/api/admin/companies').json()
-        assert l['counts'] == {'all': 2, 'paying': 1, 'courtesy': 0, 'trial': 1, 'readonly': 0, 'suspended': 0} and l['total'] == 3
+        assert l['counts'] == {'all': 2, 'paying': 1, 'courtesy': 0, 'trial': 1, 'readonly': 0, 'suspended': 0, 'risk': 0, 'test': 0} and l['total'] == 3
         assert [x['name'] for x in a.get('/api/admin/companies?tab=paying').json()['rows']] == ['Clínica Bella']
         assert [x['name'] for x in a.get('/api/admin/companies?q=diego').json()['rows']] == ['Barbearia Dom']
         assert a.get('/api/admin/companies?wa=yes').json()['rows'] == []
