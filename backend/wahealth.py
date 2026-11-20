@@ -37,10 +37,10 @@ def why_pt(errors):
 def problem_of(status=None, quality=None, can_send=None, errors=None):
     """Lê o que a Meta devolve e diz se é problema: (tipo, título, detalhe) ou None."""
     st = (status or '').upper()
-    if (can_send or '').upper() in ('BLOCKED', 'LIMITED') and any('payment' in (e or '').lower() for e in errors or []):
-        return 'payment', 'A Meta pausou as mensagens que a empresa inicia', PAY_FIX
     if st == 'BANNED': return 'banned', 'O WhatsApp bloqueou o número da empresa', 'A Nanda e o time não conseguem mandar nem receber mensagens por ele. ' + APPEAL
     if st in ('RESTRICTED', 'RATE_LIMITED'): return 'restricted', 'O WhatsApp restringiu o número da empresa', 'Por um tempo ele só responde quem chamou e não pode iniciar conversas. Evite campanhas até a restrição acabar. ' + APPEAL
+    if (can_send or '').upper() in ('BLOCKED', 'LIMITED') and any('payment' in (e or '').lower() for e in errors or []):
+        return 'payment', 'A Meta pausou as mensagens que a empresa inicia', PAY_FIX
     if (can_send or '').upper() == 'BLOCKED':
         why = why_pt(errors)
         return 'blocked', 'A Meta bloqueou o envio de mensagens deste número', (why[0].upper() + why[1:] + '. ' if why else '') + 'Veja os detalhes no Gerenciador do WhatsApp em business.facebook.com e resolva o que a Meta pede.'
