@@ -106,3 +106,10 @@ def test_recursos_extras_comecam_desligados():
         assert r['modules'] == {'metas': False, 'jornada': True}
         co = c.get('/api/auth/me').json()['company']
         assert journey.nanda_block({**co, 'modules': {'jornada': False}}) == ''
+
+
+def test_link_curto():
+    import origins
+    assert origins.short_base('https://app.oinanda.com.br') == 'https://oinanda.com.br/l'
+    assert origins.short_base('http://localhost:8001') == 'http://localhost:8001/api/l'
+    assert origins.link_out({'code': 'k3m9p'}, 'https://app.oinanda.com.br')['short'] == 'https://oinanda.com.br/l/k3m9p'

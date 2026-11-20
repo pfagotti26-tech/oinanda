@@ -171,9 +171,16 @@ def wa_url(phone, link):
     return f'https://wa.me/{phone}?text=' + quote(f'{link["message"].strip()} #oi-{link["code"]}')
 
 def link_out(l, base):
-    return {k: v for k, v in l.items() if k != '_id'} | {'short': f'{base}/api/l/{l["code"]}', 'qr': f'{base}/api/l/{l["code"]}/qr.svg'}
+    return {k: v for k, v in l.items() if k != '_id'} | {'short': f'{short_base(base)}/{l["code"]}', 'qr': f'{base}/api/l/{l["code"]}/qr.svg'}
 
 def base_of(request): return str(request.base_url).rstrip('/').replace('http://', 'https://') if 'localhost' not in str(request.base_url) else str(request.base_url).rstrip('/')
+
+def short_base(base):
+    """Endereço curto para divulgar: oinanda.com.br/l/codigo (o site repassa para a API). Os links antigos /api/l/ continuam valendo."""
+    import os
+    if os.environ.get('SHORT_BASE'): return os.environ['SHORT_BASE'].rstrip('/')
+    m = re.match(r'^(https?://)app\.(.+)$', base)
+    return f'{m.group(1)}{m.group(2)}/l' if m else f'{base}/api/l'
 
 @router.get('/track-links')
 async def list_links(request: Request, user=Depends(current_user)):
@@ -231,7 +238,7 @@ async def qr(code: str, request: Request):
     if not l: raise HTTPException(404, 'Link não encontrado.')
     import io
     buf = io.BytesIO()
-    segno.make(f'{base_of(request)}/api/l/{l["code"]}', error='m').save(buf, kind='svg', scale=8, border=2, dark='#17212B')
+    segno.make(f'{short_base(base_of(request))}/{l["code"]}', error='m').save(buf, kind='svg', scale=8, border=2, dark='#17212B')
     return Response(buf.getvalue(), media_type='image/svg+xml', headers={'Cache-Control': 'public, max-age=86400'})
 
 # ---------- relatório de origens ----------

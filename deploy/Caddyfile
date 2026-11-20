@@ -15,10 +15,18 @@
 # site (oinanda.com.br)
 {$SITE_HOSTS} {
 	encode zstd gzip
-	root * /srv/site
-	@html path / /index.html /segmentos/ /privacidade/ /termos/
-	header @html Cache-Control "no-cache"
-	file_server
+	# link curto rastreável: oinanda.com.br/l/k3m9p (e o QR Code dele) vai para a API
+	@curto path_regexp curto ^/l/([a-z0-9]{3,12})(/qr\.svg)?$
+	handle @curto {
+		rewrite * /api/l/{re.curto.1}{re.curto.2}
+		reverse_proxy api:8001
+	}
+	handle {
+		root * /srv/site
+		@html path / /index.html /segmentos/ /privacidade/ /termos/
+		header @html Cache-Control "no-cache"
+		file_server
+	}
 	import seguranca
 }
 

@@ -9,7 +9,12 @@ echo "30 3 * * * root $(pwd)/backup.sh >> /var/log/oinanda-backup.log 2>&1" > /e
 echo "*/5 * * * * root $(pwd)/monitor.sh >> /var/log/oinanda-monitor.log 2>&1" > /etc/cron.d/oinanda-monitor
 mkdir -p backups
 docker compose up -d --build --remove-orphans
-docker compose exec -T web caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1 || docker compose restart web
+# confere o Caddyfile antes de aplicar: com erro, o site segue com a configuração anterior em vez de cair
+if docker compose exec -T web caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
+  docker compose exec -T web caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1 || docker compose restart web
+else
+  echo "AVISO: o Caddyfile novo tem erro. O site continua com a configuração anterior. Veja: docker compose exec web caddy validate --config /etc/caddy/Caddyfile"
+fi
 docker image prune -f >/dev/null
 echo "Aguardando o sistema responder..."
 for i in $(seq 1 40); do docker compose exec -T api python -c "import urllib.request;urllib.request.urlopen('http://localhost:8001/api/health')" 2>/dev/null && { OK=1; break; }; sleep 3; done
