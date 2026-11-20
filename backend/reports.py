@@ -228,7 +228,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
         'unassigned': {'won': sum(1 for c in won if not (c.get('assigned_to') or c.get('won_by_id'))), 'value': sum(c.get('value') or 0 for c in won if not (c.get('assigned_to') or c.get('won_by_id')))},
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,
-                   'conversion': round(100 * converted / len(new), 1) if new else None,
+                   'conversion': round(100 * converted / len(new), 1) if new else None, 'converted': converted,
                    'cycle_days': round(median(cycle), 1) if cycle else None,
                    'first_reply_min': median(all_fr) if all_fr else None,
                    'wrote': len(wrote), 'answered': len([k for k in fr if k in wrote])},

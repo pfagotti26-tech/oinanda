@@ -108,7 +108,7 @@ def row_out(r):
     return {'id': c['id'], 'name': c.get('name'), 'segment': c.get('segment'), 'users': r['users'], 'created_at': c.get('created_at'), 'internal': r['internal'], 'own': r['own'], 'test': r['test'],
             'owner': {k: (r['owner'] or {}).get(k) for k in ('name', 'email')}, 'kind': r['kind'], 'plan': r['plan'], 'raw_plan': c.get('plan'),
             'trial_ends_at': c.get('trial_ends_at') if r['kind'] == 'trial' else None, 'next_payment': b.get('next_payment') if r['kind'] == 'paying' else None,
-            'paid_until': b.get('paid_until'), 'amount': b.get('amount'), 'cycle': b.get('cycle'), 'cancelled': r['cancelled'],
+            'paid_until': b.get('paid_until'), 'amount': b.get('amount'), 'cycle': b.get('cycle'), 'cancelled': r['cancelled'], 'sub_cancelled': b.get('status') == 'cancelled',
             'refused': {'due': r['refused']['due'], 'amount': r['refused']['amount'], 'detail': r['refused'].get('detail')} if r['refused'] else None,
             'courtesy_until': (c.get('courtesy') or {}).get('until'), 'last_use': r['last_use'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'], 'ai_cost': r['ai_real'],
             'ai_margin': round((b.get('amount') or 0) - (r['ai_real'] or 0), 2) if r['kind'] == 'paying' and (b.get('cycle') or 'monthly') == 'monthly' else None,

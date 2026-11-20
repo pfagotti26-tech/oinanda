@@ -336,7 +336,7 @@ async def me(user=Depends(current_user)):
     trial_left = max(0, (end - now()).days + 1) if end else None
     lim = limits(c)
     if lim['state'] != 'trial': trial_left = None
-    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'roles': ROLES, 'access': lim}
+    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'sub_cancelled': (c.get('billing') or {}).get('status') == 'cancelled', 'roles': ROLES, 'access': lim}
 
 @app.post('/api/auth/password')
 async def change_password(body: PasswordChange, request: Request, response: Response, user=Depends(current_user)):

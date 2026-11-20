@@ -146,6 +146,9 @@ async def patch_contact(contact_id: str, body: ContactPatch, request: Request, u
         won = any(s['id'] == sid and s['kind'] == 'won' for s in await stages_for(user['company']))
         if moved and won and not user.get('impersonated_by'): upd['won_by_id'] = user['id']  # quem fechou: a venda conta para ele no relatório se o card não tiver responsável
     if upd: await db.contacts.update_one({'id': contact_id}, {'$set': upd})
+    if 'stage' in (body.model_dump(exclude_none=True)) and (upd.get('value') or c.get('value')):
+        from sales import migrate_legacy
+        await migrate_legacy(user['company'])  # card fechado com valor vira venda na hora, não só quando alguém abre Vendas
     return await db.contacts.find_one({'id': contact_id}, {'_id': 0})
 
 class ContactIn(BaseModel):

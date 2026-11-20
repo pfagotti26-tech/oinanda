@@ -260,6 +260,7 @@ async def migrate_legacy(company):
                                        'source': ('ad:' + ((c.get('ad') or {}).get('headline') or 'sem título')) if c.get('ad') else c.get('source') or 'whatsapp',
                                        'status': 'ok', 'legacy': True, 'created_by': None, 'created_by_name': 'Funil', 'created_at': now(), 'history': []})
         await db.contacts.update_one({'id': c['id']}, {'$set': {'sales_migrated': True}})
+        await refresh_contact(company, c['id'])  # quem fechou pelo funil passa a contar como cliente (Clientes, públicos, recompra)
 
 # ---------- consulta e relatório ----------
 class Filters(BaseModel):
