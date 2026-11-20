@@ -1922,6 +1922,44 @@ body:has(.nz-save) #toast{bottom:92px}
 .cb-empty{text-align:center;padding:30px 10px}.cb-empty b{font-size:15px}.cb-empty p{color:var(--ink3);font-size:13px;margin:4px 0 0}
 @media (max-width:860px){.cb-t2{display:none}.cb-sr{border:0}.cb-kp{grid-template-columns:1fr 1fr}.cb-t{padding:10px 12px;grid-template-columns:28px 1fr}.cb-ti{width:28px;height:28px}.cb-t>b{font-size:19px}.cb-t>small{display:none}
  .cb-cl{width:100%}.cb-ch{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.cb-ch .cb-cl{display:none}.cb-c{flex:none}.cb-sum{border-radius:16px;border-bottom:1px solid var(--line);margin-bottom:10px}.cb-tb{border-radius:16px!important}.cb-q{max-width:none}}
+/* ficha do cliente */
+.cf{width:1180px;max-width:100%;gap:14px!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.cf-hd{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;flex-wrap:wrap}
+.cf-av{width:58px;height:58px;border-radius:50%;color:#fff;font-weight:700;font-size:20px;display:grid;place-items:center;flex:none}.cf-av.sm{width:38px;height:38px;font-size:14px}
+.cf-id{flex:1;min-width:240px;display:flex;flex-direction:column;gap:6px}.cf-nm{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cf-nm h2{font-size:22px;margin:0;letter-spacing:-.3px}
+.cf-mt{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--ink2)}.cf-mt span{display:inline-flex;align-items:center;gap:5px}.cf-mt svg{width:14px;height:14px;color:var(--ink3)}
+.cf-ac{display:flex;gap:8px;flex-wrap:wrap}.cf-ac .btn{gap:7px}.cf-ac svg{width:16px;height:16px}
+.cf-kp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cf-kp>div{padding:12px 16px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #F3EEE9;min-width:0}.cf-kp>div:first-child{border-left:0}
+.cf-kp span{font-size:12px;color:var(--ink3);font-weight:600}.cf-kp b{font-size:19px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cf-kp small{font-size:12px;color:var(--ink3)}.cf-kp .ok b{color:#1F7A50}.cf-kp .ok small{color:#1F7A50}
+.cf-t{margin:2px 0 0}.cf-t em{font-style:normal;font-size:11.5px;background:#F3EEE9;border-radius:999px;padding:1px 7px;margin-left:4px;color:var(--ink2)}
+.cf-g{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start}.cf-col{display:flex;flex-direction:column;gap:14px}
+.cf-g .hd{align-items:center;gap:6px}.cf-g .hd h3{font-size:15px}
+.cf-wl{display:flex;flex-direction:column}.cf-wl>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #F3EEE9}.cf-wl>div:last-child{border:0}
+.cf-wl b{font-size:14px}.cf-wl span:not(.pill){font-size:12.5px;color:var(--ink3)}
+.cf-of{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;padding:12px;background:#FFF8F4;border-radius:12px}.cf-of>span{font-size:12px;font-weight:600;color:var(--c2);width:100%}
+.cf-of button{display:inline-flex;align-items:center;gap:6px;border:1px solid #F2B9A6;background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}.cf-of button svg{width:13px;height:13px;color:var(--c)}.cf-of button:hover{border-color:var(--c)}
+.cf-dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px 12px;margin:0;font-size:13.5px}.cf-dl dt{color:var(--ink3);font-size:12.5px;display:flex;align-items:center}.cf-dl dd{margin:0}
+.cf-nt{white-space:pre-wrap;font-size:13.5px;line-height:1.5;margin:0;background:#FFFBEA;border-radius:10px;padding:10px 12px}
+.cf-ap{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #F3EEE9;font-size:13.5px}.cf-ap:last-child{border:0}.cf-ap span{color:var(--ink3);font-size:12.5px}
+.cf-mo{font-size:12px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px}.cf-mo:first-child{margin-top:4px}
+.cf-tl{list-style:none;margin:0;padding:0;position:relative}.cf-tl li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;padding:0 0 14px;position:relative}
+.cf-tl li:not(:last-child)::before{content:'';position:absolute;left:15.5px;top:32px;bottom:0;width:1.5px;background:#F1E8E0}
+.cf-tl i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#F6F1EC;color:var(--ink2)}.cf-tl i svg{width:15px;height:15px}
+.cf-tl b{font-size:13.5px;display:block;margin-top:5px}.cf-tl p{margin:2px 0 0;font-size:13px;color:var(--ink2);line-height:1.45}.cf-tl small{font-size:12px;color:var(--ink3)}
+.cf-tl .k-sale i{background:#E6F4EC;color:#1F7A50}.cf-tl .k-chat i{background:#E8EFFB;color:#2E5AAC}.cf-tl .k-appt i,.cf-tl .k-mile i{background:#F3EAFB;color:#7A3FB0}.cf-tl .k-camp i,.cf-tl .k-opp i{background:#FDECE6;color:var(--c)}
+.cf-tl .k-note i{background:#FFF4DE;color:#8A5A00}.cf-tl .k-sale_x i,.cf-tl .k-appt_x i{background:#F3EEE9;color:var(--ink3)}.cf-tl .k-start i{background:var(--c);color:#fff}
+.cf-tl.sm li{padding-bottom:10px}
+.cf-st small.cf-pr{display:block;color:#1F7A50;font-size:12px}
+.cf-f{display:flex;flex-direction:column;gap:12px}
+.modal.cm{width:600px;max-width:100%;margin-left:auto;margin-right:auto}.cm>.row{gap:12px;align-items:center;margin-bottom:12px}.cm-h{display:flex;flex-direction:column}.cm-h h2{font-size:18px;margin:0}.cm-h span{font-size:12.5px;color:var(--ink3)}
+.cm-st{display:flex;gap:10px;align-items:flex-start;background:#F6F1EC;border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.45;color:var(--ink2)}.cm-st svg{width:17px;height:17px;flex:none;margin-top:1px}
+.cm-st.ok{background:#E9F6EF;color:#185E3E}.cm-st.warn{background:#FFF7E8;color:#7A5A12}
+.cm textarea{width:100%;margin-top:12px;border:1px solid #DCD2C9;border-radius:12px;padding:12px;font:inherit;font-size:14px;resize:vertical;outline:0;box-sizing:border-box}.cm textarea:focus{border-color:var(--c)}
+.cm-ft{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-top:12px}.cm-ft .btn{gap:7px}.cm-ft svg{width:15px;height:15px}
+@media (max-width:860px){.cf-hd{padding:14px}.cf-av{width:46px;height:46px;font-size:16px}.cf-nm h2{font-size:19px}.cf-ac{width:100%}.cf-ac .btn{flex:1;justify-content:center;padding:10px 12px}.cf-ac #cfMsg{flex:1 1 100%}
+ .cf-kp{grid-template-columns:1fr 1fr}.cf-kp>div{border-left:0;border-top:1px solid #F3EEE9}.cf-kp>div:nth-child(-n+2){border-top:0}.cf-kp>div:nth-child(even){border-left:1px solid #F3EEE9}.cf-kp>div:last-child{grid-column:span 2;border-left:0}
+ .cf-g{grid-template-columns:1fr}.cf-dl{grid-template-columns:100px minmax(0,1fr)}.cf-st{display:none}.cf .ls-cards{display:flex}.cf-t{overflow-x:auto}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -3132,7 +3170,7 @@ async function cvPanel(c){
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</details>
    <details class="pn-s pn-d" data-pd="tg" ${(c.tags||[]).length?'open':''}><summary><span class="lb">Etiquetas ${ii('etiquetas')}</span><small>${(c.tags||[]).length||'nenhuma'}</small></summary><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></details>
    <details class="pn-s pn-d" data-pd="nt" id="pnNd" ${c.notes?'open':''}><summary><span class="lb">Anotações ${ii('anotacoes')}</span><span class="hint" id="pnNs"></span><small>${c.notes?'':'vazio'}</small></summary><textarea id="pnN" rows="4" placeholder="O que o time precisa saber sobre ${esc(c.name.split(' ')[0])}">${esc(c.notes||'')}</textarea></details>
-   <div class="pn-s"><button class="btn sm" id="pnDet" style="width:100%;justify-content:center">Ver detalhes completos</button></div>`;
+   <div class="pn-s"><button class="btn sm" id="pnDet" style="width:100%;justify-content:center">Abrir a ficha completa</button></div>`;
   const patch=async(body,msg)=>{try{await api('/contacts/'+c.id,{method:'PATCH',body});if(msg)toast(msg);CV.sig='';cvChat(false);cvList()}catch(e){toast(e.message)}};
   $('#pnX').onclick=()=>{if(innerWidth<1200){$('.cv').classList.remove('pn-open');return}$('#cvPan')?.click()};
   $('#pnExp').onclick=()=>$('#cvPan')?.click();
@@ -3164,7 +3202,7 @@ async function cvPanel(c){
   $('#pnOr').onclick=()=>originEdit(c,()=>{CV.pnFor=null;CV.sig='';cvChat(true)});
   $('#pnBook').onclick=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
   $('#pnTr').onclick=()=>transferModal(c);
-  $('#pnDet').onclick=()=>contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()});
+  $('#pnDet').onclick=()=>ctProfile(c.id);
   if($('#pnJnAll')){$('#pnJnAll').onclick=()=>contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()},'jornada');pnJourney(c)}
   const tags=[...(c.tags||[])];
   p.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{c.tags=tags.filter(t=>t!==b.dataset.tx);patch({tags:c.tags});cvPanel(c)});
@@ -4151,6 +4189,103 @@ async function couponsModal(p){
     try{const r=await api('/promos/'+p.id+'/coupons',{method:'POST',body});toast(r.length===1?'Cupom '+r[0].code+' criado.':r.length+' cupons criados.');drawF();load();if(VD.tab==='promocoes')vdPromos()}catch(e){$('#cpE').textContent=e.message}};
 }
 
+/* ficha do cliente: quem é, o que comprou, tudo o que aconteceu e o botão para falar com ele */
+const CF_IC={start:'<path d="M5 12h14M13 6l6 6-6 6"/>',chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',sale:'<path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',sale_x:'<path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
+ appt:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',appt_x:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M10 13l4 4M14 13l-4 4"/>',camp:'<path d="M4 10v4l11 5V5L4 10z"/>',
+ stage:'<path d="M4 6h16M4 12h10M4 18h6"/>',opp:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',mile:'<path d="M5 21V4h11l-2 4 2 4H5"/>',note:'<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/>',sys:'<circle cx="12" cy="12" r="8.5"/><path d="M12 8v5M12 16h.01"/>'};
+const cfWhen=v=>{const d=new Date(v);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' · '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
+const cfAgo=v=>{if(!v)return '—';const n=Math.floor((Date.now()-new Date(v))/864e5);return n<1?'hoje':n===1?'ontem':n<30?`há ${n} dias`:n<365?`há ${Math.round(n/30)} ${Math.round(n/30)===1?'mês':'meses'}`:`há ${Math.round(n/365)} ${Math.round(n/365)===1?'ano':'anos'}`};
+async function ctProfile(id,tab){
+  if(!STAGES)STAGES=await api('/funnel/stages').catch(()=>[]);
+  const [p,sales,wal,aps,tl]=await Promise.all([api('/contacts/'+id+'/profile'),api('/contacts/'+id+'/sales').catch(()=>[]),api('/contacts/'+id+'/wallet').catch(()=>({items:[],offers:[]})),api('/contacts/'+id+'/appointments').catch(()=>[]),api('/contacts/'+id+'/timeline').catch(()=>({items:[]}))]);
+  const nm=dispName(p.name),first=nm.split(' ')[0],S=p.stats,K=CLK[p.kind]||['—','grey'];
+  const chan=p.channel==='instagram'?`${svg('<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/>')}${p.ig_username?'@'+esc(p.ig_username):'Instagram'}`:p.wa_id?`${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${esc(fmtPhone(p.wa_id))}`:'';
+  const meta=[chan?`<span>${chan}</span>`:'',p.origin_name?`<span>${svg('<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>')}veio por ${esc(p.origin_name)}</span>`:'',p.owner?`<span>${svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')}${esc(p.owner)}</span>`:'',`<span>${svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>')}chegou ${cfAgo(p.created_at)}</span>`].join('');
+  const st=p.channel==='instagram'||p.channel==='messenger'?(p.window_open?'pode responder agora':'só depois que ele chamar'):p.window_open?'conversa aberta':'precisa de modelo';
+  const kp=[['Total gasto',S.spent?brl(S.spent):'R$ 0',S.purchases?`em ${S.purchases} ${S.purchases===1?'compra':'compras'}`:'ainda não comprou','ok'],['Ticket médio',S.ticket?brl(S.ticket):'—','por compra',''],
+    ['Última compra',S.last_sale_at?fmtD(ymd(new Date(S.last_sale_at))):'—',S.last_sale_at?cfAgo(S.last_sale_at):'',''],['Cliente desde',S.first_sale_at?fmtD(ymd(new Date(S.first_sale_at))):'—',S.first_sale_at?cfAgo(S.first_sale_at):'',''],
+    ['Último contato',p.last_in_at?cfAgo(p.last_in_at):'—',st,p.window_open?'ok':'']];
+  const o=overlay(`<div class="modal cf"><div class="cf-hd"><span class="cf-av" style="background:${avc(p.name)}">${esc(initials(nm))}</span>
+     <div class="cf-id"><div class="cf-nm"><h2>${esc(nm)}</h2><span class="pill ${K[1]}">${K[0]}</span>${p.opt_out?'<span class="pill grey">não quer mensagens automáticas</span>':''}</div><div class="cf-mt">${meta}</div></div>
+     <div class="cf-ac"><button class="btn p" id="cfMsg">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}Mandar mensagem</button><button class="btn" id="cfSale">${svg('<path d="M12 5v14M5 12h14"/>')}Registrar venda</button><button class="btn" id="cfConv" title="Abrir a conversa completa">${svg('<path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>')}Conversa</button></div></div>
+    <div class="cf-kp">${kp.map(k=>`<div class="${k[3]}"><span>${k[0]}</span><b>${k[1]}</b><small>${k[2]}</small></div>`).join('')}</div>
+    <nav class="utabs cf-t">${[['res','Resumo'],['buy',`Compras${sales.length?` <em>${sales.length}</em>`:''}`],['tl','Linha do tempo'],['dad','Dados']].map(t=>`<button type="button" data-cft="${t[0]}">${t[1]}</button>`).join('')}</nav>
+    <div id="cfB"></div></div>`,true);
+  const reload=t=>{o.remove();ctProfile(id,t)};
+  const ST={ativo:['valendo','ok'],vence_logo:['vence logo','warn'],vencido:['venceu','bad']};
+  const tlRow=x=>`<li class="k-${x.kind}"><i>${svg(CF_IC[x.kind]||CF_IC.sys)}</i><div><b>${esc(x.title)}</b>${x.sub?`<p>${esc(x.sub)}</p>`:''}<small>${cfWhen(x.at)}${x.by?' · '+esc(x.by):''}</small></div></li>`;
+  const tlFull=()=>{if(!tl.items.length)return '<div class="cb-empty"><b>Nada por aqui ainda</b></div>';let m='',h='';
+    for(const x of tl.items){const k=new Date(x.at).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});if(k!==m){h+=`${m?'</ul>':''}<div class="cf-mo">${k}</div><ul class="cf-tl">`;m=k}h+=tlRow(x)}return h+'</ul>'};
+  const saleRows=()=>sales.length?`<table class="vtb cf-st"><thead><tr><th>Data</th><th>Itens</th><th>Pagamento</th><th>Vendedor</th><th class="n">Valor</th><th></th></tr></thead><tbody>${sales.map((s,i)=>`<tr class="ck" data-sl="${i}" tabindex="0"><td>${fmtD(ymd(new Date(s.date)))}</td><td>${s.items.map(it=>esc(it.name)+(it.qty>1?` ×${it.qty}`:'')).join(', ')}${(s.promos||[]).length?`<small class="cf-pr">${(s.promos||[]).map(x=>esc(x.name)).join(', ')}</small>`:''}</td><td>${esc(s.payment_label||'—')}</td><td>${esc(((s.sellers||[])[0]||{}).name||'—')}</td><td class="n"><b>${brl(s.total)}</b></td><td>${s.status==='cancelled'?'<span class="pill grey">cancelada</span>':s.status==='pending'?'<span class="pill warn">aguardando</span>':''}</td></tr>`).join('')}</tbody></table>
+     <div class="ls-cards">${sales.map((s,i)=>`<button class="ls-card" data-sl="${i}"><span class="t"><b>${fmtD(ymd(new Date(s.date)))}</b><b>${brl(s.total)}</b></span><span class="i">${s.items.map(it=>esc(it.name)).join(', ')}</span>${s.status!=='ok'?`<span class="m">${s.status==='cancelled'?'cancelada':'aguardando aprovação'}</span>`:''}</button>`).join('')}</div>`
+    :`<div class="cb-empty"><b>${esc(first)} ainda não comprou</b><p>Quando você registrar uma venda, ela aparece aqui com os itens, o valor e quem vendeu.</p><button class="btn sm p" data-cfs style="margin-top:12px">Registrar venda</button></div>`;
+  const draw=t=>{o.querySelectorAll('[data-cft]').forEach(b=>b.classList.toggle('on',b.dataset.cft===t));const B=o.querySelector('#cfB');
+    if(t==='res'){const up=aps.filter(a=>new Date(a.start)>Date.now()&&!['canceled','no_show'].includes(a.status)).slice(-3).reverse();
+      B.innerHTML=`<div class="cf-g"><div class="cf-col">
+        <div class="vd-c"><div class="hd"><h3>O que ${esc(first)} tem</h3>${ii('cl_tem')}</div>${wal.items.length?`<div class="cf-wl">${wal.items.map(x=>{const s=ST[x.state]||['','grey'];return `<div><b>${esc(x.name)}</b><span>${x.expires_at?(x.state==='vencido'?'venceu ':'vence ')+fmtD(ymd(new Date(x.expires_at))):'sem validade'}</span><span class="pill ${s[1]}">${s[0]}</span></div>`}).join('')}</div>`:`<p class="hint">${S.purchases?'Os itens comprados não têm validade cadastrada.':'Nada ainda. Quando comprar, aparece aqui o que tem e até quando vale.'}</p>`}
+         ${wal.offers&&wal.offers.length?`<div class="cf-of"><span>Pode oferecer agora</span>${wal.offers.map((x,i)=>`<button data-of="${i}">${esc(x.name)}${x.price!=null?' · '+brl(x.price):''}${svg('<path d="M12 5v14M5 12h14"/>')}</button>`).join('')}</div>`:''}</div>
+        <div class="vd-c"><div class="hd"><h3>Últimos acontecimentos</h3><span class="sp"></span>${tl.items.length>5?'<button class="lnk" data-go="tl">ver tudo</button>':''}</div>${tl.items.length?`<ul class="cf-tl sm">${tl.items.slice(0,5).map(tlRow).join('')}</ul>`:'<p class="hint">Nada ainda.</p>'}</div></div>
+       <div class="cf-col">
+        <div class="vd-c"><div class="hd"><h3>Sobre</h3><span class="sp"></span><button class="lnk" data-go="dad">editar</button></div><dl class="cf-dl">
+          <dt>Situação ${ii('situacao')}</dt><dd><span class="pill ${K[1]}">${K[0]}</span></dd>
+          <dt>Origem ${ii('origem')}</dt><dd>${p.origin_name?esc(p.origin_name)+(p.origin_detail?` <span class="hint">· ${esc(p.origin_detail)}</span>`:''):'<span class="hint">não sabemos</span>'}${p.referred_by_name?` <span class="hint">· indicado por ${esc(p.referred_by_name)}</span>`:''}</dd>
+          <dt>Etapa</dt><dd>${esc(((STAGES||[]).find(s=>s.id===p.stage)||(STAGES||[])[0]||{}).name||'—')}</dd>
+          <dt>Responsável</dt><dd>${esc(p.owner||'ninguém ainda')}${p.team?` <span class="hint">· ${esc(p.team)}</span>`:''}</dd>
+          <dt>E-mail</dt><dd>${p.email?esc(p.email):'<span class="hint">—</span>'}</dd>
+          <dt>Etiquetas ${ii('etiquetas')}</dt><dd>${(p.tags||[]).length?p.tags.map(t=>`<span class="sx">${esc(t)}</span>`).join(' '):'<span class="hint">nenhuma</span>'}</dd></dl></div>
+        <div class="vd-c"><div class="hd"><h3>Anotações</h3>${ii('anotacoes')}<span class="sp"></span><button class="lnk" data-go="dad">${p.notes?'editar':'escrever'}</button></div>${p.notes?`<p class="cf-nt">${esc(p.notes)}</p>`:'<p class="hint">O que o time precisa lembrar. O cliente nunca vê.</p>'}</div>
+        ${up.length?`<div class="vd-c"><div class="hd"><h3>Próximos horários</h3></div>${up.map(a=>`<div class="cf-ap"><b>${esc(a.service_name||'Horário')}</b><span>${cfWhen(a.start)}</span></div>`).join('')}</div>`:''}</div></div>`}
+    else if(t==='buy')B.innerHTML=`<div class="vd-c">${sales.length?`<div class="hd"><h3>${sales.length} ${sales.length===1?'compra':'compras'}</h3><span class="hint">${brl(S.spent)} no total</span><span class="sp"></span><button class="btn sm p" data-cfs>+ Registrar venda</button></div>`:''}${saleRows()}</div>`;
+    else if(t==='tl')B.innerHTML=`<div class="vd-c"><div class="hd"><h3>Linha do tempo</h3><span class="hint">tudo o que aconteceu com ${esc(first)}, do mais novo ao mais antigo</span></div>${tlFull()}</div>`;
+    else B.innerHTML=`<form class="vd-c cf-f" id="cfF"><div class="form2"><div class="field"><label>Nome</label><input name="name" value="${esc(p.name)}" required maxlength="80"></div><div class="field"><label>E-mail</label><input name="email" type="email" value="${esc(p.email||'')}"></div></div>
+      <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(p.stage||(STAGES[0]||{}).id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div><div class="field"><label>Etiquetas</label><input name="tags" value="${esc((p.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div></div>
+      <div class="field"><label>Anotações</label><textarea name="notes" rows="5" placeholder="O que o time precisa saber sobre ${esc(first)}">${esc(p.notes||'')}</textarea></div>
+      <label class="ckl"><input type="checkbox" name="opt_out" ${p.opt_out?'checked':''}> Não quer receber mensagens automáticas (campanhas e lembretes)</label>
+      <div class="row"><button class="btn p">Salvar</button><button type="button" class="btn sm" id="cfOr" style="margin-left:auto">Mudar a origem</button><span class="err" id="cfE"></span></div></form>`;
+    B.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>draw(b.dataset.go));
+    B.querySelectorAll('[data-cfs]').forEach(b=>b.onclick=()=>saleModal({contact:{id,name:p.name},onDone:()=>reload('buy')}));
+    B.querySelectorAll('[data-sl]').forEach(b=>{const g=()=>saleModal({sale:sales[+b.dataset.sl],onDone:()=>reload('buy')});b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+    B.querySelectorAll('[data-of]').forEach(b=>b.onclick=()=>{const x=wal.offers[+b.dataset.of];saleModal({contact:{id,name:p.name},items:[{product_id:x.product_id,name:x.name,price:x.price}],onDone:()=>reload('buy')})});
+    const f=B.querySelector('#cfF');if(f){f.querySelector('#cfOr').onclick=()=>originEdit({...p},()=>reload('res'));
+      f.onsubmit=async ev=>{ev.preventDefault();const body={name:f.name.value,email:f.email.value,stage:f.stage.value,notes:f.notes.value,opt_out:f.opt_out.checked,tags:f.tags.value.split(',').map(x=>x.trim()).filter(Boolean)};
+        try{await api('/contacts/'+id,{method:'PATCH',body});toast('Dados salvos.');reload('res')}catch(e){f.querySelector('#cfE').textContent=e.message}}}};
+  o.querySelectorAll('[data-cft]').forEach(b=>b.onclick=()=>draw(b.dataset.cft));draw(tab||'res');
+  o.querySelector('#cfMsg').onclick=()=>msgModal(p,()=>reload('tl'));
+  o.querySelector('#cfSale').onclick=()=>saleModal({contact:{id,name:p.name},onDone:()=>reload('buy')});
+  o.querySelector('#cfConv').onclick=()=>{o.remove();CV.open=id;CV.filter='all';go('conversas')};
+}
+async function msgModal(p,after){
+  const nm=dispName(p.name),first=nm.split(' ')[0],meta=p.channel==='instagram'||p.channel==='messenger',chn=p.channel==='instagram'?'Instagram':p.channel==='messenger'?'Messenger':'WhatsApp';
+  const until=p.window_ends_at?new Date(p.window_ends_at):null,untilTxt=until?until.toLocaleString('pt-BR',{weekday:'long',hour:'2-digit',minute:'2-digit'}):'';
+  const o=overlay(`<div class="modal cm" style="width:600px;max-width:100%;margin:0 auto"><div class="row"><span class="cf-av sm" style="background:${avc(p.name)}">${esc(initials(nm))}</span><div class="cm-h"><h2>Mensagem para ${esc(first)}</h2><span>pelo ${chn}${p.wa_id&&!meta?' · '+esc(fmtPhone(p.wa_id)):p.ig_username?' · @'+esc(p.ig_username):''}</span></div><button type="button" class="x" style="margin-left:auto">×</button></div><div id="cmB"></div></div>`,true);
+  const B=o.querySelector('#cmB'),done=t=>{toast(t);o.remove();after&&after()};
+  if(p.window_open){
+    B.innerHTML=`<div class="cm-st ok">${svg('<path d="m5 12 4.5 4.5L19 7"/>')}<span>${p.human_only?`Pelo Instagram, só uma pessoa do time pode responder agora, até ${esc(untilTxt)}.`:`${esc(first)} falou com você ${p.last_in_at?agoShort(p.last_in_at).replace(/^(\d)/,'há $1'):'agora'}. Você pode escrever à vontade${untilTxt?' até '+esc(untilTxt):''}.`}</span></div>
+      <textarea id="cmT" rows="5" maxlength="4096" placeholder="Escreva para ${esc(first)}..."></textarea>
+      <div class="cm-ft"><span class="hint">Sai como mensagem sua, e fica na conversa.</span><button class="btn p" id="cmGo">${svg('<path d="m4 12 16-8-6 16-3-7-7-1z"/>')}Enviar</button></div>`;
+    const ta=B.querySelector('#cmT');setTimeout(()=>ta.focus(),60);
+    B.querySelector('#cmGo').onclick=async e=>{const t=ta.value.trim();if(!t)return ta.focus();e.target.disabled=true;
+      try{await api('/conversations/'+p.id+'/send',{method:'POST',body:{text:t}});done('Mensagem enviada.')}catch(x){toast(x.message);e.target.disabled=false}};
+    return}
+  if(meta){B.innerHTML=`<div class="cm-st">${svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 8v5M12 16h.01"/>')}<span>No ${chn}, a empresa só pode escrever depois que a pessoa chama. Quando ${esc(first)} mandar mensagem, você responde por aqui ou pela conversa.${p.wa_id?' Ele também tem WhatsApp: abra a conversa e troque o canal.':''}</span></div>
+    <div class="cm-ft"><span></span><button class="btn" id="cmCv">Abrir a conversa</button></div>`;B.querySelector('#cmCv').onclick=()=>{o.remove();CV.open=p.id;CV.filter='all';go('conversas')};return}
+  const [tp,rt]=await Promise.all([api('/templates').catch(()=>[]),api('/meta/rates').catch(()=>null)]);const ok=tp.filter(t=>t.status==='APPROVED');const can=['owner','manager'].includes(ME.user.role);
+  const head=`<div class="cm-st warn">${svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>')}<span>${p.last_in_at?`${esc(first)} não fala com você há mais de 24 h.`:`${esc(first)} ainda não mandou mensagem.`} Pela regra da Meta, para chamar no WhatsApp é preciso usar um <b>modelo aprovado</b>. ${ii('janela')}</span></div>`;
+  if(!ok.length){B.innerHTML=head+`<p class="hint" style="margin:12px 0">${tp.some(t=>t.status==='PENDING')?'Seus modelos ainda estão em análise na Meta. Costuma sair em minutos ou poucas horas.':'Você ainda não tem modelo aprovado.'}</p><div class="cm-ft"><span></span>${can?'<button class="btn p" id="cmMk">Criar modelo</button>':'<span class="hint">Peça para o dono ou gestor criar um modelo.</span>'}</div>`;
+    if($('#cmMk'))$('#cmMk').onclick=()=>{o.remove();AU.tab='modelos';go('automacoes')};return}
+  B.innerHTML=head+`<div class="field" style="margin-top:12px"><label>Modelo</label><select id="cmS">${ok.map(t=>`<option value="${t.id}">${esc(t.label)} · ${t.category==='UTILITY'?'utilidade':'marketing'}</option>`).join('')}</select></div><div id="cmV" class="tpv"></div><div id="cmP"></div>
+    <div class="cm-ft"><span class="hint" id="cmC"></span><button class="btn p" id="cmGo">${svg('<path d="m4 12 16-8-6 16-3-7-7-1z"/>')}Enviar modelo</button></div>`;
+  const drawT=()=>{const t=ok.find(x=>x.id===$('#cmS').value);const ext=(t.params||[]).filter(x=>/^\d+$/.test(x));
+    $('#cmV').innerHTML=ext.map((x,i)=>`<input data-v="${i}" placeholder="Valor de {${x}}" value="${i===0&&/^(oi|olá|ola)\b/i.test(t.body)?esc(first):''}">`).join('');
+    const pv=()=>{const vals=[...o.querySelectorAll('#cmV [data-v]')].map(i=>i.value.trim());const txt=t.external?t.body.replace(/\{(\d+)\}/g,(m,n)=>vals[n-1]||m):fillVars(t.body,{name:nm});
+      $('#cmP').innerHTML=`<div class="wab"><span class="wl">Como ${esc(first)} recebe</span>${esc(txt)}<small>agora</small></div>`};
+    o.querySelectorAll('#cmV [data-v]').forEach(i=>i.oninput=pv);pv();
+    const per=rt?(t.category==='UTILITY'?rt.UTILITY:rt.MARKETING):null;$('#cmC').innerHTML=per?`Custo aproximado na Meta: ~R$ ${String(per.toFixed(2)).replace('.',',')}`:''};
+  $('#cmS').onchange=drawT;drawT();
+  $('#cmGo').onclick=async e=>{const t=ok.find(x=>x.id===$('#cmS').value);const vals=[...o.querySelectorAll('#cmV [data-v]')].map(i=>i.value.trim());
+    if(vals.some(v=>!v))return toast('Preencha os campos do modelo.');e.target.disabled=true;
+    try{await api('/conversations/'+p.id+'/template',{method:'POST',body:{template_id:t.id,values:vals.length?vals:null}});done('Mensagem enviada. Quando responder, a conversa abre de novo.')}catch(x){toast(x.message);e.target.disabled=false}};
+}
 /* clientes: carteira e segmentos */
 const CL={rules:[],seg:null,data:null,t:null,n:0,tab:'seg'};
 const CLF=[['product','Tem / já teve um item'],['category','Tem / já teve uma categoria'],['expires_in','Vence nos próximos dias'],['expired_within','Venceu e não renovou'],
@@ -4252,7 +4387,7 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
      <div class="ls-cards">${r.items.map(c=>`<button class="ls-card" data-oc="${c.id}"><span class="t"><b>${esc(dispName(c.name))}</b>${kd(c)}</span><span class="i">${c.has.map(h=>esc(h.name)).join(', ')||(c.purchases?'':'Ainda não comprou')}</span><span class="m">${c.next_expiry?'vence '+fmtD(ymd(new Date(c.next_expiry)))+' · ':''}${c.purchases} ${c.purchases===1?'compra':'compras'}${c.spent?' · '+brl(c.spent):''}${c.owner?' · '+esc(c.owner):''}</span></button>`).join('')}</div>
      ${(CL.q?r.found:r.count)>r.items.length?`<p class="hint" style="margin:10px 4px 2px">Mostrando ${r.items.length} de ${num(CL.q?r.found:r.count)}. Use a busca ou exporte para ver todos.</p>`:''}`
    :`<div class="cb-empty"><b>${CL.q?'Ninguém com esse nome ou telefone neste público':'Ninguém se encaixa'}</b><p>${CL.q?'Confira a busca ou limpe as condições.':'Afrouxe alguma condição ou mude o período.'}</p></div>`}</div>`;
-  box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>{CV.open=b.dataset.oc;CV.filter='all';go('conversas')};b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+  box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>ctProfile(b.dataset.oc);b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
   const qi=$('#clQ');qi.oninput=()=>{CL.q=qi.value;clearTimeout(CL.qt);CL.qt=setTimeout(async()=>{const pos=qi.selectionStart;await clRun();const n=$('#clQ');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}},300)};
   if($('#clSave'))$('#clSave').onclick=async()=>{const cur=CL.seg&&CL.data.segs.find(x=>x.id===CL.seg);
     const name=await sure(cur?'Nome do público:':'Dê um nome para este público. Ele se atualiza sozinho: quem passar a se encaixar entra.',{input:true,value:cur?cur.name:'',placeholder:'Ex.: Renovação de novembro',ok:'Salvar',el:$('#clSave')});if(!name)return;
