@@ -7,6 +7,7 @@ no fim do período atual. Fica guardada no contato (holdings) para filtrar rápi
 Segmentos: públicos montados com regras (todas precisam valer). Ficam salvos e se atualizam sozinhos:
 quem passa a se encaixar entra, quem deixa de se encaixar sai.
 """
+import re
 import csv, io
 from datetime import timedelta
 from typing import Optional, List, Literal, Any
@@ -105,6 +106,7 @@ class Rule(BaseModel):
 
 class SegIn(BaseModel):
     rules: List[Rule] = Field(default_factory=list, max_length=12)
+    q: str = Field(default='', max_length=80)  # busca por nome ou telefone, só na lista
 
 def _days(v):
     try: return max(0, min(3650, int(v)))
@@ -188,22 +190,49 @@ async def run_segment(user, rules):
             products = products or await products_map(company['id'])
             await refresh_holdings(company['id'], c['id'], products)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
-                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1}).to_list(50000)
+                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1}).to_list(50000)
     return [c for c in rows if all(match(c, r, ctx) for r in rules)]
 
-def row_out(c, names):
+def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
+
+def row_out(c, names, inactive_days=None):
+    from origins import status_of
     hs = c.get('holdings') or []
-    return {'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
+    return {'kind': status_of(c, inactive_days), 'channel': c.get('channel') or 'whatsapp', 'ig': c.get('ig_username'), 'origin': c.get('origin') or ('anuncio' if c.get('ad') else None),
+            'last_in_at': c.get('last_in_at'), 'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
             'purchases': c.get('sales_count') or 0, 'last_sale_at': c.get('last_sale_at'), 'next_expiry': c.get('next_expiry'), 'opt_out': bool(c.get('opt_out')),
             'has': [{'name': x['name'], 'state': state_of(x), 'expires_at': x.get('expires_at')} for x in hs][:6]}
 
 @router.post('/segments/preview')
 async def preview(body: SegIn, user=Depends(current_user)):
+    from origins import status_of
     rows = await run_segment(user, body.rules)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
-    rows.sort(key=lambda c: (aware(c.get('next_expiry')) or now() + timedelta(days=99999), -(c.get('value') or 0)))
-    return {'count': len(rows), 'spent': round(sum((c.get('value') or 0) for c in rows if c.get('sales_count')), 2),
-            'reachable': sum(1 for c in rows if not c.get('opt_out')), 'items': [row_out(c, names) for c in rows[:300]]}
+    days = user['company'].get('inactive_days')
+    kinds = {'prospect': 0, 'cliente': 0, 'inativo': 0}
+    for c in rows: kinds[status_of(c, days)] += 1
+    # quem já comprou e vence primeiro vem antes; depois quem gastou mais; depois quem falou por último
+    rows.sort(key=lambda c: (aware(c.get('next_expiry')) or now() + timedelta(days=99999), -(c.get('value') or 0) if c.get('sales_count') else 0,
+                             -(aware(c.get('last_in_at')) or aware(c.get('created_at')) or now() - timedelta(days=99999)).timestamp()))
+    shown = rows
+    q = body.q.strip().lower()
+    if q:
+        dq = re.sub(r'\D', '', q)
+        shown = [c for c in rows if q in (c.get('name') or '').lower() or (len(dq) >= 4 and dq in (c.get('wa_id') or '')) or q.lstrip('@') in (c.get('ig_username') or '').lower()]
+    return {'count': len(rows), 'spent': round(sum((c.get('value') or 0) for c in rows if c.get('sales_count')), 2), 'kinds': kinds,
+            'reachable': sum(1 for c in rows if reachable(c)), 'found': len(shown), 'items': [row_out(c, names, days) for c in shown[:300]]}
+
+@router.get('/segments/overview')
+async def overview(user=Depends(current_user)):
+    """Números da base para o topo da página: cada um vira um público com um clique."""
+    from origins import status_of
+    rows = await run_segment(user, [])
+    days = user['company'].get('inactive_days'); t = now()
+    k = {'prospect': 0, 'cliente': 0, 'inativo': 0}
+    for c in rows: k[status_of(c, days)] += 1
+    due = sum(1 for c in rows if any(x.get('expires_at') and t <= aware(x['expires_at']) <= t + timedelta(days=30) for x in c.get('holdings') or []))
+    lost = sum(1 for c in rows if any(x.get('expires_at') and t - timedelta(days=30) <= aware(x['expires_at']) < t for x in c.get('holdings') or []))
+    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):

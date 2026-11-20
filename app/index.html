@@ -1893,6 +1893,34 @@ body:has(.nz-save) #toast{bottom:92px}
 .pm-facts i{width:26px!important;height:26px!important;border-radius:8px!important;background:#FDECE6!important;color:var(--c)!important}.pm-facts>div{grid-template-columns:26px 1fr!important}
 @media (max-width:860px){.lk-flow{grid-template-columns:1fr!important;padding:0 14px 14px!important}.lk-ar{transform:rotate(90deg)}.lk-fs>span:not(.lk-fn){min-height:0}.lk-fs>.lk-fv{min-height:0}
  .pm-facts{grid-template-columns:1fr 1fr!important;row-gap:12px!important;margin:0 14px 14px}.pm-facts>div:nth-child(3){padding-left:0;border-left:0}}
+/* clientes: base e públicos */
+.cb-kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.cb-t{display:grid;grid-template-columns:34px 1fr;grid-template-areas:"i l" "i b" "i s";gap:0 10px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.cb-t:hover{border-color:#E7C9BC}.cb-t.on{border-color:var(--c);box-shadow:0 0 0 3px #FDECE6}
+.cb-ti{grid-area:i;width:34px;height:34px;border-radius:10px;background:#F6F1EC;color:var(--ink2);display:grid;place-items:center;align-self:center}.cb-ti svg{width:17px;height:17px}
+.cb-t.cliente .cb-ti{background:#E6F4EC;color:#1F7A50}.cb-t.prospect .cb-ti{background:#E8EFFB;color:#2E5AAC}.cb-t.inativo .cb-ti{background:#FFF4DE;color:#8A5A00}.cb-t.due30 .cb-ti{background:#FDECE6;color:var(--c)}
+.cb-tl{grid-area:l;font-size:12.5px;color:var(--ink2);font-weight:600}.cb-t>b{grid-area:b;font-size:22px;line-height:1.15;font-variant-numeric:tabular-nums}.cb-t>small{grid-area:s;font-size:11.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-f{margin-bottom:12px}.cb-fh{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}.cb-fh>.btn{margin-left:auto}.cb-br{margin-right:auto}.cb-fh h3{font-size:16px;margin:0 0 2px}.cb-fh .hint{font-size:12.5px}
+.cb-ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}.cb-cl{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;width:62px;flex:none}
+.cb-c{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}.cb-c>button{border:0;background:none;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.cb-c:hover{border-color:#E7C9BC}.cb-c.on{background:#FDECE6;border-color:#F2B9A6}.cb-c.on>button{color:var(--c2);font-weight:600}
+.cb-c.sv svg{width:13px;height:13px;color:#C9A227}.cb-c em{font-style:normal;font-size:11.5px;color:var(--ink3);background:#F3EEE9;border-radius:999px;padding:0 7px}.cb-x{border:0;background:none;padding:6px 10px 6px 2px;cursor:pointer;color:var(--ink3);font-size:15px}.cb-x:hover{color:var(--bad)}
+.cb-f .cl-rules:not(:empty){margin-top:4px}
+.cb-sum{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px 16px 0 0;border-bottom:0;padding:14px 16px}
+.cb-n{display:flex;align-items:baseline;gap:6px}.cb-n b{font-size:24px;font-variant-numeric:tabular-nums}.cb-n span{font-size:13px;color:var(--ink2)}
+.cb-br{display:flex;flex-wrap:wrap;gap:6px}.cb-k{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2);background:#F6F1EC;border-radius:999px;padding:3px 10px}.cb-k svg{width:13px;height:13px}
+.cb-k.cliente{background:#E6F4EC;color:#1F7A50}.cb-k.prospect{background:#E8EFFB;color:#2E5AAC}.cb-k.inativo{background:#FFF4DE;color:#8A5A00}.cb-k.wa{background:#fff;border:1px solid var(--line)}
+.cb-sum .cl-act .btn svg{width:14px;height:14px}.cb-sum .cl-act .btn{gap:6px}
+.cb-tb{border-radius:0 0 16px 16px!important;padding-top:4px!important}.cb-sr{display:flex;align-items:center;gap:10px;padding:0 0 10px;border-bottom:1px solid #F3EEE9;margin-bottom:2px}
+.cb-q{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:0 12px;max-width:360px;flex:1;background:#FBF8F5}.cb-q svg{width:15px;height:15px;color:var(--ink3);flex:none}.cb-q input{border:0;background:none;padding:8px 0;font:inherit;font-size:13.5px;outline:0;width:100%}
+.cb-q:focus-within{border-color:var(--c);background:#fff}
+.cb-pn{display:inline-flex;align-items:center;gap:10px}.cb-pn>i{width:30px;height:30px;border-radius:50%;color:#fff;font-style:normal;font-weight:700;font-size:12.5px;display:grid;place-items:center;flex:none}
+.cb-pn>span{display:flex;flex-direction:column;min-width:0}.cb-pn b{font-size:14px}.cb-chn{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ink3)}.cb-chn svg{width:12px;height:12px}
+.cb-t2 td{vertical-align:middle}.cb-t2 small{display:none}
+#clRes.ld{opacity:.55;transition:opacity .2s}
+.cb-empty{text-align:center;padding:30px 10px}.cb-empty b{font-size:15px}.cb-empty p{color:var(--ink3);font-size:13px;margin:4px 0 0}
+@media (max-width:860px){.cb-t2{display:none}.cb-sr{border:0}.cb-kp{grid-template-columns:1fr 1fr}.cb-t{padding:10px 12px;grid-template-columns:28px 1fr}.cb-ti{width:28px;height:28px}.cb-t>b{font-size:19px}.cb-t>small{display:none}
+ .cb-cl{width:100%}.cb-ch{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.cb-ch .cb-cl{display:none}.cb-c{flex:none}.cb-sum{border-radius:16px;border-bottom:1px solid var(--line);margin-bottom:10px}.cb-tb{border-radius:16px!important}.cb-q{max-width:none}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4127,26 +4155,37 @@ function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).lengt
   if(hm('orcamento')&&buy)t.push(['Pediram orçamento e não compraram','Nos últimos 30 dias',[{field:'milestone',op:'within',value:{id:'orcamento',days:30}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   if(hm('compareceu')&&buy)t.push([`Não compraram depois de "${hm('compareceu').name}"`,'Há mais de 3 dias',[{field:'milestone',op:'more',value:{id:'compareceu',days:3}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   return t}
+const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}]};
+const CLK={prospect:['prospect','grey'],cliente:['cliente','ok'],inativo:['inativo','warn']};
 async function clView(){
   if(CL.tab==='camp'&&isMgr())return clCamps();
   if(CL.tab==='ren'&&isMgr())return clRen();
-  const [ps,org,st,tms,team,pr,segs,jst]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[]),api('/journey/settings').catch(()=>({milestones:[]}))]);
+  CL.q=CL.q||'';
+  const [ps,org,st,tms,team,pr,segs,jst,ov]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[]),api('/journey/settings').catch(()=>({milestones:[]})),api('/segments/overview').catch(()=>null)]);
   const D=CL.data={ms:jst.milestones.filter(m=>m.active!==false).map(m=>({id:m.id,name:m.name})),products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
-  const tpl=clTemplates(D);
-  $('#page').innerHTML=clHead()+`
-   <div class="cl-g"><aside class="cl-side">
-     <div class="cl-box"><h3>Seus segmentos</h3>${segs.length?segs.map(x=>`<div class="cl-seg ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}"><b>${esc(x.name)}</b><span>${x.count??'—'}</span></button><button class="sm-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}">×</button></div>`).join(''):'<p class="hint">Nenhum salvo ainda. Monte um ao lado e salve.</p>'}</div>
-     <div class="cl-box"><h3>Modelos prontos</h3>${tpl.map((x,i)=>`<button class="cl-tp" data-tp="${i}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></button>`).join('')}</div>
-   </aside><section class="cl-main">
-     <div class="vd-c"><div class="hd"><h3>${CL.seg?esc((segs.find(x=>x.id===CL.seg)||{}).name||'Segmento'):'Quem entra'}</h3><span class="hint">todas as condições precisam valer</span><span class="sp"></span>${CL.rules.length?'<button class="lnk" id="clClr">começar de novo</button>':''}</div>
-      <div id="clR" class="cl-rules"></div>
-      <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">Adicionar condição</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
-     <div id="clRes"></div></section></div>`;
+  const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);
+  const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}</span><b>${num(v)}</b><small>${sub}</small></button>`;
+  const kp=ov?`<div class="cb-kp">${tile('total','Toda a base',ov.total,'todo mundo que já falou com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
+     ${tile('prospect','Prospects',ov.prospect,'ainda não compraram','<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')}
+     ${tile('cliente','Clientes',ov.cliente,'já compraram','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}
+     ${ov.inactive_days?tile('inativo','Inativos',ov.inativo,`sem comprar há ${ov.inactive_days}+ dias`,'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'):''}
+     ${tile('due30','Vencem em 30 dias',ov.due30,'hora de oferecer a renovação','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')}</div>`:'';
+  const segName=CL.seg&&(segs.find(x=>x.id===CL.seg)||{}).name;
+  $('#page').innerHTML=clHead()+kp+`
+   <div class="vd-c cb-f"><div class="cb-fh"><div><h3>${segName?esc(segName):'Quem você quer ver'}</h3><span class="hint">${CL.rules.length?'Todas as condições precisam valer. A lista se atualiza sozinha.':'Escolha um público pronto ou monte o seu com condições.'}</span></div>
+      <span class="sp"></span>${CL.rules.length?'<button class="btn sm" id="clClr">Limpar</button>':''}</div>
+     ${segs.length?`<div class="cb-ch"><span class="cb-cl">Salvos</span>${segs.map(x=>`<span class="cb-c sv ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${esc(x.name)}<em>${x.count??''}</em></button>${CL.seg===x.id?`<button class="cb-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}" title="Apagar">×</button>`:''}</span>`).join('')}</div>`:''}
+     <div class="cb-ch"><span class="cb-cl">Prontos</span>${tpl.map((x,i)=>`<span class="cb-c ${!CL.seg&&JSON.stringify(x[2])===cur?'on':''}"><button data-tp="${i}" title="${esc(x[1])}">${esc(x[0])}</button></span>`).join('')}</div>
+     <div id="clR" class="cl-rules"></div>
+     <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">${CL.rules.length?'Mais uma condição':'Adicionar condição'}</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
+   <div id="clRes"></div>`;
   clTabs();
-  document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>{CL.rules=JSON.parse(JSON.stringify(tpl[+b.dataset.tp][2]));CL.seg=null;clView()});
+  const set=r=>{CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;clView()};
+  document.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>set(CLQ[b.dataset.qk]));
+  document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>set(tpl[+b.dataset.tp][2]));
   document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>{const x=segs.find(y=>y.id===b.dataset.sg);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()});
-  document.querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este segmento? Os clientes não são afetados.'))return;await api('/segments/'+b.dataset.sd,{method:'DELETE'});if(CL.seg===b.dataset.sd)CL.seg=null;clView()});
-  if($('#clClr'))$('#clClr').onclick=()=>{CL.rules=[];CL.seg=null;clView()};
+  document.querySelectorAll('[data-sd]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este público salvo? Os clientes não são afetados.'))return;await api('/segments/'+b.dataset.sd,{method:'DELETE'});if(CL.seg===b.dataset.sd)CL.seg=null;clView()});
+  if($('#clClr'))$('#clClr').onclick=()=>set([]);
   $('#clAdd').onchange=e=>{const f=e.target.value;if(!f)return;const op=(CLOPS[f]||[['is']])[0][0];
     const v={product:D.products[0]?.id,category:D.categories[0],expires_in:15,expired_within:30,last_purchase:30,created:7,purchases:2,spent:500,kind:'cliente',origin:D.origins[0]?.id,stage:D.stages[0]?.id,tag:'',team:D.teams[0]?.id,owner:D.users[0]?.id,promo:D.promos[0]?.id,milestone:{id:D.ms[0]?.id,days:7}}[f];
     CL.rules.push({field:f,op,value:v});e.target.value='';clRules();clRun()};
@@ -4171,39 +4210,46 @@ function clRules(){const D=CL.data;const sel=(k,list,v,extra)=>`<select data-k="
       case 'owner':ctl=ops+sel('value',D.users,r.value,'<option value="">sem responsável</option>');break;
       case 'promo':ctl=ops+sel('value',D.promos,r.value);break
       case 'milestone':{const v=r.value||{};ctl=ops+sel('mid',D.ms,v.id)+(['within','more'].includes(r.op)?`<input type="number" data-k="days" min="0" max="3650" value="${v.days??7}"><span>dias</span>`:'');break}}
-    return `<div class="cl-rule" data-i="${i}">${i?'<span class="cl-e">e</span>':''}<b>${f[1]}</b>${ctl}<button class="sm-x" data-rx="${i}" aria-label="Tirar condição">×</button></div>`}).join('')||'<p class="hint" style="margin:4px 0 10px">Sem condições: mostrando toda a base. Escolha um modelo ou adicione uma condição.</p>';
+    return `<div class="cl-rule" data-i="${i}">${i?'<span class="cl-e">e</span>':''}<b>${f[1]}</b>${ctl}<button class="sm-x" data-rx="${i}" aria-label="Tirar condição">×</button></div>`}).join('')||'';
   $('#clR').querySelectorAll('.cl-rule').forEach(row=>{const r=CL.rules[+row.dataset.i];
     row.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{const k=el.dataset.k;
       if(k==='op'){r.op=el.value;if(r.field==='milestone')clRules()}else if(k==='mid'){r.value={...(r.value||{}),id:el.value}}else if(k==='days'||k==='product'){const o=typeof r.value==='object'&&r.value?r.value:{days:r.value};o[k]=k==='days'?Number(el.value):el.value;r.value=o}
       else r.value=el.type==='number'?Number(el.value):el.value;clearTimeout(CL.t);CL.t=setTimeout(clRun,350)})});
   $('#clR').querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{CL.rules.splice(+b.dataset.rx,1);clRules();clRun()})}
-async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;box.innerHTML='<div class="empty">Contando...</div>';
-  let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;
-  const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr();
-  box.innerHTML=`<div class="cl-sum"><div><b>${num(r.count)}</b> ${r.count===1?'cliente':'clientes'}${r.spent?` · ${brl(r.spent)} já gastos`:''}<span class="hint"> · ${num(r.reachable)} podem receber mensagem</span></div>
-     <div class="cl-act"><button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button><button class="btn sm" id="clOpp">Criar oportunidades</button><button class="btn sm" id="clCamp">Enviar campanha</button>':''}<button class="btn sm p" id="clSave">${CL.seg?'Salvar alterações':'Salvar segmento'}</button></div></div>
-   ${r.items.length?`<div class="vd-c ls-t"><table class="vtb"><thead><tr><th>Cliente</th><th>Tem</th><th>Próximo vencimento</th><th class="n">Compras</th><th class="n">Gasto</th><th>Responsável</th></tr></thead><tbody>
-     ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><b>${esc(c.name)}</b>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}<small>${esc(fmtPhone(c.wa_id))}</small></td>
+async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!box.innerHTML)box.innerHTML='<div class="empty">Contando...</div>';else box.classList.add('ld');
+  let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules,q:CL.q||''}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;box.classList.remove('ld');
+  const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr(),K=r.kinds||{},hasOwner=r.items.some(c=>c.owner);
+  const brk=[['cliente','cliente','clientes'],['prospect','prospect','prospects'],['inativo','inativo','inativos']].filter(k=>K[k[0]]).map(k=>`<span class="cb-k ${k[0]}">${num(K[k[0]])} ${K[k[0]]===1?k[1]:k[2]}</span>`).join('');
+  const ch=c=>c.channel==='instagram'?`<span class="cb-chn ig" title="Instagram">${svg('<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/>')}${c.ig?'@'+esc(c.ig):'Instagram'}</span>`:c.wa_id?`<span class="cb-chn">${esc(fmtPhone(c.wa_id))}</span>`:'';
+  const kd=c=>{const k=CLK[c.kind]||['—','grey'];return `<span class="pill ${k[1]}">${k[0]}</span>`};
+  box.innerHTML=`<div class="cb-sum"><div class="cb-n"><b>${num(r.count)}</b><span>${r.count===1?'pessoa':'pessoas'} neste público</span></div>
+     <div class="cb-br">${brk}${r.spent?`<span class="cb-k">${brl(r.spent)} gastos</span>`:''}<span class="cb-k wa" title="Têm WhatsApp e não pediram para sair">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${num(r.reachable)} recebem campanha</span></div>
+     <div class="cl-act">${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button><button class="btn sm" id="clOpp">Criar oportunidades</button>`:''}
+      <button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button>':''}${CL.rules.length?`<button class="btn sm ${mgr?'':'p'}" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}</div></div>
+   <div class="vd-c cb-tb"><div class="cb-sr"><label class="cb-q">${svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>')}<input id="clQ" type="search" placeholder="Buscar por nome, telefone ou @" value="${esc(CL.q||'')}" autocomplete="off"></label>${CL.q?`<span class="hint">${num(r.found)} ${r.found===1?'encontrado':'encontrados'}</span>`:''}</div>
+   ${r.items.length?`<table class="vtb cb-t2"><thead><tr><th>Pessoa</th><th>Situação</th><th>Tem</th><th>Vence</th><th class="n">Compras</th><th class="n">Gasto</th>${hasOwner?'<th>Responsável</th>':''}</tr></thead><tbody>
+     ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><span class="cb-pn"><i style="background:${avc(c.name)}">${esc(dispName(c.name).slice(0,1))}</i><span><b>${esc(dispName(c.name))}</b>${ch(c)}</span></span>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}</td><td>${kd(c)}</td>
        <td>${c.has.map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td>${c.next_expiry?fmtD(ymd(new Date(c.next_expiry))):'<span class="hint">—</span>'}</td>
-       <td class="n">${c.purchases}</td><td class="n">${c.spent?brl(c.spent):'—'}</td><td>${esc(c.owner||'—')}</td></tr>`).join('')}</tbody></table></div>
-     <div class="ls-cards">${r.items.map(c=>`<button class="ls-card" data-oc="${c.id}"><span class="t"><b>${esc(c.name)}</b><b>${c.spent?brl(c.spent):''}</b></span><span class="i">${c.has.map(h=>esc(h.name)).join(', ')||'Sem compras'}</span><span class="m">${c.next_expiry?'vence '+fmtD(ymd(new Date(c.next_expiry)))+' · ':''}${c.purchases} ${c.purchases===1?'compra':'compras'}${c.owner?' · '+esc(c.owner):''}</span></button>`).join('')}</div>
-     ${r.count>r.items.length?`<p class="hint" style="margin-top:8px">Mostrando ${r.items.length} de ${num(r.count)}. Exporte para ver todos.</p>`:''}`
-   :'<div class="aempty"><div><b>Ninguém se encaixa</b><p>Afrouxe alguma condição ou mude o período.</p></div></div>'}`;
+       <td class="n">${c.purchases||'<span class="hint">0</span>'}</td><td class="n">${c.spent?brl(c.spent):'<span class="hint">—</span>'}</td>${hasOwner?`<td>${esc(c.owner||'—')}</td>`:''}</tr>`).join('')}</tbody></table>
+     <div class="ls-cards">${r.items.map(c=>`<button class="ls-card" data-oc="${c.id}"><span class="t"><b>${esc(dispName(c.name))}</b>${kd(c)}</span><span class="i">${c.has.map(h=>esc(h.name)).join(', ')||(c.purchases?'':'Ainda não comprou')}</span><span class="m">${c.next_expiry?'vence '+fmtD(ymd(new Date(c.next_expiry)))+' · ':''}${c.purchases} ${c.purchases===1?'compra':'compras'}${c.spent?' · '+brl(c.spent):''}${c.owner?' · '+esc(c.owner):''}</span></button>`).join('')}</div>
+     ${(CL.q?r.found:r.count)>r.items.length?`<p class="hint" style="margin:10px 4px 2px">Mostrando ${r.items.length} de ${num(CL.q?r.found:r.count)}. Use a busca ou exporte para ver todos.</p>`:''}`
+   :`<div class="cb-empty"><b>${CL.q?'Ninguém com esse nome ou telefone neste público':'Ninguém se encaixa'}</b><p>${CL.q?'Confira a busca ou limpe as condições.':'Afrouxe alguma condição ou mude o período.'}</p></div>`}</div>`;
   box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>{CV.open=b.dataset.oc;CV.filter='all';go('conversas')};b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
-  $('#clSave').onclick=async()=>{const cur=CL.seg&&CL.data.segs.find(x=>x.id===CL.seg);
-    const name=await sure(cur?'Nome do segmento:':'Dê um nome para este segmento. Ele se atualiza sozinho.',{input:true,value:cur?cur.name:'',placeholder:'Ex.: Renovação de novembro',ok:'Salvar',el:$('#clSave')});if(!name)return;
-    try{const x=await api(cur?'/segments/'+cur.id:'/segments',{method:cur?'PUT':'POST',body:{name,rules:CL.rules}});CL.seg=x.id;toast('Segmento salvo.');clView()}catch(e){toast(e.message)}};
-  $('#clTag').onclick=async()=>{const tag=await sure(`Colocar uma etiqueta nos ${num(r.count)} clientes deste público:`,{input:true,placeholder:'Ex.: renovacao-nov',ok:'Etiquetar',el:$('#clTag')});if(!tag)return;
-    try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} clientes.`)}catch(e){toast(e.message)}};
+  const qi=$('#clQ');qi.oninput=()=>{CL.q=qi.value;clearTimeout(CL.qt);CL.qt=setTimeout(async()=>{const pos=qi.selectionStart;await clRun();const n=$('#clQ');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}},300)};
+  if($('#clSave'))$('#clSave').onclick=async()=>{const cur=CL.seg&&CL.data.segs.find(x=>x.id===CL.seg);
+    const name=await sure(cur?'Nome do público:':'Dê um nome para este público. Ele se atualiza sozinho: quem passar a se encaixar entra.',{input:true,value:cur?cur.name:'',placeholder:'Ex.: Renovação de novembro',ok:'Salvar',el:$('#clSave')});if(!name)return;
+    try{const x=await api(cur?'/segments/'+cur.id:'/segments',{method:cur?'PUT':'POST',body:{name,rules:CL.rules}});CL.seg=x.id;toast('Público salvo.');clView()}catch(e){toast(e.message)}};
+  $('#clTag').onclick=async()=>{const tag=await sure(`Colocar uma etiqueta nas ${num(r.count)} pessoas deste público:`,{input:true,placeholder:'Ex.: renovacao-nov',ok:'Etiquetar',el:$('#clTag')});if(!tag)return;
+    try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} pessoas.`)}catch(e){toast(e.message)}};
   if($('#clOpp'))$('#clOpp').onclick=()=>{if(!r.count)return toast('Ninguém neste público.');oppForm(CL.rules,r.count)};
-  if($('#clCamp'))$('#clCamp').onclick=()=>{if(!r.reachable)return toast('Ninguém neste público pode receber mensagem.');campForm(CL.rules,r.count)};
+  if($('#clCamp'))$('#clCamp').onclick=()=>{if(!r.reachable)return toast('Ninguém neste público pode receber campanha pelo WhatsApp.');campForm(CL.rules,r.count)};
   if($('#clExp'))$('#clExp').onclick=async()=>{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
     const a=document.createElement('a');a.href=URL.createObjectURL(await res.blob());a.download='clientes.csv';a.click()};
 }
 
 /* pós-venda, campanhas e renovação */
 const OPK={renovacao:['Renovação','kc'],upsell:['Próximo produto','kp'],reativacao:['Reativação','ki']};
-function clHead(){const mgr=isMgr();const tabs=[['seg','Segmentos'],...(mgr?[['camp','Campanhas'],['ren','Renovação e upsell']]:[])];
+function clHead(){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...(mgr?[['camp','Campanhas'],['ren','Renovação e upsell']]:[])];
   return `<div class="fhd"><div><h1>Clientes</h1><p class="sub">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div></div>
    <nav class="utabs">${tabs.map(t=>`<button class="${(CL.tab||'seg')===t[0]?'on':''}" data-clt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
 function clTabs(){document.querySelectorAll('[data-clt]').forEach(b=>b.onclick=()=>{CL.tab=b.dataset.clt;syncUrl();clView()})}
@@ -4308,7 +4354,8 @@ async function clCamps(){
      <div class="nums"><div><b>${c.sent}</b><span>receberam</span></div><div><b>${c.replied}</b><span>responderam</span></div><div><b>${c.bought}</b><span>compraram</span></div><div class="${c.revenue?'okn':''}"><b>${brl(c.revenue)}</b><span>vendas</span></div></div>
      ${money(c)}
      ${c.status==='sending'?`<div class="bt"><button class="btn sm danger" data-cst="${c.id}">Parar</button></div>`:''}</div>`}).join('')}</div>`
-   :'<div class="aempty"><div><b>Nenhuma campanha ainda</b><p>Monte um público em Segmentos (ex.: "Vence nos próximos 15 dias") e clique em "Enviar campanha".</p></div></div>');
+   :'<div class="aempty"><div><b>Nenhuma campanha ainda</b><p>Escolha o público em "Base e públicos" (ex.: quem vence nos próximos 15 dias) e clique em "Enviar campanha". Antes de enviar, você vê quanto custa na Meta.</p><button class="btn sm p" id="caGo" style="margin-top:12px">Escolher o público</button></div></div>');
+  if($('#caGo'))$('#caGo').onclick=()=>{CL.tab='seg';syncUrl();clView()};
   if($('#hlWhy'))$('#hlWhy').onclick=async()=>{const r=await api('/meta/rates');const o=overlay(`<div class="modal" style="max-width:860px">${metaIntroHtml(r,false)}<div class="row" style="margin-top:12px"><button class="btn x" type="button">Fechar</button></div></div>`,true)};
   document.querySelectorAll('[data-crs]').forEach(b=>b.onclick=async()=>{try{const r=await api('/campaigns/'+b.dataset.crs+'/resume',{method:'POST',body:{recent_days:90,tomorrow:true}});toast(`Combinado: continua amanhã às 9h${r.dropped?`, sem ${r.dropped} contatos frios`:''}.`);clCamps()}catch(e){toast(e.message)}});
   document.querySelectorAll('[data-cst]').forEach(b=>b.onclick=async()=>{if(!await sure('Parar esta campanha? Quem ainda não recebeu fica sem receber.'))return;await api('/campaigns/'+b.dataset.cst+'/stop',{method:'POST'});clCamps()});
