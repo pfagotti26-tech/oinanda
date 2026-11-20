@@ -413,24 +413,76 @@ def notice_out(key, on, t, custom, tpl):
     return {'key': key, 'name': n['name'], 'when': n['when'], 'email': True, 'whatsapp': 'w' in n['ch'], 'on': on, 'custom': custom,
             'wa_status': (tpl or {}).get('status') if 'w' in n['ch'] else None, **t}
 
+GOALS = {'activate': 'ativaram o teste', 'wa_missing': 'conectaram o WhatsApp', 'trial_3d': 'assinaram', 'trial_1d': 'assinaram', 'trial_end': 'assinaram',
+         'trial_card_3d': 'seguiram com a assinatura', 'refused': 'pagaram', 'last_call': 'pagaram', 'paused': 'pagaram', 'ai_80': 'compraram mais atendimentos', 'ai_100': 'compraram mais atendimentos'}
+
+async def outcomes(logs):
+    """Para os avisos que pedem uma ação, quantos clientes fizeram a ação depois de receber."""
+    ids = list({l['company_id'] for l in logs if l['key'] in GOALS})
+    comps = {c['id']: c for c in await db.companies.find({'id': {'$in': ids}}, {'_id': 0, 'id': 1, 'billing': 1}).to_list(5000)}
+    was = {w['company_id']: aware(w.get('connected_at')) for w in await db.wa_numbers.find({'company_id': {'$in': ids}}, {'_id': 0, 'company_id': 1, 'connected_at': 1}).to_list(5000)}
+    paid = {}
+    for p in await db.payments.find({'company_id': {'$in': ids}, 'status': 'paid'}, {'_id': 0, 'company_id': 1, 'paid_at': 1}).to_list(20000): paid.setdefault(p['company_id'], []).append(aware(p.get('paid_at')))
+    packs = {}
+    for p in await db.ai_packs.find({'company_id': {'$in': ids}}, {'_id': 0, 'company_id': 1, 'at': 1}).to_list(20000): packs.setdefault(p['company_id'], []).append(aware(p.get('at')))
+    out, seen = {}, set()
+    for l in logs:
+        k = l['key']
+        if k not in GOALS or (l['company_id'], k) in seen: continue
+        seen.add((l['company_id'], k)); at = aware(l['at']); b = (comps.get(l['company_id']) or {}).get('billing') or {}
+        if k == 'wa_missing': ok = bool(was.get(l['company_id']) and was[l['company_id']] > at)
+        elif k in ('activate', 'trial_3d', 'trial_1d', 'trial_end'): ok = bool(aware(b.get('since')) and aware(b['since']) > at)
+        elif k == 'trial_card_3d': ok = b.get('status') == 'active'
+        elif k in ('refused', 'last_call', 'paused'): ok = any(x and x > at for x in paid.get(l['company_id'], []))
+        else: ok = any(x and x > at for x in packs.get(l['company_id'], []))
+        o = out.setdefault(k, {'total': 0, 'acted': 0, 'goal': GOALS[k]}); o['total'] += 1; o['acted'] += ok
+    return out
+
+@router.get('/admin/notices/upcoming')
+async def notices_upcoming(days: int = 7, user=Depends(admin)):
+    """O que deve sair sozinho nos próximos dias, pelo que já se sabe hoje (fim de teste e cobranças)."""
+    import notices as N
+    on = await N.toggles(); n = now(); end = n + timedelta(days=max(1, min(days, 30))); out = []
+    internal = {r['c']['id'] for r in await base() if r['internal']}
+    done = {(l['company_id'], l.get('once')) for l in await db.notice_log.find({'at': {'$gte': n - timedelta(days=40)}}, {'_id': 0, 'company_id': 1, 'once': 1}).to_list(20000)}
+    def add(c, key, when, detail, once):
+        if c['id'] in internal or c.get('test') or not on.get(key) or (c['id'], once) in done or when < n - timedelta(hours=1) or when > end: return
+        out.append({'company_id': c['id'], 'company': c.get('name'), 'key': key, 'name': N.DEFS[key]['name'], 'when': when, 'detail': detail})
+    for c in await db.companies.find({'$or': [{'plan': 'trial', 'trial_ends_at': {'$gt': n - timedelta(days=1), '$lte': end + timedelta(days=3)}},
+                                               {'billing.status': 'active'}]}, {'_id': 0}).to_list(5000):
+        te = aware(c.get('trial_ends_at')); b = c.get('billing') or {}
+        if c.get('plan') == 'trial' and te:
+            add(c, 'trial_3d', te - timedelta(days=3), f'teste acaba em {te.astimezone(SP):%d/%m}', 'trial_3d')
+            add(c, 'trial_1d', te - timedelta(days=1), f'teste acaba em {te.astimezone(SP):%d/%m}', 'trial_1d')
+            add(c, 'trial_end', te, 'último dia do teste', 'trial_end')
+        tu = aware(b.get('trial_until')); nx = aware(b.get('next_payment'))
+        if b.get('status') == 'active' and tu and tu > n:
+            add(c, 'trial_card_3d', tu - timedelta(days=3), f'1ª mensalidade de {mailer_money(b.get("amount") or 0)} em {tu.astimezone(SP):%d/%m}', 'trial_card_3d:' + str(b.get('sub_id')))
+        elif b.get('status') == 'active' and nx:
+            add(c, 'charge_3d', nx - timedelta(days=3), f'renova {mailer_money(b.get("amount") or 0)} em {nx.astimezone(SP):%d/%m}', 'charge_3d:' + N.day(nx))
+    out.sort(key=lambda x: x['when'])
+    return out[:100]
+
 @router.get('/admin/notices')
-async def notices_get(user=Depends(admin)):
+async def notices_get(days: int = 30, user=Depends(admin)):
     import notices as N
     on = await N.toggles(); custom = (await db.settings.find_one({'id': 'notice_texts'}, {'_id': 0})) or {}
     items = []
     for k in N.DEFS:
         tpl = await db.notice_templates.find_one({'key': k}, {'_id': 0}, sort=[('version', -1)])
         items.append(notice_out(k, on[k], await N.texts(k), bool(custom.get(k)), tpl))
-    since = now() - timedelta(days=30); st = {}
-    for l in await db.notice_log.find({'at': {'$gte': since}}, {'_id': 0, 'key': 1, 'email': 1, 'wa': 1, 'at': 1}).to_list(20000):
+    since = now() - timedelta(days=max(1, min(days, 365))); st = {}
+    logs = await db.notice_log.find({'at': {'$gte': since}}, {'_id': 0, 'key': 1, 'email': 1, 'wa': 1, 'at': 1, 'company_id': 1}).to_list(20000)
+    res = await outcomes(logs)
+    for l in logs:
         x = st.setdefault(l['key'], {'sent': 0, 'email': 0, 'wa': 0, 'failed': 0, 'last_at': None})
         x['sent'] += 1; x['email'] += bool(l.get('email')); x['wa'] += bool(l.get('wa')); x['failed'] += not (l.get('email') or l.get('wa'))
         if not x['last_at'] or aware(l['at']) > aware(x['last_at']): x['last_at'] = l['at']
     for it in items:
         it['stats'] = st.get(it['key'], {'sent': 0, 'email': 0, 'wa': 0, 'failed': 0, 'last_at': None})
-        it['optional'] = it['key'] in N.OPTIONAL; it['always'] = bool(N.DEFS[it['key']].get('always'))
+        it['optional'] = it['key'] in N.OPTIONAL; it['always'] = bool(N.DEFS[it['key']].get('always')); it['result'] = res.get(it['key'])
     tot = {k: sum(x[k] for x in st.values()) for k in ('sent', 'email', 'wa', 'failed')}
-    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': await N.wa_ready(), 'totals_30': tot}
+    return {'notices': on, 'items': items, 'vars': sorted(N.VARS), 'email_ready': bool(os.environ.get('RESEND_API_KEY')), 'wa_ready': await N.wa_ready(), 'totals_30': tot, 'days': days}
 
 @router.put('/admin/notices')
 async def notices_put(body: dict, request: Request, user=Depends(admin)):
@@ -442,9 +494,20 @@ async def notices_put(body: dict, request: Request, user=Depends(admin)):
     return {'notices': await N.toggles()}
 
 @router.get('/admin/notices/log')
-async def notices_log(limit: int = 100, company_id: str = '', user=Depends(admin)):
-    q = {'company_id': company_id} if company_id else {}
-    return await db.notice_log.find(q, {'_id': 0}).sort('at', -1).limit(min(limit, 500)).to_list(500)
+async def notices_log(limit: int = 100, company_id: str = '', key: str = '', channel: str = '', how: str = '', q: str = '', days: int = 0, user=Depends(admin)):
+    f = {}
+    if company_id: f['company_id'] = company_id
+    if key: f['key'] = key
+    if channel == 'email': f['email'] = True
+    elif channel == 'wa': f['wa'] = True
+    elif channel == 'failed': f['email'] = {'$ne': True}; f['wa'] = {'$ne': True}
+    if how == 'manual': f['manual'] = True
+    elif how == 'auto': f['manual'] = {'$ne': True}
+    if days: f['at'] = {'$gte': now() - timedelta(days=min(days, 365))}
+    rows = await db.notice_log.find(f, {'_id': 0}).sort('at', -1).limit(2000).to_list(2000)
+    ql = q.strip().lower()
+    if ql: rows = [r for r in rows if ql in (r.get('company') or '').lower() or ql in (r.get('to') or '').lower()]
+    return rows[:min(limit, 500)]
 
 class NoticeText(BaseModel):
     subject: Optional[str] = Field(default=None, max_length=120)

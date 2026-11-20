@@ -168,6 +168,9 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         # avisos automáticos
         nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 17 and all(nn['notices'].values())
         assert nn['totals_30']['sent'] >= 1 and all('stats' in i and 'optional' in i for i in nn['items'])
+        assert a.get('/api/admin/notices?days=7').json()['days'] == 7 and isinstance(a.get('/api/admin/notices/upcoming').json(), list)
+        lg = a.get('/api/admin/notices/log?channel=failed&how=auto&days=30').json(); assert all(not (x['email'] or x['wa']) and not x.get('manual') for x in lg)
+        assert all(x.get('manual') for x in a.get('/api/admin/notices/log?how=manual').json())
         assert a.put('/api/admin/notices', json={'paid': False}).json()['notices']['paid'] is False
 
 def test_admin_funil_cancelamento_e_conta_de_teste(monkeypatch):
