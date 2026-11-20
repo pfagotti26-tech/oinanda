@@ -225,6 +225,7 @@ async def deliver(company, key, v=None, once=None, manual=False, only=None):
     Avisos que não são urgentes respeitam o horário (8h às 20h) e o limite de um por dia: devolve None e o próximo ciclo tenta de novo.
     """
     n = DEFS[key]
+    if not manual and company.get('test'): return False  # conta de teste marcada pelo admin: sem avisos automáticos
     if not manual:
         if not (await toggles()).get(key): return False
         if once and await db.notice_log.find_one({'company_id': company['id'], 'once': once}): return False

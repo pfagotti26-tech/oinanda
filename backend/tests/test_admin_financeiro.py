@@ -153,6 +153,38 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 17 and all(nn['notices'].values())
         assert a.put('/api/admin/notices', json={'paid': False}).json()['notices']['paid'] is False
 
+def test_admin_funil_cancelamento_e_conta_de_teste(monkeypatch):
+    subs, invs = fake(monkeypatch); mailer.SENT.clear()
+    with mk() as c:
+        c.post('/api/auth/signup', json={'name': 'Renata', 'email': 're2@bella.com', 'password': 'senha-forte-1', 'company': 'Clínica Bella', 'segment': 'clinica'})
+        sid = assina(c, subs, 'profissional')
+        invs['301'] = {'id': 301, 'preapproval_id': sid, 'transaction_amount': 297, 'debit_date': now().isoformat(), 'status': 'processed', 'payment': {'id': 3, 'status': 'approved'}}
+        c.post('/api/billing/webhook', json={'type': 'subscription_authorized_payment', 'data': {'id': '301'}})
+        assert c.post('/api/billing/cancel').status_code == 200
+    with mk() as t:
+        t.post('/api/auth/signup', json={'name': 'Camila', 'email': 'camila+revisao@x.com', 'password': 'senha-forte-1', 'company': 'Studio Teste', 'segment': 'salao'})
+    with mk() as a:
+        a.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'admin-forte-1', 'company': 'Oi Nanda'})
+        o = a.get('/api/admin/overview').json()
+        f = {x['key']: x['count'] for x in o['funnel']}
+        assert o['signups'] == 2 and f['signup'] == 2 and f['card'] == 1 and f['whatsapp'] == 0 and o['funnel'][0]['pct'] == 100
+        assert o['churn']['count'] == 1 and o['churn']['mrr_lost'] == 297
+        at = a.get('/api/admin/attention').json(); assert at['counts']['cancelled'] == 1
+        assert next(x for x in at['items'] if x['kind'] == 'cancelled')['notice'] is None
+        # conta de teste: sai dos números, aparece marcada na lista e não recebe avisos automáticos
+        st = next(x for x in a.get('/api/admin/companies').json()['rows'] if x['name'] == 'Studio Teste')
+        assert a.patch(f'/api/admin/companies/{st["id"]}', json={'test': True}).status_code == 200
+        l = a.get('/api/admin/companies').json()
+        assert l['counts']['all'] == 1 and next(x for x in l['rows'] if x['name'] == 'Studio Teste')['test'] is True
+        o = a.get('/api/admin/overview').json(); assert o['signups'] == 1 and o['trial'] == 0
+        import notices
+        async def tenta():
+            comp = await db.companies.find_one({'id': st['id']}, {'_id': 0})
+            return await notices.deliver(comp, 'trial_3d', once='x')
+        assert a.portal.call(tenta) is False
+        a.patch(f'/api/admin/companies/{st["id"]}', json={'test': False})
+        assert a.get('/api/admin/companies').json()['counts']['all'] == 2
+
 def test_aviso_de_cobranca_chegando(monkeypatch):
     subs, _ = fake(monkeypatch); mailer.SENT.clear()
     with mk() as c:

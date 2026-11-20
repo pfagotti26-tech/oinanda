@@ -65,7 +65,8 @@ async def base():
                     'ai_in': a.get('input_tokens') or 0, 'ai_out': a.get('output_tokens') or 0, 'ai_cr': a.get('cache_read_tokens') or 0, 'ai_cw': a.get('cache_write_tokens') or 0,
                     'ai_real': ai_cost(a.get('input_tokens') or 0, a.get('output_tokens') or 0, a.get('cache_read_tokens') or 0, a.get('cache_write_tokens') or 0), 'wa': wa.get(c['id']), 'refused': bad,
                     'cancelled': kind == 'paying' and b.get('status') == 'cancelled', 'mrr': monthly_value(c),
-                    'internal': bool(owner and ADMIN_EMAIL and owner['email'] == ADMIN_EMAIL)})
+                    'own': bool(owner and ADMIN_EMAIL and owner['email'] == ADMIN_EMAIL), 'test': bool(c.get('test')),
+                    'internal': bool(c.get('test') or (owner and ADMIN_EMAIL and owner['email'] == ADMIN_EMAIL))})
     return out
 
 def ai_cost(tokens_in, tokens_out, cache_read=0, cache_write=0):
@@ -86,14 +87,14 @@ def match(r, plan='', segment='', cycle=''):
 
 def row_out(r):
     c = r['c']; b = c.get('billing') or {}
-    return {'id': c['id'], 'name': c.get('name'), 'segment': c.get('segment'), 'users': r['users'], 'created_at': c.get('created_at'), 'internal': r['internal'],
+    return {'id': c['id'], 'name': c.get('name'), 'segment': c.get('segment'), 'users': r['users'], 'created_at': c.get('created_at'), 'internal': r['internal'], 'own': r['own'], 'test': r['test'],
             'owner': {k: (r['owner'] or {}).get(k) for k in ('name', 'email')}, 'kind': r['kind'], 'plan': r['plan'], 'raw_plan': c.get('plan'),
             'trial_ends_at': c.get('trial_ends_at') if r['kind'] == 'trial' else None, 'next_payment': b.get('next_payment') if r['kind'] == 'paying' else None,
             'paid_until': b.get('paid_until'), 'amount': b.get('amount'), 'cycle': b.get('cycle'), 'cancelled': r['cancelled'],
             'refused': {'due': r['refused']['due'], 'amount': r['refused']['amount'], 'detail': r['refused'].get('detail')} if r['refused'] else None,
             'courtesy_until': (c.get('courtesy') or {}).get('until'), 'last_use': r['last_use'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'], 'ai_cost': r['ai_real'],
             'ai_margin': round((b.get('amount') or 0) - (r['ai_real'] or 0), 2) if r['kind'] == 'paying' and (b.get('cycle') or 'monthly') == 'monthly' else None,
-            'wa': bool(r['wa'] and r['wa'].get('status') == 'connected'), 'status': c.get('status')}
+            'wa': bool(r['wa'] and r['wa'].get('status') == 'connected'), 'wa_alert': (r['wa'] or {}).get('alert') if r['wa'] and r['wa'].get('status') == 'connected' else None, 'status': c.get('status')}
 
 # ---------- visão geral ----------
 @router.get('/admin/overview')
@@ -128,17 +129,46 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
     tin, tout = sum(r['ai_in'] for r in rows), sum(r['ai_out'] for r in rows)
     tcr, tcw = sum(r['ai_cr'] for r in rows), sum(r['ai_cw'] for r in rows)
     refused = [r for r in rows if r['refused']]
+    # cadastros e funil de ativação (de quem se cadastrou no período)
+    signed = [r for r in rows if inside(r['c'].get('created_at'), t0, t1)]
+    sids = [r['c']['id'] for r in signed]
+    taught = {s['company_id'] for s in await db.ai_settings.find({'company_id': {'$in': sids}}, {'_id': 0, 'company_id': 1, 'about': 1, 'offer': 1, 'knowledge': 1}).to_list(5000)
+              if ((s.get('about') or '') + (s.get('offer') or '') + (s.get('knowledge') or '')).strip()}
+    answered = {u['company_id'] for u in await db.ai_usage.find({'company_id': {'$in': sids}}, {'_id': 0, 'company_id': 1, 'atend': 1, 'replies': 1, 'suggestions': 1}).to_list(20000)
+                if (u.get('atend') or 0) + (u.get('replies') or 0) + (u.get('suggestions') or 0) > 0}
+    steps = [('signup', 'Cadastro', signed),
+             ('whatsapp', 'Conectou o WhatsApp', [r for r in signed if r['wa']]),
+             ('taught', 'Ensinou a Nanda', [r for r in signed if r['c']['id'] in taught]),
+             ('answered', 'Nanda respondeu', [r for r in signed if r['c']['id'] in answered]),
+             ('card', 'Cadastrou o cartão', [r for r in signed if (r['c'].get('billing') or {}).get('sub_id')]),
+             ('paying', 'Virou pagante', [r for r in signed if since(r) and r['kind'] == 'paying'])]
+    funnel = [{'key': k, 'label': l, 'count': len(v), 'pct': round(100 * len(v) / len(signed)) if signed else None} for k, l, v in steps]
+    # cancelamentos: quem cancelou a assinatura no período e quanto de receita mensal saiu
+    def cancel_at(r): return (r['c'].get('billing') or {}).get('cancelled_at')
+    def monthly(r):
+        b = r['c'].get('billing') or {}; a = b.get('amount') or 0
+        return a / 12 if b.get('cycle') == 'annual' else a
+    gone = [r for r in rows if inside(cancel_at(r), t0, t1)]
+    gone_prev = [r for r in rows if inside(cancel_at(r), p0, p1)]
+    base_n = len(paying) + sum(1 for r in gone if r['kind'] != 'paying')
+    churn = {'count': len(gone), 'count_prev': len(gone_prev), 'mrr_lost': round(sum(monthly(r) for r in gone), 2),
+             'pct': round(100 * len(gone) / base_n, 1) if base_n else None,
+             'in_trial': sum(1 for r in gone if billing.card_trial(r['c']) or not since(r))}
+    wa_bad = [r for r in live if r['wa'] and r['wa'].get('status') == 'connected' and r['wa'].get('alert')]
+    card_soon = [r for r in rows if (lambda tu: tu and now() < tu <= now() + timedelta(days=3))(aware((r['c'].get('billing') or {}).get('trial_until'))) and (r['c'].get('billing') or {}).get('status') == 'active']
     return {'period': {'start': t0, 'end': t1 - timedelta(seconds=1), 'prev_start': p0, 'prev_end': p1 - timedelta(seconds=1)},
             'mrr': round(sum(r['mrr'] for r in rows), 2), 'paying': len(paying), 'courtesy': sum(1 for r in rows if r['kind'] == 'courtesy'),
             'trial': len(trial), 'trial_soon': len(soon), 'readonly': sum(1 for r in rows if r['kind'] == 'readonly'), 'suspended': sum(1 for r in rows if r['kind'] == 'suspended'),
             'received': round(received, 2), 'received_prev': round(received_prev, 2),
+            'signups': len(signed), 'signups_prev': sum(1 for r in rows if inside(r['c'].get('created_at'), p0, p1)), 'funnel': funnel, 'churn': churn,
             'new_paying': sum(1 for r in rows if inside(since(r), t0, t1)), 'new_paying_prev': sum(1 for r in rows if inside(since(r), p0, p1)),
             'conversion': {'ended': len(ended), 'converted': len(converted), 'pct': round(100 * len(converted) / len(ended)) if ended else None},
             'revenue_months': [{'key': f'{y}-{m:02d}', 'label': MONTHS[m - 1], 'total': round(tot[(y, m)], 2)} for y, m in months],
             'attention': {'refused': {'count': len(refused), 'amount': round(sum(r['refused']['amount'] for r in refused), 2)},
                           'trial_soon': {'count': len(soon), 'connected': sum(1 for r in soon if r['wa'])},
                           'no_whatsapp': {'count': sum(1 for r in live if not r['wa'] and aware(r['c'].get('created_at')) and aware(r['c']['created_at']) < now() - timedelta(days=2))},
-                          'ai_near': {'count': sum(1 for r in live if r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai'])}},
+                          'ai_near': {'count': sum(1 for r in live if r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai'])},
+                          'wa_alert': {'count': len(wa_bad)}, 'card_trial_soon': {'count': len(card_soon)}},
             'plans': [{'plan': k, 'name': PLANS[k]['name'], 'count': sum(1 for r in paying if r['plan'] == k), 'mrr': round(sum(r['mrr'] for r in paying if r['plan'] == k), 2)} for k in PLANS],
             'usage': {'accounts': len(live), 'active_week': sum(1 for r in live if r['last_use'] and r['last_use'] >= week),
                       'ai_replies': sum(r['ai_used'] for r in rows), 'ai_cost': ai_cost(tin, tout, tcr, tcw)}}
@@ -330,12 +360,22 @@ async def attention(kind: str = '', user=Depends(admin)):
             out.append(item(r, 'trial_soon', 'Teste acabando', 'WhatsApp conectado, vale uma conversa' if r['wa'] else 'Ainda sem WhatsApp conectado', aware(c['trial_ends_at']), 1, 'trial_3d', 'Enviar aviso'))
         elif r['kind'] in ('trial', 'paying', 'courtesy') and not r['wa'] and aware(c.get('created_at')) and aware(c['created_at']) < n - timedelta(days=2):
             out.append(item(r, 'no_whatsapp', 'Sem WhatsApp conectado', 'Conta criada, mas as conversas não chegam', aware(c['created_at']), 2, 'wa_missing', 'Enviar aviso'))
+        w = r['wa'] or {}
+        if w.get('status') == 'connected' and w.get('alert'):
+            a = w['alert']
+            out.append(item(r, 'wa_alert', 'WhatsApp com problema na Meta', a.get('title') or 'A Meta restringiu o número', aware(a.get('at')), 0, None, 'Ver cliente'))
+        b = c.get('billing') or {}; tu = aware(b.get('trial_until'))
+        if tu and n < tu <= n + timedelta(days=3) and b.get('status') == 'active':
+            out.append(item(r, 'card_trial_soon', 'Primeira mensalidade chegando', ('WhatsApp conectado' if r['wa'] else 'Ainda sem WhatsApp conectado') + ' · cobrança automática no cartão', tu, 1, 'trial_card_3d', 'Enviar aviso'))
+        ca = aware(b.get('cancelled_at'))
+        if ca and ca >= n - timedelta(days=14):
+            out.append(item(r, 'cancelled', 'Cancelou a assinatura', 'Vale perguntar o motivo', ca, 2, None, 'Ver cliente'))
         if r['kind'] != 'readonly' and r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai']:
             full = r['ai_used'] >= r['lim']['ai']
             out.append(item(r, 'ai_near', 'Nanda no limite' if full else 'Nanda perto do limite', f"{r['ai_used']} de {r['lim']['ai']} respostas no mês", None, 1 if full else 3, 'ai_100' if full else 'ai_80', 'Enviar aviso'))
     far = n + timedelta(days=3650)
     out.sort(key=lambda x: (x['urgency'], x['when'] or far))
-    counts = {k: sum(1 for x in out if x['kind'] == k) for k in ('refused', 'trial_soon', 'no_whatsapp', 'ai_near')}
+    counts = {k: sum(1 for x in out if x['kind'] == k) for k in ('refused', 'wa_alert', 'trial_soon', 'card_trial_soon', 'no_whatsapp', 'ai_near', 'cancelled')}
     return {'items': [x for x in out if not kind or x['kind'] == kind], 'counts': counts, 'total': len(out), 'wa_ready': await N.wa_ready()}
 
 REASONS = {'cc_rejected_insufficient_amount': 'sem limite', 'cc_rejected_bad_filled_date': 'validade incorreta', 'cc_rejected_bad_filled_security_code': 'código de segurança incorreto',
@@ -452,6 +492,7 @@ class CompanyPatch(BaseModel):
     cnpj: Optional[str] = Field(default=None, max_length=20)
     address: Optional[str] = Field(default=None, max_length=200)
     contract_url: Optional[str] = Field(default=None, max_length=500)
+    test: Optional[bool] = None
 
 @router.patch('/admin/companies/{company_id}')
 async def company_update(company_id: str, body: CompanyPatch, request: Request, user=Depends(admin)):
@@ -460,6 +501,7 @@ async def company_update(company_id: str, body: CompanyPatch, request: Request, 
     data = body.model_dump(exclude_none=True)
     changes = {k: (v.strip() if isinstance(v, str) else v) for k, v in data.items() if k in ('status', 'note', 'phone', 'legal_name', 'cnpj', 'address', 'contract_url')}
     unset = {}
+    if body.test is not None: changes['test'] = body.test
     if changes.get('contract_url') and not changes['contract_url'].lower().startswith(('https://', 'http://')): raise HTTPException(400, 'O link do contrato precisa começar com https://')
     if body.plan:
         changes['plan'] = body.plan
