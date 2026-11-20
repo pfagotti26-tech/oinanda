@@ -66,7 +66,7 @@ class ConnectIn(BaseModel):
 
 def number_out(n):
     if not n: return None
-    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync', 'token_kind', 'token_expires_at', 'last_in_at', 'alert', 'health')}
+    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync', 'token_kind', 'token_expires_at', 'last_in_at', 'alert', 'checkup')}
 
 @router.get('/wa/number')
 async def get_number(user=Depends(current_user)):

@@ -16,25 +16,48 @@ log = logging.getLogger('oinanda')
 CHECK_EVERY = timedelta(hours=1)
 APPEAL = 'Peça a análise pelo próprio app (botão "Pedir análise") ou no Gerenciador do WhatsApp em business.facebook.com. Enquanto isso, não desinstale o app, não troque de aparelho e não mande mensagens em massa.'
 
+PAY_FIX = ('Falta uma forma de pagamento válida na conta do WhatsApp na Meta. Respostas para quem chamou continuam saindo; lembretes, '
+           'automações e campanhas para quem não falou nas últimas 24 h ficam parados. Para resolver: em business.facebook.com, abra '
+           'Configurações do negócio › Pagamentos e adicione um cartão na conta do WhatsApp.')
+
+def why_pt(errors):
+    """O motivo que a Meta manda vem em inglês: traduz os mais comuns e deixa o resto como veio."""
+    out = []
+    for e in errors or []:
+        t = (e or '').strip().rstrip('.')
+        low = t.lower()
+        if not t: continue
+        if 'payment' in low: out.append('problema na forma de pagamento da conta na Meta')
+        elif 'verif' in low: out.append('a empresa ainda não foi verificada na Meta')
+        elif 'display name' in low or 'name' in low and 'review' in low: out.append('o nome de exibição do número ainda não foi aprovado')
+        elif 'policy' in low or 'violat' in low: out.append('a Meta apontou violação das regras do WhatsApp')
+        else: out.append('motivo informado pela Meta: ' + t)
+    return '; '.join(dict.fromkeys(out))[:300]
+
 def problem_of(status=None, quality=None, can_send=None, errors=None):
     """Lê o que a Meta devolve e diz se é problema: (tipo, título, detalhe) ou None."""
     st = (status or '').upper()
+    if (can_send or '').upper() in ('BLOCKED', 'LIMITED') and any('payment' in (e or '').lower() for e in errors or []):
+        return 'payment', 'A Meta pausou as mensagens que a empresa inicia', PAY_FIX
     if st == 'BANNED': return 'banned', 'O WhatsApp bloqueou o número da empresa', 'A Nanda e o time não conseguem mandar nem receber mensagens por ele. ' + APPEAL
     if st in ('RESTRICTED', 'RATE_LIMITED'): return 'restricted', 'O WhatsApp restringiu o número da empresa', 'Por um tempo ele só responde quem chamou e não pode iniciar conversas. Evite campanhas até a restrição acabar. ' + APPEAL
     if (can_send or '').upper() == 'BLOCKED':
-        why = '; '.join(e for e in (errors or []) if e)[:300]
-        return 'blocked', 'A Meta bloqueou o envio de mensagens deste número', (why + '. ' if why else '') + APPEAL
+        why = why_pt(errors)
+        return 'blocked', 'A Meta bloqueou o envio de mensagens deste número', (why[0].upper() + why[1:] + '. ' if why else '') + 'Veja os detalhes no Gerenciador do WhatsApp em business.facebook.com e resolva o que a Meta pede.'
     if st == 'FLAGGED' or (quality or '').upper() == 'RED':
         return 'flagged', 'A nota do número na Meta caiu para vermelho', 'Muita gente bloqueou ou denunciou mensagens recentes. Pause campanhas e automações que iniciam conversa por alguns dias, senão o número pode ser restringido.'
     if (can_send or '').upper() == 'LIMITED':
-        why = '; '.join(e for e in (errors or []) if e)[:300]
-        return 'limited', 'A Meta limitou o envio deste número', (why + '. ' if why else '') + 'Respostas para quem chamou continuam saindo. Veja o motivo no Gerenciador do WhatsApp em business.facebook.com.'
+        why = why_pt(errors)
+        return 'limited', 'A Meta limitou o envio deste número', (why[0].upper() + why[1:] + '. ' if why else '') + 'Respostas para quem chamou continuam saindo. Veja o motivo no Gerenciador do WhatsApp em business.facebook.com.'
     if st == 'DISCONNECTED': return 'disconnected', 'O número foi desconectado na Meta', 'As mensagens deixaram de chegar. Reconecte em Empresa › WhatsApp. Se usa o app junto, abra o WhatsApp Business no celular.'
     return None
 
 async def raise_alert(n, kind, title, detail, source):
     cur = n.get('alert') or {}
     if cur.get('kind') == kind: return False  # já avisado
+    if {cur.get('kind'), kind} == {'blocked', 'payment'}:  # mesmo problema, só com o texto melhor: troca sem avisar de novo
+        await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'alert.kind': kind, 'alert.title': title, 'alert.detail': detail}})
+        return False
     alert = {'kind': kind, 'title': title, 'detail': detail, 'at': now(), 'source': source}
     await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'alert': alert}})
     await db.wa_alerts.insert_one({'company_id': n['company_id'], 'phone': n.get('display_phone'), **alert})
@@ -101,7 +124,7 @@ async def check(n):
     except Exception: pass
     errs = [e.get('error_description') for ent in hs.get('entities') or [] for e in ent.get('errors') or []]
     snap = {'status': info.get('status'), 'quality': info.get('quality_rating'), 'can_send': hs.get('can_send_message'), 'errors': errs[:5], 'at': now()}
-    await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'health': snap, 'quality': info.get('quality_rating') or n.get('quality')}})
+    await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'checkup': snap, 'quality': info.get('quality_rating') or n.get('quality')}})
     p = problem_of(snap['status'], snap['quality'], snap['can_send'], errs)
     if p: await raise_alert(n, *p, 'conferencia')
     else: await clear_alert(n)
@@ -110,8 +133,8 @@ async def check(n):
 async def tick():
     """De hora em hora, um número de cada vez (no máximo 30 por volta)."""
     cut = now() - CHECK_EVERY
-    for n in await db.wa_numbers.find({'status': 'connected', '$or': [{'health.at': {'$lt': cut}}, {'health': {'$exists': False}}]}, {'_id': 0}).to_list(30):
+    for n in await db.wa_numbers.find({'status': 'connected', '$or': [{'checkup.at': {'$lt': cut}}, {'checkup': {'$exists': False}}]}, {'_id': 0}).to_list(30):
         try: await check(n)
         except Exception as e:
             log.warning('conferir saúde do número %s: %s', n.get('display_phone'), e)
-            await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'health.at': now(), 'health.error': str(e)[:200]}})
+            await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'checkup.at': now(), 'checkup.error': str(e)[:200]}})
