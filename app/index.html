@@ -2032,6 +2032,17 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* empresa */
+.em-hd .agt p{margin:2px 0 0;color:var(--ink2);font-size:14px}
+.em-st{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px}
+.em-st>button{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;min-width:0;cursor:pointer}.em-st>button:hover{border-color:#E6D6CB}
+.em-st .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;background:#F6F1EC;color:var(--ink2)}.em-st .ic svg{width:18px;height:18px}
+.em-st>button>span:last-child{display:flex;flex-direction:column;min-width:0}.em-st small{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.em-st b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.em-st em{font-style:normal;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.em-st .ok .ic{background:#E3F6EA;color:#1E9E57}.em-st .ok em{color:var(--ok);font-weight:600}.em-st .bad .ic{background:var(--badsoft);color:var(--bad)}.em-st .bad em{color:var(--bad);font-weight:600}.em-st .warn em{color:var(--warn);font-weight:600}
+.em-sh{display:flex;flex-direction:column;gap:2px;margin:24px 2px 10px;scroll-margin-top:16px}.em-sh h3{font-size:16px;margin:0}.em-sh span{font-size:13px;color:var(--ink3)}
+.em-g{scroll-margin-top:16px;align-items:start}#extras>.xmod:first-child,#chmore .xmod:first-of-type{border-top:0;padding-top:0}.em-c{margin-bottom:12px;scroll-margin-top:16px}
+@media (max-width:860px){.em-st{grid-template-columns:1fr 1fr}.em-st>button{padding:10px 12px;gap:10px}.em-st .ic{width:32px;height:32px}}
 /* equipe */
 .eq-hd .agt p{margin:2px 0 0;color:var(--ink2);font-size:14px}.eq-hd .btn{display:inline-flex;align-items:center;gap:6px}
 .eq-roles i{font-style:normal}.pm-facts.eq-roles i.eq-g{background:#E8EFFB!important;color:#2F6FB5!important}.pm-facts.eq-roles i.eq-a{background:#E3F6EA!important;color:#1E7A48!important}
@@ -5890,27 +5901,38 @@ const VIEWS={
  },
  async empresa(){
   const c=ME.company,own=ME.user.role==='owner';
-  $('#page').innerHTML=`<h1>Empresa</h1><p class="sub">Dados do negócio e do plano.</p>
-   <div class="grid g2"><div class="card"><form id="co" style="display:flex;flex-direction:column;gap:12px">
+  const mgr=['owner','manager'].includes(ME.user.role);
+  const [wn,ig]=await Promise.all([api('/wa/number').catch(()=>null),api('/ig/status').catch(()=>null)]);const ia=ig&&ig.account;
+  const ST=[['emNeg',svg('<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>'),'Negócio',esc(c.name),SEG[c.segment]||'',''],
+    ['emPlan',svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>'),'Plano',esc(PLAN[c.plan]||c.plan),c.plan==='trial'?'teste até '+day(c.trial_ends_at):'desde '+day(c.created_at),c.plan==='trial'?'warn':''],
+    ['wa',WAI,'WhatsApp',wn?esc((wn.display_phone||'conectado').replace(/^\+55\s?/,'')):'não conectado',wn?'conectado':'conecte para atender',wn?'ok':'bad'],
+    ['igc',IGI,'Instagram',ia?'@'+esc(ia.username||''):'não conectado',ia?(ia.status==='connected'?'conectado':'reconectar'):'opcional',ia?(ia.status==='connected'?'ok':'bad'):'']];
+  $('#page').innerHTML=`<div class="fz-hd em-hd"><div class="agt"><h1>Empresa</h1><p>Dados do negócio, plano, canais de atendimento e o que aparece no menu.</p></div></div>
+   <div class="em-st">${ST.map(x=>`<button type="button" class="${x[5]}" data-go="${x[0]}"><span class="ic">${x[1]}</span><span><small>${x[2]}</small><b>${x[3]}</b><em>${x[4]}</em></span></button>`).join('')}</div>
+   <div class="em-sh" id="emNeg"><h3>Negócio e plano</h3><span>O nome aparece para o time e nas mensagens da Nanda. O segmento ajusta as ideias prontas de funil, automações e jornada.</span></div>
+   <div class="grid g2 em-g"><div class="card"><form id="co" style="display:flex;flex-direction:column;gap:12px">
     <div class="field"><label>Nome do negócio</label><input name="name" value="${esc(c.name)}" ${own?'':'disabled'}></div>
     <div class="field"><label>Segmento</label><select name="segment" ${own?'':'disabled'}>${Object.entries(SEG).map(([k,v])=>`<option value="${k}" ${k===c.segment?'selected':''}>${v}</option>`).join('')}</select></div>
     <div class="field"><label>WhatsApp do negócio</label><input name="phone" value="${esc(c.phone)}" ${own?'':'disabled'}></div>
     ${own?'<button class="btn p" style="align-self:flex-start">Salvar</button>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
-   <div class="card"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
+   <div class="card" id="emPlan"><h3 style="margin-bottom:10px">Plano</h3><p><span class="pill">${esc(PLAN[c.plan]||c.plan)}</span></p>
     ${c.plan==='trial'?`<p style="margin-top:10px;color:var(--ink2)">Teste grátis até ${day(c.trial_ends_at)}.</p>`:''}
     <button class="btn sm ${c.plan==='trial'?'p':''}" style="margin-top:12px" data-sub2>${c.plan==='trial'?'Ver planos e assinar':'Assinatura e uso do plano'}</button>
-    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div><div class="card" style="margin-top:14px" id="wa"></div><div class="card" style="margin-top:14px" id="igc"></div>
-   ${['owner','manager'].includes(ME.user.role)?`<div class="card" style="margin-top:14px" id="chmore"><h3 style="margin-bottom:4px">Mais canais</h3>
+    <p style="margin-top:14px;color:var(--ink2);font-size:13px">Cliente desde ${day(c.created_at)}.</p></div></div>
+   <div class="em-sh"><h3>Canais de atendimento</h3><span>Por onde os clientes falam com você. Tudo chega na mesma caixa de Conversas.</span></div>
+   <div class="card em-c" id="wa"></div><div class="card em-c" id="igc"></div>
+   ${mgr?`<div class="card em-c" id="chmore"><h3 style="margin-bottom:4px">Mais canais</h3>
     <p class="hint" style="margin:0 0 12px">WhatsApp e Instagram já vêm ligados. Ligue outro canal só se os seus clientes usarem — enquanto estiver desligado, ele não aparece em lugar nenhum.</p>
     <label class="xmod"><input type="checkbox" data-ch="messenger" ${chOn('messenger')?'checked':''}><span><b>Messenger</b><small>Mensagens da sua Página do Facebook, na mesma caixa. Usa a conexão do Instagram, sem passo novo.</small><small id="mgSt" class="hint"></small></span></label>
     <label class="xmod"><input type="checkbox" data-ch="telegram" ${chOn('telegram')?'checked':''}><span><b>Telegram</b><small>Para quem atende por lá. Você cria um bot gratuito e cola o código aqui.</small></span></label>
     </div>
-   <div class="card" style="margin-top:14px" id="tgc" hidden></div>
-   <div class="card" style="margin-top:14px" id="extras"><h3 style="margin-bottom:4px">Recursos extras</h3>
-    <p class="hint" style="margin:0 0 12px">Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time.</p>
+   <div class="card em-c" id="tgc" hidden></div>
+   <div class="em-sh"><h3>Recursos extras</h3><span>Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time; desligar não apaga nada.</span></div>
+   <div class="card em-c" id="extras">
     ${[['metas','Metas e ranking','Metas da empresa, de equipes e de cada vendedor, com desafios, prêmios e modo TV.'],['jornada','Jornada do cliente','Marcos como "fez a aula", "pediu orçamento", "comprou de novo". A Nanda marca sozinha pelas conversas e o relatório mostra onde os clientes travam.']]
       .map(([k,l,h])=>`<label class="xmod"><input type="checkbox" data-mod="${k}" ${modOn(k)?'checked':''}><span><b>${l}</b><small>${h}</small></span></label>`).join('')}</div>`:''}`;
   renderWa(own);renderIg(own);renderTg(own);
+  document.querySelectorAll('.em-st [data-go]').forEach(x=>x.onclick=()=>{const t=$('#'+x.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
   document.querySelectorAll('[data-ch]').forEach(x=>x.onchange=async()=>{x.disabled=true;try{const r=await api('/company/channels',{method:'PUT',body:{[x.dataset.ch]:x.checked}});ME.company.channels=r.channels;
     const l={messenger:'Messenger',telegram:'Telegram',email:'E-mail'}[x.dataset.ch]||x.dataset.ch;toast(x.checked?`${l} ligado. As mensagens novas chegam nas Conversas.`:`${l} desligado. Nada foi apagado.`);renderIg(own);renderTg(own)}
     catch(e){x.checked=!x.checked;toast(e.message)}finally{x.disabled=false}});
