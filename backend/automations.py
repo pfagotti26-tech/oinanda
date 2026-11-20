@@ -281,11 +281,16 @@ async def preview_auto(body: AutoIn, user=Depends(managers)):
          'milestone_id': body.milestone_id, 'unless_id': body.unless_id}
     try: rows = await candidates(a, user['company'], stages)
     except Exception: rows = []
-    seen, names = set(), []
+    from channels import view, window_of
+    seen, names, ok, tpl, no = set(), [], 0, 0, 0
     for _, c, _ in rows:
         if c['id'] in seen: continue
         seen.add(c['id']); names.append((c.get('name') or '').split(' ')[0])
-    return {'count': len(seen), 'names': names[:3]}
+        v = view(c); ch = v.get('channel') or 'whatsapp'; w = window_of(ch); li = aware(v.get('last_in_at'))
+        if not w or (li and now() - li < w): ok += 1  # dentro das 24 h: mensagem normal
+        elif ch == 'whatsapp': tpl += 1  # precisa do modelo aprovado
+        else: no += 1  # Instagram/Messenger fora do prazo: não dá para enviar
+    return {'count': len(seen), 'names': names[:3], 'now': ok, 'needs_template': tpl, 'blocked': no}
 
 @router.post('/automations')
 async def create_auto(body: AutoIn, request: Request, user=Depends(managers)):
