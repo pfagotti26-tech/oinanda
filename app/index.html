@@ -3219,7 +3219,7 @@ function transferModal(c){
 let NOTIF={seen:null,t:null};
 async function pollCounts(){if(!ME)return;let n;try{n=await api('/inbox/counts')}catch(e){return}CV.counts=n;
   const badge=(v,k,t)=>document.querySelectorAll(`.side [data-v=${v}],.bnav [data-v=${v}]`).forEach(b=>{let s=b.querySelector('.nb');if(!s){s=document.createElement('span');s.className='nb';b.appendChild(s)}s.textContent=k>99?'99+':k||'';s.title=t||'';s.classList.toggle('hide',!k)});
-  badge('conversas',(n.transfers||[]).length+(n.human||0)+(n.waiting||0),'esperando resposta, pediram atendente ou transferidas para você');
+  badge('conversas',n.need!=null?n.need:(n.transfers||[]).length+(n.human||0)+(n.waiting||0),'esperando resposta, pediram atendente ou transferidas para você');
   document.querySelectorAll('.side [data-v=conversas] .nb,.bnav [data-v=conversas] .nb').forEach(b=>{b.classList.toggle('calm',!n.late);b.title=(n.late?n.late+(n.late===1?' passou':' passaram')+' do tempo de resposta · ':'')+b.title});
   if(NOTIF.unread!=null&&(n.unread||0)>NOTIF.unread&&soundOn())beep();NOTIF.unread=n.unread||0;
   NOTIF.waiting=n.waiting||0;badge('vendas',n.sales_pending||0,'vendas aguardando aprovação');
@@ -5462,6 +5462,7 @@ const VIEWS={
   const G={venda:['venda','Vendas e retomada','Para quem parou de responder durante a conversa.',IC.back],pos:['pos','Pós-venda e renovação','Renovar antes de vencer, chamar de volta e oferecer o próximo passo.',NI.vendas],agenda:['agenda','Horário marcado','Lembrar, remarcar quem faltou e puxar o próximo passo.',IC.clock]};
   const gOf=t=>['before_appt','appt_no_show','appt_done'].includes(t)?G.agenda:['before_expiry','after_expiry','after_purchase'].includes(t)?G.pos:G.venda;
   const tstate=a=>{const t=T[a.template_id];
+    if(a.trigger==='no_reply'&&a.hours<24&&!(t&&t.status==='APPROVED'))return ['ok','Sai como mensagem normal','Dispara antes de fechar as 24 h: não precisa de aprovação da Meta.'];
     if(t&&t.status==='APPROVED')return ['ok','Envia a qualquer hora','Modelo aprovado pela Meta.'];
     if(t&&t.status==='REJECTED')return ['bad','Modelo recusado pela Meta','Ajuste a mensagem e peça de novo.','ask'];
     if(t)return ['warn','Aguardando a Meta','Enquanto isso, só sai para quem falou nas últimas 24 h.'];
@@ -5835,7 +5836,7 @@ const VIEWS={
    <div class="card"><table><thead><tr><th>Pessoa</th><th>Papel</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead><tbody>
    ${team.map(m=>`<tr><td><b>${esc(m.name)}</b><small>${esc(m.email)}</small></td><td>${esc(ME.roles[m.role])}</td>
      <td>${m.active?(m.must_change_password?'<span class="pill warn">aguardando 1º acesso</span>':'<span class="pill ok">ativo</span>'):'<span class="pill grey">desativado</span>'}</td>
-     <td>${dt(m.last_login_at)}</td>
+     <td>${dt([m.last_seen,m.last_login_at].filter(Boolean).sort().pop())}</td>
      <td style="text-align:right">${canManage&&m.role!=='owner'&&m.id!==u.id?`<button class="btn sm" data-reset="${m.id}">Nova senha</button> <button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:''}</td></tr>`).join('')}
    </tbody></table></div>
    <p class="note" style="margin-top:14px"><b>Dono</b> vê e configura tudo. <b>Gestor</b> convida e acompanha o time. <b>Atendente</b> atende as próprias conversas e transfere para outras equipes ou pessoas.</p>

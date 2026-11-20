@@ -6,6 +6,7 @@ proporcional aos dias. Os contatos contam pelo dia em que chegaram; o faturament
 até hoje (assim uma campanha de outubro recebe o crédito da venda fechada em novembro).
 """
 import csv, io, re, unicodedata
+from wallet import BASE_FIELDS, in_base, own_numbers
 from datetime import date, datetime, timedelta
 from typing import Optional, Literal
 from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File, Form
@@ -181,7 +182,9 @@ async def report(start: Optional[str] = None, end: Optional[str] = None, user=De
     s0, s1, t0, t1 = period(company, Filters(start=start, end=end))
     names = {o['id']: o['name'] for o in await origins_of(company)}; names['_none'] = 'Não sabemos'
     cs = await db.contacts.find({'company_id': company['id'], 'created_at': {'$gte': t0, '$lt': t1}, 'source': {'$nin': ['historico', 'agenda do celular']}},
-                                {'_id': 0, 'id': 1, 'origin': 1, 'origin_detail': 1, 'ad': 1}).to_list(50000)
+                                {'_id': 0, 'id': 1, 'origin': 1, 'origin_detail': 1, 'ad': 1, **BASE_FIELDS}).to_list(50000)
+    own = await own_numbers(company)
+    cs = [c for c in cs if in_base(c, own)]  # agenda do celular, fora da base e o número da empresa não contam
     ids = [c['id'] for c in cs]
     rev, first = {}, {}
     for s in await db.sales.find({'company_id': company['id'], 'contact_id': {'$in': ids}, 'status': 'ok'}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(100000):
