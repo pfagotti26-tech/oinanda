@@ -33,7 +33,8 @@ def compute_holdings(sales, products):
                                    'first_at': d, 'last_at': d, 'count': 0, 'spent': 0.0, 'expires_at': None})
             x['last_at'] = d; x['count'] += 1; x['spent'] = round(x['spent'] + (i.get('total') or 0), 2)
             dur = p.get('duration_days')
-            if p.get('recurring'): x['recurring'] = True; x['expires_at'] = None  # assinatura: segue ativa, sem vencimento
+            if i.get('expires_at'): x['expires_at'] = max(aware(i['expires_at']), x['expires_at']) if x['expires_at'] else aware(i['expires_at'])  # vencimento informado (planilha)
+            elif p.get('recurring'): x['recurring'] = True; x['expires_at'] = None  # assinatura: segue ativa, sem vencimento
             elif dur:
                 start = max(d, x['expires_at']) if x['expires_at'] else d  # renovou antes de vencer: soma no fim
                 x['expires_at'] = start + timedelta(days=dur * max(1, int(round(i.get('qty') or 1))))
@@ -177,7 +178,15 @@ IN_AT = ('last_in_at', 'wa_last_in_at', 'ig_last_in_at', 'fb_last_in_at', 'tg_la
 def is_agenda(c):
     """Contato que só veio da agenda do celular (ou só recebeu mensagem): nunca escreveu, nunca comprou e o time não cadastrou.
     Não é prospect: fica fora da base e das campanhas, a não ser que o público peça ele de propósito."""
-    return not any(c.get(k) for k in IN_AT) and not c.get('sales_count') and c.get('source') != 'manual'
+    return not any(c.get(k) for k in IN_AT) and not c.get('sales_count') and c.get('source') not in ('manual', 'importado')
+
+def cold_import(c):
+    """Veio de planilha e nunca falou com a empresa: fica em Clientes, mas fora do funil e dos contatos novos."""
+    return c.get('source') == 'importado' and not any(c.get(k) for k in IN_AT)
+
+def no_campaign(c):
+    """Prospect importado que não autorizou mensagens: campanha pelo WhatsApp oficial derruba a qualidade do número."""
+    return cold_import(c) and not c.get('consent') and not c.get('sales_count')
 
 async def run_segment(user, rules):
     from funnel import stages_for
@@ -200,7 +209,7 @@ async def run_segment(user, rules):
             await refresh_holdings(company['id'], c['id'], products)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
                                                     'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1,
-                                                    'source': 1, 'wa_last_in_at': 1, 'ig_last_in_at': 1, 'fb_last_in_at': 1, 'tg_last_in_at': 1, 'em_last_in_at': 1, 'internal': 1}).to_list(50000)
+                                                    'source': 1, 'wa_last_in_at': 1, 'ig_last_in_at': 1, 'fb_last_in_at': 1, 'tg_last_in_at': 1, 'em_last_in_at': 1, 'internal': 1, 'consent': 1}).to_list(50000)
     own = await own_numbers(company)
     rows = [c for c in rows if (c.get('wa_id') or '') not in own and not c.get('internal')]  # o próprio número da empresa e contatos de teste não são clientes
     if not any(r.field == 'base' for r in rules): rules = [*rules, Rule(field='base', value='conversaram')]  # agenda só quando pedida
@@ -213,13 +222,13 @@ async def own_numbers(company):
     if 10 <= len(ph) <= 11: own.add('55' + ph)
     return own
 
-BASE_FIELDS = {'internal': 1, 'wa_id': 1, 'source': 1, 'sales_count': 1, **{k: 1 for k in IN_AT}}
+BASE_FIELDS = {'internal': 1, 'wa_id': 1, 'source': 1, 'sales_count': 1, 'consent': 1, **{k: 1 for k in IN_AT}}
 
 def in_base(c, own=()):
     """Conta como prospect ou cliente? Fora: quem só está na agenda do celular, quem foi tirado da base e o número da própria empresa."""
     return not c.get('internal') and not is_agenda(c) and (c.get('wa_id') or '') not in own
 
-def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
+def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id')) and not no_campaign(c)  # campanha sai pelo WhatsApp
 
 def row_out(c, names, inactive_days=None):
     from origins import status_of
@@ -265,7 +274,7 @@ async def overview(user=Depends(current_user)):
     due = sum(1 for c in rows if any(x.get('expires_at') and t <= aware(x['expires_at']) <= t + timedelta(days=30) for x in c.get('holdings') or []))
     lost = sum(1 for c in rows if any(x.get('expires_at') and t - timedelta(days=30) <= aware(x['expires_at']) < t for x in c.get('holdings') or []))
     agenda = len(await run_segment(user, [Rule(field='base', value='agenda')]))
-    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days, 'agenda': agenda}
+    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days, 'agenda': agenda, 'imported': sum(1 for c in rows if c.get('source') == 'importado')}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):

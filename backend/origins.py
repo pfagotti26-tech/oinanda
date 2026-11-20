@@ -243,7 +243,7 @@ async def origins_report(start: Optional[str] = None, end: Optional[str] = None,
     from wallet import BASE_FIELDS, in_base, own_numbers
     s0, s1, t0, t1 = period(company, Filters(start=start, end=end))
     names = {o['id']: o['name'] for o in await origins_of(company)}
-    contacts = await db.contacts.find({'company_id': user['company_id'], 'created_at': {'$gte': t0, '$lt': t1}, 'source': {'$nin': ['historico', 'agenda do celular']}},
+    contacts = await db.contacts.find({'company_id': user['company_id'], 'created_at': {'$gte': t0, '$lt': t1}, 'source': {'$nin': ['historico', 'agenda do celular', 'importado']}},
                                       {'_id': 0, 'id': 1, 'origin': 1, 'ad': 1, 'referred_by_name': 1, 'referred_by_id': 1, **BASE_FIELDS}).to_list(50000)
     own = await own_numbers(user['company'])
     contacts = [c for c in contacts if in_base(c, own)]

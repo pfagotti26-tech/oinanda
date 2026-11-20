@@ -2032,6 +2032,29 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* importar planilha */
+.ls-imp{display:flex!important;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink2);margin-left:auto;cursor:pointer}.ls-imp input{width:auto!important}
+#clImp{display:inline-flex;align-items:center;gap:7px;margin-left:auto}#clImp svg{width:16px;height:16px}
+.modal.iw{max-width:980px!important}.iw-st{display:flex;align-items:center;gap:10px;margin:2px 0 16px;flex-wrap:wrap}.iw-st span{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink3)}
+.iw-st i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#F1EBE5;font-size:12px}.iw-st .on{color:var(--ink)}.iw-st .on i{background:var(--c);color:#fff}.iw-st .ok i{background:var(--oksoft);color:var(--ok)}.iw-st b{flex:0 0 26px;height:1px;background:var(--line)}
+.iw-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.iw-drop{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border:2px dashed #E2CFC3;border-radius:18px;padding:34px 20px;background:#FFFBF8;cursor:pointer;min-height:280px}
+.iw-drop:hover,.iw-drop.on{border-color:var(--c);background:var(--tint)}.iw-drop svg{width:40px;height:40px;color:var(--c)}.iw-drop b{font-size:16px}.iw-drop span{font-size:13px;color:var(--ink2);max-width:300px}.iw-drop em{font-style:normal;font-size:13px;font-weight:600;color:var(--ink2)}.iw-drop em.err{color:var(--bad)}
+.iw-help{border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}.iw-help>b{font-size:15px}.iw-help>p{font-size:13px;color:var(--ink2);margin:0}
+.iw-help ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}.iw-help li{display:flex;flex-direction:column;font-size:12.5px}.iw-help li b{font-size:13px}.iw-help li span{color:var(--ink3);line-height:1.3}
+.iw-tips{background:#FBF8F5;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}.iw-tips p{margin:0;font-size:12.5px;color:var(--ink2)}.iw-help .btn{align-self:flex-start;display:inline-flex;align-items:center;gap:6px}.iw-help .btn svg{width:15px;height:15px}
+.iw-hist{margin-top:16px;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}.iw-hist>b{font-size:13.5px}.iw-hist>div{display:flex;align-items:center;gap:10px;justify-content:space-between}.iw-hist span{display:flex;flex-direction:column;font-size:13.5px;font-weight:600}.iw-hist small{font-weight:500;color:var(--ink3);font-size:12px}
+.iw-f{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 6px}.iw-f svg{width:18px;height:18px;color:var(--ink3)}
+.iw-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px;margin-bottom:12px;max-height:440px;overflow:auto;padding:2px}.iw-c{min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.iw-c.on{border-color:#E6C9BA}.iw-c.ph{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.iw-ch{padding:10px;background:#FBF8F5;display:flex;flex-direction:column;gap:6px}.iw-ch b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.iw-ch select{width:100%;border:1px solid var(--line);border-radius:9px;padding:6px 8px;font:inherit;font-size:13px;background:#fff}
+.iw-c.on .iw-ch select{border-color:var(--c);color:var(--c);font-weight:600}.iw-c ul{list-style:none;margin:0;padding:6px 10px}.iw-c li{font-size:12.5px;color:var(--ink2);padding:4px 0;border-bottom:1px solid #F5F0EB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.iw-c li:last-child{border:0}.iw-c li i{color:var(--ink3)}
+.iw-sum{display:flex;flex-direction:column;gap:10px}.iw-k{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.iw-k>div{background:#FBF8F5;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column}.iw-k b{font-size:22px;letter-spacing:-.5px}.iw-k span{font-size:12.5px;color:var(--ink2);font-weight:600;line-height:1.25}.iw-k small{font-weight:500;color:var(--ink3)}.iw-k .ok b{color:var(--ok)}
+.iw-sum .note{margin:0}.note.ok{background:#F0FAF4;border-color:#CDEBD8}.note.warn{background:var(--warnsoft)}
+.iw-err{border:1px solid #F1C9C2;background:#FFFAF8;border-radius:12px;padding:10px 14px}.iw-err.w{border-color:#EAD9B0;background:#FFFCF3}.iw-err summary{cursor:pointer;font-size:13.5px}.iw-err ul{margin:8px 0 4px;padding-left:18px;font-size:12.5px;color:var(--ink2);max-height:180px;overflow:auto}
+.iw-cs{display:flex!important;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}.iw-cs input{width:auto!important;margin-top:3px}.iw-cs span{display:flex;flex-direction:column;gap:3px}.iw-cs b{font-size:13.5px}.iw-cs small{font-size:12.5px;color:var(--ink3);line-height:1.4}
+.iw-go{margin-top:4px}
+.iw-done{text-align:center;padding:24px 10px}.iw-done>.ok{width:56px;height:56px;border-radius:50%;display:inline-grid;place-items:center;background:var(--oksoft);color:var(--ok);font-size:26px;font-weight:700}.iw-done h3{font-size:20px;margin:12px 0 6px}.iw-done p{max-width:560px;margin:0 auto 6px;color:var(--ink2)}
+@media (max-width:860px){.iw-scr{display:none}.iw-map{max-height:none;grid-template-columns:1fr 1fr;overflow:visible}.iw-c li:nth-child(n+3){display:none}.iw-ch{padding:8px}.iw-ch select{font-size:12.5px;padding:5px 6px}.iw-g{grid-template-columns:1fr}.iw-drop{min-height:180px}.iw-help ul{grid-template-columns:1fr}.iw-k{grid-template-columns:1fr 1fr}#clImp span{display:none}}
 /* catálogo e atividade */
 .ci-how{margin-bottom:14px}.ci-kp{margin-bottom:14px}
 .at-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.at-bar .srch{flex:1 1 280px;max-width:420px;background:#fff}.at-who{flex-wrap:wrap}
@@ -2247,7 +2270,7 @@ const INFO={
  horarios:['Próximos horários','Aulas, consultas ou visitas marcadas com essa pessoa. Também aparecem na Agenda.'],
  etiquetas:['Etiquetas','Palavras curtas para separar clientes do seu jeito. Ex.: pilates, manhã, indicação. Servem para filtrar em Clientes e para montar segmentos.'],
  anotacoes:['Anotações','O que o time precisa lembrar sobre a pessoa, sempre à vista aqui. Ex.: tem dor no joelho, prefere ser chamada à tarde. O cliente nunca vê.'],
- cl_base:['Conversaram','Todo mundo que já mandou mensagem para a empresa pelo WhatsApp ou pelo Instagram, comprou ou cadastrado pelo time. É a sua base de verdade. Entra sozinho na primeira mensagem.'],
+ cl_base:['Sua base','Todo mundo que já mandou mensagem para a empresa pelo WhatsApp ou pelo Instagram, comprou, foi cadastrado pelo time ou veio de uma planilha importada. Quem só está na agenda do celular fica de fora.'],
  cl_agenda:['Só na agenda','Contatos que vieram da agenda do celular quando o WhatsApp foi conectado e nunca mandaram mensagem para a empresa: família, amigos, fornecedores. Ficam fora da base, dos números e das campanhas. Quando alguém deles escrever, passa a contar sozinho.'],
  cl_prospect:['Prospects','Quem conversou com você e ainda não comprou nada. É o público para ofertas de primeira compra.'],
  cl_cliente:['Clientes','Quem já tem pelo menos uma venda registrada. Vira cliente sozinho quando você registra a venda.'],
@@ -4042,12 +4065,12 @@ async function vdList(){
   VD.st=VD.st||'open';
   $('#vdBody').innerHTML=`<div class="vd-bar" id="vdBar"></div><div id="vdL"><div class="empty">Carregando...</div></div>`;
   vdBar(()=>vdList(),true);
-  const r=await api('/sales?'+vdQs({q:VD.q,status:VD.st}));const it=r.items;
+  const r=await api('/sales?'+vdQs({q:VD.q,status:VD.st})+(VD.imp?'&imported=hide':''));const it=r.items;const anyImp=VD.imp||it.some(x=>x.imported);
   const okc=it.filter(x=>x.status!=='cancelled'),tot=okc.reduce((a,x)=>a+x.total,0),pend=it.filter(x=>x.status==='pending').length;
   const sellers=x=>(x.sellers||[]).map(y=>esc(y.name.split(' ')[0])+(x.sellers.length>1?` <span class="hint">${num(y.pct)}%</span>`:'')).join(' + ')||'<span class="hint">sem vendedor</span>';
-  const tags=x=>`${x.status==='pending'?'<span class="pill warn">aguardando aprovação</span>':''}${x.status==='cancelled'?'<span class="pill grey">cancelada</span>':''}${x.first?'':'<span class="sx">recompra</span>'}${(x.promos||[]).map(a=>`<span class="sx pr">${esc(a.code||a.name)}</span>`).join('')}`;
+  const tags=x=>`${x.status==='pending'?'<span class="pill warn">aguardando aprovação</span>':''}${x.status==='cancelled'?'<span class="pill grey">cancelada</span>':''}${x.imported?'<span class="sx" title="Veio de uma planilha importada em Clientes">importada</span>':''}${x.first||x.imported?'':'<span class="sx">recompra</span>'}${(x.promos||[]).map(a=>`<span class="sx pr">${esc(a.code||a.name)}</span>`).join('')}`;
   $('#vdL').innerHTML=`<div class="ls-top"><div class="seg">${[['open','Válidas'],['pending','Aguardando aprovação'],['cancelled','Canceladas']].map(x=>`<button class="${VD.st===x[0]?'on':''}" data-st="${x[0]}">${x[1]}</button>`).join('')}</div>
-     <span class="ls-sum">${okc.length} ${okc.length===1?'venda':'vendas'} · <b>${brl2(tot)}</b>${okc.length?` · ticket ${brl(tot/okc.length)}`:''}${pend&&VD.st==='open'?` · <span style="color:var(--warn)">${pend} aguardando</span>`:''}</span></div>
+     <span class="ls-sum">${okc.length} ${okc.length===1?'venda':'vendas'} · <b>${brl2(tot)}</b>${okc.length?` · ticket ${brl(tot/okc.length)}`:''}${pend&&VD.st==='open'?` · <span style="color:var(--warn)">${pend} aguardando</span>`:''}</span>${anyImp?`<label class="ls-imp"><input type="checkbox" id="vdImp" ${VD.imp?'checked':''}> Esconder importadas</label>`:''}</div>
    ${it.length?`<div class="vd-c ls-t"><table class="vtb"><thead><tr><th>Data</th><th>Cliente</th><th>Itens</th><th>Vendedores</th><th>Pagamento</th><th class="n">Total</th></tr></thead>
     <tbody>${it.map(x=>`<tr class="ck ${x.status==='cancelled'?'cx':''}" data-s="${x.id}" tabindex="0"><td class="nw">${fmtD(ymd(new Date(x.date)))}</td><td><b>${esc(x.contact_name||'')}</b><div class="tgs">${tags(x)}</div></td>
       <td class="its">${x.items.map(i=>`${num(i.qty)}× ${esc(i.name)}`).join(', ')}</td><td>${sellers(x)}</td><td>${esc(x.payment_label||'—')}</td><td class="n"><b>${brl2(x.total)}</b>${x.discount?`<small>− ${brl2(x.discount)}</small>`:''}</td></tr>`).join('')}</tbody></table></div>
@@ -4055,6 +4078,7 @@ async function vdList(){
       <span class="i">${x.items.map(i=>`${num(i.qty)}× ${esc(i.name)}`).join(', ')}</span><span class="m">${fmtD(ymd(new Date(x.date)))} · ${sellers(x)}${x.payment_label?' · '+esc(x.payment_label):''}</span>${tags(x)?`<span class="tgs">${tags(x)}</span>`:''}</button>`).join('')}</div>`
     :`<div class="aempty"><div><b>${VD.st==='pending'?'Nenhuma venda esperando aprovação':VD.st==='cancelled'?'Nenhuma venda cancelada':'Nenhuma venda com esses filtros'}</b><p>${VD.st==='open'?'Mude o período, tire filtros ou registre uma venda.':'Tudo em dia por aqui.'}</p></div></div>`}`;
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{VD.st=b.dataset.st;vdList()});
+  if($('#vdImp'))$('#vdImp').onchange=e=>{VD.imp=e.target.checked;vdList()};
   $('#vdL').querySelectorAll('[data-s]').forEach(b=>{const go=()=>saleModal({sale:it.find(x=>x.id===b.dataset.s),onDone:vdList});b.onclick=go;b.onkeydown=e=>{if(e.key==='Enter')go()}});
 }
 
@@ -4571,7 +4595,7 @@ async function clView(){
   const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);
   const IK={total:'cl_base',prospect:'cl_prospect',cliente:'cl_cliente',inativo:'cl_inativo',due30:'cl_due',agenda:'cl_agenda'};
   const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}<span class="ii" role="button" tabindex="0" data-info="${IK[k]}" aria-label="O que é ${l}?">i</span></span><b>${num(v)}</b><small>${sub}</small></button>`;
-  const kp=ov?`<div class="cb-kp">${tile('total','Conversaram',ov.total,'já falaram com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
+  const kp=ov?`<div class="cb-kp">${tile('total',ov.imported?'Na sua base':'Conversaram',ov.total,ov.imported?`conversaram ou vieram de planilha`:'já falaram com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
      ${tile('prospect','Prospects',ov.prospect,'ainda não compraram','<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')}
      ${tile('cliente','Clientes',ov.cliente,'já compraram','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}
      ${ov.inactive_days?tile('inativo','Inativos',ov.inativo,`sem comprar há ${ov.inactive_days}+ dias`,'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'):''}
@@ -4672,9 +4696,67 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
 /* pós-venda, campanhas e renovação */
 const OPK={renovacao:['Renovação','kc'],upsell:['Próximo produto','kp'],reativacao:['Reativação','ki']};
 function clHead(){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...(mgr?[['camp','Campanhas'],['ren','Renovação e upsell']]:[])];
-  return `<div class="fhd"><div><h1>Clientes</h1><p class="sub">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div></div>
+  return `<div class="fhd"><div><h1>Clientes</h1><p class="sub">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div>${mgr?`<button class="btn" id="clImp" title="Traga clientes e prospects de uma planilha do Excel ou CSV">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<span>Importar planilha</span></button>`:''}</div>
    <nav class="utabs">${tabs.map(t=>`<button class="${(CL.tab||'seg')===t[0]?'on':''}" data-clt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
-function clTabs(){document.querySelectorAll('[data-clt]').forEach(b=>b.onclick=()=>{CL.tab=b.dataset.clt;syncUrl();clView()})}
+
+/* importar clientes e prospects de uma planilha: enviar -> conferir -> pronto */
+async function importWizard(){
+  const F={name:'Nome',phone:'Telefone',email:'E-mail',product:'Produto ou plano',date:'Data da compra',value:'Valor',expires:'Vencimento',tags:'Etiquetas',origin:'Origem',notes:'Observação'};
+  const FH={name:'Ex.: Ana Souza',phone:'Obrigatório. Com DDD, em qualquer formato',email:'Ex.: ana@email.com',product:'O que comprou. Se o nome for igual ao do Catálogo, já pega a validade',date:'Quando comprou. Ex.: 05/11/2026',value:'Ex.: 280,00',expires:'Quando vence, se for diferente do Catálogo',tags:'Separe por vírgula. Ex.: pilates, manhã',origin:'Ex.: Instagram, Indicação',notes:'Qualquer coisa útil para o time'};
+  let J=null,map={},chk=null,consent=false,tm=null,dirty=false;
+  const o=overlay(`<div class="modal iw"><div class="row"><h2 style="font-size:20px">Importar clientes de uma planilha</h2><button class="x">×</button></div><div class="iw-st" id="iwSt"></div><div id="iwB"></div></div>`,true);
+  const B=()=>o.querySelector('#iwB');
+  {const par=o.parentNode;if(par){const mo=new MutationObserver(()=>{if(!o.isConnected){mo.disconnect();if(dirty&&VIEW==='clientes')clView()}});mo.observe(par,{childList:true})}}
+  const steps=n=>{o.querySelector('#iwSt').innerHTML=['Enviar a planilha','Conferir as colunas','Pronto'].map((t,i)=>`<span class="${i+1<n?'ok':i+1===n?'on':''}"><i>${i+1<n?'✓':i+1}</i>${t}</span>`).join('<b></b>')};
+  const dl=async()=>{try{const r=await fetch('/api/import/template.xlsx',{credentials:'same-origin'});if(!r.ok)throw new Error('Não foi possível baixar o modelo.');const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download='modelo-clientes-oi-nanda.xlsx';a.click()}catch(e){toast(e.message)}};
+  const step1=async()=>{steps(1);const hist=await api('/import').catch(()=>[]);
+    B().innerHTML=`<div class="iw-g"><label class="iw-drop" id="iwDrop"><input type="file" id="iwF" accept=".xlsx,.csv,.xlsm,.txt" hidden>${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<b>Arraste a planilha aqui ou clique para escolher</b><span>Excel (.xlsx) ou CSV, até 5.000 linhas. Do jeito que você já tem: a gente reconhece as colunas.</span><em id="iwE"></em></label>
+      <div class="iw-help"><b>O que a planilha pode ter</b><p>Só o <b>telefone</b> é obrigatório. O resto é opcional e entra se existir.</p>
+       <ul>${Object.entries(F).map(([k,v])=>`<li><b>${v}</b><span>${FH[k]}</span></li>`).join('')}</ul>
+       <div class="iw-tips"><p>✔ <b>Uma linha por compra.</b> A mesma pessoa em várias linhas soma as compras dela.</p><p>✔ <b>Linha sem compra</b> entra como prospect.</p><p>✔ <b>Quem já está no Oi Nanda</b> (mesmo telefone) não duplica: os dados são juntados.</p></div>
+       <button type="button" class="btn sm" id="iwTpl">${svg('<path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}Baixar planilha modelo</button></div></div>
+     ${hist.length?`<div class="iw-hist"><b>Importações anteriores</b>${hist.map(h=>`<div><span>${esc(h.file)}<small>${dt(h.created_at)} · ${esc(h.by||'')}${h.result?` · ${h.result.created} novos, ${h.result.updated} juntados, ${h.result.sales} compras`:''}</small></span>${h.status==='done'?`<button class="btn sm danger" data-un="${h.id}">Desfazer</button>`:'<span class="pill grey">desfeita</span>'}</div>`).join('')}</div>`:''}`;
+    o.querySelector('#iwTpl').onclick=dl;
+    const send=async f=>{if(!f)return;const e=o.querySelector('#iwE');e.textContent='Lendo a planilha...';e.className='';
+      const fd=new FormData();fd.append('file',f);try{const r=await fetch('/api/import/upload',{method:'POST',body:fd,credentials:'same-origin'});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.detail||'Não foi possível ler a planilha.');J=d;map={...d.mapping};step2()}
+      catch(x){e.textContent=x.message;e.className='err'}};
+    const dr=o.querySelector('#iwDrop');o.querySelector('#iwF').onchange=e=>send(e.target.files[0]);
+    dr.ondragover=e=>{e.preventDefault();dr.classList.add('on')};dr.ondragleave=()=>dr.classList.remove('on');dr.ondrop=e=>{e.preventDefault();dr.classList.remove('on');send(e.dataTransfer.files[0])};
+    o.querySelectorAll('[data-un]').forEach(b=>b.onclick=async()=>{if(!await sure('Desfazer essa importação? As compras importadas saem e os contatos criados por ela são apagados (menos quem já conversou com você).'))return;
+      try{const r=await api('/import/'+b.dataset.un+'/undo',{method:'POST'});toast(`Importação desfeita: ${r.removed} ${r.removed===1?'contato apagado':'contatos apagados'}.`);dirty=true;step1()}catch(e){toast(e.message)}})};
+  const step2=()=>{steps(2);const used=k=>Object.values(map).includes(k);
+    B().innerHTML=`<p class="iw-f">${svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>')}<b>${esc(J.file)}</b> · ${num(J.count)} ${J.count===1?'linha':'linhas'} <button type="button" class="lnk" id="iwBk">trocar arquivo</button></p>
+      <p class="hint" style="margin:0 0 10px">Confira o que é cada coluna. A gente já adivinhou pelo nome. Coluna que não serve, deixe em "Não importar".${J.headers.length>8?`<span class="iw-scr"> A planilha tem ${J.headers.length} colunas: role o quadro para ver todas.</span>`:''}</p>
+      <div class="iw-map">${J.headers.map((h,i)=>`<div class="iw-c ${map[i]?'on':''} ${map[i]==='phone'?'ph':''}"><div class="iw-ch"><b title="${esc(h)}">${esc(h)}</b><select data-col="${i}"><option value="">Não importar</option>${Object.entries(F).map(([k,v])=>`<option value="${k}" ${map[i]===k?'selected':''} ${used(k)&&map[i]!==k?'disabled':''}>${v}${k==='phone'?' (obrigatório)':''}</option>`).join('')}</select></div>
+        <ul>${J.samples.map(r=>`<li>${esc(String(r[i]??''))||'<i>vazio</i>'}</li>`).join('')}</ul></div>`).join('')}</div>
+      <div id="iwSum" class="iw-sum"><div class="empty">Conferindo...</div></div>`;
+    o.querySelector('#iwBk').onclick=step1;
+    o.querySelectorAll('[data-col]').forEach(x=>x.onchange=()=>{if(x.value)map[x.dataset.col]=x.value;else delete map[x.dataset.col];step2()});
+    clearTimeout(tm);tm=setTimeout(check,150)};
+  const check=async()=>{const box=o.querySelector('#iwSum');if(!box)return;
+    if(!Object.values(map).includes('phone')){box.innerHTML='<p class="note warn">Diga qual coluna é o <b>Telefone</b>: é por ele que a gente encontra cada pessoa e junta com quem já está no Oi Nanda.</p>';return}
+    try{chk=await api('/import/'+J.id+'/check',{method:'POST',body:{mapping:map}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}
+    const c=chk;box.innerHTML=`<div class="iw-k"><div><b>${num(c.people)}</b><span>${c.people===1?'pessoa':'pessoas'}</span></div><div><b>${num(c.new)}</b><span>${c.new===1?'nova':'novas'}</span></div><div><b>${num(c.existing)}</b><span>já no Oi Nanda<br><small>os dados são juntados</small></span></div><div class="ok"><b>${num(c.clients)}</b><span>${c.clients===1?'cliente':'clientes'}<br><small>${num(c.buys)} ${c.buys===1?'compra':'compras'}${c.value?' · '+brl(c.value):''}</small></span></div><div><b>${num(c.prospects)}</b><span>${c.prospects===1?'prospect':'prospects'}<br><small>sem compra</small></span></div></div>
+      ${c.with_expiry?`<p class="note ok">📅 <b>${num(c.with_expiry)} ${c.with_expiry===1?'compra tem':'compras têm'} vencimento.</b> Essas pessoas já aparecem em "Vence nos próximos 30 dias" e nas automações de renovação.</p>`:''}
+      ${c.unknown_count?`<p class="note">🏷️ <b>${num(c.unknown_count)} ${c.unknown_count===1?'produto não está':'produtos não estão'} no Catálogo:</b> ${c.unknown_products.slice(0,6).map(esc).join(', ')}${c.unknown_count>6?'...':''}. Entram como item avulso, sem validade. Se quiser lembrete de renovação, cadastre no Catálogo com o mesmo nome antes de importar.</p>`:''}
+      ${c.error_count?`<details class="iw-err"><summary>⚠️ <b>${num(c.error_count)} ${c.error_count===1?'linha não vai entrar':'linhas não vão entrar'}</b> · ver quais</summary><ul>${c.errors.map(e=>`<li>Linha ${e.row}${e.name?' · '+esc(e.name):''}: ${esc(e.why)}</li>`).join('')}</ul><p class="hint">Corrija na planilha e importe de novo depois, se quiser. As outras linhas entram normalmente.</p></details>`:''}
+      ${c.warn_count?`<details class="iw-err w"><summary>ℹ️ <b>${num(c.warn_count)} ${c.warn_count===1?'aviso':'avisos'}</b> · entram com ajuste</summary><ul>${c.warns.map(e=>`<li>Linha ${e.row}${e.name?' · '+esc(e.name):''}: ${esc(e.why)}</li>`).join('')}</ul></details>`:''}
+      ${c.prospects?`<label class="iw-cs"><input type="checkbox" id="iwCs" ${consent?'checked':''}><span><b>Esses ${num(c.prospects)} prospects autorizaram receber mensagens do meu negócio</b><small>Ex.: deixaram o contato no seu site, numa ficha ou num evento. Sem autorização, eles ficam na base mas fora das campanhas: mandar mensagem para quem não espera derruba a nota do seu número na Meta e pode bloquear o WhatsApp. Eles entram nas campanhas quando chamarem você.</small></span></label>`:''}
+      <div class="row iw-go"><button class="btn p" id="iwRun" ${c.people?'':'disabled'}>Importar ${num(c.people)} ${c.people===1?'pessoa':'pessoas'}</button><span class="hint">Dá para desfazer depois.</span></div>`;
+    if(o.querySelector('#iwCs'))o.querySelector('#iwCs').onchange=e=>consent=e.target.checked;
+    o.querySelector('#iwRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Importando...';
+      try{const r=await api('/import/'+J.id+'/run',{method:'POST',body:{mapping:map,consent}});step3(r)}catch(x){toast(x.message);b.disabled=false;b.textContent='Importar'}}};
+  const step3=r=>{steps(3);
+    B().innerHTML=`<div class="iw-done"><span class="ok">✓</span><h3>Planilha importada</h3><p>${num(r.created)} ${r.created===1?'pessoa nova':'pessoas novas'}, ${num(r.updated)} ${r.updated===1?'juntada':'juntadas'} com quem já estava e ${num(r.sales)} ${r.sales===1?'compra registrada':'compras registradas'}.</p>
+      <p class="hint">Todo mundo dessa importação ganhou a etiqueta <b>${esc(r.tag)}</b>, para você achar e filtrar. As compras aparecem em Vendas marcadas como "importada" e não contam como contato novo nos relatórios.</p>
+      <div class="row" style="justify-content:center;margin-top:14px"><button class="btn p" id="iwSee">Ver os importados</button><button class="btn" id="iwUn">Desfazer importação</button></div></div>`;
+    o.querySelector('#iwSee').onclick=()=>{dirty=false;o.remove();CL.rules=[{field:'tag',op:'is',value:r.tag}];CL.seg=null;CL.tab='seg';syncUrl();go('clientes')};
+    o.querySelector('#iwUn').onclick=async()=>{if(!await sure('Desfazer essa importação? As compras importadas saem e os contatos criados por ela são apagados (menos quem já conversou com você).'))return;
+      try{const u=await api('/import/'+J.id+'/undo',{method:'POST'});toast(`Importação desfeita: ${u.removed} ${u.removed===1?'contato apagado':'contatos apagados'}.`);dirty=true;o.remove()}catch(e){toast(e.message)}};
+    dirty=true};
+  step1()}
+
+function clTabs(){if($('#clImp'))$('#clImp').onclick=()=>importWizard();document.querySelectorAll('[data-clt]').forEach(b=>b.onclick=()=>{CL.tab=b.dataset.clt;syncUrl();clView()})}
 async function oppForm(rules,count){
   const [ps,tms,team]=await Promise.all([api('/products'),api('/teams').catch(()=>[]),api('/team')]);
   const o=overlay(`<form class="modal" id="opF"><div class="fm-hd"><h2>Criar oportunidades no pós-venda</h2><button type="button" class="x">×</button></div>

@@ -38,7 +38,8 @@ class CampIn(BaseModel):
 
 async def audience(user, rules):
     rows = await run_segment(user, rules)
-    return [c for c in rows if not c.get('opt_out') and c.get('wa_id')]
+    from wallet import reachable
+    return [c for c in rows if reachable(c)]
 
 class PreviewIn(BaseModel):
     rules: List[Rule] = Field(default_factory=list, max_length=12)
@@ -65,7 +66,8 @@ async def preview(body: PreviewIn, user=Depends(managers)):
     t = await db.templates.find_one({'id': body.template_id, 'company_id': user['company_id']}, {'_id': 0})
     if not t: raise HTTPException(404, 'Modelo não encontrado.')
     rows = await run_segment(user, body.rules)
-    ok = [c for c in rows if not c.get('opt_out') and c.get('wa_id')]
+    from wallet import reachable
+    ok = [c for c in rows if reachable(c)]
     cat = t.get('category') or 'MARKETING'
     recent = await recent_promo(user['company_id'], [c['id'] for c in ok]) if cat == 'MARKETING' else set()
     n = len(ok) - len(recent)

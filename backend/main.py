@@ -162,6 +162,8 @@ from adminapi import router as admin_router
 from profile import router as profile_router
 app.include_router(admin_router, prefix="/api")
 app.include_router(profile_router, prefix="/api")
+from importer import router as import_router
+app.include_router(import_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

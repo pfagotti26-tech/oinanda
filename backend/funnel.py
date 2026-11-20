@@ -81,7 +81,8 @@ async def funnel(mine: bool = False, user=Depends(current_user)):
     elif user['role'] == 'agent': q['assigned_to'] = {'$in': [None, user['id']]}
     from wallet import BASE_FIELDS, in_base, own_numbers
     own = await own_numbers(user['company'])
-    rows = [r for r in await db.contacts.find(q, {**CARD_FIELDS, **BASE_FIELDS}).sort('last_at', -1).to_list(5000) if in_base(r, own)][:2000]
+    from wallet import cold_import
+    rows = [r for r in await db.contacts.find(q, {**CARD_FIELDS, **BASE_FIELDS}).sort('last_at', -1).to_list(5000) if in_base(r, own) and not cold_import(r)][:2000]
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     for r in rows:
         if r.get('stage') not in ids: r['stage'] = ids[0]
@@ -186,9 +187,9 @@ async def summary(user=Depends(current_user)):
     own = await own_numbers(user['company'])
     F = {'_id': 0, 'id': 1, 'value': 1, 'stage': 1, 'won_at': 1, 'created_at': 1, 'last_dir': 1, 'resolved_at': 1, 'noreply_at': 1, 'needs_human': 1, **BASE_FIELDS}
     rows = [c for c in await db.contacts.find({**q, '$or': [{'created_at': {'$gte': start}}, {'won_at': {'$gte': start}}, {'last_dir': 'in'}, {'needs_human': True}]}, F).to_list(20000) if in_base(c, own)]
-    new = sum(1 for c in rows if aware(c.get('created_at')) and aware(c['created_at']) >= start)
+    new = sum(1 for c in rows if aware(c.get('created_at')) and aware(c['created_at']) >= start and c.get('source') != 'importado')
     # vendas do mês: as vendas registradas (as canceladas não contam); cards ganhos sem venda registrada entram pelo valor do card
-    sales_ok = await db.sales.find({**q, 'status': 'ok', 'date': {'$gte': start}}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(20000)
+    sales_ok = await db.sales.find({**q, 'status': 'ok', 'imported': {'$ne': True}, 'date': {'$gte': start}}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(20000)
     keep = {c['id'] for c in rows}
     ext = {c['contact_id'] for c in sales_ok}
     base_ids = {c['id'] for c in await db.contacts.find({'id': {'$in': list(ext)}}, {'_id': 0, 'id': 1, **BASE_FIELDS}).to_list(20000) if in_base(c, own)}
