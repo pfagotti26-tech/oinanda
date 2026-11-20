@@ -205,9 +205,9 @@ class NotClientIn(BaseModel):
 
 @router.post('/contacts/not-client')
 async def not_client(body: NotClientIn, request: Request, user=Depends(managers)):
-    """Marca vários contatos de uma vez como "não é cliente" (time, teste ou mensagem automática)."""
+    """Tira vários contatos da base de vendas de uma vez (time, teste ou mensagem automática): não contam como prospect nem cliente."""
     r = await db.contacts.update_many({'company_id': user['company_id'], 'id': {'$in': body.ids}}, {'$set': {'internal': body.value}})
-    await audit(request, user, 'Marcou como não é cliente' if body.value else 'Voltou a contar como cliente', f'{r.modified_count} contatos')
+    await audit(request, user, 'Tirou da base de vendas' if body.value else 'Voltou para a base de vendas', f'{r.modified_count} contatos')
     return {'updated': r.modified_count}
 
 @router.get('/funnel/auto-stage')
