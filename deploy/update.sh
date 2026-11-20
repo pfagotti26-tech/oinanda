@@ -9,11 +9,16 @@ echo "30 3 * * * root $(pwd)/backup.sh >> /var/log/oinanda-backup.log 2>&1" > /e
 echo "*/5 * * * * root $(pwd)/monitor.sh >> /var/log/oinanda-monitor.log 2>&1" > /etc/cron.d/oinanda-monitor
 mkdir -p backups
 docker compose up -d --build --remove-orphans
-# confere o Caddyfile antes de aplicar: com erro, o site segue com a configuração anterior em vez de cair
-if docker compose exec -T web caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
-  docker compose exec -T web caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1 || docker compose restart web
+# Caddyfile: o container enxerga o arquivo antigo depois do git pull (montagem de arquivo único), então só recriar aplica.
+# Antes de aplicar, confere o arquivo novo num container à parte: com erro, o site segue com a configuração anterior.
+if docker compose exec -T web cat /etc/caddy/Caddyfile 2>/dev/null | cmp -s - Caddyfile; then
+  :
+elif docker run --rm --env-file .env -v "$(pwd)/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
+  echo "Aplicando a configuração nova do site..."
+  docker compose up -d --force-recreate --no-deps web
 else
-  echo "AVISO: o Caddyfile novo tem erro. O site continua com a configuração anterior. Veja: docker compose exec web caddy validate --config /etc/caddy/Caddyfile"
+  echo "AVISO: o Caddyfile novo tem erro. O site continua com a configuração anterior."
+  echo "Para ver o erro: docker run --rm --env-file .env -v \"\$(pwd)/Caddyfile:/etc/caddy/Caddyfile:ro\" caddy:2 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile"
 fi
 docker image prune -f >/dev/null
 echo "Aguardando o sistema responder..."
