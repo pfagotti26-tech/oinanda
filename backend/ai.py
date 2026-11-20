@@ -424,6 +424,10 @@ async def on_human_send(user, contact):
     if (contact.get('ai_mode') or s['default_mode']) == 'auto':
         await db.contacts.update_one({'id': contact['id']}, {'$set': {'ai_mode': 'copilot'}})
         await note(user['company_id'], contact['id'], f'{user.get("impersonated_by") or user["name"]} assumiu a conversa · a Nanda passou para copiloto')
+    try:
+        from funnel import on_team_reply
+        await on_team_reply(user['company_id'], contact)
+    except Exception: log.exception('falha ao mover o card depois da resposta do time')
 whatsapp.ON_HUMAN_SEND = on_human_send
 
 _tasks = set()

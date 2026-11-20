@@ -200,11 +200,18 @@ async def run_segment(user, rules):
             await refresh_holdings(company['id'], c['id'], products)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
                                                     'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1,
-                                                    'source': 1, 'wa_last_in_at': 1, 'ig_last_in_at': 1, 'fb_last_in_at': 1, 'tg_last_in_at': 1, 'em_last_in_at': 1}).to_list(50000)
-    own = {re.sub(r'\D', '', n.get('display_phone') or '') for n in await db.wa_numbers.find({'company_id': company['id']}, {'_id': 0, 'display_phone': 1}).to_list(20)} - {''}
-    if own: rows = [c for c in rows if (c.get('wa_id') or '') not in own]  # o próprio número da empresa não é cliente
+                                                    'source': 1, 'wa_last_in_at': 1, 'ig_last_in_at': 1, 'fb_last_in_at': 1, 'tg_last_in_at': 1, 'em_last_in_at': 1, 'internal': 1}).to_list(50000)
+    own = await own_numbers(company)
+    rows = [c for c in rows if (c.get('wa_id') or '') not in own and not c.get('internal')]  # o próprio número da empresa e contatos de teste não são clientes
     if not any(r.field == 'base' for r in rules): rules = [*rules, Rule(field='base', value='conversaram')]  # agenda só quando pedida
     return [c for c in rows if all(match(c, r, ctx) for r in rules)]
+
+async def own_numbers(company):
+    """Números que são da própria empresa: o WhatsApp conectado e o telefone do cadastro."""
+    own = {re.sub(r'\D', '', n.get('display_phone') or '') for n in await db.wa_numbers.find({'company_id': company['id']}, {'_id': 0, 'display_phone': 1}).to_list(20)} - {''}
+    ph = re.sub(r'\D', '', company.get('phone') or '')
+    if 10 <= len(ph) <= 11: own.add('55' + ph)
+    return own
 
 def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
 

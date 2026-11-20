@@ -21,7 +21,7 @@ def _st(*rows):
 def default_stages(segment):
     return _st(*niche(segment)['stages'])
 
-async def move_stage(company, contact, stage_id, by_name, stages=None, route=True):
+async def move_stage(company, contact, stage_id, by_name, stages=None, route=True, quiet=False):
     """Muda a etapa do contato, registra na conversa e no histórico de etapas (base dos relatórios)."""
     stages = stages or await stages_for(company)
     st = next((s for s in stages if s['id'] == stage_id), None)
@@ -33,12 +33,33 @@ async def move_stage(company, contact, stage_id, by_name, stages=None, route=Tru
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
     await db.stage_events.insert_one({'id': uid(), 'company_id': company['id'], 'contact_id': contact['id'], 'from': contact.get('stage'),
                                       'to': stage_id, 'kind': st['kind'], 'value': contact.get('value'), 'by': by_name, 'at': now()})
-    await note(company['id'], contact['id'], f'{by_name} moveu para {st["name"]}')
+    if not quiet: await note(company['id'], contact['id'], f'{by_name} moveu para {st["name"]}')
     contact.update(upd)
     if route:  # etapa ligada a uma equipe: a conversa vai para ela
         from teams import route_by_stage
         await route_by_stage(company, contact, stage_id)
     return True
+
+AUTO_RX = re.compile(r'convers|atendimento|interessad|qualificad', re.I)
+
+def auto_stage_of(company, stages):
+    """Etapa para onde vai o contato novo quando o time responde. Sem escolha salva: a segunda etapa, se o nome dela for de conversa."""
+    v = company.get('auto_stage')
+    opn = [s for s in stages if s['kind'] == 'open']
+    if v == '': return None
+    if v and any(s['id'] == v for s in opn[1:]): return v
+    if v is None and len(opn) > 1 and AUTO_RX.search(opn[1]['name']): return opn[1]['id']
+    return None
+
+async def on_team_reply(company_id, contact):
+    """Alguém do time respondeu um contato que ainda está na primeira etapa: o card anda sozinho."""
+    company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+    if not company: return
+    stages = await stages_for(company)
+    tgt = auto_stage_of(company, stages)
+    c = await db.contacts.find_one({'id': contact['id']}, {'_id': 0})
+    if tgt and c and c.get('stage') in (None, stages[0]['id']):
+        await move_stage(company, c, tgt, 'Automático (o time respondeu)', stages, quiet=True)  # fica no histórico de etapas, sem poluir a conversa
 
 async def stages_for(company):
     if company.get('stages'): return company['stages']
@@ -82,6 +103,7 @@ class StageIn(BaseModel):
 
 class StagesIn(BaseModel):
     stages: List[StageIn] = Field(min_length=2, max_length=12)
+    auto_stage: Optional[str] = Field(default=None, max_length=40)  # '' = não mover sozinho
 
 @router.put('/funnel/stages')
 async def put_stages(body: StagesIn, request: Request, user=Depends(managers)):
@@ -92,7 +114,9 @@ async def put_stages(body: StagesIn, request: Request, user=Depends(managers)):
     gone = [s['id'] for s in old if s['id'] not in {n['id'] for n in new}]
     if gone:  # contatos de etapas apagadas voltam para a primeira
         await db.contacts.update_many({'company_id': user['company_id'], 'stage': {'$in': gone}}, {'$set': {'stage': new[0]['id']}})
-    await db.companies.update_one({'id': user['company_id']}, {'$set': {'stages': new}})
+    st = {'stages': new}
+    if body.auto_stage is not None: st['auto_stage'] = body.auto_stage if any(s['id'] == body.auto_stage and s['kind'] == 'open' for s in new[1:]) else ''
+    await db.companies.update_one({'id': user['company_id']}, {'$set': st})
     await audit(request, user, 'Editou as etapas do funil', ' → '.join(s['name'] for s in new))
     return {'stages': new}
 
@@ -104,6 +128,7 @@ class ContactPatch(BaseModel):
     tags: Optional[List[str]] = Field(default=None, max_length=12)
     email: Optional[str] = Field(default=None, max_length=120)
     opt_out: Optional[bool] = None
+    internal: Optional[bool] = None
 
 @router.patch('/contacts/{contact_id}')
 async def patch_contact(contact_id: str, body: ContactPatch, request: Request, user=Depends(current_user)):
@@ -112,7 +137,10 @@ async def patch_contact(contact_id: str, body: ContactPatch, request: Request, u
     if 'tags' in upd: upd['tags'] = sorted({t.strip()[:24] for t in upd['tags'] if t.strip()})
     if 'stage' in upd:
         if 'value' in upd: c['value'] = upd['value']
-        await move_stage(user['company'], c, upd.pop('stage'), user.get('impersonated_by') or user['name'])
+        sid = upd.pop('stage')
+        moved = await move_stage(user['company'], c, sid, user.get('impersonated_by') or user['name'])
+        won = any(s['id'] == sid and s['kind'] == 'won' for s in await stages_for(user['company']))
+        if moved and won and not user.get('impersonated_by'): upd['won_by_id'] = user['id']  # quem fechou: a venda conta para ele no relatório se o card não tiver responsável
     if upd: await db.contacts.update_one({'id': contact_id}, {'$set': upd})
     return await db.contacts.find_one({'id': contact_id}, {'_id': 0})
 
@@ -169,3 +197,8 @@ async def summary(user=Depends(current_user)):
 @router.get('/funnel/stages')
 async def get_stages(user=Depends(current_user)):
     return await stages_for(user['company'])
+
+@router.get('/funnel/auto-stage')
+async def get_auto(user=Depends(current_user)):
+    company = await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
+    return {'stage': auto_stage_of(company, await stages_for(company))}

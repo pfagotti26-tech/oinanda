@@ -46,8 +46,8 @@ async def first_reply_minutes(company_id, contact_ids):
 async def period_totals(cid, kinds, won_ids, start, end, keep=lambda c: True):
     """Números de um período fechado, para comparar com o atual."""
     new = [c for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular']}},
-                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
-    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
+                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
+    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
     fr = await first_reply_minutes(cid, [c['id'] for c in new])
     vals = [v[0] for v in fr.values()]
     conv = sum(1 for c in new if kinds.get(c.get('stage')) == 'won')
@@ -75,20 +75,23 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
     from origins import origins_of
     onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
     lnames = {l['id']: l.get('label') or 'Link' for l in await db.track_links.find({'company_id': cid}, {'_id': 0, 'id': 1, 'label': 1}).to_list(300)}
+    from wallet import own_numbers
+    own = await own_numbers(user['company'])
     def keep(c, skip_origin=False):
+        if c.get('internal') or (c.get('wa_id') and c['wa_id'] in own): return False  # teste do time e o número da própria empresa
         if channel and (c.get('channel') or 'whatsapp') != channel: return False
         if owner and (c.get('assigned_to') or '_none') != owner: return False
         if team and c.get('team_id') != team: return False
         if origin and not skip_origin and origin_key(c, onames, lnames)[0] != origin: return False
         return True
-    all_new = await db.contacts.find({'company_id': cid, 'created_at': rng, 'source': {'$nin': ['historico', 'agenda do celular']}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000)
+    all_new = await db.contacts.find({'company_id': cid, 'created_at': rng, 'source': {'$nin': ['historico', 'agenda do celular']}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000)
     from wallet import is_agenda, IN_AT
     real = {c['id'] for c in await db.contacts.find({'company_id': cid, 'id': {'$in': [c['id'] for c in all_new]}}, {'_id': 0, 'id': 1, 'source': 1, 'sales_count': 1, **{k: 1 for k in IN_AT}}).to_list(10000) if not is_agenda(c)}
     all_new = [c for c in all_new if c['id'] in real]  # quem só veio da agenda do celular não é contato novo
     origin_opts = sorted({origin_key(c, onames, lnames)[0] for c in all_new if keep(c, True)})
     new = [c for c in all_new if keep(c)]
-    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
-    lost = sum(1 for c in await db.contacts.find({'company_id': cid, 'lost_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c))
+    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
+    lost = sum(1 for c in await db.contacts.find({'company_id': cid, 'lost_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c))
     value = sum(c.get('value') or 0 for c in won)
     with_value = [c['value'] for c in won if c.get('value')]
     cycle = [(aware(c['won_at']) - aware(c['created_at'])).total_seconds() / 86400 for c in won if c.get('created_at') and c.get('won_at')]
@@ -142,7 +145,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
         if c['origin_by_id'] != won_by_id[c['id']].get('assigned_to'): origin_won.setdefault(c['origin_by_id'], []).append(won_by_id[c['id']])
     people = []
     for u in team:
-        w = [c for c in won if c.get('assigned_to') == u['id']]
+        w = [c for c in won if (c.get('assigned_to') or c.get('won_by_id')) == u['id']]
         mine = [v[0] for k, v in fr.items() if v[1] == u['id']]
         people.append({'id': u['id'], 'name': u['name'], 'active': u.get('active'), 'messages': sent.get(u['id'], 0), 'won': len(w),
                        'value': sum(c.get('value') or 0 for c in w), 'first_reply_min': median(mine) if mine else None,
@@ -156,6 +159,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
     handoffs = await db.messages.count_documents({'company_id': cid, 'dir': 'sys', 'at': rng, 'text': {'$regex': '^A Nanda passou a conversa'}})
     autos = await db.automation_runs.count_documents({'company_id': cid, 'at': rng, 'status': 'sent'})
     all_fr = [v[0] for v in fr.values()]
+    wrote = set(await db.messages.distinct('contact_id', {'company_id': cid, 'contact_id': {'$in': list(new_ids)}, 'dir': 'in'}))  # quem escreveu e esperava resposta
     prev = await period_totals(cid, kinds, won_ids, since - (until - since), since, keep)
     # série por dia (ou por semana em períodos longos), no fuso da empresa
     bucket = 7 if days > 45 else 1
@@ -221,12 +225,13 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
         'days': days, 'start': str(start_local), 'end': str(start_local + timedelta(days=days - 1)),
         'filters': {'origins': origin_opts, 'teams': [{'id': t['id'], 'name': t['name']} for t in await teams_of(cid)],
                     'owners': [{'id': u['id'], 'name': u['name']} for u in team]},
-        'unassigned': {'won': sum(1 for c in won if not c.get('assigned_to')), 'value': sum(c.get('value') or 0 for c in won if not c.get('assigned_to'))},
+        'unassigned': {'won': sum(1 for c in won if not (c.get('assigned_to') or c.get('won_by_id'))), 'value': sum(c.get('value') or 0 for c in won if not (c.get('assigned_to') or c.get('won_by_id')))},
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,
                    'conversion': round(100 * converted / len(new), 1) if new else None,
                    'cycle_days': round(median(cycle), 1) if cycle else None,
-                   'first_reply_min': median(all_fr) if all_fr else None},
+                   'first_reply_min': median(all_fr) if all_fr else None,
+                   'wrote': len(wrote), 'answered': len([k for k in fr if k in wrote])},
         'funnel': funnel, 'origin': sorted(origin.values(), key=lambda o: -o['contacts']), 'people': people,
         'nanda': {'messages': sent.get('nanda', 0), 'bookings': nanda_books, 'handoffs': handoffs, 'replies_month': usage.get('replies', 0)},
         'automations': {'sent': autos, 'messages': sent.get('auto', 0)},
