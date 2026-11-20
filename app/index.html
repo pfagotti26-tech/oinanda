@@ -2032,6 +2032,16 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* catálogo e atividade */
+.ci-how{margin-bottom:14px}.ci-kp{margin-bottom:14px}
+.at-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.at-bar .srch{flex:1 1 280px;max-width:420px;background:#fff}.at-who{flex-wrap:wrap}
+.at-l{padding:6px 16px 10px}.at-d{font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;padding:14px 0 6px}
+.at-r{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #F3EEE9}.at-r:last-child{border:0}
+.at-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#F6F1EC;color:var(--ink2)}.at-i svg{width:16px;height:16px}
+.at-i.vd{background:#E3F6EA;color:#1E7A48}.at-i.au{background:#FDE7DF;color:var(--c)}.at-i.eq{background:#E8EFFB;color:#2F6FB5}.at-i.ch{background:#E4F3FB;color:#2A8BC0}.at-i.ct{background:#F3EAFB;color:#7A4CB0}.at-i.ca{background:#FFF1DC;color:#B0721C}
+.at-t{min-width:0;display:flex;flex-direction:column}.at-t b{font-size:13.5px}.at-t span{font-size:12.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.at-w{display:flex;align-items:center;gap:10px;font-size:12.5px;white-space:nowrap}.at-w b{font-weight:600;color:var(--ink2)}.at-w small{color:var(--ink3);font-variant-numeric:tabular-nums}
+@media (max-width:860px){.at-r{grid-template-columns:34px minmax(0,1fr)}.at-w{grid-column:2}.at-bar .srch{max-width:none}}
 /* nanda */
 button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz-st:hover{border-color:#E6D6CB}.nz-chg{font-style:normal;font-size:12px;font-weight:700;color:var(--c);margin-left:6px}
 .nz-how{margin-bottom:14px}
@@ -4053,11 +4063,17 @@ async function vdProducts(){
   const cl=Object.keys(cc).filter(Boolean).sort((a,b)=>cc[b]-cc[a]||a.localeCompare(b));if(VD.pcat!=null&&!(VD.pcat in cc))VD.pcat=null;
   const ps=(VD.pcat==null?all:all.filter(p=>(p.category||'')===VD.pcat)).slice().sort((a,b)=>(!a.category-!b.category)||(a.category||'').localeCompare(b.category||'')||((a.price==null)-(b.price==null))||((a.price||0)-(b.price||0))||a.name.localeCompare(b.name));
   const fl=cl.length>1||(cl.length&&cc[''])?`<div class="ci-fl" role="tablist"><button type="button" class="ci-chip ${VD.pcat==null?'on':''}" data-pc="*">Todos<i>${all.length}</i></button>${cl.map(c=>`<button type="button" class="ci-chip ${VD.pcat===c?'on':''}" data-pc="${esc(c)}">${esc(c)}<i>${cc[c]}</i></button>`).join('')}${cc['']?`<button type="button" class="ci-chip ${VD.pcat===''?'on':''}" data-pc="">Sem categoria<i>${cc['']}</i></button>`:''}</div>`:'';
-  $('#vdBody').innerHTML=`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?'<button class="btn sm p" id="pdNew">+ Novo item</button>':''}</div>${fl}
+  const hOpen=(()=>{try{return localStorage.getItem('ciHow')==='1'}catch(e){return false}})();
+  const nop=all.filter(p=>p.active!==false&&p.price==null&&!p.service_id).length,pl=all.filter(p=>p.kind==='plano'||p.duration_days).length;
+  const hero=`<details class="lk-hero ci-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}</span><div><b>Cadastre uma vez, use em todo o sistema</b><span>O que você vende e quanto custa. A Nanda, as vendas, os clientes e as automações usam os mesmos itens.</span></div><em class="lk-ht">Onde é usado</em></summary>
+    <div class="pm-facts cb-steps">${[['1','Na venda','Você escolhe o item e o preço já vem. Dá para vender algo fora do catálogo também.'],['2','Na Nanda','Ela informa o preço quando o cliente pergunta. Item sem preço ela não informa: chama o time.'],['3','Em Clientes','Plano com validade mostra quando vence e quem pode renovar.'],['4','Nas automações','Lembrete de renovação e oferta do próximo item depois da compra.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
+  const kp=all.length?`<div class="eq-kp ci-kp"><div><b>${all.filter(p=>p.active!==false).length}</b><span>itens ativos</span></div><div><b>${pl}</b><span>${pl===1?'plano com validade':'planos com validade'}</span></div><div><b>${all.filter(p=>p.service_id).length}</b><span>da Agenda</span></div><div class="${nop?'warn':''}"><b>${nop}</b><span>sem preço${nop?' · a Nanda não informa':''}</span></div></div>`:'';
+  $('#vdBody').innerHTML=hero+kp+`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?'<button class="btn sm p" id="pdNew">+ Novo item</button>':''}</div>${fl}
    ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Validade</th><th class="hm">Oferecer depois</th><th class="n">Preço</th><th></th></tr></thead><tbody>
-   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}${p.kind==='plano'?' <span class="sx">plano</span>':p.kind==='produto'?' <span class="sx">produto</span>':''}</td><td>${p.category?esc(p.category):'<span class="hint">—</span>'}</td><td class="hm">${p.recurring?'a cada '+durTxt(p.duration_days||30).replace(/^1 /,'')+' <span class="sx">renova sozinho</span>':durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):'<span class="hint">varia</span>'}</td><td class="n">${p.active?'':'<span class="hint">fora da venda</span>'}</td></tr>`).join('')}</tbody></table></div>`
+   ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td><b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}${p.kind==='plano'?' <span class="sx">plano</span>':p.kind==='produto'?' <span class="sx">produto</span>':''}</td><td>${p.category?esc(p.category):'<span class="hint">—</span>'}</td><td class="hm">${p.recurring?'a cada '+durTxt(p.duration_days||30).replace(/^1 /,'')+' <span class="sx">renova sozinho</span>':durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):p.service_id?'<span class="hint">varia</span>':'<span class="pill warn" title="A Nanda não informa preço deste item: chama o time">sem preço</span>'}</td><td class="n">${p.active?'':'<span class="hint">fora da venda</span>'}</td></tr>`).join('')}</tbody></table></div>`
    :'<div class="empty">Nenhum item ainda.</div>'}</div>`;
   document.querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>{VD.pcat=b.dataset.pc==='*'?null:b.dataset.pc;vdProducts()});
+  {const hw=$('#vdBody .ci-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('ciHow',hw.open?'0':'1')}catch(e){}}}
   if(!mgr)return;
   $('#pdNew').onclick=()=>productModal(null,all);
   document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>productModal(all.find(p=>p.id===b.dataset.p),all));
@@ -5978,11 +5994,21 @@ const VIEWS={
     f.onsubmit=async ev=>{ev.preventDefault();sb.disabled=true;try{await api('/company',{method:'PATCH',body:Object.fromEntries(new FormData(f))});await refresh();toast('Dados salvos.');VIEWS.empresa()}catch(e){toast(e.message);sb.disabled=false}}}
  },
  async atividade(){
-  const rows=await api('/audit');
-  $('#page').innerHTML=`<h1>Atividade</h1><p class="sub">Quem fez o quê na conta, nos últimos 180 dias.</p>
-   <div class="card">${rows.length?`<table><thead><tr><th>Quando</th><th>Quem</th><th>O quê</th><th>De onde</th></tr></thead><tbody>
-   ${rows.map(r=>`<tr><td>${dt(r.at)}</td><td>${esc(r.actor)}${r.impersonated_by?'<small>suporte Oi Nanda</small>':''}</td><td>${esc(r.action)}${r.target?`<small>${esc(r.target)}</small>`:''}</td><td><small>${esc(r.ip||'')}</small></td></tr>`).join('')}
-   </tbody></table>`:'<div class="empty">Nada registrado ainda.</div>'}</div>`;
+  const rows=await api('/audit');const AT=VIEWS._at||(VIEWS._at={who:'',q:''});
+  const who=[...new Set(rows.map(r=>r.actor))];
+  const dayK=d=>{const x=new Date(d),t=new Date();const y=new Date();y.setDate(t.getDate()-1);return x.toDateString()===t.toDateString()?'Hoje':x.toDateString()===y.toDateString()?'Ontem':x.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})};
+  const ic=a=>/base|contato|conversa|cliente/i.test(a)?['ct',svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')]:/cat[áa]logo|produto|promo|cupom/i.test(a)?['ca',svg('<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')]:/venda/i.test(a)?['vd',svg('<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>')]:/automa/i.test(a)?['au',svg('<path d="M13 3 5 14h6l-1 7 8-11h-6l1-7z"/>')]:/convid|senha|equipe|desativ|reativ|papel/i.test(a)?['eq',svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5"/>')]:/whatsapp|instagram|telegram|messenger|conect/i.test(a)?['ch',svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')]:/base|contato|conversa|cliente/i.test(a)?['ct',svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')]:['ot',svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')];
+  const draw=()=>{const q=AT.q.trim().toLowerCase();const list=rows.filter(r=>(!AT.who||r.actor===AT.who)&&(!q||(r.action+' '+(r.target||'')).toLowerCase().includes(q)));
+   let html='',last='';for(const r of list){const k=dayK(r.at);if(k!==last){html+=`<div class="at-d">${esc(k)}</div>`;last=k}const c=ic(r.action);
+    html+=`<div class="at-r"><span class="at-i ${c[0]}">${c[1]}</span><div class="at-t"><b>${esc(r.action)}</b>${r.target?`<span>${esc(r.target)}</span>`:''}</div><div class="at-w"><b>${esc(r.actor)}</b>${r.impersonated_by?'<span class="pill warn">suporte Oi Nanda</span>':''}<small title="${esc(r.ip?'De onde: '+r.ip:'')}">${new Date(r.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</small></div></div>`}
+   $('#atL').innerHTML=html||'<div class="empty">Nada encontrado com esse filtro.</div>'};
+  $('#page').innerHTML=`<div class="fz-hd em-hd"><div class="agt"><h1>Atividade</h1><p>Quem fez o quê na conta, nos últimos 180 dias. Serve para conferir mudanças e saber quem mexeu.</p></div></div>
+   ${rows.length?`<div class="at-bar"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="atQ" placeholder="Buscar: venda, automação, nome do cliente..." value="${esc(AT.q)}"></label>
+    <div class="fz-seg at-who">${['',...who].map(w=>`<button type="button" class="${AT.who===w?'on':''}" data-w="${esc(w)}">${w?esc(w.split(' ')[0]):'Todos'}</button>`).join('')}</div></div>
+    <div class="vd-c at-l" id="atL"></div>`:'<div class="vd-c"><div class="empty">Nada registrado ainda.</div></div>'}`;
+  if(!rows.length)return;draw();
+  $('#atQ').oninput=e=>{AT.q=e.target.value;draw()};
+  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{AT.who=b.dataset.w;document.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('on',x===b));draw()});
  },
  'avisos-conta':avisosConta,
  'a-visao':adVisao,
