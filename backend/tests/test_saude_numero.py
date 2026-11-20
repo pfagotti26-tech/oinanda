@@ -55,3 +55,7 @@ def test_leitura_da_meta():
     assert wahealth.problem_of('CONNECTED', 'GREEN', 'BLOCKED', ['Something else'])[0] == 'blocked'
     assert wahealth.problem_of('CONNECTED', 'RED')[0] == 'flagged'
     assert wahealth.problem_of('RESTRICTED')[0] == 'restricted'
+
+
+def test_bloqueio_vem_antes_do_pagamento():
+    assert wahealth.problem_of('BANNED', 'GREEN', 'BLOCKED', ['There is an error with the payment method.', 'The Business has not passed business verification.'])[0] == 'banned'
