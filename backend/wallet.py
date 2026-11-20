@@ -14,7 +14,7 @@ from typing import Optional, List, Literal, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
-from core import db, now, uid, audit, current_user, managers
+from core import db, now, uid, audit, current_user, managers, owners
 from whatsapp import get_contact, aware
 
 router = APIRouter()
@@ -289,14 +289,38 @@ async def bulk_tag(body: BulkTag, request: Request, user=Depends(current_user)):
     return {'ok': True, 'count': len(ids)}
 
 @router.post('/segments/export')
-async def export(body: SegIn, user=Depends(managers)):
+async def export(body: SegIn, request: Request, user=Depends(owners)):
+    """Planilha Excel da base (ou do público filtrado). Só o dono baixa: é a lista de clientes da empresa inteira."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.utils import get_column_letter
+    from origins import status_of, origins_of, STATUS
     rows = await run_segment(user, body.rules)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
-    buf = io.StringIO(); w = csv.writer(buf, delimiter=';')
-    w.writerow(['Nome', 'Telefone', 'Compras', 'Total gasto', 'Última compra', 'Próximo vencimento', 'Tem', 'Responsável', 'Não quer mensagens'])
-    br = lambda v: f'{v:.2f}'.replace('.', ',')
+    onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
+    days = user['company'].get('inactive_days')
+    full = {c['id']: c for c in await db.contacts.find({'id': {'$in': [r['id'] for r in rows]}}, {'_id': 0, 'id': 1, 'email': 1, 'tags': 1, 'created_at': 1, 'origin_detail': 1}).to_list(50000)}
+    wb = Workbook(); ws = wb.active; ws.title = 'Clientes'
+    head = ['Nome', 'Situação', 'Telefone (WhatsApp)', 'Instagram', 'E-mail', 'Origem', 'Detalhe da origem', 'Compras', 'Total gasto (R$)', 'Última compra',
+            'Tem', 'Próximo vencimento', 'Etiquetas', 'Responsável', 'Chegou em', 'Não quer mensagens']
+    ws.append(head)
+    d = lambda v: aware(v).replace(tzinfo=None) if v else None
     for c in rows:
-        o = row_out(c, names)
-        w.writerow([o['name'], '+' + (o['wa_id'] or ''), o['purchases'], br(o['spent'] or 0), aware(o['last_sale_at']).strftime('%d/%m/%Y') if o['last_sale_at'] else '',
-                    aware(o['next_expiry']).strftime('%d/%m/%Y') if o['next_expiry'] else '', ', '.join(h['name'] for h in o['has']), o['owner'] or '', 'sim' if o['opt_out'] else ''])
-    return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8', headers={'Content-Disposition': 'attachment; filename="segmento.csv"'})
+        o = row_out(c, names); x = full.get(c['id'], {})
+        org = c.get('origin') or ('anuncio' if c.get('ad') else None)
+        ws.append([o['name'], STATUS.get(status_of(c, days), ''), ('+' + o['wa_id']) if o['wa_id'] else '', ('@' + c['ig_username']) if c.get('ig_username') else '',
+                   x.get('email') or '', onames.get(org, '') if org else 'Não sabemos', x.get('origin_detail') or '', o['purchases'], round(o['spent'] or 0, 2),
+                   d(o['last_sale_at']), ', '.join(h['name'] for h in o['has']), d(o['next_expiry']), ', '.join(x.get('tags') or []), o['owner'] or '',
+                   d(x.get('created_at')), 'sim' if o['opt_out'] else ''])
+    for cell in ws[1]:
+        cell.font = Font(bold=True, color='FFFFFF'); cell.fill = PatternFill('solid', fgColor='E8603F'); cell.alignment = Alignment(vertical='center')
+    widths = [28, 16, 20, 18, 26, 16, 22, 10, 16, 14, 34, 18, 22, 18, 14, 16]
+    for i, w in enumerate(widths, 1): ws.column_dimensions[get_column_letter(i)].width = w
+    for r in ws.iter_rows(min_row=2):
+        r[8].number_format = '#,##0.00'
+        for k in (9, 11, 14): r[k].number_format = 'DD/MM/YYYY'
+    ws.freeze_panes = 'A2'; ws.auto_filter.ref = ws.dimensions
+    buf = io.BytesIO(); wb.save(buf)
+    await audit(request, user, 'Exportou a base de clientes em Excel', f'{len(rows)} contatos')
+    fn = f'clientes-{now().strftime("%Y-%m-%d")}.xlsx'
+    return Response(buf.getvalue(), media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', headers={'Content-Disposition': f'attachment; filename="{fn}"'})

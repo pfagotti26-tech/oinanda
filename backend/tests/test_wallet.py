@@ -58,4 +58,13 @@ def test_carteira_e_segmentos(monkeypatch):
         assert c.get('/api/segments').json()[0]['count'] == 1
         assert c.post('/api/segments/tag', json={'rules': s['rules'], 'tag': 'oferta-m2'}).json()['count'] == 1
         assert 'oferta-m2' in next(x for x in c.get('/api/conversations').json() if x['name'] == 'Ana')['tags']
-        assert 'Ana' in c.post('/api/segments/export', json={'rules': s['rules']}).text
+        import io, openpyxl
+        x = c.post('/api/segments/export', json={'rules': s['rules']})
+        assert x.headers['content-type'].startswith('application/vnd.openxmlformats') and '.xlsx' in x.headers['content-disposition']
+        ws = openpyxl.load_workbook(io.BytesIO(x.content)).active
+        assert ws['A1'].value == 'Nome' and ws['A2'].value == 'Ana' and ws['B2'].value == 'Cliente'
+        from core import db as _db
+        async def role(r): await _db.users.update_many({}, {'$set': {'role': r}})
+        c.portal.call(role, 'manager')
+        assert c.post('/api/segments/export', json={'rules': []}).status_code == 403  # só o dono exporta a base
+        c.portal.call(role, 'owner')

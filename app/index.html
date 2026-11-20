@@ -1900,7 +1900,8 @@ body:has(.nz-save) #toast{bottom:92px}
 .cb-ti{grid-area:i;width:34px;height:34px;border-radius:10px;background:#F6F1EC;color:var(--ink2);display:grid;place-items:center;align-self:center}.cb-ti svg{width:17px;height:17px}
 .cb-t.cliente .cb-ti{background:#E6F4EC;color:#1F7A50}.cb-t.prospect .cb-ti{background:#E8EFFB;color:#2E5AAC}.cb-t.inativo .cb-ti{background:#FFF4DE;color:#8A5A00}.cb-t.due30 .cb-ti{background:#FDECE6;color:var(--c)}
 .cb-tl{grid-area:l;font-size:12.5px;color:var(--ink2);font-weight:600}.cb-t>b{grid-area:b;font-size:22px;line-height:1.15;font-variant-numeric:tabular-nums}.cb-t>small{grid-area:s;font-size:11.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cb-f{margin-bottom:12px}.cb-fh{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}.cb-fh>.btn{margin-left:auto}.cb-br{margin-right:auto}.cb-fh h3{font-size:16px;margin:0 0 2px}.cb-fh .hint{font-size:12.5px}
+.cb-f{margin-bottom:12px}.cb-how{margin-bottom:12px}.cb-steps{border-top:0!important;padding-top:0!important}.cb-steps>div{align-content:start;grid-template-rows:auto 1fr}.cb-steps>div>span{margin-top:2px}.cb-steps i{font-style:normal;font-weight:700;font-size:12.5px}
+.cb-tl .ii{margin-left:5px;vertical-align:1px}.cb-bi{display:inline-flex;align-items:center;gap:2px}.cb-k .ii,.cb-fh h3 .ii,.cb-t2 th .ii{margin-left:5px}.cb-fh{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}.cb-fh>.btn{margin-left:auto}.cb-br{margin-right:auto}.cb-fh h3{font-size:16px;margin:0 0 2px}.cb-fh .hint{font-size:12.5px}
 .cb-ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}.cb-cl{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;width:62px;flex:none}
 .cb-c{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}.cb-c>button{border:0;background:none;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
 .cb-c:hover{border-color:#E7C9BC}.cb-c.on{background:#FDECE6;border-color:#F2B9A6}.cb-c.on>button{color:var(--c2);font-weight:600}
@@ -2034,6 +2035,18 @@ const INFO={
  horarios:['Próximos horários','Aulas, consultas ou visitas marcadas com essa pessoa. Também aparecem na Agenda.'],
  etiquetas:['Etiquetas','Palavras curtas para separar clientes do seu jeito. Ex.: pilates, manhã, indicação. Servem para filtrar em Clientes e para montar segmentos.'],
  anotacoes:['Anotações','O que o time precisa lembrar sobre a pessoa, sempre à vista aqui. Ex.: tem dor no joelho, prefere ser chamada à tarde. O cliente nunca vê.'],
+ cl_base:['Toda a base','Todo mundo que já conversou com a empresa pelo WhatsApp ou pelo Instagram, tendo comprado ou não. Entra sozinho na primeira mensagem.'],
+ cl_prospect:['Prospects','Quem conversou com você e ainda não comprou nada. É o público para ofertas de primeira compra.'],
+ cl_cliente:['Clientes','Quem já tem pelo menos uma venda registrada. Vira cliente sozinho quando você registra a venda.'],
+ cl_inativo:['Inativos','Clientes que não compram há mais tempo que o prazo definido em Vendas › Origens. Bom público para "volta pra gente".'],
+ cl_due:['Vencem em 30 dias','Clientes com um item que tem validade (plano, pacote, mensalidade) terminando nos próximos 30 dias. A validade vem do cadastro do item no Catálogo. É a hora de oferecer a renovação.'],
+ cl_pub:['Público','Um grupo de pessoas que você escolhe pelos números do topo, por um pronto ou montando condições. Ao salvar, ele se atualiza sozinho: quem passa a se encaixar entra, quem deixa de se encaixar sai.'],
+ cl_reach:['Recebem campanha','Quem tem WhatsApp e não pediu para sair. Contatos do Instagram não recebem campanha, porque ela sai pelo WhatsApp oficial.'],
+ cl_spent:['Gastos','A soma das vendas registradas dessas pessoas no Oi Nanda.'],
+ cl_tem:['Tem','O que a pessoa comprou. Verde: está valendo. Amarelo: vence em breve. Vermelho: venceu e não renovou.'],
+ cl_vence:['Vence','A data do próximo item que vai vencer, quando o item tem validade.'],
+ cl_opp:['Criar oportunidades','Cada pessoa do público vira um cartão no funil de pós-venda, na coluna "A contatar", para o time chamar: renovação, próximo produto ou reativação.'],
+ cl_excel:['Exportar Excel','Baixa uma planilha com as pessoas deste público: contato, situação, origem, compras, o que têm e vencimentos. Só o dono da conta pode exportar, e fica registrado quem baixou.'],
  janela:['Janela de 24 h','Regra da Meta: depois que o cliente manda mensagem, você tem 24 h para responder à vontade. Passou disso, só dá para chamar com um <b>modelo aprovado</b> pela Meta, e cada envio tem custo. Quando o cliente responde, a janela abre de novo.'],
  janela_ig:['Prazo do Instagram','No Direct, a empresa só pode escrever depois que a pessoa chama. Depois que ela manda mensagem, a conversa fica aberta por 24 h, para o time e para a Nanda. Passou disso, é preciso esperar ela chamar de novo (ou continuar pelo WhatsApp, se ela passou o número).'],
 };
@@ -4164,15 +4177,19 @@ async function clView(){
   const [ps,org,st,tms,team,pr,segs,jst,ov]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[]),api('/journey/settings').catch(()=>({milestones:[]})),api('/segments/overview').catch(()=>null)]);
   const D=CL.data={ms:jst.milestones.filter(m=>m.active!==false).map(m=>({id:m.id,name:m.name})),products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
   const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);
-  const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}</span><b>${num(v)}</b><small>${sub}</small></button>`;
+  const IK={total:'cl_base',prospect:'cl_prospect',cliente:'cl_cliente',inativo:'cl_inativo',due30:'cl_due'};
+  const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}<span class="ii" role="button" tabindex="0" data-info="${IK[k]}" aria-label="O que é ${l}?">i</span></span><b>${num(v)}</b><small>${sub}</small></button>`;
   const kp=ov?`<div class="cb-kp">${tile('total','Toda a base',ov.total,'todo mundo que já falou com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
      ${tile('prospect','Prospects',ov.prospect,'ainda não compraram','<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')}
      ${tile('cliente','Clientes',ov.cliente,'já compraram','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}
      ${ov.inactive_days?tile('inativo','Inativos',ov.inativo,`sem comprar há ${ov.inactive_days}+ dias`,'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'):''}
      ${tile('due30','Vencem em 30 dias',ov.due30,'hora de oferecer a renovação','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')}</div>`:'';
   const segName=CL.seg&&(segs.find(x=>x.id===CL.seg)||{}).name;
-  $('#page').innerHTML=clHead()+kp+`
-   <div class="vd-c cb-f"><div class="cb-fh"><div><h3>${segName?esc(segName):'Quem você quer ver'}</h3><span class="hint">${CL.rules.length?'Todas as condições precisam valer. A lista se atualiza sozinha.':'Escolha um público pronto ou monte o seu com condições.'}</span></div>
+  let hOpen=false;try{hOpen=localStorage.getItem('clHow')!=='0'}catch(e){}
+  const how=`<details class="lk-hero cb-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}</span><div><b>Sua base de clientes, para vender de novo</b><span>Quem já falou com você, quem comprou e quem pode comprar mais. Escolha um grupo e aja com ele de uma vez.</span></div><em class="lk-ht">Como usar</em></summary>
+    <div class="pm-facts cb-steps">${[['1','Escolha o público','Clique num número do topo ou num público pronto. Ex.: quem vence nos próximos 30 dias.'],['2','Veja quem é','A lista mostra cada pessoa, o que comprou e quando vence. Busque por nome ou telefone.'],['3','Aja de uma vez','Envie uma campanha no WhatsApp, crie oportunidades para o time chamar ou coloque uma etiqueta.'],['4','Salve o que usa sempre','O público salvo se atualiza sozinho. Volte nele todo mês.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
+  $('#page').innerHTML=clHead()+how+kp+`
+   <div class="vd-c cb-f"><div class="cb-fh"><div><h3>${segName?esc(segName):'Quem você quer ver'}${ii('cl_pub')}</h3><span class="hint">${CL.rules.length?'Todas as condições precisam valer. A lista se atualiza sozinha.':'Escolha um público pronto ou monte o seu com condições.'}</span></div>
       <span class="sp"></span>${CL.rules.length?'<button class="btn sm" id="clClr">Limpar</button>':''}</div>
      ${segs.length?`<div class="cb-ch"><span class="cb-cl">Salvos</span>${segs.map(x=>`<span class="cb-c sv ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${esc(x.name)}<em>${x.count??''}</em></button>${CL.seg===x.id?`<button class="cb-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}" title="Apagar">×</button>`:''}</span>`).join('')}</div>`:''}
      <div class="cb-ch"><span class="cb-cl">Prontos</span>${tpl.map((x,i)=>`<span class="cb-c ${!CL.seg&&JSON.stringify(x[2])===cur?'on':''}"><button data-tp="${i}" title="${esc(x[1])}">${esc(x[0])}</button></span>`).join('')}</div>
@@ -4180,6 +4197,7 @@ async function clView(){
      <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">${CL.rules.length?'Mais uma condição':'Adicionar condição'}</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
    <div id="clRes"></div>`;
   clTabs();
+  const hw=$('#page .cb-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('clHow',hw.open?'0':'1')}catch(e){}};
   const set=r=>{CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;clView()};
   document.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>set(CLQ[b.dataset.qk]));
   document.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>set(tpl[+b.dataset.tp][2]));
@@ -4223,11 +4241,11 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
   const ch=c=>c.channel==='instagram'?`<span class="cb-chn ig" title="Instagram">${svg('<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/>')}${c.ig?'@'+esc(c.ig):'Instagram'}</span>`:c.wa_id?`<span class="cb-chn">${esc(fmtPhone(c.wa_id))}</span>`:'';
   const kd=c=>{const k=CLK[c.kind]||['—','grey'];return `<span class="pill ${k[1]}">${k[0]}</span>`};
   box.innerHTML=`<div class="cb-sum"><div class="cb-n"><b>${num(r.count)}</b><span>${r.count===1?'pessoa':'pessoas'} neste público</span></div>
-     <div class="cb-br">${brk}${r.spent?`<span class="cb-k">${brl(r.spent)} gastos</span>`:''}<span class="cb-k wa" title="Têm WhatsApp e não pediram para sair">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${num(r.reachable)} recebem campanha</span></div>
-     <div class="cl-act">${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button><button class="btn sm" id="clOpp">Criar oportunidades</button>`:''}
-      <button class="btn sm" id="clTag">Etiquetar</button>${mgr?'<button class="btn sm" id="clExp">Exportar</button>':''}${CL.rules.length?`<button class="btn sm ${mgr?'':'p'}" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}</div></div>
+     <div class="cb-br">${brk}${r.spent?`<span class="cb-k">${brl(r.spent)} gastos${ii('cl_spent')}</span>`:''}<span class="cb-k wa" title="Têm WhatsApp e não pediram para sair">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${num(r.reachable)} recebem campanha${ii('cl_reach')}</span></div>
+     <div class="cl-act">${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button><span class="cb-bi"><button class="btn sm" id="clOpp">Criar oportunidades</button>${ii('cl_opp')}</span>`:''}
+      <button class="btn sm" id="clTag">Etiquetar</button>${ME.user.role==='owner'?`<button class="btn sm" id="clExp" title="Só o dono da conta pode baixar a base">${svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>')}Excel</button>${ii('cl_excel')}`:''}${CL.rules.length?`<button class="btn sm ${mgr?'':'p'}" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}</div></div>
    <div class="vd-c cb-tb"><div class="cb-sr"><label class="cb-q">${svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>')}<input id="clQ" type="search" placeholder="Buscar por nome, telefone ou @" value="${esc(CL.q||'')}" autocomplete="off"></label>${CL.q?`<span class="hint">${num(r.found)} ${r.found===1?'encontrado':'encontrados'}</span>`:''}</div>
-   ${r.items.length?`<table class="vtb cb-t2"><thead><tr><th>Pessoa</th><th>Situação</th><th>Tem</th><th>Vence</th><th class="n">Compras</th><th class="n">Gasto</th>${hasOwner?'<th>Responsável</th>':''}</tr></thead><tbody>
+   ${r.items.length?`<table class="vtb cb-t2"><thead><tr><th>Pessoa</th><th>Situação${ii('situacao')}</th><th>Tem${ii('cl_tem')}</th><th>Vence${ii('cl_vence')}</th><th class="n">Compras</th><th class="n">Gasto</th>${hasOwner?'<th>Responsável</th>':''}</tr></thead><tbody>
      ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><span class="cb-pn"><i style="background:${avc(c.name)}">${esc(dispName(c.name).slice(0,1))}</i><span><b>${esc(dispName(c.name))}</b>${ch(c)}</span></span>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}</td><td>${kd(c)}</td>
        <td>${c.has.map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td>${c.next_expiry?fmtD(ymd(new Date(c.next_expiry))):'<span class="hint">—</span>'}</td>
        <td class="n">${c.purchases||'<span class="hint">0</span>'}</td><td class="n">${c.spent?brl(c.spent):'<span class="hint">—</span>'}</td>${hasOwner?`<td>${esc(c.owner||'—')}</td>`:''}</tr>`).join('')}</tbody></table>
@@ -4243,8 +4261,12 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
     try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} pessoas.`)}catch(e){toast(e.message)}};
   if($('#clOpp'))$('#clOpp').onclick=()=>{if(!r.count)return toast('Ninguém neste público.');oppForm(CL.rules,r.count)};
   if($('#clCamp'))$('#clCamp').onclick=()=>{if(!r.reachable)return toast('Ninguém neste público pode receber campanha pelo WhatsApp.');campForm(CL.rules,r.count)};
-  if($('#clExp'))$('#clExp').onclick=async()=>{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(await res.blob());a.download='clientes.csv';a.click()};
+  if($('#clExp'))$('#clExp').onclick=async()=>{const b=$('#clExp');b.disabled=true;
+    try{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
+      if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d.detail||'Não foi possível exportar.')}
+      const fn=(res.headers.get('Content-Disposition')||'').match(/filename="([^"]+)"/);
+      const a=document.createElement('a');a.href=URL.createObjectURL(await res.blob());a.download=fn?fn[1]:'clientes.xlsx';a.click();toast(`Planilha com ${num(r.count)} ${r.count===1?'pessoa':'pessoas'} baixada.`)}
+    catch(e){toast(e.message)}finally{b.disabled=false}};
 }
 
 /* pós-venda, campanhas e renovação */
