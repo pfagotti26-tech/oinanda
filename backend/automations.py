@@ -485,6 +485,22 @@ async def run_once(limit=300):
             if done >= limit: return done
     return done
 
+async def sync_pending():
+    """Modelo em análise na Meta: confere sozinho a cada 15 min. Sem isso a automação ficava "Aguardando a Meta" até alguém clicar em atualizar."""
+    from datetime import timedelta
+    cut = now() - timedelta(minutes=15)
+    q = {'status': 'PENDING', '$or': [{'synced_at': {'$lt': cut}}, {'synced_at': {'$exists': False}}]}
+    for cid in (await db.templates.distinct('company_id', q))[:20]:
+        try: await sync_templates(cid)
+        except Exception as e: log.warning('conferir modelos na Meta (%s): %s', cid, e)
+        await db.templates.update_many({'company_id': cid, 'status': 'PENDING'}, {'$set': {'synced_at': now()}})
+    try:
+        from notify import refresh_status
+        for c in await db.companies.find({'alert_tpl.status': 'PENDING', '$or': [{'alert_tpl.synced_at': {'$lt': cut}}, {'alert_tpl.synced_at': {'$exists': False}}]}, {'_id': 0}).to_list(20):
+            await refresh_status(c)
+            await db.companies.update_one({'id': c['id']}, {'$set': {'alert_tpl.synced_at': now()}})
+    except Exception: log.exception('falha ao conferir o modelo de aviso do time')
+
 async def loop():
     every = float(os.environ.get('AUTOMATIONS_EVERY', '60'))
     await asyncio.sleep(10)
@@ -519,6 +535,8 @@ async def loop():
             from instagram import refresh_tokens
             await refresh_tokens()
         except Exception: log.exception('falha ao renovar o acesso do Instagram')
+        try: await sync_pending()
+        except Exception: log.exception('falha ao conferir os modelos na Meta')
         try:
             from push import late_tick
             await late_tick()
