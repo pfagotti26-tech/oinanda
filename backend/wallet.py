@@ -109,6 +109,7 @@ class SegIn(BaseModel):
     rules: List[Rule] = Field(default_factory=list, max_length=12)
     q: str = Field(default='', max_length=80)  # busca por nome ou telefone, só na lista
     sort: Literal['recent', 'spent', 'expiry', 'name'] = 'recent'
+    limit: int = Field(default=300, ge=1, le=5000)  # a lista vem em páginas: "Carregar mais" pede mais 300
 
 def _days(v):
     try: return max(0, min(3650, int(v)))
@@ -261,7 +262,7 @@ async def preview(body: SegIn, user=Depends(current_user)):
         dq = re.sub(r'\D', '', q)
         shown = [c for c in rows if q in (c.get('name') or '').lower() or (len(dq) >= 4 and dq in (c.get('wa_id') or '')) or q.lstrip('@') in (c.get('ig_username') or '').lower()]
     return {'count': len(rows), 'spent': round(sum((c.get('value') or 0) for c in rows if c.get('sales_count')), 2), 'kinds': kinds,
-            'reachable': sum(1 for c in rows if reachable(c)), 'found': len(shown), 'items': [row_out(c, names, days) for c in shown[:300]]}
+            'reachable': sum(1 for c in rows if reachable(c)), 'found': len(shown), 'items': [row_out(c, names, days) for c in shown[:body.limit]]}
 
 @router.get('/segments/overview')
 async def overview(user=Depends(current_user)):

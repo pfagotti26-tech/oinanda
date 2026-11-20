@@ -36,8 +36,14 @@ def test_importar_planilha(monkeypatch):
         ck = c.post(f'/api/import/{up["id"]}/check', json={'mapping': m}).json()
         assert ck['people'] == 3 and ck['new'] == 2 and ck['existing'] == 1 and ck['clients'] == 2 and ck['prospects'] == 1 and ck['buys'] == 3 and ck['error_count'] == 2
         assert set(ck['unknown_products']) == {'Avaliação', 'Aula avulsa'}
-        r = c.post(f'/api/import/{up["id"]}/run', json={'mapping': m, 'consent': False}).json()
-        assert r['created'] == 2 and r['updated'] == 1 and r['sales'] == 3
+        pr = c.get(f'/api/import/{up["id"]}/problems.xlsx')
+        ws = load_workbook(io.BytesIO(pr.content)).active
+        assert pr.status_code == 200 and ws['A1'].value == 'Linha' and ws.cell(1, ws.max_column).value == 'Problema' and ws.max_row == 3
+        st = c.post(f'/api/import/{up["id"]}/run', json={'mapping': m, 'consent': False}).json()
+        assert st['status'] == 'running' and st['progress']['total'] == 3 and st['tag'].startswith('importado ')
+        j = c.get(f'/api/import/{up["id"]}').json()  # roda em segundo plano; a tela acompanha por aqui
+        r = j['result']
+        assert j['status'] == 'done' and j['progress']['done'] == 3 and r['created'] == 2 and r['updated'] == 1 and r['sales'] == 3
         assert c.post(f'/api/import/{up["id"]}/run', json={'mapping': m}).status_code == 400  # não importa duas vezes
         base = {x['name']: x for x in c.post('/api/segments/preview', json={'rules': []}).json()['items']}
         assert base['Ana Souza']['kind'] == 'cliente' and base['Bruno Lima']['kind'] == 'prospect'
@@ -61,3 +67,19 @@ def test_importar_planilha(monkeypatch):
         csvb = 'Nome;Telefone\nCarla;(21) 99999-0000\n'.encode('latin-1')
         up2 = c.post('/api/import/upload', files={'file': ('c.csv', csvb, 'text/csv')}).json()
         assert up2['count'] == 1 and set(up2['mapping'].values()) == {'name', 'phone'}
+        # cada importação tem a sua etiqueta, e desfazer uma não mexe na outra
+        st2 = c.post(f'/api/import/{up2["id"]}/run', json={'mapping': up2['mapping']}).json()
+        assert st2['tag'] != st['tag'] and st2['tag'].endswith('(2)')
+        up3 = c.post('/api/import/upload', files={'file': ('d.csv', 'Nome;Telefone\nCarla;(21) 99999-0000\nDavi;(21) 98888-0000\n'.encode(), 'text/csv')}).json()
+        c.post(f'/api/import/{up3["id"]}/check', json={'mapping': up3['mapping']})
+        st3 = c.post(f'/api/import/{up3["id"]}/run', json={'mapping': up3['mapping']}).json()
+        assert c.get(f'/api/import/{up3["id"]}').json()['result'] == {'created': 1, 'updated': 1, 'sales': 0, 'errors': 0, 'tag': st3['tag']}
+        c.post(f'/api/import/{up3["id"]}/undo')
+        carla = [x for x in c.post('/api/segments/preview', json={'rules': []}).json()['items'] if x['name'] == 'Carla']
+        assert len(carla) == 1
+        tagged = c.post('/api/segments/preview', json={'rules': [{'field': 'tag', 'op': 'is', 'value': st2['tag']}]}).json()
+        assert tagged['count'] == 1
+        assert c.post('/api/segments/preview', json={'rules': [{'field': 'tag', 'op': 'is', 'value': st3['tag']}]}).json()['count'] == 0
+        assert [h['status'] for h in c.get('/api/import').json()][:3] == ['undone', 'done', 'undone']
+        # lista de clientes vem em páginas
+        assert len(c.post('/api/segments/preview', json={'rules': [], 'limit': 1}).json()['items']) == 1

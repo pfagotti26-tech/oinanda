@@ -4,7 +4,11 @@ Fluxo em três passos, todos pela tela de Clientes:
 1. POST /import/upload      -> lê o arquivo, guarda as linhas num rascunho e adivinha o que é cada coluna.
 2. POST /import/{id}/check  -> com as colunas confirmadas, conta quem é novo, quem já existe, as compras e as linhas com problema.
 3. POST /import/{id}/run    -> cria ou junta os contatos e registra as compras (marcadas como importadas).
+   GET  /import/{id}        -> andamento: a importação roda em segundo plano e a tela acompanha por aqui.
+   GET  /import/{id}/problems.xlsx -> as linhas que não entram ou entram com ajuste, para corrigir e importar de novo.
    POST /import/{id}/undo   -> desfaz: apaga as compras importadas e os contatos criados (se ainda não conversaram).
+
+As linhas ficam guardadas em blocos (import_rows), não dentro do rascunho: uma planilha grande passaria do limite de um documento.
 
 Regras:
 - Telefone é a chave: o mesmo número na planilha e no Oi Nanda vira um contato só (os dados são juntados).
@@ -12,16 +16,16 @@ Regras:
 - Prospect importado (sem compra) só entra em campanha se a pessoa autorizou receber mensagens.
 - Importados não contam como "contatos novos" nos relatórios: não chegaram pelo atendimento.
 """
-import csv, io, re, unicodedata
+import asyncio, csv, io, re, unicodedata
 from datetime import datetime, timedelta, date, time as dtime
 from typing import Dict, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, UploadFile, File, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from core import db, now, uid, audit, managers
 
 router = APIRouter()
-MAX_ROWS, MAX_BYTES = 5000, 5 * 1024 * 1024
+MAX_ROWS, MAX_BYTES, CHUNK = 20000, 15 * 1024 * 1024, 1000
 
 FIELDS = {  # chave -> (rótulo, palavras que aparecem no cabeçalho)
     'name': ('Nome', ['nome', 'cliente', 'nome completo', 'contato', 'aluno', 'paciente', 'name']),
@@ -54,7 +58,7 @@ def guess(headers):
     return out
 
 def read_file(name, data):
-    if len(data) > MAX_BYTES: raise HTTPException(400, 'A planilha passou de 5 MB. Divida em partes menores.')
+    if len(data) > MAX_BYTES: raise HTTPException(400, 'A planilha passou de 15 MB. Divida em partes menores.')
     low = (name or '').lower()
     rows = []
     if low.endswith(('.xlsx', '.xlsm')):
@@ -71,7 +75,9 @@ def read_file(name, data):
             except UnicodeDecodeError: continue
         first = text.split('\n', 1)[0]
         sep = max([';', ',', '\t'], key=first.count)
-        rows = [r for r in csv.reader(io.StringIO(text), delimiter=sep)]
+        for r in csv.reader(io.StringIO(text), delimiter=sep):
+            rows.append(r)
+            if len(rows) > MAX_ROWS + 50: break
     elif low.endswith('.xls'):
         raise HTTPException(400, 'Esse é o formato antigo do Excel (.xls). No Excel, use "Salvar como" e escolha .xlsx ou .csv.')
     else:
@@ -80,7 +86,7 @@ def read_file(name, data):
     if len(rows) < 2: raise HTTPException(400, 'A planilha está vazia ou só tem o cabeçalho. A primeira linha é o nome das colunas e as outras, uma pessoa por linha.')
     head = [str(h).strip() or f'Coluna {i + 1}' for i, h in enumerate(rows[0])]
     body = rows[1:]
-    if len(body) > MAX_ROWS: raise HTTPException(400, f'A planilha tem mais de {MAX_ROWS} linhas. Divida em partes menores.')
+    if len(body) > MAX_ROWS: raise HTTPException(400, f'A planilha tem mais de {MAX_ROWS:,} linhas. Divida em partes menores.'.replace(',', '.'))
     width = max(len(head), max(len(r) for r in body))
     head += [f'Coluna {i + 1}' for i in range(len(head), width)]
     return head, [list(r) + [''] * (width - len(r)) for r in body]
@@ -157,17 +163,42 @@ async def _parse(user, rows, mapping):
     return people, errors, warns
 
 async def _job(user, jid):
-    j = await db.import_jobs.find_one({'id': jid, 'company_id': user['company_id']}, {'_id': 0})
+    j = await db.import_jobs.find_one({'id': jid, 'company_id': user['company_id']}, {'_id': 0, 'rows': 0})
     if not j: raise HTTPException(404, 'Importação não encontrada. Envie a planilha de novo.')
     return j
+
+def _clean(v):
+    return v if isinstance(v, (str, int, float, bool)) else str(v)
+
+async def _save_rows(jid, cid, rows):
+    docs = [{'job_id': jid, 'company_id': cid, 'n': i // CHUNK, 'rows': [[_clean(v) for v in r] for r in rows[i:i + CHUNK]]} for i in range(0, len(rows), CHUNK)]
+    if docs: await db.import_rows.insert_many(docs)
+
+async def _rows(jid):
+    """Junta os blocos de linhas na ordem e devolve as datas ao tipo certo."""
+    out = []
+    for d in await db.import_rows.find({'job_id': jid}, {'_id': 0, 'rows': 1, 'n': 1}).sort('n', 1).to_list(None):
+        out.extend(d['rows'])
+    if not out: raise HTTPException(400, 'As linhas dessa planilha não estão mais aqui. Envie o arquivo de novo.')
+    return _fix_rows(out)
+
+async def _sweep(cid):
+    """Rascunhos esquecidos há mais de 2 dias e linhas de importações antigas (30 dias) saem para não ocupar espaço."""
+    old = await db.import_jobs.distinct('id', {'company_id': cid, '$or': [{'status': 'draft', 'created_at': {'$lt': now() - timedelta(days=2)}},
+                                                                          {'created_at': {'$lt': now() - timedelta(days=30)}}]})
+    if old:
+        await db.import_rows.delete_many({'job_id': {'$in': old}})
+        await db.import_jobs.delete_many({'id': {'$in': old}, 'status': 'draft'})
 
 @router.post('/import/upload')
 async def upload(file: UploadFile = File(...), user=Depends(managers)):
     data = await file.read()
     head, rows = read_file(file.filename, data)
-    j = {'id': uid(), 'company_id': user['company_id'], 'file': (file.filename or 'planilha')[:120], 'headers': head, 'rows': rows, 'status': 'draft',
+    await _sweep(user['company_id'])
+    j = {'id': uid(), 'company_id': user['company_id'], 'file': (file.filename or 'planilha')[:120], 'headers': head, 'count': len(rows), 'status': 'draft',
          'created_at': now(), 'by': user['name']}
-    await db.import_jobs.insert_one({**j, 'rows': [[v if isinstance(v, (str, int, float, bool)) else str(v) for v in r] for r in rows]})
+    await db.import_jobs.insert_one(j.copy())
+    await _save_rows(j['id'], user['company_id'], rows)
     return {'id': j['id'], 'file': j['file'], 'headers': head, 'count': len(rows), 'mapping': guess(head),
             'samples': [[('' if v is None else str(v))[:60] for v in r] for r in rows[:4]],
             'fields': {k: v[0] for k, v in FIELDS.items()}}
@@ -182,12 +213,20 @@ def _fix_rows(rows):
         out.append([datetime.fromisoformat(v) if isinstance(v, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?', v) else v for v in r])
     return out
 
+async def _existing(cid, phones, fields):
+    out, phones = {}, list(phones)
+    for i in range(0, len(phones), 1000):
+        for c in await db.contacts.find({'company_id': cid, 'wa_id': {'$in': phones[i:i + 1000]}}, {'_id': 0, **fields}).to_list(None):
+            out[c['wa_id']] = c
+    return out
+
 @router.post('/import/{jid}/check')
 async def check(jid: str, body: CheckIn, user=Depends(managers)):
     j = await _job(user, jid)
     if 'phone' not in body.mapping.values(): raise HTTPException(400, 'Diga qual coluna é o telefone: é por ele que a gente encontra cada pessoa.')
-    people, errors, warns = await _parse(user, _fix_rows(j['rows']), body.mapping)
-    existing = {c['wa_id']: c for c in await db.contacts.find({'company_id': user['company_id'], 'wa_id': {'$in': list(people)}}, {'_id': 0, 'wa_id': 1, 'name': 1}).to_list(10000)}
+    people, errors, warns = await _parse(user, await _rows(jid), body.mapping)
+    if j['status'] == 'draft': await db.import_jobs.update_one({'id': jid}, {'$set': {'mapping': body.mapping}})
+    existing = await _existing(user['company_id'], people, {'wa_id': 1})
     cat = {_n(p['name']): p for p in await db.products.find({'company_id': user['company_id']}, {'_id': 0, 'name': 1, 'duration_days': 1}).to_list(1000)}
     buys = [b for p in people.values() for b in p['buys']]
     unknown = sorted({b['product'] for b in buys if _n(b['product']) not in cat and b['product'] != 'Compra importada'})
@@ -195,82 +234,55 @@ async def check(jid: str, body: CheckIn, user=Depends(managers)):
     return {'people': len(people), 'new': sum(1 for k in people if k not in existing), 'existing': sum(1 for k in people if k in existing),
             'clients': clients, 'prospects': len(people) - clients, 'buys': len(buys), 'value': round(sum(b['value'] for b in buys), 2),
             'with_expiry': sum(1 for b in buys if b['expires'] or (cat.get(_n(b['product'])) or {}).get('duration_days')),
-            'unknown_products': unknown[:20], 'unknown_count': len(unknown), 'errors': errors[:200], 'error_count': len(errors), 'warns': warns[:100], 'warn_count': len(warns),
+            'unknown_products': unknown[:20], 'unknown_count': len(unknown), 'errors': errors[:50], 'error_count': len(errors), 'warns': warns[:50], 'warn_count': len(warns),
             'preview': [{'name': p['name'], 'phone': p['phone'], 'buys': len(p['buys']), 'exists': k in existing} for k, p in list(people.items())[:8]]}
+
+@router.get('/import/{jid}/problems.xlsx')
+async def problems(jid: str, user=Depends(managers)):
+    """As linhas com problema, com as colunas originais e uma coluna "Problema" no fim. Corrige e importa de novo só esse arquivo."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill
+    j = await _job(user, jid)
+    if not j.get('mapping'): raise HTTPException(400, 'Confira as colunas antes de baixar as linhas com problema.')
+    rows = await _rows(jid)
+    _, errors, warns = await _parse(user, rows, j['mapping'])
+    why = {}
+    for e in errors + warns: why.setdefault(e['row'], []).append(e['why'])
+    wb = Workbook(); ws = wb.active; ws.title = 'Linhas com problema'
+    ws.append(['Linha'] + list(j['headers']) + ['Problema'])
+    for n in sorted(why):
+        r = rows[n - 2]
+        ws.append([n] + [v.strftime('%d/%m/%Y') if isinstance(v, datetime) else v for v in r] + ['; '.join(why[n])])
+    for c in ws[1]: c.font = Font(bold=True, color='FFFFFF'); c.fill = PatternFill('solid', fgColor='E8603C')
+    ws.column_dimensions['A'].width = 8
+    buf = io.BytesIO(); wb.save(buf); buf.seek(0)
+    stem = re.sub(r'[^\w-]+', '-', (j['file'] or 'planilha').rsplit('.', 1)[0])[:40].strip('-') or 'planilha'
+    return StreamingResponse(buf, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                             headers={'Content-Disposition': f'attachment; filename="{stem}-linhas-com-problema.xlsx"'})
 
 class RunIn(CheckIn):
     consent: bool = False  # os prospects da planilha autorizaram receber mensagens
 
-@router.post('/import/{jid}/run')
-async def run(jid: str, body: RunIn, request: Request, user=Depends(managers)):
-    j = await _job(user, jid)
-    if j['status'] != 'draft': raise HTTPException(400, 'Essa planilha já foi importada.')
-    if 'phone' not in body.mapping.values(): raise HTTPException(400, 'Diga qual coluna é o telefone.')
-    await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'running'}})
-    people, errors, warns = await _parse(user, _fix_rows(j['rows']), body.mapping)
-    company = user['company']; cid = company['id']
-    from sales import local_noon, refresh_contact
-    from origins import origins_of
-    onames = {_n(o['name']): o['id'] for o in await origins_of(company)}
-    cat = {_n(p['name']): p for p in await db.products.find({'company_id': cid}, {'_id': 0}).to_list(1000)}
-    tag = 'importado ' + now().astimezone(__import__('agenda').tz_of(company)).strftime('%d/%m')
-    created, updated, sales = [], [], 0
-    for ph, p in people.items():
-        c = await db.contacts.find_one({'company_id': cid, 'wa_id': ph}, {'_id': 0})
-        tags = sorted(set(p['tags']) | {tag})
-        if c:
-            upd = {'tags': sorted(set(c.get('tags') or []) | set(tags))}
-            if p['email'] and not c.get('email'): upd['email'] = p['email']
-            if p['notes']: upd['notes'] = ((c.get('notes') or '') + ('\n' if c.get('notes') else '') + '\n'.join(p['notes']))[:3000]
-            if body.consent and c.get('source') == 'importado': upd['consent'] = True
-            await db.contacts.update_one({'id': c['id']}, {'$set': upd}); updated.append(c['id'])
-        else:
-            c = {'id': uid(), 'company_id': cid, 'wa_id': ph, 'name': p['name'], 'email': p['email'] or None, 'tags': tags, 'notes': '\n'.join(p['notes']) or None,
-                 'source': 'importado', 'import_id': jid, 'consent': bool(body.consent), 'created_at': now(), 'assigned_to': None, 'unread': 0}
-            o = onames.get(_n(p['origin'])) if p['origin'] else None
-            if o: c['origin'] = o
-            elif p['origin']: c['origin_detail'] = p['origin']
-            await db.contacts.insert_one(c.copy()); created.append(c['id'])
-        for b in p['buys']:
-            prod = cat.get(_n(b['product']))
-            it = {'name': prod['name'] if prod else b['product'], 'product_id': prod['id'] if prod else None, 'category': (prod or {}).get('category') or '',
-                  'qty': 1, 'price': b['value'], 'discount': 0, 'total': b['value'], 'promo_discount': 0}
-            if b['expires']: it['expires_at'] = datetime.combine(b['expires'], dtime(23, 59), __import__('agenda').tz_of(company))
-            await db.sales.insert_one({'id': uid(), 'company_id': cid, 'contact_id': c['id'], 'contact_name': c.get('name'), 'date': local_noon(company, b['date'].isoformat()),
-                                       'items': [it], 'total': b['value'], 'subtotal': b['value'], 'discount': 0, 'promos': [], 'payment': '', 'sellers': [], 'notes': '',
-                                       'status': 'ok', 'imported': True, 'import_id': jid, 'created_by': user['id'], 'created_by_name': user['name'], 'created_at': now(), 'history': []})
-            sales += 1
-        if p['buys']: await refresh_contact(company, c['id'])
-    res = {'created': len(created), 'updated': len(updated), 'sales': sales, 'errors': len(errors), 'tag': tag}
-    await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'done', 'done_at': now(), 'created_ids': created, 'updated_ids': updated, 'result': res, 'rows': []}})
-    await audit(request, user, 'Importou planilha', f'{j["file"]} · {len(created)} novos, {len(updated)} juntados, {sales} compras')
-    return res
+async def _tag(company):
+    """Etiqueta só desta importação: "importado 20/11", e "importado 20/11 (2)" se já houve outra no mesmo dia."""
+    base = 'importado ' + now().astimezone(__import__('agenda').tz_of(company)).strftime('%d/%m')
+    used = set(await db.import_jobs.distinct('tag', {'company_id': company['id'], 'tag': {'$regex': '^' + re.escape(base)}}))
+    used |= set(await db.contacts.distinct('tags', {'company_id': company['id'], 'tags': {'$regex': '^' + re.escape(base)}}))
+    if base not in used: return base
+    n = 2
+    while f'{base} ({n})' in used: n += 1
+    return f'{base} ({n})'
 
-@router.get('/import')
-async def history(user=Depends(managers)):
-    rows = await db.import_jobs.find({'company_id': user['company_id'], 'status': {'$in': ['done', 'undone']}}, {'_id': 0, 'rows': 0, 'created_ids': 0, 'updated_ids': 0, 'headers': 0}).sort('created_at', -1).to_list(20)
-    return rows
+STALL = timedelta(minutes=3)
 
-@router.post('/import/{jid}/undo')
-async def undo(jid: str, request: Request, user=Depends(managers)):
-    j = await _job(user, jid)
-    if j['status'] != 'done': raise HTTPException(400, 'Só dá para desfazer uma importação concluída.')
-    from sales import refresh_contact
-    touched = set(await db.sales.distinct('contact_id', {'company_id': user['company_id'], 'import_id': jid}))
-    await db.sales.delete_many({'company_id': user['company_id'], 'import_id': jid})
-    kept, removed = 0, 0
-    for cid in j.get('created_ids') or []:
-        talked = await db.messages.find_one({'contact_id': cid, 'company_id': user['company_id']}, {'_id': 1})
-        own_sale = await db.sales.find_one({'contact_id': cid, 'company_id': user['company_id']}, {'_id': 1})
-        if talked or own_sale: kept += 1; await db.contacts.update_one({'id': cid}, {'$unset': {'import_id': ''}})
-        else: removed += 1; await db.contacts.delete_one({'id': cid})
-    tag = (j.get('result') or {}).get('tag')
-    if tag: await db.contacts.update_many({'company_id': user['company_id'], 'tags': tag}, {'$pull': {'tags': tag}})
-    for cid in touched:
-        if await db.contacts.find_one({'id': cid}, {'_id': 1}): await refresh_contact(user['company'], cid)
-    await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'undone', 'undone_at': now()}})
-    await audit(request, user, 'Desfez importação', f'{j["file"]} · {removed} contatos apagados')
-    return {'removed': removed, 'kept': kept}
+def _state(j):
+    st = j['status']
+    if st == 'running' and (j.get('beat') or j['created_at']).replace(tzinfo=None) < (now() - STALL).replace(tzinfo=None): st = 'stalled'
+    return st
+
+def _out(j):
+    return {'id': j['id'], 'file': j['file'], 'status': _state(j), 'progress': j.get('progress') or {'done': 0, 'total': 0},
+            'result': j.get('result'), 'tag': j.get('tag'), 'count': j.get('count'), 'created_at': j['created_at'], 'by': j.get('by')}
 
 @router.get('/import/template.xlsx')
 async def template(user=Depends(managers)):
@@ -286,3 +298,112 @@ async def template(user=Depends(managers)):
     buf = io.BytesIO(); wb.save(buf); buf.seek(0)
     return StreamingResponse(buf, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                              headers={'Content-Disposition': 'attachment; filename="modelo-clientes-oi-nanda.xlsx"'})
+
+@router.get('/import/{jid}')
+async def status(jid: str, user=Depends(managers)):
+    return _out(await _job(user, jid))
+
+@router.post('/import/{jid}/run')
+async def run(jid: str, body: RunIn, request: Request, tasks: BackgroundTasks, user=Depends(managers)):
+    j = await _job(user, jid)
+    if 'phone' not in body.mapping.values(): raise HTTPException(400, 'Diga qual coluna é o telefone.')
+    rows = await _rows(jid)
+    tag = await _tag(user['company'])
+    ok = await db.import_jobs.update_one({'id': jid, 'status': 'draft'}, {'$set': {'status': 'running', 'tag': tag, 'mapping': body.mapping, 'beat': now(),
+                                                                                    'created_ids': [], 'updated_ids': [], 'progress': {'done': 0, 'total': 0}}})
+    if not ok.modified_count: raise HTTPException(400, 'Essa planilha já foi importada.')
+    people, errors, warns = await _parse(user, rows, body.mapping)
+    await db.import_jobs.update_one({'id': jid}, {'$set': {'progress': {'done': 0, 'total': len(people)}}})
+    tasks.add_task(_run, jid, j['file'], user, people, len(errors), tag, body.consent)
+    return {'id': jid, 'status': 'running', 'progress': {'done': 0, 'total': len(people)}, 'tag': tag}
+
+async def _run(jid, fname, user, people, n_errors, tag, consent):
+    try: await _do_run(jid, fname, user, people, n_errors, tag, consent)
+    except Exception as e:  # a importação para no meio: o que entrou fica marcado e pode ser desfeito
+        import logging; logging.exception('importacao %s falhou', jid)
+        await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'failed', 'error': str(e)[:300], 'done_at': now()}})
+
+async def _do_run(jid, fname, user, people, n_errors, tag, consent):
+    company = user['company']; cid = company['id']
+    from sales import local_noon, refresh_contact
+    from origins import origins_of
+    tz = __import__('agenda').tz_of(company)
+    onames = {_n(o['name']): o['id'] for o in await origins_of(company)}
+    cat = {_n(p['name']): p for p in await db.products.find({'company_id': cid}, {'_id': 0}).to_list(1000)}
+    have = await _existing(cid, people, {'id': 1, 'wa_id': 1, 'name': 1, 'tags': 1, 'email': 1, 'notes': 1, 'source': 1})
+    created, updated, sales, done = [], [], 0, 0
+    pend_c, pend_u = [], []
+    async def flush():
+        await db.import_jobs.update_one({'id': jid}, {'$push': {'created_ids': {'$each': pend_c}, 'updated_ids': {'$each': pend_u}},
+                                                      '$set': {'progress': {'done': done, 'total': len(people)}, 'beat': now()}})
+        pend_c.clear(); pend_u.clear()
+    for ph, p in people.items():
+        c = have.get(ph)
+        tags = sorted(set(p['tags']) | {tag})
+        if c:
+            upd = {'tags': sorted(set(c.get('tags') or []) | set(tags))}
+            if p['email'] and not c.get('email'): upd['email'] = p['email']
+            if p['notes']: upd['notes'] = ((c.get('notes') or '') + ('\n' if c.get('notes') else '') + '\n'.join(p['notes']))[:3000]
+            if consent and c.get('source') == 'importado': upd['consent'] = True
+            await db.contacts.update_one({'id': c['id']}, {'$set': upd}); updated.append(c['id']); pend_u.append(c['id'])
+        else:
+            c = {'id': uid(), 'company_id': cid, 'wa_id': ph, 'name': p['name'], 'email': p['email'] or None, 'tags': tags, 'notes': '\n'.join(p['notes']) or None,
+                 'source': 'importado', 'import_id': jid, 'consent': bool(consent), 'created_at': now(), 'assigned_to': None, 'unread': 0}
+            o = onames.get(_n(p['origin'])) if p['origin'] else None
+            if o: c['origin'] = o
+            elif p['origin']: c['origin_detail'] = p['origin']
+            await db.contacts.insert_one(c.copy()); created.append(c['id']); pend_c.append(c['id'])
+        docs = []
+        for b in p['buys']:
+            prod = cat.get(_n(b['product']))
+            it = {'name': prod['name'] if prod else b['product'], 'product_id': prod['id'] if prod else None, 'category': (prod or {}).get('category') or '',
+                  'qty': 1, 'price': b['value'], 'discount': 0, 'total': b['value'], 'promo_discount': 0}
+            if b['expires']: it['expires_at'] = datetime.combine(b['expires'], dtime(23, 59), tz)
+            docs.append({'id': uid(), 'company_id': cid, 'contact_id': c['id'], 'contact_name': c.get('name'), 'date': local_noon(company, b['date'].isoformat()),
+                         'items': [it], 'total': b['value'], 'subtotal': b['value'], 'discount': 0, 'promos': [], 'payment': '', 'sellers': [], 'notes': '',
+                         'status': 'ok', 'imported': True, 'import_id': jid, 'created_by': user['id'], 'created_by_name': user['name'], 'created_at': now(), 'history': []})
+        if docs:
+            await db.sales.insert_many(docs); sales += len(docs)
+            await refresh_contact(company, c['id'])
+        done += 1
+        if done % 25 == 0: await asyncio.sleep(0)  # deixa o resto do sistema respirar durante a importação
+        if done % 100 == 0: await flush()
+    res = {'created': len(created), 'updated': len(updated), 'sales': sales, 'errors': n_errors, 'tag': tag}
+    await flush()
+    await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'done', 'done_at': now(), 'result': res}})
+    await audit(None, user, 'Importou planilha', f'{fname} · {len(created)} novos, {len(updated)} juntados, {sales} compras')
+
+@router.get('/import')
+async def history(user=Depends(managers)):
+    rows = await db.import_jobs.find({'company_id': user['company_id'], 'status': {'$in': ['running', 'done', 'undone', 'failed']}},
+                                     {'_id': 0, 'created_ids': 0, 'updated_ids': 0, 'headers': 0}).sort('created_at', -1).to_list(20)
+    return [_out(j) for j in rows]
+
+@router.post('/import/{jid}/undo')
+async def undo(jid: str, request: Request, user=Depends(managers)):
+    j = await db.import_jobs.find_one({'id': jid, 'company_id': user['company_id']}, {'_id': 0})
+    if not j: raise HTTPException(404, 'Importação não encontrada.')
+    if _state(j) not in ('done', 'failed', 'stalled'): raise HTTPException(400, 'Só dá para desfazer uma importação concluída. Se ainda está rodando, espere terminar.')
+    from sales import refresh_contact
+    co = user['company_id']
+    touched = set(await db.sales.distinct('contact_id', {'company_id': co, 'import_id': jid}))
+    await db.sales.delete_many({'company_id': co, 'import_id': jid})
+    created = j.get('created_ids') or []
+    keep = set()
+    for i in range(0, len(created), 1000):
+        part = created[i:i + 1000]
+        keep |= set(await db.messages.distinct('contact_id', {'company_id': co, 'contact_id': {'$in': part}}))
+        keep |= set(await db.sales.distinct('contact_id', {'company_id': co, 'contact_id': {'$in': part}}))
+    gone = [x for x in created if x not in keep]
+    for i in range(0, len(gone), 1000): await db.contacts.delete_many({'company_id': co, 'id': {'$in': gone[i:i + 1000]}})
+    if keep: await db.contacts.update_many({'company_id': co, 'id': {'$in': list(keep)}}, {'$unset': {'import_id': ''}})
+    tag = j.get('tag') or (j.get('result') or {}).get('tag')
+    mine = [x for x in list(keep) + (j.get('updated_ids') or [])]
+    if tag and mine:
+        for i in range(0, len(mine), 1000): await db.contacts.update_many({'company_id': co, 'id': {'$in': mine[i:i + 1000]}}, {'$pull': {'tags': tag}})
+    for cid in touched - set(gone):
+        if await db.contacts.find_one({'id': cid}, {'_id': 1}): await refresh_contact(user['company'], cid)
+    await db.import_jobs.update_one({'id': jid}, {'$set': {'status': 'undone', 'undone_at': now()}})
+    await db.import_rows.delete_many({'job_id': jid})
+    await audit(request, user, 'Desfez importação', f'{j["file"]} · {len(gone)} contatos apagados')
+    return {'removed': len(gone), 'kept': len(keep)}
