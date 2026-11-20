@@ -143,6 +143,7 @@ async def platform():
     me = await db.users.find_one({'email': ADMIN_EMAIL, 'role': 'owner'}, {'_id': 0, 'company_id': 1}) if ADMIN_EMAIL else None
     w = await db.wa_numbers.find_one({'company_id': me['company_id'], 'status': 'connected'}, {'_id': 0}) if me else None
     if not w or not w.get('token_enc'): return None
+    if w.get('alert'): return None  # número com bloqueio ou restrição na Meta: os avisos saem só por e-mail até liberar
     import whatsapp
     return {'phone': w['phone_number_id'], 'token': whatsapp.decrypt(w['token_enc']), 'waba': w.get('waba_id'), 'display': w.get('display_phone')}
 
