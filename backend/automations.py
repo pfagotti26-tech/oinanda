@@ -538,6 +538,10 @@ async def loop():
         try: await sync_pending()
         except Exception: log.exception('falha ao conferir os modelos na Meta')
         try:
+            from wahealth import tick as wa_tick
+            await wa_tick()
+        except Exception: log.exception('falha ao conferir a saúde dos números')
+        try:
             from push import late_tick
             await late_tick()
         except Exception: log.exception('falha no aviso de espera')
