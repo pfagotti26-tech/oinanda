@@ -107,6 +107,7 @@ class Rule(BaseModel):
 class SegIn(BaseModel):
     rules: List[Rule] = Field(default_factory=list, max_length=12)
     q: str = Field(default='', max_length=80)  # busca por nome ou telefone, só na lista
+    sort: Literal['recent', 'spent', 'expiry', 'name'] = 'recent'
 
 def _days(v):
     try: return max(0, min(3650, int(v)))
@@ -212,8 +213,13 @@ async def preview(body: SegIn, user=Depends(current_user)):
     kinds = {'prospect': 0, 'cliente': 0, 'inativo': 0}
     for c in rows: kinds[status_of(c, days)] += 1
     # quem já comprou e vence primeiro vem antes; depois quem gastou mais; depois quem falou por último
-    rows.sort(key=lambda c: (aware(c.get('next_expiry')) or now() + timedelta(days=99999), -(c.get('value') or 0) if c.get('sales_count') else 0,
-                             -(aware(c.get('last_in_at')) or aware(c.get('created_at')) or now() - timedelta(days=99999)).timestamp()))
+    far, old = now() + timedelta(days=99999), now() - timedelta(days=99999)
+    last = lambda c: aware(c.get('last_in_at')) or aware(c.get('created_at')) or old
+    spent = lambda c: (c.get('value') or 0) if c.get('sales_count') else 0
+    if body.sort == 'spent': rows.sort(key=lambda c: (-spent(c), -last(c).timestamp()))
+    elif body.sort == 'expiry': rows.sort(key=lambda c: (aware(c.get('next_expiry')) or far, -spent(c)))
+    elif body.sort == 'name': rows.sort(key=lambda c: (c.get('name') or '').lower())
+    else: rows.sort(key=lambda c: -last(c).timestamp())  # quem falou por último primeiro
     shown = rows
     q = body.q.strip().lower()
     if q:
