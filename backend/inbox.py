@@ -18,13 +18,21 @@ STALE_DAYS = 7
 
 def waiting(c):
     """Cliente falou por último e ninguém respondeu nem marcou como resolvido ou "não precisa responder" depois disso."""
-    if c.get('last_dir') != 'in': return False
+    if c.get('last_dir') != 'in' or c.get('internal'): return False  # quem não é cliente não fica na fila
     li = aware(c.get('last_in_at'))
     if li and now() - li > timedelta(days=STALE_DAYS): return False  # esperou demais: sai da fila sozinha (volta se o cliente escrever de novo)
     for k in ('resolved_at', 'noreply_at'):
         r = aware(c.get(k))
         if r and li and r >= li: return False
     return True
+
+AUTO_RX = re.compile(r'https?://|www\.|📎|🔗|^↩️', re.I)
+
+def looks_auto(msgs):
+    """Parece mensagem automática de outro perfil: só chegou anexo, link ou texto longo de divulgação, e ninguém do time respondeu."""
+    ins = [m for m in msgs if m['dir'] == 'in']
+    if not ins or any(m['dir'] == 'out' and m.get('by_id') for m in msgs): return False
+    return all(AUTO_RX.search(m.get('text') or '') or len(m.get('text') or '') > 180 or (m.get('type') not in (None, 'text')) for m in ins)
 
 LATE_DEFAULT = 15  # minutos: depois disso fica vermelho
 

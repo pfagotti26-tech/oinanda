@@ -2032,6 +2032,17 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* não é cliente / mensagem automática */
+.cv-nc{display:flex;align-items:center;gap:12px;margin:10px 16px 0;padding:10px 14px;border-radius:14px;background:#F2F5FA;border:1px solid #DCE4EF}.cv-nc>span{font-size:20px}
+.cv-nc p{flex:1;min-width:0;font-size:12.5px;color:var(--ink2);margin:0}.cv-nc p b{display:block;font-size:13.5px;color:var(--ink)}.cv-nc.on{background:#F4F4F4;border-color:var(--line)}
+.cv-ab{display:flex;align-items:center;gap:10px;width:calc(100% - 16px);margin:8px;padding:10px 12px;border-radius:14px;background:#F2F5FA;border:1px solid #DCE4EF;text-align:left}
+.cv-ab>span:first-child{font-size:18px}.cv-ab>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}.cv-ab b{font-size:13px}.cv-ab small{font-size:11.5px;color:var(--ink3)}.cv-ab i{font-style:normal;font-weight:700;font-size:12.5px;color:#2F6FB5;white-space:nowrap}
+.cz-h.nc{background:#EEF1F4;color:var(--ink2)}
+.ar-l{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;max-height:52vh;overflow:auto;margin:12px 0}
+.ar-r{display:flex!important;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-weight:500}.ar-r:last-child{border:0}.ar-r input{width:auto!important;flex:none}
+.ar-r .av{width:34px;height:34px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex:none}
+.ar-t{display:flex;flex-direction:column;min-width:0}.ar-t b{font-size:13.5px}.ar-t b small{font-weight:500;color:var(--ink3)}.ar-t>span{font-size:12.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:860px){.cv-nc{flex-wrap:wrap;margin:8px 10px 0}.cv-nc p{flex-basis:calc(100% - 40px)}}
 /* relatórios: respondidos, etapa automática, contato interno */
 .rp-ans{font-weight:700;color:var(--ok)}.rp-ans.bad{color:var(--bad)}.kpi.rp-low{border-color:#F1C9C2;background:#FFFAF8}.kpi.rp-low .eh{color:var(--bad)}
 .sr-auto{display:flex;flex-direction:column;gap:4px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#FBF8F5}.sr-auto b{font-size:13.5px}.sr-auto span{font-size:12.5px;color:var(--ink2)}
@@ -2924,7 +2935,7 @@ function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir
   const lt=c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'';
   const pv=c.needs_human&&c.handoff_reason?`<em class="cz-why">Motivo:</em> ${esc(c.handoff_reason)}`:by+esc(lt);
   const first=(STAGES||[])[0],showSt=sx&&!(first&&sx.s.id===first.id);
-  const tags=`${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${showSt?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}`;
+  const tags=`${c.internal?'<span class="cz-h nc">não é cliente</span>':''}${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${showSt?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}`;
   const canRes=c.waiting||c.needs_human;
   return `<button class="ci cz ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
     <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
@@ -2951,7 +2962,19 @@ async function cvList(){cvNorm();
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
     el.insertAdjacentHTML('afterbegin',`<div class="cvchip"><span>${esc(lab)} <b>${CV.list.length}</b></span><button id="cvChX" aria-label="Tirar filtro">×</button></div>`);$('#cvChX').onclick=()=>{CV.origin='';CV.kind='';cvList()}}
   el.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{const q=e.target.closest('[data-qr]');if(q){e.stopPropagation();return cvQuickRes(q.dataset.qr)}openConv(b.dataset.c)});
+  const auto=CV.list.filter(c=>c.maybe_auto);
+  if(auto.length&&['owner','manager'].includes(ME.user.role)){el.insertAdjacentHTML('afterbegin',`<button class="cv-ab" id="cvAb"><span>🤖</span><span><b>${auto.length===1?'1 conversa parece':auto.length+' conversas parecem'} mensagem automática</b><small>De outros perfis, não de clientes. Revise e tire da fila.</small></span><i>Revisar ›</i></button>`);$('#cvAb').onclick=()=>autoReview(auto)}
 }
+function autoReview(list){const sel=new Set(list.map(c=>c.id));
+  const o=overlay(`<div class="modal ar"><div class="row"><h2 style="font-size:20px">Mensagens automáticas de outros perfis</h2><button class="x">×</button></div>
+    <p class="hint">A Nanda separou conversas em que só chegou anexo, link ou texto de divulgação e ninguém do time respondeu. Normalmente são robôs de outras contas. Marque as que não são clientes: elas saem da fila, de Clientes e dos relatórios. A conversa continua aqui, e dá para desfazer.</p>
+    <div class="ar-l">${list.map(c=>`<label class="ar-r"><input type="checkbox" data-ar="${c.id}" checked><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><span class="ar-t"><b>${esc(dispName(c.name))}${c.ig_username?` <small>@${esc(c.ig_username)}</small>`:''}</b><span>${esc(c.last_text==='📎 Anexo'?'📎 Mandou um anexo':(c.last_text||'').slice(0,110))}</span></span></label>`).join('')}</div>
+    <div class="row ar-a"><button class="btn p" id="arGo">Não são clientes (${sel.size})</button><button class="btn" id="arNo">Agora não</button></div></div>`,true);
+  const go=o.querySelector('#arGo');
+  o.querySelectorAll('[data-ar]').forEach(x=>x.onchange=()=>{x.checked?sel.add(x.dataset.ar):sel.delete(x.dataset.ar);go.textContent=`Não são clientes (${sel.size})`;go.disabled=!sel.size});
+  o.querySelector('#arNo').onclick=()=>o.remove();
+  go.onclick=async()=>{go.disabled=true;try{const ids=[...sel];await api('/contacts/not-client',{method:'POST',body:{ids}});o.remove();cvList();pollCounts();
+    undoToast(`${ids.length} ${ids.length===1?'conversa saiu':'conversas saíram'} da fila e dos números.`,async()=>{await api('/contacts/not-client',{method:'POST',body:{ids,value:false}});cvList();pollCounts()})}catch(e){toast(e.message);go.disabled=false}}}
 async function cvQuickRes(id){const c=CV.list.find(x=>x.id===id);try{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:true}})}catch(e){return toast(e.message)}
   if(CV.open===id){CV.sig='';cvChat(false)}cvList();pollCounts();
   undoToast(`${dispName((c&&c.name)||'Conversa').split(' ')[0]} saiu da fila.`,async()=>{await api('/conversations/'+id+'/resolve',{method:'POST',body:{resolved:false}});cvList();pollCounts();if(CV.open===id){CV.sig='';cvChat(false)}})}
@@ -3033,8 +3056,14 @@ async function cvChat(full){
     </div></div>
    ${c.needs_human?`<div class="hcard ${c.handoff_urgent?'urg':''}"><span class="hi">${c.handoff_urgent?'🚨':'🙋'}</span><div class="ht"><b>${c.handoff_urgent?'Urgente: ':''}${first} pediu para falar com alguém${c.needs_human_at?' · há '+agoShort(c.needs_human_at):''}</b><p>${c.handoff_reason?'Motivo que a Nanda anotou: '+esc(c.handoff_reason):'A Nanda passou a conversa para o time.'}${c.assigned_to&&c.assigned_to!==ME.user.id&&c.assigned_name?' Está com '+esc(c.assigned_name.split(' ')[0])+'.':''}</p></div>${!c.assigned_to?'<button type="button" class="btn sm p" id="cvTake">Assumir conversa</button>':''}<button type="button" class="lnk" id="cvGiveBack" title="A Nanda volta a atuar como antes nesta conversa">Devolver para a Nanda</button></div>`
      :c.ai_mode==='off'?`<div class="paused">⏸ Nanda pausada nesta conversa${c.ai_paused==='handoff'?' desde que passou para o time':''}. Ela só cobre o básico (endereço, horário) enquanto o time não responde.<button type="button" class="lnk" id="cvGiveBack">Religar a Nanda</button></div>`:''}
+   ${(()=>{const li=(CV.list||[]).find(x=>x.id===c.id);if(c.internal)return `<div class="cv-nc on"><span>🚫</span><p><b>Marcado como "não é cliente"</b>Fica fora da fila, de Clientes e dos relatórios.</p><button class="btn sm" id="cvNcU">Voltar a contar</button></div>`;
+     if(li&&li.maybe_auto&&['owner','manager'].includes(ME.user.role))return `<div class="cv-nc"><span>🤖</span><p><b>Parece mensagem automática de outro perfil</b>Só chegou anexo, link ou texto de divulgação e ninguém do time respondeu ainda.</p><button class="btn sm p" id="cvNcY">Não é cliente</button><button class="btn sm" id="cvNcN">É cliente</button></div>`;return ''})()}
    <div class="msgs" id="cvMsgs">${msgsHtml(d.messages)}</div>
    <div class="cmp" id="cvCmp"></div>`;
+  const ncSet=async(v,msg)=>{try{await api('/contacts/not-client',{method:'POST',body:{ids:[c.id],value:v}});toast(msg);CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}};
+  if($('#cvNcY'))$('#cvNcY').onclick=()=>ncSet(true,'Marcado como não é cliente. Saiu da fila e dos números.');
+  if($('#cvNcU'))$('#cvNcU').onclick=()=>ncSet(false,'Voltou a contar como cliente.');
+  if($('#cvNcN'))$('#cvNcN').onclick=async()=>{try{await api('/contacts/'+c.id,{method:'PATCH',body:{bot_ok:true}});const li=(CV.list||[]).find(x=>x.id===c.id);if(li)li.maybe_auto=false;CV.sig='';cvChat(false);cvList()}catch(e){toast(e.message)}};
   drawComposer(c,w,draft);
   const wc=c.needs_human?'':waitCls(c);if(wc&&CV.tab==='msg'&&$('#cvCmp')){const wcl=$('#cvCmp .wclosed');(wcl||$('#cvCmp')).insertAdjacentHTML(wcl?'beforeend':'afterbegin',`<div class="wbar ${wc}"><i></i><span>${wc==='off'?(innerWidth<860?`Chegou fora do horário`:`${first} mandou mensagem fora do horário. A espera começa a contar quando o atendimento abrir.`):`${first} espera resposta há <b>${waitTxt(c)}</b>`}</span><button type="button" class="lnk" id="cvNoR" title="Só um ok/obrigado: tira da fila sem marcar como resolvida">Tirar da fila</button></div>`);
     $('#cvNoR').onclick=async()=>{try{await api('/conversations/'+c.id+'/no-reply',{method:'POST'});toast('Saiu da fila de espera.');CV.sig='';cvChat(false);cvList();pollCounts()}catch(e){toast(e.message)}}}
@@ -4363,7 +4392,7 @@ async function ctProfile(id,tab){
     ['Última compra',S.last_sale_at?fmtD(ymd(new Date(S.last_sale_at))):'—',S.last_sale_at?cfAgo(S.last_sale_at):'',''],['Cliente desde',S.first_sale_at?fmtD(ymd(new Date(S.first_sale_at))):'—',S.first_sale_at?cfAgo(S.first_sale_at):'',''],
     ['Último contato',p.last_in_at?cfAgo(p.last_in_at):'—',st,p.window_open?'ok':'']];
   const o=overlay(`<div class="modal cf"><div class="cf-hd"><span class="cf-av" style="background:${avc(p.name)}">${esc(initials(nm))}</span>
-     <div class="cf-id"><div class="cf-nm"><h2>${esc(nm)}</h2>${p.internal?'<span class="pill grey">time ou teste</span>':`<span class="pill ${K[1]}">${K[0]}</span>`}${p.opt_out?'<span class="pill grey">não quer mensagens automáticas</span>':''}</div><div class="cf-mt">${meta}</div></div>
+     <div class="cf-id"><div class="cf-nm"><h2>${esc(nm)}</h2>${p.internal?'<span class="pill grey">não é cliente</span>':`<span class="pill ${K[1]}">${K[0]}</span>`}${p.opt_out?'<span class="pill grey">não quer mensagens automáticas</span>':''}</div><div class="cf-mt">${meta}</div></div>
      <div class="cf-ac"><button class="btn p" id="cfMsg">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}Mandar mensagem</button><button class="btn" id="cfSale">${svg('<path d="M12 5v14M5 12h14"/>')}Registrar venda</button><button class="btn" id="cfConv" title="Abrir a conversa completa">${svg('<path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>')}Conversa</button></div></div>
     <div class="cf-kp">${kp.map(k=>`<div class="${k[3]}"><span>${k[0]}</span><b>${k[1]}</b><small>${k[2]}</small></div>`).join('')}</div>
     <nav class="utabs cf-t">${[['res','Resumo'],['buy',`Compras${sales.length?` <em>${sales.length}</em>`:''}`],['tl','Linha do tempo'],['dad','Dados']].map(t=>`<button type="button" data-cft="${t[0]}">${t[1]}</button>`).join('')}</nav>
@@ -4398,7 +4427,7 @@ async function ctProfile(id,tab){
       <div class="form2"><div class="field"><label>Etapa</label><select name="stage">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(p.stage||(STAGES[0]||{}).id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div><div class="field"><label>Etiquetas</label><input name="tags" value="${esc((p.tags||[]).join(', '))}" placeholder="pilates, manhã, indicação"><span class="hint">Separe por vírgula.</span></div></div>
       <div class="field"><label>Anotações</label><textarea name="notes" rows="5" placeholder="O que o time precisa saber sobre ${esc(first)}">${esc(p.notes||'')}</textarea></div>
       <label class="ckl"><input type="checkbox" name="opt_out" ${p.opt_out?'checked':''}> Não quer receber mensagens automáticas (campanhas e lembretes)</label>
-      <label class="ckl"><input type="checkbox" name="internal" ${p.internal?'checked':''}><span>É do time ou um teste, não é cliente<small>Fica fora de Clientes, das campanhas e dos relatórios. A conversa continua normal.</small></span></label>
+      <label class="ckl"><input type="checkbox" name="internal" ${p.internal?'checked':''}><span>Não é cliente: é do time, um teste ou mensagem automática de outro perfil<small>Fica fora de Clientes, das campanhas, dos relatórios e da fila de espera. A conversa continua normal.</small></span></label>
       <div class="row"><button class="btn p">Salvar</button><button type="button" class="btn sm" id="cfOr" style="margin-left:auto">Mudar a origem</button><span class="err" id="cfE"></span></div></form>`;
     B.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>draw(b.dataset.go));
     B.querySelectorAll('[data-cfs]').forEach(b=>b.onclick=()=>saleModal({contact:{id,name:p.name},onDone:()=>reload('buy')}));

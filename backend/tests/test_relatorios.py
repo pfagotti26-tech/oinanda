@@ -82,3 +82,26 @@ def test_card_anda_respondidos_e_interno(monkeypatch):
         c.patch(f'/api/contacts/{cs["Cli Tres"]["id"]}', json={'stage': won['id'], 'value': 200})
         r = c.get('/api/reports/sales?days=30').json()
         assert r['unassigned']['won'] == 0 and next(p for p in r['people'] if p['name'] == 'Dona S')['won'] == 1
+
+def test_mensagem_automatica_e_nao_cliente(monkeypatch):
+    async def fake_graph(method, path, token, payload=None, params=None):
+        if path.endswith('/messages'): return {'messages': [{'id': 'o1'}]}
+        return {'success': True, 'display_phone_number': '+55 11 97575-4765'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    async def no_ai(*a, **k): return None
+    monkeypatch.setattr(ai, 'maybe_reply', no_ai, raising=False)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona T', 'email': 'dt@x.com', 'password': 'senha-forte-1', 'company': 'Agência T', 'segment': 'outro'})
+        c.post('/api/wa/connect', json={'phone_number_id': '6660011', 'waba_id': '6660012', 'token': 'EAA' + 'q' * 30})
+        inbound(c, '5511900002001', 'Robo Divulga', 'Aqui está o seu material: https://exemplo.com/mapa')
+        inbound(c, '5511900002002', 'Cliente Real', 'Oi, quanto custa?')
+        cs = {x['name']: x for x in c.get('/api/conversations').json()}
+        assert cs['Robo Divulga']['maybe_auto'] and not cs['Cliente Real']['maybe_auto']
+        assert {x['name'] for x in c.get('/api/conversations?filter=waiting').json()} == {'Robo Divulga', 'Cliente Real'}
+        assert c.post('/api/contacts/not-client', json={'ids': [cs['Robo Divulga']['id']]}).json()['updated'] == 1
+        cs = {x['name']: x for x in c.get('/api/conversations').json()}
+        assert cs['Robo Divulga']['internal'] and not cs['Robo Divulga']['maybe_auto']
+        assert {x['name'] for x in c.get('/api/conversations?filter=waiting').json()} == {'Cliente Real'}
+        assert c.get('/api/reports/sales?days=30').json()['totals']['new_contacts'] == 1
+        c.post('/api/contacts/not-client', json={'ids': [cs['Robo Divulga']['id']], 'value': False})
+        assert c.get('/api/reports/sales?days=30').json()['totals']['new_contacts'] == 2
