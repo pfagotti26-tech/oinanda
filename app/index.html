@@ -2021,6 +2021,17 @@ body:has(.nz-save) #toast{bottom:92px}
 .au-hr .pill{justify-self:start}.au-hr b{font-size:13.5px;display:block}.au-hr span:not(.pill){font-size:12.5px;color:var(--ink3)}.au-hr em{font-style:normal;color:#8A5A00}.au-hr small{font-size:12px;color:var(--ink3);white-space:nowrap}
 @media (max-width:860px){.au-rec{grid-template-columns:1fr;padding:14px}.au-rec .btn{width:100%;justify-content:center}.am-g{grid-template-columns:1fr}.am-r{order:-1}.au-grid{grid-template-columns:minmax(0,1fr)}
  .au-tr{grid-template-columns:minmax(0,1fr) auto}.au-ts{grid-column:1}.au-hr{grid-template-columns:minmax(0,1fr) auto}.au-hr .pill{grid-row:2}.au-hr small{grid-row:2;grid-column:2}.au-hr .lk-go{display:none}}
+/* relatórios */
+.al .tx{display:flex;flex-direction:column;gap:2px;min-width:0}.al .tx small{font-size:12px;font-weight:500;color:var(--ink3)}
+.alerts.ok p{margin:0 2px}
+.kpi .l .ii,.kmini .ii,h3.sec .ii{margin-left:4px}
+.chart .bars .ymx{position:absolute;top:-2px;left:0;font-style:normal;font-size:10.5px;color:var(--ink3);background:#fff;padding-right:4px;z-index:1}
+.chart .bars::before{content:'';position:absolute;left:0;right:0;top:6px;border-top:1px dashed var(--line)}
+.rp-oi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}.rp-oi svg{width:17px;height:17px}
+.rp-oi.ig{background:#FCE8F1;color:#C13584}.rp-oi.wa{background:#E3F6EA;color:#1E9E57}.rp-oi.ad{background:#E8EFFB;color:#2F6FB5}.rp-oi.ln{background:var(--tint);color:var(--c)}.rp-oi.ot{background:#EEF1F4;color:var(--ink2)}
+.pr .vv>span:only-child{font-size:12px}
+.rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
+.rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -2127,6 +2138,17 @@ let ME=null,VIEW='inicio';
 
 /* ---------- dicas: nome das ações (hover / segurar no celular) e "o que é isso?" (ⓘ) ---------- */
 const INFO={
+ rp_vendas:['Vendas','Soma das vendas fechadas no período: cards que foram para a etapa de venda do funil, com o valor informado. Ex.: 3 vendas de R$ 450 = R$ 1.350.'],
+ rp_conv:['Conversão','De cada 100 pessoas que chegaram no período, quantas já compraram. Ex.: 50 contatos novos e 5 vendas = 10%. Quem ainda está negociando entra na conta quando fechar.'],
+ rp_novos:['Contatos novos','Pessoas que falaram com você pela primeira vez no período, em qualquer canal. Não conta os contatos importados da agenda do celular.'],
+ rp_resp:['Primeira resposta','Quanto tempo o cliente espera pela primeira resposta, do time ou da Nanda. É o tempo típico (a mediana): metade foi respondida mais rápido que isso. Até 5 min é ótimo; acima de 1 hora, muita venda esfria.'],
+ rp_ticket:['Ticket médio','Valor médio de cada venda no período. Sobe quando você vende planos maiores ou mais de um item.'],
+ rp_ciclo:['Ciclo de venda','Quantos dias, em geral, entre a pessoa chegar e comprar. Ajuda a saber quando insistir: quem passou muito desse prazo provavelmente esfriou.'],
+ rp_perd:['Perdidos','Cards que o time marcou como perdidos no período. Marcar o motivo ajuda a entender o que trava a venda.'],
+ rp_nota:['Nota do atendimento','Média das notas que a IA deu às conversas do time, de 0 a 10. Para gerar, use "Avaliar conversas da semana" no fim da página.'],
+ rp_funil:['Funil','Das pessoas que chegaram no período, quantas passaram por cada etapa. A porcentagem é quantos da etapa anterior chegaram nessa. Aparece a partir de 5 pessoas na etapa anterior, para não enganar com números pequenos.'],
+ rp_time:['Time','Vendas e mensagens de cada pessoa do time. A venda conta para o responsável pelo card. Venda sem responsável não aparece em ninguém.'],
+ rp_origem:['De onde vieram','Por onde as pessoas chegaram: anúncio, link rastreável, origem marcada na ficha ou o canal em que chamaram. Mostra qual lugar traz cliente e não só contato.'],
  situacao:['Situação','Em que ponto a pessoa está com o seu negócio. <b>Prospect</b>: ainda não comprou. <b>Cliente</b>: já comprou. <b>Cliente inativo</b>: comprou, mas faz tempo que não volta. Muda sozinha quando você registra uma venda.'],
  previsto:['Previsto','Quanto essa venda deve render se fechar. Ex.: plano trimestral, R$ 450. Entra no valor do funil e ajuda a prever o mês.'],
  origem:['Origem','Por onde a pessoa chegou: anúncio, Instagram, indicação, Google... Vem sozinha quando dá para saber (anúncio ou link rastreável), e você pode marcar à mão. É o que mostra, em Vendas › Retorno, qual canal traz cliente.'],
@@ -5440,38 +5462,46 @@ const VIEWS={
   if(RP.tab==='jornada'&&modOn('jornada'))return rpJourney();
   const [r,q]=await Promise.all([api('/reports/sales?days='+RP.days),api('/quality?days='+RP.days)]);const t=r.totals,pv=r.prev||{};
   const pct=v=>String(v).replace('.',',');
-  const delta=(cur,prev,lowBetter,pp)=>{if(cur==null||prev==null)return '';if(prev===0&&!pp)return cur>0?'<span class="dl up">novo</span>':'';
+  const delta=(cur,prev,lowBetter,pp)=>{if(cur==null||prev==null)return '';if(prev===0&&!pp)return '';
     const d=pp?Math.round((cur-prev)*10)/10:Math.round(100*(cur-prev)/prev);if(!d)return '<span class="dl eq">= anterior</span>';
     const good=lowBetter?d<0:d>0;return `<span class="dl ${good?'up':'down'}">${d>0?'↑':'↓'} ${pct(Math.abs(d))}${pp?' p.p.':'%'}</span>`};
   const kpi=(l,v,sub,dl,empty)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s">${dl||''}${sub?`<span>${sub}</span>`:''}</div>${empty?`<p class="eh">${empty}</p>`:''}</div>`;
   const ser=r.series||[];const mx=Math.max(1,...ser.map(x=>x.new));
   const lab=d=>{const x=new Date(d+'T12:00');return `${x.getDate()}/${x.getMonth()+1}`};
   const every=Math.ceil(ser.length/8);
-  const chart=ser.length?`<div class="chart"><div class="bars">${ser.map((x,i)=>`<div class="bc" title="${r.bucket>1?'Semana de ':''}${lab(x.date)}: ${x.new} ${x.new===1?'contato novo':'contatos novos'}, ${x.won} ${x.won===1?'venda':'vendas'}${x.value?' ('+brl(x.value)+')':''}">
+  const chart=ser.length?`<div class="chart"><div class="bars"><em class="ymx">${mx}</em>${ser.map((x,i)=>`<div class="bc" title="${r.bucket>1?'Semana de ':''}${lab(x.date)}: ${x.new} ${x.new===1?'contato novo':'contatos novos'}, ${x.won} ${x.won===1?'venda':'vendas'}${x.value?' ('+brl(x.value)+')':''}">
       <i class="n" style="height:${Math.round(100*x.new/mx)}%"></i><i class="w" style="height:${Math.round(100*x.won/mx)}%"></i><span>${i%every===0?lab(x.date):''}</span></div>`).join('')}</div>
       <div class="lg"><span><i class="n"></i>contatos novos</span><span><i class="w"></i>vendas</span>${r.bucket>1?'<span class="hint">por semana</span>':'<span class="hint">por dia</span>'}</div></div>`:'';
   const top=Math.max(1,...r.funnel.map(f=>f.count));
   const worst=r.funnel.slice(1).filter((f,i)=>f.rate!=null&&r.funnel[i].count>=5).sort((x,y)=>x.rate-y.rate)[0];
   const sortBy=(arr,k)=>[...arr].sort((x,y)=>(y[k]??-1)-(x[k]??-1));
-  const people=sortBy(r.people.filter(p=>p.active||p.messages||p.won||p.passed),RP.sort||'value');
+  const people=sortBy(r.people.filter(p=>p.messages||p.won||p.passed),RP.sort||'value');
+  const idle=r.people.filter(p=>p.active&&!p.messages&&!p.won&&!p.passed);const un=r.unassigned||{};
   const AL={bad:'red',warn:'amber',info:'blue'};
-  $('#rpBody').innerHTML=`
-   ${r.alerts&&r.alerts.length?`<div class="alerts"><b class="at">O que fazer agora</b>${r.alerts.map((a,i)=>`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span>${esc(a.text)}<span class="go">›</span></button>`).join('')}</div>`:''}
+  const hOpen=(()=>{try{return localStorage.getItem('rpHow')==='1'}catch(e){return false}})();
+  const hero=`<details class="lk-hero rp-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}</span><div><b>O retrato das suas vendas, em 1 minuto</b><span>Comece pelo que precisa de ação agora. Depois veja se está vendendo mais que antes, de onde vem quem compra e quem do time vende.</span></div><em class="lk-ht">Como ler</em></summary>
+    <div class="pm-facts cb-steps">${[['1','Resolva o que está pendente','"O que fazer agora" mostra clientes esperando e negociações paradas. Clique para ir direto a eles.'],['2','Compare com o período anterior','As setas mostram se você melhorou em relação aos '+RP.days+' dias antes. Verde é bom.'],['3','Veja onde perde gente','O funil mostra em que etapa as pessoas param. É ali que vale melhorar a conversa.'],['4','Invista no que traz cliente','"De onde vieram" mostra que lugar gera venda, não só contato. Use links rastreáveis para saber mais.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
+  const noPrev=!pv.new_contacts&&!pv.won;
+  const OI={ad:[IC.chat,'ad'],link:[svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),'ln'],instagram:[IGI,'ig'],whatsapp:[WAI,'wa'],manual:[svg('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'),'ot'],other:[svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>'),'ot']};
+  $('#rpBody').innerHTML=hero+`
+   ${r.alerts&&r.alerts.length?`<div class="alerts"><b class="at">O que fazer agora</b>${r.alerts.map((a,i)=>`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span><span class="tx">${esc(a.text)}${a.sub?`<small>${esc(a.sub)}</small>`:''}</span><span class="go">›</span></button>`).join('')}</div>`:'<div class="alerts ok"><b class="at">O que fazer agora</b><p class="hint">Nada pendente: ninguém esperando resposta e nenhuma negociação parada.</p></div>'}
    <div class="kpis">
-    ${kpi('Vendas',t.won_value?brl(t.won_value):String(t.won),t.won_value?`${t.won} ${t.won===1?'venda':'vendas'}`:'',delta(t.won_value||t.won,pv.won_value||pv.won),!t.won?'Mova o card para a etapa de venda e informe o valor.':'')}
-    ${kpi('Conversão',t.conversion!=null?pct(t.conversion)+'%':'—','dos contatos novos',delta(t.conversion,pv.conversion,false,true),t.conversion==null?'Aparece quando chegarem contatos novos.':'')}
-    ${kpi('Contatos novos',t.new_contacts,'',delta(t.new_contacts,pv.new_contacts),!t.new_contacts?'Aparecem quando alguém chamar no WhatsApp.':'')}
-    ${kpi('Primeira resposta',fmtMin(t.first_reply_min),'tempo típico',delta(t.first_reply_min,pv.first_reply_min,true),t.first_reply_min==null?'Aparece quando o time responder um contato novo.':'')}
+    ${kpi('Vendas'+ii('rp_vendas'),t.won_value?brl(t.won_value):String(t.won),t.won_value?`${t.won} ${t.won===1?'venda':'vendas'}`:'',delta(t.won_value||t.won,pv.won_value||pv.won),!t.won?'Mova o card para a etapa de venda e informe o valor.':'')}
+    ${kpi('Conversão'+ii('rp_conv'),t.conversion!=null?pct(t.conversion)+'%':'—',t.conversion!=null?`${t.won===1?'1 venda':t.won+' vendas'} de ${t.new_contacts} ${t.new_contacts===1?'contato':'contatos'}`:'',delta(t.conversion,pv.conversion,false,true),t.conversion==null?'Aparece quando chegarem contatos novos.':'')}
+    ${kpi('Contatos novos'+ii('rp_novos'),t.new_contacts,t.new_contacts?'chegaram no período':'',delta(t.new_contacts,pv.new_contacts),!t.new_contacts?'Aparecem quando alguém chamar no WhatsApp ou no Instagram.':'')}
+    ${kpi('Primeira resposta'+ii('rp_resp'),fmtMin(t.first_reply_min),t.first_reply_min!=null?(t.first_reply_min<=5?'ótimo':t.first_reply_min<=30?'tempo típico':t.first_reply_min<=60?'dá para melhorar':'lento: vendas esfriam'):'',delta(t.first_reply_min,pv.first_reply_min,true),t.first_reply_min==null?'Aparece quando o time responder um contato novo.':'')}
    </div>
-   <div class="kmini"><span>Ticket médio <b>${t.ticket!=null?brl(t.ticket):'—'}</b></span><span>Ciclo de venda <b>${t.cycle_days!=null?pct(t.cycle_days)+' dias':'—'}</b></span><span>Perdidos <b>${t.lost}</b></span><span>Nota do atendimento <b>${q.avg!=null?pct(q.avg):'—'}</b></span><span class="hint">Comparação com os ${RP.days} dias anteriores</span></div>
-   <div class="grid g2 rp2"><div class="card"><h3 class="sec">Contatos e vendas</h3>${t.new_contacts||t.won?chart:'<div class="empty">Sem movimento no período.</div>'}</div>
-    <div class="card"><h3 class="sec">Funil dos contatos novos</h3><p class="hint" style="margin:-6px 0 12px">Quantos chegaram em cada etapa e quantos passaram da anterior.</p>
-     ${r.funnel.map((f,i)=>`<div class="fbar ${f.kind} ${worst&&worst.id===f.id&&worst.rate<50?'worst':''}"><span>${esc(f.name)}${i&&f.rate!=null?`<em>${f.rate}%</em>`:''}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}
+   <div class="kmini"><span>Ticket médio${ii('rp_ticket')} <b>${t.ticket!=null?brl(t.ticket):'—'}</b></span><span>Ciclo de venda${ii('rp_ciclo')} <b>${t.cycle_days!=null?pct(t.cycle_days)+' dias':'—'}</b></span><span>Perdidos${ii('rp_perd')} <b>${t.lost}</b></span><span>Nota do atendimento${ii('rp_nota')} <b>${q.avg!=null?pct(q.avg):'—'}</b></span><span class="hint">${noPrev?`Sem movimento nos ${RP.days} dias anteriores para comparar`:`Setas: comparação com os ${RP.days} dias anteriores`}</span></div>
+   <div class="grid g2 rp2"><div class="card"><h3 class="sec">Contatos e vendas</h3><p class="hint" style="margin:-6px 0 12px">Quantas pessoas chegaram e quantas compraram em cada ${r.bucket>1?'semana':'dia'}. Passe o mouse numa barra para ver os números.</p>${t.new_contacts||t.won?chart:'<div class="empty">Sem movimento no período.</div>'}</div>
+    <div class="card"><h3 class="sec">Funil dos contatos novos${ii('rp_funil')}</h3><p class="hint" style="margin:-6px 0 12px">Das ${t.new_contacts} pessoas que chegaram, quantas passaram por cada etapa.</p>
+     ${r.funnel.map((f,i)=>`<div class="fbar ${f.kind} ${worst&&worst.id===f.id&&worst.rate<50?'worst':''}"><span>${esc(f.name)}${i&&f.rate!=null&&r.funnel[i-1].count>=5?`<em>${f.rate}%</em>`:''}</span><span class="b"><i style="width:${Math.round(100*f.count/top)}%"></i></span><span>${f.count}</span></div>`).join('')}
      ${worst&&worst.rate<50?`<p class="note" style="margin-top:10px">Maior perda: só ${worst.rate}% de quem chega na etapa anterior vai para "${esc(worst.name)}".</p>`:''}</div></div>
-   <div class="grid g2 rp2"><div class="card"><div class="row"><h3 class="sec" style="margin:0">Time</h3><span class="hint" style="margin-left:auto">ordenar:</span>${[['value','valor'],['won','vendas'],['messages','mensagens']].map(o=>`<button class="chip sm ${(RP.sort||'value')===o[0]?'on':''}" data-so="${o[0]}">${o[1]}</button>`).join('')}</div>
-     <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span>${p.passed?`<span class="as ${p.assisted?'':'z'}">passou ${p.passed} ${p.passed===1?'oportunidade':'oportunidades'} · ${p.assisted} ${p.assisted===1?'virou venda':'viraram venda'}${p.assisted_value?' ('+brl(p.assisted_value)+')':''}</span>`:''}</div><div class="vv"><b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span></div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém atendeu no período.</div>'}</div></div>
-    <div class="card"><h3 class="sec">De onde vieram</h3>${r.origin.length?`<div class="plist">${r.origin.map(o=>`<div class="pr"><span class="ico ${o.ad?'g1':'g2'}" style="width:34px;height:34px">${o.ad?IC.chat:IC.check}</span><div class="nm"><b>${esc(o.name)}</b><span>${o.contacts} ${o.contacts===1?'contato':'contatos'}</span></div><div class="vv"><b>${o.value?brl(o.value):o.won}</b><span>${o.won} ${o.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div>`:'<div class="empty">Sem contatos novos no período.</div>'}
-     <p class="hint" style="margin-top:10px">Quem clica em anúncio de "Enviar mensagem" no Facebook ou Instagram aparece com o nome do anúncio.</p></div></div>
+   <div class="grid g2 rp2"><div class="card"><div class="row"><h3 class="sec" style="margin:0">Time${ii('rp_time')}</h3><span class="hint" style="margin-left:auto">ordenar:</span>${[['value','valor'],['won','vendas'],['messages','mensagens']].map(o=>`<button class="chip sm ${(RP.sort||'value')===o[0]?'on':''}" data-so="${o[0]}">${o[1]}</button>`).join('')}</div>
+     <div class="plist">${people.map(p=>`<div class="pr"><span class="av">${initials(p.name)}</span><div class="nm"><b>${esc(p.name)}</b><span>${p.messages} mensagens · resposta ${fmtMin(p.first_reply_min)}</span>${p.passed?`<span class="as ${p.assisted?'':'z'}">passou ${p.passed} ${p.passed===1?'oportunidade':'oportunidades'} · ${p.assisted} ${p.assisted===1?'virou venda':'viraram venda'}${p.assisted_value?' ('+brl(p.assisted_value)+')':''}</span>`:''}</div><div class="vv">${p.won?`<b>${p.value?brl(p.value):p.won}</b><span>${p.won} ${p.won===1?'venda':'vendas'}</span>`:'<span>sem venda</span>'}</div>${p.score!=null?`<span class="sc ${scc(p.score)}" title="Nota do atendimento">${pct(p.score)}</span>`:'<span class="sc" style="background:#EEF1F4;color:var(--ink3)" title="Sem nota ainda">—</span>'}</div>`).join('')||'<div class="empty">Ninguém do time respondeu no período.</div>'}
+     ${un.won?`<div class="pr rp-un"><span class="av">?</span><div class="nm"><b>Sem responsável</b><span>Defina o responsável no card para a venda contar para alguém.</span></div><div class="vv"><b>${un.value?brl(un.value):un.won}</b><span>${un.won} ${un.won===1?'venda':'vendas'}</span></div><span class="sc" style="visibility:hidden">—</span></div>`:''}</div>
+     ${idle.length?`<p class="hint rp-idle">Sem atendimento no período: ${idle.map(p=>esc(p.name.split(' ')[0])).join(', ')}.</p>`:''}</div>
+    <div class="card"><h3 class="sec">De onde vieram${ii('rp_origem')}</h3>${r.origin.length?`<div class="plist">${r.origin.map(o=>{const ic=OI[o.kind]||OI.other;return `<div class="pr"><span class="rp-oi ${ic[1]}">${ic[0]}</span><div class="nm"><b>${esc(o.name)}</b><span>${o.contacts} ${o.contacts===1?'contato':'contatos'}${o.won?` · ${pct(Math.round(1000*o.won/o.contacts)/10)}% compraram`:''}</span></div><div class="vv">${o.won?`<b>${o.value?brl(o.value):o.won}</b><span>${o.won} ${o.won===1?'venda':'vendas'}</span>`:'<span>sem venda</span>'}</div></div>`}).join('')}</div>`:'<div class="empty">Sem contatos novos no período.</div>'}
+     ${r.origin.some(o=>o.kind==='link'||o.kind==='ad')?'':`<p class="note rp-tip">Quer saber de onde vem cada cliente? Crie um link para cada lugar onde você divulga. <button class="lnk" id="rpLk">Criar links ›</button></p>`}</div></div>
    ${r.teams&&r.teams.length?`<div class="card" style="margin-bottom:14px"><h3 class="sec">Equipes</h3><div class="plist">${r.teams.map(t=>`<div class="pr"><span class="ico" style="width:34px;height:34px;background:${t.color}22;color:${t.color}">${IC.chat}</span><div class="nm"><b>${esc(t.name)}</b><span>${t.members} ${t.members===1?'pessoa':'pessoas'} · ${t.contacts} conversas · ${t.queue} na fila · ${t.waiting} esperando · resposta ${fmtMin(t.first_reply_min)}</span></div><div class="vv"><b>${t.value?brl(t.value):t.won}</b><span>${t.won} ${t.won===1?'venda':'vendas'}</span></div></div>`).join('')}</div></div>`:''}
    <div class="kmini"><span>Mensagens da Nanda <b>${r.nanda.messages}</b></span><span>Horários marcados pela Nanda <b>${r.nanda.bookings}</b></span><span>Passou para o time <b>${r.nanda.handoffs}</b></span><span>Mensagens das automações <b>${r.automations.messages}</b></span></div>
    <div class="card"><div class="row"><h3 class="sec" style="margin:0">Nota de atendimento</h3><button class="btn sm p" id="qRun" style="margin-left:auto">Avaliar conversas da semana</button></div>
@@ -5480,6 +5510,8 @@ const VIEWS={
   document.querySelectorAll('[data-so]').forEach(b=>b.onclick=()=>{RP.sort=b.dataset.so;VIEWS.relatorios()});
   document.querySelectorAll('[data-al]').forEach(b=>b.onclick=()=>{const a=r.alerts[b.dataset.al];if(a.to==='conversas')CV.filter=a.filter||'all';if(a.to==='funil')FN.f=a.filter||'all';if(a.to!=='relatorios')go(a.to)});
   document.querySelectorAll('.qi').forEach(b=>b.onclick=()=>{CV.open=b.dataset.c;go('conversas')});
+  const hw=$('#rpBody .rp-how');hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('rpHow',hw.open?'0':'1')}catch(e){}};
+  if($('#rpLk'))$('#rpLk').onclick=()=>{VD.tab='origens';go('vendas')};
   $('#qRun').onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Avaliando... (pode levar um minuto)';try{const x=await api('/quality-run',{method:'POST'});toast(x.scored?x.scored+' conversas avaliadas.':'Nenhuma conversa nova para avaliar.');VIEWS.relatorios()}catch(x){toast(x.message);b.disabled=false;b.textContent='Avaliar conversas da semana'}};
  },
  async agenda(){

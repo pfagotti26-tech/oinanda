@@ -16,7 +16,18 @@ import ai
 
 router = APIRouter()
 SOURCES = {'whatsapp': 'Chamou no WhatsApp', 'anuncio': 'Anúncio', 'manual': 'Cadastro manual', 'historico': 'Conversa antiga do celular',
-           'agenda do celular': 'Agenda do celular'}
+           'agenda do celular': 'Agenda do celular', 'instagram': 'Chamou no Direct do Instagram', 'instagram_comentario': 'Comentou num post do Instagram'}
+SRC_KIND = {'whatsapp': 'whatsapp', 'instagram': 'instagram', 'instagram_comentario': 'instagram', 'manual': 'manual'}
+
+def origin_key(c, onames, lnames):
+    """De onde a pessoa veio, do mais preciso para o menos: anúncio, link rastreável, origem marcada, canal por onde chamou."""
+    ad = c.get('ad')
+    if ad: return 'Anúncio: ' + (ad.get('headline') or ad.get('source_id') or 'sem título'), 'ad'
+    if c.get('origin_link') in lnames: return lnames[c['origin_link']], 'link'
+    o = c.get('origin')
+    if o and o in onames and o != 'anuncio': return onames[o], 'instagram' if o == 'instagram' else 'whatsapp' if o == 'whatsapp' else 'other'
+    src = c.get('source') or ('instagram' if c.get('channel') == 'instagram' else 'whatsapp')
+    return SOURCES.get(src, src), SRC_KIND.get(src, 'other')
 
 def mins(td): return round(td.total_seconds() / 60, 1)
 
@@ -51,7 +62,7 @@ async def sales(days: int = 30, user=Depends(managers)):
     kinds = {s['id']: s['kind'] for s in stages}
     won_ids = [s['id'] for s in stages if s['kind'] == 'won']
     new = await db.contacts.find({'company_id': cid, 'created_at': {'$gte': since}, 'source': {'$nin': ['historico', 'agenda do celular']}},
-                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1}).to_list(10000)
+                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1}).to_list(10000)
     won = await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': since}},
                                  {'_id': 0, 'id': 1, 'value': 1, 'created_at': 1, 'won_at': 1, 'assigned_to': 1, 'source': 1, 'ad': 1}).to_list(10000)
     lost = await db.contacts.count_documents({'company_id': cid, 'lost_at': {'$gte': since}})
@@ -79,15 +90,17 @@ async def sales(days: int = 30, user=Depends(managers)):
     for f in funnel: f['name'] = names[f['id']]; f['kind'] = kinds[f['id']]
 
     # origem
-    origin = {}
+    from origins import origins_of
+    onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
+    lnames = {l['id']: l.get('label') or 'Link' for l in await db.track_links.find({'company_id': cid}, {'_id': 0, 'id': 1, 'label': 1}).to_list(300)}
+    origin, okey = {}, {}
     for c in new:
-        k = ('Anúncio: ' + ((c.get('ad') or {}).get('headline') or (c.get('ad') or {}).get('source_id') or 'sem título')) if c.get('ad') else SOURCES.get(c.get('source'), c.get('source') or 'Outro')
-        o = origin.setdefault(k, {'name': k, 'contacts': 0, 'won': 0, 'value': 0, 'ad': bool(c.get('ad'))})
+        k, kind = origin_key(c, onames, lnames); okey[c['id']] = k
+        o = origin.setdefault(k, {'name': k, 'kind': kind, 'contacts': 0, 'won': 0, 'value': 0, 'ad': kind == 'ad'})
         o['contacts'] += 1
     for c in won:
-        if c['id'] not in new_ids: continue
-        k = ('Anúncio: ' + ((c.get('ad') or {}).get('headline') or (c.get('ad') or {}).get('source_id') or 'sem título')) if c.get('ad') else SOURCES.get(c.get('source'), c.get('source') or 'Outro')
-        if k in origin: origin[k]['won'] += 1; origin[k]['value'] += c.get('value') or 0
+        k = okey.get(c['id'])
+        if k: origin[k]['won'] += 1; origin[k]['value'] += c.get('value') or 0
 
     # primeira resposta e desempenho por pessoa
     fr = await first_reply_minutes(cid, list(new_ids))
@@ -144,14 +157,24 @@ async def sales(days: int = 30, user=Depends(managers)):
         f['rate'] = round(100 * f['count'] / funnel[i - 1]['count']) if i and funnel[i - 1]['count'] else None
     # o que fazer agora
     alerts = []
+    from inbox import waiting as _is_waiting
+    from channels import view, window_of
     hour_ago = now() - timedelta(hours=1)
-    waiting = await db.contacts.count_documents({'company_id': cid, 'last_dir': 'in', 'last_in_at': {'$lte': hour_ago}, 'needs_human': {'$ne': True}})
     human = await db.contacts.count_documents({'company_id': cid, 'needs_human': True})
+    can, closed = 0, 0  # esperando há mais de 1 h: dá para responder agora / a janela de 24 h já fechou
+    for c in await db.contacts.find({'company_id': cid, 'last_dir': 'in', 'last_in_at': {'$lte': hour_ago}, 'needs_human': {'$ne': True}}, {'_id': 0}).to_list(5000):
+        if not _is_waiting(c): continue
+        v = view(c); w = window_of(v.get('channel') or 'whatsapp'); li = aware(v.get('last_in_at'))
+        if not w or (li and now() - li < w): can += 1
+        else: closed += 1
     open_ids = [s['id'] for s in stages if s['kind'] == 'open']
-    stale = await db.contacts.count_documents({'company_id': cid, 'stage': {'$in': open_ids + [None]}, 'last_at': {'$lte': now() - timedelta(days=3)}})
+    # negociação = quem já passou da primeira etapa; quem está em "Novo contato" sem resposta já aparece em "esperando"
+    stale = await db.contacts.count_documents({'company_id': cid, 'stage': {'$in': open_ids[1:]}, 'last_at': {'$lte': now() - timedelta(days=3)}})
     if human: alerts.append({'kind': 'bad', 'text': f'{human} {"cliente pediu" if human == 1 else "clientes pediram"} para falar com alguém do time', 'to': 'conversas', 'filter': 'waiting'})
-    if waiting: alerts.append({'kind': 'warn', 'text': f'{waiting} {"cliente esperando" if waiting == 1 else "clientes esperando"} resposta há mais de 1 hora', 'to': 'conversas', 'filter': 'waiting'})
-    if stale: alerts.append({'kind': 'warn', 'text': f'{stale} {"negociação parada" if stale == 1 else "negociações paradas"} há 3 dias ou mais', 'to': 'funil', 'filter': 'stale'})
+    if can: alerts.append({'kind': 'warn', 'text': f'{can} {"cliente esperando" if can == 1 else "clientes esperando"} resposta há mais de 1 hora', 'sub': 'Ainda dá para responder normalmente.', 'to': 'conversas', 'filter': 'waiting'})
+    if closed: alerts.append({'kind': 'bad', 'text': f'{closed} {"cliente ficou" if closed == 1 else "clientes ficaram"} sem resposta e a janela de 24 h fechou',
+                              'sub': 'No WhatsApp, só com modelo aprovado pela Meta. No Instagram, só se a pessoa escrever de novo.', 'to': 'conversas', 'filter': 'waiting'})
+    if stale: alerts.append({'kind': 'warn', 'text': f'{stale} {"negociação parada" if stale == 1 else "negociações paradas"} há 3 dias ou mais', 'sub': 'Já passaram da primeira etapa do funil e ninguém falou com elas.', 'to': 'funil', 'filter': 'stale'})
     timed = [p for p in people if p['first_reply_min'] is not None]
     if len(timed) >= 2:
         fast, slow = min(timed, key=lambda p: p['first_reply_min']), max(timed, key=lambda p: p['first_reply_min'])
@@ -178,6 +201,7 @@ async def sales(days: int = 30, user=Depends(managers)):
     if late: alerts.insert(0, {'kind': 'bad', 'text': f'{late} {"cliente passou" if late == 1 else "clientes passaram"} do tempo limite na fila de uma equipe', 'to': 'conversas', 'filter': 'waiting'})
     return {'prev': prev, 'series': series, 'bucket': bucket, 'alerts': alerts[:4], 'teams': team_rows,
         'days': days,
+        'unassigned': {'won': sum(1 for c in won if not c.get('assigned_to')), 'value': sum(c.get('value') or 0 for c in won if not c.get('assigned_to'))},
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,
                    'conversion': round(100 * converted / len(new), 1) if new else None,
