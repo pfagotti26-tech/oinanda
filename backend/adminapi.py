@@ -7,7 +7,7 @@ import os, io, csv
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Literal
 from zoneinfo import ZoneInfo
-from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException, Query
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from core import db, now, uid, audit, admin, client_ip, ADMIN_EMAIL
@@ -575,25 +575,55 @@ async def notify(company_id: str, body: NotifyIn, request: Request, user=Depends
 # ---------- clientes ----------
 @router.get('/admin/companies')
 async def companies(q: str = '', tab: str = '', plan: str = '', segment: str = '', wa: str = '', ai: str = '', by: str = '', start: Optional[str] = None,
-                    end: Optional[str] = None, sort: Literal['recent', 'use', 'trial_end', 'name', 'health', 'value'] = 'recent', limit: int = 50, offset: int = 0, user=Depends(admin)):
+                    end: Optional[str] = None, sort: Literal['recent', 'use', 'trial_end', 'name', 'health', 'value'] = 'recent', limit: int = 50, offset: int = 0,
+                    cycle: str = '', health_: str = Query('', alias='health'), ig: str = '', last: str = '', created: str = '', vmin: Optional[float] = None,
+                    vmax: Optional[float] = None, flags: str = '', user=Depends(admin)):
     rows = await base()
-    ql = q.strip().lower()
+    ql = q.strip().lower(); qd = ''.join(ch for ch in ql if ch.isdigit())
+    n = now(); fl = set(x for x in flags.split(',') if x)
+    igs = {x['company_id'] for x in await db.ig_accounts.find({}, {'_id': 0, 'company_id': 1}).to_list(5000)}
     def keep(r):
-        c = r['c']; o = r['owner'] or {}
-        if ql and ql not in ' '.join([c.get('name') or '', o.get('name') or '', o.get('email') or '']).lower(): return False
-        if not match(r, plan, segment): return False
-        if wa and (wa == 'yes') != bool(r['wa'] and r['wa'].get('status') == 'connected'): return False
+        c = r['c']; o = r['owner'] or {}; b = c.get('billing') or {}
+        hay = ' '.join([c.get('name') or '', o.get('name') or '', o.get('email') or '', c.get('legal_name') or '', c.get('cnpj') or '']).lower()
+        phones = ''.join(ch for ch in (c.get('phone') or '') + ' ' + ((r['wa'] or {}).get('display_phone') or '') + ' ' + (c.get('cnpj') or '') if ch.isdigit())
+        if ql and ql not in hay and not (len(qd) >= 4 and qd in phones): return False
+        if not match(r, plan, segment, cycle): return False
+        con = bool(r['wa'] and r['wa'].get('status') == 'connected')
+        if wa == 'alert' and not (con and r['wa'].get('alert')): return False
+        if wa in ('yes', 'no') and (wa == 'yes') != con: return False
+        if ig and (ig == 'yes') != (c['id'] in igs): return False
         if ai == 'high' and not (r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai']): return False
         if ai == 'none' and r['ai_used']: return False
+        if ai == 'some' and not r['ai_used']: return False
+        if health_ and health(r)['level'] != health_: return False
+        lu = r['last_use']; idle = (n - lu).days if lu else None
+        if last == 'today' and not (idle is not None and idle < 1): return False
+        if last == '7' and not (idle is not None and idle < 7): return False
+        if last == 'idle7' and not (idle is None or idle >= 7): return False
+        if last == 'idle30' and not (idle is None or idle >= 30): return False
+        if last == 'never' and lu: return False
+        if created:
+            ca = aware(c.get('created_at'))
+            days = {'7': 7, '30': 30, '90': 90}.get(created)
+            if days and not (ca and ca >= n - timedelta(days=days)): return False
+            if created == 'month' and not (ca and ca >= n.astimezone(SP).replace(day=1, hour=0, minute=0, second=0, microsecond=0)): return False
+        mv = per_month(c) if b.get('amount') else 0
+        if vmin is not None and mv < vmin: return False
+        if vmax is not None and mv > vmax: return False
+        if 'refused' in fl and not r['refused']: return False
+        if 'cancelled' in fl and b.get('status') != 'cancelled': return False
+        if 'trial_soon' in fl:
+            te = aware(c.get('trial_ends_at')) if r['kind'] == 'trial' else None; tu = billing.card_trial(c)
+            if not ((te and te - n <= timedelta(days=3)) or (tu and tu - n <= timedelta(days=3))): return False
         if by and (start or end):
             t0, t1, _, _ = period(start, end)
             v = {'created': c.get('created_at'), 'last_use': r['last_use'], 'next_payment': (c.get('billing') or {}).get('next_payment'), 'trial_end': c.get('trial_ends_at')}.get(by)
             if not inside(v, t0, t1): return False
         return True
-    rows = [r for r in rows if keep(r)]
+    filtered = bool(ql or plan or segment or wa or ai or cycle or health_ or ig or last or created or vmin is not None or vmax is not None or fl or (by and (start or end)))
+    rows = [r for r in rows if keep(r) and not (r['own'] and filtered) and not (r['test'] and tab != 'test' and (filtered or tab))]
     month0 = now().astimezone(SP).replace(day=1, hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
     convs = {x['_id']: x['n'] async for x in db.contacts.aggregate([{'$match': {'last_at': {'$gte': month0}}}, {'$group': {'_id': '$company_id', 'n': {'$sum': 1}}}])}
-    igs = {x['company_id'] for x in await db.ig_accounts.find({}, {'_id': 0, 'company_id': 1}).to_list(5000)}
     for r in rows: r['convs'] = convs.get(r['c']['id'], 0); r['ig'] = r['c']['id'] in igs
     real = [r for r in rows if not r['internal']]
     counts = {'all': len(real), **{k: sum(1 for r in real if r['kind'] == k) for k in ('paying', 'courtesy', 'trial', 'readonly', 'suspended')},
