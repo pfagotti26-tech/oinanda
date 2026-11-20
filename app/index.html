@@ -1900,7 +1900,8 @@ body:has(.nz-save) #toast{bottom:92px}
 .cb-ti{grid-area:i;width:34px;height:34px;border-radius:10px;background:#F6F1EC;color:var(--ink2);display:grid;place-items:center;align-self:center}.cb-ti svg{width:17px;height:17px}
 .cb-t.cliente .cb-ti{background:#E6F4EC;color:#1F7A50}.cb-t.prospect .cb-ti{background:#E8EFFB;color:#2E5AAC}.cb-t.inativo .cb-ti{background:#FFF4DE;color:#8A5A00}.cb-t.due30 .cb-ti{background:#FDECE6;color:var(--c)}
 .cb-tl{grid-area:l;font-size:12.5px;color:var(--ink2);font-weight:600}.cb-t>b{grid-area:b;font-size:22px;line-height:1.15;font-variant-numeric:tabular-nums}.cb-t>small{grid-area:s;font-size:11.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cb-f{margin-bottom:12px}.cb-how{margin-bottom:12px}.cb-steps{border-top:0!important;padding-top:0!important}.cb-steps>div{align-content:start;grid-template-rows:auto 1fr}.cb-steps>div>span{margin-top:2px}.cb-steps i{font-style:normal;font-weight:700;font-size:12.5px}
+.cb-f{margin-bottom:12px}
+.cb-ag{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px dashed #E2D8CE;border-radius:12px;padding:9px 14px;margin:-2px 0 12px;font:inherit;font-size:12.5px;color:var(--ink3);cursor:pointer}.cb-ag>svg{width:16px;height:16px;flex:none}.cb-ag b{color:var(--ink2)}.cb-ag>span:nth-child(2){flex:1}.cb-ag em{font-style:normal;font-weight:600;color:var(--c)}.cb-ag:hover{border-color:#E7C9BC}.cb-ag.on{border-style:solid;border-color:var(--c);background:#FFF8F4}.cb-how{margin-bottom:12px}.cb-steps{border-top:0!important;padding-top:0!important}.cb-steps>div{align-content:start;grid-template-rows:auto 1fr}.cb-steps>div>span{margin-top:2px}.cb-steps i{font-style:normal;font-weight:700;font-size:12.5px}
 .cb-tl .ii{margin-left:5px;vertical-align:1px}.cb-bi{display:inline-flex;align-items:center;gap:2px}.cb-k .ii,.cb-fh h3 .ii,.cb-t2 th .ii{margin-left:5px}.cb-fh{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}.cb-fh>.btn{margin-left:auto}.cb-br{margin-right:auto}.cb-fh h3{font-size:16px;margin:0 0 2px}.cb-fh .hint{font-size:12.5px}
 .cb-ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}.cb-cl{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;width:62px;flex:none}
 .cb-c{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}.cb-c>button{border:0;background:none;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
@@ -2092,7 +2093,8 @@ const INFO={
  horarios:['Próximos horários','Aulas, consultas ou visitas marcadas com essa pessoa. Também aparecem na Agenda.'],
  etiquetas:['Etiquetas','Palavras curtas para separar clientes do seu jeito. Ex.: pilates, manhã, indicação. Servem para filtrar em Clientes e para montar segmentos.'],
  anotacoes:['Anotações','O que o time precisa lembrar sobre a pessoa, sempre à vista aqui. Ex.: tem dor no joelho, prefere ser chamada à tarde. O cliente nunca vê.'],
- cl_base:['Toda a base','Todo mundo que já conversou com a empresa pelo WhatsApp ou pelo Instagram, tendo comprado ou não. Entra sozinho na primeira mensagem.'],
+ cl_base:['Conversaram','Todo mundo que já mandou mensagem para a empresa pelo WhatsApp ou pelo Instagram, comprou ou cadastrado pelo time. É a sua base de verdade. Entra sozinho na primeira mensagem.'],
+ cl_agenda:['Só na agenda','Contatos que vieram da agenda do celular quando o WhatsApp foi conectado e nunca mandaram mensagem para a empresa: família, amigos, fornecedores. Ficam fora da base, dos números e das campanhas. Quando alguém deles escrever, passa a contar sozinho.'],
  cl_prospect:['Prospects','Quem conversou com você e ainda não comprou nada. É o público para ofertas de primeira compra.'],
  cl_cliente:['Clientes','Quem já tem pelo menos uma venda registrada. Vira cliente sozinho quando você registra a venda.'],
  cl_inativo:['Inativos','Clientes que não compram há mais tempo que o prazo definido em Vendas › Origens. Bom público para "volta pra gente".'],
@@ -4322,10 +4324,10 @@ function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).lengt
   if(hm('orcamento')&&buy)t.push(['Pediram orçamento e não compraram','Nos últimos 30 dias',[{field:'milestone',op:'within',value:{id:'orcamento',days:30}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   if(hm('compareceu')&&buy)t.push([`Não compraram depois de "${hm('compareceu').name}"`,'Há mais de 3 dias',[{field:'milestone',op:'more',value:{id:'compareceu',days:3}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   return t}
-const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}]};
+const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}],agenda:[{field:'base',op:'is',value:'agenda'}]};
 const clSort=()=>CL.sort||(CL.rules.some(r=>['expires_in','expired_within'].includes(r.field))?'expiry':'recent');
-const clName=c=>{const n=dispName(c.name||'');const anon=!n||/^(instagram|messenger|whatsapp)$/i.test(n.trim());return {t:anon?(c.ig?'@'+c.ig:'Sem nome'):n,anon}};
-const CLK={prospect:['prospect','grey'],cliente:['cliente','ok'],inativo:['inativo','warn']};
+const clName=c=>{const n=dispName(c.name||'');const anon=!n||/^(instagram|messenger|whatsapp)$/i.test(n.trim());return {t:anon?(c.ig?'@'+c.ig:c.channel==='instagram'?'Contato do Instagram':'Sem nome'):n,anon}};
+const CLK={agenda:['só na agenda','grey'],prospect:['prospect','blue'],cliente:['cliente','ok'],inativo:['inativo','warn']};
 async function clView(){
   if(CL.tab==='camp'&&isMgr())return clCamps();
   if(CL.tab==='ren'&&isMgr())return clRen();
@@ -4333,13 +4335,14 @@ async function clView(){
   const [ps,org,st,tms,team,pr,segs,jst,ov]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[]),api('/journey/settings').catch(()=>({milestones:[]})),api('/segments/overview').catch(()=>null)]);
   const D=CL.data={ms:jst.milestones.filter(m=>m.active!==false).map(m=>({id:m.id,name:m.name})),products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
   const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);
-  const IK={total:'cl_base',prospect:'cl_prospect',cliente:'cl_cliente',inativo:'cl_inativo',due30:'cl_due'};
+  const IK={total:'cl_base',prospect:'cl_prospect',cliente:'cl_cliente',inativo:'cl_inativo',due30:'cl_due',agenda:'cl_agenda'};
   const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}<span class="ii" role="button" tabindex="0" data-info="${IK[k]}" aria-label="O que é ${l}?">i</span></span><b>${num(v)}</b><small>${sub}</small></button>`;
-  const kp=ov?`<div class="cb-kp">${tile('total','Toda a base',ov.total,'todo mundo que já falou com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
+  const kp=ov?`<div class="cb-kp">${tile('total','Conversaram',ov.total,'já falaram com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
      ${tile('prospect','Prospects',ov.prospect,'ainda não compraram','<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>')}
      ${tile('cliente','Clientes',ov.cliente,'já compraram','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}
      ${ov.inactive_days?tile('inativo','Inativos',ov.inativo,`sem comprar há ${ov.inactive_days}+ dias`,'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'):''}
-     ${tile('due30','Vencem em 30 dias',ov.due30,'hora de oferecer a renovação','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')}</div>`:'';
+     ${tile('due30','Vencem em 30 dias',ov.due30,'hora de oferecer a renovação','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>')}</div>
+     ${ov.agenda?`<button class="cb-ag ${!CL.seg&&JSON.stringify(CLQ.agenda)===cur?'on':''}" data-qk="agenda">${svg('<rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16c.6-1.6 2-2.5 3.5-2.5s2.9.9 3.5 2.5"/>')}<span><b>${num(ov.agenda)}</b> contatos só na agenda do celular, que nunca falaram com a empresa. Ficam fora da base e das campanhas.</span><span class="ii" role="button" tabindex="0" data-info="cl_agenda" aria-label="O que é Só na agenda?">i</span><em>ver</em></button>`:''}`:'';
   const segName=CL.seg&&(segs.find(x=>x.id===CL.seg)||{}).name;
   let hOpen=false;try{hOpen=localStorage.getItem('clHow')!=='0'}catch(e){}
   const how=`<details class="lk-hero cb-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}</span><div><b>Sua base de clientes, para vender de novo</b><span>Quem já falou com você, quem comprou e quem pode comprar mais. Escolha um grupo e aja com ele de uma vez.</span></div><em class="lk-ht">Como usar</em></summary>
@@ -4393,7 +4396,7 @@ function clRules(){const D=CL.data;const sel=(k,list,v,extra)=>`<select data-k="
 async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!box.innerHTML)box.innerHTML='<div class="empty">Contando...</div>';else box.classList.add('ld');
   let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules,q:CL.q||'',sort:clSort()}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;box.classList.remove('ld');
   const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr(),K=r.kinds||{},hasExp=r.items.some(c=>c.next_expiry);
-  const brk=[['cliente','cliente','clientes'],['prospect','prospect','prospects'],['inativo','inativo','inativos']].filter(k=>K[k[0]]).map(k=>`<span class="cb-k ${k[0]}">${num(K[k[0]])} ${K[k[0]]===1?k[1]:k[2]}</span>`).join('');
+  const brk=[['cliente','cliente','clientes'],['prospect','prospect','prospects'],['inativo','inativo','inativos'],['agenda','só na agenda','só na agenda']].filter(k=>K[k[0]]).map(k=>`<span class="cb-k ${k[0]}">${num(K[k[0]])} ${K[k[0]]===1?k[1]:k[2]}</span>`).join('');
   const ch=c=>c.channel==='instagram'?`<span class="cb-chn ig" title="Instagram">${svg('<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/>')}${c.ig?'@'+esc(c.ig):'Instagram'}</span>`:c.wa_id?`<span class="cb-chn">${esc(fmtPhone(c.wa_id))}</span>`:'';
   const kd=c=>{const k=CLK[c.kind]||['—','grey'];return `<span class="pill ${k[1]}">${k[0]}</span>`};
   box.innerHTML=`<div class="cb-sum"><div class="cb-n"><b>${num(r.count)}</b><span>${r.count===1?'pessoa':'pessoas'} neste público</span></div>
@@ -4422,7 +4425,8 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
   $('#clTag').onclick=async()=>{const tag=await sure(`Colocar uma etiqueta nas ${num(r.count)} pessoas deste público:`,{input:true,placeholder:'Ex.: renovacao-nov',ok:'Etiquetar',el:$('#clTag')});if(!tag)return;
     try{const x=await api('/segments/tag',{method:'POST',body:{rules:CL.rules,tag}});toast(`Etiqueta colocada em ${x.count} pessoas.`)}catch(e){toast(e.message)}};
   if($('#clOpp'))$('#clOpp').onclick=()=>{if(!r.count)return toast('Ninguém neste público.');oppForm(CL.rules,r.count)};
-  if($('#clCamp'))$('#clCamp').onclick=()=>{if(!r.reachable)return toast('Ninguém neste público pode receber campanha pelo WhatsApp.');campForm(CL.rules,r.count)};
+  if($('#clCamp'))$('#clCamp').onclick=async()=>{if(!r.reachable)return toast('Ninguém neste público pode receber campanha pelo WhatsApp.');
+    if((r.kinds||{}).agenda&&!await sure(`${num(r.kinds.agenda)} ${r.kinds.agenda===1?'pessoa deste público nunca falou':'pessoas deste público nunca falaram'} com a empresa: vieram da agenda do celular. Quem não espera a mensagem costuma bloquear, e bloqueio derruba a nota do seu número na Meta. Enviar mesmo assim?`,{ok:'Entendi, continuar',el:$('#clCamp')}))return;campForm(CL.rules,r.count)};
   if($('#clExp'))$('#clExp').onclick=async()=>{const b=$('#clExp');b.disabled=true;
     try{const res=await fetch('/api/segments/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rules:CL.rules}),credentials:'same-origin'});
       if(!res.ok){let d={};try{d=await res.json()}catch(e){}throw new Error(d.detail||'Não foi possível exportar.')}

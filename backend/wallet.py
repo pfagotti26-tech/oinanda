@@ -100,7 +100,7 @@ FIELDS = {
 }
 
 class Rule(BaseModel):
-    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created', 'milestone']
+    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created', 'milestone', 'base']
     op: str = Field(default='is', max_length=12)  # is | not | active | ever | never | gte | lte | more | less
     value: Any = None
 
@@ -159,6 +159,7 @@ def match(c, r: Rule, ctx):
     if f == 'tag': return (v in (c.get('tags') or [])) == (op != 'not')
     if f == 'team': return (c.get('team_id') == (v or None)) == (op != 'not')
     if f == 'owner': return (c.get('assigned_to') == (v or None)) == (op != 'not')
+    if f == 'base': return is_agenda(c) == (v == 'agenda')
     if f == 'promo': return (c['id'] in ctx['promo_users'].get(v, set())) == (op != 'not')
     if f == 'milestone':
         mid = v.get('id') if isinstance(v, dict) else v
@@ -170,6 +171,13 @@ def match(c, r: Rule, ctx):
             return days <= n if op == 'within' else days > n
         return last is not None
     return True
+
+IN_AT = ('last_in_at', 'wa_last_in_at', 'ig_last_in_at', 'fb_last_in_at', 'tg_last_in_at', 'em_last_in_at')
+
+def is_agenda(c):
+    """Contato que só veio da agenda do celular (ou só recebeu mensagem): nunca escreveu, nunca comprou e o time não cadastrou.
+    Não é prospect: fica fora da base e das campanhas, a não ser que o público peça ele de propósito."""
+    return not any(c.get(k) for k in IN_AT) and not c.get('sales_count') and c.get('source') != 'manual'
 
 async def run_segment(user, rules):
     from funnel import stages_for
@@ -191,7 +199,11 @@ async def run_segment(user, rules):
             products = products or await products_map(company['id'])
             await refresh_holdings(company['id'], c['id'], products)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
-                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1}).to_list(50000)
+                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1,
+                                                    'source': 1, 'wa_last_in_at': 1, 'ig_last_in_at': 1, 'fb_last_in_at': 1, 'tg_last_in_at': 1, 'em_last_in_at': 1}).to_list(50000)
+    own = {re.sub(r'\D', '', n.get('display_phone') or '') for n in await db.wa_numbers.find({'company_id': company['id']}, {'_id': 0, 'display_phone': 1}).to_list(20)} - {''}
+    if own: rows = [c for c in rows if (c.get('wa_id') or '') not in own]  # o próprio número da empresa não é cliente
+    if not any(r.field == 'base' for r in rules): rules = [*rules, Rule(field='base', value='conversaram')]  # agenda só quando pedida
     return [c for c in rows if all(match(c, r, ctx) for r in rules)]
 
 def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
@@ -199,8 +211,8 @@ def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campan
 def row_out(c, names, inactive_days=None):
     from origins import status_of
     hs = c.get('holdings') or []
-    return {'kind': status_of(c, inactive_days), 'channel': c.get('channel') or 'whatsapp', 'ig': c.get('ig_username'), 'origin': c.get('origin') or ('anuncio' if c.get('ad') else None),
-            'last_in_at': c.get('last_in_at'), 'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
+    return {'kind': 'agenda' if is_agenda(c) else status_of(c, inactive_days), 'channel': c.get('channel') or 'whatsapp', 'ig': c.get('ig_username'), 'origin': c.get('origin') or ('anuncio' if c.get('ad') else None),
+            'last_in_at': max([aware(c.get(k)) for k in IN_AT if c.get(k)], default=None), 'agenda': is_agenda(c), 'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
             'purchases': c.get('sales_count') or 0, 'last_sale_at': c.get('last_sale_at'), 'next_expiry': c.get('next_expiry'), 'opt_out': bool(c.get('opt_out')),
             'has': [{'name': x['name'], 'state': state_of(x), 'expires_at': x.get('expires_at')} for x in hs][:6]}
 
@@ -211,15 +223,16 @@ async def preview(body: SegIn, user=Depends(current_user)):
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     days = user['company'].get('inactive_days')
     kinds = {'prospect': 0, 'cliente': 0, 'inativo': 0}
-    for c in rows: kinds[status_of(c, days)] += 1
+    kinds['agenda'] = 0
+    for c in rows: kinds['agenda' if is_agenda(c) else status_of(c, days)] += 1
     # quem já comprou e vence primeiro vem antes; depois quem gastou mais; depois quem falou por último
     far, old = now() + timedelta(days=99999), now() - timedelta(days=99999)
-    last = lambda c: aware(c.get('last_in_at')) or aware(c.get('created_at')) or old
+    last = lambda c: max([aware(c.get(k)) for k in IN_AT if c.get(k)] or [old])
     spent = lambda c: (c.get('value') or 0) if c.get('sales_count') else 0
     if body.sort == 'spent': rows.sort(key=lambda c: (-spent(c), -last(c).timestamp()))
     elif body.sort == 'expiry': rows.sort(key=lambda c: (aware(c.get('next_expiry')) or far, -spent(c)))
     elif body.sort == 'name': rows.sort(key=lambda c: (c.get('name') or '').lower())
-    else: rows.sort(key=lambda c: -last(c).timestamp())  # quem falou por último primeiro
+    else: rows.sort(key=lambda c: (-last(c).timestamp(), -(aware(c.get('created_at')) or old).timestamp()))  # quem falou por último primeiro; quem nunca falou, no fim
     shown = rows
     q = body.q.strip().lower()
     if q:
@@ -238,7 +251,8 @@ async def overview(user=Depends(current_user)):
     for c in rows: k[status_of(c, days)] += 1
     due = sum(1 for c in rows if any(x.get('expires_at') and t <= aware(x['expires_at']) <= t + timedelta(days=30) for x in c.get('holdings') or []))
     lost = sum(1 for c in rows if any(x.get('expires_at') and t - timedelta(days=30) <= aware(x['expires_at']) < t for x in c.get('holdings') or []))
-    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days}
+    agenda = len(await run_segment(user, [Rule(field='base', value='agenda')]))
+    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days, 'agenda': agenda}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):
