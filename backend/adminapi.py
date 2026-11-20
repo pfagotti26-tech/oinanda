@@ -273,12 +273,74 @@ async def payments(start: Optional[str] = None, end: Optional[str] = None, date_
             w.writerow([day(x['due']), day(x['paid_at']), x['company'], x['segment'], (PLANS.get(x['plan']) or {}).get('name', x['plan']),
                         'anual' if x['cycle'] == 'annual' else 'mensal', f"{x['amount']:.2f}".replace('.', ','), STATUS.get(x['status'], x['status'])])
         return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8', headers={'Content-Disposition': 'attachment; filename="oinanda-cobrancas.csv"'})
+    summary = await fin_summary(rows_c, t0, t1)
     upcoming = sorted([{'company_id': r['c']['id'], 'company': r['c'].get('name'), 'due': aware(r['c']['billing']['next_payment']), 'plan': r['c']['billing'].get('plan'),
                         'extra_users': r['c']['billing'].get('extra_users') or 0, 'amount': float(r['c']['billing'].get('amount') or 0)}
                        for r in rows_c.values() if r['kind'] == 'paying' and (r['c'].get('billing') or {}).get('status') == 'active'
                        and inside(r['c']['billing'].get('next_payment'), now(), now() + timedelta(days=7))], key=lambda x: x['due'])
-    return {'period': {'start': t0, 'end': t1 - timedelta(seconds=1)}, 'rows': rows[:500], 'total': len(rows), 'totals': totals, 'counts': counts, 'upcoming': upcoming,
+    return {'period': {'start': t0, 'end': t1 - timedelta(seconds=1)}, 'rows': rows[:500], 'total': len(rows), 'totals': totals, 'counts': counts, 'upcoming': upcoming, 'summary': summary,
             'ready': bool(os.environ.get('MP_ACCESS_TOKEN'))}
+
+def per_month(c):
+    b = c.get('billing') or {}; a = float(b.get('amount') or 0)
+    return a / 12 if b.get('cycle') == 'annual' else a
+
+async def fin_summary(rows_c, t0, t1):
+    """Visão de dono do caixa: receita recorrente, o que entra nos próximos 30 dias, inadimplência e o que mudou na receita."""
+    n = now(); rows = list(rows_c.values())
+    paying = [r for r in rows if r['kind'] == 'paying']
+    mrr = round(sum(r['mrr'] for r in rows), 2); active = [r for r in paying if (r['c'].get('billing') or {}).get('status') == 'active']
+    pays = [p for p in await db.payments.find({'status': 'paid'}, {'_id': 0}).to_list(20000) if p['company_id'] in rows_c]
+    p0 = t0 - (t1 - t0)
+    received_prev = round(sum(p['amount'] for p in pays if inside(p.get('paid_at'), p0, t0)), 2)
+    # próximos 30 dias: renovações das assinaturas ativas e primeiras mensalidades de quem está no teste com cartão
+    fut = []
+    for r in rows:
+        b = r['c'].get('billing') or {}
+        if b.get('status') != 'active': continue
+        tu = aware(b.get('trial_until')); nx = aware(b.get('next_payment'))
+        if tu and n < tu <= n + timedelta(days=30): fut.append({'company_id': r['c']['id'], 'company': r['c'].get('name'), 'due': tu, 'amount': float(b.get('amount') or 0), 'plan': b.get('plan'), 'cycle': b.get('cycle') or 'monthly', 'first': True})
+        elif r['kind'] == 'paying' and nx and n <= nx <= n + timedelta(days=30): fut.append({'company_id': r['c']['id'], 'company': r['c'].get('name'), 'due': nx, 'amount': float(b.get('amount') or 0), 'plan': b.get('plan'), 'cycle': b.get('cycle') or 'monthly', 'first': False})
+    fut.sort(key=lambda x: x['due'])
+    weeks = [{'label': f'{(n + timedelta(days=7 * i)).astimezone(SP):%d/%m} a {(n + timedelta(days=7 * i + 6)).astimezone(SP):%d/%m}', 'total': 0.0, 'n': 0} for i in range(5)]
+    for x in fut:
+        w = weeks[min(4, max(0, (x['due'] - n).days // 7))]; w['total'] = round(w['total'] + x['amount'], 2); w['n'] += 1
+    # inadimplência: cobrança recusada ainda sem pagamento depois dela
+    late = []
+    for r in rows:
+        if not r['refused']: continue
+        p = r['refused']; lim = aware(p['due']) + timedelta(days=GRACE_DAYS) if p.get('due') else None
+        late.append({'company_id': r['c']['id'], 'company': r['c'].get('name'), 'amount': p['amount'], 'due': p.get('due'), 'attempt': p.get('attempt') or 0,
+                     'reason': reason(p.get('detail')) or 'recusada pelo banco', 'access_until': lim, 'blocked': bool(lim and lim < n)})
+    late.sort(key=lambda x: aware(x['due']) or n)
+    # o que mudou na receita recorrente no período
+    since = lambda r: aware((r['c'].get('billing') or {}).get('since'))
+    new = [r for r in paying if inside(since(r), t0, t1) and not billing.card_trial(r['c'])]
+    lost = [r for r in rows if inside((r['c'].get('billing') or {}).get('cancelled_at'), t0, t1)]
+    new_mrr = round(sum(per_month(r['c']) for r in new), 2); lost_mrr = round(sum(per_month(r['c']) for r in lost), 2)
+    cyc = lambda k: [r for r in paying if ((r['c'].get('billing') or {}).get('cycle') or 'monthly') == k]
+    # recebido nos últimos 12 meses
+    today = n.astimezone(SP); ms = []; y, m = today.year, today.month
+    for _ in range(12):
+        ms.append((y, m)); m -= 1
+        if m == 0: y, m = y - 1, 12
+    ms.reverse(); tot = {k: 0.0 for k in ms}
+    for p in pays:
+        d = aware(p.get('paid_at'))
+        if d:
+            k = (d.astimezone(SP).year, d.astimezone(SP).month)
+            if k in tot: tot[k] += p['amount']
+    tin = sum(r['ai_in'] for r in rows); tout = sum(r['ai_out'] for r in rows)
+    aic = ai_cost(tin, tout, sum(r['ai_cr'] for r in rows), sum(r['ai_cw'] for r in rows))
+    return {'mrr': mrr, 'arr': round(mrr * 12, 2), 'paying': len(paying), 'ticket': round(mrr / len(paying), 2) if paying else 0, 'received_prev': received_prev,
+            'forecast': {'total': round(sum(x['amount'] for x in fut), 2), 'n': len(fut), 'first': sum(1 for x in fut if x['first']), 'items': fut[:30], 'weeks': weeks},
+            'late': {'total': round(sum(x['amount'] for x in late), 2), 'n': len(late), 'items': late},
+            'movement': {'new': new_mrr, 'new_n': len(new), 'lost': lost_mrr, 'lost_n': len(lost), 'net': round(new_mrr - lost_mrr, 2)},
+            'cycles': {k: {'n': len(cyc(k)), 'mrr': round(sum(r['mrr'] for r in cyc(k)), 2)} for k in ('monthly', 'annual')},
+            'plans': [{'plan': k, 'name': PLANS[k]['name'], 'n': sum(1 for r in paying if r['plan'] == k), 'mrr': round(sum(r['mrr'] for r in paying if r['plan'] == k), 2)} for k in PLANS],
+            'months': [{'key': f'{y}-{m:02d}', 'label': MONTHS[m - 1], 'total': round(tot[(y, m)], 2)} for y, m in ms],
+            'ai_cost': aic, 'margin': round(mrr - aic, 2) if aic is not None else None, 'margin_pct': round(100 * (mrr - aic) / mrr) if aic is not None and mrr else None,
+            'mp_fee_pct': float(os.environ['MP_FEE_PCT']) if os.environ.get('MP_FEE_PCT') else None}
 
 @router.post('/admin/payments/sync')
 async def payments_sync(request: Request, user=Depends(admin)):

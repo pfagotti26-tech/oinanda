@@ -117,6 +117,10 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert a.get('/api/admin/payments?start=2020-01-01&end=2020-01-31').json()['rows'] == []
         csv = a.get(P + '&fmt=csv'); assert 'Clínica Bella' in csv.text and 'text/csv' in csv.headers['content-type']
         assert len(f['upcoming']) == 0  # próxima cobrança em 30 dias, fora dos 7
+        sm = f['summary']
+        assert sm['mrr'] == 297 and sm['arr'] == 3564 and sm['paying'] == 1 and sm['ticket'] == 297 and sm['late']['n'] == 0
+        assert sm['forecast']['n'] == 1 and sm['forecast']['total'] == 297 and len(sm['months']) == 12 and sm['months'][-1]['total'] == 297
+        assert sm['cycles']['monthly']['n'] == 1 and sm['movement']['new'] == 297
         # clientes: abas, busca e filtros
         l = a.get('/api/admin/companies').json()
         assert l['counts'] == {'all': 2, 'paying': 1, 'courtesy': 0, 'trial': 1, 'readonly': 0, 'suspended': 0} and l['total'] == 3
