@@ -501,10 +501,27 @@ async def sync_pending():
             await db.companies.update_one({'id': c['id']}, {'$set': {'alert_tpl.synced_at': now()}})
     except Exception: log.exception('falha ao conferir o modelo de aviso do time')
 
+LOOP_ID = uid()
+
+async def lead():
+    """Só um processo roda o ciclo: o servidor tem mais de um worker, e dois ciclos juntos mandariam e-mail e mensagem em dobro."""
+    from datetime import timedelta
+    from pymongo.errors import DuplicateKeyError
+    until = now() + timedelta(seconds=150)
+    try:
+        await db.locks.update_one({'_id': 'loop', '$or': [{'owner': LOOP_ID}, {'until': {'$lt': now()}}]}, {'$set': {'owner': LOOP_ID, 'until': until}}, upsert=True)
+        return True
+    except DuplicateKeyError:
+        return False
+
 async def loop():
     every = float(os.environ.get('AUTOMATIONS_EVERY', '60'))
     await asyncio.sleep(10)
     while True:
+        try:
+            if not await lead():
+                await asyncio.sleep(every); continue
+        except Exception: log.exception('falha ao decidir quem roda o ciclo')
         try: await run_once()
         except Exception: log.exception('falha no ciclo das automações')
         try:
