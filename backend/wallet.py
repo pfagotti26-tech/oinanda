@@ -21,8 +21,8 @@ router = APIRouter()
 SOON_DAYS = 15
 
 # ---------- carteira ----------
-def compute_holdings(sales, products):
-    """sales: vendas válidas do cliente (com items/date). products: id -> produto."""
+def compute_holdings(sales, products, cancels=None):
+    """sales: vendas válidas do cliente (com items/date). products: id -> produto. cancels: id do produto -> quando a assinatura foi cancelada."""
     h = {}
     for s in sorted(sales, key=lambda x: aware(x['date'])):
         d = aware(s['date'])
@@ -38,7 +38,18 @@ def compute_holdings(sales, products):
             elif dur:
                 start = max(d, x['expires_at']) if x['expires_at'] else d  # renovou antes de vencer: soma no fim
                 x['expires_at'] = start + timedelta(days=dur * max(1, int(round(i.get('qty') or 1))))
+    for x in h.values():  # assinatura cancelada: termina na data do cancelamento (se comprou de novo depois, voltou a valer)
+        ca = aware((cancels or {}).get(x.get('product_id')))
+        if x.get('recurring') and ca and ca >= x['last_at']: x['cancelled_at'] = ca; x['expires_at'] = ca
     return list(h.values())
+
+def cancels_of(contact):
+    return {k: v.get('at') for k, v in ((contact or {}).get('sub_cancel') or {}).items()}
+
+def monthly(p):
+    """Quanto a assinatura rende por mês (o preço do catálogo dividido pelo período)."""
+    d = p.get('duration_days') or 30
+    return round((p.get('price') or 0) * 30 / d, 2)
 
 def state_of(x, at=None):
     t = at or now()
@@ -54,7 +65,8 @@ async def products_map(company_id):
 async def refresh_holdings(company_id, contact_id, products=None):
     products = products or await products_map(company_id)
     sales = await db.sales.find({'company_id': company_id, 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'items': 1, 'date': 1}).to_list(1000)
-    hs = compute_holdings(sales, products)
+    ct = await db.contacts.find_one({'id': contact_id}, {'_id': 0, 'sub_cancel': 1})
+    hs = compute_holdings(sales, products, cancels_of(ct))
     nxt = min((aware(x['expires_at']) for x in hs if x.get('expires_at') and aware(x['expires_at']) >= now()), default=None)
     await db.contacts.update_one({'id': contact_id}, {'$set': {'holdings': hs, 'next_expiry': nxt}})
     return hs
@@ -93,15 +105,46 @@ async def wallet(contact_id: str, user=Depends(current_user)):
     items.sort(key=lambda x: ({'vence_logo': 0, 'ativo': 1, 'vencido': 2}[x['state']], aware(x['expires_at']) or now()))
     return {'items': items, 'offers': offers_for(hs, products)}
 
+class SubIn(BaseModel):
+    product_id: str = Field(max_length=40)
+    cancel: bool = True
+    at: Optional[str] = Field(default=None, max_length=10)  # AAAA-MM-DD; sem data = hoje
+    reason: str = Field(default='', max_length=200)
+
+@router.post('/contacts/{contact_id}/subscription')
+async def subscription(contact_id: str, body: SubIn, request: Request, user=Depends(current_user)):
+    """Cancelou (ou voltou) a assinatura: sem isso, quem cancela o cartão continuaria aparecendo como ativo para sempre."""
+    from datetime import datetime, time as dtime
+    from agenda import tz_of
+    from whatsapp import note
+    c = await get_contact(user, contact_id)
+    p = await db.products.find_one({'company_id': user['company_id'], 'id': body.product_id}, {'_id': 0})
+    if not p or not p.get('recurring'): raise HTTPException(400, 'Esse item não é uma assinatura.')
+    if body.cancel:
+        tz = tz_of(user['company'])
+        try: d = datetime.strptime(body.at, '%Y-%m-%d').date() if body.at else now().astimezone(tz).date()
+        except ValueError: raise HTTPException(400, 'Data inválida.')
+        if d > (now() + timedelta(days=366)).date(): raise HTTPException(400, 'A data do cancelamento está longe demais.')
+        at = now() if d == now().astimezone(tz).date() else datetime.combine(d, dtime(23, 59), tz)  # hoje: já sai; data futura: vale até o fim daquele dia
+        await db.contacts.update_one({'id': c['id']}, {'$set': {f'sub_cancel.{p["id"]}': {'at': at, 'reason': body.reason.strip(), 'by': user['name'], 'marked_at': now()}}})
+        txt = f'{user["name"]} marcou que a assinatura {p["name"]} foi cancelada' + (f' (vale até {d:%d/%m/%Y})' if d > now().astimezone(tz).date() else f' em {d:%d/%m/%Y}') + (f' · motivo: {body.reason.strip()}' if body.reason.strip() else '')
+    else:
+        await db.contacts.update_one({'id': c['id']}, {'$unset': {f'sub_cancel.{p["id"]}': ''}})
+        txt = f'{user["name"]} marcou que a assinatura {p["name"]} voltou a valer'
+    await note(user['company_id'], c['id'], txt)
+    await audit(request, user, 'Cancelou assinatura' if body.cancel else 'Reativou assinatura', f'{c.get("name")} · {p["name"]}')
+    await refresh_holdings(user['company_id'], c['id'])
+    return await wallet(contact_id, user)
+
 # ---------- segmentos ----------
 FIELDS = {
     'product': 'Item', 'category': 'Categoria', 'expires_in': 'Vence nos próximos dias', 'expired_within': 'Venceu e não renovou (até X dias)',
     'last_purchase': 'Última compra', 'purchases': 'Número de compras', 'spent': 'Total gasto', 'kind': 'Situação', 'origin': 'Origem',
-    'stage': 'Etapa do funil', 'tag': 'Etiqueta', 'team': 'Equipe', 'owner': 'Responsável', 'promo': 'Usou promoção', 'created': 'Chegou há',
+    'stage': 'Etapa do funil', 'tag': 'Etiqueta', 'team': 'Equipe', 'owner': 'Responsável', 'promo': 'Usou promoção', 'created': 'Chegou há', 'sub': 'Assinatura',
 }
 
 class Rule(BaseModel):
-    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created', 'milestone', 'base']
+    field: Literal['product', 'category', 'expires_in', 'expired_within', 'last_purchase', 'purchases', 'spent', 'kind', 'origin', 'stage', 'tag', 'team', 'owner', 'promo', 'created', 'milestone', 'base', 'sub']
     op: str = Field(default='is', max_length=12)  # is | not | active | ever | never | gte | lte | more | less
     value: Any = None
 
@@ -162,6 +205,10 @@ def match(c, r: Rule, ctx):
     if f == 'team': return (c.get('team_id') == (v or None)) == (op != 'not')
     if f == 'owner': return (c.get('assigned_to') == (v or None)) == (op != 'not')
     if f == 'base': return is_agenda(c) == (v == 'agenda')
+    if f == 'sub':  # assinatura que renova sozinha: ativa agora ou cancelada (e não voltou)
+        subs = [x for x in hs if x.get('recurring')]
+        if v == 'cancelled': return any(x.get('cancelled_at') and state_of(x) == 'vencido' for x in subs)
+        return any(state_of(x) != 'vencido' for x in subs)
     if f == 'promo': return (c['id'] in ctx['promo_users'].get(v, set())) == (op != 'not')
     if f == 'milestone':
         mid = v.get('id') if isinstance(v, dict) else v
@@ -275,7 +322,10 @@ async def overview(user=Depends(current_user)):
     due = sum(1 for c in rows if any(x.get('expires_at') and t <= aware(x['expires_at']) <= t + timedelta(days=30) for x in c.get('holdings') or []))
     lost = sum(1 for c in rows if any(x.get('expires_at') and t - timedelta(days=30) <= aware(x['expires_at']) < t for x in c.get('holdings') or []))
     agenda = len(await run_segment(user, [Rule(field='base', value='agenda')]))
-    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days, 'agenda': agenda, 'imported': sum(1 for c in rows if c.get('source') == 'importado')}
+    products = await products_map(user['company_id'])
+    subs = [x for c in rows for x in c.get('holdings') or [] if x.get('recurring') and state_of(x) != 'vencido']
+    gone = sum(1 for c in rows for x in c.get('holdings') or [] if x.get('cancelled_at') and t - timedelta(days=30) <= aware(x['cancelled_at']) <= t)
+    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'subs': len(subs), 'mrr': round(sum(monthly(products.get(x.get('product_id')) or {}) for x in subs), 2), 'subs_lost30': gone, 'inactive_days': days, 'agenda': agenda, 'imported': sum(1 for c in rows if c.get('source') == 'importado')}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):
