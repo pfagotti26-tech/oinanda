@@ -27,9 +27,9 @@ AGENDA_RECIPES = [
       why='Quando o horário é marcado como "Faltou", chama para remarcar.'),
 ]
 FOLLOWUP = [
-    R('esfriou_1', 'Sem resposta há 1 dia', 'no_reply', 24,
+    R('esfriou_1', 'Sem resposta no mesmo dia', 'no_reply', 20,
       'Oi, {primeiro_nome}! Conseguiu ver minha última mensagem? Fico à disposição para qualquer dúvida.',
-      why='Retoma quem parou de responder durante a negociação.'),
+      why='Retoma quem parou de responder, ainda dentro das 24 h: sai como mensagem normal, sem modelo e sem custo da Meta.'),
     R('esfriou_3', 'Sem resposta há 3 dias', 'no_reply', 72,
       'Oi, {primeiro_nome}! Vou deixar seu atendimento em aberto por aqui. Quando quiser continuar, é só me chamar!',
       why='Última tentativa, sem pressionar.'),

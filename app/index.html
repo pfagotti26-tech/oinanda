@@ -2009,6 +2009,8 @@ body:has(.nz-save) #toast{bottom:92px}
 .am-sum{margin:0;background:#FAF6F2;border-radius:10px;padding:8px 12px;font-size:13px;color:var(--ink2)}
 .am-vars{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px}.am-vars>span{font-size:12px;color:var(--ink3)}.am-vars button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer;color:var(--ink2)}.am-vars button:hover{border-color:var(--c);color:var(--c)}
 .am-sticky{position:sticky;top:12px;display:flex;flex-direction:column;gap:12px}.am-r .lk-ph{min-height:90px;align-items:flex-start}
+.am-cnt ul{margin:6px 0 0;padding-left:16px;display:flex;flex-direction:column;gap:2px;font-size:12.5px}.am-cnt li.ok{color:#1F7A50}.am-cnt li.wn{color:#8A5A00}.am-cnt li.no{color:var(--bad)}.am-cnt.warn{background:#FFF7E8}.am-cnt.warn b,.am-cnt.warn>span{color:#7A5A12}
+.au-sk{border:0;background:none;padding:0;font:inherit;cursor:pointer;display:flex;flex-direction:column;line-height:1.15;text-align:left}.au-sk b{font-size:16px;color:#8A5A00}.au-sk span{font-size:11px;color:#8A5A00;text-decoration:underline;text-decoration-color:#E8D3A8}
 .am-cnt{display:flex;flex-direction:column;gap:2px;background:#E9F6EF;border-radius:12px;padding:10px 12px;font-size:13px}.am-cnt b{color:#185E3E}.am-cnt span{color:#2C6B4C;font-size:12.5px}
 .am-meta{border:1px solid #F1E8E0;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px}.am-meta>b{display:flex;align-items:center;gap:6px}.am-meta>b svg{width:15px;height:15px;color:var(--ink3)}.am-meta p{margin:0;color:var(--ink3);font-size:12.5px}
 .am-tp summary{font-size:12.5px;color:var(--c);cursor:pointer}.am-tp select{margin-top:6px;width:100%}
@@ -3595,7 +3597,9 @@ async function autoModal(a,d,tpls){
      <details class="am-tp"><summary>Usar um modelo que já tenho</summary><select name="template_id"><option value="">Nenhum</option>${tpls.filter(t=>t.status!=='REJECTED').map(t=>`<option value="${t.id}" ${x.template_id===t.id?'selected':''}>${esc(t.label)} (${esc(t.label_status)})</option>`).join('')}</select></details></div>
     <div class="row"><button class="btn p">${a?'Salvar':'Criar e ligar'}</button><span class="err" id="amE"></span></div></div></aside></div></form>`,true);
   const f=o.querySelector('#amF');
-  o.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.v+'}',ta=f.message,i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length;pv()});
+  let car=null;f.message.addEventListener('blur',()=>{car=[f.message.selectionStart,f.message.selectionEnd]});
+  o.querySelectorAll('[data-v]').forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>{const v='{'+b.dataset.v+'}',ta=f.message,foc=document.activeElement===ta,[i,j]=foc?[ta.selectionStart,ta.selectionEnd]:car||[ta.value.length,ta.value.length];
+    const pre=ta.value.slice(0,i),sp=pre&&!/\s$/.test(pre)?' ':'';ta.value=pre+sp+v+ta.value.slice(j);const k=i+sp.length+v.length;ta.focus();ta.selectionStart=ta.selectionEnd=k;car=[k,k];pv()}});
   const pv=()=>{$('#amPv').innerHTML=esc(f.message.value||'…').replace(/\{(\w+)\}/g,(m,k)=>S[k]!=null?`<b>${esc(S[k])}</b>`:m)};
   const hrs=()=>{const n=Number(f.n.value)||0;return f.unit.value==='d'?n*24:n};
   const when=()=>{const t=f.trigger.value,h=hrs(),q=h>=24&&h%24===0?`${h/24} ${h/24===1?'dia':'dias'}`:`${h} ${h===1?'hora':'horas'}`,st=(d.stages.find(s=>s.id===f.stage_id.value)||{}).name;
@@ -3603,7 +3607,11 @@ async function autoModal(a,d,tpls){
       before_appt:`${q} antes de cada horário marcado.`,appt_done:`${q} depois de cada atendimento.`,appt_no_show:`${q} depois de uma falta.`,after_milestone:`${h?q+' depois':'Assim'} que o cliente atinge o marco.`}[t]};
   let ct;const cnt=()=>{clearTimeout(ct);ct=setTimeout(async()=>{const t=f.trigger.value;
     try{const r=await api('/automations/preview',{method:'POST',body:{trigger:t,hours:hrs(),stage_id:['stage_enter','no_reply'].includes(t)?(f.stage_id.value||null):null,product_id:['before_expiry','after_expiry','after_purchase'].includes(t)?(f.product_id.value||null):null,milestone_id:t==='after_milestone'?f.milestone_id.value||null:null,unless_id:t==='after_milestone'?f.unless_id.value||null:null}});
-      $('#amCnt').innerHTML=r.count?`<b>${num(r.count)} ${r.count===1?'pessoa está':'pessoas estão'} nesse momento agora</b><span>${r.names.map(esc).join(', ')}${r.count>r.names.length?' e outras':''} ${r.count===1?'receberia':'receberiam'} na próxima rodada (das 8h às 21h).</span>`:'<b>Ninguém nesse momento agora</b><span>Ela fica ligada e envia sozinha quando alguém chegar nele.</span>'}catch(e){$('#amCnt').innerHTML=''}},350)};
+      const pl=(n,a,b)=>`${num(n)} ${n===1?a:b}`;
+      $('#amCnt').className='am-cnt'+(r.count&&!r.now?' warn':'');
+      $('#amCnt').innerHTML=r.count?`<b>${pl(r.count,'pessoa está','pessoas estão')} nesse momento agora</b><span>${r.names.map(esc).join(', ')}${r.count>r.names.length?' e outras':''}.</span>
+        <ul>${r.now?`<li class="ok">${pl(r.now,'recebe','recebem')} na próxima rodada, como mensagem normal</li>`:''}${r.needs_template?`<li class="wn">${pl(r.needs_template,'só recebe','só recebem')} depois que a Meta aprovar a mensagem (fora das 24 h)</li>`:''}${r.blocked?`<li class="no">${pl(r.blocked,'não recebe','não recebem')}: Instagram fora do prazo de 24 h</li>`:''}</ul>`
+        :'<b>Ninguém nesse momento agora</b><span>Ela fica ligada e envia sozinha quando alguém chegar nele. Não manda para quem já passou desse momento antes de ligar.</span>'}catch(e){$('#amCnt').innerHTML=''}},350)};
   const sync=()=>{const t=f.trigger.value;o.querySelector('#amSt').classList.toggle('hide',!['stage_enter','no_reply'].includes(t));
     f.stage_id.options[0].textContent=t==='stage_enter'?'Escolha a etapa':'Qualquer etapa em andamento';
     o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois',before_expiry:'Quanto tempo antes de vencer',after_expiry:'Quanto tempo depois de vencer',after_purchase:'Quanto tempo depois da compra',after_milestone:'Quanto tempo depois do marco'}[t];
@@ -5354,8 +5362,8 @@ const VIEWS={
  vendas:()=>vdView(),
  clientes:()=>clView(),
  async automacoes(){
-  const [d,tpls]=await Promise.all([api('/automations'),api('/templates')]);
-  const n=d.items.length;
+  const [d,tpls,aps]=await Promise.all([api('/automations'),api('/templates'),api('/products').catch(()=>[])]);
+  const n=d.items.length;const p1=aps.find(p=>p.active&&p.duration_days)||aps.find(p=>p.active);
   $('#page').innerHTML=`<div class="fhd"><div><h1>Automações</h1><p class="sub">Mensagens que saem sozinhas no WhatsApp na hora certa, para nenhuma venda se perder por esquecimento.</p></div>
    <div class="tools">${AU.tab==='lista'?'<button class="btn sm p" id="auNew">+ Criar automação</button>':AU.tab==='modelos'?'<button class="btn sm" id="tpSync">Atualizar com a Meta</button><button class="btn sm p" id="tpNew">+ Novo modelo</button>':''}</div></div>
    <nav class="utabs">${[['lista',`Automações${n?` <em class="ut-n">${n}</em>`:''}`],['hist','Histórico'],['modelos','Modelos da Meta']].map(t=>`<button class="${AU.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</nav><div id="auBody"></div>`;
@@ -5365,7 +5373,7 @@ const VIEWS={
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
   const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
   const cfgA=AG.cfg||await api('/agenda/settings').catch(()=>null);const tm=new Date();tm.setDate(tm.getDate()+1);
-  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',profissional:'Léo',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00',produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2'};
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',profissional:'Léo',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00',produto:(p1&&p1.name)||'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2'};
   AU.sample=sample;
   const prev=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b title="${esc(VARS_TXT[k]||k)}">${esc(sample[k])}</b>`:m);
   const bubble=(t,sm)=>`<div class="wab ${sm?'au-mini':''}">${sm?'':'<span class="wl">Como o cliente recebe</span>'}${prev(t)}<small>09:00 ✓✓</small></div>`;
@@ -5382,7 +5390,7 @@ const VIEWS={
      ${bubble(a.message,true)}
      <div class="au3-s ${s[0]}"><i></i><div><b>${s[1]}</b><span>${s[2]}</span></div>${s[3]?`<button class="btn sm" data-ask="${a.id}">${a.template_id?'Pedir de novo':'Pedir aprovação'}</button>`:''}</div>
      ${!a.active&&a.trigger==='stage_enter'&&!a.stage_id?'<div class="au3-s warn"><i></i><div><b>Falta escolher a etapa</b><span>Abra em editar para ligar.</span></div></div>':''}
-     <div class="au3-n"><div><b>${a.sent||0}</b><span>enviadas</span></div><div><b>${a.replied||0}</b><span>responderam</span></div><div class="${a.bought?'ok':''}"><b>${a.bought||0}</b><span>${a.revenue?brl(a.revenue):'compraram'}</span></div>
+     <div class="au3-n"><div><b>${a.sent||0}</b><span>enviadas</span></div><div><b>${a.replied||0}</b><span>responderam</span></div><div class="${a.bought?'ok':''}"><b>${a.bought||0}</b><span>${a.revenue?brl(a.revenue):'compraram'}</span></div>${a.skipped?`<button class="au-sk" data-sk title="Ver no histórico por que não foram enviadas"><b>${a.skipped}</b><span>não enviadas</span></button>`:''}
       <span class="sp"></span><button class="btn sm icn" data-ed="${a.id}" title="Editar" aria-label="Editar">${svg('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button><button class="btn sm icn" data-del="${a.id}" title="Apagar" aria-label="Apagar">${IC.trash}</button></div></div>`};
   const packR=d.pack.map(k=>d.recipes.find(r=>r.key===k)).filter(Boolean);
   const why=d.uses_agenda?'Você marca horários na Agenda: o que mais dá resultado é lembrar antes, remarcar quem faltou e retomar quem parou de responder.':`Você não usa horário marcado, então o melhor começo é retomar quem parou de responder${d.has_validity?' e lembrar a renovação antes de vencer':' e puxar o próximo passo depois da compra'}.`;
@@ -5412,8 +5420,12 @@ const VIEWS={
   const reload=()=>VIEWS.automacoes();
   const hw=$('#auBody .au-how');hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('auHow',hw.open?'0':'1')}catch(e){}};
   document.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{AU.grp=b.dataset.gs;reload()});
-  if($('#auPack'))$('#auPack').onclick=async e=>{e.target.disabled=true;try{for(const k of d.pack)await api('/automations',{method:'POST',body:{recipe:k}});toast(d.pack.length===1?'Automação ligada.':d.pack.length+' automações ligadas.');reload()}catch(x){toast(x.message);e.target.disabled=false}};
-  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await api('/automations',{method:'POST',body:{recipe:b.dataset.add}});toast('Automação adicionada e ligada.');reload()}catch(e){toast(e.message);b.disabled=false}});
+  document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{AU.tab='hist';AU.rf='skipped';syncUrl();reload()});
+  // ao ligar uma ideia pronta, já pede a aprovação da Meta quando ela vai cair fora das 24 h
+  const addRec=async k=>{const r=d.recipes.find(x=>x.key===k),a=await api('/automations',{method:'POST',body:{recipe:k}});
+    if(d.whatsapp&&r&&!(r.trigger==='no_reply'&&r.hours<24)){try{await api('/automations/'+a.id+'/template',{method:'POST'});return 1}catch(e){}}return 0};
+  if($('#auPack'))$('#auPack').onclick=async e=>{e.target.disabled=true;try{let t=0;for(const k of d.pack)t+=await addRec(k);toast((d.pack.length===1?'Automação ligada.':d.pack.length+' automações ligadas.')+(t?' As mensagens foram para aprovação da Meta.':''));reload()}catch(x){toast(x.message);e.target.disabled=false}};
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{const t=await addRec(b.dataset.add);toast('Automação adicionada e ligada.'+(t?' A mensagem foi para aprovação da Meta.':''));reload()}catch(e){toast(e.message);b.disabled=false}});
   document.querySelectorAll('[data-tg]').forEach(b=>b.onclick=async()=>{const a=d.items.find(x=>x.id===b.dataset.tg);try{await api('/automations/'+a.id,{method:'PATCH',body:{active:!a.active}});toast(a.active?'Automação desligada.':'Automação ligada.');reload()}catch(e){toast(e.message)}});
   document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>autoModal(d.items.find(x=>x.id===b.dataset.ed),d,tpls));
   document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta automação? O histórico de envios continua.'))return;await api('/automations/'+b.dataset.del,{method:'DELETE'});reload()});

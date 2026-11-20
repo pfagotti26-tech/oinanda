@@ -64,9 +64,14 @@ def test_nichos_e_automacoes(monkeypatch):
             past = now() - timedelta(hours=hours)
             await db.contacts.update_one({'id': conv['id']}, {'$set': {'last_in_at': past, 'stage_at': past, 'last_at': past}})
         c.portal.call(age, 10)
-        assert c.portal.call(automations.run_once) == 0  # ainda não deu 24 h
-        c.portal.call(age, 23.5)  # janela aberta ainda: vai mensagem normal
-        assert c.portal.call(automations.run_once) == 0
+        assert c.portal.call(automations.run_once) == 0  # ainda não deu 20 h
+        c.portal.call(age, 21)  # 20 h sem resposta, janela aberta: vai mensagem normal, sem modelo
+        n0 = len(meta.sent)
+        assert c.portal.call(automations.run_once) == 1 and len(meta.sent) == n0 + 1
+        assert meta.sent[-1]['type'] == 'text' and meta.sent[-1]['text']['body'].startswith('Oi, Marina!')
+        assert c.portal.call(automations.run_once) == 0  # não repete
+        async def clear0(): await db.automation_runs.delete_many({})
+        c.portal.call(clear0)
         c.portal.call(age, 24.5)  # passou de 24 h: janela fechada e sem modelo, a vez é pulada
         n0 = len(meta.sent)
         assert c.portal.call(automations.run_once) == 1 and len(meta.sent) == n0
