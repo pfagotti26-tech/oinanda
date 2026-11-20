@@ -129,6 +129,7 @@ class ContactPatch(BaseModel):
     email: Optional[str] = Field(default=None, max_length=120)
     opt_out: Optional[bool] = None
     internal: Optional[bool] = None
+    bot_ok: Optional[bool] = None  # "é cliente sim": não sugerir de novo que é mensagem automática
 
 @router.patch('/contacts/{contact_id}')
 async def patch_contact(contact_id: str, body: ContactPatch, request: Request, user=Depends(current_user)):
@@ -197,6 +198,17 @@ async def summary(user=Depends(current_user)):
 @router.get('/funnel/stages')
 async def get_stages(user=Depends(current_user)):
     return await stages_for(user['company'])
+
+class NotClientIn(BaseModel):
+    ids: List[str] = Field(min_length=1, max_length=300)
+    value: bool = True
+
+@router.post('/contacts/not-client')
+async def not_client(body: NotClientIn, request: Request, user=Depends(managers)):
+    """Tira vários contatos da base de vendas de uma vez (time, teste ou mensagem automática): não contam como prospect nem cliente."""
+    r = await db.contacts.update_many({'company_id': user['company_id'], 'id': {'$in': body.ids}}, {'$set': {'internal': body.value}})
+    await audit(request, user, 'Tirou da base de vendas' if body.value else 'Voltou para a base de vendas', f'{r.modified_count} contatos')
+    return {'updated': r.modified_count}
 
 @router.get('/funnel/auto-stage')
 async def get_auto(user=Depends(current_user)):

@@ -402,7 +402,13 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         r['wait_from'], r['wait_limit'] = (wf.isoformat() if wf else None), lim
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     from channels import window_of
+    from inbox import looks_auto
+    cand = [r['id'] for r in rows if not r.get('internal') and not r.get('bot_ok') and not r.get('sales_count')]
+    by = {}
+    for m in await db.messages.find({'company_id': user['company_id'], 'contact_id': {'$in': cand}, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'contact_id': 1, 'dir': 1, 'text': 1, 'type': 1, 'by_id': 1}).to_list(30000):
+        by.setdefault(m['contact_id'], []).append(m)
     for r in rows:
+        r['maybe_auto'] = r['id'] in by and looks_auto(by[r['id']])
         r['assigned_name'] = names.get(r.get('assigned_to'))
         li = aware(r.get('last_in_at'))
         w = window_of(r.get('channel'))

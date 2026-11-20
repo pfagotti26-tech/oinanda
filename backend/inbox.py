@@ -18,13 +18,21 @@ STALE_DAYS = 7
 
 def waiting(c):
     """Cliente falou por último e ninguém respondeu nem marcou como resolvido ou "não precisa responder" depois disso."""
-    if c.get('last_dir') != 'in': return False
+    if c.get('last_dir') != 'in' or c.get('internal'): return False  # quem não é cliente não fica na fila
     li = aware(c.get('last_in_at'))
     if li and now() - li > timedelta(days=STALE_DAYS): return False  # esperou demais: sai da fila sozinha (volta se o cliente escrever de novo)
     for k in ('resolved_at', 'noreply_at'):
         r = aware(c.get(k))
         if r and li and r >= li: return False
     return True
+
+AUTO_RX = re.compile(r'https?://|www\.|📎|🔗|^↩️', re.I)
+
+def looks_auto(msgs):
+    """Parece mensagem automática de outro perfil: só chegou anexo, link ou texto longo de divulgação, e ninguém do time respondeu."""
+    ins = [m for m in msgs if m['dir'] == 'in']
+    if not ins or any(m['dir'] == 'out' and m.get('by_id') for m in msgs): return False
+    return all(AUTO_RX.search(m.get('text') or '') or len(m.get('text') or '') > 180 or (m.get('type') not in (None, 'text')) for m in ins)
 
 LATE_DEFAULT = 15  # minutos: depois disso fica vermelho
 
@@ -102,7 +110,7 @@ async def counts(user=Depends(current_user)):
     from teams import my_team_ids
     mine = set(await my_team_ids(user))
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'last_in_at': 1, 'needs_human': 1,
-                                                    'unread': 1, 'team_id': 1, 'noreply_at': 1, 'transfer_seen': 1, 'transfer_by': 1, 'transfer_reason': 1, 'transfer_at': 1, 'ai_mode': 1, 'last_at': 1, 'last_by': 1}).to_list(5000)
+                                                    'unread': 1, 'team_id': 1, 'noreply_at': 1, 'transfer_seen': 1, 'transfer_by': 1, 'transfer_reason': 1, 'transfer_at': 1, 'ai_mode': 1, 'last_at': 1, 'last_by': 1, 'internal': 1}).to_list(5000)
     ctx = await wait_ctx(user['company']); late = 0
     for r in rows:
         wf, lim = wait_info(r, ctx)
@@ -113,7 +121,7 @@ async def counts(user=Depends(current_user)):
     return {'team': sum(1 for r in rows if r.get('team_id') in mine), 'team_queue': sum(1 for r in rows if r.get('team_id') in mine and not r.get('assigned_to')),
             'has_team': bool(mine), 'transfers': pend, 'need': sum(1 for r in rows if needs_you(r, user['id'])), 'nanda': sum(1 for r in rows if with_nanda(r, dm)),'all': len(rows), 'mine': sum(1 for r in rows if r.get('assigned_to') == user['id']),
             'unassigned': sum(1 for r in rows if not r.get('assigned_to')), 'waiting': sum(1 for r in rows if waiting(r)), 'late': late,
-            'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread')),
+            'human': sum(1 for r in rows if r.get('needs_human')), 'unread': sum(1 for r in rows if r.get('unread') and not r.get('internal')),
             'sales_pending': await db.sales.count_documents({'company_id': user['company_id'], 'status': 'pending'}) if user['role'] in ('owner', 'manager') else 0,
             'celebrations': [{'key': h['key'], 'text': (f"{h.get('owner_name') or 'A empresa'} {'venceu' if 'lugar' in h['level'] else 'bateu'} "
                                                          + (f"o desafio {h['goal']} ({h['level']})" if 'lugar' in h['level'] else f"{'a supermeta' if h['level'] == 'super' else 'a meta'} {h['goal']}"))}
