@@ -242,7 +242,50 @@ async def list_autos(user=Depends(managers)):
     for r in recipes_for(user['company'].get('segment')):
         recipes.append({**r, 'stage_id': stage_by_hint(stages, r['stage']), 'added': r['key'] in used})
     has_wa = bool(await db.wa_numbers.find_one({'company_id': user['company_id']}, {'_id': 1}))
-    return {'items': [auto_out(a) for a in items], 'recipes': recipes, 'stages': stages, 'triggers': TRIGGERS, 'vars': list(VARS), 'whatsapp': has_wa}
+    cid = user['company_id']
+    uses_agenda = bool(await db.appointments.find_one({'company_id': cid}, {'_id': 1}))
+    has_validity = bool(await db.products.find_one({'company_id': cid, 'duration_days': {'$gt': 0}}, {'_id': 1}))
+    # pacote recomendado: depende de usar horário marcado e de ter item com validade
+    pack = ['lembrete_24h', 'faltou', 'esfriou_1'] if uses_agenda else ['esfriou_1', 'esfriou_3'] + (['renova_7d', 'volta_7d'] if has_validity else ['proximo_15d'])
+    pack = [k for k in pack if any(r['key'] == k and not r['added'] for r in recipes)]
+    # resultado de cada automação: quem respondeu em até 3 dias e quem comprou em até 7 dias depois do envio
+    runs = await db.automation_runs.find({'company_id': cid, 'status': 'sent', 'at': {'$gte': now() - timedelta(days=90)}}, {'_id': 0, 'automation_id': 1, 'contact_id': 1, 'at': 1}).to_list(20000)
+    stats = {}
+    if runs:
+        ids = list({r['contact_id'] for r in runs})
+        ins = {}
+        for m in await db.messages.find({'company_id': cid, 'contact_id': {'$in': ids}, 'dir': 'in', 'at': {'$gte': now() - timedelta(days=95)}}, {'_id': 0, 'contact_id': 1, 'at': 1}).to_list(100000):
+            ins.setdefault(m['contact_id'], []).append(aware(m['at']))
+        buys = {}
+        for x in await db.sales.find({'company_id': cid, 'contact_id': {'$in': ids}, 'status': 'ok'}, {'_id': 0, 'contact_id': 1, 'date': 1, 'total': 1}).to_list(20000):
+            buys.setdefault(x['contact_id'], []).append((aware(x['date']), x['total']))
+        for r in runs:
+            st = stats.setdefault(r['automation_id'], {'replied': 0, 'bought': 0, 'revenue': 0.0})
+            t0 = aware(r['at'])
+            if any(t0 < t <= t0 + timedelta(days=3) for t in ins.get(r['contact_id'], [])): st['replied'] += 1
+            b = [v for t, v in buys.get(r['contact_id'], []) if t and t0 <= t <= t0 + timedelta(days=7)]
+            if b: st['bought'] += 1; st['revenue'] += sum(b)
+    out = []
+    for a in items:
+        o = auto_out(a); o.update(stats.get(a['id'], {'replied': 0, 'bought': 0, 'revenue': 0.0})); out.append(o)
+    return {'items': out, 'recipes': recipes, 'stages': stages, 'triggers': TRIGGERS, 'vars': list(VARS), 'whatsapp': has_wa,
+            'uses_agenda': uses_agenda, 'has_validity': has_validity, 'pack': pack}
+
+@router.post('/automations/preview')
+async def preview_auto(body: AutoIn, user=Depends(managers)):
+    """Quantas pessoas estão no momento de receber agora (o que sairia na próxima rodada)."""
+    from funnel import stages_for
+    if not body.trigger or body.hours is None: return {'count': 0, 'names': []}
+    stages = await stages_for(user['company'])
+    a = {'id': 'preview', 'trigger': body.trigger, 'hours': body.hours, 'stage_id': body.stage_id, 'product_id': body.product_id,
+         'milestone_id': body.milestone_id, 'unless_id': body.unless_id}
+    try: rows = await candidates(a, user['company'], stages)
+    except Exception: rows = []
+    seen, names = set(), []
+    for _, c, _ in rows:
+        if c['id'] in seen: continue
+        seen.add(c['id']); names.append((c.get('name') or '').split(' ')[0])
+    return {'count': len(seen), 'names': names[:3]}
 
 @router.post('/automations')
 async def create_auto(body: AutoIn, request: Request, user=Depends(managers)):
