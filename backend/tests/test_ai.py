@@ -90,4 +90,31 @@ def test_nanda(monkeypatch):
         assert 'R$ 180' in t['reply']
         u = c.get('/api/ai/settings').json()['usage']
         assert u['replies'] >= 2 and u['suggestions'] == 1 and u['tests'] == 1
-        assert ai.parse('lixo sem json') == {'reply': 'lixo sem json', 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False}
+        assert ai.parse('lixo sem json') == {'reply': 'lixo sem json', 'handoff': False, 'reason': '', 'book': None, 'origin': None, 'origin_detail': '', 'marcos': [], 'anotar': '', 'valor': None, 'valor_item': '', 'etapa': None, 'urgente': False, 'faltou': ''}
+
+
+def test_nanda_aprende_o_que_nao_soube(monkeypatch):
+    """Pergunta que ela não sabia vira lista para o dono ensinar; respondida, entra nas Perguntas frequentes."""
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    async def llm2(system, messages, max_tokens=500):
+        return '{"reply": "Vou confirmar com o time e já te respondo!", "handoff": true, "reason": "estacionamento", "faltou": "tem estacionamento"}', {'input_tokens': 5, 'output_tokens': 5}
+    monkeypatch.setattr(ai, 'llm', llm2); monkeypatch.setenv('ANTHROPIC_API_KEY', 'teste')
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Gil Dono', 'email': 'gil@x.com', 'password': 'senha-forte-1', 'company': 'Studio Gil', 'segment': 'studio'})
+        c.post('/api/wa/connect', json={'phone_number_id': '7770001112', 'waba_id': '5556667778', 'token': 'EAA' + 'z' * 30})
+        signed(c, inbound('Vocês têm estacionamento?', 'wamid.G1'))
+        cid = c.get('/api/conversations').json()[0]['id']
+        c.post(f'/api/conversations/{cid}/suggest'); c.post(f'/api/conversations/{cid}/suggest')  # a mesma pessoa de novo não soma
+        g = c.get('/api/ai/gaps').json()
+        assert len(g) == 1 and g[0]['q'] == 'Tem estacionamento?' and g[0]['count'] == 1
+        r = c.post(f'/api/ai/gaps/{g[0]["id"]}/answer', json={'answer': 'Sim, conveniado ao lado, 2h grátis'}).json()
+        assert r['faq'].endswith('Tem estacionamento? Sim, conveniado ao lado, 2h grátis.')
+        assert c.get('/api/ai/settings').json()['faq'] == r['faq'] and c.get('/api/ai/gaps').json() == []
+        # dispensada não volta
+        async def llm3(system, messages, max_tokens=500):
+            return '{"reply": "Vou chamar o time.", "handoff": true, "reason": "convênio", "faltou": "Atende convênio?"}', {}
+        monkeypatch.setattr(ai, 'llm', llm3)
+        c.post(f'/api/conversations/{cid}/suggest')
+        g = c.get('/api/ai/gaps').json(); assert g[0]['q'] == 'Atende convênio?'
+        c.post(f'/api/ai/gaps/{g[0]["id"]}/dismiss'); c.post(f'/api/conversations/{cid}/suggest')
+        assert c.get('/api/ai/gaps').json() == []
