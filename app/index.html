@@ -1960,6 +1960,25 @@ body:has(.nz-save) #toast{bottom:92px}
 @media (max-width:860px){.cf-hd{padding:14px}.cf-av{width:46px;height:46px;font-size:16px}.cf-nm h2{font-size:19px}.cf-ac{width:100%}.cf-ac .btn{flex:1;justify-content:center;padding:10px 12px}.cf-ac #cfMsg{flex:1 1 100%}
  .cf-kp{grid-template-columns:1fr 1fr}.cf-kp>div{border-left:0;border-top:1px solid #F3EEE9}.cf-kp>div:nth-child(-n+2){border-top:0}.cf-kp>div:nth-child(even){border-left:1px solid #F3EEE9}.cf-kp>div:last-child{grid-column:span 2;border-left:0}
  .cf-g{grid-template-columns:1fr}.cf-dl{grid-template-columns:100px minmax(0,1fr)}.cf-st{display:none}.cf .ls-cards{display:flex}.cf-t{overflow-x:auto}}
+/* lista de pessoas em Clientes */
+.cb-lh,.cb-r{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.35fr) 130px 76px;gap:0 16px;align-items:center}
+.cb-lh.x,.cb-r.x{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.35fr) 110px 130px 76px}
+.cb-lh{padding:10px 12px 8px;font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;border-bottom:1px solid #F3EEE9}.cb-lh .ii{margin-left:5px}
+.cb-l{display:flex;flex-direction:column}
+.cb-r{padding:11px 12px;border-bottom:1px solid #F3EEE9;cursor:pointer;transition:background .12s}.cb-r:last-child{border-bottom:0}.cb-r:hover{background:#FBF8F5}.cb-r:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
+.cb-r .cb-pn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.cb-r .cb-pn b.anon{color:var(--ink3);font-weight:500;font-style:italic}.cb-r .cb-pn>span{min-width:0}.cb-r .cb-pn{min-width:0;display:flex}
+.cb-sit{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}.cb-sit small{width:100%;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-buy{display:flex;flex-direction:column;gap:4px;min-width:0}.cb-buy b{font-size:13.5px;font-variant-numeric:tabular-nums}.cb-has{display:flex;gap:4px;flex-wrap:wrap}.cb-has .sx{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-exp,.cb-lc{display:flex;flex-direction:column;gap:1px}.cb-exp b,.cb-lc b{font-size:13.5px;font-weight:600}.cb-exp small,.cb-lc small{font-size:12px;color:var(--ink3)}.cb-lc small.ok{color:#1F7A50}
+.cb-exp.warn small{color:#8A5A00;font-weight:600}.cb-exp.bad small{color:var(--bad);font-weight:600}
+.cb-ra{display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.cb-mb{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--ink2);cursor:pointer;opacity:0;transition:opacity .12s}.cb-mb svg{width:16px;height:16px}
+.cb-r:hover .cb-mb,.cb-mb:focus-visible{opacity:1}.cb-mb:hover{border-color:var(--c);color:var(--c);background:#FFF8F4}
+.cb-so{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:12.5px;color:var(--ink3)}.cb-so select{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+@media (max-width:860px){.cb-lh{display:none}.cb-r,.cb-r.x{grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;padding:12px 4px}
+ .cb-r .cb-pn{grid-column:1}.cb-ra{grid-column:2;grid-row:1}.cb-mb{opacity:1}.cb-ra .lk-go{display:none}
+ .cb-sit,.cb-buy,.cb-exp,.cb-lc{grid-column:1/-1;padding-left:40px}.cb-sit small{width:auto}.cb-exp,.cb-lc{flex-direction:row;gap:6px;align-items:baseline}.cb-exp:has(.hint),.cb-lc:has(.hint){display:none}
+ .cb-exp b::before{content:'Vence ';font-weight:400;color:var(--ink3)}.cb-lc b::before{content:'Falou ';font-weight:400;color:var(--ink3)}.cb-so{margin-left:0}.cb-sr{flex-wrap:wrap}.cb-q{flex:1 1 100%}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -4304,6 +4323,8 @@ function clTemplates(D){const withNext=D.products.find(p=>(p.next_ids||[]).lengt
   if(hm('compareceu')&&buy)t.push([`Não compraram depois de "${hm('compareceu').name}"`,'Há mais de 3 dias',[{field:'milestone',op:'more',value:{id:'compareceu',days:3}},{field:'milestone',op:'never',value:{id:'comprou'}}]]);
   return t}
 const CLQ={total:[],prospect:[{field:'kind',op:'is',value:'prospect'}],cliente:[{field:'kind',op:'is',value:'cliente'}],inativo:[{field:'kind',op:'is',value:'inativo'}],due30:[{field:'expires_in',op:'is',value:30}]};
+const clSort=()=>CL.sort||(CL.rules.some(r=>['expires_in','expired_within'].includes(r.field))?'expiry':'recent');
+const clName=c=>{const n=dispName(c.name||'');const anon=!n||/^(instagram|messenger|whatsapp)$/i.test(n.trim());return {t:anon?(c.ig?'@'+c.ig:'Sem nome'):n,anon}};
 const CLK={prospect:['prospect','grey'],cliente:['cliente','ok'],inativo:['inativo','warn']};
 async function clView(){
   if(CL.tab==='camp'&&isMgr())return clCamps();
@@ -4370,8 +4391,8 @@ function clRules(){const D=CL.data;const sel=(k,list,v,extra)=>`<select data-k="
       else r.value=el.type==='number'?Number(el.value):el.value;clearTimeout(CL.t);CL.t=setTimeout(clRun,350)})});
   $('#clR').querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{CL.rules.splice(+b.dataset.rx,1);clRules();clRun()})}
 async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!box.innerHTML)box.innerHTML='<div class="empty">Contando...</div>';else box.classList.add('ld');
-  let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules,q:CL.q||''}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;box.classList.remove('ld');
-  const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr(),K=r.kinds||{},hasOwner=r.items.some(c=>c.owner);
+  let r;try{r=await api('/segments/preview',{method:'POST',body:{rules:CL.rules,q:CL.q||'',sort:clSort()}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}if(my!==CL.n)return;box.classList.remove('ld');
+  const ST={ativo:'ok',vence_logo:'warn',vencido:'bad'};const mgr=isMgr(),K=r.kinds||{},hasExp=r.items.some(c=>c.next_expiry);
   const brk=[['cliente','cliente','clientes'],['prospect','prospect','prospects'],['inativo','inativo','inativos']].filter(k=>K[k[0]]).map(k=>`<span class="cb-k ${k[0]}">${num(K[k[0]])} ${K[k[0]]===1?k[1]:k[2]}</span>`).join('');
   const ch=c=>c.channel==='instagram'?`<span class="cb-chn ig" title="Instagram">${svg('<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/>')}${c.ig?'@'+esc(c.ig):'Instagram'}</span>`:c.wa_id?`<span class="cb-chn">${esc(fmtPhone(c.wa_id))}</span>`:'';
   const kd=c=>{const k=CLK[c.kind]||['—','grey'];return `<span class="pill ${k[1]}">${k[0]}</span>`};
@@ -4379,15 +4400,21 @@ async function clRun(){const box=$('#clRes');if(!box)return;const my=++CL.n;if(!
      <div class="cb-br">${brk}${r.spent?`<span class="cb-k">${brl(r.spent)} gastos${ii('cl_spent')}</span>`:''}<span class="cb-k wa" title="Têm WhatsApp e não pediram para sair">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${num(r.reachable)} recebem campanha${ii('cl_reach')}</span></div>
      <div class="cl-act">${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button><span class="cb-bi"><button class="btn sm" id="clOpp">Criar oportunidades</button>${ii('cl_opp')}</span>`:''}
       <button class="btn sm" id="clTag">Etiquetar</button>${ME.user.role==='owner'?`<button class="btn sm" id="clExp" title="Só o dono da conta pode baixar a base">${svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>')}Excel</button>${ii('cl_excel')}`:''}${CL.rules.length?`<button class="btn sm ${mgr?'':'p'}" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}</div></div>
-   <div class="vd-c cb-tb"><div class="cb-sr"><label class="cb-q">${svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>')}<input id="clQ" type="search" placeholder="Buscar por nome, telefone ou @" value="${esc(CL.q||'')}" autocomplete="off"></label>${CL.q?`<span class="hint">${num(r.found)} ${r.found===1?'encontrado':'encontrados'}</span>`:''}</div>
-   ${r.items.length?`<table class="vtb cb-t2"><thead><tr><th>Pessoa</th><th>Situação${ii('situacao')}</th><th>Tem${ii('cl_tem')}</th><th>Vence${ii('cl_vence')}</th><th class="n">Compras</th><th class="n">Gasto</th>${hasOwner?'<th>Responsável</th>':''}</tr></thead><tbody>
-     ${r.items.map(c=>`<tr class="ck" data-oc="${c.id}" tabindex="0"><td><span class="cb-pn"><i style="background:${avc(c.name)}">${esc(dispName(c.name).slice(0,1))}</i><span><b>${esc(dispName(c.name))}</b>${ch(c)}</span></span>${c.opt_out?' <span class="pill grey">não quer mensagens</span>':''}</td><td>${kd(c)}</td>
-       <td>${c.has.map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td>${c.next_expiry?fmtD(ymd(new Date(c.next_expiry))):'<span class="hint">—</span>'}</td>
-       <td class="n">${c.purchases||'<span class="hint">0</span>'}</td><td class="n">${c.spent?brl(c.spent):'<span class="hint">—</span>'}</td>${hasOwner?`<td>${esc(c.owner||'—')}</td>`:''}</tr>`).join('')}</tbody></table>
-     <div class="ls-cards">${r.items.map(c=>`<button class="ls-card" data-oc="${c.id}"><span class="t"><b>${esc(dispName(c.name))}</b>${kd(c)}</span><span class="i">${c.has.map(h=>esc(h.name)).join(', ')||(c.purchases?'':'Ainda não comprou')}</span><span class="m">${c.next_expiry?'vence '+fmtD(ymd(new Date(c.next_expiry)))+' · ':''}${c.purchases} ${c.purchases===1?'compra':'compras'}${c.spent?' · '+brl(c.spent):''}${c.owner?' · '+esc(c.owner):''}</span></button>`).join('')}</div>
+   <div class="vd-c cb-tb"><div class="cb-sr"><label class="cb-q">${svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>')}<input id="clQ" type="search" placeholder="Buscar por nome, telefone ou @" value="${esc(CL.q||'')}" autocomplete="off"></label>${CL.q?`<span class="hint">${num(r.found)} ${r.found===1?'encontrado':'encontrados'}</span>`:''}
+     <label class="cb-so"><span>Ordenar</span><select id="clSo">${[['recent','Último contato'],['spent','Quem mais gastou'],['expiry','Vence primeiro'],['name','Nome']].map(o=>`<option value="${o[0]}" ${clSort()===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label></div>
+   ${r.items.length?`<div class="cb-lh ${hasExp?'x':''}"><span>Pessoa</span><span>Situação${ii('situacao')}</span><span>Compras${ii('cl_tem')}</span>${hasExp?`<span>Vence${ii('cl_vence')}</span>`:''}<span>Último contato</span><span></span></div>
+     <div class="cb-l">${r.items.map(c=>{const nm=clName(c),d=c.next_expiry?Math.ceil((new Date(c.next_expiry)-Date.now())/864e5):null,lc=c.last_in_at?(Date.now()-new Date(c.last_in_at))/36e5:null;
+       return `<div class="cb-r ${hasExp?'x':''}" data-oc="${c.id}" tabindex="0" role="button"><span class="cb-pn"><i style="background:${avc(nm.t)}">${esc(nm.t.slice(0,1).toUpperCase())}</i><span><b class="${nm.anon?'anon':''}">${esc(nm.t)}</b>${ch(c)}</span></span>
+        <span class="cb-sit">${kd(c)}${c.opt_out?'<span class="pill grey" title="Pediu para não receber mensagens automáticas">sem campanhas</span>':''}<small>${[c.origin?'veio por '+esc(orgName(c.origin)):'',c.owner?esc(c.owner.split(' ')[0]):''].filter(Boolean).join(' · ')}</small></span>
+        <span class="cb-buy">${c.purchases?`<b>${c.purchases} ${c.purchases===1?'compra':'compras'} · ${brl(c.spent)}</b><span class="cb-has">${c.has.slice(0,2).map(h=>`<span class="sx ${ST[h.state]}">${esc(h.name)}</span>`).join('')}${c.has.length>2?`<span class="sx">+${c.has.length-2}</span>`:''}</span>`:'<span class="hint">ainda não comprou</span>'}</span>
+        ${hasExp?`<span class="cb-exp ${d==null?'':d<0?'bad':d<=15?'warn':''}">${d==null?'<span class="hint">—</span>':`<b>${fmtD(ymd(new Date(c.next_expiry)))}</b><small>${d<0?`venceu há ${-d} d`:d===0?'vence hoje':`em ${d} ${d===1?'dia':'dias'}`}</small>`}</span>`:''}
+        <span class="cb-lc">${lc==null?'<span class="hint">—</span>':`<b>${cfAgo(c.last_in_at)}</b>${lc<24?'<small class="ok">conversa aberta</small>':''}`}</span>
+        <span class="cb-ra"><button class="cb-mb" data-msg="${c.id}" title="Mandar mensagem" aria-label="Mandar mensagem para ${esc(nm.t)}">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}</button><span class="lk-go">${svg('<path d="m9 6 6 6-6 6"/>')}</span></span></div>`}).join('')}</div>
      ${(CL.q?r.found:r.count)>r.items.length?`<p class="hint" style="margin:10px 4px 2px">Mostrando ${r.items.length} de ${num(CL.q?r.found:r.count)}. Use a busca ou exporte para ver todos.</p>`:''}`
    :`<div class="cb-empty"><b>${CL.q?'Ninguém com esse nome ou telefone neste público':'Ninguém se encaixa'}</b><p>${CL.q?'Confira a busca ou limpe as condições.':'Afrouxe alguma condição ou mude o período.'}</p></div>`}</div>`;
-  box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>ctProfile(b.dataset.oc);b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+  box.querySelectorAll('[data-oc]').forEach(b=>{const g=()=>ctProfile(b.dataset.oc);b.onclick=e=>{if(!e.target.closest('[data-msg]'))g()};b.onkeydown=e=>{if(e.key==='Enter'&&e.target===b)g()}});
+  box.querySelectorAll('[data-msg]').forEach(b=>b.onclick=async e=>{e.stopPropagation();b.disabled=true;try{const p=await api('/contacts/'+b.dataset.msg+'/profile');msgModal(p,()=>clRun())}catch(x){toast(x.message)}finally{b.disabled=false}});
+  $('#clSo').onchange=e=>{CL.sort=e.target.value;clRun()};
   const qi=$('#clQ');qi.oninput=()=>{CL.q=qi.value;clearTimeout(CL.qt);CL.qt=setTimeout(async()=>{const pos=qi.selectionStart;await clRun();const n=$('#clQ');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}},300)};
   if($('#clSave'))$('#clSave').onclick=async()=>{const cur=CL.seg&&CL.data.segs.find(x=>x.id===CL.seg);
     const name=await sure(cur?'Nome do público:':'Dê um nome para este público. Ele se atualiza sozinho: quem passar a se encaixar entra.',{input:true,value:cur?cur.name:'',placeholder:'Ex.: Renovação de novembro',ok:'Salvar',el:$('#clSave')});if(!name)return;
