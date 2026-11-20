@@ -159,7 +159,9 @@ app.include_router(later_router, prefix="/api")
 from metacost import router as metacost_router
 app.include_router(metacost_router, prefix="/api")
 from adminapi import router as admin_router
+from profile import router as profile_router
 app.include_router(admin_router, prefix="/api")
+app.include_router(profile_router, prefix="/api")
 
 @app.middleware('http')
 async def guard(request: Request, call_next):

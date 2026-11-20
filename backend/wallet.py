@@ -7,13 +7,14 @@ no fim do período atual. Fica guardada no contato (holdings) para filtrar rápi
 Segmentos: públicos montados com regras (todas precisam valer). Ficam salvos e se atualizam sozinhos:
 quem passa a se encaixar entra, quem deixa de se encaixar sai.
 """
+import re
 import csv, io
 from datetime import timedelta
 from typing import Optional, List, Literal, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
-from core import db, now, uid, audit, current_user, managers
+from core import db, now, uid, audit, current_user, managers, owners
 from whatsapp import get_contact, aware
 
 router = APIRouter()
@@ -105,6 +106,7 @@ class Rule(BaseModel):
 
 class SegIn(BaseModel):
     rules: List[Rule] = Field(default_factory=list, max_length=12)
+    q: str = Field(default='', max_length=80)  # busca por nome ou telefone, só na lista
 
 def _days(v):
     try: return max(0, min(3650, int(v)))
@@ -188,22 +190,49 @@ async def run_segment(user, rules):
             products = products or await products_map(company['id'])
             await refresh_holdings(company['id'], c['id'], products)
     rows = await db.contacts.find(visible_q(user), {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'tags': 1, 'team_id': 1, 'assigned_to': 1, 'origin': 1, 'ad': 1,
-                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1}).to_list(50000)
+                                                    'sales_count': 1, 'value': 1, 'last_sale_at': 1, 'created_at': 1, 'holdings': 1, 'next_expiry': 1, 'opt_out': 1, 'last_in_at': 1, 'channel': 1, 'ig_username': 1}).to_list(50000)
     return [c for c in rows if all(match(c, r, ctx) for r in rules)]
 
-def row_out(c, names):
+def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
+
+def row_out(c, names, inactive_days=None):
+    from origins import status_of
     hs = c.get('holdings') or []
-    return {'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
+    return {'kind': status_of(c, inactive_days), 'channel': c.get('channel') or 'whatsapp', 'ig': c.get('ig_username'), 'origin': c.get('origin') or ('anuncio' if c.get('ad') else None),
+            'last_in_at': c.get('last_in_at'), 'id': c['id'], 'name': c['name'], 'wa_id': c.get('wa_id'), 'stage': c.get('stage'), 'owner': names.get(c.get('assigned_to')), 'spent': c.get('value') if c.get('sales_count') else 0,
             'purchases': c.get('sales_count') or 0, 'last_sale_at': c.get('last_sale_at'), 'next_expiry': c.get('next_expiry'), 'opt_out': bool(c.get('opt_out')),
             'has': [{'name': x['name'], 'state': state_of(x), 'expires_at': x.get('expires_at')} for x in hs][:6]}
 
 @router.post('/segments/preview')
 async def preview(body: SegIn, user=Depends(current_user)):
+    from origins import status_of
     rows = await run_segment(user, body.rules)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
-    rows.sort(key=lambda c: (aware(c.get('next_expiry')) or now() + timedelta(days=99999), -(c.get('value') or 0)))
-    return {'count': len(rows), 'spent': round(sum((c.get('value') or 0) for c in rows if c.get('sales_count')), 2),
-            'reachable': sum(1 for c in rows if not c.get('opt_out')), 'items': [row_out(c, names) for c in rows[:300]]}
+    days = user['company'].get('inactive_days')
+    kinds = {'prospect': 0, 'cliente': 0, 'inativo': 0}
+    for c in rows: kinds[status_of(c, days)] += 1
+    # quem já comprou e vence primeiro vem antes; depois quem gastou mais; depois quem falou por último
+    rows.sort(key=lambda c: (aware(c.get('next_expiry')) or now() + timedelta(days=99999), -(c.get('value') or 0) if c.get('sales_count') else 0,
+                             -(aware(c.get('last_in_at')) or aware(c.get('created_at')) or now() - timedelta(days=99999)).timestamp()))
+    shown = rows
+    q = body.q.strip().lower()
+    if q:
+        dq = re.sub(r'\D', '', q)
+        shown = [c for c in rows if q in (c.get('name') or '').lower() or (len(dq) >= 4 and dq in (c.get('wa_id') or '')) or q.lstrip('@') in (c.get('ig_username') or '').lower()]
+    return {'count': len(rows), 'spent': round(sum((c.get('value') or 0) for c in rows if c.get('sales_count')), 2), 'kinds': kinds,
+            'reachable': sum(1 for c in rows if reachable(c)), 'found': len(shown), 'items': [row_out(c, names, days) for c in shown[:300]]}
+
+@router.get('/segments/overview')
+async def overview(user=Depends(current_user)):
+    """Números da base para o topo da página: cada um vira um público com um clique."""
+    from origins import status_of
+    rows = await run_segment(user, [])
+    days = user['company'].get('inactive_days'); t = now()
+    k = {'prospect': 0, 'cliente': 0, 'inativo': 0}
+    for c in rows: k[status_of(c, days)] += 1
+    due = sum(1 for c in rows if any(x.get('expires_at') and t <= aware(x['expires_at']) <= t + timedelta(days=30) for x in c.get('holdings') or []))
+    lost = sum(1 for c in rows if any(x.get('expires_at') and t - timedelta(days=30) <= aware(x['expires_at']) < t for x in c.get('holdings') or []))
+    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'inactive_days': days}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):
@@ -260,14 +289,38 @@ async def bulk_tag(body: BulkTag, request: Request, user=Depends(current_user)):
     return {'ok': True, 'count': len(ids)}
 
 @router.post('/segments/export')
-async def export(body: SegIn, user=Depends(managers)):
+async def export(body: SegIn, request: Request, user=Depends(owners)):
+    """Planilha Excel da base (ou do público filtrado). Só o dono baixa: é a lista de clientes da empresa inteira."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.utils import get_column_letter
+    from origins import status_of, origins_of, STATUS
     rows = await run_segment(user, body.rules)
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
-    buf = io.StringIO(); w = csv.writer(buf, delimiter=';')
-    w.writerow(['Nome', 'Telefone', 'Compras', 'Total gasto', 'Última compra', 'Próximo vencimento', 'Tem', 'Responsável', 'Não quer mensagens'])
-    br = lambda v: f'{v:.2f}'.replace('.', ',')
+    onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
+    days = user['company'].get('inactive_days')
+    full = {c['id']: c for c in await db.contacts.find({'id': {'$in': [r['id'] for r in rows]}}, {'_id': 0, 'id': 1, 'email': 1, 'tags': 1, 'created_at': 1, 'origin_detail': 1}).to_list(50000)}
+    wb = Workbook(); ws = wb.active; ws.title = 'Clientes'
+    head = ['Nome', 'Situação', 'Telefone (WhatsApp)', 'Instagram', 'E-mail', 'Origem', 'Detalhe da origem', 'Compras', 'Total gasto (R$)', 'Última compra',
+            'Tem', 'Próximo vencimento', 'Etiquetas', 'Responsável', 'Chegou em', 'Não quer mensagens']
+    ws.append(head)
+    d = lambda v: aware(v).replace(tzinfo=None) if v else None
     for c in rows:
-        o = row_out(c, names)
-        w.writerow([o['name'], '+' + (o['wa_id'] or ''), o['purchases'], br(o['spent'] or 0), aware(o['last_sale_at']).strftime('%d/%m/%Y') if o['last_sale_at'] else '',
-                    aware(o['next_expiry']).strftime('%d/%m/%Y') if o['next_expiry'] else '', ', '.join(h['name'] for h in o['has']), o['owner'] or '', 'sim' if o['opt_out'] else ''])
-    return Response('﻿' + buf.getvalue(), media_type='text/csv; charset=utf-8', headers={'Content-Disposition': 'attachment; filename="segmento.csv"'})
+        o = row_out(c, names); x = full.get(c['id'], {})
+        org = c.get('origin') or ('anuncio' if c.get('ad') else None)
+        ws.append([o['name'], STATUS.get(status_of(c, days), ''), ('+' + o['wa_id']) if o['wa_id'] else '', ('@' + c['ig_username']) if c.get('ig_username') else '',
+                   x.get('email') or '', onames.get(org, '') if org else 'Não sabemos', x.get('origin_detail') or '', o['purchases'], round(o['spent'] or 0, 2),
+                   d(o['last_sale_at']), ', '.join(h['name'] for h in o['has']), d(o['next_expiry']), ', '.join(x.get('tags') or []), o['owner'] or '',
+                   d(x.get('created_at')), 'sim' if o['opt_out'] else ''])
+    for cell in ws[1]:
+        cell.font = Font(bold=True, color='FFFFFF'); cell.fill = PatternFill('solid', fgColor='E8603F'); cell.alignment = Alignment(vertical='center')
+    widths = [28, 16, 20, 18, 26, 16, 22, 10, 16, 14, 34, 18, 22, 18, 14, 16]
+    for i, w in enumerate(widths, 1): ws.column_dimensions[get_column_letter(i)].width = w
+    for r in ws.iter_rows(min_row=2):
+        r[8].number_format = '#,##0.00'
+        for k in (9, 11, 14): r[k].number_format = 'DD/MM/YYYY'
+    ws.freeze_panes = 'A2'; ws.auto_filter.ref = ws.dimensions
+    buf = io.BytesIO(); wb.save(buf)
+    await audit(request, user, 'Exportou a base de clientes em Excel', f'{len(rows)} contatos')
+    fn = f'clientes-{now().strftime("%Y-%m-%d")}.xlsx'
+    return Response(buf.getvalue(), media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', headers={'Content-Disposition': f'attachment; filename="{fn}"'})
