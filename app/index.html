@@ -2032,6 +2032,9 @@ body:has(.nz-save) #toast{bottom:92px}
 .pr .vv>span:only-child{font-size:12px}
 .rp-un .av{background:#EEF1F4;color:var(--ink2)}.rp-un .nm b{color:var(--ink2)}
 .rp-idle{margin-top:8px}.rp-tip{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}.rp-tip .lnk{font-weight:700;color:var(--c)}
+/* nanda */
+button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz-st:hover{border-color:#E6D6CB}.nz-chg{font-style:normal;font-size:12px;font-weight:700;color:var(--c);margin-left:6px}
+.nz-how{margin-bottom:14px}
 /* empresa */
 .em-hd .agt p{margin:2px 0 0;color:var(--ink2);font-size:14px}
 .em-st{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px}
@@ -5756,13 +5759,15 @@ const VIEWS={
   const draw=()=>{const d=done(),m=modeOf(V.default_mode);
    $('#page').innerHTML=`<div class="nz">
     <div class="nz-hd"><div><h1>Nanda (IA)</h1><p class="sub">Ensine o que ela precisa saber e teste como ela responde.</p></div>
-     <div class="nz-st"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span></div></div>
+     <button type="button" class="nz-st" id="nzStB" title="Mudar como ela atende"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span><i class="nz-chg">mudar</i></button></div>
+    <details class="lk-hero nz-how" ${(()=>{try{return localStorage.getItem('nzHow')==='0'?'':'open'}catch(e){return 'open'}})()}><summary><span class="lk-hi">${svg('<path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>')}</span><div><b>A Nanda responde os clientes por você, 24 horas</b><span>Ela só fala o que você ensinou aqui. Quando não sabe ou o cliente pede uma pessoa, chama o time na hora.</span></div><em class="lk-ht">Como funciona</em></summary>
+     <div class="pm-facts cb-steps">${[['1','Ensine o seu negócio','Preencha as 5 partes abaixo: o que você vende, preços, dúvidas comuns e o que ela nunca deve prometer.'],['2','Teste como cliente','Escreva no chat de teste, ao lado, como se fosse um cliente. Se a resposta não ficar boa, ajuste o texto e teste de novo.'],['3','Escolha como ela atende','Atende sozinha, Copiloto (sugere e o time envia) ou Pausada. Dá para mudar a qualquer hora e em cada conversa.'],['4','Ela chama o time','Pedido de atendente, reclamação ou assunto que ela não sabe vai para o time, com o motivo, sem o cliente esperar.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>
     <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Ensinar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
     ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
     <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
      <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Agora teste com perguntas reais dos seus clientes.':'Preencha cada parte. Quanto mais ela souber, menos ela chama o time.'}</span></div>
       <div class="nz-bar"><i style="width:${Math.round(100*d/total)}%"></i></div>
-      ${d===total?'<button type="button" class="btn sm p" id="nzTry">Testar agora</button>':''}${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">Preencher o que falta com exemplo de ${esc(segName)}</button>`:''}</div>
+      ${d===total?'<button type="button" class="btn sm p" id="nzTry">Testar agora</button>':''}${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">${seg==='outro'?'Preencher o que falta com um exemplo':'Preencher o que falta com exemplo de '+esc(segName)}</button>`:''}</div>
      ${SEC.map((x,i)=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
       <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
       ${isO?`<div class="nz-sb">${body(x[0])}</div>`:''}</section>`}).join('')}
@@ -5794,6 +5799,8 @@ const VIEWS={
      el.value=k==='goal'?t+'.':(el.value.trim()?el.value.trim()+'\n':'')+t+'.';V[k]=el.value;b.remove();refreshHead()});
    f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};
    f.onchange=e=>{const t=e.target;if(t.type==='radio'){V[t.name]=t.value;t.closest('div').querySelectorAll('label').forEach(l=>l.classList.toggle('on',l.contains(t)&&t.checked));refreshHead();if(t.name==='default_mode'){const m=modeOf(V.default_mode);$('.nz-st b').textContent=m[1];$('.nz-dot').className='nz-dot '+V.default_mode}}};
+   {const hw=$('#page .nz-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('nzHow',hw.open?'0':'1')}catch(e){}}}
+   if($('#nzStB'))$('#nzStB').onclick=()=>{open='jeito';MT='l';draw();const el=document.querySelector('.nz-s[data-s="jeito"]');if(el)el.scrollIntoView({block:'start',behavior:'smooth'})};
    document.querySelectorAll('.nz-sh').forEach(h=>h.onclick=()=>{const id=h.parentNode.dataset.s;open=open===id?null:id;draw();const el=document.querySelector(`.nz-s[data-s="${id}"]`);if(open&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start',behavior:'smooth'})});
    document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const k=b.dataset.ex;V[k]=ex[k];draw();toast('Exemplo colocado. Troque pelos dados do seu negócio.')});
    if($('#aiCat'))$('#aiCat').onclick=()=>{VD.tab='produtos';go('vendas')};
