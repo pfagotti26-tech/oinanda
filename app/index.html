@@ -2057,6 +2057,7 @@ body:has(.nz-save) #toast{bottom:92px}
 @media (max-width:860px){.iw-scr{display:none}.iw-map{max-height:none;grid-template-columns:1fr 1fr;overflow:visible}.iw-c li:nth-child(n+3){display:none}.iw-ch{padding:8px}.iw-ch select{font-size:12.5px;padding:5px 6px}.iw-g{grid-template-columns:1fr}.iw-drop{min-height:180px}.iw-help ul{grid-template-columns:1fr}.iw-k{grid-template-columns:1fr 1fr}#clImp span{display:none}}
 /* saúde do número */
 .wa-al{display:flex;flex-direction:column;gap:6px;margin-top:12px;background:var(--badsoft);border:1px solid #F1C9C2;border-radius:12px;padding:12px 14px}.wa-al b{color:var(--bad);font-size:14px}.wa-al span{font-size:13px;color:var(--ink2)}.wa-al small{font-size:12px;color:var(--ink3)}.wa-al .btn{align-self:flex-start;margin-top:4px}
+.wz-pay{background:#FFF7E8!important;border:1px solid #F2D9A6;align-items:flex-start}.wz-pay>span{color:#B7791F}.wz-pay small{line-height:1.45;margin-top:3px}
 .wz-cf{display:flex;flex-direction:column;gap:8px}.wz-cf label{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}.wz-cf label.on{border-color:var(--ok);background:#fff}.wz-cf input{margin-top:2px;width:18px;height:18px;flex:none;accent-color:var(--ok)}.wz-cf b{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}.wz-cf small{display:block;font-size:12px;color:var(--ink3);margin-top:2px}.wz-bt:disabled{opacity:.45;cursor:not-allowed}
 .wz-cu{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff}.wz-cu summary{cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13.5px}.wz-cu summary svg{width:16px;height:16px;color:var(--ok)}.wz-cu ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction:column;gap:6px}.wz-cu li{font-size:13px;color:var(--ink2)}
 /* início: precisa de você */
@@ -2934,6 +2935,7 @@ const wzCare=()=>`<details class="wz-cu"><summary>${wzi('shield','s')}<b>Antes d
     <li><b>Deixe o portfólio completo e, se puder, verificado.</b> Razão social, CNPJ, endereço e site em business.facebook.com › Configurações do negócio. A verificação da empresa fica em Central de Segurança.</li>
     <li><b>Use um número com histórico.</b> Chip novo ou número parado: use no WhatsApp Business por pelo menos 7 dias, com foto, nome da empresa e conversas de verdade, antes de conectar.</li>
     <li><b>Conecte uma vez só.</b> Desconectar e conectar de novo várias vezes, trocar de celular ou reinstalar o app nas primeiras semanas chama a atenção da Meta.</li>
+    <li><b>Cadastre um cartão na conta do WhatsApp na Meta.</b> Sem forma de pagamento, a Meta trava lembretes, campanhas e automações (as respostas a quem chamou continuam). Fica em business.facebook.com › Configurações › Pagamentos.</li>
     <li><b>Nos primeiros dias, só responda.</b> A Nanda fica em Copiloto (já vem assim). Deixe campanhas e mensagens automáticas para depois da primeira semana.</li>
     <li><b>Só mande mensagem para quem te procurou.</b> Lista comprada e contato da agenda que não te conhece levam a bloqueio e denúncia.</li>
     <li><b>Se um dia o número for bloqueado,</b> o Oi Nanda avisa na hora. Peça a análise uma vez só, pelo próprio app do celular com o chip, e não tente entrar em outro aparelho.</li></ul></details>`;
@@ -2975,6 +2977,7 @@ async function renderWa(own){
   if(WZ.step===4&&n){const got=n.last_in_at&&new Date(n.last_in_at)>new Date(n.connected_at);
    L=`${wzSteps(4)}<span class="wz-okc">${wzi('check')}</span><div><h2>WhatsApp conectado</h2><p style="margin-top:6px">As conversas da ${esc(ME.company.name)} já chegam no Oi Nanda.${n.mode==='coexistence'?' O celular continua funcionando normalmente.':''}</p></div>
     <div class="wz-num"><div><small>Número conectado</small><b>${esc(n.display_phone||'')}</b></div><span class="pill ok">funcionando</span></div>
+    <div class="wz-nd wz-pay"><span>${wzi('alert')}</span><div>Falta 1 minuto: cartão na Meta<small>Para lembretes, campanhas e automações saírem, cadastre uma forma de pagamento em business.facebook.com › Configurações › Pagamentos, na conta do WhatsApp. A Meta só cobra conversas que a empresa inicia.</small></div></div>
     <div class="wz-ft"><button class="wz-bt" id="wzNanda">${wzi('spark','s')}Próximo passo: ensinar a Nanda</button><button class="wz-bt g" id="wzCv">Ver minhas conversas</button></div>`;
    R=`<div class="wz-cap">Faça um teste agora</div><p style="font-size:13.5px;color:var(--ink)">De outro celular, mande um “oi” para o seu número. Ele aparece aqui em segundos.</p>
     <div class="wz-ib">${got?`<span class="wz-bb">Chegou a primeira mensagem 👋</span><span style="color:var(--ok);font-weight:600">Tudo certo. Ela já está nas suas Conversas.</span>`:`<div style="display:flex;gap:10px;align-items:center;color:var(--ink2)"><i class="wz-sp"></i>Esperando a primeira mensagem…</div>`}</div>`;
@@ -2993,6 +2996,7 @@ async function renderWa(own){
    L=`${wzSteps(2)}<div><h2>Agora é na tela da Meta</h2><p style="margin-top:6px">Ela abre numa janela da própria Meta. São quatro telas rápidas, e ao lado está o que escolher em cada uma.</p></div>
     <div class="wz-safe">${wzi('shield')}<span>É a conexão oficial. O Oi Nanda não vê a sua senha e você pode desconectar quando quiser.</span></div>
     ${wzChk(coex)}
+    <div class="wz-nd wz-pay"><span>${wzi('alert')}</span><div>Tenha um cartão cadastrado na Meta<small>Sem forma de pagamento na conta do WhatsApp, a Meta trava lembretes, campanhas e automações para quem não falou nas últimas 24 h. Respostas para quem chamou funcionam normalmente. Onde cadastrar: business.facebook.com › Configurações › Pagamentos, na conta do WhatsApp.</small></div></div>
     <div class="wz-ft"><button class="wz-bt" id="wzOpen" ${wzChkOk(coex)?'':'disabled title="Marque as confirmações acima"'}>Abrir a tela da Meta</button><button class="wz-ln" id="wzBack" style="align-self:center">Voltar e mudar a resposta</button>${wzHelp()}</div>`;
    R=`<div class="wz-cap">O que vai aparecer</div>
     <div class="wz-ms"><i>1</i><div>Entre com o seu Facebook<small>o login de quem administra a empresa</small></div><div class="wz-mk"><span>Continuar como você</span><b>Continuar</b></div></div>
