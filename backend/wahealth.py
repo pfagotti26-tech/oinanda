@@ -101,7 +101,7 @@ async def check(n):
     except Exception: pass
     errs = [e.get('error_description') for ent in hs.get('entities') or [] for e in ent.get('errors') or []]
     snap = {'status': info.get('status'), 'quality': info.get('quality_rating'), 'can_send': hs.get('can_send_message'), 'errors': errs[:5], 'at': now()}
-    await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'health': snap, 'quality': info.get('quality_rating') or n.get('quality')}})
+    await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'checkup': snap, 'quality': info.get('quality_rating') or n.get('quality')}})
     p = problem_of(snap['status'], snap['quality'], snap['can_send'], errs)
     if p: await raise_alert(n, *p, 'conferencia')
     else: await clear_alert(n)
@@ -110,8 +110,8 @@ async def check(n):
 async def tick():
     """De hora em hora, um número de cada vez (no máximo 30 por volta)."""
     cut = now() - CHECK_EVERY
-    for n in await db.wa_numbers.find({'status': 'connected', '$or': [{'health.at': {'$lt': cut}}, {'health': {'$exists': False}}]}, {'_id': 0}).to_list(30):
+    for n in await db.wa_numbers.find({'status': 'connected', '$or': [{'checkup.at': {'$lt': cut}}, {'checkup': {'$exists': False}}]}, {'_id': 0}).to_list(30):
         try: await check(n)
         except Exception as e:
             log.warning('conferir saúde do número %s: %s', n.get('display_phone'), e)
-            await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'health.at': now(), 'health.error': str(e)[:200]}})
+            await db.wa_numbers.update_one({'company_id': n['company_id']}, {'$set': {'checkup.at': now(), 'checkup.error': str(e)[:200]}})

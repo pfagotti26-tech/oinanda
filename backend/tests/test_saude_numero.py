@@ -28,7 +28,7 @@ def test_saude_do_numero(monkeypatch):
         # a Meta bloqueia: a conferência percebe, avisa por e-mail uma vez e o Início mostra primeiro
         state['status'] = 'BANNED'
         async def force():
-            await db.wa_numbers.update_many({}, {'$unset': {'health': ''}})
+            await db.wa_numbers.update_many({}, {'$unset': {'checkup': ''}})
             await wahealth.tick()
         c.portal.call(force); c.portal.call(force)
         a = c.get('/api/wa/number').json()['alert']
