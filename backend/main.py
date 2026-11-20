@@ -21,6 +21,7 @@ from teams import router as teams_router
 from notify import router as notify_router
 from sales import router as sales_router
 from origins import router as origins_router
+from home import router as home_router
 from promos import router as promos_router
 from wallet import router as wallet_router
 from campaigns import router as campaigns_router
@@ -46,6 +47,8 @@ async def lifespan(app):
     await db.users.create_index('email', unique=True)
     await db.users.create_index('company_id')
     await db.import_rows.create_index([('job_id', 1), ('n', 1)])
+    from instagram import PLATFORM  # contas oficiais da plataforma nunca são clientes (vale também para as que já chegaram)
+    await db.contacts.update_many({'ig_username': {'$in': sorted(PLATFORM)}, 'internal': {'$exists': False}}, {'$set': {'internal': True}})
     await db.import_jobs.create_index([('company_id', 1), ('created_at', -1)])
     await db.companies.create_index('id', unique=True)
     await db.sessions.create_index('token_hash', unique=True)
@@ -141,6 +144,7 @@ app.include_router(teams_router, prefix='/api')
 app.include_router(notify_router, prefix="/api")
 app.include_router(sales_router, prefix="/api")
 app.include_router(origins_router, prefix="/api")
+app.include_router(home_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
 app.include_router(wallet_router, prefix="/api")
 app.include_router(campaigns_router, prefix="/api")

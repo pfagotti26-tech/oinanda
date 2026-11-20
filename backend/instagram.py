@@ -342,6 +342,8 @@ async def profile(a, sid, ch='instagram'):
     try: return await ig('GET', f'/{sid}', decrypt(a['token_enc']), {'fields': f})
     except HTTPException: return {}
 
+PLATFORM = {'instagram', 'meta', 'facebook', 'whatsapp', 'threads', 'creators', 'instagramforbusiness', 'metaforbusiness', 'facebookapp'}
+
 async def upsert(a, sid, username=None, source='instagram', ch='instagram'):
     cid = a['company_id']
     c = await db.contacts.find_one({'company_id': cid, CID[ch]: sid}, {'_id': 0})
@@ -354,6 +356,7 @@ async def upsert(a, sid, username=None, source='instagram', ch='instagram'):
     else:
         c = {'id': uid(), 'company_id': cid, 'channel': 'instagram', 'ig_id': sid, 'ig_username': un, 'name': p.get('name') or (('@' + un) if un else 'Instagram'),
              'ig_pic': p.get('profile_pic'), 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
+    if (un or '').lower() in PLATFORM: c['internal'] = True  # conta oficial da plataforma (resposta de story, aviso): não é cliente
     await db.contacts.insert_one(c.copy())
     try:
         from origins import origins_of, set_origin

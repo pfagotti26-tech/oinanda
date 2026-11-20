@@ -2055,6 +2055,14 @@ body:has(.nz-save) #toast{bottom:92px}
 .iw-go{margin-top:4px}
 .iw-done{text-align:center;padding:24px 10px}.iw-done>.ok{width:56px;height:56px;border-radius:50%;display:inline-grid;place-items:center;background:var(--oksoft);color:var(--ok);font-size:26px;font-weight:700}.iw-done h3{font-size:20px;margin:12px 0 6px}.iw-done p{max-width:560px;margin:0 auto 6px;color:var(--ink2)}
 @media (max-width:860px){.iw-scr{display:none}.iw-map{max-height:none;grid-template-columns:1fr 1fr;overflow:visible}.iw-c li:nth-child(n+3){display:none}.iw-ch{padding:8px}.iw-ch select{font-size:12.5px;padding:5px 6px}.iw-g{grid-template-columns:1fr}.iw-drop{min-height:180px}.iw-help ul{grid-template-columns:1fr}.iw-k{grid-template-columns:1fr 1fr}#clImp span{display:none}}
+/* início: precisa de você */
+.hm-td{display:flex;flex-direction:column;gap:8px}
+.hm-ti{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;font:inherit;cursor:pointer;color:var(--ink)}
+.hm-ti:hover{border-color:var(--c)}.hm-ti i{font-style:normal;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#EEF1F4;font-weight:800;font-size:15px}
+.hm-ti.warn i{background:var(--warnsoft);color:var(--warn)}.hm-ti.bad i{background:var(--badsoft);color:var(--bad)}.hm-ti.bad{border-color:#F1C9C2}
+.hm-ti span{display:flex;flex-direction:column;gap:2px;min-width:0}.hm-ti b{font-size:14.5px}.hm-ti small{font-size:12.5px;color:var(--ink3)}.hm-ti em{font-style:normal;font-weight:700;font-size:13px;color:var(--c);white-space:nowrap}
+.hm-cop{display:flex;gap:12px;align-items:center;background:#F6F8FB;border:1px solid #E3E8EF;border-radius:14px;padding:12px 16px;margin-bottom:10px}.hm-cop>span{font-size:20px}.hm-cop p{margin:0;font-size:13px;color:var(--ink2);flex:1}.hm-cop .btn{flex:none}
+@media (max-width:860px){.hm-ti{grid-template-columns:32px minmax(0,1fr)}.hm-ti em{grid-column:2}.hm-cop{flex-wrap:wrap}}
 /* o que a Nanda não soube */
 .nz-gap{background:#FFFBF2;border:1px solid #EAD9B0;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}
 .nz-gh{display:flex;gap:12px;align-items:flex-start}.nz-gh>div{display:flex;flex-direction:column;gap:2px}.nz-gh b{font-size:14.5px}.nz-gh span:not(.nz-gi){font-size:12.5px;color:var(--ink2)}
@@ -2264,7 +2272,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 <script>
 let SEG={studio:'Studio, academia ou box',clinica:'Clínica de estética, odonto ou saúde',salao:'Salão, barbearia ou beleza',imobiliaria:'Imobiliária ou corretor',escola:'Escola, idiomas ou cursos presenciais',loja:'Loja ou e-commerce',servicos:'Serviços profissionais (contabilidade, advocacia, consultoria)',restaurante:'Restaurante, delivery ou confeitaria',lancamento:'Infoproduto, curso online ou mentoria',outro:'Outro tipo de negócio'};
 let SEGS={};
-const PLAN={demo:'Demonstração',trial:'Teste grátis',oferta:'Oferta do mês',completo:'Completo',rede:'Rede',essencial:'Essencial',profissional:'Profissional',equipe:'Equipe'};
+const PLAN={demo:'Demonstração',trial:'Teste grátis',oferta:'Profissional',completo:'Equipe',rede:'Equipe',essencial:'Essencial',profissional:'Profissional',equipe:'Equipe'};
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dt=v=>v?new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
@@ -6035,7 +6043,7 @@ const VIEWS={
  },
  async inicio(){
   const u=ME.user,mgr=['owner','manager'].includes(u.role),own=u.role==='owner';
-  const [team,num,ai,sm,au]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),mgr?api('/automations').catch(()=>null):null]);
+  const [team,num,ai,sm,au,td]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),mgr?api('/automations').catch(()=>null):null,mgr?api('/home/todo').catch(()=>[]):[]]);
   const demo=ME.access&&ME.access.state==='demo',first=esc(u.name.split(' ')[0]),co=esc(ME.company.name);
   const talked=ai&&((ai.usage||{}).tests>0||ai.taught);
   const S=[['nanda','Conversar com a Nanda','Veja como ela responderia os seus clientes.','1 min','💬',talked,'Conversar agora',()=>comecarView()],
@@ -6062,7 +6070,9 @@ const VIEWS={
    ${sm&&(sm.waiting||sm.needs_human)?`<div class="hm-now">${sm.needs_human?`<button class="hm-al r" data-to="conversas"><b>${sm.needs_human}</b><span>${sm.needs_human===1?'cliente pediu':'clientes pediram'} para falar com alguém do time</span><em>Atender →</em></button>`:''}
      ${sm.waiting?`<button class="hm-al a" data-to="conversas"><b>${sm.waiting}</b><span>${sm.waiting===1?'conversa esperando':'conversas esperando'} resposta</span><em>Responder →</em></button>`:''}</div>`
     :num?'<div class="hm-now"><div class="hm-al g"><b>✓</b><span>Tudo em dia. Nenhum cliente esperando.</span></div></div>':''}
+   ${td&&td.length?`<section class="hm-sec"><div class="hm-sh"><h2>Precisa de você</h2><span class="hm-tag">${td.length===1?'1 coisa':td.length+' coisas'} para resolver</span></div><div class="hm-td">${td.map((x,i)=>`<button type="button" class="hm-ti ${x.tone}" data-td="${i}"><i>${{gaps:'?',tpl_bad:'!',tpl_late:'⏳',alert:'🔔',auto:'🤖'}[x.k]||'•'}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><em>${esc(x.cta)} →</em></button>`).join('')}</div></section>`:''}
    <section class="hm-sec"><div class="hm-sh"><h2>O que a Nanda fez por você este mês</h2>${num?'':'<span class="hm-tag">começa a contar quando o WhatsApp estiver conectado</span>'}</div>
+    ${num&&ai&&ai.default_mode!=='auto'&&!N.people?`<div class="hm-cop"><span>${ai.default_mode==='off'?'⏸':'✍️'}</span><p><b>${ai.default_mode==='off'?'A Nanda está pausada.':'A Nanda está em Copiloto: ela sugere e o time envia.'}</b> Por isso os números abaixo ficam em zero. ${ai.default_mode==='off'?'Ligue para ela voltar a ajudar.':`Este mês ela escreveu ${Number((ai.usage||{}).suggestions||0).toLocaleString('pt-BR')} ${((ai.usage||{}).suggestions||0)===1?'sugestão':'sugestões'}. Para ela responder sozinha, inclusive de madrugada, mude para “Atende sozinha”.`}</p><button type="button" class="btn sm" data-to="nanda">Ver a Nanda</button></div>`:''}
     ${num||N.people?`<div class="hm-val">${val.map(v=>`<div><i>${v[0]}</i><small>${v[1]}</small><b>${v[2]}</b><span>${v[3]}</span></div>`).join('')}</div>`
     :`<div class="hm-demo"><div class="hm-dl"><b>Ela já está pronta para conversar com os seus clientes.</b><p>Responde em segundos, marca o horário na sua agenda e chama o seu time quando o cliente está pronto para fechar. Faça uma pergunta como se fosse um cliente e veja.</p><button class="btn p" id="hmTry">Conversar com a Nanda</button></div>
       <div class="hm-dr" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Oi! Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div></div></div>`}</section>
@@ -6078,6 +6088,7 @@ const VIEWS={
   if($('#hmTry'))$('#hmTry').onclick=()=>comecarView();
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>steps[+b.dataset.st][7]());
   document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+  document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{const x=td[+b.dataset.td];if(x.to==='conversas'){CV.filter='all';CV.kind='';CV.origin='';CV.open=null}go(x.to)});
   $('#hmCostMore').onclick=async()=>{let r;try{r=await api('/meta/rates')}catch(e){return toast(e.message)}overlay(`<div class="modal hm-mi"><button type="button" class="x" style="float:right">×</button>${metaIntroHtml(r,false)}</div>`,true)};
   inicioMeta();pushNudge();
  },
