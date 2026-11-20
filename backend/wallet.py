@@ -213,6 +213,12 @@ async def own_numbers(company):
     if 10 <= len(ph) <= 11: own.add('55' + ph)
     return own
 
+BASE_FIELDS = {'internal': 1, 'wa_id': 1, 'source': 1, 'sales_count': 1, **{k: 1 for k in IN_AT}}
+
+def in_base(c, own=()):
+    """Conta como prospect ou cliente? Fora: quem só está na agenda do celular, quem foi tirado da base e o número da própria empresa."""
+    return not c.get('internal') and not is_agenda(c) and (c.get('wa_id') or '') not in own
+
 def reachable(c): return not c.get('opt_out') and bool(c.get('wa_id'))  # campanha sai pelo WhatsApp
 
 def row_out(c, names, inactive_days=None):

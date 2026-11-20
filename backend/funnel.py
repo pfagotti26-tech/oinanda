@@ -79,14 +79,16 @@ async def funnel(mine: bool = False, user=Depends(current_user)):
     q = {'company_id': user['company_id']}
     if mine: q['assigned_to'] = user['id']
     elif user['role'] == 'agent': q['assigned_to'] = {'$in': [None, user['id']]}
-    rows = await db.contacts.find(q, CARD_FIELDS).sort('last_at', -1).to_list(2000)
+    from wallet import BASE_FIELDS, in_base, own_numbers
+    own = await own_numbers(user['company'])
+    rows = [r for r in await db.contacts.find(q, {**CARD_FIELDS, **BASE_FIELDS}).sort('last_at', -1).to_list(5000) if in_base(r, own)][:2000]
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     for r in rows:
         if r.get('stage') not in ids: r['stage'] = ids[0]
         r['assigned_name'] = names.get(r.get('assigned_to'))
         from inbox import waiting
         r['waiting'] = waiting(r)
-        for k in ('resolved_at', 'noreply_at'): r.pop(k, None)
+        for k in ('resolved_at', 'noreply_at', 'internal', 'sales_count', 'wa_last_in_at', 'ig_last_in_at', 'fb_last_in_at', 'tg_last_in_at', 'em_last_in_at'): r.pop(k, None)
         li = aware(r.pop('last_in_at', None))
         from channels import window_of
         w = window_of(r.get('channel'))
@@ -179,10 +181,22 @@ async def summary(user=Depends(current_user)):
     won = [s['id'] for s in stages if s['kind'] == 'won']
     start = now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     q = {'company_id': user['company_id']}
-    new = await db.contacts.count_documents({**q, 'created_at': {'$gte': start}})
-    won_rows = await db.contacts.find({**q, 'stage': {'$in': won}, 'won_at': {'$gte': start}}, {'_id': 0, 'value': 1}).to_list(5000)
-    waiting = await db.contacts.count_documents({**q, 'last_dir': 'in'})
-    human = await db.contacts.count_documents({**q, 'needs_human': True})
+    from wallet import BASE_FIELDS, in_base, own_numbers
+    from inbox import waiting as is_waiting
+    own = await own_numbers(user['company'])
+    F = {'_id': 0, 'id': 1, 'value': 1, 'stage': 1, 'won_at': 1, 'created_at': 1, 'last_dir': 1, 'resolved_at': 1, 'noreply_at': 1, 'needs_human': 1, **BASE_FIELDS}
+    rows = [c for c in await db.contacts.find({**q, '$or': [{'created_at': {'$gte': start}}, {'won_at': {'$gte': start}}, {'last_dir': 'in'}, {'needs_human': True}]}, F).to_list(20000) if in_base(c, own)]
+    new = sum(1 for c in rows if aware(c.get('created_at')) and aware(c['created_at']) >= start)
+    # vendas do mês: as vendas registradas (as canceladas não contam); cards ganhos sem venda registrada entram pelo valor do card
+    sales_ok = await db.sales.find({**q, 'status': 'ok', 'date': {'$gte': start}}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(20000)
+    keep = {c['id'] for c in rows}
+    ext = {c['contact_id'] for c in sales_ok}
+    base_ids = {c['id'] for c in await db.contacts.find({'id': {'$in': list(ext)}}, {'_id': 0, 'id': 1, **BASE_FIELDS}).to_list(20000) if in_base(c, own)}
+    won_rows = [{'value': s.get('total') or 0} for s in sales_ok if s['contact_id'] in base_ids]
+    with_sale = {s['contact_id'] for s in sales_ok}
+    won_rows += [c for c in rows if c.get('stage') in won and aware(c.get('won_at')) and aware(c['won_at']) >= start and c['id'] not in with_sale and not c.get('sales_count')]
+    waiting = sum(1 for c in rows if is_waiting(c) and not c.get('needs_human'))  # quem pediu atendente aparece no aviso de cima
+    human = sum(1 for c in rows if c.get('needs_human'))
     # o que a Nanda fez no mês: clientes atendidos, respostas fora do horário comercial, horários que ela marcou
     from agenda import tz_of
     tz = tz_of(user['company'])
@@ -207,7 +221,7 @@ class NotClientIn(BaseModel):
 async def not_client(body: NotClientIn, request: Request, user=Depends(managers)):
     """Tira vários contatos da base de vendas de uma vez (time, teste ou mensagem automática): não contam como prospect nem cliente."""
     r = await db.contacts.update_many({'company_id': user['company_id'], 'id': {'$in': body.ids}}, {'$set': {'internal': body.value}})
-    await audit(request, user, 'Tirou da base de vendas' if body.value else 'Voltou para a base de vendas', f'{r.modified_count} contatos')
+    await audit(request, user, 'Tirou da base de vendas' if body.value else 'Voltou para a base de vendas', f'{r.modified_count} contato' + ('' if r.modified_count == 1 else 's'))
     return {'updated': r.modified_count}
 
 @router.get('/funnel/auto-stage')

@@ -105,3 +105,31 @@ def test_mensagem_automatica_e_nao_cliente(monkeypatch):
         assert c.get('/api/reports/sales?days=30').json()['totals']['new_contacts'] == 1
         c.post('/api/contacts/not-client', json={'ids': [cs['Robo Divulga']['id']], 'value': False})
         assert c.get('/api/reports/sales?days=30').json()['totals']['new_contacts'] == 2
+
+def test_base_unica_em_todas_as_telas(monkeypatch):
+    async def fake_graph(method, path, token, payload=None, params=None):
+        if path.endswith('/messages'): return {'messages': [{'id': 'o1'}]}
+        return {'success': True, 'display_phone_number': '+55 11 97575-4765'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    async def no_ai(*a, **k): return None
+    monkeypatch.setattr(ai, 'maybe_reply', no_ai, raising=False)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona U', 'email': 'du@x.com', 'password': 'senha-forte-1', 'company': 'Agência U', 'segment': 'outro'})
+        c.post('/api/wa/connect', json={'phone_number_id': '6660011', 'waba_id': '6660012', 'token': 'EAA' + 'q' * 30})
+        inbound(c, '5511900003001', 'Real Um', 'Oi!')
+        inbound(c, '5511900003002', 'Teste Meu', 'Oi!')
+        from core import db, now, uid
+        cid = c.get('/api/auth/me').json()['company']['id']
+        async def seed():
+            for i in range(5): await db.contacts.insert_one({'id': uid(), 'company_id': cid, 'wa_id': f'551197777{i:04d}', 'name': f'Agenda {i}', 'created_at': now(), 'source': 'agenda do celular'})
+        c.portal.call(seed)
+        cs = {x['name']: x for x in c.get('/api/conversations').json()}
+        c.post('/api/contacts/not-client', json={'ids': [cs['Teste Meu']['id']]})
+        names = {x['name'] for x in c.get('/api/funnel').json()['cards']}
+        assert names == {'Real Um'}  # sem agenda do celular e sem quem está fora da base
+        sm = c.get('/api/funnel/summary').json()
+        assert sm['waiting'] == 1 and sm['new_contacts'] == 1
+        s = c.post('/api/sales', json={'contact_id': cs['Real Um']['id'], 'items': [{'name': 'Plano', 'price': 300}]}).json()
+        assert c.get('/api/funnel/summary').json()['won_value'] == 300
+        c.post(f'/api/sales/{s["id"]}/cancel', json={'reason': 'teste'})
+        assert c.get('/api/funnel/summary').json()['won_value'] == 0  # venda cancelada não conta
