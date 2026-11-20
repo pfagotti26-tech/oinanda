@@ -85,6 +85,24 @@ def match(r, plan='', segment='', cycle=''):
     if cycle and ((c.get('billing') or {}).get('cycle') or 'monthly') != cycle: return False
     return True
 
+def health(r):
+    """Saúde da conta para o admin: ok, atencao, risco ou off (sem plano), com os motivos em português."""
+    c = r['c']; b = c.get('billing') or {}; n = now(); risk, warn = [], []
+    if r['kind'] in ('readonly', 'suspended'): return {'level': 'off', 'reasons': ['sem plano ativo' if r['kind'] == 'readonly' else 'suspensa por você']}
+    w = r['wa'] or {}
+    if r['refused']: risk.append('cobrança recusada')
+    if w.get('status') == 'connected' and w.get('alert'): risk.append('WhatsApp com problema na Meta')
+    if b.get('status') == 'cancelled': risk.append('cancelou a assinatura')
+    idle = (n - r['last_use']).days if r['last_use'] else None
+    if idle is not None and idle >= 14: risk.append(f'sem entrar há {idle} dias')
+    elif idle is not None and idle >= 7: warn.append(f'sem entrar há {idle} dias')
+    if not (w.get('status') == 'connected') and aware(c.get('created_at')) and aware(c['created_at']) < n - timedelta(days=2): warn.append('sem WhatsApp conectado')
+    te = aware(c.get('trial_ends_at')) if r['kind'] == 'trial' else None
+    tu = billing.card_trial(c)
+    if (te and te - n <= timedelta(days=3)) or (tu and tu - n <= timedelta(days=3)): warn.append('teste acabando')
+    if r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai']: warn.append('Nanda perto do limite (chance de upgrade)')
+    return {'level': 'risco' if risk else 'atencao' if warn else 'ok', 'reasons': risk + warn}
+
 def row_out(r):
     c = r['c']; b = c.get('billing') or {}
     return {'id': c['id'], 'name': c.get('name'), 'segment': c.get('segment'), 'users': r['users'], 'created_at': c.get('created_at'), 'internal': r['internal'], 'own': r['own'], 'test': r['test'],
@@ -94,6 +112,9 @@ def row_out(r):
             'refused': {'due': r['refused']['due'], 'amount': r['refused']['amount'], 'detail': r['refused'].get('detail')} if r['refused'] else None,
             'courtesy_until': (c.get('courtesy') or {}).get('until'), 'last_use': r['last_use'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'], 'ai_cost': r['ai_real'],
             'ai_margin': round((b.get('amount') or 0) - (r['ai_real'] or 0), 2) if r['kind'] == 'paying' and (b.get('cycle') or 'monthly') == 'monthly' else None,
+            'mrr': r['mrr'], 'monthly': round(per_month(c), 2) if b.get('amount') else 0, 'health': health(r), 'phone': c.get('phone'),
+            'card_trial_until': billing.card_trial(c), 'since': b.get('since'), 'convs': r.get('convs', 0), 'ig': r.get('ig', False),
+            'wa_phone': (r['wa'] or {}).get('display_phone') if r['wa'] and r['wa'].get('status') == 'connected' else None,
             'wa': bool(r['wa'] and r['wa'].get('status') == 'connected'), 'wa_alert': (r['wa'] or {}).get('alert') if r['wa'] and r['wa'].get('status') == 'connected' else None, 'status': c.get('status')}
 
 # ---------- visão geral ----------
@@ -554,7 +575,7 @@ async def notify(company_id: str, body: NotifyIn, request: Request, user=Depends
 # ---------- clientes ----------
 @router.get('/admin/companies')
 async def companies(q: str = '', tab: str = '', plan: str = '', segment: str = '', wa: str = '', ai: str = '', by: str = '', start: Optional[str] = None,
-                    end: Optional[str] = None, sort: Literal['recent', 'use', 'trial_end', 'name'] = 'recent', limit: int = 50, offset: int = 0, user=Depends(admin)):
+                    end: Optional[str] = None, sort: Literal['recent', 'use', 'trial_end', 'name', 'health', 'value'] = 'recent', limit: int = 50, offset: int = 0, user=Depends(admin)):
     rows = await base()
     ql = q.strip().lower()
     def keep(r):
@@ -570,16 +591,29 @@ async def companies(q: str = '', tab: str = '', plan: str = '', segment: str = '
             if not inside(v, t0, t1): return False
         return True
     rows = [r for r in rows if keep(r)]
+    month0 = now().astimezone(SP).replace(day=1, hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
+    convs = {x['_id']: x['n'] async for x in db.contacts.aggregate([{'$match': {'last_at': {'$gte': month0}}}, {'$group': {'_id': '$company_id', 'n': {'$sum': 1}}}])}
+    igs = {x['company_id'] for x in await db.ig_accounts.find({}, {'_id': 0, 'company_id': 1}).to_list(5000)}
+    for r in rows: r['convs'] = convs.get(r['c']['id'], 0); r['ig'] = r['c']['id'] in igs
     real = [r for r in rows if not r['internal']]
-    counts = {'all': len(real), **{k: sum(1 for r in real if r['kind'] == k) for k in ('paying', 'courtesy', 'trial', 'readonly', 'suspended')}}
-    if tab: rows = [r for r in rows if r['kind'] == tab]
+    counts = {'all': len(real), **{k: sum(1 for r in real if r['kind'] == k) for k in ('paying', 'courtesy', 'trial', 'readonly', 'suspended')},
+              'risk': sum(1 for r in real if health(r)['level'] == 'risco'), 'test': sum(1 for r in rows if r['test'])}
+    if tab == 'risk': rows = [r for r in real if health(r)['level'] in ('risco', 'atencao')]
+    elif tab == 'test': rows = [r for r in rows if r['test']]
+    elif tab: rows = [r for r in rows if r['kind'] == tab]
     far = datetime.max.replace(tzinfo=timezone.utc); old = datetime.min.replace(tzinfo=timezone.utc)
-    if sort == 'use': rows.sort(key=lambda r: -(r['ai_used'] / r['lim']['ai'] if r['lim']['ai'] else 0))
+    lv = {'risco': 0, 'atencao': 1, 'ok': 2, 'off': 3}
+    if sort == 'health': rows.sort(key=lambda r: (lv[health(r)['level']], -(r['mrr'] or 0)))
+    elif sort == 'value': rows.sort(key=lambda r: -(per_month(r['c']) if (r['c'].get('billing') or {}).get('amount') else 0))
+    elif sort == 'use': rows.sort(key=lambda r: -(r['ai_used'] / r['lim']['ai'] if r['lim']['ai'] else 0))
     elif sort == 'trial_end': rows.sort(key=lambda r: aware(r['c'].get('trial_ends_at')) if r['kind'] == 'trial' else far)
     elif sort == 'name': rows.sort(key=lambda r: (r['c'].get('name') or '').lower())
     else: rows.sort(key=lambda r: aware(r['c'].get('created_at')) or old, reverse=True)
     limit = max(1, min(limit, 200)); offset = max(0, offset)
-    return {'rows': [row_out(r) for r in rows[offset:offset + limit]], 'total': len(rows), 'counts': counts}
+    shown = [r for r in rows if not r['internal']]
+    sumry = {'mrr': round(sum(r['mrr'] for r in shown), 2), 'wa': sum(1 for r in shown if r['wa'] and r['wa'].get('status') == 'connected'),
+             'active_week': sum(1 for r in shown if r['last_use'] and r['last_use'] >= now() - timedelta(days=7)), 'n': len(shown)}
+    return {'rows': [row_out(r) for r in rows[offset:offset + limit]], 'total': len(rows), 'counts': counts, 'summary': sumry}
 
 @router.get('/admin/companies.csv')
 async def companies_csv(user=Depends(admin)):

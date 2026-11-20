@@ -136,6 +136,8 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         assert a.get('/api/admin/companies?by=created&start=2020-01-01&end=2020-01-02').json()['rows'] == []
         assert 'Barbearia Dom' in a.get('/api/admin/companies.csv').text
         bella = next(x for x in l['rows'] if x['name'] == 'Clínica Bella'); dom = next(x for x in l['rows'] if x['name'] == 'Barbearia Dom')
+        assert dom['health']['level'] in ('ok', 'atencao') and bella['monthly'] == 297 and l['summary']['mrr'] == 297 and l['counts']['risk'] == 0
+        assert a.get('/api/admin/companies?tab=risk&sort=health').status_code == 200 and a.get('/api/admin/companies?sort=value').json()['rows'][0]['name'] == 'Clínica Bella'
         assert bella['kind'] == 'paying' and bella['ai_limit'] == 600 and dom['kind'] == 'trial' and dom['trial_ends_at']
         # ficha
         d = a.get(f'/api/admin/companies/{bella["id"]}').json()
