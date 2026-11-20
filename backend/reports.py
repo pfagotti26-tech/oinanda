@@ -43,11 +43,11 @@ async def first_reply_minutes(company_id, contact_ids):
         if rep: out[cid] = (mins(aware(rep['at']) - aware(first_in['at'])), rep.get('by_id'), '(IA)' in (rep.get('by') or ''))
     return out
 
-async def period_totals(cid, kinds, won_ids, start, end):
+async def period_totals(cid, kinds, won_ids, start, end, keep=lambda c: True):
     """Números de um período fechado, para comparar com o atual."""
-    new = await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular']}},
-                                 {'_id': 0, 'id': 1, 'stage': 1}).to_list(10000)
-    won = await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'value': 1}).to_list(10000)
+    new = [c for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular']}},
+                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
+    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
     fr = await first_reply_minutes(cid, [c['id'] for c in new])
     vals = [v[0] for v in fr.values()]
     conv = sum(1 for c in new if kinds.get(c.get('stage')) == 'won')
@@ -55,17 +55,40 @@ async def period_totals(cid, kinds, won_ids, start, end):
             'conversion': round(100 * conv / len(new), 1) if new else None, 'first_reply_min': median(vals) if vals else None}
 
 @router.get('/reports/sales')
-async def sales(days: int = 30, user=Depends(managers)):
-    days = max(1, min(days, 365))
-    cid = user['company_id']; since = now() - timedelta(days=days)
+async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] = None, channel: str = '', origin: str = '', owner: str = '', team: str = '',
+                user=Depends(managers)):
+    import agenda as _ag
+    tz = _ag.tz_of(user['company'])
+    if start or end:  # período escolhido no calendário, dias inteiros no fuso da empresa
+        from sales import period, Filters
+        try: s0, s1, since, until = period(user['company'], Filters(start=start, end=end))
+        except ValueError: raise HTTPException(400, 'Data inválida.')
+        days = (s1 - s0).days + 1; start_local = s0
+    else:
+        days = max(1, min(days, 365)); until = now(); since = until - timedelta(days=days)
+        start_local = (until - timedelta(days=days - 1)).astimezone(tz).date()
+    rng = {'$gte': since, '$lt': until}
+    cid = user['company_id']
     stages = await stages_for(user['company'])
     kinds = {s['id']: s['kind'] for s in stages}
     won_ids = [s['id'] for s in stages if s['kind'] == 'won']
-    new = await db.contacts.find({'company_id': cid, 'created_at': {'$gte': since}, 'source': {'$nin': ['historico', 'agenda do celular']}},
-                                 {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1}).to_list(10000)
-    won = await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': since}},
-                                 {'_id': 0, 'id': 1, 'value': 1, 'created_at': 1, 'won_at': 1, 'assigned_to': 1, 'source': 1, 'ad': 1}).to_list(10000)
-    lost = await db.contacts.count_documents({'company_id': cid, 'lost_at': {'$gte': since}})
+    from origins import origins_of
+    onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
+    lnames = {l['id']: l.get('label') or 'Link' for l in await db.track_links.find({'company_id': cid}, {'_id': 0, 'id': 1, 'label': 1}).to_list(300)}
+    def keep(c, skip_origin=False):
+        if channel and (c.get('channel') or 'whatsapp') != channel: return False
+        if owner and (c.get('assigned_to') or '_none') != owner: return False
+        if team and c.get('team_id') != team: return False
+        if origin and not skip_origin and origin_key(c, onames, lnames)[0] != origin: return False
+        return True
+    all_new = await db.contacts.find({'company_id': cid, 'created_at': rng, 'source': {'$nin': ['historico', 'agenda do celular']}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000)
+    from wallet import is_agenda, IN_AT
+    real = {c['id'] for c in await db.contacts.find({'company_id': cid, 'id': {'$in': [c['id'] for c in all_new]}}, {'_id': 0, 'id': 1, 'source': 1, 'sales_count': 1, **{k: 1 for k in IN_AT}}).to_list(10000) if not is_agenda(c)}
+    all_new = [c for c in all_new if c['id'] in real]  # quem só veio da agenda do celular não é contato novo
+    origin_opts = sorted({origin_key(c, onames, lnames)[0] for c in all_new if keep(c, True)})
+    new = [c for c in all_new if keep(c)]
+    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c)]
+    lost = sum(1 for c in await db.contacts.find({'company_id': cid, 'lost_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1}).to_list(10000) if keep(c))
     value = sum(c.get('value') or 0 for c in won)
     with_value = [c['value'] for c in won if c.get('value')]
     cycle = [(aware(c['won_at']) - aware(c['created_at'])).total_seconds() / 86400 for c in won if c.get('created_at') and c.get('won_at')]
@@ -90,9 +113,6 @@ async def sales(days: int = 30, user=Depends(managers)):
     for f in funnel: f['name'] = names[f['id']]; f['kind'] = kinds[f['id']]
 
     # origem
-    from origins import origins_of
-    onames = {o['id']: o['name'] for o in await origins_of(user['company'])}
-    lnames = {l['id']: l.get('label') or 'Link' for l in await db.track_links.find({'company_id': cid}, {'_id': 0, 'id': 1, 'label': 1}).to_list(300)}
     origin, okey = {}, {}
     for c in new:
         k, kind = origin_key(c, onames, lnames); okey[c['id']] = k
@@ -106,15 +126,15 @@ async def sales(days: int = 30, user=Depends(managers)):
     fr = await first_reply_minutes(cid, list(new_ids))
     team = await db.users.find({'company_id': cid}, {'_id': 0, 'id': 1, 'name': 1, 'active': 1}).to_list(200)
     sent = {}
-    for m in await db.messages.find({'company_id': cid, 'dir': 'out', 'at': {'$gte': since}}, {'_id': 0, 'by_id': 1, 'by': 1}).to_list(100000):
+    for m in await db.messages.find({'company_id': cid, 'dir': 'out', 'at': rng}, {'_id': 0, 'by_id': 1, 'by': 1}).to_list(100000):
         k = m.get('by_id') or ('nanda' if '(IA)' in (m.get('by') or '') else 'auto' if (m.get('by') or '').startswith('Automação') else 'celular')
         sent[k] = sent.get(k, 0) + 1
     scores = {}
-    for q in await db.quality.find({'company_id': cid, 'at': {'$gte': since}}, {'_id': 0, 'agents': 1, 'score': 1}).to_list(5000):
+    for q in await db.quality.find({'company_id': cid, 'at': rng}, {'_id': 0, 'agents': 1, 'score': 1}).to_list(5000):
         for a in q.get('agents') or []: scores.setdefault(a, []).append(q['score'])
     # quem passou oportunidades adiante (pré-vendas) e quantas viraram venda
     passed = {}
-    for t in await db.transfers.find({'company_id': cid, 'at': {'$gte': since}, 'by_id': {'$ne': None}, 'auto': {'$ne': True}}, {'_id': 0, 'by_id': 1, 'contact_id': 1}).to_list(50000):
+    for t in await db.transfers.find({'company_id': cid, 'at': rng, 'by_id': {'$ne': None}, 'auto': {'$ne': True}}, {'_id': 0, 'by_id': 1, 'contact_id': 1}).to_list(50000):
         passed.setdefault(t['by_id'], set()).add(t['contact_id'])
     won_by_id = {c['id']: c for c in won}
     origin_won = {}
@@ -132,15 +152,13 @@ async def sales(days: int = 30, user=Depends(managers)):
     people.sort(key=lambda p: (-p['value'], -p['won'], -p['messages']))
     month = now().strftime('%Y-%m')
     usage = await db.ai_usage.find_one({'company_id': cid, 'month': month}, {'_id': 0}) or {}
-    nanda_books = await db.appointments.count_documents({'company_id': cid, 'created_at': {'$gte': since}, 'by': {'$regex': r'\(IA\)$'}})
-    handoffs = await db.messages.count_documents({'company_id': cid, 'dir': 'sys', 'at': {'$gte': since}, 'text': {'$regex': '^A Nanda passou a conversa'}})
-    autos = await db.automation_runs.count_documents({'company_id': cid, 'at': {'$gte': since}, 'status': 'sent'})
+    nanda_books = await db.appointments.count_documents({'company_id': cid, 'created_at': rng, 'by': {'$regex': r'\(IA\)$'}})
+    handoffs = await db.messages.count_documents({'company_id': cid, 'dir': 'sys', 'at': rng, 'text': {'$regex': '^A Nanda passou a conversa'}})
+    autos = await db.automation_runs.count_documents({'company_id': cid, 'at': rng, 'status': 'sent'})
     all_fr = [v[0] for v in fr.values()]
-    prev = await period_totals(cid, kinds, won_ids, since - timedelta(days=days), since)
+    prev = await period_totals(cid, kinds, won_ids, since - (until - since), since, keep)
     # série por dia (ou por semana em períodos longos), no fuso da empresa
-    import agenda as _ag
-    tz = _ag.tz_of(user['company']); bucket = 7 if days > 45 else 1
-    start_local = (now() - timedelta(days=days - 1)).astimezone(tz).date()
+    bucket = 7 if days > 45 else 1
     nb = (days + bucket - 1) // bucket
     series = [{'date': str(start_local + timedelta(days=i * bucket)), 'new': 0, 'won': 0, 'value': 0} for i in range(nb)]
     def idx(dt):
@@ -200,7 +218,9 @@ async def sales(days: int = 30, user=Depends(managers)):
     late = await db.contacts.count_documents({'company_id': cid, 'sla_alert_at': {'$gte': now() - timedelta(hours=24)}, 'last_dir': 'in'})
     if late: alerts.insert(0, {'kind': 'bad', 'text': f'{late} {"cliente passou" if late == 1 else "clientes passaram"} do tempo limite na fila de uma equipe', 'to': 'conversas', 'filter': 'waiting'})
     return {'prev': prev, 'series': series, 'bucket': bucket, 'alerts': alerts[:4], 'teams': team_rows,
-        'days': days,
+        'days': days, 'start': str(start_local), 'end': str(start_local + timedelta(days=days - 1)),
+        'filters': {'origins': origin_opts, 'teams': [{'id': t['id'], 'name': t['name']} for t in await teams_of(cid)],
+                    'owners': [{'id': u['id'], 'name': u['name']} for u in team]},
         'unassigned': {'won': sum(1 for c in won if not c.get('assigned_to')), 'value': sum(c.get('value') or 0 for c in won if not c.get('assigned_to'))},
         'totals': {'new_contacts': len(new), 'won': len(won), 'won_value': value, 'lost': lost,
                    'ticket': round(sum(with_value) / len(with_value), 2) if with_value else None,
@@ -284,9 +304,12 @@ async def score_batch(limit: int = 15, user=Depends(managers)):
     return {'scored': len(done)}
 
 @router.get('/quality')
-async def quality_list(days: int = 30, user=Depends(managers)):
-    since = now() - timedelta(days=max(1, min(days, 365)))
-    rows = await db.quality.find({'company_id': user['company_id'], 'at': {'$gte': since}}, {'_id': 0}).sort('at', -1).to_list(500)
+async def quality_list(days: int = 30, start: Optional[str] = None, end: Optional[str] = None, user=Depends(managers)):
+    if start or end:
+        from sales import period, Filters
+        _, _, since, until = period(user['company'], Filters(start=start, end=end))
+    else: until = now(); since = until - timedelta(days=max(1, min(days, 365)))
+    rows = await db.quality.find({'company_id': user['company_id'], 'at': {'$gte': since, '$lt': until}}, {'_id': 0}).sort('at', -1).to_list(500)
     latest = {}
     for r in rows: latest.setdefault(r['contact_id'], r)  # a nota mais recente de cada conversa
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(200)}

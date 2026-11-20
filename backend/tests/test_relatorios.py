@@ -37,3 +37,14 @@ def test_relatorio_honesto(monkeypatch):
         assert not any('negocia' in t for t in txt)  # todo mundo ainda está na primeira etapa
         j = c.get('/api/reports/journey').json()
         assert j['total'] == 2  # quem só está na agenda do celular não entra na jornada
+        # período escolhido e filtros
+        from datetime import date
+        hoje = date.today().isoformat()
+        r = c.get(f'/api/reports/sales?start=2020-01-01&end=2020-01-31').json()
+        assert r['days'] == 31 and r['totals']['new_contacts'] == 0
+        r = c.get(f'/api/reports/sales?start={hoje}&end={hoje}').json()
+        assert r['totals']['new_contacts'] == 2 and 'Bio do Instagram' in r['filters']['origins']
+        assert c.get(f'/api/reports/sales?start={hoje}&end={hoje}&origin=Bio do Instagram').json()['totals']['new_contacts'] == 1
+        assert c.get(f'/api/reports/sales?start={hoje}&end={hoje}&channel=instagram').json()['totals']['new_contacts'] == 0
+        assert c.get(f'/api/reports/sales?start={hoje}&end={hoje}&owner=_none').json()['totals']['new_contacts'] == 2
+        assert c.get('/api/reports/sales?start=2020-13-01').status_code in (400, 422)
