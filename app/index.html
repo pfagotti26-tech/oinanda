@@ -1876,6 +1876,23 @@ body:has(.nz-save) #toast{bottom:92px}
 @media (max-width:860px){
  .lk-th{display:none}.lk-r{grid-template-columns:38px repeat(3,auto) minmax(36px,1fr);gap:6px 14px;padding:12px 4px}.lk-m{grid-column:2/5;grid-row:1}.lk-ic{grid-row:1}.lk-v{grid-row:2;flex-direction:row;align-items:baseline;gap:4px}.lk-v:nth-child(3){grid-column:2}.lk-v:nth-child(4){grid-column:3}.lk-v:nth-child(5){grid-column:4}.lk-v b{font-size:15px}.lk-v i{display:inline;font-size:12px;color:var(--ink3)}.lk-v small{display:none}.lk-cv{padding:0}.lk-a{grid-column:5;grid-row:1}.lk-cp{width:36px;height:36px;padding:0}.lk-cp span{display:none}.lk-cp svg{width:16px;height:16px}.lk-go{display:none}
  .lk-a{flex-wrap:wrap}.lk-fg{grid-template-columns:1fr}.lk-sug>div{grid-template-columns:1fr 1fr}}
+/* hero "como funciona": passos com título em cima e a cena num palco branco embaixo */
+.lk-flow{grid-template-columns:1fr 22px 1fr 22px 1fr!important;gap:8px!important;padding:2px 18px 16px!important}
+.lk-fs{display:grid!important;grid-template-columns:26px 1fr;grid-template-rows:auto auto 1fr;grid-template-areas:"n t" ". d" "v v";column-gap:10px;row-gap:2px!important;padding:14px!important;border:1px solid #F1E8E0}
+.lk-fs>.lk-fn{grid-area:n;position:static!important;width:26px!important;height:26px!important;font-size:12.5px!important;align-self:start}
+.lk-fs>b{grid-area:t;font-size:14px!important;align-self:center;line-height:26px}
+.lk-fs>span:not(.lk-fn){grid-area:d;font-size:12.5px;min-height:34px}
+.lk-fs>.lk-fv{grid-area:v;height:auto!important;min-height:112px;margin:10px 0 0!important;padding:12px!important;background:#fff;border-radius:12px;box-shadow:inset 0 0 0 1px #F1E8E0;align-self:stretch}
+.lk-fv .lk-chip{background:#F6F1EC}
+.lk-ar{align-self:center}.lk-ar svg{width:16px!important;height:16px!important}.lk-ar{width:22px;height:22px;border-radius:50%;background:#fff;border:1px solid #F1E8E0;color:var(--c)!important;justify-self:center}
+.pm-hero .lk-fv{padding:12px!important;height:auto!important}.pm-in{align-self:flex-start;background:#F1ECE7!important;box-shadow:none!important}.pm-hero .lk-bb.sm:not(.pm-in){align-self:flex-end}
+.pm-mini{display:flex;align-items:center;gap:10px;border:1px solid #F1E8E0;border-radius:12px;padding:8px 10px;width:100%;max-width:250px}.pm-mini>span:nth-child(2){flex:1;display:flex;flex-direction:column;min-width:0}.pm-mini b{font-size:13px}.pm-mini small{font-size:11.5px;color:var(--ink3)}.pm-mini .tg{width:30px;height:18px}.pm-mini .tg::after{width:12px;height:12px}.pm-mini .tg.on::after{left:15px}
+.pm-rc{box-shadow:none!important;border:1px solid #F1E8E0;width:100%;max-width:220px}
+.pm-facts{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0 18px 18px;padding:12px 0!important;border-top:1px dashed #E9DFD6}
+.pm-facts>div{padding:0 14px;border-left:1px solid #F1E8E0}.pm-facts>div:first-child{padding-left:0;border-left:0}
+.pm-facts i{width:26px!important;height:26px!important;border-radius:8px!important;background:#FDECE6!important;color:var(--c)!important}.pm-facts>div{grid-template-columns:26px 1fr!important}
+@media (max-width:860px){.lk-flow{grid-template-columns:1fr!important;padding:0 14px 14px!important}.lk-ar{transform:rotate(90deg)}.lk-fs>span:not(.lk-fn){min-height:0}.lk-fs>.lk-fv{min-height:0}
+ .pm-facts{grid-template-columns:1fr 1fr!important;row-gap:12px!important;margin:0 14px 14px}.pm-facts>div:nth-child(3){padding-left:0;border-left:0}}
 /* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
@@ -3977,7 +3994,7 @@ async function vdPromos(){
   let open=!ps.length;try{if(ps.length&&localStorage.getItem('pmHow')==='1')open=true}catch(e){}
   const ar=`<i class="lk-ar">${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</i>`;
   const hero=`<details class="lk-hero pm-hero" ${open?'open':''}><summary><span class="lk-hi">${svg('<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}</span><div><b>Promoções que se aplicam sozinhas</b><span>Você cria a regra uma vez. A Nanda oferece na conversa e o desconto entra certo na venda.</span></div><em class="lk-ht">Como funciona</em></summary>
-    <div class="lk-flow"><div class="lk-fs"><span class="lk-fn">1</span><div class="lk-fv"><span class="pm-bd k-percent sm"><b>10%</b><small>off</small></span><span class="lk-chip">na primeira compra · até 30/11</span></div><b>Você cria a regra</b><span>o desconto, em quê, quando vale e para quem</span></div>${ar}
+    <div class="lk-flow"><div class="lk-fs"><span class="lk-fn">1</span><div class="lk-fv"><span class="pm-mini"><span class="pm-bd k-percent sm"><b>10%</b><small>off</small></span><span><b>Boas-vindas</b><small>na primeira compra · até 30/11</small></span><i class="tg on"></i></span></div><b>Você cria a regra</b><span>o desconto, em quê, quando vale e para quem</span></div>${ar}
      <div class="lk-fs"><span class="lk-fn">2</span><div class="lk-fv"><span class="lk-bb sm pm-in">Tem desconto? 🙂</span><span class="lk-bb sm">Tem sim! 10% na primeira compra 😊</span></div><b>A Nanda oferece</b><span>só o que está valendo agora, e confere o cupom que o cliente digita</span></div>${ar}
      <div class="lk-fs"><span class="lk-fn">3</span><div class="lk-fv"><span class="pm-rc"><span>Plano mensal<em>R$ 300</em></span><span class="g">Boas-vindas<em>− R$ 30</em></span><span class="t">Total<em>R$ 270</em></span></span></div><b>Entra na venda</b><span>ao registrar, ela aparece marcada e o resultado fica aqui</span></div></div>
     <div class="pm-facts">${[[I.auto,'Automática','Já aparece marcada na venda que se encaixa.'],[I.cup,'Com cupom','Só vale com o código: um para divulgar ou individuais.'],[I.nanda,'A Nanda','Oferece só o que vale agora e confere o cupom.'],['<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/>','Sem cobrança','O desconto vai para a venda e os relatórios.']].map(f=>`<div><i>${svg(f[0])}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
