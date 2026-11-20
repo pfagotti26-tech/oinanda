@@ -154,6 +154,24 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
     churn = {'count': len(gone), 'count_prev': len(gone_prev), 'mrr_lost': round(sum(monthly(r) for r in gone), 2),
              'pct': round(100 * len(gone) / base_n, 1) if base_n else None,
              'in_trial': sum(1 for r in gone if billing.card_trial(r['c']) or not since(r))}
+    # uso da plataforma no período (só clientes, sem contas internas e de teste)
+    idl = list(ids)
+    cnt = lambda coll, q: coll.count_documents({'company_id': {'$in': idl}, **q})
+    rng = {'$gte': t0, '$lt': t1}
+    sales_ok = await db.sales.find({'company_id': {'$in': idl}, 'status': 'ok', 'created_at': rng}, {'_id': 0, 'total': 1}).to_list(50000)
+    ai_cost_month = ai_cost(sum(r['ai_in'] for r in rows), sum(r['ai_out'] for r in rows), sum(r['ai_cr'] for r in rows), sum(r['ai_cw'] for r in rows))
+    activity = {'conversations': await cnt(db.contacts, {'last_at': rng}), 'msgs_in': await cnt(db.messages, {'dir': 'in', 'at': rng}),
+                'msgs_out': await cnt(db.messages, {'dir': 'out', 'at': rng}), 'handoffs': await cnt(db.contacts, {'needs_human_at': rng}),
+                'appointments': await cnt(db.appointments, {'created_at': rng}), 'sales': len(sales_ok), 'sales_total': round(sum(x.get('total') or 0 for x in sales_ok), 2),
+                'wa_connected': sum(1 for r in live if r['wa'] and r['wa'].get('status') == 'connected'),
+                'ig_connected': await db.ig_accounts.count_documents({'company_id': {'$in': [r['c']['id'] for r in live]}})}
+    top = sorted([r for r in live if r['ai_used']], key=lambda r: -r['ai_used'])[:5]
+    top = [{'id': r['c']['id'], 'name': r['c'].get('name'), 'kind': r['kind'], 'plan': r['plan'], 'ai_used': r['ai_used'], 'ai_limit': r['lim']['ai'], 'ai_cost': r['ai_real'],
+            'mrr': r['mrr'], 'wa': bool(r['wa'] and r['wa'].get('status') == 'connected')} for r in top]
+    import mailer, notices as N
+    bk = await db.settings.find_one({'id': 'backup'}, {'_id': 0}) or {}
+    ops = {'wa_notices': await N.wa_ready(), 'payments': bool(os.environ.get('MP_ACCESS_TOKEN')), 'email': mailer.ready(),
+           'errors_24h': await db.errors.count_documents({'at': {'$gte': now() - timedelta(days=1)}}), 'backup_at': bk.get('last_at')}
     wa_bad = [r for r in live if r['wa'] and r['wa'].get('status') == 'connected' and r['wa'].get('alert')]
     card_soon = [r for r in rows if (lambda tu: tu and now() < tu <= now() + timedelta(days=3))(aware((r['c'].get('billing') or {}).get('trial_until'))) and (r['c'].get('billing') or {}).get('status') == 'active']
     return {'period': {'start': t0, 'end': t1 - timedelta(seconds=1), 'prev_start': p0, 'prev_end': p1 - timedelta(seconds=1)},
@@ -170,6 +188,7 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
                           'ai_near': {'count': sum(1 for r in live if r['lim']['ai'] and r['ai_used'] >= 0.8 * r['lim']['ai'])},
                           'wa_alert': {'count': len(wa_bad)}, 'card_trial_soon': {'count': len(card_soon)}},
             'plans': [{'plan': k, 'name': PLANS[k]['name'], 'count': sum(1 for r in paying if r['plan'] == k), 'mrr': round(sum(r['mrr'] for r in paying if r['plan'] == k), 2)} for k in PLANS],
+            'activity': activity, 'top': top, 'ops': ops, 'margin': round(sum(r['mrr'] for r in rows) - (ai_cost_month or 0), 2) if ai_cost_month is not None else None,
             'usage': {'accounts': len(live), 'active_week': sum(1 for r in live if r['last_use'] and r['last_use'] >= week),
                       'ai_replies': sum(r['ai_used'] for r in rows), 'ai_cost': ai_cost(tin, tout, tcr, tcw)}}
 
@@ -181,6 +200,33 @@ async def stats(user=Depends(admin)):
             'paying': sum(1 for r in rows if r['kind'] == 'paying'), 'suspended': sum(1 for r in rows if r['kind'] == 'suspended'),
             'users': await db.users.count_documents({}), 'new_week': sum(1 for r in rows if aware(r['c'].get('created_at')) and aware(r['c']['created_at']) >= week),
             'errors_day': await db.errors.count_documents({'at': {'$gte': now() - timedelta(days=1)}})}
+
+# ---------- dados do Oi Nanda (a empresa que vende a plataforma) ----------
+PLATFORM_DEFAULT = {'legal_name': 'Fagotti Marketing Direto Ltda', 'cnpj': '40.864.395/0001-95', 'address': '', 'email': 'contato@altaagencydigital.com',
+                    'phone': '', 'site': 'https://oinanda.com.br', 'instagram': '@oinanda.app', 'meta_portfolio': 'Oi Nanda'}
+
+class PlatformIn(BaseModel):
+    legal_name: Optional[str] = Field(default=None, max_length=120)
+    cnpj: Optional[str] = Field(default=None, max_length=20)
+    address: Optional[str] = Field(default=None, max_length=200)
+    email: Optional[str] = Field(default=None, max_length=120)
+    phone: Optional[str] = Field(default=None, max_length=30)
+    site: Optional[str] = Field(default=None, max_length=120)
+    instagram: Optional[str] = Field(default=None, max_length=60)
+    meta_portfolio: Optional[str] = Field(default=None, max_length=80)
+
+@router.get('/admin/platform')
+async def platform_get(user=Depends(admin)):
+    d = await db.settings.find_one({'id': 'platform'}, {'_id': 0, 'id': 0}) or {}
+    return {**PLATFORM_DEFAULT, **d}
+
+@router.put('/admin/platform')
+async def platform_put(body: PlatformIn, request: Request, user=Depends(admin)):
+    ch = {k: v.strip() for k, v in body.model_dump(exclude_none=True).items()}
+    if ch:
+        await db.settings.update_one({'id': 'platform'}, {'$set': ch}, upsert=True)
+        await audit(request, user, 'Admin alterou os dados do Oi Nanda', ', '.join(ch))
+    return await platform_get(user)
 
 # ---------- financeiro ----------
 STATUS = {'paid': 'paga', 'pending': 'pendente', 'refused': 'recusada', 'cancelled': 'cancelada', 'scheduled': 'a vencer'}

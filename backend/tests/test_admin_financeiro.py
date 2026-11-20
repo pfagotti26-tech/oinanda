@@ -169,6 +169,10 @@ def test_admin_funil_cancelamento_e_conta_de_teste(monkeypatch):
         f = {x['key']: x['count'] for x in o['funnel']}
         assert o['signups'] == 2 and f['signup'] == 2 and f['card'] == 1 and f['whatsapp'] == 0 and o['funnel'][0]['pct'] == 100
         assert o['churn']['count'] == 1 and o['churn']['mrr_lost'] == 297
+        assert set(o['activity']) >= {'conversations', 'msgs_in', 'msgs_out', 'handoffs', 'appointments', 'sales', 'sales_total'} and o['ops']['errors_24h'] == 0
+        pf = a.get('/api/admin/platform').json(); assert pf['cnpj'] == '40.864.395/0001-95' and pf['address'] == ''
+        assert a.put('/api/admin/platform', json={'address': 'Av. Teste, 100'}).json()['address'] == 'Av. Teste, 100'
+        assert a.get('/api/admin/platform').json()['legal_name'] == 'Fagotti Marketing Direto Ltda'
         at = a.get('/api/admin/attention').json(); assert at['counts']['cancelled'] == 1
         assert next(x for x in at['items'] if x['kind'] == 'cancelled')['notice'] is None
         # conta de teste: sai dos números, aparece marcada na lista e não recebe avisos automáticos
