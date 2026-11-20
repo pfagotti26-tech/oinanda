@@ -66,7 +66,7 @@ class ConnectIn(BaseModel):
 
 def number_out(n):
     if not n: return None
-    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync', 'token_kind', 'token_expires_at', 'last_in_at')}
+    return {k: n.get(k) for k in ('phone_number_id', 'waba_id', 'display_phone', 'verified_name', 'quality', 'status', 'connected_at', 'webhook', 'mode', 'register_error', 'sync', 'token_kind', 'token_expires_at', 'last_in_at', 'alert', 'health')}
 
 @router.get('/wa/number')
 async def get_number(user=Depends(current_user)):
@@ -337,6 +337,9 @@ async def webhook(request: Request):
                 elif field == 'smb_message_echoes': await ingest_echoes(value)
                 elif field == 'history': await ingest_history(value)
                 elif field == 'smb_app_state_sync': await ingest_contacts(value)
+                elif field in ('account_update', 'phone_number_quality_update', 'account_review_update'):
+                    from wahealth import on_webhook
+                    await on_webhook(field, entry.get('id'), value)
                 if field != 'messages': await sample(field, value)
             except Exception: log.exception('falha ao processar webhook (%s)', field)
     return {'ok': True}

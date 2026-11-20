@@ -11,6 +11,10 @@ def plural(n, um, varios): return um if n == 1 else varios
 @router.get('/home/todo')
 async def todo(user=Depends(managers)):
     cid = user['company_id']; out = []
+    n = await db.wa_numbers.find_one({'company_id': cid}, {'_id': 0, 'alert': 1})
+    if n and n.get('alert'):
+        a = n['alert']
+        out.append({'k': 'wa_alert', 'tone': 'bad', 'n': 1, 'to': 'empresa', 'cta': 'Ver o que fazer', 'title': a['title'], 'sub': a['detail']})
     # perguntas que a Nanda não soube responder
     gaps = await db.ai_gaps.count_documents({'company_id': cid, 'status': 'open'})
     if gaps:
