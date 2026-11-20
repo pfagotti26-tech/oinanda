@@ -63,7 +63,7 @@ async def raise_alert(n, kind, title, detail, source):
     await db.wa_alerts.insert_one({'company_id': n['company_id'], 'phone': n.get('display_phone'), **alert})
     from core import audit
     await audit(None, None, 'Alerta do WhatsApp', f'{n.get("display_phone")} · {title}', company_id=n['company_id'])
-    await notify(n, title, detail)
+    await notify(n, title, detail, kind)
     return True
 
 async def clear_alert(n):
@@ -72,7 +72,18 @@ async def clear_alert(n):
     await db.wa_alerts.insert_one({'company_id': n['company_id'], 'phone': n.get('display_phone'), 'kind': 'ok', 'title': 'Número voltou ao normal', 'at': now()})
     return True
 
-async def notify(n, title, detail):
+STEPS = {  # o que fazer, em passos, para o e-mail
+    'banned': ('A Nanda e o time não conseguem mandar nem receber mensagens por este número até o WhatsApp liberar.',
+               [(2, 'Peça a análise no app WhatsApp Business', 'botão "Pedir análise"; a maioria sai em até 24 h'), (0, 'Não desinstale o app nem troque de aparelho', 'isso pode atrasar a análise'), (0, 'Não mande mensagens em massa enquanto isso', 'nem pelo celular, nem por outras ferramentas')]),
+    'restricted': ('Por um tempo o número só responde quem chamou e não pode iniciar conversas.',
+                   [(2, 'Pause campanhas e automações que iniciam conversa', 'em Automações e Clientes › Campanhas'), (0, 'Veja o motivo no Gerenciador do WhatsApp', 'business.facebook.com'), (0, 'Se discordar, peça a análise por lá', '')]),
+    'payment': ('Respostas para quem chamou continuam saindo. Lembretes, automações e campanhas para quem não falou nas últimas 24 h ficam parados.',
+                [(2, 'Abra business.facebook.com', 'Configurações do negócio › Pagamentos'), (0, 'Adicione um cartão na conta do WhatsApp', 'é o cartão que a Meta usa para cobrar as mensagens'), (0, 'Pronto: o envio volta sozinho', 'e o aviso some do painel')]),
+    'flagged': ('Muita gente bloqueou ou denunciou mensagens recentes. Se continuar, o número pode ser restringido.',
+                [(2, 'Pause campanhas e automações que iniciam conversa', 'por alguns dias'), (0, 'Mande só para quem pediu para receber', 'e com mensagem que a pessoa espera'), (0, 'A nota volta a subir com o tempo', 'o Oi Nanda avisa quando normalizar')]),
+}
+
+async def notify(n, title, detail, kind=''):
     """Dono e gestores ficam sabendo na hora: notificação no celular/computador e e-mail."""
     try:
         from push import send_user
@@ -82,8 +93,14 @@ async def notify(n, title, detail):
             try: await send_user(u['id'], '⚠️ ' + title, detail, '/', 'wa-alert')
             except Exception: log.exception('push do alerta do WhatsApp')
             if u.get('email'):
-                paras = [f'Número {n.get("display_phone") or ""}.', detail]
-                await send(u['email'], title, layout(title, paras, ('Abrir o Oi Nanda', 'https://app.oinanda.com.br/')), plain(title, paras))
+                import html as _h
+                lead, steps = STEPS.get(kind, (detail, None))
+                paras = [_h.escape(lead)]
+                bad = kind in ('banned', 'blocked', 'restricted', 'payment')
+                await send(u['email'], title, layout(title, paras, ('Ver no Oi Nanda', 'https://app.oinanda.com.br/empresa'), 'O aviso some sozinho do painel quando a Meta liberar o número. A gente confere de hora em hora.',
+                                                     icon='wa-r' if bad else 'wa-a', tone='r' if bad else 'a', eyebrow='WhatsApp da empresa', pre=lead[:120], steps=steps, steps_title='O que fazer agora',
+                                                     rows=[('Número', n.get('display_phone') or ''), ('Percebido em', now().astimezone(__import__('zoneinfo').ZoneInfo('America/Sao_Paulo')).strftime('%d/%m às %H:%M'))],
+                                                     why='Você recebe este alerta por ser dono ou gestor da conta.'), plain(title, paras))
     except Exception: log.exception('falha ao avisar o alerta do WhatsApp')
 
 async def find_number(entry_id, value):
