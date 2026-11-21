@@ -101,6 +101,7 @@ class SaleIn(BaseModel):
     payment: Literal['pix', 'cartao_credito', 'cartao_debito', 'boleto', 'dinheiro', 'transferencia', 'outro', ''] = ''
     sellers: Optional[List[SellerIn]] = Field(default=None, max_length=10)
     notes: str = Field(default='', max_length=1000)
+    installments: int = Field(default=1, ge=1, le=24)  # parcelas no cartão de crédito
     move_won: bool = True
     promo_ids: Optional[List[str]] = Field(default=None, max_length=20)  # None = aplica sozinho as promoções automáticas
     coupon: Optional[str] = Field(default=None, max_length=30)
@@ -147,7 +148,7 @@ async def clean_sale(user, body: SaleIn, contact, skip_sale=None):
     approval = bool(lim is not None and user['role'] == 'agent' and gross and 100 * manual / gross > lim + 0.001)
     return {'contact_id': contact['id'], 'contact_name': contact.get('name'), 'date': date, 'items': items, 'total': round(sum(i['total'] for i in items), 2),
             'subtotal': subtotal, 'promos': r['applied'], 'discount': round(manual + r['discount'], 2), 'needs_approval': approval,
-            'payment': body.payment, 'sellers': sellers, 'notes': body.notes.strip(), 'team_id': contact.get('team_id'),
+            'payment': body.payment, 'installments': body.installments if body.payment == 'cartao_credito' else 1, 'sellers': sellers, 'notes': body.notes.strip(), 'team_id': contact.get('team_id'),
             'source': (('ad:' + ((contact.get('ad') or {}).get('headline') or (contact.get('ad') or {}).get('source_id') or 'sem título')) if contact.get('ad') else contact.get('source') or 'whatsapp')}
 
 async def refresh_contact(company, contact_id):
