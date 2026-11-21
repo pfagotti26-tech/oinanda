@@ -2288,6 +2288,56 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ck-url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}.ck-url code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12.5px}
 .ck-ft{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}.ck-ft .sp{flex:1}
 @media(max-width:860px){.ck-k{grid-template-columns:1fr 1fr}}
+
+/* comissão e turno (modal) */
+.wk2{max-width:520px}.wk2-h{display:flex;align-items:center;gap:12px;margin-bottom:18px}.wk2-h .av{width:44px;height:44px;font-size:15px}.wk2-h h3{margin:0}.wk2-h .hint{margin:2px 0 0}
+.wk2-s{border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.wk2-t{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}.wk2-t b{font-size:15px}.wk2-t span{font-size:13px;color:var(--ink2)}.wk2-tg{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:12px}.wk2-tg>div{display:flex;flex-direction:column;gap:2px}
+.wk2-pct{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;background:var(--bg)}.wk2-pct:focus-within{border-color:var(--c);background:#fff}
+.wk2-pct input{border:0!important;background:transparent!important;font-size:26px;font-weight:800;width:90px;padding:8px 0;outline:0;box-shadow:none!important}.wk2-pct em{font-style:normal;font-size:20px;font-weight:700;color:var(--ink3)}
+.wk2-ex{font-size:13px;color:var(--ink2);margin:10px 0 0}.wk2-ex b{color:var(--ink)}
+.sw{position:relative;display:inline-block;width:44px;height:26px;flex:none;cursor:pointer}.sw input{opacity:0;width:0;height:0;position:absolute}.sw i{position:absolute;inset:0;background:#D9D2CB;border-radius:99px;transition:.2s}
+.sw i::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}.sw input:checked+i{background:var(--c)}.sw input:checked+i::after{transform:translateX(18px)}
+.wk2-pre{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.wk2-pre .chip{cursor:pointer;font:inherit;font-size:12.5px;font-weight:700}.wk2-pre .chip small{font-weight:500;color:var(--ink3);margin-left:3px}.wk2-pre .chip.on{background:var(--tint);border-color:var(--c);color:var(--c2)}
+.wk2-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.wk2-days button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer}
+.wk2-days button.on{background:var(--c);border-color:var(--c);color:#fff}
+.wk2-hr{display:flex;gap:10px;margin-top:12px}.wk2-hr label{flex:1;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2);border:1.5px solid var(--line);border-radius:12px;padding:0 12px;background:#fff}
+.wk2-hr input{border:0!important;flex:1;min-width:0;font:inherit;font-size:16px;font-weight:700;padding:10px 0;background:transparent;outline:0;box-shadow:none!important;color:var(--ink)}
+.wk2-sum{margin:12px 0 0;font-size:13px;background:var(--oksoft);color:#0A4A41;border-radius:10px;padding:9px 12px;font-weight:600}
+.wk2-ft{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+/* comissões */
+.cm2{max-width:980px}.cm-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.cm-sum{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-bottom:14px}.cm-sum>div{border-radius:18px;padding:18px 20px}
+.cm-sum>div:first-child{background:var(--ink);color:#fff}.cm-sum small{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.75}.cm-sum b{display:block;font-size:32px;letter-spacing:-.5px;margin:4px 0 2px}.cm-sum span{font-size:13px;opacity:.85}
+.cm-warn{background:var(--warnsoft);color:#5C4100;display:flex;flex-direction:column;align-items:flex-start;gap:2px}.cm-warn b{font-size:22px!important;margin:0!important}.cm-warn .lnk{margin-top:6px;font-weight:700}
+.cm-list{padding:6px 20px}.cm-p{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.cm-p:first-child{border-top:0}
+.cm-p .av{width:40px;height:40px;flex:none}.cm-pm{flex:1;min-width:0}.cm-pn{display:flex;flex-direction:column}.cm-pn b{font-size:15px}.cm-pn span{font-size:12.5px;color:var(--ink2)}
+.cm-bar{height:6px;background:var(--bg);border-radius:99px;margin-top:8px;overflow:hidden}.cm-bar i{display:block;height:100%;background:var(--c);border-radius:99px}
+.cm-pv{text-align:right;display:flex;flex-direction:column;align-items:flex-end;min-width:120px}.cm-pv b{font-size:18px}.cm-pv b.mut{color:var(--ink3)}.cm-pv span{font-size:12px;color:var(--ink2)}
+.cm-empty{text-align:center;padding:34px 20px}.cm-foot{margin-top:12px}
+/* plataformas de venda */
+.ck2{padding:18px}.ck2-k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;position:relative}.ck2-k div{background:var(--bg);border-radius:12px;padding:10px 12px}.ck2-k b{display:block;font-size:20px}.ck2-k span{font-size:12px;color:var(--ink2)}.ck2-k .ok{background:var(--oksoft)}.ck2-k em{position:absolute;right:2px;top:-18px;font-size:11px;color:var(--ink3);font-style:normal}
+.ck2-g{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ck2-c{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--line);border-radius:16px;padding:14px;background:#fff;cursor:pointer;font:inherit;color:inherit;transition:border-color .15s,box-shadow .15s}
+.ck2-c:hover{border-color:var(--c);box-shadow:0 4px 14px rgba(232,96,63,.08)}.ck2-c.on{border-color:#BFE6D8;background:#FBFEFD}
+.ck2-l{width:42px;height:42px;border-radius:12px;color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.ck2-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ck2-n b{font-size:15px}.ck2-n small{font-size:12.5px;color:var(--ink2);line-height:1.35}
+.ck2-s{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}.ck2-s small{font-size:11px;color:var(--ink3)}.ck2-go{font-size:13px;font-weight:700;color:var(--c2)}
+.ck2-how{display:flex;gap:10px;align-items:flex-start;margin-top:14px;background:var(--bg);border-radius:12px;padding:12px 14px}.ck2-how>span svg{width:18px;height:18px;color:var(--ok)}.ck2-how p{margin:0;font-size:13px;color:var(--ink2);line-height:1.5}
+.ck3{max-width:600px}.ck3-h{display:flex;align-items:center;gap:12px;margin-bottom:18px}.ck3-h h3{margin:0 0 4px}
+.ck3-st{list-style:none;display:flex;flex-direction:column;gap:0;margin:0;padding:0}.ck3-st>li{display:flex;gap:14px;padding:0 0 18px;position:relative}
+.ck3-st>li:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;bottom:4px;width:2px;background:var(--line)}
+.ck3-n{width:30px;height:30px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.ck3-st>li>div:last-child{flex:1;min-width:0;padding-top:4px}.ck3-st b{font-size:15px}
+.ck3-url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 12px;margin-top:8px}.ck3-url code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12.5px;color:var(--ink)}
+.ck3-w{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:13.5px;color:var(--ink2);line-height:1.45}.ck3-w b{color:var(--ink)}
+.ck3-f{display:flex;flex-direction:column;gap:10px;margin-top:8px}.ck3-f label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--ink2)}.ck3-f label small{font-weight:400;color:var(--ink3);font-size:12px}
+.ck3-f input{border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}.ck3-f input:focus{outline:0;border-color:var(--c)}.ck3-f .btn{align-self:flex-start}
+.ck3-ok{border-radius:12px;padding:11px 14px;font-size:13.5px;background:var(--oksoft);color:#0A4A41;font-weight:600}.ck3-ok.wait{background:var(--warnsoft);color:#5C4100}.ck3-err{margin-top:8px;border-radius:12px;padding:11px 14px;font-size:13.5px;background:var(--badsoft);color:var(--bad);font-weight:600}
+.ck3-d{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:0 14px}.ck3-d summary{cursor:pointer;padding:12px 0;font-weight:700;font-size:14px;color:var(--ink2)}.ck3-d[open] summary{margin-bottom:6px}.ck3-d .ck3-st{padding-bottom:4px}
+.cm-p .av,.wk2-h .av{border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}.wk2-pct input::-webkit-outer-spin-button,.wk2-pct input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.wk2-pct input{-moz-appearance:textfield}
+.ck3-ft{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}.ck3-ft .sp{flex:1}
+@media(max-width:860px){.ck2-g{grid-template-columns:1fr}.ck2-k{grid-template-columns:1fr 1fr}.cm-sum{grid-template-columns:1fr}.cm-pv{min-width:0}.wk2-days button{padding:9px 0;font-size:12px}.wk2-hr{flex-direction:column}.wk2-days{gap:4px}}
 /* central de ajuda */
 .hp-w{max-width:980px}.hp-w>.card,.hp-w>section{margin-bottom:14px}
 .hp-sr{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:0 16px;margin-bottom:16px;transition:border-color .15s}
@@ -6843,63 +6893,110 @@ async function boot(){
 const WKD=['seg','ter','qua','qui','sex','sáb','dom'];
 function shiftTxt(sh){if(!sh||!sh.days)return '';const d=sh.days;const seq=d.length>1&&d.every((x,i)=>!i||x===d[i-1]+1);
   return `${d.length===7?'todos os dias':seq?WKD[d[0]]+' a '+WKD[d[d.length-1]]:d.map(x=>WKD[x]).join(', ')}, ${sh.start} às ${sh.end}`}
-function workModal(m){const sh=m.shift||{days:[0,1,2,3,4],start:'08:00',end:'18:00'};const has=!!m.shift;
-  const o=overlay(`<div class="modal wk-m"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button><h3>Comissão e turno · ${esc(m.name.split(' ')[0])}</h3>
-   <form id="wkF"><div class="field"><label>Comissão sobre as vendas</label><div class="row" style="gap:8px;align-items:center"><input name="pct" type="number" min="0" max="100" step="0.5" value="${m.commission_pct??''}" placeholder="ex.: 10" style="max-width:120px"><span>%</span></div>
-    <small>Calculada sobre a parte de cada venda que é dela. Venda dividida entre duas pessoas: cada uma ganha sobre a sua parte. Veja em Vendas › Comissões.</small></div>
-    <div class="field"><label class="wk-on"><input type="checkbox" name="on" ${has?'checked':''}><span>Só recebe conversa do rodízio no turno</span></label>
-     <div id="wkS" ${has?'':'hidden'}><div class="wk-d">${WKD.map((d,i)=>`<label class="chip"><input type="checkbox" name="d" value="${i}" ${sh.days.includes(i)?'checked':''}>${d}</label>`).join('')}</div>
-      <div class="wk-t"><input type="time" name="st" value="${sh.start}" aria-label="Início do turno"><span>às</span><input type="time" name="en" value="${sh.end}" aria-label="Fim do turno"></div>
-      <small>Fora do turno, as conversas novas vão para quem está trabalhando ou ficam na fila. Turno que vira a noite (ex.: 22:00 às 06:00) também vale.</small></div></div>
-    <p class="err" id="wkE"></p><button class="btn p">Salvar</button></form></div>`,true);
-  const f=o.querySelector('#wkF');f.on.onchange=()=>o.querySelector('#wkS').hidden=!f.on.checked;
+const brlC=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function workModal(m){
+  const st={pct:m.commission_pct??'',on:!!m.shift,days:[...((m.shift||{}).days||[0,1,2,3,4])],start:(m.shift||{}).start||'08:00',end:(m.shift||{}).end||'18:00'};
+  const PRE=[['Manhã','08:00','14:00'],['Tarde','14:00','20:00'],['Comercial','09:00','18:00'],['Noite','18:00','23:00']];
+  const o=overlay(`<div class="modal wk2"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button>
+   <div class="wk2-h"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}</span><div><h3>${esc(m.name)}</h3><p class="hint">Comissão e turno</p></div></div>
+   <form id="wkF">
+    <section class="wk2-s"><div class="wk2-t"><b>Comissão</b><span>Percentual sobre o que essa pessoa vender.</span></div>
+     <div class="wk2-pct"><input name="pct" type="number" inputmode="decimal" min="0" max="100" step="0.5" value="${st.pct}" placeholder="0" aria-label="Percentual de comissão"><em>%</em></div>
+     <p class="wk2-ex" id="wkEx"></p></section>
+    <section class="wk2-s"><div class="wk2-t wk2-tg"><div><b>Turno de trabalho</b><span>Fora dele, o rodízio não entrega conversa nova para essa pessoa.</span></div>
+      <label class="sw"><input type="checkbox" name="on" ${st.on?'checked':''} aria-label="Usar turno"><i></i></label></div>
+     <div id="wkS" ${st.on?'':'hidden'}>
+      <div class="wk2-pre">${PRE.map(p=>`<button type="button" class="chip" data-pre="${p[1]}|${p[2]}">${p[0]} <small>${p[1].slice(0,2)}h–${p[2].slice(0,2)}h</small></button>`).join('')}</div>
+      <div class="wk2-days">${WKD.map((d,i)=>`<button type="button" data-d="${i}" class="${st.days.includes(i)?'on':''}" aria-pressed="${st.days.includes(i)}">${d}</button>`).join('')}</div>
+      <div class="wk2-hr"><label>Das<input type="time" name="st" value="${st.start}"></label><label>às<input type="time" name="en" value="${st.end}"></label></div>
+      <p class="wk2-sum" id="wkSum"></p></div></section>
+    <p class="err" id="wkE"></p>
+    <div class="wk2-ft"><button type="button" class="btn" data-cancel>Cancelar</button><button class="btn p">Salvar</button></div></form></div>`,true);
+  const f=o.querySelector('#wkF');
+  const draw=()=>{const p=parseFloat(f.pct.value);o.querySelector('#wkEx').innerHTML=p>0?`Numa venda de <b>R$ 1.000</b>, ${esc(m.name.split(' ')[0])} ganha <b>${brlC(10*p)}</b>. Venda dividida: sobre a parte dela.`:'Sem comissão. Deixe em branco se não usa.';
+    st.start=f.st.value;st.end=f.en.value;
+    o.querySelector('#wkSum').textContent=st.days.length?`Recebe conversas: ${shiftTxt({days:[...st.days].sort(),start:st.start,end:st.end})}${st.end<st.start?' (vira a noite)':''}.`:'Escolha pelo menos um dia.';
+    o.querySelectorAll('[data-d]').forEach(b=>{const on=st.days.includes(+b.dataset.d);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+    o.querySelectorAll('[data-pre]').forEach(b=>b.classList.toggle('on',b.dataset.pre===st.start+'|'+st.end))};
+  f.pct.oninput=draw;f.st.oninput=f.en.oninput=draw;
+  f.on.onchange=()=>{o.querySelector('#wkS').hidden=!f.on.checked};
+  o.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;st.days=st.days.includes(d)?st.days.filter(x=>x!==d):[...st.days,d];draw()});
+  o.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{const [a,z]=b.dataset.pre.split('|');f.st.value=a;f.en.value=z;draw()});
+  o.querySelector('[data-cancel]').onclick=()=>o.remove();
+  draw();
   f.onsubmit=async ev=>{ev.preventDefault();const body={};if(f.pct.value!=='')body.commission_pct=+f.pct.value;
-    if(f.on.checked)body.shift={days:[...f.querySelectorAll('[name=d]:checked')].map(x=>+x.value),start:f.st.value,end:f.en.value};else if(has)body.clear_shift=true;
-    try{await api('/team/'+m.id+'/work',{method:'PUT',body});o.remove();toast('Salvo.');VIEWS.equipe()}catch(e){o.querySelector('#wkE').textContent=e.message}}}
-async function vdCommissions(){const mgr=isMgr();const P=VD.cm||(VD.cm={preset:'mes'});const brl2=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const kpi=(l,v,sub)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s"><span>${sub||''}</span></div></div>`;
-  const today=new Date();const ym=d=>d.toISOString().slice(0,10);
+    if(f.on.checked)body.shift={days:[...st.days].sort(),start:f.st.value,end:f.en.value};else if(m.shift)body.clear_shift=true;
+    try{await api('/team/'+m.id+'/work',{method:'PUT',body});o.remove();toast('Comissão e turno salvos.');VIEWS.equipe()}catch(e){o.querySelector('#wkE').textContent=e.message}}}
+async function vdCommissions(){const mgr=isMgr();const P=VD.cm||(VD.cm={preset:'mes'});
+  const today=new Date();const ym=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const rng={mes:[ym(new Date(today.getFullYear(),today.getMonth(),1)),ym(today)],ant:[ym(new Date(today.getFullYear(),today.getMonth()-1,1)),ym(new Date(today.getFullYear(),today.getMonth(),0))],'30d':[ym(new Date(Date.now()-29*864e5)),ym(today)]}[P.preset];
   let d;try{d=await api(`/sales/commissions?start=${rng[0]}&end=${rng[1]}`)}catch(e){$('#vdBody').innerHTML=`<div class="card err">${esc(e.message)}</div>`;return}
-  const pre=`<div class="fz-seg cm-p">${[['mes','Este mês'],['ant','Mês passado'],['30d','30 dias']].map(x=>`<button class="${P.preset===x[0]?'on':''}" data-cmp="${x[0]}">${x[1]}</button>`).join('')}</div>`;
-  $('#vdBody').innerHTML=`<div class="cm-top">${pre}<span class="hint">${fmtD(d.start)} a ${fmtD(d.end)} · só vendas confirmadas</span></div>
-   <div class="kpis">${kpi(mgr?'Comissão a pagar':'Sua comissão',brl2(d.total_commission),mgr?`${d.rows.length} ${d.rows.length===1?'pessoa':'pessoas'}`:'')}${mgr&&d.without_seller&&d.without_seller.count?kpi('Vendas sem vendedor',brl2(d.without_seller.value),`${d.without_seller.count} ${d.without_seller.count===1?'venda não entra':'vendas não entram'} na comissão`):''}</div>
-   ${d.missing_pct.length&&mgr?`<p class="note">Sem percentual cadastrado: ${esc(d.missing_pct.join(', '))}. Defina em Equipe › Comissão e turno.</p>`:''}
-   <div class="card">${d.rows.length?`<table class="tbl cm-t"><thead><tr><th>Pessoa</th><th class="n">Vendas</th><th class="n">Vendido (parte dela)</th><th class="n">%</th><th class="n">Comissão</th></tr></thead><tbody>${d.rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="n">${r.count}</td><td class="n">${brl2(r.value)}</td><td class="n">${r.pct!=null?String(r.pct).replace('.',',')+'%':'<span class="hint">—</span>'}</td><td class="n"><b>${brl2(r.commission)}</b></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhuma venda com vendedor no período.</div>'}</div>
-   ${mgr?'<p class="hint" style="margin-top:10px">Quem vendeu é definido ao registrar a venda (dá para dividir entre duas pessoas). Vendas que chegam da Hotmart, Kiwify ou Eduzz entram com o responsável do card.</p>':''}`;
-  document.querySelectorAll('[data-cmp]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.cmp;vdCommissions()})}
-/* Plataformas de venda: Hotmart, Kiwify e Eduzz */
-const CK_HOW={
- hotmart:{sec:'Hottok',where:'Na Hotmart: Ferramentas › Webhook (API e notificações) › Cadastrar webhook. Cole o endereço abaixo, escolha a versão 2.0.0 e marque os eventos de compra (aprovada, boleto/Pix impresso, abandono de carrinho, reembolso e chargeback). O Hottok aparece na mesma tela.'},
- kiwify:{sec:'Token do webhook',where:'Na Kiwify: Apps › Webhooks › Criar webhook. Cole o endereço abaixo, escolha os produtos e marque: compra aprovada, boleto gerado, Pix gerado, carrinho abandonado, compra reembolsada e chargeback. O token aparece no webhook criado.'},
- iugu:{sec:'código de autorização do gatilho',ph:'Código de autorização',api:true,where:'Na iugu: Administração › Configurações de conta › Gatilhos (webhooks). Crie um gatilho para cada evento de fatura (criada, mudança de status, falha no pagamento e reembolso) com o endereço abaixo e invente um código no campo Autorização. Depois, em Administração › Chaves de API, crie um token de produção só para o Oi Nanda.'},
- eduzz:{sec:'Chave secreta',where:'No Console da Eduzz: Webhooks › Segurança, crie uma chave secreta. Depois, em Webhooks, adicione o endereço abaixo e marque as faturas paga, aguardando pagamento, reembolsada, cancelada e chargeback.'}};
+  const sold=d.rows.reduce((a,r)=>a+r.value,0),mx=Math.max(1,...d.rows.map(r=>r.value));
+  const pre=`<div class="fz-seg">${[['mes','Este mês'],['ant','Mês passado'],['30d','30 dias']].map(x=>`<button class="${P.preset===x[0]?'on':''}" data-cmp="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  const card=r=>`<div class="cm-p"><span class="av" style="background:${avc(r.name)}">${initials(r.name)}</span>
+    <div class="cm-pm"><div class="cm-pn"><b>${esc(r.name)}</b><span>${r.count} ${r.count===1?'venda':'vendas'} · ${brlC(r.value)} vendidos</span></div>
+     <div class="cm-bar"><i style="width:${Math.max(3,Math.round(100*r.value/mx))}%"></i></div></div>
+    <div class="cm-pv">${r.pct!=null?`<b>${brlC(r.commission)}</b><span>${String(r.pct).replace('.',',')}% de comissão</span>`:`<b class="mut">—</b>${mgr?`<button class="lnk" data-setpct="${r.user_id}">definir %</button>`:'<span>sem percentual</span>'}`}</div></div>`;
+  $('#vdBody').innerHTML=`<div class="cm2">
+    <div class="cm-hd">${pre}<span class="hint">${fmtD(d.start)} a ${fmtD(d.end)} · só vendas confirmadas</span></div>
+    <div class="cm-sum"><div><small>${mgr?'Comissão a pagar':'Sua comissão'}</small><b>${brlC(d.total_commission)}</b><span>sobre ${brlC(sold)} vendidos${mgr?` por ${d.rows.length} ${d.rows.length===1?'pessoa':'pessoas'}`:''}</span></div>
+     ${mgr&&d.without_seller&&d.without_seller.count?`<div class="cm-warn"><b>${brlC(d.without_seller.value)}</b><span>em ${d.without_seller.count} ${d.without_seller.count===1?'venda sem vendedor':'vendas sem vendedor'}. Não entram na comissão.</span><button class="lnk" data-tab2="lista">Ver vendas</button></div>`:''}</div>
+    ${d.rows.length?`<div class="card cm-list">${d.rows.map(card).join('')}</div>`
+      :`<div class="card cm-empty"><b>Nenhuma venda com vendedor no período</b><p class="hint">Ao registrar uma venda, escolha quem vendeu (dá para dividir entre duas pessoas). ${mgr?'O percentual de cada pessoa fica em Equipe › Comissão e turno.':''}</p></div>`}
+    ${mgr?`<p class="hint cm-foot">Percentuais em <button class="lnk" data-to="equipe">Equipe › Comissão e turno</button>. Vendas que chegam da Hotmart, Kiwify, Eduzz ou iugu entram com o responsável do card.</p>`:''}</div>`;
+  document.querySelectorAll('[data-cmp]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.cmp;vdCommissions()});
+  document.querySelectorAll('#vdBody [data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+  document.querySelectorAll('[data-tab2]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab2;syncUrl();vdView()});
+  document.querySelectorAll('[data-setpct]').forEach(b=>b.onclick=async()=>{const t=await api('/team');const m=t.find(x=>x.id===b.dataset.setpct);if(m)workModal(m)})}
+
+/* Plataformas de venda: Hotmart, Kiwify, Eduzz e iugu */
+const CK_P={
+ hotmart:{n:'Hotmart',c:'#F04E23',d:'Vendas, boleto e Pix gerados e carrinho abandonado.',sec:'Hottok',ph:'Cole o Hottok',
+  where:['Na Hotmart, abra <b>Ferramentas › Webhook</b> e toque em <b>Cadastrar webhook</b>.','Cole o endereço acima e escolha a <b>versão 2.0.0</b>.','Marque: compra aprovada, boleto/Pix impresso, abandono de carrinho, reembolso e chargeback.','Copie o <b>Hottok</b> que aparece na mesma tela.']},
+ kiwify:{n:'Kiwify',c:'#18A957',d:'Vendas, boleto e Pix gerados e carrinho abandonado.',sec:'Token do webhook',ph:'Cole o token',
+  where:['Na Kiwify, abra <b>Apps › Webhooks</b> e toque em <b>Criar webhook</b>.','Cole o endereço acima e escolha os produtos.','Marque: compra aprovada, boleto gerado, Pix gerado, carrinho abandonado, reembolso e chargeback.','Copie o <b>token</b> do webhook criado.']},
+ eduzz:{n:'Eduzz',c:'#0C4DA2',d:'Faturas pagas, aguardando pagamento e reembolsos.',sec:'Chave secreta',ph:'Cole a chave secreta',
+  where:['No Console da Eduzz, abra <b>Webhooks › Segurança</b> e crie uma <b>chave secreta</b>.','Em <b>Webhooks</b>, adicione o endereço acima.','Marque as faturas: paga, aguardando pagamento, reembolsada, cancelada e chargeback.','Copie a chave secreta.']},
+ iugu:{n:'iugu',c:'#7B3FE4',d:'Faturas pagas, em aberto e cartão recusado.',sec:'Código de autorização',ph:'O código que você escreveu no gatilho',api:true,
+  where:['Na iugu, abra <b>Configurações da conta › Gatilhos</b>.','Crie um gatilho para cada evento de fatura (criada, mudança de status, falha no pagamento e reembolso) com o endereço acima.','No campo <b>Autorização</b>, escreva um código seu (ex.: oinanda-2026) e repita aqui.','Em <b>Chaves de API</b>, crie um token de produção só para o Oi Nanda.']}};
+const agoTx=v=>{const t=ago(v);return t==='agora'?'agora há pouco':'há '+t};
+function ckState(h){return !h?['','Não ligada']:!h.has_secret?['warn','Falta terminar']:h.last_error?['bad','Confira o código']:h.last_at?['ok','Recebendo']:['warn','Esperando o 1º evento']}
 async function renderCk(){const box=$('#ckc');if(!box)return;let d;try{d=await api('/checkout/hooks')}catch(e){box.innerHTML=`<p class="hint">${esc(e.message)}</p>`;return}
-  const by=Object.fromEntries(d.items.map(h=>[h.provider,h]));const st=d.stats||{};
-  const row=(k,n)=>{const h=by[k];const ok=h&&h.has_secret;const stt=!h?['','não ligada']:!h.has_secret?['warn','falta o código']:h.last_error?['bad','confira o código']:h.last_at?['ok','recebendo']:['warn','esperando o 1º evento'];
-    return `<div class="ck-r" data-ck="${k}"><div class="ck-h"><b>${n}</b>${h?`<span class="pill ${stt[0]}">${stt[1]}</span>`:''}${h&&h.last_at?`<small>último evento ${ago(h.last_at)}</small>`:''}<span class="sp"></span>
-      <button class="btn sm ${h?'':'p'}" data-cko="${k}">${h?(ok?'Ver configuração':'Terminar de ligar'):'Ligar'}</button></div>
-      ${h&&h.last_error?`<p class="ck-err">${esc(h.last_error)}</p>`:''}</div>`};
-  box.innerHTML=`${d.items.length?`<div class="ck-k"><div><b>${num(st.approved||0)}</b><span>vendas aprovadas</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix gerados</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos abandonados</span></div><div><b>${num(st.recovered||0)}</b><span>recuperados</span></div><em>últimos 30 dias</em></div>`:''}
-    ${[['hotmart','Hotmart'],['kiwify','Kiwify'],['eduzz','Eduzz'],['iugu','iugu']].map(x=>row(...x)).join('')}
-    <p class="hint" style="margin-top:10px">Venda aprovada entra sozinha em Vendas e move o card para a etapa de venda. Para recuperar boleto, Pix e carrinho, ligue as automações "Boleto ou Pix sem pagar" e "Carrinho abandonado". <button class="lnk" id="ckHelp">Como funciona</button></p>`;
+  const by=Object.fromEntries(d.items.map(h=>[h.provider,h]));const st=d.stats||{};const any=d.items.some(h=>h.has_secret);
+  box.classList.add('ck2');
+  box.innerHTML=`${any?`<div class="ck2-k"><div><b>${num(st.approved||0)}</b><span>vendas</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos</span></div><div class="ok"><b>${num(st.recovered||0)}</b><span>recuperados</span></div><em>30 dias</em></div>`:''}
+   <div class="ck2-g">${Object.entries(CK_P).map(([k,p])=>{const h=by[k],s=ckState(h);
+     return `<button type="button" class="ck2-c ${h&&h.has_secret?'on':''}" data-cko="${k}"><span class="ck2-l" style="background:${p.c}">${p.n[0].toUpperCase()}</span>
+      <span class="ck2-n"><b>${p.n}</b><small>${p.d}</small></span>
+      <span class="ck2-s">${h?`<span class="pill ${s[0]}">${s[1]}</span>${h.last_at?`<small>${agoTx(h.last_at)}</small>`:''}`:'<span class="ck2-go">Ligar →</span>'}</span></button>`}).join('')}</div>
+   <div class="ck2-how"><span>${IC.check}</span><p>Venda aprovada entra sozinha em Vendas. Boleto, Pix e carrinho viram recuperação pelas automações <b>Boleto ou Pix sem pagar</b> e <b>Carrinho abandonado</b>. <button class="lnk" id="ckHelp">Como funciona</button></p></div>`;
   $('#ckHelp').onclick=()=>hpOpen('plataformas-de-venda');
-  box.querySelectorAll('[data-cko]').forEach(b=>b.onclick=()=>ckModal(b.dataset.cko,by[b.dataset.cko]));}
-async function ckModal(k,h){const N={hotmart:'Hotmart',kiwify:'Kiwify',eduzz:'Eduzz',iugu:'iugu'}[k],H=CK_HOW[k];
+  box.querySelectorAll('[data-cko]').forEach(b=>b.onclick=()=>ckModal(b.dataset.cko,by[b.dataset.cko]))}
+async function ckModal(k,h){const P=CK_P[k];
   if(!h){try{h=await api('/checkout/hooks',{method:'POST',body:{provider:k}})}catch(e){return toast(e.message)}}
-  const o=overlay(`<div class="modal ck-m"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button><h3>Ligar a ${N}</h3>
-    <ol class="ck-st"><li><b>Copie o endereço do Oi Nanda</b><div class="ck-url"><code>${esc(h.url)}</code><button class="btn sm" id="ckCp">Copiar</button></div></li>
-    <li><b>Cadastre na ${N}</b><p class="hint">${esc(H.where)}</p></li>
-    <li><b>Cole aqui o ${esc(H.sec)}</b><p class="hint">É ele que garante que o aviso veio mesmo da ${N}. Fica guardado criptografado.</p>
-     <form id="ckF" class="ck-f"><input name="s" type="password" autocomplete="off" placeholder="${h.has_secret?'Já cadastrado. Cole outro para trocar':esc(H.ph||H.sec)}">
-      ${H.api?`<label class="hint" style="margin-top:6px">Token da API da iugu <span>(o aviso da iugu só traz o número da fatura; o Oi Nanda usa o token para ler quem pagou e o link)</span></label><input name="a" type="password" autocomplete="off" placeholder="${h.has_api?'Já cadastrado. Cole outro para trocar':'Token de produção'}">`:''}
-      <button class="btn p">Salvar</button></form></li></ol>
-    <div class="ck-ft">${h.has_secret?'<span class="pill ok">código salvo</span>':''}<span class="sp"></span><button class="btn sm danger" id="ckDel">Desligar ${N}</button></div></div>`,true);
-  o.querySelector('#ckCp').onclick=async()=>{try{await navigator.clipboard.writeText(h.url);toast('Endereço copiado.')}catch(e){toast('Selecione o endereço e copie.')}};
+  const s=ckState(h);
+  const o=overlay(`<div class="modal ck3"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button>
+   <div class="ck3-h"><span class="ck2-l" style="background:${P.c}">${P.n[0].toUpperCase()}</span><div><h3>${P.n}</h3><span class="pill ${s[0]}">${s[1]}</span></div></div>
+   ${h.has_secret?`<div class="ck3-ok ${h.last_at?'':'wait'}">${h.last_at?`Tudo certo. Último evento recebido ${agoTx(h.last_at)}, ${num(h.received||0)} no total.`:`Ligada. Faça uma compra de teste ou use o teste de webhook da ${P.n}: quando chegar, aparece aqui.`}</div>`:''}
+   ${h.last_error?`<div class="ck3-err">${esc(h.last_error)}</div>`:''}
+   ${h.has_secret?'<details class="ck3-d"><summary>Ver configuração e trocar o código</summary>':''}
+   <ol class="ck3-st">
+    <li><div class="ck3-n">1</div><div><b>Copie este endereço</b><div class="ck3-url"><code>${esc(h.url)}</code><button class="btn sm p" id="ckCp">Copiar</button></div></div></li>
+    <li><div class="ck3-n">2</div><div><b>Cadastre na ${P.n}</b><ul class="ck3-w">${P.where.map(x=>`<li>${x}</li>`).join('')}</ul></div></li>
+    <li><div class="ck3-n">3</div><div><b>Cole aqui ${P.api?'os códigos':'o código'}</b>
+     <form id="ckF" class="ck3-f"><label>${esc(P.sec)}<input name="s" type="password" autocomplete="off" placeholder="${h.has_secret?'Já salvo. Cole outro para trocar':esc(P.ph)}"></label>
+      ${P.api?`<label>Token da API da iugu<input name="a" type="password" autocomplete="off" placeholder="${h.has_api?'Já salvo. Cole outro para trocar':'Token de produção'}"><small>O aviso da iugu só traz o número da fatura. Com o token, o Oi Nanda lê quem pagou, o valor e o link.</small></label>`:''}
+      <button class="btn p">Salvar e ligar</button><small class="hint">Fica guardado criptografado. É o que garante que o aviso veio mesmo da ${P.n}.</small></form></div></li>
+   </ol>${h.has_secret?'</details>':''}
+   <div class="ck3-ft"><button class="lnk" id="ckGuide">Ver o guia completo</button><span class="sp"></span><button class="btn sm danger" id="ckDel">Desligar</button></div></div>`,true);
+  o.querySelector('#ckCp').onclick=async e=>{try{await navigator.clipboard.writeText(h.url);e.target.textContent='Copiado ✓';setTimeout(()=>e.target.textContent='Copiar',1800)}catch(x){toast('Selecione o endereço e copie.')}};
+  o.querySelector('#ckGuide').onclick=()=>{o.remove();hpOpen('plataformas-de-venda')};
   o.querySelector('#ckF').onsubmit=async ev=>{ev.preventDefault();const v=ev.target.s.value.trim(),ap=ev.target.a?ev.target.a.value.trim():'';
-    if(v&&v.length<6)return toast('Cole o código completo.');if(!v&&!ap)return toast('Cole o código para salvar.');if(H.api&&!h.has_api&&!ap)return toast('Cole também o token da API da iugu.');
-    try{await api('/checkout/hooks',{method:'POST',body:{provider:k,...(v?{secret:v}:{}),...(ap?{api_token:ap}:{})}});toast(`${N} ligada. Quando o primeiro evento chegar, aparece aqui.`);o.remove();renderCk()}catch(e){toast(e.message)}};
-  o.querySelector('#ckDel').onclick=async()=>{if(!await sure(`Desligar a ${N}? Os eventos param de chegar. O que já entrou continua no Oi Nanda.`,{ok:'Desligar'}))return;try{await api('/checkout/hooks/'+h.id,{method:'DELETE'});o.remove();renderCk();toast(`${N} desligada.`)}catch(e){toast(e.message)}};
+    if(v&&v.length<6)return toast('Cole o código completo.');if(!v&&!ap)return toast('Cole o código para salvar.');if(P.api&&!h.has_api&&!ap)return toast('Cole também o token da API da iugu.');
+    try{await api('/checkout/hooks',{method:'POST',body:{provider:k,...(v?{secret:v}:{}),...(ap?{api_token:ap}:{})}});toast(`${P.n} ligada. Quando o primeiro evento chegar, aparece aqui.`);o.remove();renderCk()}catch(e){toast(e.message)}};
+  o.querySelector('#ckDel').onclick=async()=>{if(!await sure(`Desligar a ${P.n}? Os eventos param de chegar. O que já entrou continua no Oi Nanda.`,{ok:'Desligar'}))return;try{await api('/checkout/hooks/'+h.id,{method:'DELETE'});o.remove();renderCk();toast(`${P.n} desligada.`)}catch(e){toast(e.message)}};
 }
+
 /* ---------- Central de ajuda (conteúdo em /ajuda.js, carregado só quando precisa) ---------- */
 let HP={art:null,q:'',seg:null};
 let HELP_P=null;
