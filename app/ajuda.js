@@ -197,13 +197,13 @@ arts: [
   'Depois de uma semana, abra o Histórico e veja quais trouxeram resposta e venda.']],
  ['go', 'Abrir Automações', 'automacoes']]},
 
-{id: 'plataformas-de-venda', cat: 'vender', title: 'Hotmart, Kiwify, Eduzz e iugu: vendas, boletos e carrinhos', sum: 'Ligue a sua plataforma e recupere boleto, Pix e carrinho abandonado pelo WhatsApp.', min: 4, to: 'empresa', body: [
+{id: 'plataformas-de-venda', cat: 'vender', title: 'Plataformas de venda e cobrança: Hotmart, Kiwify, Eduzz, Cakto, Asaas, Mercado Pago e iugu', sum: 'Ligue a sua plataforma e recupere boleto, Pix, cobrança vencida e carrinho abandonado pelo WhatsApp.', min: 4, to: 'empresa', body: [
  ['p', 'Se você vende por uma dessas plataformas, o Oi Nanda passa a saber o que acontece no checkout de cada pessoa, e a Nanda e as automações agem em cima disso.'],
  ['h', 'Como ligar (uns 5 minutos)'],
  ['steps', [
   'Em Empresa › Plataformas de venda, toque em Ligar na sua plataforma e copie o endereço que aparece.',
   'Na plataforma, cadastre esse endereço como webhook e marque os eventos de compra (aprovada, boleto/Pix gerado, carrinho abandonado, reembolso e chargeback). A tela do Oi Nanda mostra o caminho de cada uma.',
-  'Copie o código de segurança da plataforma (Hottok na Hotmart, token na Kiwify, chave secreta na Eduzz, código de autorização do gatilho na iugu) e cole no Oi Nanda. Sem ele, nada entra: é o que garante que o aviso veio mesmo da plataforma.',
+  'Copie o código de segurança da plataforma (Hottok na Hotmart, token na Kiwify, chave secreta na Eduzz, secret na Cakto, token de autenticação no Asaas, assinatura secreta no Mercado Pago, código de autorização na iugu) e cole no Oi Nanda. Sem ele, nada entra: é o que garante que o aviso veio mesmo da plataforma.',
   'Faça uma compra de teste ou use o botão de teste da plataforma. Quando chegar, aparece "recebendo".']],
  ['h', 'O que acontece com cada evento'],
  ['list', [
@@ -211,8 +211,9 @@ arts: [
   '<b>Boleto ou Pix gerado:</b> fica anotado na conversa. A automação "Boleto ou Pix sem pagar" manda uma mensagem com o link depois do tempo que você escolher (padrão: 6 h).',
   '<b>Carrinho abandonado:</b> a automação "Carrinho abandonado" chama a pessoa pelo nome, oferece ajuda e o link (padrão: 1 h depois).',
   '<b>Reembolso ou chargeback:</b> a venda é cancelada em Vendas e sai dos relatórios e da comissão.']],
- ['h', 'iugu'],
- ['p', 'Na iugu o aviso traz só o número da fatura. Por isso, além do código do gatilho, o Oi Nanda pede um <b>token da API</b>: com ele lê quem é o pagador, o que foi cobrado e o link da fatura. Crie um token só para o Oi Nanda, que você pode apagar quando quiser. Fatura paga vira venda; fatura em aberto e cartão recusado entram em "Boleto ou Pix sem pagar", com o link da fatura. A iugu não tem carrinho abandonado.'],
+ ['h', 'Asaas, Mercado Pago e iugu (cobranças)'],
+ ['p', 'Nessas três, o aviso traz só o número da cobrança. Por isso, além do código de segurança, o Oi Nanda pede a <b>chave da API</b> (Access Token no Mercado Pago): com ela lê quem pagou, o valor e o link. Crie uma chave só para o Oi Nanda, que você pode apagar quando quiser.'],
+ ['list', ['<b>Pago:</b> vira venda e move o card.', '<b>Venceu sem pagar ou cartão recusado:</b> entra em "Boleto ou Pix sem pagar", com o link da cobrança.', '<b>Mensalidade gerada antes do vencimento</b> não entra na recuperação: o Oi Nanda espera vencer.', 'Essas plataformas não têm carrinho abandonado.']],
  ['p', 'Quem pagou sai da recuperação sozinho. A pessoa é encontrada pelo celular (ou pelo e-mail) que preencheu no checkout; se ainda não existia, a ficha é criada.'],
  ['warn', 'Quem nunca conversou com você no WhatsApp só recebe a recuperação por modelo aprovado pela Meta. Em Automações, peça a aprovação do modelo da automação antes do lançamento.'],
  ['tip', 'A Nanda sabe o que a pessoa fez no checkout e de onde veio (link, anúncio, aula). Na primeira resposta ela cita isso com naturalidade.'],
@@ -371,7 +372,7 @@ faq: [
  ['Quantas pessoas podem atender ao mesmo tempo?', 'Depende do plano: 2 no Essencial, 5 no Profissional e 12 no Equipe. Todas no mesmo número, cada uma com o seu acesso.'],
  ['Funciona fora do horário comercial?', 'A Nanda responde 24 horas. Automações e campanhas só saem das 8h às 21h, para não incomodar.'],
  ['E se eu cancelar, perco tudo?', 'Não. A conta fica só para consulta, com conversas, contatos e vendas guardados. Dá para reativar quando quiser.'],
- ['Integra com Hotmart, Kiwify, Eduzz ou iugu?', 'Sim. Vendas aprovadas e faturas pagas entram sozinhas, e boleto, Pix, cartão recusado e carrinho abandonado viram recuperação automática pelo WhatsApp. Liga em Empresa › Plataformas de venda.'],
+ ['Integra com Hotmart, Kiwify, Eduzz, Cakto, Asaas, Mercado Pago ou iugu?', 'Sim. Vendas aprovadas e cobranças pagas entram sozinhas, e boleto, Pix, cartão recusado e carrinho abandonado viram recuperação automática pelo WhatsApp. Liga em Empresa › Plataformas de venda.'],
  ['Dá para usar com Instagram?', 'Sim. O Direct do Instagram chega na mesma tela de Conversas, com a Nanda ajudando.'],
  ['Preciso de ajuda para configurar. Como faço?', 'Responda qualquer e-mail do Oi Nanda ou fale com a gente pelo WhatsApp. Quem responde é uma pessoa do time.'],
 ],

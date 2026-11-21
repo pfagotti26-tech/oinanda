@@ -10,6 +10,12 @@ Conferência de origem (sem ela, nada entra):
 - iugu: o gatilho manda o código de autorização cadastrado nele (Authorization). O aviso só traz o número da fatura,
   então o Oi Nanda busca a fatura na API da iugu com o token da conta: quem pagou, o quê e o link. Como a fatura vem
   direto da iugu, um aviso falso não registra nada.
+- Cakto: X-Cakto-Signature (v1=HMAC-SHA256 hex de "{timestamp}.{corpo cru}") com X-Cakto-Timestamp; sem o cabeçalho,
+  o campo "secret" do corpo precisa bater.
+- Asaas: cabeçalho asaas-access-token igual ao token escolhido no webhook. O cliente é lido na API (chave da conta).
+- Mercado Pago: x-signature (ts=...,v1=HMAC-SHA256 de "id:{data.id};request-id:{x-request-id};ts:{ts};") com a
+  assinatura secreta do webhook. O pagamento é lido na API com o Access Token da conta.
+Cobrança de mensalidade criada para o futuro não entra na recuperação: só a que vence hoje, venceu ou foi recusada.
 
 O que cada evento faz:
 - venda aprovada: registra a venda (sem duplicar), move o card para a etapa de venda e resolve boleto/carrinho em aberto;
@@ -28,7 +34,8 @@ from whatsapp import encrypt, decrypt, note, aware
 
 log = logging.getLogger('checkout')
 router = APIRouter()
-PROVIDERS = {'hotmart': 'Hotmart', 'kiwify': 'Kiwify', 'eduzz': 'Eduzz', 'iugu': 'iugu'}
+PROVIDERS = {'hotmart': 'Hotmart', 'kiwify': 'Kiwify', 'eduzz': 'Eduzz', 'iugu': 'iugu', 'cakto': 'Cakto', 'asaas': 'Asaas', 'mercadopago': 'Mercado Pago'}
+NEEDS_API = ('iugu', 'asaas', 'mercadopago')  # o aviso só traz o número: a cobrança é lida na API da plataforma
 KIND_LABEL = {'approved': 'venda aprovada', 'pending': 'boleto ou Pix gerado', 'abandoned': 'carrinho abandonado', 'refunded': 'reembolso',
               'chargeback': 'chargeback', 'canceled': 'compra cancelada', 'refused': 'pagamento recusado', 'expired': 'boleto ou Pix vencido'}
 
@@ -85,8 +92,10 @@ def parse(provider, b):
             'product': it.get('name'), 'product_id': str(it.get('productId') or ''), 'value': money(first(g(d, 'paid', 'value'), g(d, 'price', 'value'))),
             'method': {'bankslip': 'boleto', 'pix': 'pix', 'creditCard': 'cartao'}.get(d.get('paymentMethod') or '', d.get('paymentMethod') or ''),
             'url': first(d.get('bankslipUrl'), d.get('checkoutUrl')), 'pix': g(d, 'transaction', 'key') if d.get('paymentMethod') == 'pix' else None, 'src': g(d, 'utm', 'source')}
-    if provider == 'iugu':
-        return iugu_event(b)
+    if provider == 'iugu': return iugu_event(b)
+    if provider == 'cakto': return cakto_event(b)
+    if provider == 'asaas': return asaas_event(b)
+    if provider == 'mercadopago': return mp_event(b)
     return None
 
 IUGU_STATUS = {'paid': 'approved', 'refunded': 'refunded', 'chargeback': 'chargeback', 'canceled': 'canceled', 'expired': 'expired', 'pending': 'pending'}
@@ -100,6 +109,7 @@ def iugu_event(b):
     elif ev in ('invoice.created', 'invoice.status_changed', 'invoice.bank_slip_status', 'invoice.due'): kind = IUGU_STATUS.get(st)
     else: kind = None
     if not kind or not inv: return None
+    if kind == 'pending' and ev != 'invoice.payment_failed' and future(inv.get('due_date')): return None  # mensalidade que ainda vai vencer
     var = {x.get('variable'): x.get('value') for x in inv.get('variables') or [] if isinstance(x, dict)}
     pre = str(first(inv.get('payer_phone_prefix'), var.get('payer.phone_prefix')) or '')
     ph = str(first(inv.get('payer_phone'), var.get('payer.phone'), g(inv, 'payer', 'phone')) or '')
@@ -115,6 +125,82 @@ def iugu_event(b):
             'product': first(*(i.get('description') for i in items if isinstance(i, dict))) or 'Fatura iugu', 'product_id': '',
             'value': money(total, cents=True) if total is not None else money(inv.get('total')), 'method': method,
             'url': first(inv.get('secure_url'), g(inv, 'bank_slip', 'bank_slip_url')), 'pix': first(g(inv, 'pix', 'qrcode_text'), g(inv, 'pix', 'qrcode')), 'src': None}
+
+def future(due):
+    """Vencimento depois de hoje (AAAA-MM-DD): ainda não é hora de recuperar."""
+    from datetime import date
+    try: return date.fromisoformat(str(due)[:10]) > (now() - timedelta(hours=3)).date()
+    except (TypeError, ValueError): return False
+
+# ---------- Cakto ----------
+CAKTO = {'purchase_approved': 'approved', 'subscription_renewed': 'approved', 'purchase_refused': 'refused', 'checkout_abandonment': 'abandoned',
+         'pix_gerado': 'pending', 'boleto_gerado': 'pending', 'picpay_gerado': 'pending', 'openfinance_nubank_gerado': 'pending',
+         'subscription_renewal_refused': 'pending', 'subscription_late': 'pending', 'pix_expirado': 'expired',
+         'refund': 'refunded', 'chargeback': 'chargeback', 'subscription_canceled': 'canceled'}
+
+def cakto_event(b):
+    kind = CAKTO.get(b.get('event'))
+    d = b.get('data') or {}
+    if not kind: return None
+    cu = d.get('customer') or {}
+    pm = d.get('paymentMethod') or ''
+    return {'kind': kind, 'ref': first(d.get('id'), d.get('refId'), b.get('id')), 'name': cu.get('name'), 'email': cu.get('email'), 'phone': cu.get('phone'),
+            'product': first(g(d, 'product', 'name'), g(d, 'offer', 'name')), 'product_id': str(g(d, 'product', 'id') or ''), 'value': money(first(d.get('amount'), d.get('baseAmount'))),
+            'method': {'pix': 'pix', 'boleto': 'boleto', 'credit_card': 'cartao'}.get(pm, pm), 'url': first(g(d, 'boleto', 'boletoUrl'), d.get('checkoutUrl')),
+            'pix': g(d, 'pix', 'qrCode'), 'src': first(g(d, 'utm', 'source'), d.get('src'))}
+
+# ---------- Asaas ----------
+ASAAS = {'PAYMENT_RECEIVED': 'approved', 'PAYMENT_CONFIRMED': 'approved', 'PAYMENT_CREATED': 'pending', 'PAYMENT_OVERDUE': 'pending',
+         'PAYMENT_CREDIT_CARD_CAPTURE_REFUSED': 'pending', 'PAYMENT_REPROVED_BY_RISK_ANALYSIS': 'refused', 'PAYMENT_REFUNDED': 'refunded',
+         'PAYMENT_CHARGEBACK_REQUESTED': 'chargeback', 'PAYMENT_DELETED': 'canceled'}
+
+def asaas_event(b):
+    ev = b.get('event'); kind = ASAAS.get(ev)
+    pay = b.get('payment') or {}; cu = b.get('customer_data') or {}
+    if not kind or not pay: return None
+    if ev == 'PAYMENT_CREATED' and future(pay.get('dueDate')): return None  # mensalidade gerada antes do vencimento: espera vencer
+    bt = (pay.get('billingType') or '').upper()
+    ph = first(cu.get('mobilePhone'), cu.get('phone'))
+    return {'kind': kind, 'ref': (pay.get('id') or '') + (':venceu' if ev == 'PAYMENT_OVERDUE' else ''), 'name': cu.get('name'), 'email': cu.get('email'), 'phone': ph,
+            'product': first(pay.get('description'), 'Cobrança Asaas'), 'product_id': pay.get('subscription') or '', 'value': money(pay.get('value')),
+            'method': {'BOLETO': 'boleto', 'PIX': 'pix', 'CREDIT_CARD': 'cartao'}.get(bt, ''), 'url': first(pay.get('invoiceUrl'), pay.get('bankSlipUrl')), 'pix': None, 'src': None,
+            'overdue': ev == 'PAYMENT_OVERDUE'}
+
+async def asaas_customer(api_key, cid):
+    import httpx
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.get(f'https://api.asaas.com/v3/customers/{cid}', headers={'access_token': api_key, 'User-Agent': 'OiNanda'})
+    if r.status_code >= 300: raise HTTPException(502, f'O Asaas não devolveu o cliente ({r.status_code}). Confira a chave da API.')
+    return r.json()
+
+# ---------- Mercado Pago ----------
+MP = {'approved': 'approved', 'authorized': 'approved', 'pending': 'pending', 'in_process': 'pending', 'rejected': 'refused',
+      'refunded': 'refunded', 'charged_back': 'chargeback', 'cancelled': 'canceled'}
+
+def mp_event(b):
+    p = b.get('payment') or {}
+    if not p: return None
+    kind = MP.get(p.get('status'))
+    pt = p.get('payment_type_id') or ''
+    if kind == 'pending' and pt not in ('ticket', 'bank_transfer', 'atm'): return None  # cartão em análise não é pagamento em aberto
+    if not kind: return None
+    payer = p.get('payer') or {}; ai = g(p, 'additional_info', 'payer') or {}
+    ph = payer.get('phone') or ai.get('phone') or {}
+    phone = (str(ph.get('area_code') or '') + str(ph.get('number') or '')) if isinstance(ph, dict) else str(ph)
+    name = ' '.join(x for x in (first(payer.get('first_name'), ai.get('first_name')), first(payer.get('last_name'), ai.get('last_name'))) if x) or None
+    items = g(p, 'additional_info', 'items') or []
+    return {'kind': kind, 'ref': str(p.get('id')), 'name': name, 'email': payer.get('email'), 'phone': phone,
+            'product': first(*(i.get('title') for i in items if isinstance(i, dict)), p.get('description'), 'Pagamento Mercado Pago'), 'product_id': '',
+            'value': money(p.get('transaction_amount')), 'method': {'ticket': 'boleto', 'bank_transfer': 'pix', 'credit_card': 'cartao', 'debit_card': 'cartao'}.get(pt, pt),
+            'url': first(g(p, 'point_of_interaction', 'transaction_data', 'ticket_url'), g(p, 'transaction_details', 'external_resource_url')),
+            'pix': g(p, 'point_of_interaction', 'transaction_data', 'qr_code'), 'src': None}
+
+async def mp_payment(token, pid):
+    import httpx
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.get(f'https://api.mercadopago.com/v1/payments/{pid}', headers={'Authorization': 'Bearer ' + token})
+    if r.status_code >= 300: raise HTTPException(502, f'O Mercado Pago não devolveu o pagamento ({r.status_code}). Confira o Access Token.')
+    return r.json()
 
 async def iugu_invoice(api_token, invoice_id):
     import httpx
@@ -136,6 +222,31 @@ def verify(provider, secret, request, raw):
         import base64
         opts = {secret, base64.b64encode(secret.encode()).decode(), base64.b64encode((secret + ':').encode()).decode()}
         return bool(got) and any(hmac.compare_digest(got, o) for o in opts)
+    if provider == 'asaas':
+        got = request.headers.get('asaas-access-token') or ''
+        return bool(got) and hmac.compare_digest(got, secret)
+    if provider == 'cakto':
+        sig, ts = request.headers.get('x-cakto-signature') or '', request.headers.get('x-cakto-timestamp') or ''
+        if sig and ts:
+            try:
+                if abs(now().timestamp() - int(ts)) > 300: return False
+            except ValueError: return False
+            mac = hmac.new(secret.encode(), ts.encode() + b'.' + raw, hashlib.sha256).hexdigest()
+            return hmac.compare_digest(sig.split('=', 1)[-1].strip().lower(), mac)
+        try: body_secret = (json.loads(raw or b'{}') or {}).get('secret') or ''
+        except ValueError: return False
+        return bool(body_secret) and hmac.compare_digest(str(body_secret), secret)
+    if provider == 'mercadopago':
+        sig = request.headers.get('x-signature') or ''; rid = request.headers.get('x-request-id') or ''
+        parts = dict(x.strip().split('=', 1) for x in sig.split(',') if '=' in x)
+        did = request.query_params.get('data.id') or ''
+        if not did:
+            try: did = str(((json.loads(raw or b'{}') or {}).get('data') or {}).get('id') or '')
+            except ValueError: did = ''
+        if did.isalnum(): did = did.lower()
+        if not parts.get('ts') or not parts.get('v1'): return False
+        man = (f'id:{did};' if did else '') + (f'request-id:{rid};' if rid else '') + f'ts:{parts["ts"]};'
+        return hmac.compare_digest(parts['v1'].lower(), hmac.new(secret.encode(), man.encode(), hashlib.sha256).hexdigest())
     if provider == 'eduzz':
         got = (request.headers.get('x-signature') or '').strip()
         mac = hmac.new(secret.encode(), raw, hashlib.sha256)
@@ -160,7 +271,7 @@ async def find_contact(company, ev):
     from funnel import stages_for
     stages = await stages_for(company)
     c = {'id': uid(), 'company_id': cid, 'wa_id': phone or None, 'email': (ev.get('email') or '').strip().lower() or None, 'name': (ev.get('name') or phone or ev.get('email') or 'Cliente').strip()[:80],
-         'assigned_to': None, 'unread': 0, 'created_at': now(), 'last_at': now(), 'last_text': f'Veio da {PROVIDERS[ev["provider"]]}', 'last_dir': 'sys',
+         'assigned_to': None, 'unread': 0, 'created_at': now(), 'last_at': now(), 'last_text': f'Chegou por {PROVIDERS[ev["provider"]]}', 'last_dir': 'sys',
          'source': 'checkout', 'checkout_src': ev.get('src'), 'stage': stages[0]['id'], 'stage_at': now()}
     await db.contacts.insert_one(c.copy())
     return c
@@ -194,7 +305,7 @@ async def apply(company, ev):
         # quem comprou não recebe mais a recuperação de boleto ou de carrinho
         await db.checkout_events.update_many({'company_id': cid, 'contact_id': c['id'], 'kind': {'$in': ['pending', 'abandoned']}, 'resolved': {'$ne': True}}, {'$set': {'resolved': True, 'resolved_at': now()}})
     elif ev['kind'] in ('pending', 'abandoned'):
-        lab = 'gerou boleto' if ev.get('method') == 'boleto' else 'gerou Pix' if ev.get('method') == 'pix' else 'gerou o pagamento' if ev['kind'] == 'pending' else 'abandonou o carrinho'
+        lab = 'cobrança venceu sem pagamento' if ev.get('overdue') else 'gerou boleto' if ev.get('method') == 'boleto' else 'gerou Pix' if ev.get('method') == 'pix' else 'gerou o pagamento' if ev['kind'] == 'pending' else 'abandonou o carrinho'
         await note(cid, c['id'], f'{p}: {lab} · {what}' + ('. Pagamento ainda não entrou.' if ev['kind'] == 'pending' else '. Não concluiu a compra.'))
     elif ev['kind'] in ('refunded', 'chargeback', 'canceled'):
         s = await db.sales.find_one({'company_id': cid, 'external_ref': ev['ref'], 'provider': ev['provider'], 'status': 'ok'}, {'_id': 0})
@@ -223,6 +334,14 @@ async def webhook(provider: str, hid: str, request: Request):
         q = {k: v[-1] for k, v in parse_qs(raw.decode('utf-8', 'ignore')).items()}
         if not q: raise HTTPException(400, 'Corpo inválido.')
         body = {'event': q.get('event'), 'data': {k[5:-1]: v for k, v in q.items() if k.startswith('data[') and k.endswith(']')}}
+    if provider == 'asaas' and (body.get('payment') or {}).get('customer') and body.get('event') in ASAAS:
+        if not h.get('api_enc'): raise HTTPException(400, 'Falta a chave da API do Asaas no Oi Nanda.')
+        body['customer_data'] = await asaas_customer(decrypt(h['api_enc']), body['payment']['customer'])
+    if provider == 'mercadopago':
+        pid = request.query_params.get('data.id') or str((body.get('data') or {}).get('id') or '')
+        if (body.get('type') or request.query_params.get('type')) == 'payment' and pid:
+            if not h.get('api_enc'): raise HTTPException(400, 'Falta o Access Token do Mercado Pago no Oi Nanda.')
+            body['payment'] = await mp_payment(decrypt(h['api_enc']), pid)
     if provider == 'iugu':
         iid = (body.get('data') or {}).get('id')
         if body.get('event', '').startswith('invoice.') and iid:
@@ -252,7 +371,7 @@ async def webhook(provider: str, hid: str, request: Request):
 # ---------- configuração (Empresa › Plataformas de venda) ----------
 def hook_out(h, base):
     return {'id': h['id'], 'provider': h['provider'], 'name': PROVIDERS[h['provider']], 'url': f'{base}/api/checkout/{h["provider"]}/{h["id"]}',
-            'has_secret': bool(h.get('secret_enc')) and (h['provider'] != 'iugu' or bool(h.get('api_enc'))), 'has_api': bool(h.get('api_enc')), 'active': h.get('active', True), 'last_at': h.get('last_at'), 'received': h.get('received', 0),
+            'has_secret': bool(h.get('secret_enc')) and (h['provider'] not in NEEDS_API or bool(h.get('api_enc'))), 'has_api': bool(h.get('api_enc')), 'active': h.get('active', True), 'last_at': h.get('last_at'), 'received': h.get('received', 0),
             'last_error': h.get('last_error'), 'created_at': h.get('created_at')}
 
 def base_url():
@@ -282,9 +401,9 @@ async def hook_events(hid: str, user=Depends(managers)):
             'contact_id': r.get('contact_id'), 'name': names.get(r.get('contact_id')), 'resolved': r.get('resolved'), 'at': r['at']} for r in rows]}
 
 class HookIn(BaseModel):
-    provider: Literal['hotmart', 'kiwify', 'eduzz', 'iugu']
+    provider: Literal['hotmart', 'kiwify', 'eduzz', 'iugu', 'cakto', 'asaas', 'mercadopago']
     secret: Optional[str] = Field(default=None, min_length=6, max_length=200)
-    api_token: Optional[str] = Field(default=None, min_length=10, max_length=200)  # só a iugu: para buscar a fatura
+    api_token: Optional[str] = Field(default=None, min_length=10, max_length=400)  # iugu, Asaas e Mercado Pago: para ler a cobrança na API
 
 @router.post('/checkout/hooks')
 async def add_hook(body: HookIn, request: Request, user=Depends(managers)):
@@ -295,9 +414,9 @@ async def add_hook(body: HookIn, request: Request, user=Depends(managers)):
     if body.secret:
         await db.checkout_hooks.update_one({'id': h['id']}, {'$set': {'secret_enc': encrypt(body.secret.strip()), 'active': True, 'last_error': None}})
         h['secret_enc'] = 'x'
-    if body.api_token and body.provider == 'iugu':
+    if body.api_token and body.provider in NEEDS_API:
         await db.checkout_hooks.update_one({'id': h['id']}, {'$set': {'api_enc': encrypt(body.api_token.strip()), 'last_error': None}})
-    await audit(request, user, f'Ligou a integração com a {PROVIDERS[body.provider]}')
+    await audit(request, user, f'Ligou a integração: {PROVIDERS[body.provider]}')
     return hook_out({**h, **(await db.checkout_hooks.find_one({'id': h['id']}, {'_id': 0}))}, base_url())
 
 @router.delete('/checkout/hooks/{hid}')
@@ -305,7 +424,7 @@ async def del_hook(hid: str, request: Request, user=Depends(managers)):
     h = await db.checkout_hooks.find_one({'id': hid, 'company_id': user['company_id']}, {'_id': 0})
     if not h: raise HTTPException(404, 'Integração não encontrada.')
     await db.checkout_hooks.delete_one({'id': hid})
-    await audit(request, user, f'Desligou a integração com a {PROVIDERS[h["provider"]]}')
+    await audit(request, user, f'Desligou a integração: {PROVIDERS[h["provider"]]}')
     return {'ok': True}
 
 @router.get('/contacts/{contact_id}/checkout')

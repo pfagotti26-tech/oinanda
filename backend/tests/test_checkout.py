@@ -118,3 +118,55 @@ def test_iugu_fatura_buscada_na_api(monkeypatch):
         s = c.portal.call(lambda: db.sales.find_one({'company_id': cid}, {'_id': 0}))
         assert s['total'] == 499.0 and s['provider'] == 'iugu' and s['payment'] == 'boleto' and s['items'][0]['name'] == 'Plano Mensal Studio'
         assert c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'kind': 'pending'}, {'_id': 0}))['resolved']
+
+def test_cakto_asaas_e_mercado_pago(monkeypatch):
+    import checkout, time
+    with mk() as c:
+        c.post('/api/auth/signup', json={'name': 'Mia Dona', 'email': 'mia@pg.com', 'password': 'senha-forte-1', 'company': 'Clínica Mia', 'segment': 'clinica'})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        P = lambda h: h['url'].replace('https://app.oinanda.com.br', '')
+        # Cakto: assinatura no cabeçalho (timestamp.corpo) ou o secret no corpo
+        ck = c.post('/api/checkout/hooks', json={'provider': 'cakto', 'secret': 'segredo-cakto'}).json()
+        body = {'secret': 'segredo-cakto', 'event': 'pix_gerado', 'data': {'id': 'ck1', 'status': 'waiting_payment', 'checkoutUrl': 'https://pay.cakto.com.br/a8', 'amount': 350.0,
+                'paymentMethod': 'pix', 'customer': {'name': 'Nina Paz', 'email': 'nina@x.com', 'phone': '5511955554444'}, 'product': {'name': 'Pacote 4 sessões'}, 'pix': {'qrCode': '000201pix'}}}
+        raw = json.dumps({**body, 'secret': 'outro'}).encode(); ts = str(int(time.time()))
+        sig = 'v1=' + hmac.new(b'segredo-cakto', ts.encode() + b'.' + raw, hashlib.sha256).hexdigest()
+        assert c.post(P(ck), content=raw, headers={'Content-Type': 'application/json', 'X-Cakto-Timestamp': ts, 'X-Cakto-Signature': sig}).status_code == 200
+        assert c.post(P(ck), json={**body, 'secret': 'errado', 'data': {**body['data'], 'id': 'ck2'}}).status_code == 401
+        ev = c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'cakto'}, {'_id': 0}))
+        assert ev['kind'] == 'pending' and ev['pix'] == '000201pix' and ev['url'] == 'https://pay.cakto.com.br/a8'
+        # Asaas: token no cabeçalho e cliente lido na API; mensalidade futura não entra
+        async def fake_cus(key, cus): assert key == 'aact_chave_api_123'; return {'name': 'Otto Reis', 'email': 'otto@x.com', 'mobilePhone': '11944443333'}
+        monkeypatch.setattr(checkout, 'asaas_customer', fake_cus)
+        tok = 'tok-asaas-' + 'x' * 30
+        asa = c.post('/api/checkout/hooks', json={'provider': 'asaas', 'secret': tok, 'api_token': 'aact_chave_api_123'}).json(); assert asa['has_secret']
+        from datetime import date, timedelta as td
+        pay = {'id': 'pay_1', 'customer': 'cus_1', 'value': 280.0, 'billingType': 'BOLETO', 'status': 'PENDING', 'description': 'Mensalidade dezembro', 'invoiceUrl': 'https://www.asaas.com/i/pay_1'}
+        H = {'asaas-access-token': tok}
+        c.post(P(asa), json={'id': 'evt1', 'event': 'PAYMENT_CREATED', 'payment': {**pay, 'dueDate': str(date.today() + td(days=10))}}, headers=H)
+        assert not c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'asaas'}))
+        assert c.post(P(asa), json={'id': 'evt2', 'event': 'PAYMENT_OVERDUE', 'payment': pay}, headers={'asaas-access-token': 'errado'}).status_code == 401
+        c.post(P(asa), json={'id': 'evt2', 'event': 'PAYMENT_OVERDUE', 'payment': pay}, headers=H)
+        ev = c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'asaas'}, {'_id': 0}))
+        assert ev['kind'] == 'pending' and ev['url'] == 'https://www.asaas.com/i/pay_1' and ev['value'] == 280.0
+        c.post(P(asa), json={'id': 'evt3', 'event': 'PAYMENT_RECEIVED', 'payment': {**pay, 'status': 'RECEIVED'}}, headers=H)
+        s = c.portal.call(lambda: db.sales.find_one({'company_id': cid, 'provider': 'asaas'}, {'_id': 0}))
+        assert s['total'] == 280.0 and s['contact_name'] == 'Otto Reis'
+        assert c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'asaas', 'kind': 'pending'}, {'_id': 0}))['resolved']
+        # Mercado Pago: x-signature com o manifesto e pagamento lido na API
+        async def fake_pay(tok, pid): return {'id': int(pid), 'status': 'approved', 'payment_type_id': 'bank_transfer', 'transaction_amount': 150,
+                                              'payer': {'email': 'lu@x.com', 'first_name': 'Lu', 'last_name': 'Prado', 'phone': {'area_code': '11', 'number': '933332222'}},
+                                              'additional_info': {'items': [{'title': 'Avaliação premium'}]}}
+        monkeypatch.setattr(checkout, 'mp_payment', fake_pay)
+        mp = c.post('/api/checkout/hooks', json={'provider': 'mercadopago', 'secret': 'assinatura-mp', 'api_token': 'APP_USR-123456789'}).json()
+        ts = str(int(time.time())); man = f'id:987654;request-id:req-1;ts:{ts};'
+        v1 = hmac.new(b'assinatura-mp', man.encode(), hashlib.sha256).hexdigest()
+        r = c.post(P(mp) + '?data.id=987654&type=payment', json={'action': 'payment.updated', 'type': 'payment', 'data': {'id': '987654'}},
+                   headers={'x-signature': f'ts={ts},v1={v1}', 'x-request-id': 'req-1'})
+        assert r.status_code == 200
+        s = c.portal.call(lambda: db.sales.find_one({'company_id': cid, 'provider': 'mercadopago'}, {'_id': 0}))
+        assert s['total'] == 150 and s['payment'] == 'pix' and s['items'][0]['name'] == 'Avaliação premium'
+        ct = c.portal.call(lambda: db.contacts.find_one({'company_id': cid, 'wa_id': '5511933332222'}, {'_id': 0}))
+        assert ct and ct['name'] == 'Lu Prado'
+        bad = c.post(P(mp) + '?data.id=987654&type=payment', json={'type': 'payment', 'data': {'id': '987654'}}, headers={'x-signature': f'ts={ts},v1=abc', 'x-request-id': 'req-1'})
+        assert bad.status_code == 401
