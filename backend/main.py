@@ -180,7 +180,7 @@ app.include_router(import_router, prefix="/api")
 @app.middleware('http')
 async def guard(request: Request, call_next):
     origin = request.headers.get('origin')
-    hook = request.url.path.startswith(('/api/checkout/hotmart/', '/api/checkout/kiwify/', '/api/checkout/eduzz/', '/api/checkout/iugu/', '/api/checkout/cakto/', '/api/checkout/asaas/', '/api/checkout/mercadopago/'))  # webhooks das plataformas: a assinatura é que valida
+    hook = request.url.path.startswith(('/api/checkout/hotmart/', '/api/checkout/kiwify/', '/api/checkout/eduzz/', '/api/checkout/iugu/', '/api/checkout/cakto/', '/api/checkout/asaas/', '/api/checkout/mercadopago/', '/api/checkout/vindi/', '/api/checkout/pagarme/', '/api/checkout/stripe/', '/api/checkout/pagbank/'))  # webhooks das plataformas: a assinatura é que valida
     if request.method in ('POST', 'PATCH', 'PUT', 'DELETE') and origin and origin not in ORIGINS and not hook:
         return JSONResponse({'detail': 'Origem não autorizada.'}, status_code=403)
     try:

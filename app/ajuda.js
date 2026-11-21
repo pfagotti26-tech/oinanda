@@ -197,7 +197,7 @@ arts: [
   'Depois de uma semana, abra o Histórico e veja quais trouxeram resposta e venda.']],
  ['go', 'Abrir Automações', 'automacoes']]},
 
-{id: 'plataformas-de-venda', cat: 'vender', title: 'Plataformas de venda e cobrança: Hotmart, Kiwify, Eduzz, Cakto, Asaas, Mercado Pago e iugu', sum: 'Ligue a sua plataforma e recupere boleto, Pix, cobrança vencida e carrinho abandonado pelo WhatsApp.', min: 4, to: 'empresa', body: [
+{id: 'plataformas-de-venda', cat: 'vender', title: 'Plataformas de venda e cobrança: como ligar e o que cada uma traz', sum: 'Ligue a sua plataforma e recupere boleto, Pix, cobrança vencida e carrinho abandonado pelo WhatsApp.', min: 4, to: 'empresa', body: [
  ['p', 'Se você vende por uma dessas plataformas, o Oi Nanda passa a saber o que acontece no checkout de cada pessoa, e a Nanda e as automações agem em cima disso.'],
  ['h', 'Como ligar (uns 5 minutos)'],
  ['steps', [
@@ -211,8 +211,11 @@ arts: [
   '<b>Boleto ou Pix gerado:</b> fica anotado na conversa. A automação "Boleto ou Pix sem pagar" manda uma mensagem com o link depois do tempo que você escolher (padrão: 6 h).',
   '<b>Carrinho abandonado:</b> a automação "Carrinho abandonado" chama a pessoa pelo nome, oferece ajuda e o link (padrão: 1 h depois).',
   '<b>Reembolso ou chargeback:</b> a venda é cancelada em Vendas e sai dos relatórios e da comissão.']],
- ['h', 'Asaas, Mercado Pago e iugu (cobranças)'],
- ['p', 'Nessas três, o aviso traz só o número da cobrança. Por isso, além do código de segurança, o Oi Nanda pede a <b>chave da API</b> (Access Token no Mercado Pago): com ela lê quem pagou, o valor e o link. Crie uma chave só para o Oi Nanda, que você pode apagar quando quiser.'],
+ ['h', 'Quais plataformas'],
+ ['list', ['<b>Infoprodutos:</b> Hotmart, Kiwify, Eduzz e Cakto.', '<b>Mensalidades e cobranças:</b> Asaas, Vindi e iugu.', '<b>Pagamentos e checkout:</b> Mercado Pago, Pagar.me, PagBank e Stripe.']],
+ ['p', 'PayPal e InfinitePay ainda não: os avisos delas não trazem o telefone de quem pagou, então a Nanda não teria como chamar o cliente.'],
+ ['h', 'Asaas, Mercado Pago, iugu, Vindi e Pagar.me'],
+ ['p', 'Nessas, o aviso traz só o número da cobrança. Por isso, além do código de segurança, o Oi Nanda pede a <b>chave da API</b> (Access Token no Mercado Pago): com ela lê quem pagou, o valor e o link. Crie uma chave só para o Oi Nanda, que você pode apagar quando quiser.'],
  ['list', ['<b>Pago:</b> vira venda e move o card.', '<b>Venceu sem pagar ou cartão recusado:</b> entra em "Boleto ou Pix sem pagar", com o link da cobrança.', '<b>Mensalidade gerada antes do vencimento</b> não entra na recuperação: o Oi Nanda espera vencer.', 'Essas plataformas não têm carrinho abandonado.']],
  ['p', 'Quem pagou sai da recuperação sozinho. A pessoa é encontrada pelo celular (ou pelo e-mail) que preencheu no checkout; se ainda não existia, a ficha é criada.'],
  ['warn', 'Quem nunca conversou com você no WhatsApp só recebe a recuperação por modelo aprovado pela Meta. Em Automações, peça a aprovação do modelo da automação antes do lançamento.'],
@@ -372,7 +375,7 @@ faq: [
  ['Quantas pessoas podem atender ao mesmo tempo?', 'Depende do plano: 2 no Essencial, 5 no Profissional e 12 no Equipe. Todas no mesmo número, cada uma com o seu acesso.'],
  ['Funciona fora do horário comercial?', 'A Nanda responde 24 horas. Automações e campanhas só saem das 8h às 21h, para não incomodar.'],
  ['E se eu cancelar, perco tudo?', 'Não. A conta fica só para consulta, com conversas, contatos e vendas guardados. Dá para reativar quando quiser.'],
- ['Integra com Hotmart, Kiwify, Eduzz, Cakto, Asaas, Mercado Pago ou iugu?', 'Sim. Vendas aprovadas e cobranças pagas entram sozinhas, e boleto, Pix, cartão recusado e carrinho abandonado viram recuperação automática pelo WhatsApp. Liga em Empresa › Plataformas de venda.'],
+ ['Integra com Hotmart, Kiwify, Eduzz, Cakto, Asaas, Vindi, iugu, Mercado Pago, Pagar.me, PagBank ou Stripe?', 'Sim. Vendas aprovadas e cobranças pagas entram sozinhas, e boleto, Pix, cartão recusado e carrinho abandonado viram recuperação automática pelo WhatsApp. Liga em Empresa › Plataformas de venda.'],
  ['Dá para usar com Instagram?', 'Sim. O Direct do Instagram chega na mesma tela de Conversas, com a Nanda ajudando.'],
  ['Preciso de ajuda para configurar. Como faço?', 'Responda qualquer e-mail do Oi Nanda ou fale com a gente pelo WhatsApp. Quem responde é uma pessoa do time.'],
 ],

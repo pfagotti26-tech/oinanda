@@ -170,3 +170,61 @@ def test_cakto_asaas_e_mercado_pago(monkeypatch):
         assert ct and ct['name'] == 'Lu Prado'
         bad = c.post(P(mp) + '?data.id=987654&type=payment', json={'type': 'payment', 'data': {'id': '987654'}}, headers={'x-signature': f'ts={ts},v1=abc', 'x-request-id': 'req-1'})
         assert bad.status_code == 401
+
+def test_vindi_pagarme_stripe_e_pagbank(monkeypatch):
+    import checkout, time
+    with mk() as c:
+        c.post('/api/auth/signup', json={'name': 'Gil Dono', 'email': 'gil@pg.com', 'password': 'senha-forte-1', 'company': 'Academia Gil', 'segment': 'studio'})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        P = lambda h: h['url'].replace('https://app.oinanda.com.br', '')
+        sale = lambda prov: c.portal.call(lambda: db.sales.find_one({'company_id': cid, 'provider': prov}, {'_id': 0}))
+        # Vindi: o aviso só diz a fatura; vale o que a API confirma
+        async def fake_vindi(key, path):
+            assert key == 'chave-vindi-123456'
+            if path.startswith('bills/'): return {'bill': {'id': 77, 'amount': '189.9', 'status': 'paid', 'url': 'https://app.vindi.com.br/customer/bills/77', 'customer': {'id': 5, 'name': 'Iara Lopes'},
+                                                           'charges': [{'payment_method': {'code': 'credit_card'}}], 'bill_items': [{'product': {'name': 'Plano mensal'}}]}}
+            return {'customer': {'id': 5, 'name': 'Iara Lopes', 'email': 'iara@x.com', 'phones': [{'phone_type': 'mobile', 'number': '5511922221111'}]}}
+        monkeypatch.setattr(checkout, 'vindi_get', fake_vindi)
+        vi = c.post('/api/checkout/hooks', json={'provider': 'vindi', 'api_token': 'chave-vindi-123456'}).json(); assert vi['has_secret']
+        assert c.post(P(vi), json={'event': {'type': 'bill_paid', 'data': {'bill': {'id': 77}}}}).status_code == 200
+        assert sale('vindi')['total'] == 189.9 and sale('vindi')['contact_name'] == 'Iara Lopes'
+        # Pagar.me: pedido confirmado na API (o aviso dizendo "pago" não basta)
+        estado = {'status': 'pending'}
+        async def fake_pm(key, oid): return {'id': oid, 'status': estado['status'], 'amount': 49700, 'customer': {'name': 'Caio Mendes', 'email': 'caio@x.com', 'phones': {'mobile_phone': {'country_code': '55', 'area_code': '11', 'number': '911112222'}}},
+                                             'items': [{'description': 'Pacote trimestral'}], 'charges': [{'payment_method': 'pix', 'last_transaction': {'qr_code': '000201', 'qr_code_url': 'https://api.pagar.me/qr/1'}}]}
+        monkeypatch.setattr(checkout, 'pagarme_order', fake_pm)
+        pg = c.post('/api/checkout/hooks', json={'provider': 'pagarme', 'api_token': 'sk_test_abcdef123'}).json()
+        c.post(P(pg), json={'id': 'hook_1', 'type': 'order.paid', 'data': {'id': 'or_1'}})
+        assert not sale('pagarme')  # a API ainda diz pendente: nada de venda
+        c.post(P(pg), json={'id': 'hook_0', 'type': 'order.created', 'data': {'id': 'or_1'}})
+        ev = c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'pagarme'}, {'_id': 0}))
+        assert ev['kind'] == 'pending' and ev['pix'] == '000201' and ev['value'] == 497.0
+        estado['status'] = 'paid'
+        c.post(P(pg), json={'id': 'hook_2', 'type': 'order.paid', 'data': {'id': 'or_1'}})
+        assert sale('pagarme')['total'] == 497.0 and sale('pagarme')['payment'] == 'pix'
+        # Stripe: assinatura t.corpo e checkout expirado = carrinho abandonado
+        st = c.post('/api/checkout/hooks', json={'provider': 'stripe', 'secret': 'whsec_teste123'}).json()
+        def stripe(body, secret=b'whsec_teste123'):
+            raw = json.dumps(body).encode(); t = str(int(time.time()))
+            v1 = hmac.new(secret, t.encode() + b'.' + raw, hashlib.sha256).hexdigest()
+            return c.post(P(st), content=raw, headers={'Content-Type': 'application/json', 'Stripe-Signature': f't={t},v1={v1}'})
+        cd = {'name': 'Rui Prado', 'email': 'rui@x.com', 'phone': '+5511900001111'}
+        assert stripe({'type': 'checkout.session.expired', 'data': {'object': {'id': 'cs_1', 'amount_total': 29700, 'customer_details': cd, 'metadata': {'produto': 'Mentoria'},
+                       'after_expiration': {'recovery': {'url': 'https://buy.stripe.com/r/cs_1'}}}}}).status_code == 200
+        assert stripe({'type': 'x'}, secret=b'outro').status_code == 401
+        ev = c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'stripe'}, {'_id': 0}))
+        assert ev['kind'] == 'abandoned' and ev['url'] == 'https://buy.stripe.com/r/cs_1' and ev['product'] == 'Mentoria'
+        stripe({'type': 'checkout.session.completed', 'data': {'object': {'id': 'cs_2', 'payment_intent': 'pi_2', 'payment_status': 'paid', 'amount_total': 29700, 'customer_details': cd}}})
+        assert sale('stripe')['total'] == 297.0
+        assert c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'provider': 'stripe', 'kind': 'abandoned'}, {'_id': 0}))['resolved']
+        stripe({'type': 'charge.refunded', 'data': {'object': {'id': 'ch_2', 'payment_intent': 'pi_2', 'amount_refunded': 29700, 'billing_details': cd}}})
+        assert sale('stripe')['status'] == 'cancelled'
+        # PagBank: x-authenticity-token = sha256(token-corpo)
+        pb = c.post('/api/checkout/hooks', json={'provider': 'pagbank', 'secret': 'token-pagbank-123'}).json()
+        order = {'id': 'ORDE_1', 'customer': {'name': 'Bia Luz', 'email': 'bia@x.com', 'phones': [{'country': '55', 'area': '11', 'number': '977776666'}]}, 'items': [{'name': 'Avaliação física'}],
+                 'charges': [{'id': 'CHAR_1', 'status': 'PAID', 'amount': {'value': 12000}, 'payment_method': {'type': 'CREDIT_CARD'}}]}
+        raw = json.dumps(order).encode()
+        assert c.post(P(pb), content=raw, headers={'Content-Type': 'application/json', 'x-authenticity-token': 'errado'}).status_code == 401
+        tok = hashlib.sha256(b'token-pagbank-123-' + raw).hexdigest()
+        assert c.post(P(pb), content=raw, headers={'Content-Type': 'application/json', 'x-authenticity-token': tok}).status_code == 200
+        assert sale('pagbank')['total'] == 120.0 and sale('pagbank')['items'][0]['name'] == 'Avaliação física'
