@@ -45,7 +45,10 @@ def overlaps(a0, a1, b0, b1): return a0 < b1 and b0 < a1
 async def taken(company_id, start, end, skip_id=None):
     q = {'company_id': company_id, 'status': {'$in': ACTIVE}, 'start': {'$lt': end}, 'end': {'$gt': start}}
     rows = await db.appointments.find(q, {'_id': 0, 'id': 1, 'start': 1, 'end': 1, 'pro_id': 1}).to_list(2000)
-    return [(aware(r['start']), aware(r['end']), r.get('pro_id')) for r in rows if r['id'] != skip_id]
+    out = [(aware(r['start']), aware(r['end']), r.get('pro_id')) for r in rows if r['id'] != skip_id]
+    for b in await db.agenda_blocks.find({'company_id': company_id, 'start': {'$lt': end}, 'end': {'$gt': start}}, {'_id': 0}).to_list(500):
+        out.append((aware(b['start']), aware(b['end']), b.get('pro_id') or '*'))  # bloqueio: folga, férias, almoço, feriado
+    return out
 
 # ---------- profissionais (opcional) ----------
 def pros_for(s, service_id):
@@ -65,7 +68,7 @@ def in_hours(hours, t, dur):
 
 def pros_free_at(s, pros, t, dur, booked):
     """Quais destes profissionais estão livres em t (horário próprio + sem agendamento em cima). Agendamentos sem profissional ocupam um lugar."""
-    avail = [p for p in pros if in_hours(p.get('hours') or s['hours'], t, dur) and not any(x[2] == p['id'] and overlaps(t, t + dur, x[0], x[1]) for x in booked)]
+    avail = [p for p in pros if in_hours(p.get('hours') or s['hours'], t, dur) and not any(x[2] in (p['id'], '*') and overlaps(t, t + dur, x[0], x[1]) for x in booked)]
     anon = sum(1 for x in booked if x[2] is None and overlaps(t, t + dur, x[0], x[1]))
     return avail[:max(0, len(avail) - anon)]
 
@@ -90,7 +93,7 @@ async def free_slots(company, service, day_from, days, limit_per_day=None, pro_i
             while t + dur <= stop:
                 if t >= earliest and not any(overlaps(t, t + dur, x[0], x[1]) for x in gbusy):
                     if pros: ok = bool(pros_free_at(s, pros, t, dur, booked))
-                    else: ok = sum(1 for x in booked if overlaps(t, t + dur, x[0], x[1])) < (service.get('capacity') or 1)
+                    else: ok = not any(x[2] is not None for x in booked if overlaps(t, t + dur, x[0], x[1])) and sum(1 for x in booked if x[2] is None and overlaps(t, t + dur, x[0], x[1])) < (service.get('capacity') or 1)
                     if ok: out.setdefault(d.isoformat(), []).append(t)
                 t += step
         if limit_per_day and d.isoformat() in out: out[d.isoformat()] = spread(out[d.isoformat()], limit_per_day)
@@ -372,3 +375,70 @@ async def confirm_by_reply(company_id, contact_id, text):
         await note(company_id, contact_id, f'Horário confirmado pelo cliente, respondendo ao lembrete: {ap.get("service_name") or "horário"} em {when:%d/%m às %H:%M}.')
         return ap['id']
     return None
+
+
+# ---------- bloqueios: folga, férias, almoço, feriado ----------
+class BlockIn(BaseModel):
+    pro_id: Optional[str] = None                     # vazio = a agenda toda
+    date: str = Field(pattern=r'^\d{4}-\d{2}-\d{2}$')
+    until: Optional[str] = Field(default=None, pattern=r'^\d{4}-\d{2}-\d{2}$')  # último dia (férias)
+    start_time: Optional[str] = Field(default=None, pattern=r'^\d{2}:\d{2}$')   # vazio = dia todo
+    end_time: Optional[str] = Field(default=None, pattern=r'^\d{2}:\d{2}$')
+    reason: str = Field(default='', max_length=60)
+
+def block_out(b, tz, s):
+    st, en = aware(b['start']).astimezone(tz), aware(b['end']).astimezone(tz)
+    p = pro_of(s, b.get('pro_id')) if b.get('pro_id') else None
+    return {'id': b['id'], 'pro_id': b.get('pro_id'), 'pro_name': p and p['name'], 'start': st.isoformat(), 'end': en.isoformat(),
+            'all_day': b.get('all_day', False), 'reason': b.get('reason') or '', 'by': b.get('by')}
+
+@router.get('/agenda/blocks')
+async def list_blocks(start: str, end: str, user=Depends(current_user)):
+    tz = tz_of(user['company']); s = await settings_for(user['company'])
+    try: a = datetime.combine(datetime.fromisoformat(start).date(), dtime(0), tz); b = datetime.combine(datetime.fromisoformat(end).date(), dtime(0), tz) + timedelta(days=1)
+    except ValueError: raise HTTPException(400, 'Período inválido.')
+    rows = await db.agenda_blocks.find({'company_id': user['company_id'], 'start': {'$lt': b.astimezone(ZoneInfo('UTC'))}, 'end': {'$gt': a.astimezone(ZoneInfo('UTC'))}}, {'_id': 0}).sort('start', 1).to_list(500)
+    return [block_out(r, tz, s) for r in rows]
+
+@router.post('/agenda/blocks')
+async def add_block(body: BlockIn, request: Request, user=Depends(managers)):
+    tz = tz_of(user['company']); s = await settings_for(user['company'])
+    if body.pro_id and not pro_of(s, body.pro_id): raise HTTPException(400, 'Profissional não encontrado.')
+    d0 = datetime.fromisoformat(body.date).date(); d1 = datetime.fromisoformat(body.until).date() if body.until else d0
+    if d1 < d0: raise HTTPException(400, 'O último dia vem antes do primeiro.')
+    if (d1 - d0).days > 366: raise HTTPException(400, 'Bloqueie no máximo um ano de cada vez.')
+    all_day = not (body.start_time and body.end_time)
+    if all_day: st, en = datetime.combine(d0, dtime(0), tz), datetime.combine(d1, dtime(0), tz) + timedelta(days=1)
+    else:
+        st, en = datetime.combine(d0, dtime.fromisoformat(body.start_time), tz), datetime.combine(d1, dtime.fromisoformat(body.end_time), tz)
+        if body.until and body.until != body.date:  # mesmo horário em vários dias (ex.: almoço da semana)
+            rows = []
+            for i in range((d1 - d0).days + 1):
+                d = d0 + timedelta(days=i); a, b = datetime.combine(d, dtime.fromisoformat(body.start_time), tz), datetime.combine(d, dtime.fromisoformat(body.end_time), tz)
+                if b <= a: raise HTTPException(400, 'O fim precisa ser depois do início.')
+                rows.append((a, b))
+            gid = uid(); who = user.get('impersonated_by') or user['name']
+            for a, b in rows:
+                await db.agenda_blocks.insert_one({'id': uid(), 'group': gid, 'company_id': user['company_id'], 'pro_id': body.pro_id or None, 'start': a.astimezone(ZoneInfo('UTC')), 'end': b.astimezone(ZoneInfo('UTC')), 'all_day': False, 'reason': body.reason.strip(), 'by': who, 'created_at': now()})
+            await audit(request, user, 'Bloqueou horários na agenda', f'{body.reason or "bloqueio"} · {len(rows)} dias')
+            return await clash(user, rows[0][0], rows[-1][1], body.pro_id, len(rows))
+        if en <= st: raise HTTPException(400, 'O fim precisa ser depois do início.')
+    await db.agenda_blocks.insert_one({'id': uid(), 'company_id': user['company_id'], 'pro_id': body.pro_id or None, 'start': st.astimezone(ZoneInfo('UTC')), 'end': en.astimezone(ZoneInfo('UTC')),
+                                       'all_day': all_day, 'reason': body.reason.strip(), 'by': user.get('impersonated_by') or user['name'], 'created_at': now()})
+    await audit(request, user, 'Bloqueou horários na agenda', body.reason or 'bloqueio')
+    return await clash(user, st, en, body.pro_id, 1)
+
+async def clash(user, st, en, pro_id, n):
+    """Avisa quantos horários já marcados caem dentro do bloqueio (eles continuam marcados; o dono decide)."""
+    q = {'company_id': user['company_id'], 'status': {'$in': ACTIVE}, 'start': {'$lt': en.astimezone(ZoneInfo('UTC'))}, 'end': {'$gt': st.astimezone(ZoneInfo('UTC'))}}
+    if pro_id: q['pro_id'] = pro_id
+    return {'ok': True, 'blocks': n, 'conflicts': await db.appointments.count_documents(q)}
+
+@router.delete('/agenda/blocks/{block_id}')
+async def del_block(block_id: str, request: Request, all: bool = False, user=Depends(managers)):
+    b = await db.agenda_blocks.find_one({'id': block_id, 'company_id': user['company_id']}, {'_id': 0})
+    if not b: raise HTTPException(404, 'Bloqueio não encontrado.')
+    if all and b.get('group'): await db.agenda_blocks.delete_many({'company_id': user['company_id'], 'group': b['group']})
+    else: await db.agenda_blocks.delete_one({'id': block_id})
+    await audit(request, user, 'Liberou horários na agenda', b.get('reason') or 'bloqueio')
+    return {'ok': True}
