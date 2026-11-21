@@ -499,7 +499,7 @@ async def del_view(vid: str, user=Depends(current_user)):
 
 # ---------- comissão ----------
 @router.get('/sales/commissions')
-async def commissions(start: Optional[str] = None, end: Optional[str] = None, user=Depends(current_user)):
+async def commissions(start: Optional[str] = None, end: Optional[str] = None, detail: Optional[str] = None, fmt: str = '', user=Depends(current_user)):
     """Quanto cada vendedor vendeu e tem de comissão no período. Venda dividida: cada um sobre a sua parte.
     Venda cancelada ou esperando aprovação não entra. O atendente vê só a dele."""
     f = Filters(start=start, end=end)
@@ -507,19 +507,36 @@ async def commissions(start: Optional[str] = None, end: Optional[str] = None, us
     users = {u['id']: u for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1, 'commission_pct': 1, 'active': 1}).to_list(500)}
     rows = {}
     nobody = {'value': 0.0, 'count': 0}
-    for sl in await db.sales.find({'company_id': user['company_id'], 'status': 'ok', 'date': {'$gte': t0, '$lt': t1}}, {'_id': 0, 'total': 1, 'sellers': 1}).to_list(50000):
+    if user['role'] not in MGR and detail and detail != user['id']: detail = user['id']
+    lines = []
+    for sl in await db.sales.find({'company_id': user['company_id'], 'status': 'ok', 'date': {'$gte': t0, '$lt': t1}}, {'_id': 0, 'id': 1, 'total': 1, 'sellers': 1, 'date': 1, 'contact_name': 1, 'items': 1}).sort('date', -1).to_list(50000):
         sellers = [x for x in sl.get('sellers') or [] if x.get('user_id') in users]
         if not sellers: nobody['value'] += sl.get('total') or 0; nobody['count'] += 1; continue
         for x in sellers:
             part = (sl.get('total') or 0) * (x.get('pct') or 0) / 100
             r = rows.setdefault(x['user_id'], {'user_id': x['user_id'], 'name': users[x['user_id']]['name'], 'pct': users[x['user_id']].get('commission_pct'), 'value': 0.0, 'count': 0})
             r['value'] += part; r['count'] += 1
+            if fmt == 'csv' or detail == x['user_id']:
+                pc = users[x['user_id']].get('commission_pct') or 0
+                lines.append({'user_id': x['user_id'], 'seller': users[x['user_id']]['name'], 'date': sl['date'], 'client': sl.get('contact_name') or '', 'items': ', '.join(i.get('name', '') for i in sl.get('items') or []),
+                              'total': sl.get('total') or 0, 'share_pct': x.get('pct') or 0, 'part': round(part, 2), 'pct': pc, 'commission': round(part * pc / 100, 2)})
     out = []
     for r in rows.values():
         r['value'] = round(r['value'], 2); r['commission'] = round(r['value'] * (r['pct'] or 0) / 100, 2)
         out.append(r)
     out.sort(key=lambda r: -r['value'])
-    if user['role'] not in MGR: out = [r for r in out if r['user_id'] == user['id']]; nobody = None
+    if user['role'] not in MGR: out = [r for r in out if r['user_id'] == user['id']]; nobody = None; lines = [l for l in lines if l['user_id'] == user['id']]
+    if fmt == 'csv':
+        import csv, io
+        from fastapi.responses import Response
+        tz = agenda.tz_of(user['company'])
+        buf = io.StringIO(); w = csv.writer(buf, delimiter=';')
+        w.writerow(['Vendedor', 'Data', 'Cliente', 'Itens', 'Total da venda', 'Parte do vendedor (%)', 'Valor da parte', 'Comissão (%)', 'Comissão'])
+        br = lambda v: f'{v:.2f}'.replace('.', ',')
+        for l in sorted(lines, key=lambda l: (l['seller'], l['date'])):
+            w.writerow([l['seller'], aware(l['date']).astimezone(tz).strftime('%d/%m/%Y'), l['client'], l['items'], br(l['total']), br(l['share_pct']), br(l['part']), br(l['pct']), br(l['commission'])])
+        return Response('\ufeff' + buf.getvalue(), media_type='text/csv; charset=utf-8', headers={'Content-Disposition': f'attachment; filename="comissoes-{s0}-a-{s1}.csv"'})
     return {'start': s0.isoformat(), 'end': s1.isoformat(), 'rows': out, 'total_commission': round(sum(r['commission'] for r in out), 2),
             'without_seller': {'value': round(nobody['value'], 2), 'count': nobody['count']} if nobody else None,
-            'missing_pct': [r['name'] for r in out if r['pct'] is None]}
+            'missing_pct': [r['name'] for r in out if r['pct'] is None],
+            'detail': [{**l, 'date': aware(l['date']).isoformat()} for l in lines if l['user_id'] == detail] if detail else None}

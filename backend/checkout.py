@@ -266,8 +266,20 @@ async def list_hooks(user=Depends(managers)):
     st = {}
     for k in ('approved', 'pending', 'abandoned'):
         st[k] = await db.checkout_events.count_documents({'company_id': user['company_id'], 'kind': k, 'at': {'$gte': since}})
-    st['recovered'] = await db.checkout_events.count_documents({'company_id': user['company_id'], 'kind': {'$in': ['pending', 'abandoned']}, 'resolved_at': {'$gte': since}})
+    rec = await db.checkout_events.find({'company_id': user['company_id'], 'kind': {'$in': ['pending', 'abandoned']}, 'resolved_at': {'$gte': since}}, {'_id': 0, 'value': 1}).to_list(20000)
+    st['recovered'] = len(rec); st['recovered_value'] = round(sum(r.get('value') or 0 for r in rec), 2)
+    st['approved_value'] = round(sum(r.get('value') or 0 for r in await db.checkout_events.find({'company_id': user['company_id'], 'kind': 'approved', 'at': {'$gte': since}}, {'_id': 0, 'value': 1}).to_list(20000)), 2)
     return {'items': [hook_out(h, base_url()) for h in rows], 'stats': st}
+
+@router.get('/checkout/hooks/{hid}/events')
+async def hook_events(hid: str, user=Depends(managers)):
+    """Últimos eventos que chegaram desta plataforma: para o dono ver que está funcionando (e o que chegou)."""
+    h = await db.checkout_hooks.find_one({'id': hid, 'company_id': user['company_id']}, {'_id': 0})
+    if not h: raise HTTPException(404, 'Integração não encontrada.')
+    rows = await db.checkout_events.find({'company_id': user['company_id'], 'provider': h['provider']}, {'_id': 0}).sort('at', -1).to_list(8)
+    names = {c['id']: c.get('name') for c in await db.contacts.find({'id': {'$in': [r.get('contact_id') for r in rows if r.get('contact_id')]}}, {'_id': 0, 'id': 1, 'name': 1}).to_list(20)}
+    return {'hook': hook_out(h, base_url()), 'events': [{'kind': r['kind'], 'label': KIND_LABEL.get(r['kind'], r['kind']), 'product': r.get('product'), 'value': r.get('value'),
+            'contact_id': r.get('contact_id'), 'name': names.get(r.get('contact_id')), 'resolved': r.get('resolved'), 'at': r['at']} for r in rows]}
 
 class HookIn(BaseModel):
     provider: Literal['hotmart', 'kiwify', 'eduzz', 'iugu']

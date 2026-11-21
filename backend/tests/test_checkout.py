@@ -58,6 +58,9 @@ def test_kiwify_boleto_recuperacao_venda_e_reembolso():
         assert ct['sales_count'] == 1 and ct['stage'] == next(s['id'] for s in c.get('/api/funnel/stages').json() if s['kind'] == 'won')
         assert c.portal.call(lambda: automations.candidates(auto, comp, [])) == []
         st = c.get('/api/checkout/hooks').json()['stats']; assert st['approved'] == 1 and st['pending'] == 1 and st['recovered'] == 1
+        assert st['recovered_value'] == 997.0 and st['approved_value'] == 997.0
+        evs = c.get(f"/api/checkout/hooks/{h['id']}/events").json()['events']
+        assert evs[0]['kind'] == 'approved' and evs[0]['name'] == 'Bruno Lima' and any(e['kind'] == 'pending' and e['resolved'] for e in evs)
         # reembolso: a venda é cancelada
         post_kiwify(c, h['url'], kiwify_body('order_refunded', status='refunded'))
         assert c.portal.call(lambda: db.sales.find_one({'company_id': cid}, {'_id': 0}))['status'] == 'cancelled'

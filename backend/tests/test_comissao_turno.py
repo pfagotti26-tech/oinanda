@@ -23,6 +23,9 @@ def test_comissao_por_vendedor_e_turno_no_rodizio():
         r = c.get('/api/sales/commissions').json()
         ra = next(x for x in r['rows'] if x['user_id'] == a['id']); rb = next(x for x in r['rows'] if x['user_id'] == b['id'])
         assert ra['value'] == 2500 and ra['commission'] == 250 and ra['count'] == 2
+        det = c.get(f"/api/sales/commissions?detail={a['id']}").json()['detail']
+        assert len(det) == 2 and sum(l['commission'] for l in det) == 250 and {l['share_pct'] for l in det} == {50, 100}
+        csv = c.get('/api/sales/commissions?fmt=csv'); assert csv.status_code == 200 and 'Ana SDR' in csv.text and '250,00' not in csv.text and '200,00' in csv.text
         assert rb['value'] == 500 and rb['commission'] == 25 and r['total_commission'] == 275
         # turno: fora do horário, a pessoa não recebe conversa do rodízio
         from zoneinfo import ZoneInfo
