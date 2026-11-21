@@ -2387,7 +2387,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .hp-segs{display:flex;flex-wrap:wrap;gap:8px}.hp-segs .chip{cursor:pointer}.hp-segs .chip.on{background:var(--c);color:#fff;border-color:var(--c)}
 .hp-how{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px 6px 9px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .hp-how svg{width:16px;height:16px;color:var(--c)}.hp-how:hover{border-color:var(--c);color:var(--c2)}
-.fhd>.hp-how{margin-left:auto;align-self:center}.fz-hd>.hp-how{align-self:center}
+.fhd>.hp-how{margin-left:auto;align-self:center}.fz-hd>.hp-how{align-self:center}.nz-hd>.hp-how{align-self:center;margin-left:auto}
 @media(max-width:860px){.hp-top{grid-template-columns:1fr}.hp-art{padding:22px 18px}.hp-art h1{font-size:23px}.hp-how span{display:none}.hp-how{padding:7px}.hp-ct{flex-direction:column;align-items:stretch}.hp-cta .btn{flex:1;text-align:center}}
 </style>
 </head>
@@ -6999,7 +6999,7 @@ async function renderCk(){const box=$('#ckc');if(!box)return;let d;try{d=await a
   const by=Object.fromEntries(d.items.map(h=>[h.provider,h]));const st=d.stats||{};const any=d.items.some(h=>h.has_secret);
   box.classList.add('ck2');
   const bv=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
-  box.innerHTML=`${any?`<div class="ck2-k"><div><b>${bv(st.approved_value)}</b><span>${num(st.approved||0)} ${st.approved===1?'venda':'vendas'} aprovadas</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix gerados</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos abandonados</span></div><div class="ok"><b>${bv(st.recovered_value)}</b><span>${num(st.recovered||0)} ${st.recovered===1?'recuperado':'recuperados'}</span></div><em>últimos 30 dias</em></div>`:''}
+  box.innerHTML=`${any?`<div class="ck2-k"><div><b>${bv(st.approved_value)}</b><span>${num(st.approved||0)} ${st.approved===1?'venda aprovada':'vendas aprovadas'}</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix gerados</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos abandonados</span></div><div class="ok"><b>${bv(st.recovered_value)}</b><span>${num(st.recovered||0)} ${st.recovered===1?'recuperado':'recuperados'}</span></div><em>últimos 30 dias</em></div>`:''}
    ${[['info','Infoprodutos e cursos','Vendas, Pix e boleto gerados e carrinho abandonado.'],['rec','Mensalidades e cobranças','Planos e faturas: pago, vencido e cartão recusado.'],['pay','Pagamentos e checkout','Links de pagamento, lojas e checkouts: pago, em aberto e estornado.']].map(([gk,gt,gd])=>`<div class="ck2-gh"><b>${gt}</b><span>${gd}</span></div>
    <div class="ck2-g">${Object.entries(CK_P).filter(([k,p])=>p.g===gk).map(([k,p])=>{const h=by[k],s=ckState(h);
      return `<button type="button" class="ck2-c ${h&&h.has_secret?'on':''}" data-cko="${k}"><span class="ck2-l" style="background:${p.c}">${p.n[0].toUpperCase()}</span>
@@ -7117,7 +7117,7 @@ async function hpView(){
   scrollTo({top:0});
 }
 /* botão "Como usar" no topo de cada tela, apontando para o guia dela */
-function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)return;const hd=document.querySelector('#page .fhd, #page .fz-hd');if(!hd||hd.querySelector('.hp-how'))return;
+function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)return;const hd=document.querySelector('#page .fhd, #page .fz-hd, #page .nz-hd');if(!hd||hd.querySelector('.hp-how'))return;
   const b=document.createElement('button');b.type='button';b.className='hp-how';b.title='Guia rápido desta tela';b.innerHTML=NI.ajuda+'<span>Como usar</span>';b.onclick=()=>hpOpen(id);
   const tg=hd.querySelector('.tools')||hd,pri=[...tg.children].find(x=>x.classList.contains('btn')&&x.classList.contains('p'));pri?tg.insertBefore(b,pri):tg.appendChild(b)}
 new MutationObserver(()=>hpBadge()).observe(document.body,{childList:true,subtree:true});
