@@ -9,6 +9,8 @@ Automação = gatilho + mensagem (+ mudar de etapa, opcional). Gatilhos:
 - before_expiry  X horas antes de um item da carteira vencer (renovação)
 - after_expiry   X horas depois de vencer sem renovar (retomada)
 - after_purchase X horas depois de uma compra (próxima oferta, pós-venda)
+- checkout_pending   X horas depois de gerar boleto ou Pix na Hotmart, Kiwify ou Eduzz sem pagar
+- checkout_abandoned X horas depois de abandonar o carrinho numa dessas plataformas
 Pode gerar um cupom individual para cada envio ({cupom}).
 
 Envio: se o cliente falou nas últimas 24 h, vai a mensagem normal. Fora disso a Meta só aceita modelo
@@ -31,11 +33,12 @@ log = logging.getLogger('oinanda.auto')
 router = APIRouter()
 TRIGGERS = {'stage_enter': 'Entrou na etapa', 'no_reply': 'Sem resposta do cliente', 'before_appt': 'Antes do horário marcado',
             'appt_no_show': 'Depois de uma falta', 'appt_done': 'Depois do atendimento', 'before_expiry': 'Antes de vencer',
-            'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra', 'after_milestone': 'Depois de atingir um marco da jornada'}
+            'after_expiry': 'Depois de vencer sem renovar', 'after_purchase': 'Depois de uma compra', 'after_milestone': 'Depois de atingir um marco da jornada',
+            'checkout_pending': 'Boleto ou Pix sem pagar', 'checkout_abandoned': 'Carrinho abandonado'}
 GRACE = timedelta(hours=24)  # depois do momento certo, ainda tenta por 24 h (ex.: servidor reiniciando, fora do horário)
 QUIET = (8, 21)
 VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'profissional': 'Léo', 'data': '12/11', 'hora': '09:00',
-        'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10'}
+        'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10', 'link_pagamento': 'https://pay.hotmart.com/X1', 'valor': 'R$ 997,00'}
 
 # ---------- variáveis ----------
 def render(text, ctx):
@@ -48,7 +51,7 @@ async def context(company, contact, appt=None):
         appt = up[0] if up else None
     name = (contact.get('name') or '').strip()
     first = name.split(' ')[0] if name and not name.isdigit() else ''
-    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'profissional': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': ''}
+    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'profissional': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': '', 'link_pagamento': '', 'valor': ''}
     hs = [x for x in contact.get('holdings') or [] if x.get('expires_at')]
     if hs:  # o item que vence primeiro (ou o que venceu por último)
         fut = [x for x in hs if aware(x['expires_at']) >= now()]
@@ -119,7 +122,7 @@ class TemplateIn(BaseModel):
 
 OPT_OUT_FOOTER = 'Responda SAIR para não receber mais promoções'
 
-async def create_template(company_id, label, body, category):
+async def create_template(company_id, label, body, category, quick=None):
     text, params = to_meta(body)
     n = await number_of(company_id)
     slug = re.sub(r'[^a-z0-9]+', '_', label.lower().encode('ascii', 'ignore').decode()).strip('_')[:40] or 'modelo'
@@ -129,6 +132,7 @@ async def create_template(company_id, label, body, category):
     comps = [comp]
     footer = OPT_OUT_FOOTER if category == 'MARKETING' else None  # promoção sempre ensina a sair: menos bloqueio, número mais saudável
     if footer: comps.append({'type': 'FOOTER', 'text': footer})
+    if quick: comps.append({'type': 'BUTTONS', 'buttons': [{'type': 'QUICK_REPLY', 'text': q[:25]} for q in quick[:3]]})
     res = await whatsapp.graph('POST', f'/{n["waba_id"]}/message_templates', decrypt(n['token_enc']),
                                {'name': name, 'language': 'pt_BR', 'category': category, 'components': comps})
     t = {'id': uid(), 'company_id': company_id, 'name': name, 'language': 'pt_BR', 'label': label.strip(), 'body': body.strip(), 'params': params, 'footer': footer,
@@ -199,7 +203,7 @@ def stage_by_hint(stages, hint):
 class AutoIn(BaseModel):
     recipe: Optional[str] = Field(default=None, max_length=40)
     name: Optional[str] = Field(default=None, min_length=2, max_length=60)
-    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done', 'before_expiry', 'after_expiry', 'after_purchase', 'after_milestone']] = None
+    trigger: Optional[Literal['stage_enter', 'no_reply', 'before_appt', 'appt_no_show', 'appt_done', 'before_expiry', 'after_expiry', 'after_purchase', 'after_milestone', 'checkout_pending', 'checkout_abandoned']] = None
     milestone_id: Optional[str] = Field(default=None, max_length=12)
     unless_id: Optional[str] = Field(default=None, max_length=12)
     product_id: Optional[str] = None
@@ -303,7 +307,7 @@ async def create_auto(body: AutoIn, request: Request, user=Depends(managers)):
         stages = await stages_for(user['company'])
         sid = stage_by_hint(stages, r['stage'])
         a.update(recipe=r['key'], name=r['name'], trigger=r['trigger'], hours=r['hours'], stage_id=sid, message=r['message'], category=r['category'],
-                 template_id=None, move_to=None, active=not (r['stage'] and not sid))
+                 template_id=None, move_to=None, active=not (r['stage'] and not sid), only_unconfirmed=bool(r.get('only_unconfirmed')))
     else:
         if not (body.name and body.trigger and body.message and body.hours is not None): raise HTTPException(400, 'Preencha nome, gatilho, tempo e mensagem.')
         a.update(name=body.name.strip(), trigger=body.trigger, hours=body.hours, stage_id=body.stage_id, message=body.message.strip(),
@@ -340,7 +344,11 @@ async def auto_template(aid: str, request: Request, user=Depends(managers)):
     """Manda a mensagem da automação para aprovação da Meta e liga o modelo a ela."""
     a = await db.automations.find_one({'id': aid, 'company_id': user['company_id']}, {'_id': 0})
     if not a: raise HTTPException(404, 'Automação não encontrada.')
-    t = await create_template(user['company_id'], a['name'], a['message'], a.get('category') or 'MARKETING')
+    quick = None
+    if a.get('trigger') == 'before_appt':  # lembrete: botões "Confirmo" e "Preciso remarcar" também quando sai por modelo
+        import wachoice
+        quick = [wachoice.CONFIRM_BTN, wachoice.RESCHED_BTN]
+    t = await create_template(user['company_id'], a['name'], a['message'], a.get('category') or 'MARKETING', quick)
     await db.automations.update_one({'id': aid}, {'$set': {'template_id': t['id']}})
     await audit(request, user, 'Enviou modelo para aprovação da Meta', t['label'])
     return t
@@ -401,6 +409,14 @@ async def candidates(a, company, stages):
             if any(w >= x['at'] for w in later.get(x['contact_id'], [])): continue  # já avançou: não precisa
             c = await db.contacts.find_one({'id': x['contact_id']}, {'_id': 0})
             if c and not c.get('opt_out'): out.append((f"{a['id']}:{c['id']}:{x['at'].isoformat()}", c, None))
+    elif t in ('checkout_pending', 'checkout_abandoned'):
+        kind = 'pending' if t == 'checkout_pending' else 'abandoned'
+        for ev in await db.checkout_events.find({'company_id': cid, 'kind': kind, 'resolved': {'$ne': True}, 'at': {'$lte': cut, '$gt': oldest}}, {'_id': 0}).to_list(3000):
+            c = await db.contacts.find_one({'id': ev.get('contact_id')}, {'_id': 0}) if ev.get('contact_id') else None
+            if not c or c.get('opt_out'): continue
+            val = f'R$ {float(ev["value"]):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.') if ev.get('value') else ''
+            out.append((f"{a['id']}:{ev['id']}", c, {'_extra': {'produto': ev.get('product') or 'produto', 'valor': val,
+                        'link_pagamento': ev.get('url') or 'é só me responder que eu te mando o link'}}))
     elif t == 'after_purchase':
         q = {'company_id': cid, 'status': 'ok', 'date': {'$lte': cut, '$gt': oldest}}
         if a.get('product_id'): q['items.product_id'] = a['product_id']
@@ -409,7 +425,7 @@ async def candidates(a, company, stages):
             it = next((i for i in sl['items'] if not a.get('product_id') or i.get('product_id') == a['product_id']), sl['items'][0])
             if c and not c.get('opt_out'): out.append((f"{a['id']}:{sl['id']}", c, {'_extra': {'produto': it['name']}}))
     else:
-        if t == 'before_appt': q = {'status': {'$in': agenda.ACTIVE}, 'start': {'$gt': now(), '$lte': now() + h}}
+        if t == 'before_appt': q = {'status': 'scheduled' if a.get('only_unconfirmed') else {'$in': agenda.ACTIVE}, 'start': {'$gt': now(), '$lte': now() + h}}
         elif t == 'appt_no_show': q = {'status': 'no_show', 'start': {'$lte': cut, '$gt': oldest - GRACE}}
         else: q = {'status': 'done', 'end': {'$lte': cut, '$gt': oldest - GRACE}}
         for ap in await db.appointments.find({'company_id': cid, **q}, {'_id': 0}).to_list(2000):
@@ -436,7 +452,12 @@ async def fire(a, company, stages, key, contact, appt):
     status, detail = 'skipped', ''
     try:
         if not win or (li and now() - li < win):  # canal sem janela (Telegram, e-mail) sempre pode
-            await deliver(company['id'], contact, render(a['message'], ctx), None, by); status = 'sent'
+            if a['trigger'] == 'before_appt' and appt and appt.get('id') and a.get('buttons', True) and ch == 'whatsapp':  # lembrete com botões
+                import wachoice
+                await wachoice.send_choices(company['id'], contact, render(a['message'], ctx), by,
+                                            buttons=[('ap_ok:' + appt['id'], wachoice.CONFIRM_BTN), ('ap_re:' + appt['id'], wachoice.RESCHED_BTN)])
+            else: await deliver(company['id'], contact, render(a['message'], ctx), None, by)
+            status = 'sent'
         elif ch != 'whatsapp':
             detail = f'{ch_label(ch)}: fora das 24 h só uma pessoa do time pode responder'
         else:

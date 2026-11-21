@@ -105,3 +105,64 @@ def test_nanda_agenda(monkeypatch):
         t = c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'segunda 9h'}]}).json()
         assert t['book'] and 'às 09:00' in t['book_label']
         assert len(c.get('/api/appointments', params={'start': str(mon), 'end': str(mon)}).json()) == 1  # teste não agenda
+
+def test_lembrete_com_botoes_remarcar_pela_lista_e_nanda_manda_lista(monkeypatch):
+    import wachoice, automations
+    from core import db
+    sent = []
+    async def fake_graph(method, path, token, payload=None, params=None):
+        if path.endswith('/messages'): sent.append(payload); return {'messages': [{'id': f'w{len(sent)}'}]}
+        if 'subscribed_apps' in path: return {'success': True}
+        return {'display_phone_number': '+55', 'verified_name': 'X'}
+    monkeypatch.setattr(whatsapp, 'graph', fake_graph); monkeypatch.setattr(wachoice, 'graph', fake_graph)
+    seen = {}
+    async def fake_llm(system, messages, max_tokens=500):
+        seen['system'] = system
+        svc = system.split('(id ')[1].split(',')[0]
+        return json.dumps({'reply': 'Separei os próximos horários livres, é só tocar 😊', 'handoff': False, 'slots': {'service_id': svc}}), {}
+    monkeypatch.setattr(ai, 'llm', fake_llm)
+    monkeypatch.setenv('AI_DEBOUNCE', '0.05'); monkeypatch.setenv('ANTHROPIC_API_KEY', 'x')
+    def wa(c, mid, msg):
+        body = {'entry': [{'changes': [{'field': 'messages', 'value': {'metadata': {'phone_number_id': '4440001199'}, 'contacts': [{'wa_id': '5511933334444', 'profile': {'name': 'Lia'}}],
+                'messages': [{'from': '5511933334444', 'id': mid, 'timestamp': str(int(time.time())), **msg}]}}]}]}
+        raw = json.dumps(body).encode()
+        c.post('/api/wa/webhook', content=raw, headers={'x-hub-signature-256': 'sha256=' + hmac.new(b'segredo', raw, hashlib.sha256).hexdigest()})
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Bia Dona', 'email': 'bia9@cl.com', 'password': 'senha-forte-1', 'company': 'Clínica Nove', 'segment': 'clinica'})
+        c.post('/api/wa/connect', json={'phone_number_id': '4440001199', 'waba_id': '5556667799', 'token': 'EAA' + 'q' * 30})
+        c.put('/api/ai/settings', json={'default_mode': 'auto'})
+        # a cliente pergunta por horário: a Nanda manda a lista para tocar
+        wa(c, 'z1', {'type': 'text', 'text': {'body': 'quero marcar avaliação'}})
+        end = time.time() + 3
+        while time.time() < end and not sent: time.sleep(0.05)
+        lst = sent[-1]
+        assert lst['type'] == 'interactive' and lst['interactive']['type'] == 'list' and 'é só tocar' in lst['interactive']['body']['text']
+        rows = lst['interactive']['action']['sections'][0]['rows']; assert 1 <= len(rows) <= 10 and rows[0]['id'].startswith('slot:')
+        # ela toca no primeiro horário: fica marcado e chega a confirmação
+        n = len(sent)
+        wa(c, 'z2', {'type': 'interactive', 'interactive': {'type': 'list_reply', 'list_reply': {'id': rows[0]['id'], 'title': rows[0]['title']}}})
+        assert sent[n]['type'] == 'text' and 'Prontinho' in sent[n]['text']['body']
+        ap = c.portal.call(lambda: db.appointments.find_one({'contact_phone': '5511933334444'}, {'_id': 0}))
+        assert ap and ap['status'] == 'scheduled' and ap['by'] == 'Nanda (IA)'
+        # lembrete automático dentro da janela: sai com os dois botões
+        cid = ap['company_id']
+        auto = c.post('/api/automations', json={'recipe': 'lembrete_24h'}).json()
+        comp = c.portal.call(lambda: db.companies.find_one({'id': cid}, {'_id': 0}))
+        a = c.portal.call(lambda: db.automations.find_one({'id': auto['id']}, {'_id': 0}))
+        ct = c.portal.call(lambda: db.contacts.find_one({'id': ap['contact_id']}, {'_id': 0}))
+        n = len(sent)
+        c.portal.call(lambda: automations.fire(a, comp, [], f"{a['id']}:{ap['id']}", ct, ap))
+        b = sent[n]; assert b['interactive']['type'] == 'button'
+        assert [x['reply']['title'] for x in b['interactive']['action']['buttons']] == ['Confirmo', 'Preciso remarcar']
+        # "Preciso remarcar": chega a lista; ao escolher, o horário antigo é cancelado
+        n = len(sent)
+        wa(c, 'z3', {'type': 'interactive', 'interactive': {'type': 'button_reply', 'button_reply': {'id': 'ap_re:' + ap['id'], 'title': 'Preciso remarcar'}}})
+        rows2 = sent[n]['interactive']['action']['sections'][0]['rows']; assert rows2[0]['id'].endswith(':' + ap['id'])
+        wa(c, 'z4', {'type': 'interactive', 'interactive': {'type': 'list_reply', 'list_reply': {'id': rows2[-1]['id'], 'title': rows2[-1]['title']}}})
+        old = c.portal.call(lambda: db.appointments.find_one({'id': ap['id']}, {'_id': 0}))
+        new = c.portal.call(lambda: db.appointments.find_one({'id': old['replaced_by']}, {'_id': 0}))
+        assert old['status'] == 'canceled' and new['status'] == 'scheduled'
+        # botão "Confirmo" no lembrete do novo horário
+        wa(c, 'z5', {'type': 'interactive', 'interactive': {'type': 'button_reply', 'button_reply': {'id': 'ap_ok:' + new['id'], 'title': 'Confirmo'}}})
+        assert c.portal.call(lambda: db.appointments.find_one({'id': new['id']}, {'_id': 0}))['status'] == 'confirmed'
+        assert 'Confirmado' in sent[-1]['text']['body']

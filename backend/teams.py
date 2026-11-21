@@ -107,10 +107,21 @@ async def open_load(company_id, user_ids):
         if is_open(c): load[c['assigned_to']] = load.get(c['assigned_to'], 0) + 1
     return load
 
+def on_shift(u, tz):
+    """Quem tem turno cadastrado só recebe conversa do rodízio dentro dele. Sem turno: sempre."""
+    sh = u.get('shift') or {}
+    if not sh.get('days') or not sh.get('start') or not sh.get('end'): return True
+    t = now().astimezone(tz); hm = t.strftime('%H:%M'); wd = t.weekday()
+    if sh['start'] <= sh['end']: return wd in sh['days'] and sh['start'] <= hm < sh['end']
+    # turno que vira a noite (ex.: 22:00 às 06:00): conta o dia em que começou
+    return (wd in sh['days'] and hm >= sh['start']) or (((wd - 1) % 7) in sh['days'] and hm < sh['end'])
+
 async def pick_member(team, exclude=None):
-    """Rodízio entre quem está ativo, disponível e abaixo do limite de conversas abertas. Ninguém livre: fica na fila."""
+    """Rodízio entre quem está ativo, disponível, no turno e abaixo do limite de conversas abertas. Ninguém livre: fica na fila."""
+    from agenda import tz_of
     ids = team.get('member_ids') or []
-    ok = {u['id'] for u in await db.users.find({'id': {'$in': ids}, 'active': True, 'away': {'$ne': True}}, {'_id': 0, 'id': 1}).to_list(200)}
+    tz = tz_of(await db.companies.find_one({'id': team['company_id']}, {'_id': 0, 'timezone': 1}) or {})
+    ok = {u['id'] for u in await db.users.find({'id': {'$in': ids}, 'active': True, 'away': {'$ne': True}}, {'_id': 0, 'id': 1, 'shift': 1}).to_list(200) if on_shift(u, tz)}
     cand = [i for i in ids if i in ok and i != exclude]
     if cand and team.get('max_open'):
         load = await open_load(team['company_id'], cand)
@@ -218,3 +229,30 @@ async def check_sla():
             await note(t['company_id'], c['id'], f'Alerta: esperando há {mins} min na fila de {t["name"]} (limite {t["sla_minutes"]} min)')
             n += 1
     return n
+
+# ---------- comissão e turno de cada pessoa ----------
+class ShiftIn(BaseModel):
+    days: List[int] = Field(default_factory=list)
+    start: str = Field(pattern=r'^([01]\d|2[0-3]):[0-5]\d$')
+    end: str = Field(pattern=r'^([01]\d|2[0-3]):[0-5]\d$')
+
+class WorkIn(BaseModel):
+    commission_pct: Optional[float] = Field(default=None, ge=0, le=100)
+    shift: Optional[ShiftIn] = None
+    clear_shift: bool = False
+
+@router.put('/team/{member_id}/work')
+async def set_work(member_id: str, body: WorkIn, request: Request, user=Depends(managers)):
+    m = await db.users.find_one({'id': member_id, 'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1})
+    if not m: raise HTTPException(404, 'Pessoa não encontrada.')
+    upd, uns = {}, {}
+    if body.commission_pct is not None: upd['commission_pct'] = round(body.commission_pct, 2)
+    if body.clear_shift: uns['shift'] = ''
+    elif body.shift:
+        if not body.shift.days or any(d not in range(7) for d in body.shift.days): raise HTTPException(400, 'Escolha pelo menos um dia do turno.')
+        if body.shift.start == body.shift.end: raise HTTPException(400, 'O turno precisa de um início e um fim diferentes.')
+        upd['shift'] = {'days': sorted(set(body.shift.days)), 'start': body.shift.start, 'end': body.shift.end}
+    if upd or uns:
+        await db.users.update_one({'id': member_id}, {**({'$set': upd} if upd else {}), **({'$unset': uns} if uns else {})})
+        await audit(request, user, 'Ajustou comissão e turno de ' + m['name'])
+    return await db.users.find_one({'id': member_id}, {'_id': 0, 'id': 1, 'commission_pct': 1, 'shift': 1})

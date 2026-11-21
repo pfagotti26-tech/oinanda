@@ -2279,6 +2279,14 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
  .ob-c .body{padding:0 14px 36px}.ob-plans{grid-template-columns:1fr}.ob-pay{grid-template-columns:1fr}
 }
 
+.eq-wk{color:var(--c2)!important;font-weight:600}.wk-d{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.wk-d .chip{display:inline-flex;gap:5px;align-items:center;cursor:pointer}.wk-m{max-width:480px}.wk-on{display:flex!important;align-items:center;gap:8px;font-weight:600;cursor:pointer}.wk-on input{width:auto;margin:0}.wk-t{display:flex;align-items:center;gap:8px;margin:10px 0 6px}.wk-t input{width:auto!important;flex:none}.wk-d .chip input{width:auto;margin:0}.cm-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.cm-t td.n,.cm-t th.n{text-align:right}
+.m-chs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.m-chs i{font-style:normal;font-size:12px;font-weight:700;border:1px solid currentColor;border-radius:999px;padding:3px 9px;opacity:.85}
+.ck-k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;position:relative}.ck-k div{background:var(--bg);border-radius:12px;padding:10px 12px}.ck-k b{display:block;font-size:20px}.ck-k span{font-size:12px;color:var(--ink2)}.ck-k em{position:absolute;right:0;top:-20px;font-size:11px;color:var(--ink3);font-style:normal}
+.ck-r{border-top:1px solid var(--line);padding:12px 0}.ck-r:first-of-type{border-top:0}.ck-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ck-h b{font-size:15px}.ck-h small{color:var(--ink3);font-size:12px}.ck-h .sp{flex:1}
+.ck-err{color:var(--bad);font-size:13px;margin:6px 0 0}.ck-m{max-width:560px}.ck-st{margin:14px 0 0 18px;display:flex;flex-direction:column;gap:14px}.ck-st li b{display:block;margin-bottom:4px}
+.ck-url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}.ck-url code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12.5px}
+.ck-ft{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}.ck-ft .sp{flex:1}
+@media(max-width:860px){.ck-k{grid-template-columns:1fr 1fr}}
 /* central de ajuda */
 .hp-w{max-width:980px}.hp-w>.card,.hp-w>section{margin-bottom:14px}
 .hp-sr{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:0 16px;margin-bottom:16px;transition:border-color .15s}
@@ -2879,7 +2887,7 @@ function readPath(){
   if(v==='ajuda')HP.art=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
-  if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno'].includes(parts[1])?parts[1]:'relatorio';
+  if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno','comissoes'].includes(parts[1])?parts[1]:'relatorio';
   if(v==='clientes')CL.tab={campanhas:'camp',renovacao:'ren'}[parts[1]]||'seg';
   if(v==='funil')FN.pipe=parts[1]==='pos-venda'?'posvenda':'vendas';
   if(v==='metas')MT.tab=['metas','desafios','premios','config'].includes(parts[1])?parts[1]:'painel';
@@ -3225,7 +3233,7 @@ function msgsHtml(list){let out='',day='',prev=null;const two=(CV.c?.channels||[
     const ai=m.dir==='out'&&!m.by_id&&/\(IA\)/.test(m.by||''),auto=m.dir==='out'&&/^Automação/.test(m.by||'');
     const grp=prev&&prev.dir===m.dir&&prev.by===m.by&&(new Date(m.at)-new Date(prev.at))<5*6e4;
     const chb=two?(CHI[m.channel]?`<span class="chb2" title="Pelo ${CHI[m.channel][1]}"><i class="chi ${CHI[m.channel][0]}">${chIcon(m.channel)}</i></span>`:`<span class="chb2" title="Pelo WhatsApp"><i class="chi wa">${WAI}</i></span>`):'';
-    out+=`<div class="m ${m.dir} ${ai?'ai':''} ${auto?'auto':''} ${grp?'grp':''}">${m.dir==='out'&&m.by&&!grp?`<span class="by">${esc(m.by)}</span>`:''}${m.type==='template'?'<span class="tp">modelo</span>':''}${(m.text==='📎 Anexo'&&m.channel==='instagram'?'🔗 Compartilhou um conteúdo (post, link ou anúncio). Abra no app do Instagram para ver.':mediaHtml(m))||(m.link?'':'<i class="m-na">Mensagem sem texto (reação, figurinha ou um formato que não dá para mostrar aqui)</i>')}${m.link?`<br><a class="mlink" href="${esc(m.link)}" target="_blank" rel="noopener">${/^🔗/.test(m.text||'')?'Abrir link ↗':'Abrir anexo ↗'}</a>`:''}<small>${chb}${tm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`;prev=m}
+    out+=`<div class="m ${m.dir} ${ai?'ai':''} ${auto?'auto':''} ${grp?'grp':''}">${m.dir==='out'&&m.by&&!grp?`<span class="by">${esc(m.by)}</span>`:''}${m.type==='template'?'<span class="tp">modelo</span>':''}${(m.text==='📎 Anexo'&&m.channel==='instagram'?'🔗 Compartilhou um conteúdo (post, link ou anúncio). Abra no app do Instagram para ver.':mediaHtml(m))||(m.link?'':'<i class="m-na">Mensagem sem texto (reação, figurinha ou um formato que não dá para mostrar aqui)</i>')}${m.link?`<br><a class="mlink" href="${esc(m.link)}" target="_blank" rel="noopener">${/^🔗/.test(m.text||'')?'Abrir link ↗':'Abrir anexo ↗'}</a>`:''}${m.choices&&m.choices.length?`<span class="m-chs" title="${m.choices.length>3?'Lista enviada: o cliente toca no horário':'Botões enviados: o cliente toca para responder'}">${m.choices.map(c=>`<i>${esc(c.title)}</i>`).join('')}</span>`:''}<small>${chb}${tm(m.at)} ${m.dir==='out'?st(m.status):''}</small>${m.error?`<small class="st failed">${esc(m.error)}</small>`:''}</div>`;prev=m}
   return out||'<div class="m sys">Nenhuma mensagem ainda.</div>'}
 
 function winInfo(c){if(!c.window_open)return null;const end=new Date(c.window_ends_at);const h=(end-Date.now())/36e5;
@@ -3835,8 +3843,8 @@ const hrsTxt=h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):(h===1?'1 hora':
 function trigTxt(a,stages){const st=(stages.find(s=>s.id===a.stage_id)||{}).name;const t=hrsTxt(a.hours||0);
   return {stage_enter:`${a.hours?t+' depois de entrar':'Assim que entra'} em "${st||'escolha a etapa'}"`,no_reply:`${t} sem resposta do cliente · ${st?'na etapa "'+st+'"':'em qualquer etapa em andamento'}`,
     before_appt:`${t} antes do horário marcado`,appt_no_show:`${t} depois de uma falta`,appt_done:`${t} depois do atendimento`,after_milestone:`${a.hours?t+' depois':'Assim que'} de atingir um marco da jornada`,
-    after_purchase:`${t} depois de cada compra`,before_expiry:`${t} antes de um item vencer`,after_expiry:`${t} depois de vencer sem renovar`}[a.trigger]||a.trigger_label||'—'}
-const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',profissional:'quem atende (se a agenda tiver profissionais)',data:'dia do horário',hora:'hora do horário',produto:'item da carteira',vencimento:'data de vencimento',cupom:'cupom individual'};
+    after_purchase:`${t} depois de cada compra`,before_expiry:`${t} antes de um item vencer`,after_expiry:`${t} depois de vencer sem renovar`,checkout_pending:`${t} depois de gerar boleto ou Pix sem pagar`,checkout_abandoned:`${t} depois de abandonar o carrinho`}[a.trigger]||a.trigger_label||'—'}
+const VARS_TXT={primeiro_nome:'primeiro nome',nome:'nome completo',empresa:'nome do negócio',servico:'serviço agendado',profissional:'quem atende (se a agenda tiver profissionais)',data:'dia do horário',hora:'hora do horário',produto:'item da carteira ou da compra',vencimento:'data de vencimento',cupom:'cupom individual',link_pagamento:'link do boleto ou do checkout',valor:'valor da compra'};
 const hlv=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>`<b style="color:var(--c2)" title="${VARS_TXT[k]||''}">${VARS_TXT[k]?'['+VARS_TXT[k]+']':m}</b>`);
 function varChips(ta){return `<div class="vars">${Object.entries(VARS_TXT).map(([k,v])=>`<button type="button" data-var="${k}" title="${v}">{${k}}</button>`).join('')}</div>`}
 function bindVars(o,ta){o.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{const v='{'+b.dataset.var+'}';const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+v+ta.value.slice(ta.selectionEnd??i);ta.focus();ta.selectionStart=ta.selectionEnd=i+v.length})}
@@ -3846,9 +3854,9 @@ async function autoModal(a,d,tpls){
   const jms=jst.milestones.filter(m=>m.active!==false);
   const days=x.hours>=24&&x.hours%24===0;
   const TG=[['Na conversa',[['no_reply','O cliente parou de responder'],['stage_enter','Entrou numa etapa do funil']]],['Compra e validade',[['after_purchase','Depois de uma compra'],['before_expiry','Antes de vencer'],['after_expiry','Depois de vencer sem renovar']]],
-    ['Horário marcado',[['before_appt','Antes do horário marcado'],['appt_done','Depois do atendimento'],['appt_no_show','Depois de uma falta']]],...(jms.length?[['Jornada',[['after_milestone','Depois de um marco da jornada']]]]:[])];
-  const S=AU.sample||{primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:'Atendimento',profissional:'Léo',data:'sex 20/11',hora:'09:00',produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2'};
-  const VL={primeiro_nome:'nome do cliente',empresa:'nome da empresa',produto:'item',vencimento:'data de vencimento',servico:'serviço',data:'dia do horário',hora:'hora',profissional:'profissional',cupom:'cupom'};
+    ['Horário marcado',[['before_appt','Antes do horário marcado'],['appt_done','Depois do atendimento'],['appt_no_show','Depois de uma falta']]],['Hotmart, Kiwify e Eduzz',[['checkout_pending','Boleto ou Pix sem pagar'],['checkout_abandoned','Carrinho abandonado']]],...(jms.length?[['Jornada',[['after_milestone','Depois de um marco da jornada']]]]:[])];
+  const S=AU.sample||{primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:'Atendimento',profissional:'Léo',data:'sex 20/11',hora:'09:00',produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',link_pagamento:'pay.hotmart.com/X1',valor:'R$ 997,00'};
+  const VL={primeiro_nome:'nome do cliente',empresa:'nome da empresa',produto:'item',vencimento:'data de vencimento',servico:'serviço',data:'dia do horário',hora:'hora',profissional:'profissional',cupom:'cupom',link_pagamento:'link do pagamento',valor:'valor'};
   const t0=tpls.find(t=>t.id===x.template_id);
   const o=overlay(`<form class="modal am" id="amF"><div class="row"><h2 style="font-size:20px">${a?'Editar automação':'Nova automação'}</h2><button type="button" class="x">×</button></div>
    <div class="am-g"><div class="am-l">
@@ -3883,7 +3891,7 @@ async function autoModal(a,d,tpls){
   const pv=()=>{$('#amPv').innerHTML=esc(f.message.value||'…').replace(/\{(\w+)\}/g,(m,k)=>S[k]!=null?`<b>${esc(S[k])}</b>`:m)};
   const hrs=()=>{const n=Number(f.n.value)||0;return f.unit.value==='d'?n*24:n};
   const when=()=>{const t=f.trigger.value,h=hrs(),q=h>=24&&h%24===0?`${h/24} ${h/24===1?'dia':'dias'}`:`${h} ${h===1?'hora':'horas'}`,st=(d.stages.find(s=>s.id===f.stage_id.value)||{}).name;
-    return {no_reply:`Quando o cliente fica ${q} sem responder${st?` na etapa "${st}"`:' numa conversa em andamento'}.`,stage_enter:st?`${h?q+' depois':'Assim'} que o cliente entra em "${st}".`:'Escolha a etapa.',after_purchase:`${q} depois de cada compra.`,before_expiry:`${q} antes de um item vencer.`,after_expiry:`${q} depois de um item vencer sem renovar.`,
+    return {no_reply:`Quando o cliente fica ${q} sem responder${st?` na etapa "${st}"`:' numa conversa em andamento'}.`,stage_enter:st?`${h?q+' depois':'Assim'} que o cliente entra em "${st}".`:'Escolha a etapa.',after_purchase:`${q} depois de cada compra.`,checkout_pending:`${q} depois de a pessoa gerar boleto ou Pix numa plataforma de venda, se ainda não pagou.`,checkout_abandoned:`${q} depois de a pessoa abandonar o carrinho numa plataforma de venda, se não comprou.`,before_expiry:`${q} antes de um item vencer.`,after_expiry:`${q} depois de um item vencer sem renovar.`,
       before_appt:`${q} antes de cada horário marcado.`,appt_done:`${q} depois de cada atendimento.`,appt_no_show:`${q} depois de uma falta.`,after_milestone:`${h?q+' depois':'Assim'} que o cliente atinge o marco.`}[t]};
   let ct;const cnt=()=>{clearTimeout(ct);ct=setTimeout(async()=>{const t=f.trigger.value;
     try{const r=await api('/automations/preview',{method:'POST',body:{trigger:t,hours:hrs(),stage_id:['stage_enter','no_reply'].includes(t)?(f.stage_id.value||null):null,product_id:['before_expiry','after_expiry','after_purchase'].includes(t)?(f.product_id.value||null):null,milestone_id:t==='after_milestone'?f.milestone_id.value||null:null,unless_id:t==='after_milestone'?f.unless_id.value||null:null}});
@@ -3894,7 +3902,7 @@ async function autoModal(a,d,tpls){
         :'<b>Ninguém nesse momento agora</b><span>Ela fica ligada e envia sozinha quando alguém chegar nele. Não manda para quem já passou desse momento antes de ligar.</span>'}catch(e){$('#amCnt').innerHTML=''}},350)};
   const sync=()=>{const t=f.trigger.value;o.querySelector('#amSt').classList.toggle('hide',!['stage_enter','no_reply'].includes(t));
     f.stage_id.options[0].textContent=t==='stage_enter'?'Escolha a etapa':'Qualquer etapa em andamento';
-    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois',before_expiry:'Quanto tempo antes de vencer',after_expiry:'Quanto tempo depois de vencer',after_purchase:'Quanto tempo depois da compra',after_milestone:'Quanto tempo depois do marco'}[t];
+    o.querySelector('#amHL').textContent={stage_enter:'Quanto tempo depois de entrar',no_reply:'Tempo sem resposta',before_appt:'Quanto tempo antes',appt_no_show:'Quanto tempo depois',appt_done:'Quanto tempo depois',before_expiry:'Quanto tempo antes de vencer',after_expiry:'Quanto tempo depois de vencer',after_purchase:'Quanto tempo depois da compra',after_milestone:'Quanto tempo depois do marco',checkout_pending:'Quanto tempo depois de gerar o pagamento',checkout_abandoned:'Quanto tempo depois de abandonar'}[t];
     o.querySelector('#amMs').classList.toggle('hide',t!=='after_milestone');
     o.querySelector('#amPr').classList.toggle('hide',!['before_expiry','after_expiry','after_purchase'].includes(t));
     $('#amSum').textContent=when();cnt()};
@@ -4096,7 +4104,7 @@ async function vdViews(onChange){
 
 async function vdView(){
   const mgr=isMgr();
-  const tabs=[['relatorio','Resumo'],['lista','Vendas'],['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])];
+  const tabs=[['relatorio','Resumo'],['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])];
   const orgT=VD.tab==='retorno'||VD.tab==='origens';
   $('#page').innerHTML=`<div class="fz-hd vd-hd2"><div class="agt"><h1>Vendas</h1><p>${mgr?'O que foi vendido, por quem e de onde vieram os clientes.':'Suas vendas e os seus números.'}</p></div><span class="sp"></span>
     <button class="btn sm" id="vdExp" title="Baixar as vendas do período em planilha">${svg('<path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/>')}<span class="hm-m">Exportar</span></button><button class="btn sm p" id="vdNew">+<span class="hm-m"> Registrar venda</span></button></div>
@@ -4111,6 +4119,7 @@ async function vdView(){
   await vdOptions();
   if(VD.tab==='lista')return vdList();
   if(VD.tab==='produtos')return vdProducts();
+  if(VD.tab==='comissoes')return vdCommissions();
   if(VD.tab==='promocoes')return vdPromos();
   if(VD.tab==='origens'&&mgr)return vdOrigins();
   if(VD.tab==='retorno'&&mgr)return vdRoi();
@@ -4992,7 +5001,7 @@ async function campForm(rules,count){
     <div class="sm-act"><button class="btn p" ${ok.length?'':'disabled'}>Enviar campanha</button><span class="err" id="caE"></span></div></div></aside></div></form>`);
   const f=o.querySelector('#caF');let pv=null;
   if($('#caMk'))$('#caMk').onclick=()=>{o.remove();AU.tab='modelos';go('automacoes')};
-  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',servico:'',data:'',hora:''};
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',servico:'',data:'',hora:'',link_pagamento:'pay.kiwify.com.br/x1',valor:'R$ 997,00'};
   const draw=async()=>{if(!ok.length){$('#caSum').innerHTML=`<b style="font-size:22px">${num(count)}</b> no público`;return}const t=ok.find(x=>x.id===f.tpl.value);
     $('#caPv').innerHTML=`<span class="wl">Como chega</span>${esc(t.body).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b>${esc(sample[k])}</b>`:m)}<small>09:00 ✓✓</small>`;
     try{pv=await api('/campaigns/preview',{method:'POST',body:{rules,template_id:t.id}})}catch(e){$('#caSum').textContent=e.message;return}
@@ -5908,12 +5917,12 @@ const VIEWS={
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
   const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
   const cfgA=AG.cfg||await api('/agenda/settings').catch(()=>null);const tm=new Date();tm.setDate(tm.getDate()+1);
-  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',profissional:'Léo',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00',produto:(p1&&p1.name)||'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2'};
+  const sample={primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:(cfgA&&cfgA.services[0]?.name)||'Atendimento',profissional:'Léo',data:`${WEEKD[(tm.getDay()+6)%7]} ${String(tm.getDate()).padStart(2,'0')}/${String(tm.getMonth()+1).padStart(2,'0')}`,hora:'09:00',produto:(p1&&p1.name)||'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',link_pagamento:'pay.kiwify.com.br/x1',valor:'R$ 997,00'};
   AU.sample=sample;
   const prev=t=>esc(t).replace(/\{(\w+)\}/g,(m,k)=>sample[k]!=null?`<b title="${esc(VARS_TXT[k]||k)}">${esc(sample[k])}</b>`:m);
   const bubble=(t,sm)=>`<div class="wab ${sm?'au-mini':''}">${sm?'':'<span class="wl">Como o cliente recebe</span>'}${prev(t)}<small>09:00 ✓✓</small></div>`;
   const G={venda:['venda','Vendas e retomada','Para quem parou de responder durante a conversa.',IC.back],pos:['pos','Pós-venda e renovação','Renovar antes de vencer, chamar de volta e oferecer o próximo passo.',NI.vendas],agenda:['agenda','Horário marcado','Lembrar, remarcar quem faltou e puxar o próximo passo.',IC.clock]};
-  const gOf=t=>['before_appt','appt_no_show','appt_done'].includes(t)?G.agenda:['before_expiry','after_expiry','after_purchase'].includes(t)?G.pos:G.venda;
+  const gOf=t=>['before_appt','appt_no_show','appt_done'].includes(t)?G.agenda:['before_expiry','after_expiry','after_purchase'].includes(t)?G.pos:G.venda;  // boleto/carrinho entram em Vendas e retomada
   const tstate=a=>{const t=T[a.template_id];
     if(a.trigger==='no_reply'&&a.hours<24&&!(t&&t.status==='APPROVED'))return ['ok','Sai como mensagem normal','Dispara antes de fechar as 24 h: não precisa de aprovação da Meta.'];
     if(t&&t.status==='APPROVED')return ['ok','Envia a qualquer hora','Modelo aprovado pela Meta.'];
@@ -6307,8 +6316,9 @@ const VIEWS={
     <div class="pm-facts cb-steps eq-roles">${[['eq-o','Dono','Vê e configura tudo: plano, WhatsApp, Nanda, relatórios e equipe. Só existe um.'],['eq-g','Gestor','Convida e acompanha o time, vê relatórios e automações, transfere conversas.'],['eq-a','Atendente','Atende as próprias conversas e as sem dono, registra vendas e transfere para outras pessoas.']].map(f=>`<div><i class="${f[0]}">${f[1][0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
   const kp=`<div class="eq-kp"><div><b>${act.length}</b><span>${act.length===1?'pessoa ativa':'pessoas ativas'}</span></div><div class="${on.length?'ok':''}"><b>${on.length}</b><span>online agora</span></div><div class="${wait.length?'warn':''}"><b>${wait.length}</b><span>aguardando 1º acesso</span></div><div><b>${off.length}</b><span>${off.length===1?'desativada':'desativadas'}</span></div></div>`;
   const row=m=>{const r=RL[m.role]||['eq-a',ME.roles[m.role]||m.role],s=st(m),l=last(m),me=m.id===u.id;
-    const acts=canManage&&m.role!=='owner'&&!me?`<button class="btn sm" data-reset="${m.id}" title="Gera uma senha provisória e manda o link por e-mail">Nova senha</button><button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:'';
-    return `<div class="eq-r ${m.active?'':'off'}"><div class="eq-p"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}${online(m)?'<i class="dot"></i>':''}</span><span><b>${esc(m.name)}${me?' <small>(você)</small>':''}</b><small>${esc(m.email)}</small>${m.active&&m.wa_notify&&m.wa_phone?`<small class="eq-wan" title="Recebe no WhatsApp quando a Nanda ou alguém do time passa uma conversa para ele">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}recebe aviso no WhatsApp</small>`:''}</span></div>
+    const wk=canManage&&m.active?`<button class="btn sm" data-work="${m.id}" title="Comissão sobre as vendas e horário em que recebe conversas do rodízio">Comissão e turno</button>`:'';
+    const acts=wk+(canManage&&m.role!=='owner'&&!me?`<button class="btn sm" data-reset="${m.id}" title="Gera uma senha provisória e manda o link por e-mail">Nova senha</button><button class="btn sm ${m.active?'danger':''}" data-act="${m.id}" data-on="${m.active?0:1}">${m.active?'Desativar':'Reativar'}</button>`:'');
+    return `<div class="eq-r ${m.active?'':'off'}"><div class="eq-p"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}${online(m)?'<i class="dot"></i>':''}</span><span><b>${esc(m.name)}${me?' <small>(você)</small>':''}</b><small>${esc(m.email)}</small>${m.commission_pct!=null||m.shift?`<small class="eq-wk" title="${esc([m.commission_pct!=null?`comissão ${m.commission_pct}%`:'',m.shift?`turno ${shiftTxt(m.shift)}`:''].filter(Boolean).join(' · '))}">${[m.commission_pct!=null?`comissão ${String(m.commission_pct).replace('.',',')}%`:'',m.shift?`turno ${shiftTxt(m.shift)}`:''].filter(Boolean).join(' · ')}</small>`:''}${m.active&&m.wa_notify&&m.wa_phone?`<small class="eq-wan" title="Recebe no WhatsApp quando a Nanda ou alguém do time passa uma conversa para ele">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}recebe aviso no WhatsApp</small>`:''}</span></div>
       <span class="eq-rl ${r[0]}">${r[1]}</span><span class="pill ${s[0]}">${s[1]}</span>
       <span class="eq-la" title="${l?dt(l):''}">${l?(online(m)?'agora':'há '+agoShort(l)):'<em>nunca entrou</em>'}</span><span class="eq-ac">${acts}</span></div>`};
   $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem tem acesso ao painel do ${esc(ME.company.name)}.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Convidar pessoa</span></button>`:''}</div>
@@ -6336,6 +6346,7 @@ const VIEWS={
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{const m=team.find(x=>x.id===b.dataset.act);
     if(b.dataset.on==='0'&&!await sure(`Desativar ${m.name.split(' ')[0]}? A pessoa não entra mais no painel. As conversas e vendas dela continuam.`))return;
     try{await api('/team/'+b.dataset.act,{method:'PATCH',body:{active:b.dataset.on==='1'}});toast(b.dataset.on==='1'?'Acesso reativado.':'Acesso desativado.');VIEWS.equipe()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-work]').forEach(b=>b.onclick=()=>workModal(team.find(x=>x.id===b.dataset.work)));
   document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{const m=team.find(x=>x.id===b.dataset.reset);
     try{const r=await api('/team/'+m.id+'/reset',{method:'POST'});await VIEWS.equipe();showTemp(m.name,m.email,r.temp_password,r.emailed)}catch(e){toast(e.message)}});
  },
@@ -6371,11 +6382,12 @@ const VIEWS={
     <label class="em-sw"><span class="ic tg">${svg('<path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/>')}</span><span class="tx"><b>Telegram</b><small>Para quem atende por lá. Você cria um bot gratuito e cola o código aqui.</small></span><input type="checkbox" data-ch="telegram" ${chOn('telegram')?'checked':''}></label></div>
     </div>
    <div class="card em-c" id="tgc" hidden></div>
+   ${mgr?`<div class="em-sh" id="emCk"><h3>Plataformas de venda</h3><span>Vende por Hotmart, Kiwify ou Eduzz? Ligue aqui e cada venda, boleto, Pix e carrinho abandonado chega no Oi Nanda, na ficha do cliente.</span></div><div class="card em-c" id="ckc"></div>`:''}
    <div class="em-sh"><h3>Recursos extras</h3><span>Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time; desligar não apaga nada.</span></div>
    <div class="card em-c em-sws" id="extras">
     ${[['metas','Metas e ranking','Metas da empresa, de equipes e de cada vendedor, com desafios, prêmios e modo TV.'],['jornada','Jornada do cliente','Marcos como "fez a aula", "pediu orçamento", "comprou de novo". A Nanda marca sozinha pelas conversas e o relatório mostra onde os clientes travam.']]
       .map(([k,l,h])=>`<label class="em-sw"><span class="ic">${svg(k==='metas'?'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>':'<circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3m4 0h3"/><circle cx="12" cy="12" r="2"/>')}</span><span class="tx"><b>${l}</b><small>${h}</small></span><input type="checkbox" data-mod="${k}" ${modOn(k)?'checked':''}></label>`).join('')}</div>`:''}`;
-  renderWa(own);renderIg(own);renderTg(own);
+  renderWa(own);renderIg(own);renderTg(own);if(mgr)renderCk();
   document.querySelectorAll('.em-st [data-go]').forEach(x=>x.onclick=()=>{const t=$('#'+x.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
   document.querySelectorAll('[data-ch]').forEach(x=>x.onchange=async()=>{x.disabled=true;try{const r=await api('/company/channels',{method:'PUT',body:{[x.dataset.ch]:x.checked}});ME.company.channels=r.channels;
     const l={messenger:'Messenger',telegram:'Telegram',email:'E-mail'}[x.dataset.ch]||x.dataset.ch;toast(x.checked?`${l} ligado. As mensagens novas chegam nas Conversas.`:`${l} desligado. Nada foi apagado.`);renderIg(own);renderTg(own)}
@@ -6823,6 +6835,65 @@ async function boot(){
   const gq=new URLSearchParams(location.search).get('google');
   if(gq){history.replaceState(null,'','/');VIEW='agenda';AG.tab='config';shell();toast({ok:'Google Agenda conectado.',cancelado:'Conexão com o Google cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Google não completou a conexão. Tente de novo.'}[gq]||'');return}
   shell();impResume();
+}
+
+
+/* Comissão e turno de cada pessoa (Equipe) e relatório de comissões (Vendas) */
+const WKD=['seg','ter','qua','qui','sex','sáb','dom'];
+function shiftTxt(sh){if(!sh||!sh.days)return '';const d=sh.days;const seq=d.length>1&&d.every((x,i)=>!i||x===d[i-1]+1);
+  return `${d.length===7?'todos os dias':seq?WKD[d[0]]+' a '+WKD[d[d.length-1]]:d.map(x=>WKD[x]).join(', ')}, ${sh.start} às ${sh.end}`}
+function workModal(m){const sh=m.shift||{days:[0,1,2,3,4],start:'08:00',end:'18:00'};const has=!!m.shift;
+  const o=overlay(`<div class="modal wk-m"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button><h3>Comissão e turno · ${esc(m.name.split(' ')[0])}</h3>
+   <form id="wkF"><div class="field"><label>Comissão sobre as vendas</label><div class="row" style="gap:8px;align-items:center"><input name="pct" type="number" min="0" max="100" step="0.5" value="${m.commission_pct??''}" placeholder="ex.: 10" style="max-width:120px"><span>%</span></div>
+    <small>Calculada sobre a parte de cada venda que é dela. Venda dividida entre duas pessoas: cada uma ganha sobre a sua parte. Veja em Vendas › Comissões.</small></div>
+    <div class="field"><label class="wk-on"><input type="checkbox" name="on" ${has?'checked':''}><span>Só recebe conversa do rodízio no turno</span></label>
+     <div id="wkS" ${has?'':'hidden'}><div class="wk-d">${WKD.map((d,i)=>`<label class="chip"><input type="checkbox" name="d" value="${i}" ${sh.days.includes(i)?'checked':''}>${d}</label>`).join('')}</div>
+      <div class="wk-t"><input type="time" name="st" value="${sh.start}" aria-label="Início do turno"><span>às</span><input type="time" name="en" value="${sh.end}" aria-label="Fim do turno"></div>
+      <small>Fora do turno, as conversas novas vão para quem está trabalhando ou ficam na fila. Turno que vira a noite (ex.: 22:00 às 06:00) também vale.</small></div></div>
+    <p class="err" id="wkE"></p><button class="btn p">Salvar</button></form></div>`,true);
+  const f=o.querySelector('#wkF');f.on.onchange=()=>o.querySelector('#wkS').hidden=!f.on.checked;
+  f.onsubmit=async ev=>{ev.preventDefault();const body={};if(f.pct.value!=='')body.commission_pct=+f.pct.value;
+    if(f.on.checked)body.shift={days:[...f.querySelectorAll('[name=d]:checked')].map(x=>+x.value),start:f.st.value,end:f.en.value};else if(has)body.clear_shift=true;
+    try{await api('/team/'+m.id+'/work',{method:'PUT',body});o.remove();toast('Salvo.');VIEWS.equipe()}catch(e){o.querySelector('#wkE').textContent=e.message}}}
+async function vdCommissions(){const mgr=isMgr();const P=VD.cm||(VD.cm={preset:'mes'});const brl2=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const kpi=(l,v,sub)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s"><span>${sub||''}</span></div></div>`;
+  const today=new Date();const ym=d=>d.toISOString().slice(0,10);
+  const rng={mes:[ym(new Date(today.getFullYear(),today.getMonth(),1)),ym(today)],ant:[ym(new Date(today.getFullYear(),today.getMonth()-1,1)),ym(new Date(today.getFullYear(),today.getMonth(),0))],'30d':[ym(new Date(Date.now()-29*864e5)),ym(today)]}[P.preset];
+  let d;try{d=await api(`/sales/commissions?start=${rng[0]}&end=${rng[1]}`)}catch(e){$('#vdBody').innerHTML=`<div class="card err">${esc(e.message)}</div>`;return}
+  const pre=`<div class="fz-seg cm-p">${[['mes','Este mês'],['ant','Mês passado'],['30d','30 dias']].map(x=>`<button class="${P.preset===x[0]?'on':''}" data-cmp="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  $('#vdBody').innerHTML=`<div class="cm-top">${pre}<span class="hint">${fmtD(d.start)} a ${fmtD(d.end)} · só vendas confirmadas</span></div>
+   <div class="kpis">${kpi(mgr?'Comissão a pagar':'Sua comissão',brl2(d.total_commission),mgr?`${d.rows.length} ${d.rows.length===1?'pessoa':'pessoas'}`:'')}${mgr&&d.without_seller&&d.without_seller.count?kpi('Vendas sem vendedor',brl2(d.without_seller.value),`${d.without_seller.count} ${d.without_seller.count===1?'venda não entra':'vendas não entram'} na comissão`):''}</div>
+   ${d.missing_pct.length&&mgr?`<p class="note">Sem percentual cadastrado: ${esc(d.missing_pct.join(', '))}. Defina em Equipe › Comissão e turno.</p>`:''}
+   <div class="card">${d.rows.length?`<table class="tbl cm-t"><thead><tr><th>Pessoa</th><th class="n">Vendas</th><th class="n">Vendido (parte dela)</th><th class="n">%</th><th class="n">Comissão</th></tr></thead><tbody>${d.rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="n">${r.count}</td><td class="n">${brl2(r.value)}</td><td class="n">${r.pct!=null?String(r.pct).replace('.',',')+'%':'<span class="hint">—</span>'}</td><td class="n"><b>${brl2(r.commission)}</b></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhuma venda com vendedor no período.</div>'}</div>
+   ${mgr?'<p class="hint" style="margin-top:10px">Quem vendeu é definido ao registrar a venda (dá para dividir entre duas pessoas). Vendas que chegam da Hotmart, Kiwify ou Eduzz entram com o responsável do card.</p>':''}`;
+  document.querySelectorAll('[data-cmp]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.cmp;vdCommissions()})}
+/* Plataformas de venda: Hotmart, Kiwify e Eduzz */
+const CK_HOW={
+ hotmart:{sec:'Hottok',where:'Na Hotmart: Ferramentas › Webhook (API e notificações) › Cadastrar webhook. Cole o endereço abaixo, escolha a versão 2.0.0 e marque os eventos de compra (aprovada, boleto/Pix impresso, abandono de carrinho, reembolso e chargeback). O Hottok aparece na mesma tela.'},
+ kiwify:{sec:'Token do webhook',where:'Na Kiwify: Apps › Webhooks › Criar webhook. Cole o endereço abaixo, escolha os produtos e marque: compra aprovada, boleto gerado, Pix gerado, carrinho abandonado, compra reembolsada e chargeback. O token aparece no webhook criado.'},
+ eduzz:{sec:'Chave secreta',where:'No Console da Eduzz: Webhooks › Segurança, crie uma chave secreta. Depois, em Webhooks, adicione o endereço abaixo e marque as faturas paga, aguardando pagamento, reembolsada, cancelada e chargeback.'}};
+async function renderCk(){const box=$('#ckc');if(!box)return;let d;try{d=await api('/checkout/hooks')}catch(e){box.innerHTML=`<p class="hint">${esc(e.message)}</p>`;return}
+  const by=Object.fromEntries(d.items.map(h=>[h.provider,h]));const st=d.stats||{};
+  const row=(k,n)=>{const h=by[k];const ok=h&&h.has_secret;const stt=!h?['','não ligada']:!h.has_secret?['warn','falta o código']:h.last_error?['bad','confira o código']:h.last_at?['ok','recebendo']:['warn','esperando o 1º evento'];
+    return `<div class="ck-r" data-ck="${k}"><div class="ck-h"><b>${n}</b>${h?`<span class="pill ${stt[0]}">${stt[1]}</span>`:''}${h&&h.last_at?`<small>último evento ${ago(h.last_at)}</small>`:''}<span class="sp"></span>
+      <button class="btn sm ${h?'':'p'}" data-cko="${k}">${h?(ok?'Ver configuração':'Terminar de ligar'):'Ligar'}</button></div>
+      ${h&&h.last_error?`<p class="ck-err">${esc(h.last_error)}</p>`:''}</div>`};
+  box.innerHTML=`${d.items.length?`<div class="ck-k"><div><b>${num(st.approved||0)}</b><span>vendas aprovadas</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix gerados</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos abandonados</span></div><div><b>${num(st.recovered||0)}</b><span>recuperados</span></div><em>últimos 30 dias</em></div>`:''}
+    ${[['hotmart','Hotmart'],['kiwify','Kiwify'],['eduzz','Eduzz']].map(x=>row(...x)).join('')}
+    <p class="hint" style="margin-top:10px">Venda aprovada entra sozinha em Vendas e move o card para a etapa de venda. Para recuperar boleto, Pix e carrinho, ligue as automações "Boleto ou Pix sem pagar" e "Carrinho abandonado". <button class="lnk" id="ckHelp">Como funciona</button></p>`;
+  $('#ckHelp').onclick=()=>hpOpen('plataformas-de-venda');
+  box.querySelectorAll('[data-cko]').forEach(b=>b.onclick=()=>ckModal(b.dataset.cko,by[b.dataset.cko]));}
+async function ckModal(k,h){const N={hotmart:'Hotmart',kiwify:'Kiwify',eduzz:'Eduzz'}[k],H=CK_HOW[k];
+  if(!h){try{h=await api('/checkout/hooks',{method:'POST',body:{provider:k}})}catch(e){return toast(e.message)}}
+  const o=overlay(`<div class="modal ck-m"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button><h3>Ligar a ${N}</h3>
+    <ol class="ck-st"><li><b>Copie o endereço do Oi Nanda</b><div class="ck-url"><code>${esc(h.url)}</code><button class="btn sm" id="ckCp">Copiar</button></div></li>
+    <li><b>Cadastre na ${N}</b><p class="hint">${esc(H.where)}</p></li>
+    <li><b>Cole aqui o ${esc(H.sec)}</b><p class="hint">É ele que garante que o aviso veio mesmo da ${N}. Fica guardado criptografado.</p>
+     <form id="ckF" class="row" style="gap:8px;margin-top:6px"><input name="s" type="password" autocomplete="off" placeholder="${h.has_secret?'Já cadastrado. Cole outro para trocar':esc(H.sec)}" style="flex:1;min-width:0"><button class="btn p">Salvar</button></form></li></ol>
+    <div class="ck-ft">${h.has_secret?'<span class="pill ok">código salvo</span>':''}<span class="sp"></span><button class="btn sm danger" id="ckDel">Desligar ${N}</button></div></div>`,true);
+  o.querySelector('#ckCp').onclick=async()=>{try{await navigator.clipboard.writeText(h.url);toast('Endereço copiado.')}catch(e){toast('Selecione o endereço e copie.')}};
+  o.querySelector('#ckF').onsubmit=async ev=>{ev.preventDefault();const v=ev.target.s.value.trim();if(v.length<6)return toast('Cole o código completo.');
+    try{await api('/checkout/hooks',{method:'POST',body:{provider:k,secret:v}});toast(`${N} ligada. Quando o primeiro evento chegar, aparece aqui.`);o.remove();renderCk()}catch(e){toast(e.message)}};
+  o.querySelector('#ckDel').onclick=async()=>{if(!await sure(`Desligar a ${N}? Os eventos param de chegar. O que já entrou continua no Oi Nanda.`,{ok:'Desligar'}))return;try{await api('/checkout/hooks/'+h.id,{method:'DELETE'});o.remove();renderCk();toast(`${N} desligada.`)}catch(e){toast(e.message)}};
 }
 /* ---------- Central de ajuda (conteúdo em /ajuda.js, carregado só quando precisa) ---------- */
 let HP={art:null,q:'',seg:null};

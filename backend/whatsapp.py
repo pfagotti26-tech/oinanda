@@ -230,13 +230,17 @@ async def ingest(value):
         mm = meta_of(m)
         await db.messages.insert_one({'id': mid, 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
                                       'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now(), **mm, **({'pending': True} if mm else {})})
+        handled = False
         if not mm and now() - at < timedelta(hours=1):
-            try:
-                from agenda import confirm_by_reply
-                await confirm_by_reply(cid, contact['id'], text)
-            except Exception: log.exception('falha ao confirmar o horário pela resposta')
+            try:  # botão ou lista tocada (lembrete, horários) e respostas curtas ao lembrete ("confirmo", "preciso remarcar")
+                import wachoice
+                fresh = {**contact, **upd}
+                choice = ((m.get('interactive') or {}).get('button_reply') or (m.get('interactive') or {}).get('list_reply') or {}).get('id') if m.get('type') == 'interactive' else None
+                if choice: handled = await wachoice.on_choice(cid, fresh, choice, text)
+                else: handled = (await wachoice.on_text(cid, fresh, text)) == 'resched'
+            except Exception: log.exception('falha ao tratar a resposta do botão ou do lembrete')
         if mm: schedule(mid)  # baixa (e transcreve o áudio) antes de chamar a Nanda
-        elif ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
+        elif ON_INBOUND and not handled and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
         if now() - at < timedelta(minutes=10):
             from push import later, on_inbound as push_inbound
             later(push_inbound(cid, contact['id'], text))

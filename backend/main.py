@@ -120,6 +120,10 @@ async def lifespan(app):
         await db.companies.update_one({'id': c['id']}, {'$set': {'trial_ends_at': end, 'trial_v2': True}})
     await db.companies.update_many({'trial_v2': {'$ne': True}}, {'$set': {'trial_v2': True}})
     await db.contacts.create_index([('company_id', 1), ('next_expiry', 1)])
+    await db.checkout_events.create_index([('company_id', 1), ('key', 1)], unique=True)
+    await db.checkout_events.create_index([('company_id', 1), ('kind', 1), ('at', -1)])
+    await db.checkout_hooks.create_index('id', unique=True)
+    await db.sales.create_index([('company_id', 1), ('provider', 1), ('external_ref', 1)])
     worker = None
     if os.environ.get('MONGO_URL') != 'mock' and os.environ.get('AUTOMATIONS_OFF') != '1':
         worker = asyncio.create_task(automations.loop())
@@ -148,6 +152,8 @@ app.include_router(home_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
 app.include_router(wallet_router, prefix="/api")
 app.include_router(campaigns_router, prefix="/api")
+import checkout as _checkout
+app.include_router(_checkout.router, prefix="/api")
 app.include_router(opps_router, prefix="/api")
 app.include_router(goals_router, prefix="/api")
 app.include_router(journey_router, prefix="/api")
@@ -174,7 +180,8 @@ app.include_router(import_router, prefix="/api")
 @app.middleware('http')
 async def guard(request: Request, call_next):
     origin = request.headers.get('origin')
-    if request.method in ('POST', 'PATCH', 'PUT', 'DELETE') and origin and origin not in ORIGINS:
+    hook = request.url.path.startswith(('/api/checkout/hotmart/', '/api/checkout/kiwify/', '/api/checkout/eduzz/'))  # webhooks das plataformas: a assinatura é que valida
+    if request.method in ('POST', 'PATCH', 'PUT', 'DELETE') and origin and origin not in ORIGINS and not hook:
         return JSONResponse({'detail': 'Origem não autorizada.'}, status_code=403)
     try:
         response = await call_next(request)

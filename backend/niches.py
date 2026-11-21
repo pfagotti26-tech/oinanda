@@ -11,8 +11,8 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-def R(key, name, trigger, hours, message, stage=None, category='MARKETING', why=''):
-    return {'key': key, 'name': name, 'trigger': trigger, 'hours': hours, 'stage': stage, 'message': message, 'category': category, 'why': why}
+def R(key, name, trigger, hours, message, stage=None, category='MARKETING', why='', **extra):
+    return {'key': key, 'name': name, 'trigger': trigger, 'hours': hours, 'stage': stage, 'message': message, 'category': category, 'why': why, **extra}
 
 # receitas que servem para qualquer negócio que tem agenda
 AGENDA_RECIPES = [
@@ -21,7 +21,7 @@ AGENDA_RECIPES = [
       why='Reduz falta. Vai 24 h antes de cada horário marcado.'),
     R('lembrete_3h', 'Lembrete no dia', 'before_appt', 3,
       'Oi, {primeiro_nome}! Hoje às {hora} tem {servico} aqui no {empresa}. Te esperamos!', category='UTILITY',
-      why='Um toque curto poucas horas antes.'),
+      why='Um toque curto poucas horas antes, só para quem ainda não confirmou.', only_unconfirmed=True),
     R('faltou', 'Faltou: oferecer novo horário', 'appt_no_show', 2,
       'Oi, {primeiro_nome}! Sentimos sua falta hoje. Quer que eu veja um novo horário para você?',
       why='Quando o horário é marcado como "Faltou", chama para remarcar.'),
@@ -156,7 +156,13 @@ NICHES = {
                'rules': 'Não prometer resultado financeiro.\nNão dar desconto fora das condições.', 'faq': 'Acesso por 1 ano.'},
         'recipes': FOLLOWUP + [
             R('link_enviado', 'Link enviado e não comprou', 'no_reply', 24, 'Oi, {primeiro_nome}! Conseguiu acessar o link? Se tiver qualquer dúvida antes de entrar, me fala.',
-              stage='link', why='Recupera quem chegou no checkout e parou.')],
+              stage='link', why='Recupera quem chegou no checkout e parou.'),
+            R('boleto_pix', 'Boleto ou Pix sem pagar', 'checkout_pending', 6,
+              'Oi, {primeiro_nome}! Vi que você gerou o pagamento do {produto} e ele ainda não entrou. Ficou alguma dúvida? Se quiser concluir agora: {link_pagamento}',
+              why='Chega da Hotmart, Kiwify ou Eduzz. Quem já pagou sai da lista sozinho.'),
+            R('carrinho', 'Carrinho abandonado', 'checkout_abandoned', 1,
+              'Oi, {primeiro_nome}! Vi que você começou a compra do {produto} e não terminou. Posso te ajudar com alguma dúvida? Se quiser continuar: {link_pagamento}',
+              why='Chega da Hotmart, Kiwify ou Eduzz. Uma mensagem só, com a ajuda e o link.')],
     },
     'outro': {
         'label': 'Outro tipo de negócio', 'short': 'Outro',
@@ -172,7 +178,7 @@ TOP3 = {'studio': ['lembrete_24h', 'pos_aula', 'renova_7d'], 'clinica': ['lembre
         'salao': ['lembrete_3h', 'retorno_30', 'faltou'], 'imobiliaria': ['esfriou_1', 'lembrete_24h', 'pos_visita'],
         'escola': ['lembrete_24h', 'esfriou_1', 'renova_7d'], 'loja': ['esfriou_1', 'orcamento', 'recompra'],
         'servicos': ['lembrete_24h', 'proposta', 'esfriou_3'], 'restaurante': ['pos_pedido', 'volta_15', 'lembrete_24h'],
-        'lancamento': ['esfriou_1', 'link_enviado', 'esfriou_3'], 'outro': ['esfriou_1', 'esfriou_3', 'lembrete_24h']}
+        'lancamento': ['boleto_pix', 'carrinho', 'link_enviado'], 'outro': ['esfriou_1', 'esfriou_3', 'lembrete_24h']}
 
 ORDER = ['studio', 'clinica', 'salao', 'imobiliaria', 'escola', 'loja', 'servicos', 'restaurante', 'lancamento', 'outro']
 

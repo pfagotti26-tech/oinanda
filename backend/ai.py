@@ -98,6 +98,7 @@ AGENDA (horários livres de verdade, já descontando o que está ocupado):
 - Só agende quando o cliente escolher um serviço e um horário que esteja livre AQUI. Aí preencha "book" e confirme na reply (serviço, dia e hora).
 - Nunca ofereça horário fora do que está livre. Se nenhum servir, chame o time.
 - Para cancelar ou remarcar, chame o time.
+- No WhatsApp, quando for oferecer horários (o cliente já disse o serviço), você pode preencher "slots" com o service_id: o sistema manda uma lista com os próximos horários livres para o cliente tocar, e o horário escolhido já fica marcado. Nesse caso a reply é só uma frase curta de introdução (ex.: "Separei os próximos horários livres, é só tocar no melhor pra você 😊"), sem listar horários.
 """
         if upcoming:
             ag += 'Este cliente já tem agendado: ' + '; '.join(f"{a['service_name']} {agenda.WEEK[agenda.aware(a['start']).astimezone(tz).weekday()]} {agenda.aware(a['start']).astimezone(tz):%d/%m %H:%M}" for a in upcoming) + '\n'
@@ -124,7 +125,7 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 - Seu objetivo é ajudar e levar ao próximo passo (agendar, fechar, tirar a dúvida), sem pressionar.
 
 Responda SOMENTE com um JSON, sem nada antes ou depois (comece direto com a chave de abertura). O texto da reply é mensagem de WhatsApp: sem markdown, sem asteriscos, curto.
-{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false, "faltou": ""}}
+{{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "slots": null ou {{"service_id": "id"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false, "faltou": ""}}
 "faltou": quando o cliente perguntou algo que NÃO está no que você sabe e por isso você não respondeu ou chamou o time, escreva a dúvida como uma pergunta frequente curta e genérica, sem o nome do cliente (ex.: "Tem estacionamento?", "Atende convênio?"). Se você soube responder, ou o assunto é negociação, reclamação ou pedido de pessoa, deixe "".
 Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
@@ -193,7 +194,9 @@ def parse(text):
             d['reply'] = clean_reply(str(d.get('reply') or ''))
             b = d.get('book') if isinstance(d.get('book'), dict) and d['book'].get('service_id') and d['book'].get('start') else None
             if b: b = {'service_id': str(b['service_id'])[:24], 'start': str(b['start'])[:19], 'pro_id': (str(b['pro_id'])[:24] if b.get('pro_id') else None)}
+            sl = d.get('slots') if isinstance(d.get('slots'), dict) and d['slots'].get('service_id') else None
             return {'reply': str(d.get('reply') or '').strip(), 'handoff': bool(d.get('handoff')), 'reason': str(d.get('reason') or '')[:200], 'book': b,
+                    'slots': {'service_id': str(sl['service_id'])[:24]} if sl and not b else None,
                     'origin': str(d['origin'])[:24] if isinstance(d.get('origin'), str) and d.get('origin') else None, 'origin_detail': str(d.get('origin_detail') or '')[:80],
                     'marcos': [str(x)[:12] for x in d.get('marcos') or [] if isinstance(x, (str, int))][:5] if isinstance(d.get('marcos'), list) else [],
                     'anotar': str(d.get('anotar') or '').strip()[:200],
@@ -255,6 +258,23 @@ async def track(company_id, usage, kind, contact_id=None):
         elif kind == 'suggestions': await notices.ai_mark(company_id)
     except Exception: log.exception('falha no aviso de uso da Nanda')
 
+async def origin_hint(company, contact):
+    bits = []
+    ad = contact.get('ad') or {}
+    if ad.get('headline') or ad.get('body'): bits.append(f'clicou no anúncio "{(ad.get("headline") or ad.get("body"))[:80]}"')
+    if contact.get('origin_link'):
+        l = await db.track_links.find_one({'id': contact['origin_link'], 'company_id': company['id']}, {'_id': 0, 'label': 1})
+        if l and l.get('label'): bits.append(f'chegou pelo link "{l["label"][:60]}"')
+    if contact.get('checkout_src'): bits.append(f'veio do checkout com a origem "{str(contact["checkout_src"])[:40]}"')
+    ev = await db.checkout_events.find_one({'company_id': company['id'], 'contact_id': contact['id']}, {'_id': 0, 'kind': 1, 'product': 1, 'provider': 1}, sort=[('at', -1)])
+    if ev and ev.get('product'):
+        what = {'pending': 'gerou o pagamento (boleto ou Pix) e ainda não pagou', 'abandoned': 'começou a compra e não terminou', 'approved': 'comprou',
+                'refunded': 'pediu reembolso', 'chargeback': 'abriu chargeback'}.get(ev['kind'])
+        if what: bits.append(f'{what} de "{ev["product"][:60]}"')
+    if not bits: return ''
+    return ('\nDE ONDE ESTE CLIENTE VEIO: ' + '; '.join(bits) + '.\nNa primeira resposta, mostre que sabe disso com naturalidade (ex.: "vi que você veio da aula 3"), '
+            'sem soar como robô e sem inventar o que não está aqui. Se ele gerou pagamento ou abandonou a compra, ajude com a dúvida e ofereça o link, sem pressionar.\n')
+
 async def system_for(s, company, contact=None):
     step = 30
     try: agenda_text, ag_s = await agenda.nanda_context(company); step = (ag_s or {}).get('step') or 30
@@ -280,6 +300,9 @@ async def system_for(s, company, contact=None):
                 extra += 'PODE FAZER SENTIDO OFERECER (só quando combinar com a conversa, sem empurrar; preço só se estiver no conhecimento): ' + '; '.join(
                     ('renovação de ' if o['why'] == 'renovar' else 'voltar com ' if o['why'] == 'voltar' else '') + o['name'] for o in offs) + '\n'
     except Exception: log.exception('falha ao montar as promoções')
+    try:  # de onde a pessoa veio (link, anúncio, plataforma de venda): a Nanda cita no começo para a conversa não parecer genérica
+        if contact: extra += await origin_hint(company, contact)
+    except Exception: log.exception('falha ao montar a origem')
     try:
         from journey import nanda_block as journey_block
         if contact: extra += journey_block(company)
@@ -443,7 +466,15 @@ async def auto_reply(company_id, contact_id, msg_id):
                     d['reply'] = (d['reply'] or '').rstrip() + f' Seu horário fica com {a["pro_name"]}.'
             except (HTTPException, ValueError):
                 d['reply'] = 'Opa, esse horário acabou de ser ocupado 😅 Quer que eu veja outra opção pra você?'
-        if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+        sent_list = False
+        if d.get('slots') and not d['book']:
+            from channels import view
+            if (view(contact).get('channel') or 'whatsapp') == 'whatsapp':
+                import wachoice
+                company = await db.companies.find_one({'id': company_id}, {'_id': 0})
+                try: sent_list = await wachoice.offer_slots(company, contact, d['slots']['service_id'], d['reply'] or 'Separei os próximos horários livres, é só tocar no melhor pra você 😊', s['name'] + ' (IA)')
+                except Exception: log.exception('falha ao mandar a lista de horários')
+        if d['reply'] and not sent_list: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
         await apply_origin(company_id, contact, d)
         await apply_facts(company_id, contact, d)
         await apply_stage(company_id, contact, d, s['name'] + ' (IA)')

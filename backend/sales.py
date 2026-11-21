@@ -496,3 +496,30 @@ async def del_view(vid: str, user=Depends(current_user)):
     if not v or (v['by_id'] != user['id'] and user['role'] not in MGR): raise HTTPException(404, 'Visão não encontrada.')
     await db.sales_views.delete_one({'id': vid})
     return {'ok': True}
+
+# ---------- comissão ----------
+@router.get('/sales/commissions')
+async def commissions(start: Optional[str] = None, end: Optional[str] = None, user=Depends(current_user)):
+    """Quanto cada vendedor vendeu e tem de comissão no período. Venda dividida: cada um sobre a sua parte.
+    Venda cancelada ou esperando aprovação não entra. O atendente vê só a dele."""
+    f = Filters(start=start, end=end)
+    s0, s1, t0, t1 = period(user['company'], f)
+    users = {u['id']: u for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1, 'commission_pct': 1, 'active': 1}).to_list(500)}
+    rows = {}
+    nobody = {'value': 0.0, 'count': 0}
+    for sl in await db.sales.find({'company_id': user['company_id'], 'status': 'ok', 'date': {'$gte': t0, '$lt': t1}}, {'_id': 0, 'total': 1, 'sellers': 1}).to_list(50000):
+        sellers = [x for x in sl.get('sellers') or [] if x.get('user_id') in users]
+        if not sellers: nobody['value'] += sl.get('total') or 0; nobody['count'] += 1; continue
+        for x in sellers:
+            part = (sl.get('total') or 0) * (x.get('pct') or 0) / 100
+            r = rows.setdefault(x['user_id'], {'user_id': x['user_id'], 'name': users[x['user_id']]['name'], 'pct': users[x['user_id']].get('commission_pct'), 'value': 0.0, 'count': 0})
+            r['value'] += part; r['count'] += 1
+    out = []
+    for r in rows.values():
+        r['value'] = round(r['value'], 2); r['commission'] = round(r['value'] * (r['pct'] or 0) / 100, 2)
+        out.append(r)
+    out.sort(key=lambda r: -r['value'])
+    if user['role'] not in MGR: out = [r for r in out if r['user_id'] == user['id']]; nobody = None
+    return {'start': s0.isoformat(), 'end': s1.isoformat(), 'rows': out, 'total_commission': round(sum(r['commission'] for r in out), 2),
+            'without_seller': {'value': round(nobody['value'], 2), 'count': nobody['count']} if nobody else None,
+            'missing_pct': [r['name'] for r in out if r['pct'] is None]}

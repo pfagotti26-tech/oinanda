@@ -650,7 +650,7 @@ const site={
   faq:[
    ['Vou perder o meu WhatsApp Business?','Não. A Nanda entra junto com o app que você já usa. Você continua respondendo pelo celular quando quiser; ela cuida do resto e tudo fica no mesmo histórico.'],
    ['A Nanda vai inventar preço ou desconto?','Não. Ela só usa a tabela que você cadastra. Se perguntarem algo fora dela, chama uma pessoa.'],
-   ['E se eu tiver duas unidades?','Cada unidade tem número, equipe e tabela própria, e você vê tudo junto na visão da matriz.'],
+   ['E se eu tiver duas unidades?','Hoje cada unidade é uma conta, com número, equipe e tabela própria. A visão da matriz, juntando as unidades num painel só, está em construção.'],
    ['Integra com meu sistema de agenda?','Na primeira versão, a agenda da experimental é do Oi Nanda. Integrações com sistemas de academia entram em seguida, e os fundadores escolhem quais primeiro.'],
   ],
  },
@@ -689,7 +689,7 @@ const site={
   faq:[
    ['A Nanda dá orientação clínica?','Não. Ela confirma, remarca, manda o preparo que a clínica aprovou e tira dúvidas de preço e horário. Qualquer pergunta clínica vai para a equipe.'],
    ['A Nanda cobra o sinal?','Ela manda a chave Pix ou o link de pagamento que a clínica já usa, quando a paciente quer fechar. O dinheiro vai direto para a sua conta; a recepção confere e move a paciente no funil.'],
-   ['E a LGPD?','Dados com acesso por pessoa e registro de quem viu o quê. A paciente sai da lista com uma mensagem, e você exporta tudo em 1 clique se sair.'],
+   ['E a LGPD?','Dados com acesso por papel e registro de quem fez o quê. A paciente sai da lista com uma mensagem, e você exporta clientes e vendas em planilha quando quiser.'],
    ['Integra com meu prontuário?','Na primeira versão, não. Agenda e histórico de conversa são do Oi Nanda; a integração com prontuário entra conforme os fundadores pedirem.'],
   ],
  },
@@ -711,14 +711,14 @@ const site={
    ['Carrinho abre, chegam 2 mil pessoas e o time responde 200.','Eu respondo as 2 mil, na hora, pelo nome. Quem está pronto ou travou vai para o SDR com a conversa inteira. Ninguém espera.'],
    ['Gerou o boleto, ficou com dúvida, e ninguém perguntou se precisava de ajuda. É dinheiro na mesa.','Seis horas depois eu pergunto se ficou dúvida e mando o link do checkout de novo. Boleto recuperado é gente atendida, e é a venda mais barata do lançamento.'],
    ['Dois vendedores falam com a mesma pessoa. Ela percebe.','Cada pessoa tem um dono, por turno e por rodízio. Quem assume vê tudo que eu já conversei. Para o cliente, é uma voz só.'],
-   ['No fim do lançamento, a comissão vira briga de planilha.','Venda aprovada entra com quem fechou. Comissão por pessoa, por turno e por origem, pronta para pagar. Time bem tratado também vende mais.'],
+   ['No fim do lançamento, a comissão vira briga de planilha.','Venda aprovada entra com quem fechou. Comissão por pessoa, calculada no mês e pronta para pagar. Time bem tratado também vende mais.'],
   ],
   autos:[
    ['Lead novo','na hora','IA cumprimenta citando a aula que a pessoa viu'],
-   ['Carrinho aberto','a cada 24 h','mensagem de template com o que falta para fechar'],
+   ['Link enviado','1 dia sem comprar','IA pergunta se conseguiu acessar e tira a dúvida'],
    ['Boleto gerado','6 h sem pagar','IA pergunta se ficou dúvida e reenvia o link do checkout'],
    ['Carrinho abandonado','1 h depois','IA chama pelo nome e oferece ajuda'],
-   ['Carrinho fecha','2 h antes','última chamada para quem conversou e não comprou'],
+   ['Carrinho fecha','quando você disparar','campanha de última chamada para quem conversou e não comprou'],
    ['Comprou','1 dia depois','boas-vindas e convite para a comunidade'],
   ],
   kpis:[['27%','dos boletos recuperados','g'],['R$ 312 mil','no lançamento','a'],['38 s','até a primeira resposta na abertura',''],['6','SDRs em 3 turnos, sem lead duplicado','']],
@@ -727,7 +727,7 @@ const site={
    ['Integra com qual plataforma?','Hotmart, Kiwify e Eduzz na primeira versão, por webhook oficial. Venda aprovada entra sozinha no funil com o vendedor certo.'],
    ['Aguenta o volume da abertura de carrinho?','O WhatsApp é pela API oficial da Meta, sem celular conectado e sem limite de atendentes. O limite diário de mensagens iniciadas por você aparece na tela.'],
    ['A Nanda vende sozinha?','Ela tira dúvida, recupera boleto e manda o link. Você decide por etapa se ela fecha ou passa para o SDR.'],
-   ['Funciona para perpétuo?','Sim. As automações de carrinho viram automações de oferta, e a IA roda 24h com teto de gasto que você define.'],
+   ['Funciona para perpétuo?','Sim. As automações de carrinho viram automações de oferta, e a IA roda 24h dentro dos atendimentos do plano. O pacote extra só entra se você ligar.'],
   ],
  },
 };
@@ -777,7 +777,7 @@ const day={
   ['08:30','Você abre o painel com o café: 4 agendamentos, 2 clientes que pediram o link de pagamento de madrugada, 1 pronto esperando o seu time.','2 vendas encaminhadas'],
   ['15:00','O "vou pensar" das 11h recebe a retomada automática com uma pergunta leve. Responde em 3 minutos e pede a chave.','1 venda'],
   ['23:40','Alguém pergunta o preço. A Nanda responde, oferece a experimental e agenda para amanhã. Você já estava dormindo.','agendou'],
-  ['Seg, 08:00','Comissão da semana calculada por pessoa. Coaching enviado para cada vendedor. Origem de cada venda no painel.','R$ 9.870 na semana']]],
+  ['Seg, 08:00','Comissão da semana calculada por pessoa. Nota de atendimento de cada vendedor. Origem de cada venda no painel.','R$ 9.870 na semana']]],
  studios:['Um dia com a Nanda no seu studio','Quarta-feira. Você deu 5 aulas e não vendeu nenhuma pelo celular. Mesmo assim, vendeu.',[
   ['05:50','"Tem vaga às 6h amanhã?" A Nanda responde antes do primeiro aluno chegar e marca a experimental.','agendou'],
   ['07:15','Você está em aula. Três experimentais de ontem recebem "como foi?" e duas pedem o plano.','2 prontas para fechar'],
@@ -832,7 +832,7 @@ function statusQuo(){return `<section style="padding-bottom:0"><div class="wrap"
 <div class="sqi"><span>Ferramenta que cobra por usuário</span><b>R$ 745</b><p>por mês, em média, para um time de 5 pessoas. E sem turnos.</p></div>
 <div class="sqi us"><span>A Nanda, com 5 pessoas no time</span><b>R$ 297</b><p>por mês no plano Profissional. Responde 24h, marca horário e sabe quando chamar você. Começa em R$ 147.</p></div>
 </div></div></section>`}
-function origin(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap orig"><div><h2>De onde a Nanda veio</h2><p>A Nanda não nasceu num laboratório. Nasceu dentro de uma operação que vende por conversa todos os dias, com time em turno, comissão por venda e meta mensal. Primeiro ela foi copiloto do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.</p><p>Por isso ela tem o que ferramenta de software não tem: regra de até onde ir sozinha, fila por turno, comissão calculada e cobrança dentro da conversa. Não é feature de roadmap. É o que uma operação real precisou para vender.</p></div><blockquote>Tudo que está nesta página foi usado para vender antes de virar produto. Se não fechasse venda, não estaria aqui.</blockquote></div></section>`}
+function origin(){return `<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap orig"><div><h2>De onde a Nanda veio</h2><p>A Nanda não nasceu num laboratório. Nasceu dentro de uma operação que vende por conversa todos os dias, com time em turno, comissão por venda e meta mensal. Primeiro ela foi copiloto do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.</p><p>Por isso ela tem o que ferramenta de software não tem: regra de até onde ir sozinha, fila por turno, comissão calculada e link de pagamento dentro da conversa. Não é feature de roadmap. É o que uma operação real precisou para vender.</p></div><blockquote>Tudo que está nesta página foi usado para vender antes de virar produto. Se não fechasse venda, não estaria aqui.</blockquote></div></section>`}
 const tourItems=[
  ['inbox','Conversas','Todas as conversas, com a Nanda sugerindo a resposta e o funil do lado. Agendar é um botão.','A tela onde o seu time passa o dia: fila por turno, IA copiloto, etapa do funil e agenda sem sair da conversa.'],
  ['funil','Funil','Quem está em cada etapa, quanto vale e há quanto tempo está parado.','Cada coluna mostra as automações ligadas. Clicou no cliente, abriu a conversa.'],
@@ -851,7 +851,7 @@ function pricing(seg){const plans=[
 function faq(f){return `<section id="faq"><div class="wrap"><div class="head c"><h2>O que perguntam antes de começar</h2></div><div class="faq">${f.map(x=>`<details><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</div></div></section>`}
 function final(seg){return `<section><div class="wrap"><div class="final"><div><h2>14 dias comigo. Cancele quando quiser.</h2><p>Conecte seu número agora e hoje à noite eu já respondo por você. Gostou, escolhe o plano e continua sem reconfigurar nada.</p></div><form data-form><input placeholder="Seu nome" required><input placeholder="Seu WhatsApp" required><input placeholder="Nome do negócio" required><button class="btn primary lg" type="submit">Começar os 14 dias grátis</button><small>Eu te chamo no WhatsApp em minutos para conectar o número. Sem spam, prometo.</small></form></div></div></section>`}
 const foot=`<footer class="wrap"><span>© 2026 Oi Nanda · FAGOTTI MARKETING DIRETO LTDA · CNPJ 40.864.395/0001-95</span><span>WhatsApp (11) 94001-2030 · oi@oinanda.com.br · <a href="/termos/">Termos</a> · <a href="/privacidade/">Privacidade</a> · Cancelamento em 1 clique</span></footer>`;
-function manifesto(){return `<section style="padding:88px 0 40px"><div class="wrap"><div class="mani"><p>“Quem não entende de pessoas não entende de negócio. A Nanda não nasceu num laboratório: nasceu dentro da minha operação, que vende por conversa todos os dias, com time em turno e meta. Primeiro ela foi copilota do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.”</p><span>Paulo, fundador do Oi Nanda</span><p class="born">Por isso ela faz o que ferramenta não faz: sabe até onde ir sozinha, trabalha em turno, calcula comissão e cobra dentro da conversa. Cada pessoa que te procura é respondida, lembrada e levada até o Pix. Bem tratada, ela compra. Bem lembrada, ela volta.</p></div></div></section>`}
+function manifesto(){return `<section style="padding:88px 0 40px"><div class="wrap"><div class="mani"><p>“Quem não entende de pessoas não entende de negócio. A Nanda não nasceu num laboratório: nasceu dentro da minha operação, que vende por conversa todos os dias, com time em turno e meta. Primeiro ela foi copilota do time. Depois passou a responder sozinha de madrugada. Quando os números mostraram que ela fechava, virou produto.”</p><span>Paulo, fundador do Oi Nanda</span><p class="born">Por isso ela faz o que ferramenta não faz: sabe até onde ir sozinha, trabalha em turno, calcula comissão e manda o seu link de pagamento dentro da conversa. Cada pessoa que te procura é respondida, lembrada e levada até o Pix. Bem tratada, ela compra. Bem lembrada, ela volta.</p></div></div></section>`}
 function beforeAfter(seg){
  const d={
   home:['Sua venda não devia depender de quem lembrou de responder.','Hoje o WhatsApp lota, o time responde o que dá, e o cliente que não teve resposta some sem avisar.',
@@ -875,7 +875,7 @@ const caps=[
  ['funil','Funil que já vem pronto para o seu segmento','Etapas, prazos e automações montados para como a sua aluna, a sua paciente ou o seu lead decide. Você ajusta; não começa do zero. Um contato pode estar em mais de um funil.'],
  ['clock','Ninguém some sem a Nanda tentar','Quem parou no funil é retomado no prazo certo, com a mensagem certa: a experimental que não virou plano, o orçamento parado, o boleto não pago, o plano vencendo. Você define a regra uma vez; ela roda todo dia.'],
  ['pin','Você sabe de onde veio cada venda','Anúncio, Instagram, indicação, Google ou QR code: a origem chega marcada e vai até a venda. O painel mostra quanto cada canal vendeu e quanto custou. Realocar verba deixa de ser palpite.'],
- ['team','Time em turno, comissão calculada, coaching da Nanda','Cada conversa tem dono; cada turno tem fila. No fim do mês a comissão já está pronta, por pessoa e por origem. E a Nanda lê as conversas do time e aponta, para cada um, onde a venda escapou.'],
+ ['team','Time em turno, comissão calculada, coaching da Nanda','Cada conversa tem dono; cada turno tem fila. No fim do mês a comissão já está pronta, por pessoa. E a Nanda lê as conversas do time e dá uma nota para cada atendimento, com o que foi bem e o que melhorar.'],
 ];
 const capIcon={chat:'<path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.8-4.6A8 8 0 1 1 21 12z"/>',pix:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="11" rx="1.5"/><rect x="16" y="4" width="5" height="7" rx="1.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 14.5a5 5 0 0 1 6 5"/>'};
 function capsGrid(){return `<section><div class="wrap"><div class="head c"><h2>Tudo que a venda pelo WhatsApp precisa. Numa Nanda só.</h2><p>Seis coisas que funcionam juntas, no mesmo número. O que acontece numa aparece na outra na hora, sem ninguém copiar nada.</p></div><div class="caps">${caps.map(c=>`<div class="cap-i"><i><svg viewBox="0 0 24 24">${capIcon[c[0]]}</svg></i><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join('')}</div></div></section>`}

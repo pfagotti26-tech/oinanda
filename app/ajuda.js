@@ -95,6 +95,8 @@ arts: [
   'No primeiro acesso, ela liga o aviso no celular em "Seu status e avisos" (canto de baixo do menu).']],
  ['h', 'Equipes, fila e rodízio (plano Equipe)'],
  ['p', 'Dá para separar o time em equipes (ex.: Pré-vendas, Vendas, Suporte). Cada equipe tem fila própria. No rodízio, as conversas novas são distribuídas entre quem está disponível e abaixo do limite de conversas abertas. Se o cliente esperar mais que o tempo combinado, a gerência recebe um alerta.'],
+ ['h', 'Turnos e comissão'],
+ ['p', 'Em Equipe › <b>Comissão e turno</b>, defina para cada pessoa os dias e o horário em que ela trabalha (ex.: SDR da manhã, seg a sex, 8h às 14h). Fora do turno, o rodízio não entrega conversa para ela. No mesmo lugar fica o percentual de comissão, que aparece calculado em Vendas › Comissões.'],
  ['go', 'Abrir Equipe', 'equipe']]},
 
 {id: 'avisos-celular', cat: 'comecar', title: 'Receber aviso de cliente no celular', sum: 'Notificação de mensagem nova sem instalar nada da loja de apps.', min: 2, to: 'inicio', body: [
@@ -117,7 +119,8 @@ arts: [
   '<b>Nota interna:</b> anotação que só o time vê (ex.: "prefere ser chamada à tarde").',
   '<b>Transferir:</b> passa para outra pessoa ou equipe, com o motivo.',
   '<b>Mandar depois:</b> "me chama na segunda" vira uma mensagem programada que sai sozinha no dia e hora combinados (dentro da janela de 24 h).',
-  '<b>Devolver para a Nanda:</b> depois de resolver, ela volta a atender aquele cliente.']],
+  '<b>Devolver para a Nanda:</b> depois de resolver, ela volta a atender aquele cliente.',
+  '<b>Botões e listas:</b> quando a mensagem foi com botões (lembrete) ou lista de horários, as opções aparecem embaixo do balão. O que o cliente tocou chega como resposta normal.']],
  ['tip', 'A ficha do cliente (ao lado da conversa) mostra etapa do funil, compras, horários marcados e a jornada completa.'],
  ['go', 'Abrir Conversas', 'conversas']]},
 
@@ -132,10 +135,13 @@ arts: [
   'Em Agenda › Configurar, cadastre os serviços com duração e quantas pessoas cabem no mesmo horário (ex.: aula experimental para 3).',
   'Defina os dias e horários de atendimento e as pausas.',
   'Se usa Google Agenda, conecte: o que estiver ocupado lá bloqueia aqui, e o que for marcado aqui aparece lá.']],
- ['p', 'A Nanda oferece no máximo 3 opções por vez e só marca quando o cliente escolhe um horário livre. Para cancelar ou remarcar, ela chama o time.'],
+ ['p', 'No WhatsApp, a Nanda manda uma <b>lista com os próximos horários livres</b>: o cliente toca no que prefere e o horário já fica marcado, sem digitar nada. Em outros canais ela oferece até 3 opções por escrito.'],
+ ['h', 'Lembrete com botões'],
+ ['p', 'O lembrete automático chega com dois botões: <b>Confirmo</b> (o horário vira Confirmado na hora) e <b>Preciso remarcar</b> (chega a lista de horários livres; quando o cliente escolhe, o horário antigo é liberado sozinho). Quem responde "sim" ou 👍 também confirma.'],
+ ['tip', 'Quando o lembrete sai depois das 24 h da última mensagem do cliente, ele vai por modelo aprovado da Meta. Ao pedir a aprovação do modelo em Automações, os dois botões já vão junto.'],
  ['h', 'Status do horário'],
  ['list', ['<b>Agendado</b> → <b>Confirmado</b> → <b>Compareceu</b> ou <b>Faltou</b>. Mude o status tocando no horário. Marcar "Faltou" dispara a automação de oferecer novo horário, se estiver ligada.']],
- ['tip', 'Ligue os lembretes "1 dia antes" e "no dia" em Automações. São os que mais reduzem falta.'],
+ ['tip', 'Ligue os lembretes "1 dia antes" e "no dia" em Automações. São os que mais reduzem falta, ainda mais com os botões.'],
  ['go', 'Abrir Agenda', 'agenda']]},
 
 /* ---------------- Vender ---------------- */
@@ -159,7 +165,9 @@ arts: [
   '<b>Desconto acima do limite</b> dado por atendente fica esperando a aprovação do gestor.',
   '<b>Exportar:</b> a lista de vendas sai em Excel, com os filtros que estiverem aplicados.',
   '<b>Cancelar uma venda</b> tira ela dos números, mas o registro fica no histórico.']],
- ['tip', 'O Oi Nanda não cobra o cliente. Ele registra a venda que você fez (Pix, cartão, link de pagamento) para você enxergar tudo num lugar só.'],
+ ['h', 'Comissão'],
+ ['p', 'Com o percentual de cada pessoa definido em Equipe, a aba <b>Vendas › Comissões</b> mostra, no mês, quanto cada um vendeu (a parte dele nas vendas divididas) e quanto tem de comissão. O atendente vê só a dele.'],
+ ['tip', 'O Oi Nanda não cobra o cliente. Ele registra a venda que você fez (Pix, cartão, link de pagamento) para você enxergar tudo num lugar só. Quem vende pela Hotmart, Kiwify ou Eduzz pode ligar a integração e as vendas entram sozinhas.'],
  ['go', 'Abrir Vendas', 'vendas']]},
 
 {id: 'clientes', cat: 'vender', title: 'Clientes e públicos: para quem vender de novo', sum: 'Prospects, clientes e inativos, e como montar um público em segundos.', min: 3, to: 'clientes', body: [
@@ -188,6 +196,25 @@ arts: [
   'Veja a prévia de como o cliente recebe e ajuste o texto se quiser.',
   'Depois de uma semana, abra o Histórico e veja quais trouxeram resposta e venda.']],
  ['go', 'Abrir Automações', 'automacoes']]},
+
+{id: 'plataformas-de-venda', cat: 'vender', title: 'Hotmart, Kiwify e Eduzz: vendas, boletos e carrinhos', sum: 'Ligue a sua plataforma e recupere boleto, Pix e carrinho abandonado pelo WhatsApp.', min: 4, to: 'empresa', body: [
+ ['p', 'Se você vende por uma dessas plataformas, o Oi Nanda passa a saber o que acontece no checkout de cada pessoa, e a Nanda e as automações agem em cima disso.'],
+ ['h', 'Como ligar (uns 5 minutos)'],
+ ['steps', [
+  'Em Empresa › Plataformas de venda, toque em Ligar na sua plataforma e copie o endereço que aparece.',
+  'Na plataforma, cadastre esse endereço como webhook e marque os eventos de compra (aprovada, boleto/Pix gerado, carrinho abandonado, reembolso e chargeback). A tela do Oi Nanda mostra o caminho de cada uma.',
+  'Copie o código de segurança da plataforma (Hottok na Hotmart, token na Kiwify, chave secreta na Eduzz) e cole no Oi Nanda. Sem ele, nada entra: é o que garante que o aviso veio mesmo da plataforma.',
+  'Faça uma compra de teste ou use o botão de teste da plataforma. Quando chegar, aparece "recebendo".']],
+ ['h', 'O que acontece com cada evento'],
+ ['list', [
+  '<b>Venda aprovada:</b> entra em Vendas, move o card para a etapa de venda e a pessoa passa a contar como cliente. Não duplica, mesmo que a plataforma mande duas vezes.',
+  '<b>Boleto ou Pix gerado:</b> fica anotado na conversa. A automação "Boleto ou Pix sem pagar" manda uma mensagem com o link depois do tempo que você escolher (padrão: 6 h).',
+  '<b>Carrinho abandonado:</b> a automação "Carrinho abandonado" chama a pessoa pelo nome, oferece ajuda e o link (padrão: 1 h depois).',
+  '<b>Reembolso ou chargeback:</b> a venda é cancelada em Vendas e sai dos relatórios e da comissão.']],
+ ['p', 'Quem pagou sai da recuperação sozinho. A pessoa é encontrada pelo celular (ou pelo e-mail) que preencheu no checkout; se ainda não existia, a ficha é criada.'],
+ ['warn', 'Quem nunca conversou com você no WhatsApp só recebe a recuperação por modelo aprovado pela Meta. Em Automações, peça a aprovação do modelo da automação antes do lançamento.'],
+ ['tip', 'A Nanda sabe o que a pessoa fez no checkout e de onde veio (link, anúncio, aula). Na primeira resposta ela cita isso com naturalidade.'],
+ ['go', 'Ligar a minha plataforma', 'empresa']]},
 
 {id: 'campanhas', cat: 'vender', title: 'Campanhas no WhatsApp sem queimar o número', sum: 'Mandar para um público com os freios que protegem a sua conta.', min: 3, to: 'clientes', body: [
  ['p', 'Campanha é uma mensagem para um público (ex.: clientes inativos há 90 dias). Como sai fora da janela de 24 h, usa um modelo aprovado pela Meta e tem custo da Meta por pessoa, mostrado antes de enviar.'],
@@ -273,13 +300,13 @@ arts: [
 segs: {
  studio: {t: 'Studio, academia ou box', goal: 'transformar a aula experimental em matrícula e manter o aluno renovando.',
   flow: ['Novo contato', 'Aula experimental marcada', 'Fez a aula', 'Negociando', 'Matriculou'],
-  day: ['Abra "Precisa de você" de manhã e no fim da tarde: é onde estão os alunos prontos para fechar.', 'Depois de cada experimental, marque "Compareceu" na agenda. Isso dispara o "Depois da aula experimental".', 'Cadastre os planos no catálogo com a validade (30, 90, 365 dias) para o aviso de renovação sair na hora certa.'],
+  day: ['Abra "Precisa de você" de manhã e no fim da tarde: é onde estão os alunos prontos para fechar. A experimental é marcada pela lista de horários que a Nanda manda no WhatsApp.', 'Depois de cada experimental, marque "Compareceu" na agenda. Isso dispara o "Depois da aula experimental".', 'Cadastre os planos no catálogo com a validade (30, 90, 365 dias) para o aviso de renovação sair na hora certa.'],
   autos: ['Lembrete 1 dia antes', 'Depois da aula experimental', 'Renovação: 7 dias antes de vencer'],
   nanda: 'Ensine os horários das turmas, o valor de cada plano e a regra de não fazer avaliação de saúde pelo WhatsApp. Objetivo dela: marcar a experimental.',
   watch: 'Quantas experimentais viram matrícula (Relatórios › Funil) e quantos planos renovam (Clientes › Renovação).'},
  clinica: {t: 'Clínica de estética, odonto ou saúde', goal: 'encher a agenda de avaliações, diminuir falta e fechar o orçamento.',
   flow: ['Novo contato', 'Avaliação marcada', 'Avaliou', 'Orçamento enviado', 'Fechou'],
-  day: ['Confira a agenda do dia seguinte no fim da tarde: quem não confirmou merece uma ligação.', 'Depois da avaliação, mova o card para "Orçamento enviado" com o valor. O lembrete de orçamento sem resposta cuida do resto.', 'Cadastre procedimentos com validade (ex.: toxina, 120 dias) para a paciente ser chamada para o retorno.'],
+  day: ['O lembrete chega com os botões Confirmo e Preciso remarcar. No fim da tarde, quem não confirmou merece uma ligação.', 'Depois da avaliação, mova o card para "Orçamento enviado" com o valor. O lembrete de orçamento sem resposta cuida do resto.', 'Cadastre procedimentos com validade (ex.: toxina, 120 dias) para a paciente ser chamada para o retorno.'],
   autos: ['Lembrete 1 dia antes', 'Orçamento sem resposta', 'Faltou: oferecer novo horário'],
   nanda: 'Em Regras, deixe claro que ela não dá orientação médica e, se preferir, que não passa preço de injetáveis pelo WhatsApp: oferece a avaliação. Objetivo dela: agendar a avaliação.',
   watch: 'Taxa de falta (Agenda), quantos orçamentos fecham (Funil) e quantas pacientes voltam (Clientes › Renovação).'},
@@ -321,11 +348,10 @@ segs: {
   watch: 'Clientes que pedem de novo em 30 dias e o horário com mais mensagens.'},
  lancamento: {t: 'Infoproduto, curso online ou mentoria', goal: 'responder todo lead na hora e levar até o link de compra.',
   flow: ['Novo lead', 'Interessado', 'Link enviado', 'Comprou'],
-  day: ['Em lançamento, deixe a Nanda em Automática: ela responde todos ao mesmo tempo e passa para o time quem está pronto ou travou.', 'Mova para "Link enviado" quando mandar o checkout: sai o lembrete para quem não comprou.', 'Registre a venda com quem fechou para a comissão (divisão entre vendedores) ficar certa.'],
-  autos: ['Sem resposta no mesmo dia', 'Link enviado e não comprou', 'Sem resposta há 3 dias'],
+  day: ['Ligue a Hotmart, Kiwify ou Eduzz em Empresa › Plataformas de venda: venda aprovada entra sozinha e boleto, Pix e carrinho abandonado viram recuperação automática.', 'Em lançamento, deixe a Nanda em Automática: ela responde todos ao mesmo tempo e passa para o time quem está pronto ou travou.', 'Com SDRs em turnos, defina o turno de cada um em Equipe: o rodízio só entrega conversa para quem está trabalhando.'],
+  autos: ['Boleto ou Pix sem pagar', 'Carrinho abandonado', 'Link enviado e não comprou'],
   nanda: 'Ensine o que o produto entrega, preço, parcelamento e garantia. Regras: não prometer resultado financeiro e não dar desconto fora das condições.',
-  watch: 'Tempo da primeira resposta na abertura do carrinho e quantos com link enviado compraram.',
-  note: 'Hoje a venda é registrada no Oi Nanda pelo time (ou pelo funil). Ainda não há integração automática com plataformas de pagamento de infoproduto.'},
+  watch: 'Tempo da primeira resposta na abertura do carrinho, boletos e carrinhos recuperados (Empresa › Plataformas de venda) e comissão por vendedor (Vendas › Comissões).'},
  outro: {t: 'Outro tipo de negócio', goal: 'tirar dúvidas e levar ao próximo passo: agendar, orçamento ou compra.',
   flow: ['Novo contato', 'Em conversa', 'Proposta enviada', 'Fechou'],
   day: ['Renomeie as etapas do funil com os passos reais da sua venda.', 'Ensine a Nanda com o exemplo e ajuste para o seu caso.', 'Registre as vendas para os relatórios fazerem sentido.'],
@@ -343,6 +369,7 @@ faq: [
  ['Quantas pessoas podem atender ao mesmo tempo?', 'Depende do plano: 2 no Essencial, 5 no Profissional e 12 no Equipe. Todas no mesmo número, cada uma com o seu acesso.'],
  ['Funciona fora do horário comercial?', 'A Nanda responde 24 horas. Automações e campanhas só saem das 8h às 21h, para não incomodar.'],
  ['E se eu cancelar, perco tudo?', 'Não. A conta fica só para consulta, com conversas, contatos e vendas guardados. Dá para reativar quando quiser.'],
+ ['Integra com Hotmart, Kiwify ou Eduzz?', 'Sim. Vendas aprovadas entram sozinhas, e boleto, Pix e carrinho abandonado viram recuperação automática pelo WhatsApp. Liga em Empresa › Plataformas de venda.'],
  ['Dá para usar com Instagram?', 'Sim. O Direct do Instagram chega na mesma tela de Conversas, com a Nanda ajudando.'],
  ['Preciso de ajuda para configurar. Como faço?', 'Responda qualquer e-mail do Oi Nanda ou fale com a gente pelo WhatsApp. Quem responde é uma pessoa do time.'],
 ],
