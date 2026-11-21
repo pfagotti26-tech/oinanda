@@ -2278,6 +2278,47 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
  .ob-b .body{grid-template-columns:1fr;padding:0 14px 32px}.ob-side{position:static}.ob-chat{height:52vh}
  .ob-c .body{padding:0 14px 36px}.ob-plans{grid-template-columns:1fr}.ob-pay{grid-template-columns:1fr}
 }
+
+/* central de ajuda */
+.hp-w{max-width:980px}.hp-w>.card,.hp-w>section{margin-bottom:14px}
+.hp-sr{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:0 16px;margin-bottom:16px;transition:border-color .15s}
+.hp-sr:focus-within{border-color:var(--c);box-shadow:0 0 0 4px var(--tint)}.hp-sr svg{width:20px;height:20px;color:var(--ink3);flex:none}
+.hp-sr input{border:0;outline:0;flex:1;font:inherit;font-size:16px;padding:15px 0;background:transparent;min-width:0}
+.hp-top{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:14px}
+.hp-seg{background:linear-gradient(155deg,#fff 0%,var(--tint) 100%);display:flex;flex-direction:column;gap:8px;align-items:flex-start}.hp-seg h3{font-size:19px;letter-spacing:-.2px}.hp-seg .btn{margin-top:auto}
+.hp-ey{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c2)}
+.hp-as{display:flex;flex-direction:column;gap:8px}
+.hp-a{display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit;transition:border-color .15s,background .15s}
+.hp-a:hover{border-color:var(--c);background:#fff}.hp-a span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hp-a b{font-size:14.5px;color:var(--ink)}.hp-a em{font-style:normal;font-size:12.8px;color:var(--ink2);line-height:1.4}
+.hp-a small{font-size:11.5px;color:var(--ink3);white-space:nowrap;font-weight:600}
+.hp-n{width:28px;height:28px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;flex:none}
+.hp-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-bottom:14px}
+.hp-ch{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}.hp-ci{font-size:22px;line-height:1;width:42px;height:42px;border-radius:12px;background:var(--tint);display:grid;place-items:center;flex:none}
+.hp-ch h3{font-size:16px}.hp-cat ul{list-style:none;display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--line);padding-top:8px}
+.hp-cat li .lnk{text-decoration:none;text-align:left;font-size:13.8px;font-weight:600;color:var(--ink);padding:6px 0;line-height:1.35}.hp-cat li .lnk:hover{color:var(--c2)}
+.hp-faq details{border-top:1px solid var(--line)}.hp-faq details:first-of-type{border-top:0}
+.hp-faq summary{cursor:pointer;list-style:none;padding:13px 0;font-weight:700;font-size:14.5px;display:flex;justify-content:space-between;gap:12px}.hp-faq summary::-webkit-details-marker{display:none}
+.hp-faq summary::after{content:'+';color:var(--c);font-size:18px;line-height:1}.hp-faq details[open] summary::after{content:'−'}.hp-faq p{color:var(--ink2);font-size:14px;line-height:1.55;margin:0 0 14px}
+.hp-ct{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--ink);color:#fff;border-color:var(--ink)}.hp-ct .hint{color:#C9D2DB;margin-top:4px}.hp-ct h3{font-size:17px}
+.hp-cta{display:flex;gap:8px;flex-wrap:wrap}.hp-cta a{text-decoration:none}.hp-bc .lnk{text-decoration:none}.hp-ct .btn:not(.p){background:transparent;color:#fff;border-color:#4B5968}
+.hp-bc{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px;color:var(--ink3)}.hp-bc .lnk{font-weight:700}
+.hp-art{padding:30px 34px}.hp-art h1{font-size:27px;letter-spacing:-.4px;line-height:1.2;margin:8px 0 8px}.hp-lead{font-size:16px;color:var(--ink2);margin-bottom:18px;line-height:1.5}
+.hp-art h3{font-size:16.5px;margin:22px 0 8px}.hp-art p{font-size:15px;line-height:1.65;color:#2E3A46;margin:0 0 12px}.hp-art b{font-weight:700;color:var(--ink)}
+.hp-steps{counter-reset:s;list-style:none;margin:6px 0 14px;display:flex;flex-direction:column;gap:10px}
+.hp-steps li{counter-increment:s;position:relative;padding:2px 0 0 40px;font-size:15px;line-height:1.55;color:#2E3A46}
+.hp-steps li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--c2);font-weight:800;font-size:13px;display:grid;place-items:center}
+.hp-list{margin:6px 0 14px;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:9px}.hp-list li{position:relative;padding-left:22px;font-size:15px;line-height:1.55;color:#2E3A46}
+.hp-list li::before{content:'';position:absolute;left:4px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--c)}
+.hp-tip,.hp-warn{border-radius:14px;padding:13px 16px;font-size:14.5px;line-height:1.55;margin:10px 0 14px}.hp-tip{background:var(--oksoft);color:#0A4A41}.hp-warn{background:var(--warnsoft);color:#5C4100}
+.hp-go{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.hp-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 8px}.hp-flow span{background:var(--tint);border:1px solid var(--soft);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--c2)}.hp-flow i{font-style:normal;color:var(--ink3)}
+.hp-flow.sm{margin:2px 0 6px}.hp-flow.sm span{font-size:12px;padding:4px 10px;background:#fff}
+.hp-fb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--ink2);font-weight:600}
+.hp-segs{display:flex;flex-wrap:wrap;gap:8px}.hp-segs .chip{cursor:pointer}.hp-segs .chip.on{background:var(--c);color:#fff;border-color:var(--c)}
+.hp-how{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px 6px 9px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.hp-how svg{width:16px;height:16px;color:var(--c)}.hp-how:hover{border-color:var(--c);color:var(--c2)}
+.fhd>.hp-how{margin-left:auto;align-self:center}.fz-hd>.hp-how{align-self:center}
+@media(max-width:860px){.hp-top{grid-template-columns:1fr}.hp-art{padding:22px 18px}.hp-art h1{font-size:23px}.hp-how span{display:none}.hp-how{padding:7px}.hp-ct{flex-direction:column;align-items:stretch}.hp-cta .btn{flex:1;text-align:center}}
 </style>
 </head>
 <body>
@@ -2702,7 +2743,7 @@ async function ativarView(){
 /* ---------- casca ---------- */
 const modOn=k=>k==='metas'?(((ME.company.modules||{}).metas!==false)||gamOn()):((ME.company.modules||{})[k]!==false);
 const chOn=k=>!!((ME.company&&ME.company.channels||{})[k]);
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['jornada','Jornada'],['empresa','Empresa'],['atividade','Atividade']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['jornada','Jornada'],['empresa','Empresa'],['atividade','Atividade'],['ajuda','Central de ajuda']];
 const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversas:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
   nanda:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
   funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',
@@ -2714,6 +2755,7 @@ const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversa
   jornada:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
   'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-financeiro':'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/>','a-avisos':'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2H4.500zM10 20h4"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
+NI.ajuda='<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.8h.01"/>';
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
 const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','metas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
 const NAVG={get(){try{return JSON.parse(localStorage.getItem('navg')||'[]')}catch(e){return []}},
@@ -2787,6 +2829,7 @@ function shell(){
     ${hiddenX?`<button class="nav nav-x" id="navX" title="Metas e Jornada do cliente">${NI.dot}<span class="lb">+ Mais recursos</span></button>`:''}
     ${adm?`<h6>Admin Oi Nanda</h6>${ADMIN_NAV.map(n=>navBtn(n[0],n[1])).join('')}`:''}</nav>
     <div class="sp"></div>
+    ${navBtn('ajuda','Central de ajuda')}
     <button class="mini-t" id="miniT" title="Recolher ou abrir o menu">${svg('<path d="m15 6-6 6 6 6"/>')}<span class="lb">Recolher menu</span></button>
     <div class="me"><button class="meb" id="meB" title="Seu status e avisos"><span class="avw"><span class="av">${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${esc(u.name)}</b><span id="meSt">${esc(ME.roles[u.role]||u.role)} · ${u.away?'ausente':'disponível'}</span></span></button><button id="out" class="lb">Sair</button></div>
   </aside><main>
@@ -2816,6 +2859,7 @@ let POLL=null;
 function pathFor(v){
   if(v==='inicio')return '/';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='visao')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
   let p='/'+v;
+  if(v==='ajuda'&&HP.art)p+='/'+HP.art;
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
   if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
@@ -2832,6 +2876,7 @@ function readPath(){
   if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
   if(v==='empresa'&&parts[1]==='avisos')return 'avisos-conta';
   if(v==='conversas')CV.open=parts[1]||null;
+  if(v==='ajuda')HP.art=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
   if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno'].includes(parts[1])?parts[1]:'relatorio';
@@ -5752,7 +5797,7 @@ async function adAvisos(){
   const vis=i=>!A.vf||(A.vf==='on'&&i.on)||(A.vf==='off'&&!i.on)||(A.vf==='fail'&&i.stats.failed)||(A.vf==='goal'&&i.result)||(A.vf==='sent'&&i.stats.sent);
   const VF=[['','Todos',n.items.length],['sent','Com envios',n.items.filter(i=>i.stats.sent).length],['goal','Pedem uma ação',n.items.filter(i=>i.result).length],['fail','Com falha',n.items.filter(i=>i.stats.failed).length],['off','Desligados',n.items.filter(i=>!i.on).length]];
   const by=k=>n.items.find(i=>i.key===k);const on=n.items.filter(i=>i.on).length;const sug=at.items.filter(x=>x.notice);
-  const G=[['Começo','Do cadastro até a Nanda atender',['welcome','activate','wa_missing']],['Teste grátis','Para ninguém ser pego de surpresa no fim do teste',['trial_3d','trial_1d','trial_end','trial_card_3d']],['Cobrança','Antes, durante e depois de cada mensalidade',['charge_3d','paid','refused','last_call','paused','cancelled']],['Uso e problemas','Quando a Nanda chega no limite ou o WhatsApp do cliente cai',['ai_80','ai_100','ai_pack','wa_down']]];
+  const G=[['Começo','Do cadastro até a Nanda atender',['welcome','activate','wa_missing']],['Dicas de uso','Ensinam a usar o Oi Nanda nos primeiros dias, só quando a pessoa ainda não fez aquilo',['tip_teach','tip_autos','week1']],['Teste grátis','Para ninguém ser pego de surpresa no fim do teste',['trial_3d','trial_1d','trial_end','trial_card_3d']],['Cobrança','Antes, durante e depois de cada mensalidade',['charge_3d','paid','refused','last_call','paused','cancelled']],['Uso e problemas','Quando a Nanda chega no limite ou o WhatsApp do cliente cai',['ai_80','ai_100','ai_pack','wa_down']]];
   const chip=(ok,l)=>`<span class="ad-chip ${ok?'ok':''}">${l}</span>`;
   const row=i=>!i?'':`<div class="av-r ${i.on?'':'off'}"><div class="av-n"><b>${esc(i.name)}</b><small>Sai ${esc(i.when)}${i.always?' · o cliente não pode desligar':''}</small></div>
    <div class="av-c">${chip(n.email_ready,'E-mail')}${i.whatsapp?chip(n.wa_ready&&i.wa_status==='APPROVED','WhatsApp'):''}</div>
@@ -6779,6 +6824,88 @@ async function boot(){
   if(gq){history.replaceState(null,'','/');VIEW='agenda';AG.tab='config';shell();toast({ok:'Google Agenda conectado.',cancelado:'Conexão com o Google cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Google não completou a conexão. Tente de novo.'}[gq]||'');return}
   shell();impResume();
 }
+/* ---------- Central de ajuda (conteúdo em /ajuda.js, carregado só quando precisa) ---------- */
+let HP={art:null,q:'',seg:null};
+let HELP_P=null;
+function helpLoad(){if(window.HELP)return Promise.resolve(window.HELP);if(!HELP_P)HELP_P=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='/ajuda.js?v=1';sc.onload=()=>ok(window.HELP);sc.onerror=()=>{HELP_P=null;no(new Error('Não foi possível abrir a ajuda agora. Confira a internet e tente de novo.'))};document.head.appendChild(sc)});return HELP_P}
+const HP_VIEW={inicio:'primeiros-passos',conversas:'conversas',nanda:'ensinar-nanda',funil:'funil',agenda:'agenda',vendas:'vendas',clientes:'clientes',automacoes:'automacoes',relatorios:'relatorios',equipe:'equipe',empresa:'conectar-whatsapp',metas:'metas',assinatura:'assinatura','avisos-conta':'avisos-conta'};
+const HP_GO={assinatura:()=>go('assinatura'),'avisos-conta':()=>go('avisos-conta')};
+function hpOpen(id){HP.art=id;HP.q='';go('ajuda')}
+function hpStrip(h){return String(h||'').replace(/<[^>]+>/g,'')}
+function hpText(a){return nrm([a.title,a.sum,...(a.body||[]).flatMap(b=>Array.isArray(b[1])?b[1]:[b[1]])].map(hpStrip).join(' '))}
+function hpSegKey(){const k=HP.seg||ME.company.segment;return window.HELP&&window.HELP.segs[k]?k:'outro'}
+async function hpView(){
+  const pg=$('#page');pg.innerHTML='<div class="card"><p class="hint">Abrindo a ajuda…</p></div>';
+  let H;try{H=await helpLoad()}catch(e){pg.innerHTML=`<div class="card err">${esc(e.message)}</div>`;return}
+  let sup=null;try{sup=await api('/help/contact')}catch(e){}
+  const mgr=['owner','manager'].includes(ME.user.role);
+  const cat=Object.fromEntries(H.cats.map(c=>[c[0],c]));
+  const card=a=>`<button class="hp-a" data-art="${a.id}"><span><b>${esc(a.title)}</b><em>${esc(a.sum)}</em></span><small>${a.min} min</small></button>`;
+  const contact=`<section class="card hp-ct"><div><h3>Ainda com dúvida?</h3><p class="hint">Fale com uma pessoa do time do Oi Nanda. Respondemos em horário comercial, normalmente no mesmo dia.</p></div><div class="hp-cta">
+     ${sup&&sup.whatsapp?`<a class="btn p" target="_blank" rel="noopener" href="https://wa.me/${sup.whatsapp}?text=${encodeURIComponent('Oi! Sou da '+ME.company.name+' e tenho uma dúvida no Oi Nanda:')}">Chamar no WhatsApp</a>`:''}
+     <a class="btn ${sup&&sup.whatsapp?'':'p'}" href="mailto:${esc((sup&&sup.email)||'contato@altaagencydigital.com')}?subject=${encodeURIComponent('Dúvida no Oi Nanda · '+ME.company.name)}">Mandar e-mail</a></div></section>`;
+  // ---- artigo ----
+  if(HP.art){
+    const a=H.arts.find(x=>x.id===HP.art);const sk=HP.art.startsWith('seg-')?HP.art.slice(4):null;
+    if(sk&&H.segs[sk]){const g=H.segs[sk];
+      pg.innerHTML=`<div class="hp-w"><nav class="hp-bc"><button class="lnk" id="hpBack">‹ Central de ajuda</button></nav>
+       <article class="card hp-art"><span class="hp-ey">Guia do segmento</span><h1>${esc(g.t)}</h1><p class="hp-lead">O foco aqui é <b>${esc(g.goal)}</b></p>
+        <h3>Seu funil já vem assim</h3><div class="hp-flow">${g.flow.map((x,i)=>`<span>${esc(x)}</span>${i<g.flow.length-1?'<i>›</i>':''}`).join('')}</div>
+        <p class="hint">Dá para renomear e criar etapas no Funil quando quiser.</p>
+        <h3>Ensine a Nanda</h3><p>${esc(g.nanda)}</p>
+        <h3>Comece por estas automações</h3><ol class="hp-steps">${g.autos.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+        <h3>No dia a dia</h3><ul class="hp-list">${g.day.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+        <div class="hp-tip"><b>Fique de olho:</b> ${esc(g.watch)}</div>
+        ${g.note?`<div class="hp-warn">${esc(g.note)}</div>`:''}
+        <div class="hp-go">${mgr?'<button class="btn p" data-to="nanda">Ensinar a Nanda</button><button class="btn" data-to="automacoes">Ver automações</button>':'<button class="btn p" data-to="conversas">Ir para Conversas</button>'}</div>
+       </article>
+       <section class="card"><h3 class="sec">Ver outro segmento</h3><div class="hp-segs">${Object.entries(H.segs).map(([k,x])=>`<button class="chip ${k===sk?'on':''}" data-seg="${k}">${esc(x.t)}</button>`).join('')}</div></section>${contact}</div>`;
+    } else if(a){
+      const rel=H.arts.filter(x=>x.cat===a.cat&&x.id!==a.id).slice(0,3);
+      const B=b=>b[0]==='p'?`<p>${b[1]}</p>`:b[0]==='h'?`<h3>${b[1]}</h3>`:b[0]==='steps'?`<ol class="hp-steps">${b[1].map(x=>`<li>${x}</li>`).join('')}</ol>`:b[0]==='list'?`<ul class="hp-list">${b[1].map(x=>`<li>${x}</li>`).join('')}</ul>`
+        :b[0]==='tip'?`<div class="hp-tip"><b>Dica:</b> ${b[1]}</div>`:b[0]==='warn'?`<div class="hp-warn">${b[1]}</div>`:b[0]==='go'?`<div class="hp-go"><button class="btn p" data-to="${b[2]}">${esc(b[1])} →</button></div>`:'';
+      pg.innerHTML=`<div class="hp-w"><nav class="hp-bc"><button class="lnk" id="hpBack">‹ Central de ajuda</button><span>${esc(cat[a.cat]?.[1]||'')}</span></nav>
+       <article class="card hp-art"><span class="hp-ey">${esc(cat[a.cat]?.[1]||'')} · leitura de ${a.min} min</span><h1>${esc(a.title)}</h1><p class="hp-lead">${esc(a.sum)}</p>${a.body.map(B).join('')}
+        <div class="hp-fb" id="hpFb"><span>Isso ajudou?</span><button class="btn sm" data-fb="1">Sim</button><button class="btn sm" data-fb="0">Não muito</button></div></article>
+       ${rel.length?`<section class="card"><h3 class="sec">Leia também</h3><div class="hp-as">${rel.map(card).join('')}</div></section>`:''}${contact}</div>`;
+    } else {HP.art=null;return hpView()}
+    $('#hpBack').onclick=()=>{HP.art=null;go('ajuda')};
+    document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>hpOpen('seg-'+b.dataset.seg));
+    document.querySelectorAll('[data-fb]').forEach(b=>b.onclick=()=>{api('/help/feedback',{method:'POST',body:{article:HP.art,useful:b.dataset.fb==='1'}}).catch(()=>{});$('#hpFb').innerHTML=b.dataset.fb==='1'?'<span>Que bom! Obrigado por avisar.</span>':'<span>Obrigado. Vamos melhorar este guia. Se quiser, fale com a gente aqui embaixo.</span>'});
+  } else {
+  // ---- início da central ----
+    const sk=hpSegKey(),g=H.segs[sk];
+    const start=['primeiros-passos','conectar-whatsapp','ensinar-nanda'].map(i=>H.arts.find(a=>a.id===i)).filter(Boolean);
+    pg.innerHTML=`<div class="hp-w"><div class="fhd"><div><h1>Central de ajuda</h1><p class="sub">Guias curtos, em português claro, para usar o Oi Nanda do jeito que traz resultado.</p></div></div>
+     <label class="hp-sr">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="hpQ" placeholder="${innerWidth<=860?'Qual é a sua dúvida?':'Busque uma dúvida: conectar WhatsApp, lembrete, cancelar…'}" value="${esc(HP.q)}" autocomplete="off" aria-label="Buscar na ajuda"></label>
+     <div id="hpRes"></div>
+     <div id="hpHome">
+      <div class="hp-top"><section class="card hp-start"><h3 class="sec">Comece por aqui</h3><div class="hp-as">${start.map((a,i)=>`<button class="hp-a" data-art="${a.id}"><i class="hp-n">${i+1}</i><span><b>${esc(a.title)}</b><em>${esc(a.sum)}</em></span><small>${a.min} min</small></button>`).join('')}</div></section>
+       <section class="card hp-seg"><span class="hp-ey">Guia do seu segmento</span><h3>${esc(g.t)}</h3><p class="hint">Como montar o funil, o que ensinar a Nanda e quais automações ligar primeiro para <b>${esc(g.goal)}</b></p><div class="hp-flow sm">${g.flow.map((x,i)=>`<span>${esc(x)}</span>${i<g.flow.length-1?'<i>›</i>':''}`).join('')}</div><button class="btn p" data-art="seg-${sk}">Ler o guia</button></section></div>
+      <div class="hp-cats">${H.cats.map(c=>{const xs=H.arts.filter(a=>a.cat===c[0]);return `<section class="card hp-cat"><div class="hp-ch"><span class="hp-ci">${c[3]}</span><div><h3>${esc(c[1])}</h3><p class="hint">${esc(c[2])}</p></div></div><ul>${xs.map(a=>`<li><button class="lnk" data-art="${a.id}">${esc(a.title)}</button></li>`).join('')}</ul></section>`}).join('')}</div>
+      <section class="card hp-faq"><h3 class="sec">Perguntas frequentes</h3>${H.faq.map(f=>`<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</section>
+      ${contact}</div></div>`;
+    const res=$('#hpRes'),home=$('#hpHome');
+    const search=()=>{const k=nrm($('#hpQ').value.trim());HP.q=$('#hpQ').value;if(!k){res.innerHTML='';home.hidden=false;return}
+      const ws=k.split(/\s+/).filter(w=>w.length>1);const score=t=>ws.reduce((n,w)=>n+(t.includes(w)?1:0),0);
+      const arts=H.arts.map(a=>[a,score(hpText(a))+(nrm(a.title).includes(k)?3:0)]).filter(x=>x[1]>=Math.max(1,Math.ceil(ws.length/2))).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+      const faq=H.faq.filter(f=>score(nrm(f[0]+' '+f[1]))>=Math.max(1,Math.ceil(ws.length/2)));
+      home.hidden=true;
+      res.innerHTML=arts.length||faq.length?`${arts.length?`<section class="card"><h3 class="sec">Guias</h3><div class="hp-as">${arts.slice(0,8).map(card).join('')}</div></section>`:''}${faq.length?`<section class="card hp-faq"><h3 class="sec">Perguntas frequentes</h3>${faq.map(f=>`<details open><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</section>`:''}`
+        :`<section class="card"><p><b>Não achamos um guia para "${esc($('#hpQ').value)}".</b></p><p class="hint">Tente outras palavras ou fale com a gente: respondemos rapidinho.</p></section>${contact}`;
+      res.querySelectorAll('[data-art]').forEach(b=>b.onclick=()=>hpOpen(b.dataset.art))};
+    $('#hpQ').oninput=search;if(HP.q)search();if(innerWidth>860)$('#hpQ').focus();
+  }
+  pg.querySelectorAll('[data-art]').forEach(b=>b.onclick=()=>hpOpen(b.dataset.art));
+  pg.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>HP_GO[b.dataset.to]?HP_GO[b.dataset.to]():go(b.dataset.to));
+  scrollTo({top:0});
+}
+/* botão "Como usar" no topo de cada tela, apontando para o guia dela */
+function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)return;const hd=document.querySelector('#page .fhd, #page .fz-hd');if(!hd||hd.querySelector('.hp-how'))return;
+  const b=document.createElement('button');b.type='button';b.className='hp-how';b.title='Guia rápido desta tela';b.innerHTML=NI.ajuda+'<span>Como usar</span>';b.onclick=()=>hpOpen(id);
+  const tg=hd.querySelector('.tools')||hd,pri=[...tg.children].find(x=>x.classList.contains('btn')&&x.classList.contains('p'));pri?tg.insertBefore(b,pri):tg.appendChild(b)}
+new MutationObserver(()=>hpBadge()).observe(document.body,{childList:true,subtree:true});
+VIEWS.ajuda=hpView;
 VIEW=readPath();swInit();boot();
 </script>
 </body>

@@ -86,6 +86,12 @@ def render(c):
     if c.get('button'): out.append(_btn(c['button'][0], c['button'][1], t, c.get('ghost')))
     if c.get('second'):
         out.append(f'<p style="margin:14px 0 0;text-align:center;font-family:{FONT};font-size:13.5px"><a href="{e(c["second"][1])}" style="color:#C44A2C;font-weight:700;text-decoration:none">{e(c["second"][0])} →</a></p>')
+    if c.get('tip'):  # guia curto da Central de ajuda que responde a dúvida mais provável deste e-mail
+        tt, tl, tu = c['tip']
+        out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:22px 0 0"><tr><td style="background:#F7F3EE;border-radius:14px;padding:14px 16px">'
+                   f'<div style="font-family:{FONT};font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8A817A;margin-bottom:4px">Guia rápido</div>'
+                   f'<div style="font-family:{FONT};font-size:14px;line-height:1.5;color:#3B4754">{e(tt)}</div>'
+                   f'<a href="{e(tu)}" style="display:inline-block;margin-top:6px;font-family:{FONT};font-size:14px;font-weight:700;color:#C44A2C;text-decoration:none">{e(tl)} →</a></td></tr></table>')
     if c.get('foot'):
         out.append(f'<p style="margin:18px 0 0;padding-top:16px;border-top:1px solid #F0EAE3;font-family:{FONT};font-size:12.5px;line-height:1.5;color:#6B7785">{e(c["foot"])}</p>')
     why = e(c.get('why') or 'Você recebe este e-mail porque tem uma conta no Oi Nanda.')

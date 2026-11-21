@@ -19,7 +19,7 @@ def test_avisos_do_teste_e_whatsapp_sem_conectar():
     mailer.SENT.clear()
     with mk() as c:
         cid = signup(c, 'p1@av.com', 'Studio Um')
-        assert subjects('p1@av.com') == ['Studio Um, sua conta está pronta']
+        assert subjects('p1@av.com') == ['Paula, sua conta no Oi Nanda está pronta']
         html = mailer.SENT[-1]['html']
         assert '14 dias' in html and 'Conectar o WhatsApp' in html and '{' not in html.split('<body')[1]
         # 1 dia depois, sem WhatsApp: lembra uma vez
@@ -29,19 +29,19 @@ def test_avisos_do_teste_e_whatsapp_sem_conectar():
         # teste acaba amanhã (o limite de um aviso por dia segura o segundo no mesmo dia)
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(hours=20)}}))
         c.portal.call(notices.tick)
-        assert 'Amanhã termina o teste da Studio Um' not in subjects('p1@av.com')
+        assert 'Amanhã termina o seu teste grátis' not in subjects('p1@av.com')
         c.portal.call(lambda: db.notice_log.update_many({}, {'$set': {'at': now() - timedelta(days=1)}}))
         c.portal.call(notices.tick); c.portal.call(notices.tick)
-        assert subjects('p1@av.com').count('Amanhã termina o teste da Studio Um') == 1
+        assert subjects('p1@av.com').count('Amanhã termina o seu teste grátis') == 1
         # fora do horário, aviso que não é urgente espera
         c.portal.call(lambda: db.notice_log.delete_many({}))
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
         import pytest
         mp = pytest.MonkeyPatch(); mp.setattr(notices, 'quiet', lambda: True)
         c.portal.call(notices.tick); mp.undo()
-        assert 'Faltam 3 dias do teste da Studio Um' not in subjects('p1@av.com')
+        assert 'Faltam 3 dias do seu teste grátis' not in subjects('p1@av.com')
         c.portal.call(notices.tick)
-        assert 'Faltam 3 dias do teste da Studio Um' in subjects('p1@av.com')
+        assert 'Faltam 3 dias do seu teste grátis' in subjects('p1@av.com')
 
 def test_recusa_ultimo_aviso_pausa_e_cancelamento(monkeypatch):
     subs, invs = fake(monkeypatch); mailer.SENT.clear()
@@ -63,12 +63,12 @@ def test_recusa_ultimo_aviso_pausa_e_cancelamento(monkeypatch):
         # 6 dias depois: último aviso; depois do prazo: conta pausada
         c.portal.call(lambda: db.payments.update_many({}, {'$set': {'due': now() - timedelta(days=6, hours=2)}}))
         c.portal.call(notices.tick); c.portal.call(notices.tick)
-        assert subjects('p2@av.com').count('Amanhã é o último dia para acertar') == 1
+        assert subjects('p2@av.com').count('Amanhã é o último dia para acertar a assinatura') == 1
         async def passa():
             await db.payments.update_many({}, {'$set': {'due': now() - timedelta(days=8)}})
             await db.companies.update_one({'id': cid}, {'$set': {'billing.paid_until': now() - timedelta(hours=1)}})
         c.portal.call(passa); c.portal.call(notices.tick); c.portal.call(notices.tick)
-        assert subjects('p2@av.com').count('A conta da Studio Dois está em pausa') == 1
+        assert subjects('p2@av.com').count('Sua conta está em pausa, e nada foi apagado') == 1
     with mk() as c:
         signup(c, 'p3@av.com', 'Studio Três'); assina(c, subs)
         assert c.post('/api/billing/cancel').status_code == 200
@@ -83,7 +83,7 @@ def test_uso_da_nanda_textos_e_whatsapp(monkeypatch):
         if r.status_code != 200: a.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'senha-forte-1', 'company': 'Oi Nanda', 'segment': 'outro'})
         v = a.get('/api/admin/notices/refused'); assert v.status_code == 200, v.text
         # 80% e 100% dos atendimentos do teste (plano Equipe: 2000)
-        c.portal.call(lambda: notices.ai_mark(cid, 1599)); assert not [s for s in subjects('p4@av.com') if 'Nanda' in s]
+        c.portal.call(lambda: notices.ai_mark(cid, 1599)); assert not [s for s in subjects('p4@av.com') if 'A Nanda' in s]
         c.portal.call(lambda: notices.ai_mark(cid, 1600)); c.portal.call(lambda: notices.ai_mark(cid, 1600))
         assert subjects('p4@av.com').count('A Nanda já atendeu 1.600 clientes este mês') == 1
         c.portal.call(lambda: notices.ai_mark(cid, 2000))
@@ -112,13 +112,13 @@ def test_cliente_escolhe_os_avisos(monkeypatch):
     with mk() as c:
         cid = signup(c, 'p5@av.com', 'Studio Cinco')
         p = c.get('/api/company/notices').json()
-        assert p['whatsapp'] and len(p['optional']) == 8 and 'Cobrança recusada' in p['always']
+        assert p['whatsapp'] and len(p['optional']) == 11 and 'Cobrança recusada' in p['always']
         assert c.put('/api/company/notices', json={'phone': '123'}).status_code == 400
         p = c.put('/api/company/notices', json={'whatsapp': False, 'off': ['trial_3d', 'refused'], 'phone': '11 98888-7777'}).json()
         assert not p['whatsapp'] and [o['key'] for o in p['optional'] if not o['on']] == ['trial_3d']  # recusada não dá para desligar
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
         c.portal.call(notices.tick)
-        assert 'Faltam 3 dias do teste da Studio Cinco' not in subjects('p5@av.com')
+        assert 'Faltam 3 dias do seu teste grátis' not in subjects('p5@av.com')
 
 def test_avisos_saem_pelo_numero_da_conta_do_oi_nanda():
     """Sem variáveis no servidor: vale o WhatsApp conectado na conta do admin."""
@@ -133,3 +133,40 @@ def test_avisos_saem_pelo_numero_da_conta_do_oi_nanda():
         p = a.portal.call(notices.platform)
         assert p['phone'] == '555' and p['waba'] == '777' and p['token'] == 'tok'
         a.portal.call(lambda: db.wa_numbers.delete_many({'company_id': cid}))
+
+def test_dicas_do_comeco_e_resumo_da_primeira_semana():
+    mailer.SENT.clear()
+    with mk() as c:
+        cid = signup(c, 'p9@av.com', 'Clínica Nove')
+        c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'segment': 'clinica', 'created_at': now() - timedelta(days=2, hours=3)}}))
+        c.portal.call(notices.tick)
+        m = next(x for x in mailer.SENT if x['subject'] == '10 minutos que fazem a Nanda responder muito melhor')
+        assert 'clínicas' in m['html'] and '/ajuda/ensinar-nanda' in m['html'] and '{' not in m['html'].split('<body')[1]
+        # dia 4 sem automação ligada: as 3 do segmento, com o motivo de cada uma
+        c.portal.call(lambda: db.notice_log.update_many({}, {'$set': {'at': now() - timedelta(days=1)}}))
+        c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'created_at': now() - timedelta(days=4, hours=3)}}))
+        c.portal.call(notices.tick); c.portal.call(notices.tick)
+        ms = [x for x in mailer.SENT if x['subject'] == 'As 3 automações que mais ajudam clínicas']
+        assert len(ms) == 1 and 'Orçamento sem resposta' in ms[0]['html'] and 'Faltou: oferecer novo horário' in ms[0]['html']
+        # uma semana de WhatsApp com conversa: resumo com os números
+        c.portal.call(lambda: db.notice_log.update_many({}, {'$set': {'at': now() - timedelta(days=1)}}))
+        c.portal.call(lambda: db.wa_numbers.insert_one({'company_id': cid, 'phone_number_id': '555001', 'status': 'connected', 'connected_at': now() - timedelta(days=7, hours=2)}))
+        c.portal.call(lambda: db.messages.insert_many([{'id': 'm1', 'company_id': cid, 'contact_id': 'k1', 'dir': 'in', 'text': 'oi', 'at': now() - timedelta(days=3)},
+                                                      {'id': 'm2', 'company_id': cid, 'contact_id': 'k1', 'dir': 'out', 'by': 'Nanda (IA)', 'text': 'oi!', 'at': now() - timedelta(days=3)}]))
+        c.portal.call(notices.tick)
+        w = next(x for x in mailer.SENT if x['subject'] == 'Sua primeira semana com a Nanda')
+        assert '/ajuda/seg-clinica' in w['html'] and 'conversas nos primeiros 7 dias' in w['html']
+
+def test_cliente_confirma_o_horario_respondendo_o_lembrete():
+    import agenda
+    from core import uid
+    async def cen():
+        await db.appointments.insert_one({'id': 'ap1', 'company_id': 'co', 'contact_id': 'k1', 'status': 'scheduled', 'service_name': 'Avaliação',
+                                          'start': now() + timedelta(hours=20), 'created_at': now() - timedelta(days=2)})
+        assert await agenda.confirm_by_reply('co', 'k1', 'sim') is None  # sem lembrete enviado, um "sim" não confirma nada
+        await db.automation_runs.insert_one({'key': 'a1:ap1', 'company_id': 'co', 'contact_id': 'k1', 'status': 'sent', 'at': now() - timedelta(hours=1)})
+        assert await agenda.confirm_by_reply('co', 'k1', 'Sim, mas dá para mudar o horário?') is None
+        assert await agenda.confirm_by_reply('co', 'k1', 'Confirmo 👍') == 'ap1'
+        ap = await db.appointments.find_one({'id': 'ap1'})
+        assert ap['status'] == 'confirmed' and ap['confirmed_by'] == 'cliente'
+    import asyncio; asyncio.run(cen())

@@ -14,7 +14,9 @@ log = logging.getLogger('notices')
 APP = mailer.APP
 SP = ZoneInfo('America/Sao_Paulo')
 TONES = {'i': ('#FEF0EA', '#9E3A22', '#E8603F'), 'g': ('#DDF4EC', '#0A5C50', '#0A7C62'), 'a': ('#FBF0D6', '#7A5600', '#C98A00'), 'n': ('#EEF1F4', '#3F4C59', '#7A8794')}
-VARS = {'primeiro_nome': 'Paula', 'empresa': 'Studio Vita', 'valor': 'R$ 297,00', 'data': '20/11', 'prazo': '24/11', 'plano': 'Profissional, mensal',
+SEG_PHRASE = {'studio': 'studios e academias', 'clinica': 'clínicas', 'salao': 'salões e barbearias', 'imobiliaria': 'imobiliárias', 'escola': 'escolas e cursos',
+              'loja': 'lojas', 'servicos': 'escritórios de serviços', 'restaurante': 'restaurantes e delivery', 'lancamento': 'infoprodutos e cursos online'}
+VARS = {'segmento': 'studios e academias', 'seg': 'studio', 'conversas': '38', 'respostas': '112', 'horarios': '9', 'vendas': '4', 'primeiro_nome': 'Paula', 'empresa': 'Studio Vita', 'valor': 'R$ 297,00', 'data': '20/11', 'prazo': '24/11', 'plano': 'Profissional, mensal',
         'proxima': '20/12', 'usadas': '1.600', 'limite': '2.000', 'numero': '(11) 90000-0002', 'hora': '11:20', 'dia': '11'}
 
 def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa=None, **k):
@@ -22,74 +24,89 @@ def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa
 
 SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
 DEFS = {
- 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{empresa}, sua conta está pronta', 'Converse com a Nanda e veja como ela atenderia seus clientes.',
-    'Que bom ter a {empresa} aqui', '{primeiro_nome}, a Nanda já está pronta para conversar com você do jeito que atenderia seus clientes. Quando quiser, ative os 14 dias grátis e conecte o WhatsApp.', ('Conhecer a Nanda', '/comecar'),
+ 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, sua conta no Oi Nanda está pronta', 'Converse com a Nanda e veja como ela atenderia seus clientes.',
+    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} já está criada e a Nanda está pronta para conversar com você do jeito que atenderia seus clientes. Leva 1 minuto e é o melhor jeito de entender o que ela faz.\nQuando gostar do que viu, ative os 14 dias grátis e conecte o WhatsApp. A gente acompanha você em cada passo.', ('Conversar com a Nanda', '/comecar'),
     '{primeiro_nome}, a conta da *{empresa}* está pronta. Converse com a Nanda como se fosse um cliente seu e, quando quiser, ative os *14 dias grátis*. Cancela quando quiser.',
-    fig=('14 dias', 'grátis · cancele quando quiser'), steps=[(0, 'Conversar com a Nanda', 'veja como ela atende'), (0, 'Ativar os 14 dias grátis', 'hoje não é cobrado nada'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos')], always=True),
- 'activate': D('Lembrete para ativar', '1 dia depois do cadastro, se ainda não ativou', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda da {empresa} está esperando', 'Ative os 14 dias grátis e ela começa a atender no seu WhatsApp.',
-    'A Nanda está pronta para atender', '{primeiro_nome}, ativando os 14 dias grátis ela começa a atender no WhatsApp da {empresa}. Hoje não é cobrado nada, a gente avisa 3 dias antes do fim e dá para cancelar com um clique.', ('Ativar meus 14 dias', '/ativar'),
+    fig=('14 dias', 'grátis · cancele quando quiser'), steps=[(0, 'Conversar com a Nanda', 'veja como ela atende, em 1 minuto'), (0, 'Ativar os 14 dias grátis', 'hoje não é cobrado nada'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos, com o celular do chip na mão')],
+    tip=('Quer ver o caminho completo antes? Montamos um guia curto, do cadastro à primeira venda.', 'Ler os primeiros passos', '/ajuda/primeiros-passos'), always=True),
+ 'activate': D('Lembrete para ativar', '1 dia depois do cadastro, se ainda não ativou', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda está esperando por você, {primeiro_nome}', 'Ative os 14 dias grátis e ela começa a atender no seu WhatsApp.',
+    'A Nanda está pronta para atender', '{primeiro_nome}, ativando os 14 dias grátis a Nanda começa a responder seus clientes no WhatsApp, a qualquer hora.\nHoje não é cobrado nada. A gente avisa 3 dias antes do fim e dá para cancelar com um clique.', ('Ativar meus 14 dias', '/ativar'),
     '{primeiro_nome}, a Nanda da *{empresa}* está pronta. Ativando os *14 dias grátis*, ela começa a atender no seu WhatsApp. Hoje não é cobrado nada e dá para cancelar quando quiser.',
     steps=[(1, 'Conta criada', ''), (2, 'Ativar os 14 dias grátis', 'hoje R$ 0,00'), (0, 'Conectar o WhatsApp', 'uns 5 minutos')], second='Ficou alguma dúvida? É só responder', reply='Tenho uma dúvida'),
  'trial_card_3d': D('Teste com cartão acaba em 3 dias', '3 dias antes da primeira mensalidade', 'we', 'i', 'Teste grátis', 'clock', 'Seu teste grátis termina em {data}', 'A primeira mensalidade entra no cartão em {data}.',
-    'Faltam 3 dias de teste', '{primeiro_nome}, em {data} entra a primeira mensalidade de {valor} no cartão cadastrado e a Nanda segue atendendo sem intervalo. Se não quiser continuar, cancele antes em Empresa › Assinatura, é um clique.', ('Ver assinatura', SUB),
+    'Faltam 3 dias de teste', '{primeiro_nome}, passando para avisar com antecedência: em {data} entra a primeira mensalidade de {valor} no cartão cadastrado, e a Nanda segue atendendo sem intervalo.\nSe preferir não continuar, é um clique em Empresa › Assinatura, sem multa.', ('Ver assinatura', SUB),
     '{primeiro_nome}, o teste grátis da {empresa} termina em *{data}*. Nesse dia entra a primeira mensalidade de *{valor}* no cartão. Para cancelar, é um clique em Empresa › Assinatura.',
     fig=('{valor}', 'em {data} · primeira mensalidade'), rows=[('Plano', '{plano}'), ('Cancelar', 'um clique, sem multa')], always=True),
  'ai_pack': D('Pacote extra automático', 'quando entra um pacote automático da Nanda', 'e', 'i', 'Uso da Nanda', 'spark', 'Entrou um pacote extra de 500 atendimentos', 'A Nanda segue atendendo sozinha. {valor} na próxima mensalidade.',
-    'A Nanda segue atendendo', '{primeiro_nome}, os atendimentos do mês acabaram e, como você deixou ligado, entrou um pacote de mais 500. O valor de {valor} vem na próxima mensalidade.', ('Ver uso da Nanda', SUB),
+    'A Nanda segue atendendo', '{primeiro_nome}, os atendimentos do mês acabaram e, como o pacote automático está ligado, entraram mais 500. Ninguém fica sem resposta.\nO valor de {valor} vem junto da próxima mensalidade.', ('Ver uso da Nanda', SUB),
     fig=('+500', 'atendimentos da Nanda este mês'), rows=[('Valor', '{valor} na próxima mensalidade'), ('Para desligar', 'Empresa › Assinatura')]),
  'wa_missing': D('WhatsApp ainda não conectado', '1 e 3 dias depois do cadastro, se não conectou', 'we', 'i', 'Falta um passo', 'chat', 'Falta um passo para a Nanda atender', 'Conectar o WhatsApp leva uns 5 minutos.',
-    'Falta só conectar o WhatsApp', '{primeiro_nome}, sem o WhatsApp conectado as conversas não chegam e a Nanda não tem como ajudar.', ('Conectar agora', '/empresa'),
+    'Falta só conectar o WhatsApp', '{primeiro_nome}, sem o WhatsApp conectado as mensagens dos seus clientes não chegam no Oi Nanda e a Nanda não tem como ajudar.\nSeparamos o que deixa a conexão tranquila: faça pelo celular que tem o chip do número e tenha um cartão para cadastrar na Meta depois.', ('Conectar agora', '/empresa'),
     '{primeiro_nome}, falta só um passo: conectar o WhatsApp da *{empresa}*. Leva uns 5 minutos. Se travar, responde aqui que eu acompanho.',
-    steps=[(1, 'Conta criada', ''), (2, 'Conectar o WhatsApp da empresa', 'uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços')], second='Prefere ajuda? É só responder este e-mail', reply='Quero ajuda'),
- 'trial_3d': D('Teste acaba em 3 dias', '3 dias antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Faltam 3 dias do teste da {empresa}', 'Escolha um plano e continue sem intervalo.',
-    'Faltam 3 dias de teste', '{primeiro_nome}, para continuar atendendo sem intervalo, é só escolher um plano. Nada do que você cadastrou se perde.', ('Ver planos', PLANS_URL),
+    steps=[(1, 'Conta criada', ''), (2, 'Conectar o WhatsApp da empresa', 'pelo celular que tem o chip, uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços')],
+    tip=('Antes de conectar, leia o guia de 4 minutos que evita bloqueio do número pela Meta.', 'Conectar sem risco de bloqueio', '/ajuda/conectar-whatsapp'), second='Prefere ajuda? É só responder este e-mail', reply='Quero ajuda'),
+ 'trial_3d': D('Teste acaba em 3 dias', '3 dias antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Faltam 3 dias do seu teste grátis', 'Escolha um plano e continue sem intervalo.',
+    'Faltam 3 dias de teste', '{primeiro_nome}, para a Nanda continuar atendendo sem intervalo, é só escolher um plano. Nada do que você cadastrou se perde: conversas, contatos e o que você ensinou continuam lá.', ('Ver planos', PLANS_URL),
     '{primeiro_nome}, faltam *3 dias* do teste da {empresa}. Escolhendo um plano até *{data}*, o atendimento segue sem intervalo.',
-    fig=('3 dias', 'de teste grátis pela frente'), bar=(11, 14, 'Dia 11 de 14', 'termina em {data}')),
- 'trial_1d': D('Teste acaba amanhã', '1 dia antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Amanhã termina o teste da {empresa}', 'Suas conversas e contatos continuam como estão.',
+    fig=('3 dias', 'de teste grátis pela frente'), bar=(11, 14, 'Dia 11 de 14', 'termina em {data}'),
+    tip=('Na dúvida entre os planos? O guia explica a diferença em 3 minutos.', 'Planos e cobrança', '/ajuda/assinatura')),
+ 'trial_1d': D('Teste acaba amanhã', '1 dia antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Amanhã termina o seu teste grátis', 'Suas conversas e contatos continuam como estão.',
     'O teste termina amanhã', '{primeiro_nome}, escolhendo um plano hoje, a Nanda segue atendendo sem intervalo. Conversas, contatos e respostas continuam como estão.', ('Escolher meu plano', PLANS_URL),
     '{primeiro_nome}, o teste da {empresa} termina *amanhã, {data}*. Escolhendo um plano hoje, a Nanda segue atendendo sem intervalo.',
     fig=('Amanhã', '{data} é o último dia do teste'), bar=(13, 14, 'Dia 13 de 14', 'termina em {data}')),
- 'trial_end': D('Teste acabou', 'no dia em que o teste termina', 'we', 'n', 'Conta em consulta', 'pause', 'O teste da {empresa} terminou', 'Está tudo guardado. Escolha um plano e volte a atender.',
-    'O teste terminou', '{primeiro_nome}, a conta ficou só para consulta: dá para ver tudo, mas não para responder. Com um plano, o atendimento volta na hora.', ('Escolher meu plano', PLANS_URL),
+ 'trial_end': D('Teste acabou', 'no dia em que o teste termina', 'we', 'n', 'Conta em consulta', 'pause', 'Seu teste terminou, e está tudo guardado', 'Escolha um plano e volte a atender na hora.',
+    'O teste terminou', '{primeiro_nome}, a conta ficou só para consulta: dá para ver tudo, mas não para responder. Escolhendo um plano, o atendimento volta na hora, do ponto onde parou.', ('Escolher meu plano', PLANS_URL),
     '{primeiro_nome}, o teste da {empresa} terminou hoje. Está *tudo guardado*. Com um plano, o atendimento volta na hora.',
-    rows=[('Conversas e contatos', 'guardados'), ('Respostas da Nanda', 'guardadas'), ('Atendimento', 'volta ao escolher o plano')]),
+    rows=[('Conversas e contatos', 'guardados'), ('O que você ensinou à Nanda', 'guardado'), ('Atendimento', 'volta ao escolher o plano')], second='Quer conversar antes de decidir? É só responder'),
  'charge_3d': D('Renovação em 3 dias', '3 dias antes de cada cobrança', 'we', 'i', 'Lembrete', 'card', 'Sua assinatura renova em {data}', '{valor} no cartão cadastrado. Não precisa fazer nada.',
-    'Renovação em 3 dias', '{primeiro_nome}, não precisa fazer nada. É só um lembrete da próxima cobrança.', ('Ver assinatura', SUB),
+    'Renovação em 3 dias', '{primeiro_nome}, é só um lembrete da próxima cobrança. Não precisa fazer nada.', ('Ver assinatura', SUB),
     '{primeiro_nome}, a assinatura da {empresa} renova em *{data}*: *{valor}* no cartão cadastrado. Não precisa fazer nada.',
     fig=('{valor}', 'em {data} · no cartão cadastrado'), rows=[('Plano', '{plano}')], second='Trocar o cartão'),
- 'paid': D('Pagamento confirmado', 'quando a cobrança é paga', 'e', 'g', 'Pagamento confirmado', 'check', 'Recebemos seu pagamento de {valor}', 'Tudo certo com a assinatura da {empresa}.',
-    'Recebemos seu pagamento', '{primeiro_nome}, está tudo certo. A Nanda segue atendendo com você.', ('Ver assinatura', SUB),
+ 'paid': D('Pagamento confirmado', 'quando a cobrança é paga', 'e', 'g', 'Pagamento confirmado', 'check', 'Recebemos seu pagamento de {valor}', 'Tudo certo com a sua assinatura.',
+    'Recebemos seu pagamento', '{primeiro_nome}, está tudo certo. Obrigado por seguir com a gente: a Nanda continua atendendo com você.', ('Ver assinatura', SUB),
     fig=('{valor}', 'pago em {data}'), rows=[('Plano', '{plano}'), ('Próxima cobrança', '{proxima}')], always=True),
  'refused': D('Cobrança recusada', 'quando o cartão não passa', 'we', 'a', 'Precisa de atenção', 'card', 'A cobrança de {valor} não passou', 'Confira o cartão para a Nanda seguir atendendo.',
-    'A cobrança não passou', '{primeiro_nome}, isso acontece: limite, cartão vencido ou bloqueio do banco. Vale conferir o cartão ou trocar por outro.', ('Conferir o cartão', SUB),
+    'A cobrança não passou', '{primeiro_nome}, isso acontece: limite, cartão vencido ou bloqueio do banco. Fique tranquilo, o atendimento segue normal por enquanto.\nVale conferir o cartão ou trocar por outro. Leva um minuto.', ('Conferir o cartão', SUB),
     '{primeiro_nome}, a cobrança de *{valor}* da {empresa} não passou no cartão. O atendimento segue normal até *{prazo}*. Vale conferir o cartão.',
     fig=('{valor}', 'não passou no cartão cadastrado'), rows=[('Nova tentativa', 'nos próximos dias'), ('Atendimento garantido até', '{prazo}')], reply='Falar com o suporte', always=True),
- 'last_call': D('Último aviso antes de pausar', '1 dia antes do fim do prazo, se segue sem pagar', 'we', 'a', 'Precisa de atenção', 'clock', 'Amanhã é o último dia para acertar', 'Trocar o cartão leva um minuto.',
-    'O prazo termina amanhã', '{primeiro_nome}, a cobrança ainda não passou. Depois de amanhã a conta fica só para consulta até o pagamento entrar.', ('Trocar o cartão', SUB),
+ 'last_call': D('Último aviso antes de pausar', '1 dia antes do fim do prazo, se segue sem pagar', 'we', 'a', 'Precisa de atenção', 'clock', 'Amanhã é o último dia para acertar a assinatura', 'Trocar o cartão leva um minuto.',
+    'O prazo termina amanhã', '{primeiro_nome}, a cobrança ainda não passou. Depois de amanhã a conta fica só para consulta até o pagamento entrar. Trocar o cartão leva um minuto.', ('Trocar o cartão', SUB),
     '{primeiro_nome}, a cobrança de *{valor}* ainda não passou. O prazo vai até *amanhã, {prazo}*. Trocar o cartão leva um minuto.',
-    fig=('Amanhã, {prazo}', 'último dia para acertar {valor}'), foot='Se já acertou, pode desconsiderar.', reply='Falar com o suporte', always=True),
- 'paused': D('Conta pausada', 'quando o prazo acaba sem pagamento', 'we', 'n', 'Conta em consulta', 'pause', 'A conta da {empresa} está em pausa', 'Nada foi apagado. O atendimento volta com o pagamento.',
-    'A conta está em pausa', '{primeiro_nome}, como a cobrança não passou, a conta ficou só para consulta. Assim que o pagamento entrar, o atendimento volta sozinho.', ('Regularizar agora', SUB),
+    fig=('Amanhã, {prazo}', 'último dia para acertar {valor}'), foot='Se já acertou, pode desconsiderar este aviso.', reply='Falar com o suporte', always=True),
+ 'paused': D('Conta pausada', 'quando o prazo acaba sem pagamento', 'we', 'n', 'Conta em consulta', 'pause', 'Sua conta está em pausa, e nada foi apagado', 'O atendimento volta com o pagamento.',
+    'A conta está em pausa', '{primeiro_nome}, como a cobrança não passou, a conta ficou só para consulta. Nada foi apagado. Assim que o pagamento entrar, o atendimento volta sozinho.', ('Regularizar agora', SUB),
     '{primeiro_nome}, a conta da {empresa} ficou *só para consulta* porque a cobrança não passou. Nada foi apagado. O atendimento volta assim que o pagamento entrar.',
     fig=('{valor}', 'em aberto'), rows=[('Seus dados', 'guardados'), ('Atendimento', 'volta com o pagamento')], reply='Falar com o suporte', always=True),
  'cancelled': D('Cancelamento confirmado', 'quando o cliente cancela', 'e', 'n', 'Cancelamento confirmado', 'bye', 'Cancelamento confirmado', 'Sem novas cobranças. A conta segue ativa até {data}.',
-    'Assinatura cancelada', '{primeiro_nome}, cancelamos a assinatura da {empresa}, como você pediu. Se mudar de ideia, é só reativar.', ('Reativar assinatura', SUB),
-    fig=('{data}', 'a conta segue ativa até esta data'), rows=[('Novas cobranças', 'nenhuma')], second='Quer contar o motivo? É só responder', ghost=True, always=True),
- 'ai_80': D('Nanda em 80% do plano', 'ao usar 80% dos atendimentos do mês', 'we', 'i', 'Uso da Nanda', 'spark', 'A Nanda já atendeu {usadas} clientes este mês', 'Atendimento movimentado na {empresa}.',
-    'A Nanda está trabalhando bastante', '{primeiro_nome}, sinal de atendimento movimentado. Para ela seguir atendendo sozinha até o fim do mês, dá para adicionar um pacote de 500 atendimentos por R$ 59 ou deixar o pacote automático ligado.', ('Ver uso da Nanda', SUB),
+    'Assinatura cancelada', '{primeiro_nome}, cancelamos a assinatura como você pediu. Até {data} tudo segue funcionando, e depois a conta fica guardada só para consulta.\nSe mudar de ideia, é só reativar. E se tiver um minuto, conta para a gente o que faltou: lemos todas as respostas.', ('Reativar assinatura', SUB),
+    fig=('{data}', 'a conta segue ativa até esta data'), rows=[('Novas cobranças', 'nenhuma'), ('Seus dados', 'guardados')], second='Quer contar o motivo? É só responder', ghost=True, always=True),
+ 'ai_80': D('Nanda em 80% do plano', 'ao usar 80% dos atendimentos do mês', 'we', 'i', 'Uso da Nanda', 'spark', 'A Nanda já atendeu {usadas} clientes este mês', 'Atendimento movimentado por aí.',
+    'A Nanda está trabalhando bastante', '{primeiro_nome}, ótimo sinal: atendimento movimentado. Para ela seguir atendendo sozinha até o fim do mês, dá para adicionar um pacote de 500 atendimentos por R$ 59 ou deixar o pacote automático ligado.', ('Ver uso da Nanda', SUB),
     '{primeiro_nome}, a Nanda já atendeu *{usadas} dos {limite}* atendimentos do plano este mês. Para ela seguir sozinha até o fim do mês, dá para adicionar um pacote em Empresa › Assinatura.',
     fig=('80%', 'dos atendimentos do mês já usados'), bar=(80, 100, '{usadas} de {limite} atendimentos', 'zera no dia 1º')),
  'ai_100': D('Nanda chegou ao limite', 'ao usar 100% dos atendimentos do mês', 'we', 'a', 'Uso da Nanda', 'spark', 'A Nanda usou os {limite} atendimentos do mês', 'Ela segue sugerindo as respostas para a sua equipe.',
-    'A Nanda passou a sugerir as respostas', '{primeiro_nome}, os atendimentos do mês acabaram. Ela não parou: segue sugerindo as respostas para a sua equipe enviar. Com um pacote de 500 atendimentos por R$ 59, ela volta a atender sozinha na hora.', ('Adicionar pacote', SUB),
+    'A Nanda passou a sugerir as respostas', '{primeiro_nome}, os atendimentos do mês acabaram. Ela não parou: segue sugerindo as respostas para a sua equipe enviar.\nCom um pacote de 500 atendimentos por R$ 59, ela volta a atender sozinha na hora.', ('Adicionar pacote', SUB),
     '{primeiro_nome}, a Nanda usou os *{limite} atendimentos* do mês. Ela segue sugerindo as respostas para a equipe. Com um pacote de 500 por R$ 59, volta a atender sozinha na hora.',
     fig=('100%', 'dos atendimentos do mês usados'), bar=(100, 100, '{limite} de {limite} atendimentos', 'zera no dia 1º'), always=True),
- 'wa_down': D('WhatsApp desconectou', 'quando o número da empresa cai', 'we', 'a', 'Precisa de atenção', 'chat', 'O WhatsApp da {empresa} desconectou', 'Reconectar leva poucos minutos.',
-    'O WhatsApp desconectou', '{primeiro_nome}, enquanto estiver desconectado, mensagens novas não aparecem no Oi Nanda.', ('Reconectar', '/empresa'),
+ 'wa_down': D('WhatsApp desconectou', 'quando o número da empresa cai', 'we', 'a', 'Precisa de atenção', 'chat', 'O WhatsApp da sua empresa desconectou', 'Reconectar leva poucos minutos.',
+    'O WhatsApp desconectou', '{primeiro_nome}, enquanto estiver desconectado, as mensagens novas dos clientes não aparecem no Oi Nanda. Reconectar leva poucos minutos.', ('Reconectar', '/empresa'),
     '{primeiro_nome}, o WhatsApp da {empresa} *desconectou* do Oi Nanda às {hora}. Mensagens novas não aparecem até reconectar. Leva poucos minutos.',
-    rows=[('Número', '{numero}'), ('Desconectou', 'hoje, {hora}')], reply='Quero ajuda', always=True),
+    rows=[('Número', '{numero}'), ('Desconectou', 'hoje, {hora}')], tip=('Se a Meta pediu alguma ação, o guia mostra o caminho.', 'Ver o guia de conexão', '/ajuda/conectar-whatsapp'), reply='Quero ajuda', always=True),
+ # ---- dicas do começo: só por e-mail, cada uma uma vez, e só quando faz sentido ----
+ 'tip_teach': D('Dica: ensinar a Nanda', '2 dias depois de começar o teste, se a Nanda ainda não sabe o básico do negócio', 'e', 'i', 'Dica do Oi Nanda', 'spark', '10 minutos que fazem a Nanda responder muito melhor', 'Ela só usa o que você ensinou. Veja o que vale preencher primeiro.',
+    'Ensine a Nanda em 10 minutos', '{primeiro_nome}, a Nanda só responde com o que você ensinou. O que ela não souber, não inventa: passa para o seu time. Quanto mais completo, menos ela precisa chamar alguém.\nNão precisa escrever do zero: na tela da Nanda tem um exemplo pronto para {segmento}. É só trocar o que for diferente.', ('Ensinar a Nanda', '/nanda'),
+    steps=[(0, 'Sobre o negócio', 'o que é, onde fica, horários'), (0, 'Preços e condições', 'valores, pacotes, formas de pagamento'), (0, 'Perguntas frequentes', 'o que os clientes sempre perguntam'), (0, 'Teste uma conversa', 'escreva como um cliente escreveria')],
+    steps_title='O que preencher primeiro', tip=('Passo a passo com exemplos, incluindo como testar antes de deixar ela sozinha.', 'Ler o guia da Nanda', '/ajuda/ensinar-nanda')),
+ 'tip_autos': D('Dica: ligar as automações', '4 dias depois de começar o teste, se nenhuma automação está ligada', 'e', 'i', 'Dica do Oi Nanda', 'spark', 'As 3 automações que mais ajudam {segmento}', 'Mensagens que saem sozinhas na hora certa, para nenhuma venda se perder.',
+    'Deixe o Oi Nanda lembrar por você', '{primeiro_nome}, boa parte das vendas se perde por esquecimento: o cliente sumiu, o orçamento ficou parado, ninguém lembrou da renovação.\nAs automações mandam a mensagem certa sozinhas, com o nome do cliente, só das 8h às 21h. Para {segmento}, estas são as que mais ajudam no começo:', ('Ligar as automações', '/automacoes'),
+    steps=[(0, 'Lembrete', ''), (0, 'Retomada', ''), (0, 'Pós-venda', '')], steps_title='Recomendadas para você', tip=('Como funcionam, quando saem e quanto custa cada mensagem.', 'Ler o guia de automações', '/ajuda/automacoes')),
+ 'week1': D('Resumo da primeira semana', '7 dias depois de conectar o WhatsApp, se já teve conversa', 'e', 'g', 'Sua primeira semana', 'check', 'Sua primeira semana com a Nanda', '{conversas} conversas, {respostas} respostas da Nanda e mais.',
+    'Uma semana de Oi Nanda', '{primeiro_nome}, olha o que aconteceu nos primeiros 7 dias com o WhatsApp conectado. Os números completos estão em Relatórios.', ('Ver meus relatórios', '/relatorios'),
+    fig=('{conversas}', 'conversas nos primeiros 7 dias'), rows=[('Respostas da Nanda', '{respostas}'), ('Horários marcados', '{horarios}'), ('Vendas registradas', '{vendas}')],
+    tip=('O guia do seu segmento mostra o que acompanhar daqui para frente.', 'Ler o guia do seu segmento', '/ajuda/seg-{seg}')),
 }
 EDIT = ('subject', 'pre', 'title', 'body', 'wa')
-OPTIONAL = ('wa_missing', 'activate', 'trial_3d', 'trial_1d', 'charge_3d', 'paid', 'ai_80', 'ai_pack')  # o cliente pode desligar; os demais sempre chegam
+OPTIONAL = ('wa_missing', 'activate', 'trial_3d', 'trial_1d', 'charge_3d', 'paid', 'ai_80', 'ai_pack', 'tip_teach', 'tip_autos', 'week1')  # o cliente pode desligar; os demais sempre chegam
 
 def fill(text, v):
     return re.sub(r'\{(\w+)\}', lambda m: str(v.get(m.group(1), m.group(0))), text or '')
@@ -112,10 +129,14 @@ async def texts(key):
 # ---------- e-mail ----------
 def email_html(key, t, v):
     n = DEFS[key]; e = html.escape; F = lambda x: fill(x, v)
+    if key == 'tip_autos' and not v.get('_steps'):  # prévia e teste: as recomendadas do segmento do exemplo
+        from niches import top3
+        v = {**v, '_steps': [(0, r['name'], r.get('why') or '') for r in top3(v.get('seg') or 'studio')]}
     c = {'tone': n['tone'], 'icon': f'{n["icon"]}-{n["tone"]}', 'eyebrow': n['eyebrow'], 'title': F(t['title']), 'pre': F(t['pre']),
          'body': [e(F(p)) for p in t['body'].split('\n') if p.strip()],
          'fig': (F(n['fig'][0]), F(n['fig'][1])) if n.get('fig') else None,
-         'steps': n.get('steps'), 'rows': [(a, F(b)) for a, b in n.get('rows') or []],
+         'steps': v.get('_steps') or n.get('steps'), 'steps_title': n.get('steps_title'), 'rows': [(a, F(b)) for a, b in n.get('rows') or []],
+         'tip': (F(n['tip'][0]), F(n['tip'][1]), APP + F(n['tip'][2])) if n.get('tip') else None,
          'button': (n['button'][0], APP + n['button'][1]), 'ghost': n.get('ghost'),
          'second': (n['second'], APP + n['button'][1]) if n.get('second') else None, 'foot': n.get('foot'),
          'why': f'Você recebe este aviso por ser responsável pela conta {v.get("empresa", "")} no Oi Nanda.', 'prefs': True}
@@ -127,6 +148,8 @@ def email_text(key, t, v):
     n = DEFS[key]; L = [fill(t['title'], v), '']
     if n.get('fig'): L += [fill(n['fig'][0], v) + ' ' + fill(n['fig'][1], v), '']
     L += [fill(t['body'], v), ''] + [f'{a}: {fill(b, v)}' for a, b in n.get('rows') or []]
+    if v.get('_steps') or n.get('steps'): L += [''] + [f'- {x[1]}' + (f' ({fill(x[2], v)})' if x[2] else '') for x in (v.get('_steps') or n['steps'])]
+    if n.get('tip'): L += ['', f'Guia rápido: {fill(n["tip"][1], v)}: {APP}{fill(n["tip"][2], v)}']
     return '\n'.join(L + ['', f'{n["button"][0]}: {APP}{n["button"][1]}'])
 
 def wa_text(t, v, mark=True):
@@ -212,7 +235,8 @@ async def base_vars(company, owner):
     b = company.get('billing') or {}
     from billing import PLANS
     plan = PLANS.get(b.get('plan') or company.get('plan') or '', {}).get('name', '')
-    return {'primeiro_nome': (owner.get('name') or '').split(' ')[0] or 'Olá', 'empresa': company.get('name') or '',
+    seg = company.get('segment') if company.get('segment') in SEG_PHRASE else 'outro'
+    return {'primeiro_nome': (owner.get('name') or '').split(' ')[0] or 'Olá', 'empresa': company.get('name') or '', 'seg': seg, 'segmento': SEG_PHRASE.get(seg, 'o seu negócio'),
             'valor': money(b.get('amount')), 'plano': (plan + (', anual' if b.get('cycle') == 'annual' else ', mensal')) if plan else '', 'data': '', 'prazo': '', 'proxima': day(b.get('next_payment'))}
 
 def quiet():
@@ -281,6 +305,32 @@ async def tick():
         age = n - aware((c.get('billing') or {}).get('since') if (c.get('billing') or {}).get('trial_until') else c['created_at'])
         if age < timedelta(days=2): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_1')
         elif timedelta(days=3) <= age < timedelta(days=4): await deliver(c, 'wa_missing', {'data': day(c.get('trial_ends_at'))}, once='wa_missing_3')
+    # dicas do começo: ensinar a Nanda (dia 2) e ligar as automações do segmento (dia 4), só se ainda não fez
+    from niches import top3
+    for c in await db.companies.find({'$or': [{'plan': 'trial', 'created_at': {'$gt': n - timedelta(days=6)}},
+                                              {'billing.since': {'$gt': n - timedelta(days=6)}, 'billing.trial_until': {'$gt': n}}]}, {'_id': 0}).to_list(500):
+        b = c.get('billing') or {}
+        age = n - aware(b.get('since') if b.get('trial_until') and b.get('since') else c.get('created_at') or n)
+        if timedelta(days=2) <= age < timedelta(days=3):
+            st = await db.ai_settings.find_one({'company_id': c['id']}, {'_id': 0, 'about': 1, 'offer': 1}) or {}
+            if not ((st.get('about') or '').strip() and (st.get('offer') or '').strip()):
+                await deliver(c, 'tip_teach', {}, once='tip_teach')
+        elif timedelta(days=4) <= age < timedelta(days=5):
+            if not await db.automations.find_one({'company_id': c['id'], 'active': True}, {'_id': 1}):
+                steps = [(0, r['name'], r.get('why') or '') for r in top3(c.get('segment'))]
+                if steps: await deliver(c, 'tip_autos', {'_steps': steps}, once='tip_autos')
+    # uma semana de WhatsApp conectado: resumo do que aconteceu (só se teve conversa)
+    for w in await db.wa_numbers.find({'status': 'connected', 'connected_at': {'$gt': n - timedelta(days=8), '$lte': n - timedelta(days=7)}}, {'_id': 0, 'company_id': 1, 'connected_at': 1}).to_list(500):
+        c = await db.companies.find_one({'id': w['company_id']}, {'_id': 0})
+        if not c or await db.notice_log.find_one({'company_id': c['id'], 'once': 'week1'}, {'_id': 1}): continue
+        since = aware(w['connected_at']); q = {'company_id': c['id']}
+        convs = len(await db.messages.distinct('contact_id', {**q, 'dir': 'in', 'at': {'$gte': since}}))
+        if not convs: continue
+        f = lambda x: f'{x:,}'.replace(',', '.')
+        v = {'conversas': f(convs), 'respostas': f(await db.messages.count_documents({**q, 'dir': 'out', 'by': {'$regex': r'\(IA\)$'}, 'at': {'$gte': since}})),
+             'horarios': f(await db.appointments.count_documents({**q, 'created_at': {'$gte': since}})),
+             'vendas': f(await db.sales.count_documents({**q, 'status': 'ok', 'date': {'$gte': since}}))}
+        await deliver(c, 'week1', v, once='week1')
     # renovação em 3 dias (a primeira, depois do teste, tem aviso próprio)
     for c in await db.companies.find({'billing.status': 'active', 'billing.next_payment': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)},
                                       'billing.trial_until': {'$not': {'$gt': n}}}, {'_id': 0}).to_list(500):

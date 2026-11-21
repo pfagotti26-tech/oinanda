@@ -246,6 +246,26 @@ async def platform_get(user=Depends(admin)):
     d = await db.settings.find_one({'id': 'platform'}, {'_id': 0, 'id': 0}) or {}
     return {**PLATFORM_DEFAULT, **d}
 
+# ---------- central de ajuda: contato do suporte e "isso ajudou?" ----------
+from core import current_user
+@router.get('/help/contact')
+async def help_contact(user=Depends(current_user)):
+    """Como falar com o suporte: e-mail e WhatsApp que o admin cadastrou em Visão geral › Dados do Oi Nanda."""
+    d = {**PLATFORM_DEFAULT, **(await db.settings.find_one({'id': 'platform'}, {'_id': 0, 'id': 0}) or {})}
+    digits = ''.join(ch for ch in (d.get('phone') or '') if ch.isdigit())
+    if digits and len(digits) in (10, 11): digits = '55' + digits
+    return {'email': d.get('email') or '', 'whatsapp': digits if len(digits) >= 12 else ''}
+
+class HelpFeedback(BaseModel):
+    article: str = Field(min_length=1, max_length=60)
+    useful: bool
+
+@router.post('/help/feedback')
+async def help_feedback(body: HelpFeedback, user=Depends(current_user)):
+    await db.help_feedback.insert_one({'id': uid(), 'company_id': user['company_id'], 'user_id': user['id'], 'article': body.article,
+                                       'useful': body.useful, 'at': now()})
+    return {'ok': True}
+
 @router.put('/admin/platform')
 async def platform_put(body: PlatformIn, request: Request, user=Depends(admin)):
     ch = {k: (v.strip() if isinstance(v, str) else v) for k, v in body.model_dump(exclude_none=True).items()}

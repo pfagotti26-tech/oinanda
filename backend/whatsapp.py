@@ -230,6 +230,11 @@ async def ingest(value):
         mm = meta_of(m)
         await db.messages.insert_one({'id': mid, 'company_id': cid, 'contact_id': contact['id'], 'dir': 'in', 'type': m.get('type'),
                                       'text': text, 'wa_msg_id': m.get('id'), 'at': at, 'received_at': now(), **mm, **({'pending': True} if mm else {})})
+        if not mm and now() - at < timedelta(hours=1):
+            try:
+                from agenda import confirm_by_reply
+                await confirm_by_reply(cid, contact['id'], text)
+            except Exception: log.exception('falha ao confirmar o horário pela resposta')
         if mm: schedule(mid)  # baixa (e transcreve o áudio) antes de chamar a Nanda
         elif ON_INBOUND and now() - at < timedelta(minutes=10): ON_INBOUND(cid, contact['id'], mid)
         if now() - at < timedelta(minutes=10):

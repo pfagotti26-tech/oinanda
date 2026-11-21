@@ -351,3 +351,24 @@ async def patch(appt_id: str, body: ApptPatch, request: Request, user=Depends(cu
         await db.appointments.update_one({'id': appt_id}, {'$set': upd})
         a.update(upd); await gcal.sync_event(a)
     return appt_out(a, tz)
+
+# ---------- cliente confirma o horário respondendo o lembrete ----------
+import re as _re
+CONFIRM = _re.compile(r'^\s*(sim|confirmo|confirmad[oa]|confirmar|pode confirmar|confirmadíssimo|ok|okay|beleza|combinado|certo|fechado|'
+                      r'estarei (l[aá]|a[ií])|vou sim|vou estar (l[aá]|a[ií])|t[oô] confirmad[oa]|est[aá] confirmad[oa]|confirmo sim|sim,? confirmo|👍|✅)'
+                      r'[\s!.,😊🙏👍✅❤️]*(obrigad[oa]|valeu)?[\s!.,😊🙏👍✅❤️]*$', _re.I)
+
+async def confirm_by_reply(company_id, contact_id, text):
+    """Resposta curta de confirmação ("sim", "confirmo", 👍) logo depois de um lembrete automático: o horário vira Confirmado.
+    Só vale se um lembrete daquele horário saiu nas últimas 48 h, para um "sim" de outra conversa não confirmar nada por engano."""
+    if not text or len(text) > 60 or not CONFIRM.match(text): return None
+    for ap in await db.appointments.find({'company_id': company_id, 'contact_id': contact_id, 'status': 'scheduled',
+                                          'start': {'$gt': now(), '$lte': now() + timedelta(hours=72)}}, {'_id': 0}).sort('start', 1).to_list(5):
+        sent = await db.automation_runs.find_one({'company_id': company_id, 'contact_id': contact_id, 'status': 'sent',
+                                                  'key': {'$regex': ':' + _re.escape(ap['id']) + '$'}, 'at': {'$gte': now() - timedelta(hours=48)}}, {'_id': 1})
+        if not sent: continue
+        await db.appointments.update_one({'id': ap['id']}, {'$set': {'status': 'confirmed', 'confirmed_at': now(), 'confirmed_by': 'cliente'}})
+        when = aware(ap['start']).astimezone(tz_of(await db.companies.find_one({'id': company_id}, {'_id': 0, 'timezone': 1}) or {}))
+        await note(company_id, contact_id, f'Horário confirmado pelo cliente, respondendo ao lembrete: {ap.get("service_name") or "horário"} em {when:%d/%m às %H:%M}.')
+        return ap['id']
+    return None

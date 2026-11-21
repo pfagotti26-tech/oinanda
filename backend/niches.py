@@ -167,6 +167,13 @@ NICHES = {
         'recipes': AGENDA_RECIPES + FOLLOWUP,
     },
 }
+# as 3 automações que mais ajudam cada segmento no começo (e-mail de dica e guia da Central de ajuda usam as mesmas)
+TOP3 = {'studio': ['lembrete_24h', 'pos_aula', 'renova_7d'], 'clinica': ['lembrete_24h', 'orcamento', 'faltou'],
+        'salao': ['lembrete_3h', 'retorno_30', 'faltou'], 'imobiliaria': ['esfriou_1', 'lembrete_24h', 'pos_visita'],
+        'escola': ['lembrete_24h', 'esfriou_1', 'renova_7d'], 'loja': ['esfriou_1', 'orcamento', 'recompra'],
+        'servicos': ['lembrete_24h', 'proposta', 'esfriou_3'], 'restaurante': ['pos_pedido', 'volta_15', 'lembrete_24h'],
+        'lancamento': ['esfriou_1', 'link_enviado', 'esfriou_3'], 'outro': ['esfriou_1', 'esfriou_3', 'lembrete_24h']}
+
 ORDER = ['studio', 'clinica', 'salao', 'imobiliaria', 'escola', 'loja', 'servicos', 'restaurante', 'lancamento', 'outro']
 
 def niche(segment): return NICHES.get(segment) or NICHES['outro']
@@ -178,3 +185,7 @@ def recipes_for(segment):
 async def niches():
     """Lista pública dos segmentos (cadastro e site)."""
     return [{'key': k, 'label': NICHES[k]['label'], 'short': NICHES[k]['short']} for k in ORDER]
+
+def top3(segment):
+    rs = {r['key']: r for r in recipes_for(segment)}
+    return [rs[k] for k in TOP3.get(segment if segment in TOP3 else 'outro', []) if k in rs]

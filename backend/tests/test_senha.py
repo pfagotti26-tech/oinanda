@@ -16,7 +16,7 @@ def test_esqueci_a_senha():
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Rita Gomes', 'email': 'rita@x.com', 'password': 'senha-forte-1', 'company': 'Studio R', 'segment': 'studio'})
         c.portal.call(lambda: __import__('asyncio').sleep(0.05))
-        assert any('sua conta está pronta' in m['subject'] for m in mailer.SENT)
+        assert any('sua conta no Oi Nanda está pronta' in m['subject'] for m in mailer.SENT)
         c.post('/api/auth/logout')
         # e-mail sem conta: mesma resposta, nada enviado
         n = len(mailer.SENT)
@@ -65,4 +65,4 @@ def test_aviso_fim_do_teste():
         cid = c.get('/api/auth/me').json()['company']['id']
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
         c.portal.call(mailer.trial_tick); c.portal.call(mailer.trial_tick)
-        assert [m['subject'] for m in mailer.SENT if m['to'] == 'donaf@x.com'].count('Faltam 3 dias do teste da Loja F') == 1
+        assert [m['subject'] for m in mailer.SENT if m['to'] == 'donaf@x.com'].count('Faltam 3 dias do seu teste grátis') == 1

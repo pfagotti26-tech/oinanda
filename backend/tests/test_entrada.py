@@ -56,7 +56,7 @@ def test_demo_teste_com_cartao_e_atendimentos(monkeypatch):
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'created_at': now() - timedelta(days=1, hours=1)}}))
         monkeypatch.setattr(notices, 'quiet', lambda: False)
         c.portal.call(notices.tick); c.portal.call(notices.tick)
-        assert [m['subject'] for m in mailer.SENT].count('A Nanda da Bella Pele está esperando') == 1
+        assert [m['subject'] for m in mailer.SENT].count('A Nanda está esperando por você, Renata') == 1
 
         # ativa: assinatura com 14 dias grátis
         r = c.post('/api/billing/subscribe', json={'plan': 'profissional', 'email': 'r@x.com'}).json()
