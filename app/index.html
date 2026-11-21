@@ -2496,6 +2496,19 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .sm-rp{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px 3px 3px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}.sm-rp:hover{border-color:var(--c);background:var(--tint)}
 .sm-rp .av{width:24px;height:24px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}.sm-rp em{font-style:normal;font-size:11px;color:var(--ink3);font-weight:600}
 .sm-rp.nw{border-style:dashed;color:var(--c2)}.sm-rp.nw .av{background:var(--tint);color:var(--c2);font-size:15px}
+.bk-sv{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.bk-s{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;text-align:left}.bk-s b{font-size:13.5px}.bk-s small{font-size:12px;color:var(--ink3)}.bk-s:hover{border-color:#E8B9A9}.bk-s.on{border-color:var(--c);background:var(--tint)}
+.bk-pr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px}.bk-pr>span{font-size:12.5px;font-weight:700;color:var(--ink2);margin-right:4px}.sm-rp.on{border-color:var(--c);background:var(--tint)}
+.bk-days{display:flex;align-items:center;gap:6px}.bk-nav{width:30px;height:56px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:20px;color:var(--ink2);cursor:pointer;flex:none}
+.bk-dl{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;min-width:0}
+.bk-d{display:flex;flex-direction:column;align-items:center;gap:1px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:7px 2px;font:inherit;cursor:pointer;min-width:0}.bk-d small{font-size:11px;color:var(--ink3);font-weight:700;text-transform:uppercase}.bk-d b{font-size:18px;line-height:1.1}.bk-d em{font-style:normal;font-size:10.5px;color:var(--ok);font-weight:700;white-space:nowrap}
+.bk-d.none em{color:var(--ink3)}.bk-d.none b{color:var(--ink3)}.bk-d:disabled{opacity:.35;cursor:default}.bk-d.on{border-color:var(--c);background:var(--c);color:#fff}.bk-d.on small,.bk-d.on em,.bk-d.on b{color:#fff}
+.bk-sl{display:flex;flex-direction:column;gap:10px}.bk-g{display:flex;gap:10px;align-items:flex-start}.bk-g>span{width:52px;flex:none;font-size:12px;font-weight:700;color:var(--ink3);padding-top:8px}.bk-g>div{display:flex;flex-wrap:wrap;gap:6px}
+.bk-t{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font:inherit;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;cursor:pointer}.bk-t:hover{border-color:var(--c)}.bk-t.on{background:var(--c);border-color:var(--c);color:#fff}
+.bk-fx summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--ink2)}.bk-fx input{border:1px solid #DCD2C9;border-radius:10px;padding:7px 10px;font:inherit}
+.bk-when{background:linear-gradient(135deg,#1F2A36,#17212B);color:#fff;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}.bk-when small{color:#C9D2DB;font-size:12.5px}.bk-when b{font-size:24px;letter-spacing:-.4px}.bk-when em{align-self:flex-start;font-style:normal;font-size:11px;font-weight:800;background:#D99A00;color:#fff;border-radius:99px;padding:1px 8px;margin-top:4px}
+@container (max-width:560px){.bk-dl{display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;padding-bottom:2px}.bk-dl::-webkit-scrollbar{display:none}.bk-d{flex:0 0 58px;padding:7px 0}.bk-d em{font-size:9.5px}.bk-nav{width:26px}.bk-g{flex-direction:column;gap:4px}.bk-g>span{padding:0}}
+.bk-jp{font-size:12.5px;font-weight:700;color:var(--c2);background:var(--tint);border-radius:10px;padding:6px 10px;align-self:flex-start}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -3812,29 +3825,90 @@ async function agStart(canManage){const box=$('#agStart');if(!box||!canManage)re
 async function bookModal(pre,after){
   const cfg=AG.cfg||await agCfg();if(!cfg.services.length)return toast('Cadastre um serviço na aba Configurar.');
   const canForce=['owner','manager'].includes(ME.user.role);
-  let contacts=[];if(!pre.contact){contacts=(await api('/funnel')).cards}
-  const o=overlay(`<form class="modal" id="bkF"><div class="row"><h2 style="font-size:20px">Agendar${pre.contact?' · '+esc(pre.contact.name):''}</h2><button type="button" class="x">×</button></div>
-   ${pre.contact?'':`<div class="field"><label>Cliente</label><select name="contact_id" required><option value="">Escolha...</option>${contacts.map(c=>`<option value="${c.id}">${esc(c.name)} · +${esc(c.wa_id)}</option>`).join('')}</select><span class="hint">Cliente novo? Adicione primeiro no Funil.</span></div>`}
-   <div class="form2"><div class="field"><label>Serviço</label><select name="service_id">${cfg.services.map(v=>`<option value="${v.id}">${esc(v.name)} (${v.duration} min)</option>`).join('')}</select></div>
-    <div class="field"><label>Dia</label><input type="date" name="date" value="${pre.date||ymd(new Date())}" required></div></div>
-   ${(cfg.pros||[]).some(p=>p.active!==false)?`<div class="field"><label>Com quem</label><select name="pro_id"><option value="">Quem estiver livre</option></select></div>`:''}
-   <div class="field"><label>Horários livres</label><div class="slots" id="bkS"></div></div>
-   ${canForce?'<div class="field"><label>Ou encaixe num horário específico</label><input type="time" name="ftime" style="max-width:150px"></div>':''}
-   <div class="field"><label>Observação</label><input name="notes" maxlength="300"></div>
-   <div class="row"><button class="btn p">Agendar</button><span class="err" id="bkE"></span></div></form>`,true);
-  const f=o.querySelector('#bkF');let pick=null;
-  const prosOf=()=>(cfg.pros||[]).filter(p=>p.active!==false&&(!(p.services||[]).length||p.services.includes(f.service_id.value)));
-  const fillPros=()=>{if(!f.pro_id)return;const cur=f.pro_id.value;f.pro_id.innerHTML='<option value="">Quem estiver livre</option>'+prosOf().map(p=>`<option value="${p.id}" ${p.id===(pre.pro_id||cur)?'selected':''}>${esc(p.name)}</option>`).join('')};
-  fillPros();
-  const load=async()=>{pick=null;const box=o.querySelector('#bkS');box.innerHTML='<span class="hint">Carregando...</span>';
-    try{const sl=await api(`/agenda/slots?service_id=${f.service_id.value}&date=${f.date.value}${f.pro_id&&f.pro_id.value?'&pro_id='+f.pro_id.value:''}`);
-      box.innerHTML=sl.length?sl.map(t=>`<button type="button" data-t="${t}">${t}</button>`).join(''):'<span class="hint">Nenhum horário livre nesse dia.</span>';
-      box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{pick=b.dataset.t;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))})}catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
-  f.service_id.onchange=()=>{fillPros();load()};f.date.onchange=load;if(f.pro_id)f.pro_id.onchange=load;await load();
-  if(pre.time){const b=o.querySelector(`#bkS [data-t="${pre.time}"]`);if(b)b.click();else if(f.ftime){f.ftime.value=pre.time;o.querySelector('#bkS').insertAdjacentHTML('afterbegin',`<span class="hint" style="width:100%">${pre.time} não está entre os horários livres. Dá para marcar como encaixe (campo abaixo) ou escolher outro.</span>`)}}
-  f.onsubmit=async ev=>{ev.preventDefault();const ft=f.ftime?.value;const time=ft||pick;if(!time)return o.querySelector('#bkE').textContent='Escolha um horário.';
-    const body={contact_id:pre.contact?pre.contact.id:f.contact_id.value,service_id:f.service_id.value,date:f.date.value,time,notes:f.notes.value||null,force:!!ft,pro_id:f.pro_id?f.pro_id.value||null:null};
-    try{const ap=await api('/appointments',{method:'POST',body});o.remove();toast('Agendado.');after&&after(ap)}catch(e){o.querySelector('#bkE').textContent=e.message}};
+  const WD=['dom','seg','ter','qua','qui','sex','sáb'],WDL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const dOf=s=>new Date(s+'T12:00'),today=ymd(new Date());
+  let contact=pre.contact||null,svc=pre.service_id||cfg.services[0].id,pro=pre.pro_id||'',date=pre.date||today,time=null,force=false,counts={},hist=null;
+  const pros=()=>(cfg.pros||[]).filter(p=>p.active!==false&&(!(p.services||[]).length||p.services.includes(svc)));
+  const S=()=>cfg.services.find(x=>x.id===svc)||cfg.services[0];
+  const o=overlay(`<form class="modal sm2 sm3 bk3" id="bkF"><div class="fm-hd"><div><h2>Agendar${pre.contact?' · '+esc(pre.contact.name):''}</h2><p class="sm-sub">Escolha o cliente, o serviço e toque num horário livre.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+   <div class="sm-grid"><div class="sm-main">
+    ${pre.contact?'':'<section class="sm-sec"><h3><i>1</i>Cliente</h3><div id="bkCt"></div></section>'}
+    <section class="sm-sec"><h3><i>${pre.contact?1:2}</i>Serviço</h3><div class="bk-sv" id="bkSv"></div><div id="bkPw"></div></section>
+    <section class="sm-sec"><h3><i>${pre.contact?2:3}</i>Dia e horário</h3>
+     <div class="bk-days"><button type="button" class="bk-nav" data-sh="-7" aria-label="Semana anterior">‹</button><div class="bk-dl" id="bkD"></div><button type="button" class="bk-nav" data-sh="7" aria-label="Próxima semana">›</button></div>
+     <div id="bkS" class="bk-sl"></div>
+     ${canForce?`<details class="bk-fx" id="bkFx"><summary>Encaixar fora dos horários livres</summary><div class="row" style="gap:8px;margin-top:8px"><input type="time" id="bkFt"><span class="hint">Ignora a agenda e marca mesmo assim.</span></div></details>`:''}
+     <div id="bkNw"><button type="button" class="lnk" id="bkNo">+ Observação</button><div class="field" style="display:none"><label>Observação</label><input name="notes" maxlength="300" placeholder="Ex.: primeira vez, prefere a sala 2"></div></div></section>
+   </div><aside class="sm-side"><div class="sm-sticky">
+    <h3>Resumo</h3><div class="sm-rc" id="bkRc"></div>
+    <div class="bk-when" id="bkW"></div>
+    <div class="sm-act"><button class="btn p" id="bkGo">Agendar</button><span class="err" id="bkE"></span></div>
+   </div></aside></div>
+   <div class="sm-mb"><span><small id="bkMs">Horário</small><b id="bkMt">—</b></span><button type="submit" class="btn p" id="bkMg">Agendar</button></div></form>`,true);
+  const f=o.querySelector('#bkF');
+  const hm=t=>{const [h,m]=t.split(':').map(Number);const e=h*60+m+S().duration;return `${String(Math.floor(e/60)%24).padStart(2,'0')}:${String(e%60).padStart(2,'0')}`};
+  const drawR=()=>{const sv=S(),p=(cfg.pros||[]).find(x=>x.id===pro),d=dOf(date);const t=force?($('#bkFt').value||''):time;
+    $('#bkRc').innerHTML=`<div class="sm-rcl ${contact?'':'miss'}"><span>Cliente</span><b>${contact?esc(contact.name):'falta escolher'}</b></div>${contact&&hist!=null?`<div class="sm-hs">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')} ${hist?hist+(hist===1?' horário marcado antes':' horários marcados antes'):'Primeira vez na agenda'}</div>`:''}
+      <div class="sm-rcl"><span>Serviço</span><b>${esc(sv.name)}</b></div><div class="sm-rcl"><span>Duração</span><b>${sv.duration} min</b></div>${sv.price!=null?`<div class="sm-rcl"><span>Valor</span><b>${brl2(sv.price)}</b></div>`:''}${(cfg.pros||[]).some(x=>x.active!==false)?`<div class="sm-rcl"><span>Com</span><b>${p?esc(p.name):'quem estiver livre'}</b></div>`:''}`;
+    $('#bkW').innerHTML=`<small>${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}</small><b>${t?t+' – '+hm(t):'escolha um horário'}</b>${force&&t?'<em>encaixe</em>':''}`;
+    const miss=!contact?'Escolha o cliente':!t?'Escolha o horário':'';
+    $('#bkGo').classList.toggle('wait',!!miss);$('#bkGo').textContent=miss||`Agendar · ${WD[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} às ${t}`;
+    $('#bkMt').textContent=t?`${WD[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} · ${t}`:'—';$('#bkMg').textContent=miss||'Agendar';$('#bkMg').classList.toggle('wait',!!miss)};
+  const drawSv=()=>{$('#bkSv').innerHTML=cfg.services.map(v=>`<button type="button" class="bk-s ${v.id===svc?'on':''}" data-sv="${v.id}"><b>${esc(v.name)}</b><small>${v.duration} min${v.price!=null?' · '+brl2(v.price):''}</small></button>`).join('');
+    o.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{svc=b.dataset.sv;if(pro&&!pros().some(p=>p.id===pro))pro='';drawSv();drawP();counts={};drawD();load()});
+  };
+  const drawP=()=>{const ps=pros();$('#bkPw').innerHTML=ps.length?`<div class="bk-pr"><span>Com quem</span><button type="button" class="sm-rp ${!pro?'on':''}" data-pr=""><span class="av" style="background:#9AA6B2">★</span>Quem estiver livre</button>${ps.map(p=>`<button type="button" class="sm-rp ${p.id===pro?'on':''}" data-pr="${p.id}"><span class="av" style="background:${p.color||avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</button>`).join('')}</div>`:'';
+    o.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{pro=b.dataset.pr;drawP();counts={};drawD();load()})};
+  let start=(()=>{const d=dOf(date);return d<dOf(today)?dOf(date):dOf(today)})();
+  const drawD=()=>{const days=[...Array(7)].map((_,k)=>{const d=new Date(start);d.setDate(d.getDate()+k);return ymd(d)});
+    $('#bkD').innerHTML=days.map(x=>{const d=dOf(x),n=counts[x];return `<button type="button" class="bk-d ${x===date?'on':''} ${n===0?'none':''}" data-d="${x}" ${x<today?'disabled':''}><small>${x===today?'hoje':WD[d.getDay()]}</small><b>${d.getDate()}</b><em>${n==null?'·':n===0?'sem vaga':n+' livres'}</em></button>`}).join('');
+    o.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{date=b.dataset.d;time=null;drawD();load()});
+    days.filter(x=>x>=today&&counts[x]==null).forEach(async x=>{try{const sl=await api(`/agenda/slots?service_id=${svc}&date=${x}${pro?'&pro_id='+pro:''}`);counts[x]=sl.length;const b=o.querySelector(`[data-d="${x}"]`);if(b){b.classList.toggle('none',!sl.length);b.querySelector('em').textContent=sl.length?sl.length+' livres':'sem vaga'}}catch(e){}})};
+  o.querySelectorAll('[data-sh]').forEach(b=>b.onclick=()=>{const d=new Date(start);d.setDate(d.getDate()+Number(b.dataset.sh));if(ymd(d)<today&&Number(b.dataset.sh)<0){start=dOf(today)}else start=d;drawD()});
+  const load=async()=>{time=null;drawR();const box=$('#bkS');box.innerHTML='<span class="hint">Buscando horários livres...</span>';
+    try{const sl=await api(`/agenda/slots?service_id=${svc}&date=${date}${pro?'&pro_id='+pro:''}`);counts[date]=sl.length;
+      const G=[['Manhã',t=>t<'12:00'],['Tarde',t=>t>='12:00'&&t<'18:00'],['Noite',t=>t>='18:00']];
+      box.innerHTML=sl.length?G.map(([n,fn])=>{const g=sl.filter(fn);return g.length?`<div class="bk-g"><span>${n}</span><div>${g.map(t=>`<button type="button" class="bk-t" data-t="${t}">${t}</button>`).join('')}</div></div>`:''}).join('')
+        :`<div class="hn-empty"><span>${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}</span><p><b>Nenhum horário livre nesse dia.</b> Escolha outro dia acima${canForce?' ou encaixe fora dos horários livres':''}.</p></div>`;
+      box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{time=b.dataset.t;force=false;if($('#bkFt'))$('#bkFt').value='';box.querySelectorAll('.bk-t').forEach(x=>x.classList.toggle('on',x===b));drawR()});
+      if(pre.time&&date===(pre.date||date)){const b=box.querySelector(`[data-t="${pre.time}"]`);if(b)b.click();else if($('#bkFt')){$('#bkFx').open=true;$('#bkFt').value=pre.time;force=true;drawR()}pre.time=null}
+    }catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
+  if($('#bkFt'))$('#bkFt').oninput=()=>{force=!!$('#bkFt').value;if(force){time=null;$('#bkS').querySelectorAll('.bk-t').forEach(x=>x.classList.remove('on'))}drawR()};
+  $('#bkNo').onclick=()=>{$('#bkNo').remove();const fl=$('#bkNw .field');fl.style.display='';fl.querySelector('input').focus()};
+  const apHist=async id=>{hist=null;try{const r=await api('/contacts/'+id+'/appointments');hist=(r.items||r||[]).length}catch(e){}drawR()};
+  // cliente: mesma escolha rápida da venda
+  const drawCt=async()=>{const w=$('#bkCt');if(!w)return;
+    if(contact){w.innerHTML=`<div class="sm-ct"><span class="av" style="background:${avc(contact.name)}">${initials(contact.name)}</span><span class="sm-ctn"><b>${esc(contact.name)}</b>${contact.wa_id?`<small>${esc(fmtPhone(contact.wa_id))}</small>`:''}</span><button type="button" class="lnk" id="bkCh">trocar</button></div>`;$('#bkCh').onclick=()=>{contact=null;hist=null;drawCt();drawR()};return}
+    w.innerHTML=`<label class="sm-q">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="bkQ" placeholder="Busque pelo nome ou telefone" autocomplete="off"></label><div id="bkR" class="sm-rs"></div>
+      <div class="sm-nw" id="bkNew" style="display:none"><div class="form2"><div class="field"><label>Nome</label><input id="bkNn" maxlength="80"></div><div class="field"><label>WhatsApp</label><input id="bkNp" inputmode="tel" placeholder="DDD + número"></div></div><div class="row" style="gap:8px"><button type="button" class="btn sm p" id="bkNs">Cadastrar e usar</button><button type="button" class="lnk" id="bkNc">cancelar</button><span class="err" id="bkNe"></span></div></div>`;
+    let rec=[];try{rec=(await api('/conversations?filter=all')).filter(c=>!c.internal&&!/^\[teste\]/i.test(c.name||'')&&(c.name||'').trim()).slice(0,6)}catch(e){}
+    const pill=c=>{const n=(c.name||'').trim().split(/\s+/);return `<button type="button" class="sm-rp" data-ct="${c.id}" title="${esc(c.name)}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${esc(n[0]+(n[1]?' '+n[1][0]+'.':''))}<em>${c.last_at?ago(c.last_at):''}</em></button>`};
+    const row=c=>`<button type="button" class="sm-res" data-ct="${c.id}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><span><b>${esc(c.name||'Sem nome')}</b><small>${esc(c.wa_id?fmtPhone(c.wa_id):c.channel||'')}</small></span></button>`;
+    const pick=c=>{contact={id:c.id,name:c.name,wa_id:c.wa_id};drawCt();drawR();apHist(c.id)};
+    const bind=l=>{$('#bkR').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>pick(l.find(x=>x.id===b.dataset.ct)));const nb=$('#bkR [data-nw]');if(nb)nb.onclick=()=>{$('#bkNew').style.display='';$('#bkR').hidden=true;const q=$('#bkQ').value.trim();if(/\d{8,}/.test(q.replace(/\D/g,'')))$('#bkNp').value=q;else $('#bkNn').value=q;($('#bkNn').value?$('#bkNp'):$('#bkNn')).focus()}};
+    const base=()=>`<div class="sm-rgp">${rec.length?'<span class="sm-lb">Recentes</span>':''}${rec.map(pill).join('')}<button type="button" class="sm-rp nw" data-nw="1"><span class="av">+</span>Cliente novo</button></div>`;
+    $('#bkR').innerHTML=base();bind(rec);
+    let t;$('#bkQ').oninput=e=>{clearTimeout(t);t=setTimeout(async()=>{const q=e.target.value.trim();$('#bkR').hidden=false;$('#bkNew').style.display='none';if(q.length<2){$('#bkR').innerHTML=base();bind(rec);return}
+      const r=await api('/conversations?q='+encodeURIComponent(q));$('#bkR').innerHTML=(r.length?r.slice(0,6).map(row).join(''):'<p class="hint" style="margin:4px 2px">Ninguém com esse nome ou telefone.</p>')+`<button type="button" class="sm-res nw" data-nw="1"><span class="av">+</span><span><b>Cadastrar “${esc(q)}”</b><small>Cliente novo</small></span></button>`;bind(r)},250)};
+    $('#bkQ').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const b=$('#bkR [data-ct]');b&&b.click()}};
+    $('#bkNc').onclick=()=>{$('#bkNew').style.display='none';$('#bkR').hidden=false};
+    $('#bkNs').onclick=async()=>{$('#bkNe').textContent='';try{pick(await api('/contacts',{method:'POST',body:{name:$('#bkNn').value.trim(),phone:$('#bkNp').value}}))}catch(x){$('#bkNe').textContent=x.message}}};
+  drawSv();drawP();drawD();drawCt();if(contact)apHist(contact.id);await load();
+  if(!pre.date&&!pre.time&&counts[date]===0){for(let k=1;k<=14;k++){const d=dOf(today);d.setDate(d.getDate()+k);const x=ymd(d);let n=counts[x];if(n==null){try{n=(await api(`/agenda/slots?service_id=${svc}&date=${x}${pro?'&pro_id='+pro:''}`)).length;counts[x]=n}catch(e){break}}
+    if(n>0){date=x;if(x>=ymd(new Date(start.getTime()+7*864e5)))start=dOf(x);drawD();await load();const h=$('#bkS');h.insertAdjacentHTML('afterbegin',`<span class="bk-jp">Hoje não tem horário livre. Mostrando o próximo dia com vaga.</span>`);break}}}
+  f.onsubmit=async ev=>{ev.preventDefault();$('#bkE').textContent='';const ft=force&&$('#bkFt')?$('#bkFt').value:'';const t=ft||time;
+    if(!contact){$('#bkQ')&&$('#bkQ').focus();return $('#bkE').textContent='Escolha o cliente.'}if(!t)return $('#bkE').textContent='Escolha um horário.';
+    const body={contact_id:contact.id,service_id:svc,date,time:t,notes:f.notes.value||null,force:!!ft,pro_id:pro||null};
+    $('#bkGo').disabled=true;
+    try{const ap=await api('/appointments',{method:'POST',body});if(VIEW==='conversas'){o.remove();toast('Agendado.');after&&after(ap);return}const d=dOf(date),sv=S(),p=(cfg.pros||[]).find(x=>x.id===pro)||(ap.pro_name?{name:ap.pro_name}:null),fn=contact.name.split(' ')[0];
+      const msg=`Oi, ${fn}! Seu horário está confirmado ✅\n\n*${sv.name}*\n${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}${p?`\nCom ${p.name}`:''}\n\n${ME.company.name}. Qualquer coisa, é só chamar aqui.`;
+      f.innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>Agendado!</h2><p><b>${esc(sv.name)}</b> com ${esc(contact.name)}<br>${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}${p?' · '+esc(p.name):''}</p>
+        <div class="sm-okb"><button type="button" class="btn p" id="bkOn">Agendar outro</button><button type="button" class="btn" id="bkCp">Copiar confirmação</button>${VIEW!=='conversas'?`<button type="button" class="btn" id="bkOc">Abrir conversa com ${esc(fn)}</button>`:''}<button type="button" class="lnk" id="bkOx">Fechar</button></div></div>`;
+      const done=()=>{after&&after(ap)};
+      $('#bkOn').onclick=()=>{o.remove();done();bookModal({},after)};$('#bkOx').onclick=()=>{o.remove();done()};
+      $('#bkCp').onclick=async()=>{try{await navigator.clipboard.writeText(msg);$('#bkCp').textContent='Copiado ✓'}catch(e){toast('Não consegui copiar.')}};
+      if($('#bkOc'))$('#bkOc').onclick=()=>{o.remove();CV.open=contact.id;CV.filter='all';go('conversas')};
+      o.querySelector('.x')&&o.querySelector('.x').addEventListener('click',done)}catch(e){$('#bkGo').disabled=false;$('#bkE').textContent=e.message}};
 }
 function apptModal(a,after){
   const st=[['scheduled','Agendado'],['confirmed','Confirmado'],['done','Compareceu'],['no_show','Faltou'],['canceled','Cancelado']];
