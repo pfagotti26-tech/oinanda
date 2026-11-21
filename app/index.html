@@ -2492,6 +2492,10 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .sm-hs{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--c2);background:var(--tint);border-radius:10px;padding:6px 9px}.sm-hs svg{width:14px;height:14px;flex:none}
 .sm-chip.av1{align-self:flex-start;border-style:dashed;color:var(--ink2)}.sm-chip.av1 svg{width:15px;height:15px;color:var(--c)}
 @container (max-width:560px){.sm-rg{grid-template-columns:1fr}}
+.sm-rgp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:2px}.sm-rgp .sm-lb{margin:0 4px 0 2px}
+.sm-rp{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px 3px 3px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}.sm-rp:hover{border-color:var(--c);background:var(--tint)}
+.sm-rp .av{width:24px;height:24px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}.sm-rp em{font-style:normal;font-size:11px;color:var(--ink3);font-weight:600}
+.sm-rp.nw{border-style:dashed;color:var(--c2)}.sm-rp.nw .av{background:var(--tint);color:var(--c2);font-size:15px}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -4669,7 +4673,8 @@ async function saleModal(opt){
     $('#smCtW').innerHTML=`<label class="sm-q">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="smQ" placeholder="Busque pelo nome ou telefone" autocomplete="off"></label><div id="smR" class="sm-rs"></div>
       <div class="sm-nw" id="smNew" style="display:none"><div class="form2"><div class="field"><label>Nome</label><input id="smNn" maxlength="80"></div><div class="field"><label>WhatsApp</label><input id="smNp" inputmode="tel" placeholder="DDD + número"></div></div><div class="row" style="gap:8px"><button type="button" class="btn sm p" id="smNs">Cadastrar e usar</button><button type="button" class="lnk" id="smNc">cancelar</button><span class="err" id="smNe"></span></div></div>`;
     let rec=[];try{const [cs,sg]=await Promise.all([api('/conversations?filter=all'),STAGES?STAGES:api('/funnel/stages').then(x=>STAGES=x)]);SGN=Object.fromEntries((sg||[]).map(x=>[x.id,x.name]));rec=cs.filter(c=>!c.internal&&!/^\[teste\]/i.test(c.name||'')&&(c.name||'').trim()).slice(0,6)}catch(e){}
-    const base=()=>(rec.length?`<span class="sm-lb">Conversaram por último</span><div class="sm-rg">${rec.map(row).join('')}</div>`:'')+'<button type="button" class="sm-res nw" data-nw="1"><span class="av">+</span><span><b>Cliente novo</b><small>Cadastre sem sair daqui</small></span></button>';
+    const pill=c=>{const n=(c.name||'Sem nome').trim().split(/\s+/);return `<button type="button" class="sm-rp" data-ct="${c.id}" title="${esc(c.name+' · '+csub(c))}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${esc(n[0]+(n[1]?' '+n[1][0]+'.':''))}<em>${c.last_at?ago(c.last_at):''}</em></button>`};
+    const base=()=>`<div class="sm-rgp">${rec.length?'<span class="sm-lb">Recentes</span>':''}${rec.map(pill).join('')}<button type="button" class="sm-rp nw" data-nw="1"><span class="av">+</span>Cliente novo</button></div>`;
     const bind=list=>{$('#smR').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>pick(list.find(x=>x.id===b.dataset.ct)));
       const nb=$('#smR [data-nw]');if(nb)nb.onclick=()=>{$('#smNew').style.display='';$('#smR').hidden=true;const q=$('#smQ').value.trim();if(/\d{8,}/.test(q.replace(/\D/g,'')))$('#smNp').value=q;else $('#smNn').value=q;($('#smNn').value?$('#smNp'):$('#smNn')).focus()}};
     $('#smR').innerHTML=base();bind(rec);
