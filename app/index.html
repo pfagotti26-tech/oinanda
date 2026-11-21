@@ -2509,6 +2509,10 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .bk-when{background:linear-gradient(135deg,#1F2A36,#17212B);color:#fff;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}.bk-when small{color:#C9D2DB;font-size:12.5px}.bk-when b{font-size:24px;letter-spacing:-.4px}.bk-when em{align-self:flex-start;font-style:normal;font-size:11px;font-weight:800;background:#D99A00;color:#fff;border-radius:99px;padding:1px 8px;margin-top:4px}
 @container (max-width:560px){.bk-dl{display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;padding-bottom:2px}.bk-dl::-webkit-scrollbar{display:none}.bk-d{flex:0 0 58px;padding:7px 0}.bk-d em{font-size:9.5px}.bk-nav{width:26px}.bk-g{flex-direction:column;gap:4px}.bk-g>span{padding:0}}
 .bk-jp{font-size:12.5px;font-weight:700;color:var(--c2);background:var(--tint);border-radius:10px;padding:6px 10px;align-self:flex-start}
+.bk-int{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.bk-int:empty{display:none}
+.bk-gc{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:700;color:var(--ink2)}button.bk-gc{cursor:pointer;color:var(--c2);border-style:dashed}.bk-gc.on{background:#F4F8F5;border-color:#CDE8D6;color:#1E6B3B}.bk-gc svg{width:14px;height:14px}
+.bk-rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.bk-rp>span{font-size:13px;font-weight:700;color:var(--ink2)}.bk-rpn select{border:1px solid #DCD2C9;border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;font-weight:600;background:#fff}
+.bk-rl{font-size:12px;color:#C9D2DB;margin-top:4px}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -3822,15 +3826,16 @@ async function agStart(canManage){const box=$('#agStart');if(!box||!canManage)re
   $('#agStX').onclick=e=>{e.stopPropagation();try{localStorage.setItem('oinanda.agStart','1')}catch(e){}box.innerHTML=''};
   $('#agStH').onclick=()=>box.querySelector('.ag-st').classList.toggle('shut');
   box.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{const k=b.dataset.st;if(k==='rem')return go('automacoes');AG.tab='config';syncUrl();VIEWS.agenda()})}
+const GLOGO='<svg viewBox="0 0 24 24" class="glg"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.4V7H2.1a11 11 0 0 0 0 10z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .6 4.2 1.6l3.1-3.1A11 11 0 0 0 2.1 7l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>';
 async function bookModal(pre,after){
   const cfg=AG.cfg||await agCfg();if(!cfg.services.length)return toast('Cadastre um serviço na aba Configurar.');
   const canForce=['owner','manager'].includes(ME.user.role);
   const WD=['dom','seg','ter','qua','qui','sex','sáb'],WDL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const dOf=s=>new Date(s+'T12:00'),today=ymd(new Date());
-  let contact=pre.contact||null,svc=pre.service_id||cfg.services[0].id,pro=pre.pro_id||'',date=pre.date||today,time=null,force=false,counts={},hist=null;
+  let rep=0,repN=4,contact=pre.contact||null,svc=pre.service_id||cfg.services[0].id,pro=pre.pro_id||'',date=pre.date||today,time=null,force=false,counts={},hist=null;
   const pros=()=>(cfg.pros||[]).filter(p=>p.active!==false&&(!(p.services||[]).length||p.services.includes(svc)));
   const S=()=>cfg.services.find(x=>x.id===svc)||cfg.services[0];
-  const o=overlay(`<form class="modal sm2 sm3 bk3" id="bkF"><div class="fm-hd"><div><h2>Agendar${pre.contact?' · '+esc(pre.contact.name):''}</h2><p class="sm-sub">Escolha o cliente, o serviço e toque num horário livre.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+  const o=overlay(`<form class="modal sm2 sm3 bk3" id="bkF"><div class="fm-hd"><div><h2>Agendar${pre.contact?' · '+esc(pre.contact.name):''}</h2><p class="sm-sub">Escolha o cliente, o serviço e toque num horário livre.</p><div class="bk-int">${cfg.google&&cfg.google.connected?`<span class="bk-gc on">${GLOGO}Sincroniza com o Google Agenda${cfg.google.email?' · '+esc(cfg.google.email):''}</span>`:cfg.google&&cfg.google.configured&&ME.user.role==='owner'?`<button type="button" class="bk-gc" id="bkGg">${GLOGO}Conectar o Google Agenda</button>`:''}<span id="bkRm"></span></div></div><button type="button" class="x" aria-label="Fechar">×</button></div>
    <div class="sm-grid"><div class="sm-main">
     ${pre.contact?'':'<section class="sm-sec"><h3><i>1</i>Cliente</h3><div id="bkCt"></div></section>'}
     <section class="sm-sec"><h3><i>${pre.contact?1:2}</i>Serviço</h3><div class="bk-sv" id="bkSv"></div><div id="bkPw"></div></section>
@@ -3838,6 +3843,7 @@ async function bookModal(pre,after){
      <div class="bk-days"><button type="button" class="bk-nav" data-sh="-7" aria-label="Semana anterior">‹</button><div class="bk-dl" id="bkD"></div><button type="button" class="bk-nav" data-sh="7" aria-label="Próxima semana">›</button></div>
      <div id="bkS" class="bk-sl"></div>
      ${canForce?`<details class="bk-fx" id="bkFx"><summary>Encaixar fora dos horários livres</summary><div class="row" style="gap:8px;margin-top:8px"><input type="time" id="bkFt"><span class="hint">Ignora a agenda e marca mesmo assim.</span></div></details>`:''}
+     <div class="bk-rp"><span>Repetir</span><div class="seg" id="bkRpS"><button type="button" class="on" data-rp="0">Não</button><button type="button" data-rp="7">Toda semana</button><button type="button" data-rp="14">A cada 2 semanas</button><button type="button" data-rp="30">Todo mês</button></div><label class="bk-rpn" id="bkRpN" hidden><select id="bkRpQ">${[2,3,4,5,6,8,10,12].map(n=>`<option value="${n}" ${n===4?'selected':''}>${n} vezes</option>`).join('')}</select></label></div>
      <div id="bkNw"><button type="button" class="lnk" id="bkNo">+ Observação</button><div class="field" style="display:none"><label>Observação</label><input name="notes" maxlength="300" placeholder="Ex.: primeira vez, prefere a sala 2"></div></div></section>
    </div><aside class="sm-side"><div class="sm-sticky">
     <h3>Resumo</h3><div class="sm-rc" id="bkRc"></div>
@@ -3847,12 +3853,13 @@ async function bookModal(pre,after){
    <div class="sm-mb"><span><small id="bkMs">Horário</small><b id="bkMt">—</b></span><button type="submit" class="btn p" id="bkMg">Agendar</button></div></form>`,true);
   const f=o.querySelector('#bkF');
   const hm=t=>{const [h,m]=t.split(':').map(Number);const e=h*60+m+S().duration;return `${String(Math.floor(e/60)%24).padStart(2,'0')}:${String(e%60).padStart(2,'0')}`};
+  const repDates=()=>{if(!rep)return[date];const out=[];for(let k=0;k<repN;k++){const d=dOf(date);if(rep===30)d.setMonth(d.getMonth()+k);else d.setDate(d.getDate()+rep*k);out.push(ymd(d))}return out};
   const drawR=()=>{const sv=S(),p=(cfg.pros||[]).find(x=>x.id===pro),d=dOf(date);const t=force?($('#bkFt').value||''):time;
     $('#bkRc').innerHTML=`<div class="sm-rcl ${contact?'':'miss'}"><span>Cliente</span><b>${contact?esc(contact.name):'falta escolher'}</b></div>${contact&&hist!=null?`<div class="sm-hs">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')} ${hist?hist+(hist===1?' horário marcado antes':' horários marcados antes'):'Primeira vez na agenda'}</div>`:''}
       <div class="sm-rcl"><span>Serviço</span><b>${esc(sv.name)}</b></div><div class="sm-rcl"><span>Duração</span><b>${sv.duration} min</b></div>${sv.price!=null?`<div class="sm-rcl"><span>Valor</span><b>${brl2(sv.price)}</b></div>`:''}${(cfg.pros||[]).some(x=>x.active!==false)?`<div class="sm-rcl"><span>Com</span><b>${p?esc(p.name):'quem estiver livre'}</b></div>`:''}`;
-    $('#bkW').innerHTML=`<small>${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}</small><b>${t?t+' – '+hm(t):'escolha um horário'}</b>${force&&t?'<em>encaixe</em>':''}`;
+    $('#bkW').innerHTML=`<small>${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}</small><b>${t?t+' – '+hm(t):'escolha um horário'}</b>${force&&t?'<em>encaixe</em>':''}${rep&&t?`<span class="bk-rl">${repN} vezes: ${repDates().map(x=>{const y=dOf(x);return y.getDate()+'/'+(y.getMonth()+1)}).join(', ')}</span>`:''}`;
     const miss=!contact?'Escolha o cliente':!t?'Escolha o horário':'';
-    $('#bkGo').classList.toggle('wait',!!miss);$('#bkGo').textContent=miss||`Agendar · ${WD[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} às ${t}`;
+    $('#bkGo').classList.toggle('wait',!!miss);$('#bkGo').textContent=miss||(rep?`Agendar ${repN} horários`:`Agendar · ${WD[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} às ${t}`);
     $('#bkMt').textContent=t?`${WD[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} · ${t}`:'—';$('#bkMg').textContent=miss||'Agendar';$('#bkMg').classList.toggle('wait',!!miss)};
   const drawSv=()=>{$('#bkSv').innerHTML=cfg.services.map(v=>`<button type="button" class="bk-s ${v.id===svc?'on':''}" data-sv="${v.id}"><b>${esc(v.name)}</b><small>${v.duration} min${v.price!=null?' · '+brl2(v.price):''}</small></button>`).join('');
     o.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{svc=b.dataset.sv;if(pro&&!pros().some(p=>p.id===pro))pro='';drawSv();drawP();counts={};drawD();load()});
@@ -3874,6 +3881,10 @@ async function bookModal(pre,after){
       if(pre.time&&date===(pre.date||date)){const b=box.querySelector(`[data-t="${pre.time}"]`);if(b)b.click();else if($('#bkFt')){$('#bkFx').open=true;$('#bkFt').value=pre.time;force=true;drawR()}pre.time=null}
     }catch(e){box.innerHTML=`<span class="err">${esc(e.message)}</span>`}};
   if($('#bkFt'))$('#bkFt').oninput=()=>{force=!!$('#bkFt').value;if(force){time=null;$('#bkS').querySelectorAll('.bk-t').forEach(x=>x.classList.remove('on'))}drawR()};
+  o.querySelectorAll('[data-rp]').forEach(b=>b.onclick=()=>{rep=+b.dataset.rp;o.querySelectorAll('[data-rp]').forEach(x=>x.classList.toggle('on',x===b));$('#bkRpN').hidden=!rep;drawR()});
+  $('#bkRpQ').onchange=e=>{repN=+e.target.value;drawR()};
+  if($('#bkGg'))$('#bkGg').onclick=async()=>{try{location.href=(await api('/google/connect',{method:'POST'})).url}catch(e){toast(e.message)}};
+  if(['owner','manager'].includes(ME.user.role))api('/automations').then(r=>{const a=(r.items||[]).filter(x=>x.active&&x.trigger==='before_appt').map(x=>x.hours).sort((a,b)=>b-a);const el=$('#bkRm');if(el&&a.length)el.innerHTML=`<span class="bk-gc on">${svg('<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>')}Lembrete pelo WhatsApp ${a.map(h=>h>=24&&h%24===0?(h/24===1?'1 dia':h/24+' dias'):h+' h').join(' e ')} antes</span>`}).catch(()=>{});
   $('#bkNo').onclick=()=>{$('#bkNo').remove();const fl=$('#bkNw .field');fl.style.display='';fl.querySelector('input').focus()};
   const apHist=async id=>{hist=null;try{const r=await api('/contacts/'+id+'/appointments');hist=(r.items||r||[]).length}catch(e){}drawR()};
   // cliente: mesma escolha rápida da venda
@@ -3900,9 +3911,12 @@ async function bookModal(pre,after){
     if(!contact){$('#bkQ')&&$('#bkQ').focus();return $('#bkE').textContent='Escolha o cliente.'}if(!t)return $('#bkE').textContent='Escolha um horário.';
     const body={contact_id:contact.id,service_id:svc,date,time:t,notes:f.notes.value||null,force:!!ft,pro_id:pro||null};
     $('#bkGo').disabled=true;
-    try{const ap=await api('/appointments',{method:'POST',body});if(VIEW==='conversas'){o.remove();toast('Agendado.');after&&after(ap);return}const d=dOf(date),sv=S(),p=(cfg.pros||[]).find(x=>x.id===pro)||(ap.pro_name?{name:ap.pro_name}:null),fn=contact.name.split(' ')[0];
-      const msg=`Oi, ${fn}! Seu horário está confirmado ✅\n\n*${sv.name}*\n${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}${p?`\nCom ${p.name}`:''}\n\n${ME.company.name}. Qualquer coisa, é só chamar aqui.`;
-      f.innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>Agendado!</h2><p><b>${esc(sv.name)}</b> com ${esc(contact.name)}<br>${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}${p?' · '+esc(p.name):''}</p>
+    try{const ap=await api('/appointments',{method:'POST',body});const okD=[date],bad=[];
+      for(const x of repDates().slice(1)){try{await api('/appointments',{method:'POST',body:{...body,date:x}});okD.push(x)}catch(e){bad.push([x,e.message])}}
+      const fmtD=x=>{const y=dOf(x);return `${WD[y.getDay()]} ${y.getDate()}/${y.getMonth()+1}`};
+      if(VIEW==='conversas'){o.remove();toast(okD.length>1?`${okD.length} horários agendados.`:'Agendado.');after&&after(ap);return}const d=dOf(date),sv=S(),p=(cfg.pros||[]).find(x=>x.id===pro)||(ap.pro_name?{name:ap.pro_name}:null),fn=contact.name.split(' ')[0];
+      const msg=`Oi, ${fn}! ${okD.length>1?'Seus horários estão confirmados':'Seu horário está confirmado'} ✅\n\n*${sv.name}*\n${okD.length>1?okD.map(fmtD).join('\n')+'\nàs '+t:`${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}`}${p?`\nCom ${p.name}`:''}\n\n${ME.company.name}. Qualquer coisa, é só chamar aqui.`;
+      f.innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>${okD.length>1?okD.length+' horários agendados!':'Agendado!'}</h2><p><b>${esc(sv.name)}</b> com ${esc(contact.name)}<br>${okD.length>1?okD.map(fmtD).join(', ')+' às '+t:`${WDL[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})} às ${t}`}${p?' · '+esc(p.name):''}</p>${bad.length?`<p class="note warnb" style="text-align:left">Não deu para marcar: ${bad.map(([x,m])=>fmtD(x)+' ('+esc(m)+')').join('; ')}. Escolha outro horário para essas datas.</p>`:''}${cfg.google&&cfg.google.connected?'<p class="hint">Já foi para o Google Agenda.</p>':''}
         <div class="sm-okb"><button type="button" class="btn p" id="bkOn">Agendar outro</button><button type="button" class="btn" id="bkCp">Copiar confirmação</button>${VIEW!=='conversas'?`<button type="button" class="btn" id="bkOc">Abrir conversa com ${esc(fn)}</button>`:''}<button type="button" class="lnk" id="bkOx">Fechar</button></div></div>`;
       const done=()=>{after&&after(ap)};
       $('#bkOn').onclick=()=>{o.remove();done();bookModal({},after)};$('#bkOx').onclick=()=>{o.remove();done()};
