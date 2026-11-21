@@ -185,7 +185,11 @@ ORDER = ['studio', 'clinica', 'salao', 'imobiliaria', 'escola', 'loja', 'servico
 def niche(segment): return NICHES.get(segment) or NICHES['outro']
 
 def recipes_for(segment):
-    return niche(segment)['recipes'] + LIFECYCLE
+    rs = niche(segment)['recipes'] + LIFECYCLE
+    have = {r['key'] for r in rs}
+    if segment not in ('salao', 'restaurante', 'imobiliaria'):  # cobrança por Hotmart, Kiwify, Eduzz ou iugu: recuperação de pagamento
+        rs += [r for r in NICHES['lancamento']['recipes'] if r['key'] in ('boleto_pix', 'carrinho') and r['key'] not in have]
+    return rs
 
 @router.get('/niches')
 async def niches():

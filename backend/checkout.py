@@ -7,6 +7,9 @@ Conferência de origem (sem ela, nada entra):
 - Hotmart: cabeçalho X-HOTMART-HOTTOK igual ao hottok da conta.
 - Kiwify: parâmetro ?signature= = HMAC-SHA1 (hex) do corpo cru, com o token do webhook como chave.
 - Eduzz: cabeçalho x-signature = HMAC-SHA256 (hex) do corpo cru, com a chave secreta criada no Console.
+- iugu: o gatilho manda o código de autorização cadastrado nele (Authorization). O aviso só traz o número da fatura,
+  então o Oi Nanda busca a fatura na API da iugu com o token da conta: quem pagou, o quê e o link. Como a fatura vem
+  direto da iugu, um aviso falso não registra nada.
 
 O que cada evento faz:
 - venda aprovada: registra a venda (sem duplicar), move o card para a etapa de venda e resolve boleto/carrinho em aberto;
@@ -25,7 +28,7 @@ from whatsapp import encrypt, decrypt, note, aware
 
 log = logging.getLogger('checkout')
 router = APIRouter()
-PROVIDERS = {'hotmart': 'Hotmart', 'kiwify': 'Kiwify', 'eduzz': 'Eduzz'}
+PROVIDERS = {'hotmart': 'Hotmart', 'kiwify': 'Kiwify', 'eduzz': 'Eduzz', 'iugu': 'iugu'}
 KIND_LABEL = {'approved': 'venda aprovada', 'pending': 'boleto ou Pix gerado', 'abandoned': 'carrinho abandonado', 'refunded': 'reembolso',
               'chargeback': 'chargeback', 'canceled': 'compra cancelada', 'refused': 'pagamento recusado', 'expired': 'boleto ou Pix vencido'}
 
@@ -82,7 +85,43 @@ def parse(provider, b):
             'product': it.get('name'), 'product_id': str(it.get('productId') or ''), 'value': money(first(g(d, 'paid', 'value'), g(d, 'price', 'value'))),
             'method': {'bankslip': 'boleto', 'pix': 'pix', 'creditCard': 'cartao'}.get(d.get('paymentMethod') or '', d.get('paymentMethod') or ''),
             'url': first(d.get('bankslipUrl'), d.get('checkoutUrl')), 'pix': g(d, 'transaction', 'key') if d.get('paymentMethod') == 'pix' else None, 'src': g(d, 'utm', 'source')}
+    if provider == 'iugu':
+        return iugu_event(b)
     return None
+
+IUGU_STATUS = {'paid': 'approved', 'refunded': 'refunded', 'chargeback': 'chargeback', 'canceled': 'canceled', 'expired': 'expired', 'pending': 'pending'}
+
+def iugu_event(b):
+    """b = {'event': ..., 'data': {...}, 'invoice': fatura buscada na API}."""
+    ev, d, inv = b.get('event') or '', b.get('data') or {}, b.get('invoice') or {}
+    st = (inv.get('status') or d.get('status') or '').lower()
+    if ev == 'invoice.refund': kind = 'refunded'
+    elif ev == 'invoice.payment_failed': kind = 'pending'  # cartão recusado: a recuperação manda o link para tentar de novo
+    elif ev in ('invoice.created', 'invoice.status_changed', 'invoice.bank_slip_status', 'invoice.due'): kind = IUGU_STATUS.get(st)
+    else: kind = None
+    if not kind or not inv: return None
+    var = {x.get('variable'): x.get('value') for x in inv.get('variables') or [] if isinstance(x, dict)}
+    pre = str(first(inv.get('payer_phone_prefix'), var.get('payer.phone_prefix')) or '')
+    ph = str(first(inv.get('payer_phone'), var.get('payer.phone'), g(inv, 'payer', 'phone')) or '')
+    phone = (pre + ph) if ph and pre and not ph.startswith(pre) and len(ph) <= 9 else ph
+    items = inv.get('items') or []
+    pw = (inv.get('payment_method') or inv.get('payable_with') or '')
+    pw = pw if isinstance(pw, str) else ''
+    method = 'boleto' if 'bank_slip' in pw else 'pix' if 'pix' in pw else 'cartao' if 'credit_card' in pw else ''
+    if ev == 'invoice.payment_failed': method = method or 'cartao'
+    total = first(inv.get('total_paid_cents') if kind == 'approved' else None, inv.get('total_cents'))
+    return {'kind': kind, 'ref': inv.get('id') or d.get('id'), 'name': first(inv.get('payer_name'), var.get('payer.name'), inv.get('customer_name'), g(inv, 'payer', 'name')),
+            'email': first(inv.get('payer_email'), inv.get('email'), var.get('payer.email')), 'phone': phone,
+            'product': first(*(i.get('description') for i in items if isinstance(i, dict))) or 'Fatura iugu', 'product_id': '',
+            'value': money(total, cents=True) if total is not None else money(inv.get('total')), 'method': method,
+            'url': first(inv.get('secure_url'), g(inv, 'bank_slip', 'bank_slip_url')), 'pix': first(g(inv, 'pix', 'qrcode_text'), g(inv, 'pix', 'qrcode')), 'src': None}
+
+async def iugu_invoice(api_token, invoice_id):
+    import httpx
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.get(f'https://api.iugu.com/v1/invoices/{invoice_id}', auth=(api_token, ''))
+    if r.status_code >= 300: raise HTTPException(502, f'A iugu não devolveu a fatura ({r.status_code}). Confira o token da API.')
+    return r.json()
 
 def verify(provider, secret, request, raw):
     if provider == 'hotmart':
@@ -91,6 +130,12 @@ def verify(provider, secret, request, raw):
     if provider == 'kiwify':
         got = request.query_params.get('signature') or ''
         return bool(got) and hmac.compare_digest(got.lower(), hmac.new(secret.encode(), raw, hashlib.sha1).hexdigest())
+    if provider == 'iugu':  # o código do gatilho chega como Authorization (com ou sem "Basic", em texto ou base64)
+        got = (request.headers.get('authorization') or '').strip()
+        if got.lower().startswith('basic '): got = got[6:].strip()
+        import base64
+        opts = {secret, base64.b64encode(secret.encode()).decode(), base64.b64encode((secret + ':').encode()).decode()}
+        return bool(got) and any(hmac.compare_digest(got, o) for o in opts)
     if provider == 'eduzz':
         got = (request.headers.get('x-signature') or '').strip()
         mac = hmac.new(secret.encode(), raw, hashlib.sha256)
@@ -173,7 +218,16 @@ async def webhook(provider: str, hid: str, request: Request):
         await db.checkout_hooks.update_one({'id': hid}, {'$set': {'last_error': 'Assinatura não confere: confira o código de segurança.', 'last_error_at': now()}})
         raise HTTPException(401, 'Assinatura inválida.')
     try: body = json.loads(raw or b'{}')
-    except ValueError: raise HTTPException(400, 'Corpo inválido.')
+    except ValueError:
+        from urllib.parse import parse_qs  # iugu manda como formulário: event=...&data[id]=...&data[status]=...
+        q = {k: v[-1] for k, v in parse_qs(raw.decode('utf-8', 'ignore')).items()}
+        if not q: raise HTTPException(400, 'Corpo inválido.')
+        body = {'event': q.get('event'), 'data': {k[5:-1]: v for k, v in q.items() if k.startswith('data[') and k.endswith(']')}}
+    if provider == 'iugu':
+        iid = (body.get('data') or {}).get('id')
+        if body.get('event', '').startswith('invoice.') and iid:
+            if not h.get('api_enc'): raise HTTPException(400, 'Falta o token da API da iugu no Oi Nanda.')
+            body['invoice'] = await iugu_invoice(decrypt(h['api_enc']), iid)
     ev = parse(provider, body)
     await db.checkout_hooks.update_one({'id': hid}, {'$set': {'last_at': now(), 'last_error': None}, '$inc': {'received': 1}})
     if not ev: return {'ok': True, 'ignored': True}  # evento que não usamos (ex.: acesso à área de membros)
@@ -198,7 +252,7 @@ async def webhook(provider: str, hid: str, request: Request):
 # ---------- configuração (Empresa › Plataformas de venda) ----------
 def hook_out(h, base):
     return {'id': h['id'], 'provider': h['provider'], 'name': PROVIDERS[h['provider']], 'url': f'{base}/api/checkout/{h["provider"]}/{h["id"]}',
-            'has_secret': bool(h.get('secret_enc')), 'active': h.get('active', True), 'last_at': h.get('last_at'), 'received': h.get('received', 0),
+            'has_secret': bool(h.get('secret_enc')) and (h['provider'] != 'iugu' or bool(h.get('api_enc'))), 'has_api': bool(h.get('api_enc')), 'active': h.get('active', True), 'last_at': h.get('last_at'), 'received': h.get('received', 0),
             'last_error': h.get('last_error'), 'created_at': h.get('created_at')}
 
 def base_url():
@@ -216,8 +270,9 @@ async def list_hooks(user=Depends(managers)):
     return {'items': [hook_out(h, base_url()) for h in rows], 'stats': st}
 
 class HookIn(BaseModel):
-    provider: Literal['hotmart', 'kiwify', 'eduzz']
+    provider: Literal['hotmart', 'kiwify', 'eduzz', 'iugu']
     secret: Optional[str] = Field(default=None, min_length=6, max_length=200)
+    api_token: Optional[str] = Field(default=None, min_length=10, max_length=200)  # só a iugu: para buscar a fatura
 
 @router.post('/checkout/hooks')
 async def add_hook(body: HookIn, request: Request, user=Depends(managers)):
@@ -228,6 +283,8 @@ async def add_hook(body: HookIn, request: Request, user=Depends(managers)):
     if body.secret:
         await db.checkout_hooks.update_one({'id': h['id']}, {'$set': {'secret_enc': encrypt(body.secret.strip()), 'active': True, 'last_error': None}})
         h['secret_enc'] = 'x'
+    if body.api_token and body.provider == 'iugu':
+        await db.checkout_hooks.update_one({'id': h['id']}, {'$set': {'api_enc': encrypt(body.api_token.strip()), 'last_error': None}})
     await audit(request, user, f'Ligou a integração com a {PROVIDERS[body.provider]}')
     return hook_out({**h, **(await db.checkout_hooks.find_one({'id': h['id']}, {'_id': 0}))}, base_url())
 

@@ -2283,6 +2283,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .m-chs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.m-chs i{font-style:normal;font-size:12px;font-weight:700;border:1px solid currentColor;border-radius:999px;padding:3px 9px;opacity:.85}
 .ck-k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;position:relative}.ck-k div{background:var(--bg);border-radius:12px;padding:10px 12px}.ck-k b{display:block;font-size:20px}.ck-k span{font-size:12px;color:var(--ink2)}.ck-k em{position:absolute;right:0;top:-20px;font-size:11px;color:var(--ink3);font-style:normal}
 .ck-r{border-top:1px solid var(--line);padding:12px 0}.ck-r:first-of-type{border-top:0}.ck-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ck-h b{font-size:15px}.ck-h small{color:var(--ink3);font-size:12px}.ck-h .sp{flex:1}
+.ck-f{display:flex;flex-direction:column;gap:6px;margin-top:6px}.ck-f input{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;background:#fff}.ck-f input:focus{outline:0;border-color:var(--c)}.ck-f .btn{align-self:flex-start;margin-top:4px}.ck-f label span{font-weight:400}
 .ck-err{color:var(--bad);font-size:13px;margin:6px 0 0}.ck-m{max-width:560px}.ck-st{margin:14px 0 0 18px;display:flex;flex-direction:column;gap:14px}.ck-st li b{display:block;margin-bottom:4px}
 .ck-url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}.ck-url code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12.5px}
 .ck-ft{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}.ck-ft .sp{flex:1}
@@ -3854,7 +3855,7 @@ async function autoModal(a,d,tpls){
   const jms=jst.milestones.filter(m=>m.active!==false);
   const days=x.hours>=24&&x.hours%24===0;
   const TG=[['Na conversa',[['no_reply','O cliente parou de responder'],['stage_enter','Entrou numa etapa do funil']]],['Compra e validade',[['after_purchase','Depois de uma compra'],['before_expiry','Antes de vencer'],['after_expiry','Depois de vencer sem renovar']]],
-    ['Horário marcado',[['before_appt','Antes do horário marcado'],['appt_done','Depois do atendimento'],['appt_no_show','Depois de uma falta']]],['Hotmart, Kiwify e Eduzz',[['checkout_pending','Boleto ou Pix sem pagar'],['checkout_abandoned','Carrinho abandonado']]],...(jms.length?[['Jornada',[['after_milestone','Depois de um marco da jornada']]]]:[])];
+    ['Horário marcado',[['before_appt','Antes do horário marcado'],['appt_done','Depois do atendimento'],['appt_no_show','Depois de uma falta']]],['Hotmart, Kiwify, Eduzz e iugu',[['checkout_pending','Boleto ou Pix sem pagar'],['checkout_abandoned','Carrinho abandonado']]],...(jms.length?[['Jornada',[['after_milestone','Depois de um marco da jornada']]]]:[])];
   const S=AU.sample||{primeiro_nome:'Ana',nome:'Ana Souza',empresa:ME.company.name,servico:'Atendimento',profissional:'Léo',data:'sex 20/11',hora:'09:00',produto:'Plano trimestral',vencimento:'20/11',cupom:'OIK3M9P2',link_pagamento:'pay.hotmart.com/X1',valor:'R$ 997,00'};
   const VL={primeiro_nome:'nome do cliente',empresa:'nome da empresa',produto:'item',vencimento:'data de vencimento',servico:'serviço',data:'dia do horário',hora:'hora',profissional:'profissional',cupom:'cupom',link_pagamento:'link do pagamento',valor:'valor'};
   const t0=tpls.find(t=>t.id===x.template_id);
@@ -6382,7 +6383,7 @@ const VIEWS={
     <label class="em-sw"><span class="ic tg">${svg('<path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/>')}</span><span class="tx"><b>Telegram</b><small>Para quem atende por lá. Você cria um bot gratuito e cola o código aqui.</small></span><input type="checkbox" data-ch="telegram" ${chOn('telegram')?'checked':''}></label></div>
     </div>
    <div class="card em-c" id="tgc" hidden></div>
-   ${mgr?`<div class="em-sh" id="emCk"><h3>Plataformas de venda</h3><span>Vende por Hotmart, Kiwify ou Eduzz? Ligue aqui e cada venda, boleto, Pix e carrinho abandonado chega no Oi Nanda, na ficha do cliente.</span></div><div class="card em-c" id="ckc"></div>`:''}
+   ${mgr?`<div class="em-sh" id="emCk"><h3>Plataformas de venda</h3><span>Vende por Hotmart, Kiwify, Eduzz ou cobra pela iugu? Ligue aqui e cada venda, boleto, Pix e carrinho abandonado chega no Oi Nanda, na ficha do cliente.</span></div><div class="card em-c" id="ckc"></div>`:''}
    <div class="em-sh"><h3>Recursos extras</h3><span>Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time; desligar não apaga nada.</span></div>
    <div class="card em-c em-sws" id="extras">
     ${[['metas','Metas e ranking','Metas da empresa, de equipes e de cada vendedor, com desafios, prêmios e modo TV.'],['jornada','Jornada do cliente','Marcos como "fez a aula", "pediu orçamento", "comprou de novo". A Nanda marca sozinha pelas conversas e o relatório mostra onde os clientes travam.']]
@@ -6870,6 +6871,7 @@ async function vdCommissions(){const mgr=isMgr();const P=VD.cm||(VD.cm={preset:'
 const CK_HOW={
  hotmart:{sec:'Hottok',where:'Na Hotmart: Ferramentas › Webhook (API e notificações) › Cadastrar webhook. Cole o endereço abaixo, escolha a versão 2.0.0 e marque os eventos de compra (aprovada, boleto/Pix impresso, abandono de carrinho, reembolso e chargeback). O Hottok aparece na mesma tela.'},
  kiwify:{sec:'Token do webhook',where:'Na Kiwify: Apps › Webhooks › Criar webhook. Cole o endereço abaixo, escolha os produtos e marque: compra aprovada, boleto gerado, Pix gerado, carrinho abandonado, compra reembolsada e chargeback. O token aparece no webhook criado.'},
+ iugu:{sec:'código de autorização do gatilho',ph:'Código de autorização',api:true,where:'Na iugu: Administração › Configurações de conta › Gatilhos (webhooks). Crie um gatilho para cada evento de fatura (criada, mudança de status, falha no pagamento e reembolso) com o endereço abaixo e invente um código no campo Autorização. Depois, em Administração › Chaves de API, crie um token de produção só para o Oi Nanda.'},
  eduzz:{sec:'Chave secreta',where:'No Console da Eduzz: Webhooks › Segurança, crie uma chave secreta. Depois, em Webhooks, adicione o endereço abaixo e marque as faturas paga, aguardando pagamento, reembolsada, cancelada e chargeback.'}};
 async function renderCk(){const box=$('#ckc');if(!box)return;let d;try{d=await api('/checkout/hooks')}catch(e){box.innerHTML=`<p class="hint">${esc(e.message)}</p>`;return}
   const by=Object.fromEntries(d.items.map(h=>[h.provider,h]));const st=d.stats||{};
@@ -6878,21 +6880,24 @@ async function renderCk(){const box=$('#ckc');if(!box)return;let d;try{d=await a
       <button class="btn sm ${h?'':'p'}" data-cko="${k}">${h?(ok?'Ver configuração':'Terminar de ligar'):'Ligar'}</button></div>
       ${h&&h.last_error?`<p class="ck-err">${esc(h.last_error)}</p>`:''}</div>`};
   box.innerHTML=`${d.items.length?`<div class="ck-k"><div><b>${num(st.approved||0)}</b><span>vendas aprovadas</span></div><div><b>${num(st.pending||0)}</b><span>boletos e Pix gerados</span></div><div><b>${num(st.abandoned||0)}</b><span>carrinhos abandonados</span></div><div><b>${num(st.recovered||0)}</b><span>recuperados</span></div><em>últimos 30 dias</em></div>`:''}
-    ${[['hotmart','Hotmart'],['kiwify','Kiwify'],['eduzz','Eduzz']].map(x=>row(...x)).join('')}
+    ${[['hotmart','Hotmart'],['kiwify','Kiwify'],['eduzz','Eduzz'],['iugu','iugu']].map(x=>row(...x)).join('')}
     <p class="hint" style="margin-top:10px">Venda aprovada entra sozinha em Vendas e move o card para a etapa de venda. Para recuperar boleto, Pix e carrinho, ligue as automações "Boleto ou Pix sem pagar" e "Carrinho abandonado". <button class="lnk" id="ckHelp">Como funciona</button></p>`;
   $('#ckHelp').onclick=()=>hpOpen('plataformas-de-venda');
   box.querySelectorAll('[data-cko]').forEach(b=>b.onclick=()=>ckModal(b.dataset.cko,by[b.dataset.cko]));}
-async function ckModal(k,h){const N={hotmart:'Hotmart',kiwify:'Kiwify',eduzz:'Eduzz'}[k],H=CK_HOW[k];
+async function ckModal(k,h){const N={hotmart:'Hotmart',kiwify:'Kiwify',eduzz:'Eduzz',iugu:'iugu'}[k],H=CK_HOW[k];
   if(!h){try{h=await api('/checkout/hooks',{method:'POST',body:{provider:k}})}catch(e){return toast(e.message)}}
   const o=overlay(`<div class="modal ck-m"><button type="button" class="x" style="float:right" aria-label="Fechar">×</button><h3>Ligar a ${N}</h3>
     <ol class="ck-st"><li><b>Copie o endereço do Oi Nanda</b><div class="ck-url"><code>${esc(h.url)}</code><button class="btn sm" id="ckCp">Copiar</button></div></li>
     <li><b>Cadastre na ${N}</b><p class="hint">${esc(H.where)}</p></li>
     <li><b>Cole aqui o ${esc(H.sec)}</b><p class="hint">É ele que garante que o aviso veio mesmo da ${N}. Fica guardado criptografado.</p>
-     <form id="ckF" class="row" style="gap:8px;margin-top:6px"><input name="s" type="password" autocomplete="off" placeholder="${h.has_secret?'Já cadastrado. Cole outro para trocar':esc(H.sec)}" style="flex:1;min-width:0"><button class="btn p">Salvar</button></form></li></ol>
+     <form id="ckF" class="ck-f"><input name="s" type="password" autocomplete="off" placeholder="${h.has_secret?'Já cadastrado. Cole outro para trocar':esc(H.ph||H.sec)}">
+      ${H.api?`<label class="hint" style="margin-top:6px">Token da API da iugu <span>(o aviso da iugu só traz o número da fatura; o Oi Nanda usa o token para ler quem pagou e o link)</span></label><input name="a" type="password" autocomplete="off" placeholder="${h.has_api?'Já cadastrado. Cole outro para trocar':'Token de produção'}">`:''}
+      <button class="btn p">Salvar</button></form></li></ol>
     <div class="ck-ft">${h.has_secret?'<span class="pill ok">código salvo</span>':''}<span class="sp"></span><button class="btn sm danger" id="ckDel">Desligar ${N}</button></div></div>`,true);
   o.querySelector('#ckCp').onclick=async()=>{try{await navigator.clipboard.writeText(h.url);toast('Endereço copiado.')}catch(e){toast('Selecione o endereço e copie.')}};
-  o.querySelector('#ckF').onsubmit=async ev=>{ev.preventDefault();const v=ev.target.s.value.trim();if(v.length<6)return toast('Cole o código completo.');
-    try{await api('/checkout/hooks',{method:'POST',body:{provider:k,secret:v}});toast(`${N} ligada. Quando o primeiro evento chegar, aparece aqui.`);o.remove();renderCk()}catch(e){toast(e.message)}};
+  o.querySelector('#ckF').onsubmit=async ev=>{ev.preventDefault();const v=ev.target.s.value.trim(),ap=ev.target.a?ev.target.a.value.trim():'';
+    if(v&&v.length<6)return toast('Cole o código completo.');if(!v&&!ap)return toast('Cole o código para salvar.');if(H.api&&!h.has_api&&!ap)return toast('Cole também o token da API da iugu.');
+    try{await api('/checkout/hooks',{method:'POST',body:{provider:k,...(v?{secret:v}:{}),...(ap?{api_token:ap}:{})}});toast(`${N} ligada. Quando o primeiro evento chegar, aparece aqui.`);o.remove();renderCk()}catch(e){toast(e.message)}};
   o.querySelector('#ckDel').onclick=async()=>{if(!await sure(`Desligar a ${N}? Os eventos param de chegar. O que já entrou continua no Oi Nanda.`,{ok:'Desligar'}))return;try{await api('/checkout/hooks/'+h.id,{method:'DELETE'});o.remove();renderCk();toast(`${N} desligada.`)}catch(e){toast(e.message)}};
 }
 /* ---------- Central de ajuda (conteúdo em /ajuda.js, carregado só quando precisa) ---------- */

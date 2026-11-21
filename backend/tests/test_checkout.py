@@ -86,3 +86,32 @@ def test_hotmart_e_eduzz_conferem_a_origem_e_carrinho_abandonado():
         assert s['total'] == 1497 and s['provider'] == 'eduzz' and s['payment'] == 'cartao'
         # a mesma pessoa (mesmo celular): o carrinho abandonado da Hotmart foi resolvido com a compra
         assert c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'kind': 'abandoned'}, {'_id': 0}))['resolved']
+
+def test_iugu_fatura_buscada_na_api(monkeypatch):
+    import checkout, base64
+    faturas = {'INV1': {'id': 'INV1', 'status': 'pending', 'payable_with': 'bank_slip', 'total_cents': 49900, 'secure_url': 'https://faturas.iugu.com/inv1',
+                        'items': [{'description': 'Plano Mensal Studio', 'quantity': 1, 'price_cents': 49900}], 'payer_name': 'Rita Souza', 'email': 'rita@x.com',
+                        'variables': [{'variable': 'payer.phone_prefix', 'value': '11'}, {'variable': 'payer.phone', 'value': '966665555'}]}}
+    pedidos = []
+    async def fake_inv(tok, iid): pedidos.append((tok, iid)); return faturas[iid]
+    monkeypatch.setattr(checkout, 'iugu_invoice', fake_inv)
+    with mk() as c:
+        c.post('/api/auth/signup', json={'name': 'Rui Dono', 'email': 'rui@iu.com', 'password': 'senha-forte-1', 'company': 'Studio Rui', 'segment': 'studio'})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        h = c.post('/api/checkout/hooks', json={'provider': 'iugu', 'secret': 'autoriza-123'}).json()
+        assert not h['has_secret']  # falta o token da API
+        h = c.post('/api/checkout/hooks', json={'provider': 'iugu', 'api_token': 'tok-api-iugu-123456'}).json(); assert h['has_secret']
+        path = h['url'].replace('https://app.oinanda.com.br', '')
+        form = 'event=invoice.created&data%5Bid%5D=INV1&data%5Bstatus%5D=pending'
+        hdr = {'Content-Type': 'application/x-www-form-urlencoded'}
+        assert c.post(path, content=form, headers=hdr).status_code == 401
+        assert c.post(path, content=form, headers={**hdr, 'Authorization': 'Basic ' + base64.b64encode(b'autoriza-123:').decode()}).status_code == 200
+        assert pedidos == [('tok-api-iugu-123456', 'INV1')]
+        ct = c.portal.call(lambda: db.contacts.find_one({'company_id': cid, 'wa_id': '5511966665555'}, {'_id': 0}))
+        ev = c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid}, {'_id': 0}))
+        assert ct['name'] == 'Rita Souza' and ev['kind'] == 'pending' and ev['value'] == 499.0 and ev['url'] == 'https://faturas.iugu.com/inv1'
+        faturas['INV1'] = {**faturas['INV1'], 'status': 'paid', 'total_paid_cents': 49900}
+        c.post(path, content='event=invoice.status_changed&data%5Bid%5D=INV1&data%5Bstatus%5D=paid', headers={**hdr, 'Authorization': 'autoriza-123'})
+        s = c.portal.call(lambda: db.sales.find_one({'company_id': cid}, {'_id': 0}))
+        assert s['total'] == 499.0 and s['provider'] == 'iugu' and s['payment'] == 'boleto' and s['items'][0]['name'] == 'Plano Mensal Studio'
+        assert c.portal.call(lambda: db.checkout_events.find_one({'company_id': cid, 'kind': 'pending'}, {'_id': 0}))['resolved']
