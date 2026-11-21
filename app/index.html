@@ -2370,6 +2370,55 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ck4-pick{margin:18px 0 0;font-weight:700;font-size:14px}
 .ck4-foot{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink2)}.ck4-foot .lnk{font-weight:700}
 @media(max-width:860px){.ck4-kpi{grid-template-columns:1fr}.ck4-stack{display:none}.ck4-ts{grid-template-columns:1fr 1fr}}
+
+/* início */
+.hn{max-width:1180px}.hn-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.hn-date{font-size:13px;font-weight:600;color:var(--ink3)}.hn-top h1{font-size:30px;letter-spacing:-.6px;margin:2px 0 8px}.hn-sub{margin:0;color:var(--ink2)}
+.hn-mode{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px 6px 10px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}
+.hn-mode i{width:9px;height:9px;border-radius:50%;background:var(--ink3)}.hn-mode.ok i{background:#16A34A;box-shadow:0 0 0 4px #DCFCE7;animation:hnp 2s infinite}.hn-mode.warn i{background:#D99A00;box-shadow:0 0 0 4px #FEF3C7}.hn-mode u{color:var(--c2);text-decoration:none;font-weight:700}
+@keyframes hnp{50%{box-shadow:0 0 0 7px #DCFCE700}}
+.hn-qa{display:flex;gap:8px}.hn-q{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;position:relative;transition:border-color .15s,transform .12s}
+.hn-q:hover{border-color:var(--c);transform:translateY(-1px)}.hn-q svg{width:18px;height:18px;color:var(--c)}.hn-q.p{background:var(--ink);color:#fff;border-color:var(--ink)}.hn-q.p svg{color:#fff}
+.hn-q em{position:absolute;top:-7px;right:-7px;background:var(--c);color:#fff;font-style:normal;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:99px;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.hn-setup{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;background:linear-gradient(135deg,#FFF1EA 0%,#FFF8F4 60%,#fff 100%);border:1px solid var(--soft);border-radius:24px;padding:24px;margin-bottom:16px}
+.hn-eb{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--c2)}.hn-setup h2{font-size:23px;letter-spacing:-.4px;margin:6px 0 6px}.hn-setup p{color:var(--ink2);margin:0 0 14px}
+.hn-prog{height:8px;background:#fff;border-radius:99px;overflow:hidden;margin-bottom:16px;border:1px solid var(--soft)}.hn-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--c),#F59E0B);border-radius:99px}
+.hn-setup .btn svg{width:16px;height:16px;vertical-align:-3px}
+.hn-steps{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:18px;padding:10px;border:1px solid var(--line)}
+.hn-st{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px}.hn-st i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12px;background:var(--bg);color:var(--ink3);flex:none}
+.hn-st.ok i{background:var(--oksoft);color:var(--ok)}.hn-st.ok b{color:var(--ink3);text-decoration:line-through;font-weight:600}.hn-st.nx{background:var(--tint);box-shadow:inset 3px 0 0 var(--c)}.hn-st.nx i{background:var(--c);color:#fff}
+.hn-st span{flex:1;min-width:0;display:flex;flex-direction:column}.hn-st b{font-size:13.5px}.hn-st em{font-style:normal;font-size:12px;color:var(--ink3)}.hn-st.ok em{display:none}
+.hn-now{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.hn-k{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;cursor:pointer;font:inherit;color:inherit;transition:transform .12s,box-shadow .15s}
+.hn-k:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(23,33,43,.06)}.hn-ki{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:none;background:var(--bg);color:var(--ink3)}.hn-ki svg{width:21px;height:21px}
+.hn-kt{flex:1;display:flex;flex-direction:column}.hn-kt b{font-size:26px;line-height:1;letter-spacing:-.5px}.hn-kt small{font-size:13px;color:var(--ink2);margin-top:3px}.hn-kt small.z{font-size:13.5px;color:var(--ink3);margin:0}
+.hn-k em{color:var(--ink3)}.hn-k em svg{width:18px;height:18px}
+.hn-k.r{border-color:#F5C2BB;background:#FFF6F4}.hn-k.r .hn-ki{background:var(--bad);color:#fff}.hn-k.a{border-color:#F2D58A;background:#FFFBF0}.hn-k.a .hn-ki{background:#D99A00;color:#fff}.hn-k.b .hn-ki{background:#E0EAFF;color:#2952CC}
+.hn-k.calm{cursor:default}.hn-k.calm:hover{transform:none;box-shadow:none}.hn-k.calm .hn-ki{background:var(--oksoft);color:var(--ok)}
+.hn-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start}.hn-main,.hn-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.hn-c{padding:18px 20px}.hn-ch{display:flex;align-items:center;gap:8px;margin-bottom:12px}.hn-ch h3{font-size:16px;margin:0}.hn-ch .lnk{margin-left:auto;font-weight:700;font-size:13px}
+.hn-n{background:var(--c);color:#fff;font-size:11.5px;font-weight:800;border-radius:99px;padding:1px 8px}
+.hn-td{display:flex;flex-direction:column;gap:6px}.hn-ti{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px 12px;cursor:pointer;font:inherit;color:inherit}
+.hn-ti:hover{border-color:var(--c)}.hn-ti>i{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-style:normal;font-weight:800;background:var(--bg);flex:none}.hn-ti.bad>i,.hn-ti.r>i{background:var(--badsoft);color:var(--bad)}.hn-ti.warn>i,.hn-ti.a>i{background:var(--warnsoft);color:var(--warn)}
+.hn-ti span{flex:1;min-width:0;display:flex;flex-direction:column}.hn-ti b{font-size:14px}.hn-ti small{font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hn-ti em{font-style:normal;font-size:13px;font-weight:700;color:var(--c2);white-space:nowrap}
+.hn-ag{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}.hn-ag li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.hn-ag li:first-child{border-top:0}
+.hn-ag time{font-weight:800;font-size:15px;width:52px;font-variant-numeric:tabular-nums}.hn-ag li span:not(.pill){flex:1;min-width:0;display:flex;flex-direction:column}.hn-ag b{font-size:14px}.hn-ag small{font-size:12.5px;color:var(--ink2)}.hn-ag li.past{opacity:.5}
+.hn-empty{display:flex;align-items:center;gap:12px;color:var(--ink2);background:var(--bg);border-radius:14px;padding:14px}.hn-empty span svg{width:22px;height:22px;color:var(--ink3)}.hn-empty p{margin:0;font-size:13.5px}
+.hn-month{padding:20px}.hn-big small{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3)}.hn-big b{display:block;font-size:34px;letter-spacing:-.8px;margin:2px 0}.hn-big span{font-size:13px;color:var(--ink2)}
+.hn-bars{display:flex;align-items:flex-end;gap:3px;height:54px;margin:14px 0 4px}.hn-bars i{flex:1;background:linear-gradient(180deg,var(--c),#F7A38B);border-radius:3px 3px 1px 1px;opacity:.85;min-height:3px}.hn-bars i:hover{opacity:1}.hn-bars i.z{background:var(--line);opacity:1}
+.hn-nd{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}.hn-ndh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:10px}.hn-ndh svg{width:16px;height:16px;color:var(--c)}
+.hn-ms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hn-ms div{background:var(--bg);border-radius:12px;padding:10px}.hn-ms b{display:block;font-size:20px}.hn-ms small{font-size:11.5px;color:var(--ink2);line-height:1.3;display:block}
+.hn-tip{font-size:12.5px;color:var(--ink2);margin:10px 0 0;background:var(--warnsoft);border-radius:10px;padding:8px 10px}
+.hn-next b{display:block;font-size:15px;margin:4px 0 2px}.hn-next p{font-size:13px;color:var(--ink2);margin:0 0 10px}
+.hn-help{display:flex;gap:12px;align-items:flex-start;padding:16px 18px}.hn-help>span{width:38px;height:38px;border-radius:12px;background:var(--tint);color:var(--c);display:grid;place-items:center;flex:none}.hn-help>span svg{width:20px;height:20px}.hn-help b{font-size:14px}.hn-help p{font-size:13px;color:var(--ink2);margin:2px 0 4px}.hn-help .lnk{font-weight:700;font-size:13px}
+.hn-demo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;padding:22px;background:linear-gradient(135deg,#fff,var(--tint))}.hn-demo h3{font-size:19px;margin:6px 0}.hn-demo p{color:var(--ink2);font-size:14px}.hn-demo .btn svg{width:16px;height:16px;vertical-align:-3px}
+.hn-chat{background:#EFE6DA;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.hn-sl{display:flex;flex-direction:column;align-items:flex-start}.hn-ob{margin-top:22px;width:100%;max-width:380px}.hn-chat .ob-m{animation:none;opacity:1}.hn-sl .hn-prog{width:100%}.hn-cap{font-size:12px;color:#7A6A55;text-align:center}
+@media(max-width:860px){.hn-now{grid-template-columns:repeat(3,1fr);gap:8px}.hn-k{flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:16px}.hn-ki{width:34px;height:34px;border-radius:11px}.hn-ki svg{width:18px;height:18px}.hn-kt b{font-size:22px}.hn-kt small{font-size:11.5px;line-height:1.25}.hn-k em{display:none}
+ .hn-q{flex-direction:column;gap:4px;padding:10px 6px;border-radius:14px}.hn-q span{font-size:12px}.hn-ob{display:none}}
+@media(max-width:980px){.hn-grid{grid-template-columns:1fr}.hn-setup{grid-template-columns:1fr}.hn-demo{grid-template-columns:1fr}}
+@media(max-width:860px){.hn-top h1{font-size:25px}.hn-qa{width:100%}.hn-q{flex:1;justify-content:center}.hn-setup{padding:18px}}
 /* central de ajuda */
 .hp-w{max-width:980px}.hp-w>.card,.hp-w>section{margin-bottom:14px}
 .hp-sr{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:0 16px;margin-bottom:16px;transition:border-color .15s}
@@ -6338,53 +6387,68 @@ const VIEWS={
  },
  async inicio(){
   const u=ME.user,mgr=['owner','manager'].includes(u.role),own=u.role==='owner';
-  const [team,num,ai,sm,au,td]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),mgr?api('/automations').catch(()=>null):null,mgr?api('/home/todo').catch(()=>[]):[]]);
-  const demo=ME.access&&ME.access.state==='demo',first=esc(u.name.split(' ')[0]),co=esc(ME.company.name);
+  const tz=new Date(),ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,today=ymd(tz);
+  const [team,num,ai,sm,au,td,ap,rp]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),
+    mgr?api('/automations').catch(()=>null):null,mgr?api('/home/todo').catch(()=>[]):[],api(`/appointments?start=${today}&end=${today}`).catch(()=>[]),mgr?api('/reports/sales?days=30').catch(()=>null):null]);
+  const demo=ME.access&&ME.access.state==='demo',first=esc(u.name.split(' ')[0]);
   const talked=ai&&((ai.usage||{}).tests>0||ai.taught);
-  const S=[['nanda','Conversar com a Nanda','Veja como ela responderia os seus clientes.','1 min','💬',talked,'Conversar agora',()=>comecarView()],
-    ['ensinar','Ensinar preços e horários','O que ela precisa saber para responder certo.','10 min','🧠',ai&&ai.taught,'Ensinar a Nanda',()=>go('nanda')],
-    ...(demo&&own?[['ativar','Ativar os 14 dias grátis','Hoje não é cobrado nada. Cancele quando quiser.','2 min','🎁',false,'Ativar agora',()=>ativarView()]]:[]),
-    ['wa','Conectar o WhatsApp','O número que seus clientes já conhecem, pelo canal oficial.','5 min','📱',!!num,'Conectar',()=>go('empresa')],
-    ...(au?[['lembretes','Ligar lembretes automáticos','Confirmação de horário e retomada de quem sumiu.','1 min','⏰',au.items.some(a=>a.active),'Ver sugestões',()=>go('automacoes')]]:[]),
-    ['time','Chamar o seu time','Cada pessoa com o seu acesso. Pode pular se é só você.','2 min','👥',team.length>1,'Convidar',()=>go('equipe')]];
-  const steps=mgr?S:S.filter(x=>x[0]==='nanda');const done=steps.filter(x=>x[5]).length+1,total=steps.length+1,next=steps.find(x=>!x[5]);
-  const pct=Math.round(100*done/total),R=34,C=2*Math.PI*R,ready=steps.filter(x=>['nanda','ensinar','ativar','wa'].includes(x[0])).every(x=>x[5]);
+  const S=[['nanda','Conversar com a Nanda','Veja como ela responderia os seus clientes.','1 min',talked,'Conversar agora',()=>comecarView()],
+    ['ensinar','Ensinar preços e horários','O que ela precisa saber para responder certo.','10 min',ai&&ai.taught,'Ensinar a Nanda',()=>go('nanda')],
+    ...(demo&&own?[['ativar','Ativar os 14 dias grátis','Hoje não é cobrado nada. Cancele quando quiser.','2 min',false,'Ativar agora',()=>ativarView()]]:[]),
+    ['wa','Conectar o WhatsApp','O número que seus clientes já conhecem, pelo canal oficial.','5 min',!!num,'Conectar',()=>go('empresa')],
+    ...(au?[['lembretes','Ligar lembretes automáticos','Confirmação de horário e retomada de quem sumiu.','1 min',au.items.some(a=>a.active),'Ver sugestões',()=>go('automacoes')]]:[]),
+    ['time','Chamar o seu time','Cada pessoa com o seu acesso. Pode pular se é só você.','2 min',team.length>1,'Convidar',()=>go('equipe')]];
+  const steps=mgr?S:S.filter(x=>x[0]==='nanda');const done=steps.filter(x=>x[4]).length+1,total=steps.length+1,next=steps.find(x=>!x[4]);
+  const ready=steps.filter(x=>['nanda','ensinar','ativar','wa'].includes(x[0])).every(x=>x[4]);
   const N=(sm&&sm.nanda)||{},nf=x=>Number(x||0).toLocaleString('pt-BR');
-  const val=[['💬','Clientes atendidos pela Nanda',nf(N.people),N.replies?`${nf(N.replies)} respostas enviadas`:'conversas que ela cuidou'],
-    ['🌙','Respostas fora do horário',nf(N.after_hours),'enquanto você descansava'],
-    ['📅','Horários marcados por ela',nf(N.appts),'direto na sua agenda'],
-    ['💰','Vendas no mês',nf(sm&&sm.won),sm&&sm.won_value?brl(sm.won_value)+' fechados':'registradas no funil']];
-  $('#page').innerHTML=`<div class="hm">
-   <section class="hm-hero"><div class="hm-hl">
-     <span class="hm-hi">Oi, ${first} 👋${mgr&&next?`<span class="hm-mini">${done} de ${total} passos prontos</span>`:''}</span>
-     <h1>${!ready?`Falta pouco para a Nanda atender os seus clientes.`:`A Nanda está cuidando do seu atendimento.`}</h1>
-     <p>${!ready?'Cada passo leva poucos minutos e a gente te guia em todos.':'Ela responde na hora, marca horários e chama o seu time quando precisa.'}</p>
-     ${next?`<div class="hm-next"><i>${next[4]}</i><span><small>${ready?'Para render ainda mais':'Próximo passo'} · ${next[3]}</small><b>${next[1]}</b><em>${next[2]}</em></span><button class="btn p" id="hmGo">${next[6]} →</button></div>`:''}</div>
-    ${mgr?`<div class="hm-ring" title="${done} de ${total} passos prontos"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${R}" class="bg"/><circle cx="40" cy="40" r="${R}" class="fg" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct/100)}"/></svg><span><b>${done}<small>/${total}</small></b>passos prontos</span></div>`:''}</section>
+  const h=tz.getHours(),hi=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const dia=(x=>x[0].toUpperCase()+x.slice(1))(tz.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}));
+  const mode=(ai&&ai.default_mode)||'copilot',ML={auto:['ok','Nanda atendendo sozinha'],copilot:['warn','Nanda em copiloto: sugere e o time envia'],off:['grey','Nanda pausada']}[mode]||['grey',''];
+  const I=p=>svg(p);
+  const IC2={chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',hand:'<path d="M7 11V6a2 2 0 1 1 4 0v5M11 10V4a2 2 0 1 1 4 0v6M15 10V6a2 2 0 1 1 4 0v8a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L4 13a2 2 0 0 1 3-2.6l1 1.6"/>',
+    cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',moon:'<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>',bag:'<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+    spark:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/>',plus:'<path d="M12 5v14M5 12h14"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+  // agora: o que pede ação
+  const apps=(ap||[]).filter(a=>a.status!=='canceled').sort((a,b)=>a.start<b.start?-1:1);
+  const upcoming=apps.filter(a=>new Date(a.start)>=new Date(Date.now()-30*6e4));
+  const nowK=[['hand',sm?sm.needs_human:0,'pediram uma pessoa','Ninguém pediu atendente','r','conversas'],['chat',sm?sm.waiting:0,'esperando resposta','Nenhum cliente esperando','a','conversas'],['cal',upcoming.length,upcoming.length===1?'horário ainda hoje':'horários ainda hoje','Agenda livre hoje','b','agenda']];
+  // mês: série de vendas para o gráfico
+  const ser=(rp&&rp.series)||[];const mx=Math.max(1,...ser.map(x=>x.value||x.won||0));
+  const bars=ser.some(x=>x.value||x.won)?`<div class="hn-bars" aria-hidden="true">${ser.slice(-30).map(x=>`<i class="${x.value||x.won?'':'z'}" style="height:${x.value||x.won?Math.max(8,Math.round(100*(x.value||x.won||0)/mx)):6}%" title="${esc(x.date)}: ${x.value?brl(x.value):(x.won||0)+' vendas'}"></i>`).join('')}</div>`:'';
+  const stepRow=(x,i)=>`<div class="hn-st ${x[4]?'ok':x===next?'nx':''}"><i>${x[4]?'✓':i+2}</i><span><b>${x[1]}</b><em>${x[2]}</em></span>${x[4]||x===next?'':`<button class="btn sm" data-st="${i}">${x[5]}</button>`}</div>`;
+  const tdIc={wa_alert:'⚠',gaps:'?',tpl_bad:'!',tpl_late:'⏳',alert:'🔔',auto:'⚡'};
+  $('#page').innerHTML=`<div class="hn">
+   <header class="hn-top"><div><span class="hn-date">${esc(dia)}</span><h1>${hi}, ${first}</h1>
+     ${num?`<button class="hn-mode ${ML[0]}" id="hnMode"><i></i>${ML[1]}${mgr&&mode!=='auto'?' · <u>mudar</u>':''}</button>`:`<p class="hn-sub">${ready?'Tudo pronto para a Nanda atender.':'Falta pouco para a Nanda atender os seus clientes.'}</p>`}</div>
+    <div class="hn-qa"><button class="hn-q" data-q="venda">${I(IC2.bag)}<span>Registrar venda</span></button><button class="hn-q" data-q="agenda">${I(IC2.cal)}<span>Agendar</span></button><button class="hn-q p" data-to="conversas">${I(IC2.chat)}<span>Conversas</span>${sm&&(sm.waiting+sm.needs_human)?`<em>${sm.waiting+sm.needs_human}</em>`:''}</button></div></header>
+   ${!ready&&mgr?`<section class="hn-setup"><div class="hn-sl"><span class="hn-eb">Primeiros passos · ${done} de ${total}</span><h2>${next?esc(next[1]):''}</h2><p>${next?esc(next[2])+' Leva '+next[3]+'.':''}</p>
+      <div class="hn-prog"><i style="width:${Math.round(100*done/total)}%"></i></div>${next?`<button class="btn p" id="hmGo">${next[5]} ${I(IC2.arrow)}</button>`:''}${!num?`<div class="hn-chat hn-ob" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div><span class="hn-cap">Assim ela responde os seus clientes, até de madrugada.</span></div>`:''}</div>
+     <div class="hn-steps">${`<div class="hn-st ok"><i>✓</i><span><b>Conta criada</b></span></div>`+steps.map(stepRow).join('')}</div></section>`:''}
    <div id="inPush"></div><div id="inMeta"></div>
-   ${sm&&(sm.waiting||sm.needs_human)?`<div class="hm-now">${sm.needs_human?`<button class="hm-al r" data-to="conversas"><b>${sm.needs_human}</b><span>${sm.needs_human===1?'cliente pediu':'clientes pediram'} para falar com alguém do time</span><em>Atender →</em></button>`:''}
-     ${sm.waiting?`<button class="hm-al a" data-to="conversas"><b>${sm.waiting}</b><span>${sm.waiting===1?'conversa esperando':'conversas esperando'} resposta</span><em>Responder →</em></button>`:''}</div>`
-    :num?'<div class="hm-now"><div class="hm-al g"><b>✓</b><span>Tudo em dia. Nenhum cliente esperando.</span></div></div>':''}
-   ${td&&td.length?`<section class="hm-sec"><div class="hm-sh"><h2>Precisa de você</h2><span class="hm-tag">${td.length===1?'1 coisa':td.length+' coisas'} para resolver</span></div><div class="hm-td">${td.map((x,i)=>`<button type="button" class="hm-ti ${x.tone}" data-td="${i}"><i>${{wa_alert:'⚠️',gaps:'?',tpl_bad:'!',tpl_late:'⏳',alert:'🔔',auto:'🤖'}[x.k]||'•'}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><em>${esc(x.cta)} →</em></button>`).join('')}</div></section>`:''}
-   <section class="hm-sec"><div class="hm-sh"><h2>O que a Nanda fez por você este mês</h2>${num?'':'<span class="hm-tag">começa a contar quando o WhatsApp estiver conectado</span>'}</div>
-    ${num&&ai&&ai.default_mode!=='auto'&&!N.people?`<div class="hm-cop"><span>${ai.default_mode==='off'?'⏸':'✍️'}</span><p><b>${ai.default_mode==='off'?'A Nanda está pausada.':'A Nanda está em Copiloto: ela sugere e o time envia.'}</b> Por isso os números abaixo ficam em zero. ${ai.default_mode==='off'?'Ligue para ela voltar a ajudar.':`Este mês ela escreveu ${Number((ai.usage||{}).suggestions||0).toLocaleString('pt-BR')} ${((ai.usage||{}).suggestions||0)===1?'sugestão':'sugestões'}. Para ela responder sozinha, inclusive de madrugada, mude para “Atende sozinha”.`}</p><button type="button" class="btn sm" data-to="nanda">Ver a Nanda</button></div>`:''}
-    ${num||N.people?`<div class="hm-val">${val.map(v=>`<div><i>${v[0]}</i><small>${v[1]}</small><b>${v[2]}</b><span>${v[3]}</span></div>`).join('')}</div>`
-    :`<div class="hm-demo"><div class="hm-dl"><b>Ela já está pronta para conversar com os seus clientes.</b><p>Responde em segundos, marca o horário na sua agenda e chama o seu time quando o cliente está pronto para fechar. Faça uma pergunta como se fosse um cliente e veja.</p><button class="btn p" id="hmTry">Conversar com a Nanda</button></div>
-      <div class="hm-dr" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Oi! Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div></div></div>`}</section>
-   ${next&&mgr&&!ready?`<section class="hm-sec"><div class="hm-sh"><h2>Primeiros passos</h2><span class="hm-tag">${done} de ${total} prontos</span></div><div class="hm-steps">
-     <div class="hm-st ok"><i>✓</i><span><b>Conta criada</b><em>Sua empresa já está no Oi Nanda.</em></span></div>
-     ${steps.map((x,i)=>`<div class="hm-st ${x[5]?'ok':x===next?'nx':''}"><i>${x[5]?'✓':i+2}</i><span><b>${x[1]}</b><em>${x[2]}</em></span>${x[5]?'':`<small>${x[3]}</small><button class="btn sm ${x===next?'p':''}" data-st="${i}">${x[6]}</button>`}</div>`).join('')}</div></section>`:''}
-   <section class="hm-sec hm-faq"><div class="hm-sh"><h2>Dúvidas rápidas</h2></div>
-    <details><summary>Vou continuar usando o WhatsApp no celular?</summary><p>Sim. A Nanda entra junto com o app que você já usa. Você responde pelo celular quando quiser e tudo fica no mesmo histórico.</p></details>
-    <details><summary>Como a Nanda sabe o que responder?</summary><p>Ela usa só o que você ensinou em Nanda (IA): preços, horários, regras. O que não souber, ela passa para o seu time, sem inventar.</p></details>
-    <details id="hmCost"><summary>O WhatsApp oficial tem algum custo?</summary><p>Responder quem te chama é grátis, sempre. A Meta só cobra quando você inicia uma conversa, como em lembretes e promoções, e a gente mostra o valor antes de enviar. <button type="button" class="lnk" id="hmCostMore">Ver como funciona</button></p></details>
-   </section></div>`;
-  if($('#hmGo'))$('#hmGo').onclick=()=>next[7]();
+   ${num?`<section class="hn-now">${nowK.map(k=>`<button class="hn-k ${k[1]?k[4]:'calm'}" data-to="${k[5]}"><span class="hn-ki">${I(IC2[k[0]])}</span><span class="hn-kt">${k[1]?`<b>${k[1]}</b><small>${k[2]}</small>`:`<small class="z">${k[3]}</small>`}</span>${k[1]?`<em>${I(IC2.arrow)}</em>`:''}</button>`).join('')}</section>`:''}
+   <div class="hn-grid"><div class="hn-main">
+    ${td&&td.length?`<section class="card hn-c"><div class="hn-ch"><h3>Precisa de você</h3><span class="hn-n">${td.length}</span></div><div class="hn-td">${td.slice(0,4).map((x,i)=>`<button type="button" class="hn-ti ${x.tone}" data-td="${i}"><i>${tdIc[x.k]||'•'}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><em>${esc(x.cta)}</em></button>`).join('')}</div>${td.length>4?`<p class="hint" style="margin:10px 0 0">+${td.length-4} ${td.length-4===1?'item':'itens'} abaixo da linha. Resolva os primeiros e eles aparecem aqui.</p>`:''}</section>`:''}
+    <section class="card hn-c"><div class="hn-ch"><h3>Agenda de hoje</h3><button class="lnk" data-to="agenda">Abrir agenda</button></div>
+     ${apps.length?`<ul class="hn-ag">${apps.slice(0,6).map(a=>{const t=new Date(a.start),past=t<new Date(Date.now()-30*6e4);return `<li class="${past?'past':''}"><time>${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</time><span><b>${esc(a.contact_name||'Cliente')}</b><small>${esc(a.service_name||'')}${a.pro_name?' · '+esc(a.pro_name):''}${a.by&&/\(IA\)$/.test(a.by)?' · marcado pela Nanda':''}</small></span><span class="pill ${a.status==='confirmed'?'ok':a.status==='done'?'grey':a.status==='no_show'?'bad':'warn'}">${esc(a.status_label||'')}</span></li>`}).join('')}</ul>${apps.length>6?`<p class="hint">e mais ${apps.length-6}.</p>`:''}`
+      :`<div class="hn-empty"><span>${I(IC2.cal)}</span><p><b>Nenhum horário hoje.</b> Quando a Nanda ou o time marcar, aparece aqui.</p></div>`}</section>
+    ${!num&&(ready||!mgr)?`<section class="card hn-demo"><div><span class="hn-eb">Experimente</span><h3>A Nanda já está pronta para conversar com os seus clientes</h3><p>Ela responde em segundos, marca o horário na sua agenda e chama o seu time quando o cliente está pronto para fechar.</p><button class="btn p" id="hmTry">Conversar com a Nanda ${I(IC2.arrow)}</button></div>
+      <div class="hn-chat" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div></div></section>`:''}
+   </div><aside class="hn-side">
+    <section class="card hn-month"><div class="hn-ch"><h3>Este mês</h3>${mgr?'<button class="lnk" data-to="relatorios">Relatórios</button>':''}</div>
+     <div class="hn-big"><small>Vendido</small><b>${sm&&sm.won_value?brl(sm.won_value):'R$ 0'}</b><span>${nf(sm&&sm.won)} ${(sm&&sm.won)===1?'venda':'vendas'} · ${nf(sm&&sm.new_contacts)} ${(sm&&sm.new_contacts)===1?'contato novo':'contatos novos'}</span></div>${bars}
+     <div class="hn-nd"><span class="hn-ndh">${I(IC2.spark)} O que a Nanda fez</span>
+      <div class="hn-ms"><div><b>${nf(N.people)}</b><small>clientes atendidos</small></div><div><b>${nf(N.after_hours)}</b><small>respostas fora do horário</small></div><div><b>${nf(N.appts)}</b><small>horários marcados</small></div></div>
+      ${num&&mode!=='auto'&&!N.people?`<p class="hn-tip">${mode==='off'?'Ela está pausada, por isso está em zero.':'Em copiloto ela sugere e o time envia, por isso está em zero.'}${mgr?' <button class="lnk" data-to="nanda">Ligar a Nanda</button>':''}</p>`:''}</div></section>
+    ${ready&&mgr&&next?`<section class="card hn-c hn-next"><span class="hn-eb">Para render mais</span><b>${esc(next[1])}</b><p>${esc(next[2])}</p><button class="btn sm" id="hmGo">${next[5]}</button></section>`:''}
+    <section class="card hn-help"><span>${I(IC2.help)}</span><div><b>Ficou com dúvida?</b><p>Guias curtos de cada tela e do seu segmento.</p><button class="lnk" data-to="ajuda">Abrir a Central de ajuda</button></div></section>
+   </aside></div></div>`;
+  if($('#hmGo'))$('#hmGo').onclick=()=>next[6]();
   if($('#hmTry'))$('#hmTry').onclick=()=>comecarView();
-  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>steps[+b.dataset.st][7]());
-  document.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+  if($('#hnMode'))$('#hnMode').onclick=()=>mgr?go('nanda'):null;
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>steps[+b.dataset.st][6]());
+  document.querySelectorAll('#page [data-to]').forEach(b=>b.onclick=()=>{if(b.dataset.to==='ajuda')HP.art=null;go(b.dataset.to)});
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>b.dataset.q==='venda'?saleModal({onDone:()=>VIEWS.inicio()}):go('agenda').then(()=>bookModal({},()=>VIEWS.agenda())));
   document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{const x=td[+b.dataset.td];if(x.to==='conversas'){CV.filter='all';CV.kind='';CV.origin='';CV.open=null}go(x.to)});
-  $('#hmCostMore').onclick=async()=>{let r;try{r=await api('/meta/rates')}catch(e){return toast(e.message)}overlay(`<div class="modal hm-mi"><button type="button" class="x" style="float:right">×</button>${metaIntroHtml(r,false)}</div>`,true)};
   inicioMeta();pushNudge();
  },
  async equipe(){
