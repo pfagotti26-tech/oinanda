@@ -5591,7 +5591,7 @@ async function adVisao(){
    <div class="card"><h2>Operação</h2><p class="sub" style="margin:4px 0 6px">O que precisa estar funcionando para o Oi Nanda rodar.</p>
     ${op(ops.payments,'Cobrança','Mercado Pago '+(ops.payments?'configurado':'sem chave: as assinaturas não funcionam'))}
     ${op(ops.email,'E-mails','envio pelo Resend '+(ops.email?'ativo':'desligado: nenhum e-mail sai'))}
-    ${op(ops.wa_notices,'Avisos por WhatsApp',ops.wa_notices?'saindo pelo número do Oi Nanda':'sem número conectado: os avisos saem só por e-mail')}
+    ${op(ops.wa_notices,'Avisos por WhatsApp',ops.wa_notices?'saindo pelo número do Oi Nanda':ops.wa_notices_why==='bloqueado'?'o número do Oi Nanda está com bloqueio na Meta: os avisos saem só por e-mail até liberar':'sem número conectado: os avisos saem só por e-mail')}
     ${op(ops.errors_24h?false:true,'Erros nas últimas 24h',ops.errors_24h?`${ops.errors_24h} ${ops.errors_24h===1?'erro':'erros'} · <a href="#" id="adErr">ver</a>`:'nenhum')}
     ${op(ops.backup_at?true:null,'Backup',ops.backup_at?'última cópia em '+dt(ops.backup_at):'cópia fora do servidor ainda não configurada')}
     <div class="ad-op"><i class="${A.wa_connected?'ok':'warn'}"></i><div><b>Canais dos clientes</b><small>${A.wa_connected||0} com WhatsApp · ${A.ig_connected||0} com Instagram</small></div></div></div>

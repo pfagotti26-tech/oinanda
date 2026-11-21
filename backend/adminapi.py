@@ -191,7 +191,11 @@ async def overview(start: Optional[str] = None, end: Optional[str] = None, plan:
             'mrr': r['mrr'], 'wa': bool(r['wa'] and r['wa'].get('status') == 'connected')} for r in top]
     import mailer, notices as N
     bk = await db.settings.find_one({'id': 'backup'}, {'_id': 0}) or {}
-    ops = {'wa_notices': await N.wa_ready(), 'payments': bool(os.environ.get('MP_ACCESS_TOKEN')), 'email': mailer.ready(),
+    own_wa = None
+    if ADMIN_EMAIL:
+        me_u = await db.users.find_one({'email': ADMIN_EMAIL, 'role': 'owner'}, {'_id': 0, 'company_id': 1})
+        own_wa = await db.wa_numbers.find_one({'company_id': me_u['company_id'], 'status': 'connected'}, {'_id': 0, 'alert': 1}) if me_u else None
+    ops = {'wa_notices': await N.wa_ready(), 'wa_notices_why': ('bloqueado' if own_wa and own_wa.get('alert') else 'sem_numero' if not own_wa else None), 'payments': bool(os.environ.get('MP_ACCESS_TOKEN')), 'email': mailer.ready(),
            'errors_24h': await db.errors.count_documents({'at': {'$gte': now() - timedelta(days=1)}}), 'backup_at': bk.get('last_at')}
     wa_bad = [r for r in live if r['wa'] and r['wa'].get('status') == 'connected' and r['wa'].get('alert')]
     card_soon = [r for r in rows if (lambda tu: tu and now() < tu <= now() + timedelta(days=3))(aware((r['c'].get('billing') or {}).get('trial_until'))) and (r['c'].get('billing') or {}).get('status') == 'active']
