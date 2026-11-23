@@ -2539,6 +2539,12 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pm-q b{display:block;font-size:15px}.pm-q small{font-size:12.5px;color:var(--ink3)}
 .pm-yn,.pm-rl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pm-yn button,.pm-rl button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 13px;font:inherit;cursor:pointer}.pm-yn button b,.pm-rl button b{font-size:14px}.pm-yn button small,.pm-rl button small{font-size:12px;color:var(--ink3)}.pm-yn button.on,.pm-rl button.on{border-color:var(--c);background:var(--tint)}
 .pm-in{width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;background:#FCFAF8;border:1px solid var(--line);border-radius:14px;padding:14px}
+.pm-do{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pm-do button{position:relative;display:flex;gap:11px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 38px 14px 14px;font:inherit;cursor:pointer}.pm-do button:disabled{cursor:default;opacity:.55}.pm-do button b{font-size:14.5px;display:block}.pm-do button small{font-size:12.5px;color:var(--ink3);line-height:1.4;display:block;margin-top:2px}
+.pm-di{width:36px;height:36px;border-radius:11px;background:var(--bg);color:var(--ink2);display:grid;place-items:center;flex:none}.pm-di svg{width:18px;height:18px}
+.pm-ck{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:1.5px solid #D5DBE1;display:grid;place-items:center}.pm-ck svg{width:12px;height:12px;stroke:#fff;stroke-width:3;opacity:0}
+.pm-do button.on{border-color:var(--c);background:var(--tint)}.pm-do button.on .pm-di{background:#fff;color:var(--c2)}.pm-do button.on .pm-ck{background:var(--c);border-color:var(--c)}.pm-do button.on .pm-ck svg{opacity:1}
+.pm-qi{width:16px;height:16px;vertical-align:-3px;margin-right:6px;color:var(--c2)}
+@media(max-width:560px){.pm-do{grid-template-columns:1fr}}
 .pm-lock{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);background:var(--bg);border-radius:12px;padding:10px 12px}.pm-lock svg{width:16px;height:16px;flex:none}
 .pm-cl{display:flex;gap:8px}.pm-cl button{width:28px;height:28px;border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}.pm-cl button.on{box-shadow:0 0 0 2px var(--c)}
 .pm-sv{display:flex;flex-wrap:wrap;gap:6px}.pm-sv .sm-rp{padding:6px 12px}
@@ -2571,12 +2577,13 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pc-me{font-size:10.5px!important;font-weight:800!important;background:var(--bg);color:var(--ink3)!important;border-radius:99px;padding:1px 7px;margin-left:4px;vertical-align:2px}
 @media(max-width:560px){.eq-st{padding:16px}.eq-pg{width:100%}.eq-st li{flex-wrap:wrap;align-items:flex-start}.eq-st li>span{flex:1 1 calc(100% - 44px)}.eq-st li .btn{margin-left:40px}.eq-st li.ok>span{flex:1 1 auto}.eq-st li.ok em{display:none}}
 .pr-l0{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:visible}
-.pr{display:grid;grid-template-columns:38px minmax(160px,1.4fr) 104px minmax(0,1.3fr) 150px auto;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line)}.pr.off{opacity:.55}
+.pr{display:grid;grid-template-columns:38px minmax(160px,1.4fr) 196px minmax(0,1.1fr) 140px auto;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line)}.pr.off{opacity:.55}
 .pr .av{width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;position:relative}.pr .av .dot{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#16A34A;border:2px solid #fff}
 .pr-n{display:flex;flex-direction:column;min-width:0}.pr-n b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pr-n small{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr-i{display:flex;gap:6px;flex-wrap:wrap;min-width:0}.pr-ag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink2);background:var(--bg);border-radius:99px;padding:3px 9px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pr-ag i{width:7px;height:7px;border-radius:50%;background:var(--pc);flex:none}.pr-x{font-size:12px;color:var(--ink2);background:var(--bg);border-radius:99px;padding:3px 9px}
 .pr-w{font-size:12.5px;color:var(--ink3);white-space:nowrap}.pr-on{display:inline-flex;align-items:center;gap:5px;color:var(--ok);font-weight:700}.pr-on i{width:7px;height:7px;border-radius:50%;background:#16A34A}
 .pc-sp{display:inline-block;width:32px}
+.pr-do{display:flex;gap:6px}.pr-b{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:99px;padding:3px 9px 3px 7px;color:#B5BEC7;background:transparent;border:1px dashed #DDE2E7;white-space:nowrap}.pr-b svg{width:13px;height:13px}.pr-b.on{color:var(--ok);background:var(--oksoft);border:1px solid transparent}
 .pr-new{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:0;border-radius:0 0 18px 18px;font:inherit;cursor:pointer;text-align:left}.pr-new:hover{background:#FFF8F4}.pr-new span{width:38px;height:38px;border-radius:50%;border:1.5px dashed #E8B9A9;color:var(--c);display:grid;place-items:center}.pr-new span svg{width:17px;height:17px}.pr-new b{font-size:14px;color:var(--c2)}.pr-new small{font-size:12.5px;color:var(--ink3)}
 @media(max-width:860px){.pr{grid-template-columns:38px minmax(0,1fr) auto;grid-template-areas:"a n c" "a r r";row-gap:6px}.pr .av{grid-area:a;align-self:start}.pr-n{grid-area:n}.pc-a{grid-area:c}.pr-r,.pr-i,.pr-w{grid-area:r}.pr-r{display:flex;gap:6px;flex-wrap:wrap}.pr-i,.pr-w{display:none}.pr-new small{display:none}}
 /* equipes */
@@ -6864,20 +6871,22 @@ const VIEWS={
   const svTxt=p=>!p?'':!(p.services||[]).length?'todos os serviços':p.services.map(x=>SVN[x]).filter(Boolean).join(', ');
   const people=[...team.map(m=>({m,p:PROS.find(x=>x.user_id===m.id)})),...PROS.filter(p=>!p.user_id||!team.some(m=>m.id===p.user_id)).map(p=>({m:null,p}))];
   const EF=VIEWS._eqf||'all';
+  const agUse=PROS.length>0||((acfg&&acfg.services)||[]).length>0;
   const card=({m,p})=>{const nm=(m||p).name,me=m&&m.id===u.id,ag=p&&p.active!==false,r=m?RL[m.role]||['eq-a',m.role]:null,s=m?st(m):null,l=m&&last(m);
     const menu=canManage&&m&&m.active?[`<button type="button" data-work="${m.id}">Comissão e turno</button>`,m.role!=='owner'&&!me?`<button type="button" data-reset="${m.id}">Mandar nova senha</button>`:'',m.role!=='owner'&&!me?`<button type="button" class="danger" data-act="${m.id}" data-on="0">Desativar acesso</button>`:''].join(''):canManage&&m&&!m.active?`<button type="button" data-act="${m.id}" data-on="1">Reativar acesso</button>`:'';
-    const sub=m?esc(m.email):'Sem acesso ao sistema';
+    const sub=m?`${esc(m.email)} · ${r[1]}`:'sem login';
+    const DO=`<span class="pr-do"><span class="pr-b ${m&&m.active?'on':''}" title="${m?'Atende conversas no WhatsApp e Instagram pelo Oi Nanda':'Não atende conversas (não tem login)'}">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}Conversas</span>${agUse?`<span class="pr-b ${ag?'on':''}" title="${ag?'Atende clientes com horário marcado':'Não atende na agenda'}">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}Agenda</span>`:''}</span>`;
     const info=[ag?`<span class="pr-ag" style="--pc:${p.color||'#999'}"><i></i>${esc(svTxt(p))}${p.hours?' · horário próprio':''}</span>`:'',m&&m.commission_pct!=null?`<span class="pr-x">comissão ${String(m.commission_pct).replace('.',',')}%</span>`:''].filter(Boolean).join('');
-    const when=m?(s&&s[1]!=='ativo'&&s[1]!=='online agora'?`<span class="pill ${s[0]}">${s[1]}</span>`:online(m)?'<span class="pr-on"><i></i>online</span>':l?`<span class="pr-l">há ${agoShort(l)}</span>`:'<span class="pr-l">nunca entrou</span>'):'<span class="pr-l">só agenda</span>';
+    const when=m?(s&&s[1]!=='ativo'&&s[1]!=='online agora'?`<span class="pill ${s[0]}">${s[1]}</span>`:online(m)?'<span class="pr-on"><i></i>online</span>':l?`<span class="pr-l">há ${agoShort(l)}</span>`:'<span class="pr-l">nunca entrou</span>'):'';
     return `<div class="pr ${m&&!m.active?'off':''}"><span class="av" style="background:${p&&p.color||avc(nm)}">${initials(nm)}${m&&online(m)?'<i class="dot"></i>':''}</span>
       <span class="pr-n"><b>${esc(nm)}${me?' <small class="pc-me">você</small>':''}</b><small>${sub}</small></span>
-      <span class="pr-r">${r?`<span class="eq-rl ${r[0]}">${r[1]}</span>`:'<span class="eq-rl eq-x">Agenda</span>'}</span>
+      <span class="pr-r">${DO}</span>
       <span class="pr-i">${info}</span><span class="pr-w">${when}</span>
       ${canManage?`<span class="pc-a"><button type="button" class="btn sm" data-ed="${m?'m:'+m.id:'p:'+p.id}">Editar</button>${menu?`<details class="pc-mn"><summary aria-label="Mais opções">⋯</summary><div>${menu}</div></details>`:'<span class="pc-sp"></span>'}</span>`:''}</div>`};
   const wa=nt||{},wt=wa.template&&wa.template.status,wtm=wa.team||{on:0,total:0};
   const hasCom=team.some(m=>m.commission_pct!=null||m.shift),agOn=PROS.some(p=>p.active!==false),svcN=((acfg&&acfg.services)||[]).length;
   const STP=[
-   ['pessoas','Adicione quem trabalha com você','Convide quem atende os clientes no sistema. Quem só atende na agenda entra sem e-mail.',team.length>1||PROS.length>0,'Adicionar pessoa','add'],
+   ['pessoas','Adicione quem trabalha com você','Quem atende conversas recebe login. Quem só atende na agenda entra sem e-mail.',team.length>1||PROS.length>0,'Adicionar pessoa','add'],
    ...(svcN?[['agenda','Diga quem atende na agenda','Cada profissional ganha a própria agenda e a Nanda distribui os horários. Se só você atende, pode pular.',agOn,'Escolher quem atende','agenda']]:[]),
    ['avisos','Ligue o aviso no WhatsApp','Quem vai atender recebe no celular quando a Nanda passa um cliente.',wt==='APPROVED'&&wtm.on>0,wt==='APPROVED'?'Ligar o meu aviso':'Ativar o aviso','wa'],
    ['comissao','Comissão e turno (opcional)','Defina a comissão de cada vendedor e o horário em que recebe conversas.',hasCom,'Definir','work']];
@@ -6886,14 +6895,14 @@ const VIEWS={
    :`<section class="eq-st"><div class="eq-sth"><div><span class="eq-eb">Monte sua equipe · ${nd} de ${STP.length}</span><b>${esc(nxt[1])}</b></div><div class="eq-pg"><i style="width:${Math.round(100*nd/STP.length)}%"></i></div></div>
      <ol>${STP.map((x,i)=>`<li class="${x[3]?'ok':x===nxt?'nx':''}"><i>${x[3]?svg('<path d="M20 6 9 17l-5-5"/>'):i+1}</i><span><b>${x[1]}</b>${x[3]?'':`<small>${x[2]}</small>`}</span>${x[3]?'<em>feito</em>':`<button type="button" class="btn sm ${x===nxt?'p':''}" data-stp="${x[5]}">${x[4]}</button>`}</li>${x[0]==='avisos'&&!x[3]&&nt?`<li class="eq-wa-in" id="eqWaBox" style="display:none">${eqWa(nt,canManage,team)}</li>`:''}`).join('')}</ol></section>`;
   const shown=people.filter(x=>EF==='all'||(EF==='acesso'?!!x.m:!!(x.p&&x.p.active!==false)));
-  $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem usa o Oi Nanda e quem atende os clientes na agenda.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Adicionar pessoa</span></button>`:''}</div>
+  $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem atende seus clientes: nas conversas do WhatsApp e Instagram, na agenda, ou nos dois.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Adicionar pessoa</span></button>`:''}</div>
    <div id="invOut"></div>
    ${canManage?stepsH:''}
-   <div class="eq-sh"><h3>Pessoas <em>${people.length}</em></h3>${people.length>3?`<div class="seg" id="eqF">${[['all','Todos'],['acesso','Usam o sistema'],['agenda','Atendem na agenda']].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>`:''}<button type="button" class="lnk eq-who" id="eqWho">Quem vê o quê?</button></div>
+   <div class="eq-sh"><h3>Pessoas <em>${people.length}</em></h3>${people.length>3?`<div class="seg" id="eqF">${[['all','Todos'],['acesso','Atendem conversas'],['agenda','Atendem na agenda']].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>`:''}<button type="button" class="lnk eq-who" id="eqWho">Quem vê o quê?</button></div>
    <div class="pc-bar" style="display:none"><div class="seg" id="eqF">${[['all','Todos',people.length],['acesso','Usam o sistema',team.length],['agenda','Atendem na agenda',PROS.filter(p=>p.active!==false).length]].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]} <em>${x[2]}</em></button>`).join('')}</div></div>
-   <div class="pr-l0">${shown.map(card).join('')}${canManage?`<button type="button" class="pr-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>no sistema, na agenda ou nos dois</small></button>`:''}</div>
+   <div class="pr-l0">${shown.map(card).join('')}${canManage?`<button type="button" class="pr-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>nas conversas, na agenda ou nos dois</small></button>`:''}</div>
    <div id="eqHow" style="display:none;margin-top:14px">${hero}</div>
-   <div class="eq-sh" style="margin-top:28px"><h3>Equipes</h3><span class="hint">Cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
+   <div class="eq-sh" style="margin-top:28px"><h3>Equipes de conversa</h3><span class="hint">Como as conversas do WhatsApp e Instagram se dividem. Só entra quem atende conversas.</span>${canManage?'<button class="btn sm" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
   drawTeams(team,canManage);
   if($('#eqWaMe'))$('#eqWaMe').onclick=()=>meModal();
@@ -7481,28 +7490,32 @@ async function personModal(opt={}){
   const h0=pro&&pro.hours||cfg.hours||{};const span=Object.values(h0).flat();
   let days=[0,1,2,3,4,5,6].filter(i=>(h0[String(i)]||[]).length),hs=span.length?span.map(x=>x[0]).sort()[0]:'09:00',he=span.length?span.map(x=>x[1]).sort().pop():'18:00';
   const multi=Object.values(h0).some(r=>r.length>1);
-  const o=overlay(`<form class="modal pm" id="pmF"><div class="fm-hd"><div><h2>${isNew?'Adicionar pessoa':esc((m||pro).name)}</h2><p class="sm-sub">${isNew?'Quem usa o Oi Nanda e quem atende os clientes ficam aqui, num lugar só.':'Acesso ao sistema e agenda dessa pessoa.'}</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+  const o=overlay(`<form class="modal pm" id="pmF"><div class="fm-hd"><div><h2>${isNew?'Adicionar pessoa':esc((m||pro).name)}</h2><p class="sm-sub">${isNew?'Pode ser quem responde os clientes nas conversas, quem atende na agenda, ou alguém que faz os dois.':'O que essa pessoa faz no atendimento.'}</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
    <div class="pm-sec"><label class="pm-f"><span>Nome</span><input id="pmN" maxlength="40" value="${esc((m||pro||{}).name||opt.name||'')}" placeholder="Ex.: Camila Rocha" ${m?'disabled':''}></label></div>
-   <div class="pm-sec"><div class="pm-q"><b>Usa o Oi Nanda?</b><small>Entra com e-mail e senha para atender conversas, registrar vendas ou ver a agenda.</small></div>
-    ${m?`<div class="pm-lock">${svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')} Tem acesso · ${esc(m.email)} · ${esc({owner:'Dono',manager:'Gestor',agent:'Atendente'}[m.role]||m.role)}</div>`
-     :`<div class="pm-yn"><button type="button" data-lg="1" class="${login?'on':''}"><b>Sim</b><small>Recebe um convite por e-mail</small></button><button type="button" data-lg="0" class="${!login?'on':''}"><b>Não</b><small>Só atende. Não ocupa vaga do plano</small></button></div>
-     <div id="pmLg" class="pm-in"><label class="pm-f"><span>E-mail</span><input id="pmE" type="email" placeholder="camila@empresa.com.br"></label>
-      <div class="pm-f"><span>Papel</span><div class="pm-rl">${[['agent','Atendente','Atende as conversas dele e as sem dono.'],['manager','Gestor','Também convida o time e vê relatórios.']].map(x=>`<button type="button" data-rl="${x[0]}" class="${x[0]===role?'on':''}"><b>${x[1]}</b><small>${x[2]}</small></button>`).join('')}</div></div></div>`}</div>
-   <div class="pm-sec"><div class="pm-q"><b>Atende clientes na agenda?</b><small>Aparece para escolher na hora de agendar e a Nanda oferece os horários dessa pessoa.</small></div>
-    ${svcs.length?`<div class="pm-yn"><button type="button" data-ag="1" class="${agenda?'on':''}"><b>Sim</b><small>Tem horários para agendar</small></button><button type="button" data-ag="0" class="${!agenda?'on':''}"><b>Não</b><small>Não atende com horário marcado</small></button></div>
+   <div class="pm-sec"><div class="pm-q"><b>O que essa pessoa faz?</b><small>Marque um ou os dois.</small></div>
+    <div class="pm-do">
+     <button type="button" data-do="lg" class="${login?'on':''}" ${m?'disabled':''}><span class="pm-di">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}</span><span><b>Atende conversas</b><small>Responde clientes no WhatsApp e Instagram pelo Oi Nanda. Entra com e-mail e senha.</small></span><i class="pm-ck">${svg('<path d="m5 12 5 5 9-10"/>')}</i></button>
+     <button type="button" data-do="ag" class="${agenda?'on':''}" ${svcs.length?'':'disabled'}><span class="pm-di">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}</span><span><b>Atende com horário marcado</b><small>${svcs.length?'Faz os atendimentos da agenda. A Nanda marca os horários dela. Não precisa de login.':'Cadastre os serviços em Agenda › Configurar para usar.'}</small></span><i class="pm-ck">${svg('<path d="m5 12 5 5 9-10"/>')}</i></button>
+    </div></div>
+   <div class="pm-sec" id="pmLgS"><div class="pm-q"><b>${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>','pm-qi')}Acesso às conversas</b></div>
+    ${m?`<div class="pm-lock">${svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')} ${esc(m.email)} · ${esc({owner:'Dono',manager:'Gestor',agent:'Atendente'}[m.role]||m.role)}. Para tirar o acesso, use Desativar no ⋯ da pessoa.</div>`
+     :`<div id="pmLg" class="pm-in"><label class="pm-f"><span>E-mail</span><input id="pmE" type="email" placeholder="camila@empresa.com.br"></label>
+      <div class="pm-f"><span>O que pode ver</span><div class="pm-rl">${[['agent','Atendente','Atende as conversas dele e as sem dono.'],['manager','Gestor','Também convida o time e vê relatórios.']].map(x=>`<button type="button" data-rl="${x[0]}" class="${x[0]===role?'on':''}"><b>${x[1]}</b><small>${x[2]}</small></button>`).join('')}</div></div>
+      <p class="hint" style="margin:0">Recebe um convite por e-mail para criar a senha.</p></div>`}</div>
+   ${svcs.length?`<div class="pm-sec" id="pmAgS"><div class="pm-q"><b>${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>','pm-qi')}Na agenda</b></div>
     <div id="pmAg" class="pm-in">
      <div class="pm-f"><span>Cor na agenda</span><div class="pm-cl">${PCOL.map(c=>`<button type="button" data-cl="${c}" style="--c:${c}" class="${c===color?'on':''}" aria-label="Cor"></button>`).join('')}</div></div>
      <div class="pm-f"><span>Serviços que faz</span><div class="pm-sv"><button type="button" class="sm-rp ${!svSel.length?'on':''}" data-sv="*">Todos</button>${svcs.map(v=>`<button type="button" class="sm-rp ${svSel.includes(v.id)?'on':''}" data-sv="${v.id}">${esc(v.name)}</button>`).join('')}</div></div>
      <div class="pm-f"><span>Horário</span><div class="seg" id="pmHs"><button type="button" data-oh="0" class="${!ownH?'on':''}">Igual ao da empresa</button><button type="button" data-oh="1" class="${ownH?'on':''}">Horário próprio</button></div>
       <div id="pmHo" class="pm-ho"><div class="pm-dy">${WDS.map((d,i)=>`<button type="button" data-dy="${i}" class="${days.includes(i)?'on':''}">${d}</button>`).join('')}</div><div class="pm-tm"><input type="time" id="pmHs1" value="${hs}"> até <input type="time" id="pmHe1" value="${he}"></div>
       ${multi?'<p class="hint" style="margin:0">Intervalos no meio do dia (como almoço) ficam melhor como bloqueio na agenda.</p>':''}</div></div>
-    </div>`:`<div class="pm-lock">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/>')} Cadastre os serviços em Agenda › Configurar para escolher quem atende cada um.</div>`}</div>
+    </div></div>`:''}
    <div class="pm-ft"><button class="btn p" id="pmGo">${isNew?'Adicionar':'Salvar'}</button>${!isNew&&pro&&!m?'<button type="button" class="lnk danger" id="pmDel">Tirar da agenda</button>':''}<span class="err" id="pmE2"></span></div></form>`,true);
   const f=o.querySelector('#pmF');
-  const sync=()=>{if($('#pmLg'))$('#pmLg').style.display=login?'':'none';if($('#pmAg'))$('#pmAg').style.display=agenda?'':'none';if($('#pmHo'))$('#pmHo').style.display=ownH?'':'none';
-    const g=$('#pmGo');if(g)g.textContent=isNew?(login?(agenda?'Convidar e pôr na agenda':'Enviar convite'):'Adicionar à agenda'):'Salvar'};
+  const sync=()=>{if($('#pmLgS'))$('#pmLgS').style.display=login?'':'none';if($('#pmAgS'))$('#pmAgS').style.display=agenda?'':'none';if($('#pmHo'))$('#pmHo').style.display=ownH?'':'none';
+    const g=$('#pmGo');if(g)g.textContent=isNew?(login?(agenda?'Convidar e pôr na agenda':'Enviar convite'):agenda?'Adicionar à agenda':'Adicionar'):(!m&&login?'Salvar e mandar convite':'Salvar')};
   const tg=(sel,fn)=>o.querySelectorAll(sel).forEach(b=>b.onclick=()=>{fn(b);o.querySelectorAll(sel).forEach(x=>x.classList.toggle('on',x===b));sync()});
-  tg('[data-lg]',b=>login=b.dataset.lg==='1');tg('[data-ag]',b=>agenda=b.dataset.ag==='1');tg('[data-rl]',b=>role=b.dataset.rl);tg('[data-cl]',b=>color=b.dataset.cl);tg('[data-oh]',b=>ownH=b.dataset.oh==='1');
+  o.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>{if(b.dataset.do==='lg')login=!login;else agenda=!agenda;b.classList.toggle('on');sync()});tg('[data-rl]',b=>role=b.dataset.rl);tg('[data-cl]',b=>color=b.dataset.cl);tg('[data-oh]',b=>ownH=b.dataset.oh==='1');
   o.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{const v=b.dataset.sv;if(v==='*')svSel=[];else svSel=svSel.includes(v)?svSel.filter(x=>x!==v):[...svSel,v];if(svSel.length===svcs.length)svSel=[];
     o.querySelectorAll('[data-sv]').forEach(x=>x.classList.toggle('on',x.dataset.sv==='*'?!svSel.length:svSel.includes(x.dataset.sv)))});
   o.querySelectorAll('[data-dy]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dy;days=days.includes(i)?days.filter(x=>x!==i):[...days,i];b.classList.toggle('on')});
@@ -7512,10 +7525,11 @@ async function personModal(opt={}){
   if($('#pmDel'))$('#pmDel').onclick=async()=>{await savePros(l=>{const i=l.findIndex(p=>p.id===pro.id);if(i>=0)l.splice(i,1)});o.remove();toast(`${pro.name.split(' ')[0]} saiu da agenda.`);opt.onDone&&opt.onDone(null)};
   f.onsubmit=async ev=>{ev.preventDefault();$('#pmE2').textContent='';const name=($('#pmN').value||'').trim();if(name.length<2)return $('#pmE2').textContent='Escreva o nome.';
     if(agenda&&ownH&&!days.length)return $('#pmE2').textContent='Escolha os dias em que essa pessoa atende.';
-    if(isNew&&!login&&!agenda)return $('#pmE2').textContent='Escolha se a pessoa usa o sistema, atende na agenda, ou os dois.';
+    if(!m&&!login&&!agenda)return $('#pmE2').textContent=isNew?'Escolha o que essa pessoa faz: conversas, agenda ou os dois.':'Para tirar da agenda, use "Tirar da agenda".';
+    if(!m&&login&&!($('#pmE').value||'').trim())return $('#pmE2').textContent='Escreva o e-mail para mandar o convite.';
     const g=$('#pmGo');g.disabled=true;let member=m,inv=null;
     try{
-      if(isNew&&login){inv=await api('/team',{method:'POST',body:{name,email:$('#pmE').value.trim(),role}});member=inv.member}
+      if(!m&&login){inv=await api('/team',{method:'POST',body:{name,email:$('#pmE').value.trim(),role}});member=inv.member}
       let pid=pro&&pro.id;
       if(svcs.length&&(agenda||pro)){const hrs=ownH?Object.fromEntries([0,1,2,3,4,5,6].map(i=>[String(i),days.includes(i)?[[$('#pmHs1').value,$('#pmHe1').value]]:[]])):null;
         const nc=await savePros(l=>{const x={name:pro&&!m?name:(member?member.name:name),user_id:member?member.id:null,color,services:svSel,hours:hrs,active:agenda};const i=pro?l.findIndex(p=>p.id===pro.id):-1;if(i>=0)l[i]={...l[i],...x};else if(agenda)l.push(x)});
