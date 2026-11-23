@@ -2520,6 +2520,32 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .bl-tm{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
 .bl-sum{display:block;background:#17212B;color:#E6ECF1;border-radius:12px;padding:10px 12px;font-size:13.5px;margin:4px 0 0}.bl-sum svg{width:15px;height:15px;vertical-align:-2px;margin-right:6px}.bl-sum b{color:#fff}
 .bl-nx summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--ink2);margin-top:6px}.bl-it{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.bl-it span{flex:1;display:flex;flex-direction:column}.bl-it b{font-size:13.5px}.bl-it small{font-size:12px;color:var(--ink3)}
+
+/* equipe: cartões de pessoa */
+.pc-bar{margin:6px 0 12px}.pc-bar .seg em{font-style:normal;font-size:11.5px;color:var(--ink3);margin-left:2px}.pc-bar .seg button.on em{color:var(--c2)}
+.pc-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.pc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative}.pc.off{opacity:.6}
+.pc-t{display:flex;align-items:center;gap:12px}.pc-t .av{width:44px;height:44px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;position:relative;flex:none}.pc-t .av .dot{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:#16A34A;border:2.5px solid #fff}
+.pc-n{flex:1;min-width:0;display:flex;flex-direction:column}.pc-n b{font-size:15px}.pc-n b small{font-weight:600;color:var(--ink3)}.pc-n>small{font-size:12.5px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-a{display:flex;align-items:center;gap:4px}.pc-mn{position:relative}.pc-mn summary{list-style:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;font-weight:800;color:var(--ink2)}.pc-mn summary::-webkit-details-marker{display:none}.pc-mn summary:hover{background:var(--bg)}
+.pc-mn>div{position:absolute;right:0;top:36px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(23,33,43,.12);padding:6px;display:flex;flex-direction:column;min-width:190px;z-index:20}.pc-mn>div button{text-align:left;padding:9px 10px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:600;background:none;border:0;cursor:pointer}.pc-mn>div button:hover{background:var(--bg)}.pc-mn>div button.danger{color:var(--bad)}
+.pc-c{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.eq-x{background:#EEF1F4;color:var(--ink2)}
+.pc-ag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink2);background:var(--bg);border-radius:99px;padding:3px 10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pc-ag i{width:8px;height:8px;border-radius:50%;background:var(--pc);flex:none}
+.pc-m{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink3);border-top:1px solid var(--line);padding-top:10px}.pc-m .ok{color:var(--ok);font-weight:700}
+.pc-new{align-items:center;justify-content:center;text-align:center;border:1.5px dashed #E2CFC3;background:#FFFBF8;cursor:pointer;font:inherit;min-height:150px}.pc-new:hover{border-color:var(--c)}.pc-new span{width:40px;height:40px;border-radius:50%;background:var(--tint);color:var(--c);display:grid;place-items:center}.pc-new span svg{width:20px;height:20px}.pc-new b{font-size:14.5px;color:var(--c2)}.pc-new small{font-size:12.5px;color:var(--ink3)}
+/* formulário de pessoa */
+.pm{max-width:620px;gap:6px}.pm .fm-hd{margin-bottom:4px}.pm-sec{border-top:1px solid var(--line);padding:14px 0;display:flex;flex-direction:column;gap:10px}.pm-sec:first-of-type{border-top:0;padding-top:4px}
+.pm-f{display:flex;flex-direction:column;gap:6px}.pm-f>span{font-size:12.5px;font-weight:700;color:var(--ink2)}.pm-f input{border:1px solid #DCD2C9;border-radius:12px;padding:11px 12px;font:inherit;font-size:15px}.pm-f input:disabled{background:var(--bg);color:var(--ink2)}
+.pm-q b{display:block;font-size:15px}.pm-q small{font-size:12.5px;color:var(--ink3)}
+.pm-yn,.pm-rl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pm-yn button,.pm-rl button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 13px;font:inherit;cursor:pointer}.pm-yn button b,.pm-rl button b{font-size:14px}.pm-yn button small,.pm-rl button small{font-size:12px;color:var(--ink3)}.pm-yn button.on,.pm-rl button.on{border-color:var(--c);background:var(--tint)}
+.pm-in{display:flex;flex-direction:column;gap:12px;background:#FCFAF8;border:1px solid var(--line);border-radius:14px;padding:14px}
+.pm-lock{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);background:var(--bg);border-radius:12px;padding:10px 12px}.pm-lock svg{width:16px;height:16px;flex:none}
+.pm-cl{display:flex;gap:8px}.pm-cl button{width:28px;height:28px;border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}.pm-cl button.on{box-shadow:0 0 0 2px var(--c)}
+.pm-sv{display:flex;flex-wrap:wrap;gap:6px}.pm-sv .sm-rp{padding:6px 12px}
+.pm-ho{display:flex;flex-direction:column;gap:8px;margin-top:8px}.pm-dy{display:flex;gap:4px;flex-wrap:wrap}.pm-dy button{min-width:44px;padding:7px 0;border-radius:10px;border:1.5px solid var(--line);background:#fff;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer;text-transform:capitalize}.pm-dy button.on{background:var(--c);border-color:var(--c);color:#fff}
+.pm-tm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}.pm-tm input{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;font:inherit}
+.pm-ft{display:flex;align-items:center;gap:12px;padding-top:6px}.pm-ft .btn.p{padding:12px 22px}
+@media(max-width:560px){.pm-yn,.pm-rl{grid-template-columns:1fr}.pc-g{grid-template-columns:1fr}}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -6747,7 +6773,7 @@ const VIEWS={
   inicioMeta();pushNudge();
  },
  async equipe(){
-  const [team,nt]=await Promise.all([api('/team'),api('/notify').catch(()=>null)]);const u=ME.user;const canManage=['owner','manager'].includes(u.role);
+  const [team,nt,acfg]=await Promise.all([api('/team'),api('/notify').catch(()=>null),agCfg().catch(()=>null)]);const u=ME.user;const PROS=(acfg&&acfg.pros)||[],SVN=Object.fromEntries(((acfg&&acfg.services)||[]).map(v=>[v.id,v.name]));const canManage=['owner','manager'].includes(u.role);
   const last=m=>[m.last_seen,m.last_login_at].filter(Boolean).sort().pop();
   const online=m=>m.active&&m.last_seen&&Date.now()-new Date(m.last_seen)<5*6e4;
   const st=m=>!m.active?['grey','desativado']:m.must_change_password?['warn','aguardando 1º acesso']:online(m)?['ok on','online agora']:['ok','ativo'];
@@ -6763,9 +6789,21 @@ const VIEWS={
     return `<div class="eq-r ${m.active?'':'off'}"><div class="eq-p"><span class="av" style="background:${avc(m.name)}">${initials(m.name)}${online(m)?'<i class="dot"></i>':''}</span><span><b>${esc(m.name)}${me?' <small>(você)</small>':''}</b><small>${esc(m.email)}</small>${m.commission_pct!=null||m.shift?`<small class="eq-wk" title="${esc([m.commission_pct!=null?`comissão ${m.commission_pct}%`:'',m.shift?`turno ${shiftTxt(m.shift)}`:''].filter(Boolean).join(' · '))}">${[m.commission_pct!=null?`comissão ${String(m.commission_pct).replace('.',',')}%`:'',m.shift?`turno ${shiftTxt(m.shift)}`:''].filter(Boolean).join(' · ')}</small>`:''}${m.active&&m.wa_notify&&m.wa_phone?`<small class="eq-wan" title="Recebe no WhatsApp quando a Nanda ou alguém do time passa uma conversa para ele">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}recebe aviso no WhatsApp</small>`:''}</span></div>
       <span class="eq-rl ${r[0]}">${r[1]}</span><span class="eq-sts"><span class="pill ${s[0]}">${s[1]}</span>${m.active&&m.shift?(onShiftNow(m.shift)?'<span class="pill ok" title="Dentro do turno: recebe conversas do rodízio">no turno</span>':'<span class="pill grey" title="Fora do turno: o rodízio não entrega conversa nova">fora do turno</span>'):''}</span>
       <span class="eq-la" title="${l?dt(l):''}">${l?(online(m)?'agora':'há '+agoShort(l)):'<em>nunca entrou</em>'}</span><span class="eq-ac">${acts}</span></div>`};
-  $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem tem acesso ao painel do ${esc(ME.company.name)}.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Convidar pessoa</span></button>`:''}</div>
+  const svTxt=p=>!p?'':!(p.services||[]).length?'todos os serviços':p.services.map(x=>SVN[x]).filter(Boolean).join(', ');
+  const people=[...team.map(m=>({m,p:PROS.find(x=>x.user_id===m.id)})),...PROS.filter(p=>!p.user_id||!team.some(m=>m.id===p.user_id)).map(p=>({m:null,p}))];
+  const EF=VIEWS._eqf||'all';
+  const card=({m,p})=>{const nm=(m||p).name,me=m&&m.id===u.id,ag=p&&p.active!==false,r=m?RL[m.role]||['eq-a',m.role]:null,s=m?st(m):null,l=m&&last(m);
+    const menu=canManage&&m&&m.active?[`<button type="button" data-work="${m.id}">Comissão e turno</button>`,m.role!=='owner'&&!me?`<button type="button" data-reset="${m.id}">Mandar nova senha</button>`:'',m.role!=='owner'&&!me?`<button type="button" class="danger" data-act="${m.id}" data-on="0">Desativar acesso</button>`:''].join(''):canManage&&m&&!m.active?`<button type="button" data-act="${m.id}" data-on="1">Reativar acesso</button>`:'';
+    return `<div class="pc ${m&&!m.active?'off':''}" data-pf="${m?'m:'+m.id:'p:'+p.id}"><div class="pc-t"><span class="av" style="background:${p&&p.color||avc(nm)}">${initials(nm)}${m&&online(m)?'<i class="dot"></i>':''}</span>
+      <span class="pc-n"><b>${esc(nm)}${me?' <small>(você)</small>':''}</b><small>${m?esc(m.email):'sem acesso ao sistema'}</small></span>
+      ${canManage?`<span class="pc-a"><button type="button" class="btn sm" data-ed="${m?'m:'+m.id:'p:'+p.id}">Editar</button>${menu?`<details class="pc-mn"><summary aria-label="Mais opções">⋯</summary><div>${menu}</div></details>`:''}</span>`:''}</div>
+     <div class="pc-c">${r?`<span class="eq-rl ${r[0]}">${r[1]}</span>`:'<span class="eq-rl eq-x">Só agenda</span>'}${ag?`<span class="pc-ag" style="--pc:${p.color||'#999'}"><i></i>Agenda · ${esc(svTxt(p))}${p.hours?' · horário próprio':''}</span>`:''}${s&&s[1]!=='ativo'?`<span class="pill ${s[0]}">${s[1]}</span>`:''}</div>
+     ${m?`<div class="pc-m"><span>${l?(online(m)?'Online agora':'Último acesso há '+agoShort(l)):'Nunca entrou'}</span>${m.commission_pct!=null?`<span>Comissão ${String(m.commission_pct).replace('.',',')}%</span>`:''}${m.active&&m.shift?`<span class="${onShiftNow(m.shift)?'ok':''}">${onShiftNow(m.shift)?'No turno':'Fora do turno'} · ${shiftTxt(m.shift)}</span>`:''}</div>`:`<div class="pc-m"><span>Aparece na agenda e na Nanda. Não ocupa vaga do plano.</span></div>`}</div>`};
+  const shown=people.filter(x=>EF==='all'||(EF==='acesso'?!!x.m:!!(x.p&&x.p.active!==false)));
+  $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem usa o Oi Nanda e quem atende os clientes na agenda.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Adicionar pessoa</span></button>`:''}</div>
    ${hero}${kp}${nt?eqWa(nt,canManage,team):''}<div id="invOut"></div>
-   <div class="vd-c eq-l"><div class="eq-lh"><span>Pessoa</span><span>Papel</span><span>Situação</span><span>Último acesso</span><span></span></div>${team.map(row).join('')}</div>
+   <div class="pc-bar"><div class="seg" id="eqF">${[['all','Todos',people.length],['acesso','Usam o sistema',team.length],['agenda','Atendem na agenda',PROS.filter(p=>p.active!==false).length]].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]} <em>${x[2]}</em></button>`).join('')}</div></div>
+   <div class="pc-g">${shown.map(card).join('')}${canManage?`<button type="button" class="pc pc-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>Para atender no sistema, na agenda, ou os dois</small></button>`:''}</div>
    ${team.some(m=>m.active&&!last(m)&&!m.must_change_password&&m.id!==u.id)?'<p class="note eq-tip">Quem nunca entrou continua com acesso liberado. Se a pessoa não vai usar, desative: dá para reativar quando quiser.</p>':''}
    <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
@@ -6774,7 +6812,13 @@ const VIEWS={
   if($('#eqWaTpl'))$('#eqWaTpl').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta. A aprovação costuma sair em minutos.');VIEWS.equipe()}catch(x){toast(x.message);b.disabled=false}};
   const hw=$('#page .eq-how');hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('eqHow',hw.open?'0':'1')}catch(e){}};
   const showTemp=(name,email,temp,emailed)=>{const box=$('#invOut');box.innerHTML=`<div class="eq-ok"><span>✓</span><div>${emailed?`<b>Convite enviado para ${esc(email)}</b><p>${esc(name.split(' ')[0])} recebe um link para criar a senha (vale por 3 dias). Se o e-mail não chegar, peça para olhar o spam ou passe a senha provisória <span class="temp">${esc(temp)}</span></p>`:`<b>Acesso criado para ${esc(name.split(' ')[0])}</b><p>Mande para a pessoa: entrar em <b>app.oinanda.com.br</b> com o e-mail <b>${esc(email)}</b> e a senha provisória <span class="temp">${esc(temp)}</span>. No primeiro acesso ela cria a própria senha.</p>`}</div><button class="x" aria-label="Fechar">×</button></div>`;box.querySelector('.x').onclick=()=>box.innerHTML=''};
-  if($('#eqInv'))$('#eqInv').onclick=()=>{let role='agent';
+  const addP=()=>personModal({team,onDone:async(pid,inv)=>{await VIEWS.equipe();if(inv)showTemp(inv.member.name,inv.member.email,inv.temp_password,inv.emailed)}});
+  if($('#eqNew'))$('#eqNew').onclick=addP;
+  document.querySelectorAll('[data-ef]').forEach(b=>b.onclick=()=>{VIEWS._eqf=b.dataset.ef;VIEWS.equipe()});
+  document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{const [k,id]=b.dataset.ed.split(':');personModal(k==='m'?{team,member:team.find(x=>x.id===id),onDone:()=>VIEWS.equipe()}:{team,pro:PROS.find(x=>x.id===id),onDone:()=>VIEWS.equipe()})});
+  document.addEventListener('click',e=>{if(!e.target.closest('.pc-mn'))document.querySelectorAll('.pc-mn[open]').forEach(d=>d.open=false)},{once:true});
+  if($('#eqInv'))$('#eqInv').onclick=addP;
+  if(false){let role='agent';
     const o=overlay(`<div class="modal eq-m"><div class="row"><h2 style="font-size:20px">Convidar pessoa</h2><button class="x">×</button></div>
       <p class="hint">A pessoa recebe um e-mail para criar a senha e já entra com o acesso do papel escolhido.</p>
       <form id="inv" class="grid" style="gap:12px;margin-top:6px"><div class="field"><label>Nome</label><input name="name" required minlength="2" placeholder="Ex.: Ana Souza"></div>
@@ -7287,6 +7331,61 @@ function onShiftNow(sh){if(!sh||!sh.days||!sh.days.length)return null;const t=ne
 function shiftTxt(sh){if(!sh||!sh.days)return '';const d=sh.days;const seq=d.length>1&&d.every((x,i)=>!i||x===d[i-1]+1);
   return `${d.length===7?'todos os dias':seq?WKD[d[0]]+' a '+WKD[d[d.length-1]]:d.map(x=>WKD[x]).join(', ')}, ${sh.start} às ${sh.end}`}
 const brlC=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+/* pessoas: um cadastro só para quem usa o sistema e quem atende na agenda */
+const PCOL=['#E8603F','#5B7DB1','#2F9AA0','#8E6CC9','#D99A1E','#C2557A','#4F8A5B','#3A86FF'];
+const WDS=['seg','ter','qua','qui','sex','sáb','dom'];
+async function personModal(opt={}){
+  const [cfg,team]=await Promise.all([agCfg().catch(()=>({services:[],pros:[],hours:{}})),opt.team?opt.team:api('/team')]);
+  const m=opt.member||null,pro=opt.pro||(m?(cfg.pros||[]).find(p=>p.user_id===m.id):null)||null,isNew=!m&&!pro;
+  const svcs=cfg.services||[];const own=ME.user.role==='owner';
+  let login=m?true:pro?false:(opt.login??true),agenda=pro?pro.active!==false:(opt.agenda??!!svcs.length),role=m?m.role:'agent',color=pro?.color||PCOL[(cfg.pros||[]).length%PCOL.length];
+  let svSel=pro&&(pro.services||[]).length?[...pro.services]:[],ownH=!!(pro&&pro.hours);
+  const h0=pro&&pro.hours||cfg.hours||{};const span=Object.values(h0).flat();
+  let days=[0,1,2,3,4,5,6].filter(i=>(h0[String(i)]||[]).length),hs=span.length?span.map(x=>x[0]).sort()[0]:'09:00',he=span.length?span.map(x=>x[1]).sort().pop():'18:00';
+  const multi=Object.values(h0).some(r=>r.length>1);
+  const o=overlay(`<form class="modal pm" id="pmF"><div class="fm-hd"><div><h2>${isNew?'Adicionar pessoa':esc((m||pro).name)}</h2><p class="sm-sub">${isNew?'Quem usa o Oi Nanda e quem atende os clientes ficam aqui, num lugar só.':'Acesso ao sistema e agenda dessa pessoa.'}</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+   <div class="pm-sec"><label class="pm-f"><span>Nome</span><input id="pmN" maxlength="40" value="${esc((m||pro||{}).name||opt.name||'')}" placeholder="Ex.: Camila Rocha" ${m?'disabled':''}></label></div>
+   <div class="pm-sec"><div class="pm-q"><b>Usa o Oi Nanda?</b><small>Entra com e-mail e senha para atender conversas, registrar vendas ou ver a agenda.</small></div>
+    ${m?`<div class="pm-lock">${svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')} Tem acesso · ${esc(m.email)} · ${esc({owner:'Dono',manager:'Gestor',agent:'Atendente'}[m.role]||m.role)}</div>`
+     :`<div class="pm-yn"><button type="button" data-lg="1" class="${login?'on':''}"><b>Sim</b><small>Recebe um convite por e-mail</small></button><button type="button" data-lg="0" class="${!login?'on':''}"><b>Não</b><small>Só atende. Não ocupa vaga do plano</small></button></div>
+     <div id="pmLg" class="pm-in"><label class="pm-f"><span>E-mail</span><input id="pmE" type="email" placeholder="camila@empresa.com.br"></label>
+      <div class="pm-f"><span>Papel</span><div class="pm-rl">${[['agent','Atendente','Atende as conversas dele e as sem dono.'],['manager','Gestor','Também convida o time e vê relatórios.']].map(x=>`<button type="button" data-rl="${x[0]}" class="${x[0]===role?'on':''}"><b>${x[1]}</b><small>${x[2]}</small></button>`).join('')}</div></div></div>`}</div>
+   <div class="pm-sec"><div class="pm-q"><b>Atende clientes na agenda?</b><small>Aparece para escolher na hora de agendar e a Nanda oferece os horários dessa pessoa.</small></div>
+    ${svcs.length?`<div class="pm-yn"><button type="button" data-ag="1" class="${agenda?'on':''}"><b>Sim</b><small>Tem horários para agendar</small></button><button type="button" data-ag="0" class="${!agenda?'on':''}"><b>Não</b><small>Não atende com horário marcado</small></button></div>
+    <div id="pmAg" class="pm-in">
+     <div class="pm-f"><span>Cor na agenda</span><div class="pm-cl">${PCOL.map(c=>`<button type="button" data-cl="${c}" style="--c:${c}" class="${c===color?'on':''}" aria-label="Cor"></button>`).join('')}</div></div>
+     <div class="pm-f"><span>Serviços que faz</span><div class="pm-sv"><button type="button" class="sm-rp ${!svSel.length?'on':''}" data-sv="*">Todos</button>${svcs.map(v=>`<button type="button" class="sm-rp ${svSel.includes(v.id)?'on':''}" data-sv="${v.id}">${esc(v.name)}</button>`).join('')}</div></div>
+     <div class="pm-f"><span>Horário</span><div class="seg" id="pmHs"><button type="button" data-oh="0" class="${!ownH?'on':''}">Igual ao da empresa</button><button type="button" data-oh="1" class="${ownH?'on':''}">Horário próprio</button></div>
+      <div id="pmHo" class="pm-ho"><div class="pm-dy">${WDS.map((d,i)=>`<button type="button" data-dy="${i}" class="${days.includes(i)?'on':''}">${d}</button>`).join('')}</div><div class="pm-tm"><input type="time" id="pmHs1" value="${hs}"> até <input type="time" id="pmHe1" value="${he}"></div>
+      ${multi?'<p class="hint" style="margin:0">Intervalos no meio do dia (como almoço) ficam melhor como bloqueio na agenda.</p>':''}</div></div>
+    </div>`:`<div class="pm-lock">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/>')} Cadastre os serviços em Agenda › Configurar para escolher quem atende cada um.</div>`}</div>
+   <div class="pm-ft"><button class="btn p" id="pmGo">${isNew?'Adicionar':'Salvar'}</button>${!isNew&&pro&&!m?'<button type="button" class="lnk danger" id="pmDel">Tirar da agenda</button>':''}<span class="err" id="pmE2"></span></div></form>`,true);
+  const f=o.querySelector('#pmF');
+  const sync=()=>{if($('#pmLg'))$('#pmLg').style.display=login?'':'none';if($('#pmAg'))$('#pmAg').style.display=agenda?'':'none';if($('#pmHo'))$('#pmHo').style.display=ownH?'':'none';
+    const g=$('#pmGo');if(g)g.textContent=isNew?(login?(agenda?'Convidar e pôr na agenda':'Enviar convite'):'Adicionar à agenda'):'Salvar'};
+  const tg=(sel,fn)=>o.querySelectorAll(sel).forEach(b=>b.onclick=()=>{fn(b);o.querySelectorAll(sel).forEach(x=>x.classList.toggle('on',x===b));sync()});
+  tg('[data-lg]',b=>login=b.dataset.lg==='1');tg('[data-ag]',b=>agenda=b.dataset.ag==='1');tg('[data-rl]',b=>role=b.dataset.rl);tg('[data-cl]',b=>color=b.dataset.cl);tg('[data-oh]',b=>ownH=b.dataset.oh==='1');
+  o.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{const v=b.dataset.sv;if(v==='*')svSel=[];else svSel=svSel.includes(v)?svSel.filter(x=>x!==v):[...svSel,v];if(svSel.length===svcs.length)svSel=[];
+    o.querySelectorAll('[data-sv]').forEach(x=>x.classList.toggle('on',x.dataset.sv==='*'?!svSel.length:svSel.includes(x.dataset.sv)))});
+  o.querySelectorAll('[data-dy]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dy;days=days.includes(i)?days.filter(x=>x!==i):[...days,i];b.classList.toggle('on')});
+  sync();setTimeout(()=>{const n=$('#pmN');if(n&&!n.disabled&&!n.value)n.focus();else if($('#pmE')&&login)$('#pmE').focus()},60);
+  const savePros=async fn=>{const c=await agCfg();const list=(c.pros||[]).map(p=>({id:p.id,name:p.name,user_id:p.user_id||null,color:p.color||null,services:p.services||[],hours:p.hours||null,active:p.active!==false}));fn(list);
+    AG.cfg=await api('/agenda/settings',{method:'PUT',body:{pros:list}});return AG.cfg};
+  if($('#pmDel'))$('#pmDel').onclick=async()=>{await savePros(l=>{const i=l.findIndex(p=>p.id===pro.id);if(i>=0)l.splice(i,1)});o.remove();toast(`${pro.name.split(' ')[0]} saiu da agenda.`);opt.onDone&&opt.onDone(null)};
+  f.onsubmit=async ev=>{ev.preventDefault();$('#pmE2').textContent='';const name=($('#pmN').value||'').trim();if(name.length<2)return $('#pmE2').textContent='Escreva o nome.';
+    if(agenda&&ownH&&!days.length)return $('#pmE2').textContent='Escolha os dias em que essa pessoa atende.';
+    if(isNew&&!login&&!agenda)return $('#pmE2').textContent='Escolha se a pessoa usa o sistema, atende na agenda, ou os dois.';
+    const g=$('#pmGo');g.disabled=true;let member=m,inv=null;
+    try{
+      if(isNew&&login){inv=await api('/team',{method:'POST',body:{name,email:$('#pmE').value.trim(),role}});member=inv.member}
+      let pid=pro&&pro.id;
+      if(svcs.length&&(agenda||pro)){const hrs=ownH?Object.fromEntries([0,1,2,3,4,5,6].map(i=>[String(i),days.includes(i)?[[$('#pmHs1').value,$('#pmHe1').value]]:[]])):null;
+        const nc=await savePros(l=>{const x={name:pro&&!m?name:(member?member.name:name),user_id:member?member.id:null,color,services:svSel,hours:hrs,active:agenda};const i=pro?l.findIndex(p=>p.id===pro.id):-1;if(i>=0)l[i]={...l[i],...x};else if(agenda)l.push(x)});
+        pid=(nc.pros||[]).find(p=>member?p.user_id===member.id:p.name===name)?.id||pid}
+      o.remove();
+      if(inv)toast(inv.emailed?`Convite enviado para ${inv.member.email}.`:`Acesso criado. Senha provisória: ${inv.temp_password}`);else toast(isNew?`${name.split(' ')[0]} entrou na agenda.`:'Salvo.');
+      opt.onDone&&opt.onDone(pid,inv)}catch(e){g.disabled=false;$('#pmE2').textContent=e.message}};
+}
 function workModal(m){
   const st={pct:m.commission_pct??'',on:!!m.shift,days:[...((m.shift||{}).days||[0,1,2,3,4])],start:(m.shift||{}).start||'08:00',end:(m.shift||{}).end||'18:00'};
   const PRE=[['Manhã','08:00','14:00'],['Tarde','14:00','20:00'],['Comercial','09:00','18:00'],['Noite','18:00','23:00']];
