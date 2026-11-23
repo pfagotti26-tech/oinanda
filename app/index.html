@@ -2555,6 +2555,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .vz-v{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}.vz-v.dim{opacity:.55}
 .vz-c{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font:inherit;text-align:left;cursor:pointer}.vz-c.on{border-color:var(--c);background:var(--tint)}.vz-c span:last-child{display:flex;flex-direction:column;min-width:0}.vz-c b{font-size:13.5px}.vz-c small{font-size:11.5px;color:var(--ink3)}
 .vz-p{width:30px;height:30px;border-radius:50%;background:var(--bg);color:var(--ink2);display:grid;place-items:center;flex:none}.vz-p svg{width:13px;height:13px}.vz-p:hover,.vz-p.pl{background:var(--c);color:#fff}
+.vz-t{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.vz-t .btn svg{width:15px;height:15px;vertical-align:-3px}
 .vz-u{display:flex;flex-direction:column;gap:6px}.vz-u>div{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12.5px}.vz-u i{height:6px;background:var(--bg);border-radius:99px;overflow:hidden}.vz-u u{display:block;height:100%;background:var(--c);border-radius:99px}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
@@ -7415,9 +7416,14 @@ async function nzVoice(){const w=$('#nzVoz');if(!w||w.dataset.on)return;w.datase
       <label class="sw" title="${v.ready?'':'A voz ainda está sendo ativada no Oi Nanda'}"><input type="checkbox" id="vzOn" ${v.on?'checked':''} ${!v.ready||!mgr?'disabled':''}><i></i></label></div>
       ${!v.ready?'<p class="vz-n">Estamos ativando a voz no Oi Nanda. Logo dá para ligar aqui.</p>':''}
       <div class="vz-v ${v.on?'':'dim'}">${v.voices.map(x=>`<button type="button" class="vz-c ${x.id===v.voice_id?'on':''}" data-vz="${x.id}" ${!mgr?'disabled':''}><span class="vz-p" data-pl="${x.id}" title="Ouvir">${svg('<path d="M8 5v14l11-7z"/>')}</span><span><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></span></button>`).join('')}</div>
-      <div class="vz-u"><div><span><b>${v.used}</b> de ${v.quota} áudios este mês</span><span class="hint">Respostas com link ou longas seguem em texto.</span></div><i><u style="width:${pct}%"></u></i></div></div>`;
+      ${v.ready?`<div class="vz-t"><button type="button" class="btn sm" id="vzT">${svg('<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>')} Ouvir como fica</button><span class="hint" id="vzTs">Uma frase de exemplo com a voz escolhida, como o cliente vai ouvir.</span></div>`:''}<div class="vz-u"><div><span><b>${v.used}</b> de ${v.quota} áudios este mês</span><span class="hint">Respostas com link ou longas seguem em texto.</span></div><i><u style="width:${pct}%"></u></i></div></div>`;
     if($('#vzOn'))$('#vzOn').onchange=async e=>{try{v=await api('/ai/voice',{method:'PUT',body:{voice_reply:e.target.checked}});toast(v.on?'A Nanda vai responder áudio com áudio.':'Voz desligada. Ela responde em texto.');draw()}catch(x){toast(x.message);e.target.checked=!e.target.checked}};
     w.querySelectorAll('[data-pl]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const x=v.voices.find(y=>y.id===b.dataset.pl);if(VZ_AUD){VZ_AUD.pause()}w.querySelectorAll('.vz-p').forEach(y=>y.classList.remove('pl'));VZ_AUD=new Audio(x.preview);VZ_AUD.play().catch(()=>{});b.classList.add('pl');VZ_AUD.onended=()=>b.classList.remove('pl')});
+    if($('#vzT'))$('#vzT').onclick=async()=>{const b=$('#vzT'),st=$('#vzTs');b.disabled=true;st.textContent='Gerando o áudio...';
+      try{const r=await fetch('/api/ai/voice/test',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({voice_id:v.voice_id})});
+        if(!r.ok){let m='Não deu para gerar o áudio.';try{m=(await r.json()).detail||m}catch(e){}throw new Error(m)}
+        const url=URL.createObjectURL(await r.blob());if(VZ_AUD)VZ_AUD.pause();VZ_AUD=new Audio(url);await VZ_AUD.play().catch(()=>{});st.textContent='Assim a '+(v.voices.find(y=>y.id===v.voice_id)||{}).name+' responde os seus clientes.'}
+      catch(e){st.innerHTML='<span style="color:var(--bad);font-weight:600">'+esc(e.message)+'</span>'}b.disabled=false};
     w.querySelectorAll('[data-vz]').forEach(b=>b.onclick=async()=>{if(b.dataset.vz===v.voice_id)return;try{v=await api('/ai/voice',{method:'PUT',body:{voice_id:b.dataset.vz}});draw();toast('Voz escolhida: '+v.voices.find(y=>y.id===v.voice_id).name)}catch(x){toast(x.message)}})};
   draw()}
 function workModal(m){

@@ -51,3 +51,18 @@ def test_voz(monkeypatch, tmp_path):
         c.put('/api/ai/voice', json={'voice_reply': False})
         c.portal.call(lambda: db.voice_usage.update_one({'company_id': cid, 'month': voice.month()}, {'$set': {'count': 0}}))
         assert c.portal.call(lambda: voice.reply(cid, ct, 'Até!', 'Nanda (IA)', audio))['type'] == 'text'
+
+def test_ouvir(monkeypatch, tmp_path):
+    monkeypatch.setenv('ELEVENLABS_API_KEY', 'xi-teste-1234567890abcdef'); monkeypatch.setenv('MEDIA_DIR', str(tmp_path))
+    calls = []
+    async def fake_tts(text, vid): calls.append(text); return b'ID3mp3'
+    monkeypatch.setattr(voice, 'tts', fake_tts)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Ana Dona', 'email': 'ana@voz2.com', 'password': 'senha-forte-1', 'company': 'Salão Ana', 'segment': 'salao'})
+        r = c.post('/api/ai/voice/test', json={'voice_id': voice.VOICES[1]['id']})
+        assert r.status_code == 200 and r.headers['content-type'] == 'audio/mpeg' and r.content == b'ID3mp3' and 'Salão Ana' in calls[0]
+        assert c.post('/api/ai/voice/test', json={'voice_id': voice.VOICES[1]['id']}).status_code == 200 and len(calls) == 1  # guardado
+        async def no(text, vid): voice.LAST_ERR = 'A ElevenLabs não liberou essa voz pela API.'; return None
+        monkeypatch.setattr(voice, 'tts', no)
+        r = c.post('/api/ai/voice/test', json={'voice_id': voice.VOICES[2]['id']})
+        assert r.status_code == 400 and 'não liberou' in r.json()['detail']

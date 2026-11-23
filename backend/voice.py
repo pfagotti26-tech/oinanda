@@ -48,8 +48,22 @@ async def tts(text, voice_id):
                          headers={'xi-api-key': os.environ['ELEVENLABS_API_KEY']},
                          json={'text': text, 'model_id': MODEL, 'language_code': 'pt'})
     if r.status_code >= 400:
-        log.warning('ElevenLabs recusou: %s %s', r.status_code, r.text[:200]); return None
+        log.warning('ElevenLabs recusou: %s %s', r.status_code, r.text[:200])
+        global LAST_ERR; LAST_ERR = why(r); return None
     return r.content
+
+LAST_ERR = ''
+def why(r):
+    """Motivo da recusa em português, para o painel."""
+    try: d = r.json().get('detail') or {}
+    except ValueError: d = {}
+    st = (d.get('status') or '') if isinstance(d, dict) else ''
+    msg = (d.get('message') or '') if isinstance(d, dict) else str(d)
+    if r.status_code == 401 or 'api_key' in st or 'permission' in st: return 'A chave da ElevenLabs não tem permissão para gerar áudio.'
+    if 'quota' in st or 'credits' in msg.lower(): return 'Os créditos da ElevenLabs acabaram.'
+    if 'voice' in st or 'library' in msg.lower() or 'paid' in msg.lower() or 'subscription' in msg.lower():
+        return 'A ElevenLabs não liberou essa voz pela API. As vozes da biblioteca exigem plano pago (Starter ou acima).'
+    return f'A ElevenLabs recusou ({r.status_code}). {msg[:120]}'.strip()
 
 def speakable(text):
     """Tira o que não se fala (emoji, markdown). Link ou texto longo: melhor em texto."""
@@ -103,6 +117,29 @@ class VoiceIn(BaseModel):
     voice_reply: Optional[bool] = None
     voice_id: Optional[str] = None
 
+from fastapi import Request
+from fastapi.responses import Response
+
+@router.post('/ai/voice/test')
+async def test_voice(body: VoiceIn, user=Depends(current_user)):
+    """Gera uma frase curta com a voz escolhida (pela API de verdade) para ouvir antes de ligar. Fica guardada: ouvir de novo não gasta."""
+    if not ready(): raise HTTPException(400, 'A voz ainda não foi ativada no Oi Nanda.')
+    vid = body.voice_id or DEFAULT
+    if vid not in {v['id'] for v in VOICES}: raise HTTPException(400, 'Voz não encontrada.')
+    s = await db.ai_settings.find_one({'company_id': user['company_id']}, {'_id': 0, 'name': 1}) or {}
+    name = s.get('name') or 'Nanda'
+    text = f'Oi! Eu sou a {name}, do {user["company"]["name"]}. Recebi seu áudio, já te ajudo. Quer que eu veja um horário para você?'
+    import media, hashlib
+    key = hashlib.sha1(f'{vid}|{text}'.encode()).hexdigest()[:20]
+    p = media.media_dir() / 'voz-teste' / f'{key}.mp3'
+    if p.exists(): return Response(p.read_bytes(), media_type='audio/mpeg')
+    day = now().strftime('%Y-%m-%d')
+    r = await db.voice_tests.find_one_and_update({'company_id': user['company_id'], 'day': day}, {'$inc': {'n': 1}}, upsert=True, return_document=True)
+    if (r or {}).get('n', 1) > 15: raise HTTPException(429, 'Muitos testes hoje. Tente amanhã.')
+    data = await tts(text, vid)
+    if not data: raise HTTPException(400, LAST_ERR or 'A ElevenLabs não respondeu. Tente de novo.')
+    p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data)
+    return Response(data, media_type='audio/mpeg')
 @router.get('/ai/voice')
 async def get_voice(user=Depends(current_user)):
     s = await db.ai_settings.find_one({'company_id': user['company_id']}, {'_id': 0, 'voice_reply': 1, 'voice_id': 1}) or {}
