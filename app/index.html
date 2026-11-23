@@ -2396,6 +2396,38 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .hn-qa{display:flex;gap:8px}.hn-q{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;position:relative;transition:border-color .15s,transform .12s}
 .hn-q:hover{border-color:var(--c);transform:translateY(-1px)}.hn-q svg{width:18px;height:18px;color:var(--c)}.hn-q.p{background:var(--ink);color:#fff;border-color:var(--ink)}.hn-q.p svg{color:#fff}
 .hn-q em{position:absolute;top:-7px;right:-7px;background:var(--c);color:#fff;font-style:normal;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:99px;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.su{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,1fr);gap:36px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px 32px;margin-bottom:16px;position:relative;overflow:hidden}
+.su:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--c)}
+.su-l h2{font-size:25px;letter-spacing:-.5px;margin:8px 0 8px}.su-l p{color:var(--ink2);margin:0;font-size:14.5px;line-height:1.5;max-width:460px}
+.su-a{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}.su-a .btn svg{width:16px;height:16px;vertical-align:-3px;margin-left:2px}
+.su-t{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink3)}.su-t svg{width:14px;height:14px}.su-sk{font-size:13px;color:var(--ink3)!important;font-weight:600}
+.su-r{display:flex;flex-direction:column;gap:14px;border-left:1px solid var(--line);padding-left:32px}
+.su-ph{display:flex;align-items:center;gap:14px}.su-ph>span:nth-child(2){flex:1;display:flex;flex-direction:column}.su-ph b{font-size:15px}.su-ph small{font-size:12.5px;color:var(--ink3)}.su-ph .lnk{font-size:13px;font-weight:700}
+.su-pr{position:relative;display:grid;place-items:center;color:var(--ink);flex:none}.su-pr b{position:absolute;font-size:13.5px;font-weight:800}.su-pr.sm b{font-size:11px}
+.su-af{display:flex;flex-direction:column;gap:2px;margin-top:26px;padding-top:16px;border-top:1px dashed var(--line)}.su-af>span{font-size:11.5px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.su-af button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:7px 0;font:inherit;font-size:13.5px;color:var(--ink2);cursor:pointer;text-align:left}.su-af button:hover{color:var(--c2)}.su-af button i{width:14px;height:14px;border-radius:50%;border:1.5px solid #D5DBE1;flex:none}.su-af button small{margin-left:auto;font-size:12px;color:var(--ink3)}
+.su-sg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.su-sg li{display:grid;grid-template-columns:30px 1fr 70px;align-items:center;gap:10px;padding:7px 8px;border-radius:12px}.su-sg li.now{background:var(--tint)}
+.su-gi{width:30px;height:30px;border-radius:9px;background:var(--bg);color:var(--ink3);display:grid;place-items:center}.su-gi svg{width:15px;height:15px}
+li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su-gi{background:#fff;color:var(--c2)}
+.su-gt{display:flex;flex-direction:column;min-width:0}.su-gt b{font-size:13.5px;font-weight:600}.su-gt small{font-size:12px;color:var(--ink3)}
+.su-gb{height:5px;border-radius:9px;background:var(--line);overflow:hidden}.su-gb i{display:block;height:100%;background:var(--c);border-radius:9px}li.ok .su-gb i{background:var(--ok)}
+.su-slim{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 16px;margin-bottom:16px}.su-st{flex:1;display:flex;flex-direction:column;min-width:0}.su-st small{font-size:12px;color:var(--ink3)}.su-st b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.su-pill{display:flex;align-items:center;gap:9px;width:100%;margin:-4px 0 12px;background:rgba(232,96,63,.12);border:1px solid rgba(232,96,63,.25);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;text-align:left;color:#fff}.su-pill:hover{background:rgba(232,96,63,.2)}.su-pill span{flex:1;display:flex;flex-direction:column;min-width:0}.su-pill b{font-size:12.5px;color:#fff}.su-pill small{font-size:11px;color:#C9D2DB}.su-pill em{font-style:normal;font-size:12px;font-weight:800;color:#FFB59E}
+.app.mini .su-pill span,.app.mini .su-pill em{display:none}
+.su-bar{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:16px;padding:10px 12px 10px 14px;margin-bottom:16px}.su-bi{color:#fff;display:grid}.su-bt{flex:1;display:flex;flex-direction:column;min-width:0}.su-bt small{font-size:11.5px;color:#AEB9C4}.su-bt b{font-size:14px}.su-bar .btn:not(.p){background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}.su-bar .sm-x{color:#AEB9C4}
+.su-dw-bg{position:fixed;inset:0;background:rgba(23,33,43,0);z-index:90;transition:background .2s}.su-dw-bg.on{background:rgba(23,33,43,.35)}
+.su-dw{position:absolute;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);box-shadow:-20px 0 50px rgba(23,33,43,.15);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease}.su-dw-bg.on .su-dw{transform:none}
+.su-dh{display:flex;align-items:center;gap:14px;padding:22px 22px 18px;background:#fff;border-bottom:1px solid var(--line)}.su-dh>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}.su-dh>span b{font-size:17px}.su-dh small{font-size:12.5px;color:var(--ink3);line-height:1.4}
+.su-db{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.su-g{background:#fff;border:1px solid var(--line);border-radius:16px}.su-g summary{list-style:none;display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer}.su-g summary::-webkit-details-marker{display:none}.su-g summary em{font-style:normal;font-size:12px;font-weight:700;color:var(--ink3)}.su-g summary .cx{width:16px;height:16px;color:var(--ink3);transition:transform .15s}.su-g[open] summary .cx{transform:rotate(180deg)}.su-g summary .su-gt{flex:1}
+.su-gl{display:flex;flex-direction:column;padding:0 10px 10px}
+.su-s{display:flex;align-items:flex-start;gap:11px;padding:11px 6px;border-top:1px solid var(--line)}.su-s>i{width:22px;height:22px;border-radius:50%;border:1.5px solid #D5DBE1;flex:none;display:grid;place-items:center;font-style:normal;color:var(--ink3);margin-top:1px}.su-s>i svg{width:12px;height:12px;stroke-width:3}
+.su-s.ok>i{background:var(--ok);border-color:var(--ok);color:#fff}.su-s.ok b{color:var(--ink3);font-weight:500;text-decoration:line-through;text-decoration-color:#C9D0D7}.su-s.nx>i{border-color:var(--c);box-shadow:0 0 0 3px var(--tint)}.su-s.skip{opacity:.6}
+.su-s>span{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.su-s b{font-size:13.5px;font-weight:600}.su-s small{font-size:12px;color:var(--ink3);line-height:1.4}.su-s .btn{flex:none}
+.su-no{align-self:flex-start;background:none;border:0;padding:0;margin-top:3px;font:inherit;font-size:12px;color:var(--ink3);text-decoration:underline;cursor:pointer}
+.su-df{padding:14px 22px 18px;border-top:1px solid var(--line);background:#fff;display:flex;flex-direction:column;gap:2px}.su-hd{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer}.su-hd input{accent-color:var(--c)}.su-df .hint{margin:0 0 0 24px;font-size:12px}
+@media(max-width:900px){.su{grid-template-columns:1fr;gap:22px;padding:22px 20px}.su-r{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:18px}.su-l h2{font-size:21px}.su-slim{flex-wrap:wrap}.su-slim .su-st{flex-basis:calc(100% - 60px)}}
 .hn-setup{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;background:linear-gradient(135deg,#FFF1EA 0%,#FFF8F4 60%,#fff 100%);border:1px solid var(--soft);border-radius:24px;padding:24px;margin-bottom:16px}
 .hn-eb{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--c2)}.hn-setup h2{font-size:23px;letter-spacing:-.4px;margin:6px 0 6px}.hn-setup p{color:var(--ink2);margin:0 0 14px}
 .hn-prog{height:8px;background:#fff;border-radius:99px;overflow:hidden;margin-bottom:16px;border:1px solid var(--soft)}.hn-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--c),#F59E0B);border-radius:99px}
@@ -3182,7 +3214,7 @@ function shell(){
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side">
     <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a><span class="cur" id="curV"></span><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-    <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div>
+    <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div>${canManage?'<button type="button" class="su-pill" id="suPill" hidden></button>':''}
     <label class="gsr" title="Buscar (Ctrl K)">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="gQ" placeholder="Buscar ou ir para…" autocomplete="off" aria-label="Buscar cliente, tela ou ação"><kbd>Ctrl K</kbd></label>
     <div class="gres" id="gRes" hidden></div>
     <nav class="snav" id="snav">${NAV_GROUPS.map(g=>{const xs=g[1].filter(allowed);if(!xs.length)return '';
@@ -3254,6 +3286,7 @@ addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelect
 function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
+  if(v!=='inicio')suLoad().then(()=>suPill());
   return (VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
@@ -6859,9 +6892,7 @@ const VIEWS={
      <div class="hn-qa"><button class="hn-q p" data-to="conversas">${I(IC2.chat)}<span>Conversas</span>${sm&&(sm.waiting+sm.needs_human)?`<em>${sm.waiting+sm.needs_human}</em>`:''}</button><button class="hn-q" data-q="venda">${I(IC2.bag)}<span>Registrar venda</span></button><button class="hn-q" data-q="agenda">${I(IC2.cal)}<span>Agendar</span></button></div></div>
     ${num?`<div class="hn-live ${ML[0]}"><div class="hn-lh"><span class="hn-av">N<i></i></span><span><b>${esc((ai&&ai.name)||'Nanda')} ${mode==='auto'?'está atendendo':mode==='copilot'?'está no copiloto':'está pausada'}</b><small>${mode==='auto'?'Responde sozinha e chama o time quando precisa':mode==='copilot'?'Sugere a resposta e o time envia':'Nenhuma resposta automática agora'}</small></span>${mgr?'<button class="lnk" id="hnMode">Ajustar</button>':''}</div>
      ${nfeed.length?`<ul class="hn-feed">${nfeed.map(c=>`<li data-cv="${c.id}"><span class="hn-fa">${esc((c.name||'?').trim()[0]||'?').toUpperCase()}</span><span><b>${esc(c.name||'Cliente')}</b><small>${esc((c.last_text||'').slice(0,70))}</small></span><time>${ago(c.last_at)}</time></li>`).join('')}</ul>`:`<p class="hn-fe">As últimas respostas dela aparecem aqui assim que os clientes começarem a chamar.</p>`}</div>`:''}</header>
-   ${!ready&&mgr?`<section class="hn-setup"><div class="hn-sl"><span class="hn-eb">Primeiros passos · ${done} de ${total}</span><h2>${next?esc(next[1]):''}</h2><p>${next?esc(next[2])+' Leva '+next[3]+'.':''}</p>
-      <div class="hn-prog"><i style="width:${Math.round(100*done/total)}%"></i></div>${next?`<button class="btn p" id="hmGo">${next[5]} ${I(IC2.arrow)}</button>`:''}${!num?`<div class="hn-chat hn-ob" aria-hidden="true"><div class="ob-m in">Oi! Quanto custa? Tem horário sábado?<small>23:41</small></div><div class="ob-m out"><b>Nanda</b>Te passo os valores agora 😊 Sábado às 10h está livre, posso reservar?<small>23:41</small></div><div class="hm-chip">📅 Horário marcado na agenda</div><span class="hn-cap">Assim ela responde os seus clientes, até de madrugada.</span></div>`:''}</div>
-     <div class="hn-steps">${`<div class="hn-st ok"><i>✓</i><span><b>Conta criada</b></span></div>`+steps.map(stepRow).join('')}</div></section>`:''}
+   ${mgr?'<div id="suHome"></div>':''}
    <div id="inPush"></div><div id="inMeta"></div>
    ${num&&!nowK.some(k=>k[1]&&k[4]!=='b')&&!(td||[]).some(x=>x.tone==='bad')?`<section class="hn-ok"><span>✓</span><div><b>Tudo em dia</b><small>Nenhum cliente esperando resposta.${upcoming.length?` Ainda ${upcoming.length===1?'tem 1 horário':'tem '+upcoming.length+' horários'} hoje.`:''}</small></div></section>`:num&&nowK.some(k=>k[1])?`<section class="hn-now">${nowK.map(k=>`<button class="hn-k ${k[1]?k[4]:'calm'}" data-to="${k[5]}"><span class="hn-ki">${I(IC2[k[0]])}</span><span class="hn-kt">${k[1]?`<b>${k[1]}</b><small>${k[2]}</small>`:`<small class="z">${k[3]}</small>`}</span>${k[1]?`<em>${I(IC2.arrow)}</em>`:''}</button>`).join('')}</section>`:''}
    <div class="hn-grid"><div class="hn-main">
@@ -6879,7 +6910,7 @@ const VIEWS={
      <div class="hn-nd"><span class="hn-ndh">${I(IC2.spark)} O que a Nanda fez</span>
       <div class="hn-ms"><div><b>${nf(N.people)}</b><small>clientes atendidos</small></div><div><b>${nf(N.after_hours)}</b><small>respostas fora do horário</small></div><div><b>${nf(N.appts)}</b><small>horários marcados</small></div></div>
       ${num&&mode!=='auto'&&!N.people?`<p class="hn-tip">${mode==='off'?'Ela está pausada, por isso está em zero.':'Em copiloto ela sugere e o time envia, por isso está em zero.'}${mgr?' <button class="lnk" data-to="nanda">Ligar a Nanda</button>':''}</p>`:''}</div></section>
-    ${ready&&mgr&&next?`<section class="card hn-c hn-next"><span class="hn-eb">Para render mais</span><b>${esc(next[1])}</b><p>${esc(next[2])}</p><button class="btn sm" id="hmGo">${next[5]}</button></section>`:''}
+
     <section class="card hn-help"><span>${I(IC2.help)}</span><div><b>Ficou com dúvida?</b><p>Guias curtos de cada tela e do seu segmento.</p><button class="lnk" data-to="ajuda">Abrir a Central de ajuda</button></div></section>
    </aside></div></div>`;
   if($('#hmGo'))$('#hmGo').onclick=()=>next[6]();
@@ -6890,7 +6921,7 @@ const VIEWS={
   document.querySelectorAll('#page [data-to]').forEach(b=>b.onclick=()=>{if(b.dataset.to==='ajuda')HP.art=null;go(b.dataset.to)});
   document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>b.dataset.q==='venda'?saleModal({onDone:()=>VIEWS.inicio()}):go('agenda').then(()=>bookModal({},()=>VIEWS.agenda())));
   document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{const x=td[+b.dataset.td];if(x.to==='conversas'){CV.filter='all';CV.kind='';CV.origin='';CV.open=null}go(x.to)});
-  inicioMeta();pushNudge();
+  inicioMeta();if(mgr)suHome();else pushNudge();
  },
  async equipe(){
   const [team,nt,acfg]=await Promise.all([api('/team'),api('/notify').catch(()=>null),agCfg().catch(()=>null)]);const u=ME.user;const PROS=(acfg&&acfg.pros)||[],SVN=Object.fromEntries(((acfg&&acfg.services)||[]).map(v=>[v.id,v.name]));const canManage=['owner','manager'].includes(u.role);
@@ -7591,6 +7622,58 @@ async function personModal(opt={}){
       if(inv)toast(inv.emailed?`Convite enviado para ${inv.member.email}.`:`Acesso criado. Senha provisória: ${inv.temp_password}`);else toast(isNew?`${name.split(' ')[0]} entrou na agenda.`:'Salvo.');
       opt.onDone&&opt.onDone(pid,inv)}catch(e){g.disabled=false;$('#pmE2').textContent=e.message}};
 }
+/* configurar a conta: um guia só, que confere sozinho o que já foi feito */
+const SU={d:null,at:0,cur:null};
+const SUI={1:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',2:'<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/>',3:'<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>',4:'<path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/>'};
+const suRing=(p,sz=44,w=5)=>{const r=(sz-w)/2,c=2*Math.PI*r;return `<svg class="su-ring" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" aria-hidden="true"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".14" stroke-width="${w}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--c)" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${(c*p/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg>`};
+const suNext=d=>d.steps.find(s=>!s.done&&!s.skipped);
+async function suLoad(force){if(!['owner','manager'].includes(ME.user.role))return null;if(!force&&SU.d&&Date.now()-SU.at<20000)return SU.d;
+  try{SU.d=await api('/setup');SU.at=Date.now()}catch(e){return SU.d}suPill();return SU.d}
+function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100){b.hidden=true;return}b.hidden=false;
+  b.innerHTML=`${suRing(d.pct,22,3.5)}<span><b>Configurar a conta</b><small>${d.done} de ${d.total} prontos</small></span><em>${d.pct}%</em>`;b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
+async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
+  const after=()=>{suBar()};
+  try{
+    if(s.act==='comecar')return comecarView();
+    if(s.act==='push'){await pushOn();await api('/push/test',{method:'POST'}).catch(()=>{});toast('Avisos ligados. Mandamos um teste.');SU.cur=null;await suLoad(true);return suRefresh()}
+    if(s.act==='venda'){SU.cur=null;return saleModal({onDone:async()=>{await suLoad(true);suRefresh()}})}
+    if(s.act==='catalogo'){VD.tab='produtos';await go('vendas');return after()}
+    if(s.act==='meta'){if(!modOn('metas')){await api('/company/modules',{method:'PUT',body:{metas:true}});ME.company.modules={...(ME.company.modules||{}),metas:true};shell()}MT.tab='painel';await go('metas');return after()}
+    await go(s.to);after()}catch(e){toast(e.message)}}
+async function suRefresh(){if(VIEW==='inicio')suHome();if($('.su-dw-bg'))suPanel()}
+async function suSkip(key,skip){try{SU.d=await api('/setup/skip',{method:'POST',body:{key,skip}});SU.at=Date.now();suPill();suRefresh();toast(skip?'Tirado do guia. Dá para voltar em Ver tudo.':'Voltou para o guia.')}catch(e){toast(e.message)}}
+function suBar(){const d=SU.d,s=d&&d.steps.find(x=>x.key===SU.cur);if(!s||!$('#page'))return;$('#suBar')?.remove();
+  const n=d.steps.filter(x=>!x.skipped).indexOf(s)+1;
+  const el=document.createElement('div');el.id='suBar';el.className='su-bar';
+  el.innerHTML=`<span class="su-bi">${suRing(d.pct,26,3.5)}</span><span class="su-bt"><small>Configurar a conta · passo ${n} de ${d.total}</small><b>${esc(s.title)}</b></span><button type="button" class="btn sm p" id="suOk">Já fiz</button><button type="button" class="btn sm" id="suAll">Ver o guia</button><button type="button" class="sm-x" id="suX" aria-label="Fechar">×</button>`;
+  $('#page').prepend(el);
+  $('#suX').onclick=()=>{SU.cur=null;el.remove()};$('#suAll').onclick=()=>suPanel();
+  $('#suOk').onclick=async()=>{const d2=await suLoad(true);const x=d2.steps.find(y=>y.key===s.key);if(x&&x.done){el.remove();SU.cur=null;const nx=suNext(d2);toast(nx?`Pronto! Próximo: ${nx.title}.`:'Conta configurada! 🎉');suPanel()}else toast('Ainda não aparece como feito. Termine por aqui e clique de novo.')}}
+async function suHome(){const box=$('#suHome');if(!box)return;const d=await suLoad(true);if(!d||d.pct>=100||d.hidden){box.innerHTML='';if(d&&d.hidden)pushNudge();return}
+  const nx=suNext(d),cur=d.stages.find(g=>g.done<g.total)||d.stages[0];
+  const stg=d.stages.map(g=>`<li class="${g.total&&g.done===g.total?'ok':g===cur?'now':''}"><span class="su-gi">${g.total&&g.done===g.total?svg('<path d="M20 6 9 17l-5-5"/>'):svg(SUI[g.n])}</span><span class="su-gt"><b>${esc(g.name)}</b><small>${g.done} de ${g.total}</small></span><span class="su-gb"><i style="width:${g.total?Math.round(100*g.done/g.total):0}%"></i></span></li>`).join('');
+  if(d.ready){box.innerHTML=`<section class="su-slim"><span class="su-pr sm">${suRing(d.pct,40,4.5)}<b>${d.pct}%</b></span><span class="su-st"><small>Configurar a conta · ${d.done} de ${d.total}</small><b>Próximo: ${esc(nx.title)}</b></span><button type="button" class="btn sm p" id="suGo">${esc(nx.cta)}</button><button type="button" class="btn sm" id="suSee">Ver tudo</button></section>`}
+  else box.innerHTML=`<section class="su"><div class="su-l"><span class="hn-eb">Configure sua conta · passo ${d.steps.filter(x=>!x.skipped).indexOf(nx)+1} de ${d.total}</span><h2>${esc(nx.title)}</h2><p>${esc(nx.why)}</p>
+     <div class="su-a"><button type="button" class="btn p" id="suGo">${esc(nx.cta)} ${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button><span class="su-t">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}Leva ${nx.mins} min</span>${nx.can_skip?`<button type="button" class="lnk su-sk" data-sk="${nx.key}">${esc(nx.skip_label)}</button>`:''}</div>
+     ${(()=>{const lt=d.steps.filter(x=>!x.done&&!x.skipped&&x!==nx).slice(0,2);return lt.length?`<div class="su-af"><span>Depois</span>${lt.map(x=>`<button type="button" data-do="${x.key}"><i></i>${esc(x.title)}<small>${x.mins} min</small></button>`).join('')}</div>`:''})()}</div>
+    <div class="su-r"><div class="su-ph"><span class="su-pr">${suRing(d.pct,58,6)}<b>${d.pct}%</b></span><span><b>${d.done} de ${d.total} prontos</b><small>Marcamos sozinhos o que já está feito.</small></span><button type="button" class="lnk" id="suSee">Ver tudo</button></div><ol class="su-sg">${stg}</ol></div></section>`;
+  $('#suGo').onclick=()=>suDo(nx);$('#suSee').onclick=()=>suPanel();box.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>suDo(d.steps.find(x=>x.key===b.dataset.do)));box.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));
+  if(!d.steps.find(x=>x.key==='push'&&!x.done&&!x.skipped))pushNudge()}
+async function suPanel(){const d=await suLoad(true);if(!d)return;$('.su-dw-bg')?.remove();const nx=suNext(d);
+  const row=s=>`<div class="su-s ${s.done?'ok':s.skipped?'skip':s===nx?'nx':''}"><i>${s.done?svg('<path d="M20 6 9 17l-5-5"/>'):s.skipped?'–':''}</i><span><b>${esc(s.title)}</b>${s.done?'':`<small>${s.skipped?'Fora do guia':s===nx?esc(s.why)+' · leva '+s.mins+' min':'leva '+s.mins+' min'}</small>`}
+     ${!s.done&&!s.skipped&&s.can_skip?`<button type="button" class="su-no" data-sk="${s.key}">${esc(s.skip_label)}</button>`:''}</span>
+     ${s.skipped?`<button type="button" class="lnk" data-un="${s.key}">Voltar</button>`:s.done?'':`<button type="button" class="btn sm ${s===nx?'p':''}" data-do="${s.key}">${esc(s.cta)}</button>`}</div>`;
+  const wrap=document.createElement('div');wrap.className='su-dw-bg';
+  wrap.innerHTML=`<aside class="su-dw" role="dialog" aria-label="Configurar a conta"><div class="su-dh"><span class="su-pr">${suRing(d.pct,52,5.5)}<b>${d.pct}%</b></span><span><b>Configurar a conta</b><small>${d.done} de ${d.total} prontos. Marcamos sozinhos o que já está feito.</small></span><button type="button" class="sm-x" id="suC" aria-label="Fechar">×</button></div>
+    <div class="su-db">${d.stages.map(g=>{const ss=d.steps.filter(s=>s.stage===g.n),full=g.total&&g.done===g.total,open=ss.includes(nx)||(!full&&g.n<=2);
+      return `<details class="su-g ${full?'ok':''}" ${open?'open':''}><summary><span class="su-gi">${full?svg('<path d="M20 6 9 17l-5-5"/>'):svg(SUI[g.n])}</span><span class="su-gt"><b>${g.n}. ${esc(g.name)}</b><small>${esc(g.sub)}</small></span><em>${g.done}/${g.total}</em>${svg('<path d="m6 9 6 6 6-6"/>','cx')}</summary><div class="su-gl">${ss.map(row).join('')}</div></details>`}).join('')}</div>
+    <div class="su-df"><label class="su-hd"><input type="checkbox" id="suHid" ${d.hidden?'checked':''}> Esconder o guia da Início</label><span class="hint">Ele continua no menu, em “Configurar a conta”.</span></div></aside>`;
+  document.body.appendChild(wrap);requestAnimationFrame(()=>wrap.classList.add('on'));
+  const close=()=>{wrap.classList.remove('on');setTimeout(()=>wrap.remove(),200)};
+  wrap.onclick=e=>{if(e.target===wrap)close()};$('#suC').onclick=close;document.addEventListener('keydown',function k(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',k)}});
+  wrap.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>suDo(d.steps.find(s=>s.key===b.dataset.do)));
+  wrap.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));wrap.querySelectorAll('[data-un]').forEach(b=>b.onclick=()=>suSkip(b.dataset.un,false));
+  $('#suHid').onchange=async e=>{SU.d=await api('/setup/hide',{method:'POST',body:{hidden:e.target.checked}});if(VIEW==='inicio')suHome()}}
 /* voz da Nanda: responder áudio com áudio */
 let VZ_AUD=null;
 async function nzVoice(){const w=$('#nzVoz');if(!w||w.dataset.on)return;w.dataset.on='1';let v;try{v=await api('/ai/voice')}catch(e){return}

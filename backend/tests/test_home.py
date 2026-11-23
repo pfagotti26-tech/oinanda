@@ -32,7 +32,7 @@ def test_precisa_de_voce(monkeypatch):
             await db.automations.insert_one({'id': uid(), 'company_id': cid, 'name': 'Sem resposta há 3 dias', 'active': True, 'template_id': t['id'], 'created_at': now()})
         c.portal.call(seed)
         td = {x['k']: x for x in c.get('/api/home/todo').json()}
-        assert set(td) == {'gaps', 'tpl_late', 'alert', 'auto'} and 'Tem estacionamento?' in td['gaps']['sub']
+        assert set(td) == {'gaps', 'tpl_late', 'auto'} and 'Tem estacionamento?' in td['gaps']['sub']
         # o modelo pendente é conferido sozinho na Meta e a pendência some
         import automations
         c.portal.call(automations.sync_pending)
