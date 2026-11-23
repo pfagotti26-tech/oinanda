@@ -210,7 +210,8 @@ async def my_status(body: StatusIn, user=Depends(current_user)):
 async def route_handoff(company, contact, reason, last_text=''):
     """Para onde vai a conversa que a Nanda passou para o time."""
     text = norm(f'{reason} {last_text}')
-    teams = await teams_of(company['id'])
+    active = {u['id'] for u in await db.users.find({'company_id': company['id'], 'active': True}, {'_id': 0, 'id': 1}).to_list(500)}
+    teams = [t for t in await teams_of(company['id']) if any(m in active for m in t.get('member_ids') or [])]  # equipe vazia não recebe repasse
     target = next((t for t in teams if any(w.strip() and norm(w.strip()) in text for w in (t.get('topics') or '').split(','))), None)
     target = target or next((t for t in teams if t.get('handoff_default')), None)
     if target and contact.get('team_id') != target['id']:
