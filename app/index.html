@@ -48,7 +48,7 @@ a.logo{text-decoration:none;cursor:pointer}.logo{display:inline-flex;flex-direct
 .auth .card{width:420px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:28px 28px 28px 8px;padding:32px;box-shadow:0 30px 60px -40px rgba(23,33,43,.4)}
 .pw{position:relative;display:block}.pw input{padding-right:46px}.pw .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:none;color:var(--ink2);border-radius:9px;display:grid;place-items:center;cursor:pointer}.pw .eye:hover{background:var(--soft);color:var(--ink)}.pw .eye svg{width:19px;height:19px}
 .field .fh{font-size:12px;color:var(--ink2);margin-top:5px;display:block}.field .fh.low{color:#B4432F}.field .fh.mid{color:#9A6B12}.field .fh.ok{color:#2E7D4F}.field .fe{font-size:12.5px;color:#B4432F;margin-top:5px}.field .fe:empty{display:none}.field .fe a{font-weight:600;text-decoration:underline;cursor:pointer;color:inherit}
-.field input.bad,.field select.bad{border-color:#D9806E}.field label .opt{font-style:normal;font-weight:400;color:var(--ink2);font-size:11.5px;margin-left:3px}.field select:invalid{color:var(--ink2)}
+.field input.bad,.field select.bad{border-color:#D9806E}.field label .mt-nx .opt{text-decoration:none;display:inline-block;width:auto;font-style:normal;font-weight:400;color:var(--ink2);font-size:11.5px;margin-left:3px}.field select:invalid{color:var(--ink2)}
 .auth .trust{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 14px;margin-top:14px;font-size:12px;color:var(--ink2)}.auth .trust span:before{content:'✓ ';color:#2E7D4F;font-weight:700}
 .auth{align-content:center;grid-template-columns:minmax(0,420px);justify-content:center}.auth .back-site{width:420px;max-width:100%;margin-bottom:12px;font-size:13px;color:var(--ink2);text-decoration:none}.auth .back-site:hover{color:var(--c)}.auth a.logo{text-decoration:none}
 .auth h1{font-size:24px;letter-spacing:-.6px;margin:18px 0 4px}
@@ -1120,6 +1120,20 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
   .gt-d{display:none!important}.gcards{display:grid}.mc-rk{grid-template-columns:1fr!important}.mt-start h2{font-size:21px}
 }
 .mt-pick button{position:relative}.mt-pick button.rec{border-color:var(--c)}.mt-pick button em{position:absolute;top:-10px;left:14px;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--c);color:#fff;border-radius:999px;padding:3px 9px}
+.mt-st2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:18px;align-items:start;margin-top:4px}
+.mt-stp{margin-bottom:0!important}.mt-stp ol{gap:6px}.mt-stp li i{font-style:normal}.mt-stp .mt-l1{border-color:var(--c);box-shadow:0 0 0 3px var(--tint)}
+.mt-pk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0 0}
+.mt-pk button{position:relative;display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:16px 40px 16px 14px;font:inherit;cursor:pointer;transition:border-color .15s,box-shadow .15s}.mt-pk button:hover{border-color:var(--c);box-shadow:0 6px 18px rgba(232,96,63,.12)}
+.mt-ic{width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--c2);font-weight:800;font-size:16px;display:grid;place-items:center;flex:none}.mt-tx{display:flex;flex-direction:column;gap:2px}.mt-tx b{font-size:15.5px}.mt-tx small{font-size:12.5px;color:var(--ink3)}
+.mt-pk em{position:absolute;top:-9px;left:12px;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--c);color:#fff;border-radius:99px;padding:2px 8px}
+.mt-go{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ink3)}.mt-go svg{width:18px;height:18px}.mt-pk button:hover .mt-go{color:var(--c2)}
+.mt-rd{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 14px}.mt-rd>span{font-size:12.5px;color:var(--ink3);margin-right:4px}
+.mt-rd button{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 12px 5px 5px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}.mt-rd button:hover{border-color:var(--c)}.mt-rd button i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--bg);color:var(--ink2);font-size:11px;font-weight:800;display:grid;place-items:center}.mt-rd button small{font-weight:500;color:var(--ink3);font-size:12px}
+.mt-nx li{opacity:.85}.mt-nx li>span{flex:1}.mt-nx .opt{text-decoration:none;display:inline-block;width:auto;font-style:normal;font-size:11px;font-weight:700;color:var(--ink3);background:var(--bg);border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.mt-demo{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}.mt-dh{display:flex;align-items:center;justify-content:space-between}.mt-dh b{font-size:14.5px}
+.mt-dc{pointer-events:none}.mt-dc .gl-c{margin:0;box-shadow:none}
+.mt-dl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}.mt-dl li{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink3);cursor:help}.mt-dl li svg{width:16px;height:16px;flex:none;color:var(--c2);margin-top:2px}.mt-dl li b{display:block;font-size:13px;color:var(--ink);font-weight:600}
+@media(max-width:980px){.mt-st2{grid-template-columns:1fr}}@media(max-width:560px){.mt-pk{grid-template-columns:1fr}}
 .mt-sug{text-align:left;margin-top:8px}.mt-sug h3{font-size:14px;color:var(--ink2);margin:0 0 8px;font-weight:600}
 .mt-sugl{display:grid;gap:8px}.mt-sugl button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer;font:inherit}
 .mt-sugl button:hover{border-color:var(--c)}.mt-sugl b{font-size:14.5px}.mt-sugl span{font-size:12.5px;color:var(--ink2)}
@@ -5658,7 +5672,7 @@ function funnelCard(f){const st=f.steps,w=f.weakest;const per={week:'semana',mon
    <div class="fn-row">${st.map(box).join('')}</div></div>`}
 function mtHead(){const mgr=isMgr(),g=ME.company.gamify||{};
   const tabs=gamOn()?[['painel','Painel'],...(mgr&&g.goals?[['metas','Metas']]:[]),['desafios','Desafios'],...(g.awards?[['premios','Prêmios']]:[])]:[];
-  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Metas da empresa, das equipes e de cada pessoa, com prêmios e ranking.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}
+  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Quanto falta para bater a meta da empresa, de cada equipe e de cada pessoa.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}
     ${mgr?`<button class="btn sm ${MT.tab==='config'?'on':''}" id="mtCfg" title="Configurar metas, prêmios e ranking" aria-label="Configurar" style="white-space:nowrap">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 10h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/>')}<span class="mt-cfl"> Configurar</span></button>`:''}</div></div>
    ${tabs.length&&MT.tab!=='config'?`<nav class="utabs">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</nav>`:''}`}
 async function mtView(){
@@ -5678,12 +5692,27 @@ async function mtStart(){
   const n=MT.niche=MT.niche||await api('/goals/niche');
   const ex={revenue:'Ex.: R$ 12.000 no mês',sales:`Ex.: 20 ${n.sales} no mês`};
   const first=n.first.metric;
-  $('#mtB').innerHTML=`<div class="mt-start"><h2>Qual é a sua meta ${n.first.period==='week'?'desta semana':'deste mês'}?</h2><p>Escolha como quer medir. Dá para mudar depois e criar outras para a semana, para uma equipe ou para cada pessoa.</p>
-    <div class="mt-pick">${[['revenue','R$','Vender um valor',ex.revenue],['sales','#',`Fazer um número de ${n.sales}`,ex.sales]].sort((a,b)=>(a[0]===first?-1:b[0]===first?1:0)).map(k=>`<button type="button" data-m="${k[0]}" class="${k[0]===first?'rec':''}">${k[0]===first?'<em>Mais comum no seu ramo</em>':''}<i>${k[1]}</i><b>${k[2]}</b><span>${k[3]}</span></button>`).join('')}</div>
-    <div class="mt-sug"><h3>Ou comece por uma meta do seu ramo</h3><div class="mt-sugl">${n.suggest.map((x,i)=>`<button type="button" data-s="${i}"><b>${esc(x.name)}</b><span>${x.unit==='pct'?'meta em %':x.unit==='brl'?'meta em R$':'meta em quantidade'} · ${{week:'toda semana',month:'todo mês',quarter:'todo trimestre',custom:'datas'}[x.period]}</span></button>`).join('')}</div></div>
-    <p class="hint">Prêmios, pontos e ranking são opcionais e ficam em Configurar.</p></div>`;
-  document.querySelectorAll('.mt-pick [data-m]').forEach(b=>b.onclick=()=>goalForm(null,{metric:b.dataset.m,period:n.first.period==='custom'?'month':n.first.period}));
-  document.querySelectorAll('.mt-sugl [data-s]').forEach(b=>b.onclick=()=>{const x=n.suggest[+b.dataset.s];goalForm(null,{metric:x.metric,period:x.period,name:x.name})});
+  const per=n.first.period==='week'?'desta semana':'deste mês';
+  const unitT=x=>x.unit==='pct'?'em %':x.unit==='brl'?'em R$':'em quantidade';
+  const perT=x=>({week:'toda semana',month:'todo mês',quarter:'todo trimestre',custom:'com datas'}[x.period]);
+  const sugTip=x=>`${x.name}: meta ${unitT(x)}, ${perT(x)}. Abre já preenchida, você só coloca o número.`;
+  const demo={name:'Faturamento do mês',owner_name:'Empresa',metric:'revenue',value:7800,target:12000,pct:65,floor_pct:80,super_pct:120,level:'abaixo',on_track:true,per_day:300,days_left:14,projection_pct:104,award_meta:(ME.company.gamify||{}).awards?'':'Jantar para o time'};
+  const IM={brl:'R$',num:'#',pct:'%'};
+  $('#mtB').innerHTML=`<div class="mt-st2"><section class="eq-st mt-stp"><div class="eq-sth"><div><span class="eq-eb">Comece por aqui · 3 passos</span><b>Qual é a sua meta ${per}?</b></div></div>
+     <ol><li class="nx mt-l1"><i>1</i><span><b>Escolha o que medir</b><small>Dá para mudar depois e criar outras para a semana, para uma equipe ou para cada pessoa.</small></span></li></ol>
+     <div class="mt-pk">${[['revenue','R$','Vender um valor',ex.revenue,'Soma de tudo que foi vendido no período, em reais.'],['sales','#',`Fazer um número de ${n.sales}`,ex.sales,`Quantas ${n.sales} foram fechadas no período, sem olhar o valor.`]].sort((a,b)=>(a[0]===first?-1:b[0]===first?1:0)).map(k=>`<button type="button" data-m="${k[0]}" title="${k[4]}"><span class="mt-ic">${k[1]}</span><span class="mt-tx"><b>${k[2]}</b><small>${k[3]}</small></span>${k[0]===first?'<em>mais comum no seu ramo</em>':''}<i class="mt-go">${svg('<path d="m9 6 6 6-6 6"/>')}</i></button>`).join('')}</div>
+     ${n.suggest.length?`<div class="mt-rd"><span>Ou use uma pronta</span>${n.suggest.map((x,i)=>`<button type="button" data-s="${i}" title="${esc(sugTip(x))}"><i>${IM[x.unit]||'#'}</i>${esc(x.name)}<small>${perT(x)}</small></button>`).join('')}</div>`:''}
+     <ol class="mt-nx">
+      <li><i>2</i><span><b>Divida entre equipes e pessoas <u class="opt">opcional</u></b><small>Cada um vê quanto falta para a parte dele bater a meta.</small></span></li>
+      <li><i>3</i><span><b>Prêmios e ranking <u class="opt">opcional</u></b><small>Prêmio por meta e supermeta, pontos e ranking do time.</small></span>${isMgr()?'<button type="button" class="btn sm" id="mtGoCfg">Ver opções</button>':''}</li></ol></section>
+    <aside class="mt-demo"><div class="mt-dh"><b>Como vai aparecer</b><span class="pill grey" title="Números de exemplo">exemplo</span></div>
+     <div class="mt-dc">${goalCard(demo,true)}</div>
+     <ul class="mt-dl"><li title="A barra mostra onde você está. As marcas são o mínimo (80%), a meta (100%) e a supermeta (120%).">${svg('<path d="M3 12h18"/><circle cx="8" cy="12" r="2"/>')}<span><b>Barra com mínimo, meta e supermeta</b>Você vê de longe se está perto.</span></li>
+      <li title="Divide o que falta pelos dias que sobram no período.">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}<span><b>Quanto falta por dia</b>Para bater no prazo, sem fazer conta.</span></li>
+      <li title="Compara o ritmo de hoje com o necessário para fechar o período.">${svg('<path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/>')}<span><b>Se está no ritmo</b>A projeção avisa antes de ser tarde.</span></li></ul></aside></div>`;
+  document.querySelectorAll('.mt-pk [data-m]').forEach(b=>b.onclick=()=>goalForm(null,{metric:b.dataset.m,period:n.first.period==='custom'?'month':n.first.period}));
+  document.querySelectorAll('.mt-rd [data-s]').forEach(b=>b.onclick=()=>{const x=n.suggest[+b.dataset.s];goalForm(null,{metric:x.metric,period:x.period,name:x.name})});
+  if($('#mtGoCfg'))$('#mtGoCfg').onclick=()=>{MT.tab='config';syncUrl();mtView()};
 }
 async function mtBoard(){if(!MT.niche)MT.niche=await api('/goals/niche').catch(()=>null);
   const b=MT.data=await api('/goals/board');const s=b.settings;
