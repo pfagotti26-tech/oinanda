@@ -2549,6 +2549,13 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pp-l{display:flex;flex-direction:column;gap:6px}.pp-i{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font:inherit;text-align:left;cursor:pointer}.pp-i:hover{border-color:var(--c)}.pp-i.off{opacity:.55}.pp-i .av{width:36px;height:36px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none}.pp-i>span:nth-child(2){flex:1;display:flex;flex-direction:column;min-width:0}.pp-i b{font-size:14px}.pp-i small{font-size:12px;color:var(--ink3)}.pp-i em{font-style:normal;font-size:13px;font-weight:700;color:var(--c2)}
 .pp-e{display:flex;flex-direction:column;gap:2px;background:var(--bg);border-radius:12px;padding:12px 14px}.pp-e b{font-size:14px}.pp-e span{font-size:13px;color:var(--ink2)}
 .bk-nudge{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFF8F4;border:1.5px dashed #F0C6B4;border-radius:14px;padding:10px 12px;margin-top:2px}.bk-nudge>span{width:34px;height:34px;border-radius:50%;background:var(--tint);color:var(--c);display:grid;place-items:center;flex:none}.bk-nudge>span svg{width:18px;height:18px}.bk-nudge>div{flex:1;min-width:180px;display:flex;flex-direction:column}.bk-nudge b{font-size:13.5px}.bk-nudge small{font-size:12.5px;color:var(--ink2)}
+.vz{border:1px solid var(--line);border-radius:18px;padding:18px;margin:0 0 12px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(135deg,#fff,#FFF8F4)}
+.vz-h{display:flex;align-items:center;gap:12px}.vz-i{width:40px;height:40px;border-radius:12px;background:var(--c);color:#fff;display:grid;place-items:center;flex:none}.vz-i svg{width:20px;height:20px}.vz-h>div{flex:1;display:flex;flex-direction:column}.vz-h b{font-size:15px}.vz-h b em{font-style:normal;font-size:10.5px;font-weight:800;background:var(--c);color:#fff;border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:2px}.vz-h small{font-size:12.5px;color:var(--ink2)}
+.vz-n{margin:0;font-size:12.5px;background:var(--warnsoft);border-radius:10px;padding:8px 10px}
+.vz-v{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}.vz-v.dim{opacity:.55}
+.vz-c{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font:inherit;text-align:left;cursor:pointer}.vz-c.on{border-color:var(--c);background:var(--tint)}.vz-c span:last-child{display:flex;flex-direction:column;min-width:0}.vz-c b{font-size:13.5px}.vz-c small{font-size:11.5px;color:var(--ink3)}
+.vz-p{width:30px;height:30px;border-radius:50%;background:var(--bg);color:var(--ink2);display:grid;place-items:center;flex:none}.vz-p svg{width:13px;height:13px}.vz-p:hover,.vz-p.pl{background:var(--c);color:#fff}
+.vz-u{display:flex;flex-direction:column;gap:6px}.vz-u>div{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12.5px}.vz-u i{height:6px;background:var(--bg);border-radius:99px;overflow:hidden}.vz-u u{display:block;height:100%;background:var(--c);border-radius:99px}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -3483,7 +3490,7 @@ function mediaHtml(m){const u='/api/media/'+m.id,has=m.media_id||m.file,cap=m.ca
   if(!has||!['image','video','audio','document','sticker'].includes(m.type))return esc(m.text);
   if(m.type==='image'||m.type==='sticker')return `<a class="mimg${m.type==='sticker'?' stk':''}" href="${u}" target="_blank" rel="noopener"><img src="${u}" alt="${m.type==='sticker'?'Figurinha':'Foto'}" loading="lazy" onerror="this.parentNode.classList.add('gone')"></a>${cap}`;
   if(m.type==='video')return `<video class="mvid" src="${u}" controls preload="metadata"></video>${cap}`;
-  if(m.type==='audio')return `<span class="maud"><audio src="${u}" controls preload="none"></audio></span>${m.transcript?`<span class="mtr">${esc(m.transcript)}</span>`:m.pending?'<span class="mtr wait">transcrevendo...</span>':''}`;
+  if(m.type==='audio')return `<span class="maud"><audio src="${u}" controls preload="none"></audio></span>${m.tts&&m.text?`<span class="mtr">🔊 ${esc(m.text)}</span>`:m.transcript?`<span class="mtr">${esc(m.transcript)}</span>`:m.pending?'<span class="mtr wait">transcrevendo...</span>':''}`;
   return `<a class="mdoc" href="${u}" target="_blank" rel="noopener"><i>${svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>')}</i><span><b>${esc(m.filename||'Documento')}</b><small>${fsize(m.size)||'abrir'}</small></span></a>${cap}`}
 function msgsHtml(list){let out='',day='',prev=null;const two=(CV.c?.channels||[]).length===2;
   const st=s=>s==='read'?'<span class="st read">✓✓</span>':s==='delivered'?'<span class="st">✓✓</span>':s==='failed'?'<span class="st failed">não entregue</span>':s==='sent'?'<span class="st">✓</span>':'';
@@ -6628,6 +6635,7 @@ const VIEWS={
      <div class="nz-prog"><div class="nz-pt"><b>${d===total?'A Nanda está pronta para atender':`Preparo da Nanda: ${d} de ${total}`}</b><span>${d===total?'Agora teste com perguntas reais dos seus clientes.':'Preencha cada parte. Quanto mais ela souber, menos ela chama o time.'}</span></div>
       <div class="nz-bar"><i style="width:${Math.round(100*d/total)}%"></i></div>
       ${d===total?'<button type="button" class="btn sm p" id="nzTry">Testar agora</button>':''}${d<total&&Object.keys(ex).length?`<button type="button" class="btn sm" id="aiEx">${seg==='outro'?'Preencher o que falta com um exemplo':'Preencher o que falta com exemplo de '+esc(segName)}</button>`:''}</div>
+     <div id="nzVoz"></div>${(setTimeout(nzVoice,0),'')}
      ${G.length?`<div class="nz-gap"><div class="nz-gh"><span class="nz-gi">?</span><div><b>${G.length===1?'1 pergunta que ela não soube responder':G.length+' perguntas que ela não soube responder'}</b><span>Vieram de clientes de verdade. Responda aqui e ela passa a saber: a resposta entra em Perguntas frequentes.</span></div></div>
       ${G.slice(0,GN).map(g=>`<div class="nz-gq" data-g="${g.id}"><div class="nz-gqt"><b>${esc(g.q)}</b><small>${g.count===1?'1 cliente perguntou':g.count+' clientes perguntaram'} · última vez ${(a=>a==='agora'?'agora há pouco':'há '+a)(agoShort(g.last_at))}${g.last_contact?' ('+esc(g.last_contact.split(' ')[0])+')':''}</small></div>
        <div class="nz-gqa"><input data-gin placeholder="Escreva a resposta" maxlength="600" aria-label="Resposta para: ${esc(g.q)}"><button type="button" class="btn sm p" data-ga>Ensinar</button><button type="button" class="lnk" data-gd title="Ela continua chamando o time quando perguntarem isso">Deixar com o time</button></div></div>`).join('')}
@@ -7398,6 +7406,20 @@ async function personModal(opt={}){
       if(inv)toast(inv.emailed?`Convite enviado para ${inv.member.email}.`:`Acesso criado. Senha provisória: ${inv.temp_password}`);else toast(isNew?`${name.split(' ')[0]} entrou na agenda.`:'Salvo.');
       opt.onDone&&opt.onDone(pid,inv)}catch(e){g.disabled=false;$('#pmE2').textContent=e.message}};
 }
+/* voz da Nanda: responder áudio com áudio */
+let VZ_AUD=null;
+async function nzVoice(){const w=$('#nzVoz');if(!w||w.dataset.on)return;w.dataset.on='1';let v;try{v=await api('/ai/voice')}catch(e){return}
+  const mgr=['owner','manager'].includes(ME.user.role);
+  const draw=()=>{const pct=v.quota?Math.min(100,Math.round(100*v.used/v.quota)):0;
+    w.innerHTML=`<div class="vz"><div class="vz-h"><span class="vz-i">${svg('<path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/>')}</span><div><b>Voz da Nanda <em>Novo</em></b><small>Quando o cliente manda áudio no WhatsApp, ela responde em áudio, com a voz que você escolher.</small></div>
+      <label class="sw" title="${v.ready?'':'A voz ainda está sendo ativada no Oi Nanda'}"><input type="checkbox" id="vzOn" ${v.on?'checked':''} ${!v.ready||!mgr?'disabled':''}><i></i></label></div>
+      ${!v.ready?'<p class="vz-n">Estamos ativando a voz no Oi Nanda. Logo dá para ligar aqui.</p>':''}
+      <div class="vz-v ${v.on?'':'dim'}">${v.voices.map(x=>`<button type="button" class="vz-c ${x.id===v.voice_id?'on':''}" data-vz="${x.id}" ${!mgr?'disabled':''}><span class="vz-p" data-pl="${x.id}" title="Ouvir">${svg('<path d="M8 5v14l11-7z"/>')}</span><span><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></span></button>`).join('')}</div>
+      <div class="vz-u"><div><span><b>${v.used}</b> de ${v.quota} áudios este mês</span><span class="hint">Respostas com link ou longas seguem em texto.</span></div><i><u style="width:${pct}%"></u></i></div></div>`;
+    if($('#vzOn'))$('#vzOn').onchange=async e=>{try{v=await api('/ai/voice',{method:'PUT',body:{voice_reply:e.target.checked}});toast(v.on?'A Nanda vai responder áudio com áudio.':'Voz desligada. Ela responde em texto.');draw()}catch(x){toast(x.message);e.target.checked=!e.target.checked}};
+    w.querySelectorAll('[data-pl]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const x=v.voices.find(y=>y.id===b.dataset.pl);if(VZ_AUD){VZ_AUD.pause()}w.querySelectorAll('.vz-p').forEach(y=>y.classList.remove('pl'));VZ_AUD=new Audio(x.preview);VZ_AUD.play().catch(()=>{});b.classList.add('pl');VZ_AUD.onended=()=>b.classList.remove('pl')});
+    w.querySelectorAll('[data-vz]').forEach(b=>b.onclick=async()=>{if(b.dataset.vz===v.voice_id)return;try{v=await api('/ai/voice',{method:'PUT',body:{voice_id:b.dataset.vz}});draw();toast('Voz escolhida: '+v.voices.find(y=>y.id===v.voice_id).name)}catch(x){toast(x.message)}})};
+  draw()}
 function workModal(m){
   const st={pct:m.commission_pct??'',on:!!m.shift,days:[...((m.shift||{}).days||[0,1,2,3,4])],start:(m.shift||{}).start||'08:00',end:(m.shift||{}).end||'18:00'};
   const PRE=[['Manhã','08:00','14:00'],['Tarde','14:00','20:00'],['Comercial','09:00','18:00'],['Noite','18:00','23:00']];

@@ -148,6 +148,8 @@ app.include_router(teams_router, prefix='/api')
 app.include_router(notify_router, prefix="/api")
 app.include_router(sales_router, prefix="/api")
 app.include_router(origins_router, prefix="/api")
+from voice import router as voice_router
+app.include_router(voice_router, prefix="/api")
 app.include_router(home_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
 app.include_router(wallet_router, prefix="/api")

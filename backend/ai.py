@@ -474,7 +474,9 @@ async def auto_reply(company_id, contact_id, msg_id):
                 company = await db.companies.find_one({'id': company_id}, {'_id': 0})
                 try: sent_list = await wachoice.offer_slots(company, contact, d['slots']['service_id'], d['reply'] or 'Separei os próximos horários livres, é só tocar no melhor pra você 😊', s['name'] + ' (IA)')
                 except Exception: log.exception('falha ao mandar a lista de horários')
-        if d['reply'] and not sent_list: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+        if d['reply'] and not sent_list:
+            import voice
+            await voice.reply(company_id, contact, d['reply'], s['name'] + ' (IA)', msg_id)
         await apply_origin(company_id, contact, d)
         await apply_facts(company_id, contact, d)
         await apply_stage(company_id, contact, d, s['name'] + ' (IA)')
