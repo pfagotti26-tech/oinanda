@@ -104,7 +104,12 @@ async def recipients(company_id, contact):
     else: ids = None
     q = {'company_id': company_id, 'active': True, 'away': {'$ne': True}}
     if ids is not None: q['id'] = {'$in': ids}
-    return [u['id'] for u in await db.users.find(q, {'_id': 0, 'id': 1}).to_list(500)]
+    out = [u['id'] for u in await db.users.find(q, {'_id': 0, 'id': 1}).to_list(500)]
+    if not out and ids is not None and not contact.get('assigned_to'):
+        # equipe sem ninguém disponível (vazia ou todos ausentes): ninguém pode ficar sem saber do cliente
+        out = [u['id'] for u in await db.users.find({'company_id': company_id, 'active': True, 'away': {'$ne': True}, 'role': {'$in': ['owner', 'manager']}}, {'_id': 0, 'id': 1}).to_list(50)]
+        if not out: out = [u['id'] for u in await db.users.find({'company_id': company_id, 'active': True}, {'_id': 0, 'id': 1}).to_list(500)]
+    return out
 
 def short(t): return (t or '').replace('\n', ' ')[:140]
 

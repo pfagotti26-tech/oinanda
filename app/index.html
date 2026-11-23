@@ -2579,6 +2579,30 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pc-sp{display:inline-block;width:32px}
 .pr-new{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:0;border-radius:0 0 18px 18px;font:inherit;cursor:pointer;text-align:left}.pr-new:hover{background:#FFF8F4}.pr-new span{width:38px;height:38px;border-radius:50%;border:1.5px dashed #E8B9A9;color:var(--c);display:grid;place-items:center}.pr-new span svg{width:17px;height:17px}.pr-new b{font-size:14px;color:var(--c2)}.pr-new small{font-size:12.5px;color:var(--ink3)}
 @media(max-width:860px){.pr{grid-template-columns:38px minmax(0,1fr) auto;grid-template-areas:"a n c" "a r r";row-gap:6px}.pr .av{grid-area:a;align-self:start}.pr-n{grid-area:n}.pc-a{grid-area:c}.pr-r,.pr-i,.pr-w{grid-area:r}.pr-r{display:flex;gap:6px;flex-wrap:wrap}.pr-i,.pr-w{display:none}.pr-new small{display:none}}
+/* equipes */
+.tq-lock,.tq-start{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.tq-lock{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.tq-lock>span{width:40px;height:40px;border-radius:12px;background:var(--bg);color:var(--ink2);display:grid;place-items:center;flex:none}.tq-lock>span svg{width:20px;height:20px}.tq-lock>div{flex:1;min-width:220px;display:flex;flex-direction:column}.tq-lock b{font-size:14.5px}.tq-lock small{font-size:12.5px;color:var(--ink2)}
+.tq-sh{display:flex;flex-direction:column;margin-bottom:12px}.tq-sh b{font-size:15px}.tq-sh small{font-size:12.5px;color:var(--ink2)}
+.tq-tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.tq-t{display:flex;flex-direction:column;align-items:flex-start;gap:4px;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font:inherit;text-align:left;cursor:pointer}.tq-t:hover{border-color:var(--c);background:#FFF8F4}.tq-t b{font-size:14px}.tq-t small{font-size:12px;color:var(--ink2)}.tq-t span{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.tq-t i{font-style:normal;font-size:11px;font-weight:700;background:var(--bg);border-radius:99px;padding:2px 8px;color:var(--ink2)}
+.tq-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-bottom:14px}
+.tq-c{background:#fff;border:1px solid var(--line);border-top:3px solid var(--tc);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}.tq-c.warn{border-color:#F2C7BC;border-top-color:var(--tc)}
+.tq-ch{display:flex;align-items:center;gap:8px}.tq-ch>i{width:9px;height:9px;border-radius:50%;background:var(--tc)}.tq-ch>b{font-size:15px}.tq-q{margin-left:auto;font-size:12px;color:var(--ink3)}.tq-q em{font-style:normal;font-weight:800;color:var(--c2)}
+.tq-al{display:flex;align-items:flex-start;gap:6px;font-size:12.5px;font-weight:600;color:#B23A22;background:#FFF1EE;border-radius:10px;padding:7px 9px}.tq-al svg{width:15px;height:15px;flex:none;margin-top:1px}
+.tq-r{display:flex;gap:8px;font-size:12.5px}.tq-r span{width:64px;flex:none;color:var(--ink3)}.tq-r b{font-weight:600;color:var(--ink2)}
+.tq-mx{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px}.tq-mh{display:flex;flex-direction:column;margin-bottom:10px}.tq-mh b{font-size:14.5px}.tq-mh small{font-size:12.5px;color:var(--ink3)}
+.tq-tb{overflow-x:auto}.tq-tr{display:grid;grid-template-columns:minmax(150px,1.4fr) repeat(var(--n),minmax(84px,1fr));align-items:center;gap:6px;padding:6px 0;border-top:1px solid var(--line);min-width:calc(160px + var(--n)*90px)}
+.tq-tr.h{border-top:0;font-size:12px;font-weight:800;color:var(--ink2)}.tq-tr.h span{text-align:center;display:flex;align-items:center;justify-content:center;gap:5px}.tq-tr.h span i{width:8px;height:8px;border-radius:50%;background:var(--tc)}
+.tq-tr.f{font-size:12px;color:var(--ink3)}.tq-tr.f span{text-align:center}.tq-tr.f span:first-child{text-align:left}.tq-tr.f .bad{color:#B23A22;font-weight:700}
+.tq-p{display:flex;align-items:center;gap:8px;min-width:0}.tq-p .av{width:28px;height:28px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:10.5px;font-weight:800;flex:none}.tq-p b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tq-p em{font-style:normal;font-size:11px;color:var(--warn);font-weight:700}
+.tq-ck{display:grid;place-items:center;cursor:pointer;position:relative}.tq-ck input{position:absolute;opacity:0;width:0;height:0}.tq-ck i{width:24px;height:24px;border-radius:8px;border:1.5px solid #D8CCC2;background:#fff;display:grid;place-items:center}.tq-ck input:checked+i{background:var(--c);border-color:var(--c)}.tq-ck input:checked+i:after{content:'';width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}.tq-ck input:focus-visible+i{box-shadow:0 0 0 3px var(--tint)}.tq-ck input:disabled+i{opacity:.6}
+.tq-m [hidden]{display:none!important}.tq-m{max-width:640px;gap:10px}.tq-hw{margin:0;padding-left:18px;font-size:13px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.tq-s{border-top:1px solid var(--line);padding:14px 0 4px;display:flex;flex-direction:column;gap:10px}.tq-s h3{display:flex;align-items:center;gap:8px;font-size:14px;margin:0}.tq-s h3 i{width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--c2);font-style:normal;font-size:11.5px;display:grid;place-items:center}
+.tq-in{border:1px solid #DCD2C9;border-radius:12px;padding:10px 12px;font:inherit;font-size:14.5px;width:100%;box-sizing:border-box}
+.tq-pp{display:flex;flex-wrap:wrap;gap:6px}.tq-pp .sm-rp{cursor:pointer}.tq-pp .sm-rp small{font-size:11px;color:var(--warn)}
+.tq-wn{margin:0;font-size:12.5px;color:#B23A22;background:#FFF1EE;border-radius:10px;padding:7px 10px}
+.tq-rr{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tq-rr input{width:76px;border:1px solid #DCD2C9;border-radius:10px;padding:7px 9px;font:inherit}
+.tq-op{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}.tq-op>label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.tq-op>label>input{margin-top:3px;accent-color:var(--c);width:16px;height:16px;flex:none}.tq-op>label>span{flex:1;display:flex;flex-direction:column;gap:2px}.tq-op>.tq-in,.tq-op>.tq-pp,.tq-op>.tq-rr{margin-left:26px;width:calc(100% - 26px)}.tq-op b{font-size:13.5px}.tq-op small{font-size:12px;color:var(--ink3)}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -6863,8 +6887,7 @@ const VIEWS={
    <div class="pc-bar" style="display:none"><div class="seg" id="eqF">${[['all','Todos',people.length],['acesso','Usam o sistema',team.length],['agenda','Atendem na agenda',PROS.filter(p=>p.active!==false).length]].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]} <em>${x[2]}</em></button>`).join('')}</div></div>
    <div class="pr-l0">${shown.map(card).join('')}${canManage?`<button type="button" class="pr-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>no sistema, na agenda ou nos dois</small></button>`:''}</div>
    <div id="eqHow" style="display:none;margin-top:14px">${hero}</div>
-   ${team.some(m=>m.active&&!last(m)&&!m.must_change_password&&m.id!==u.id)?'<p class="note eq-tip">Quem nunca entrou continua com acesso liberado. Se a pessoa não vai usar, desative: dá para reativar quando quiser.</p>':''}
-   <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
+   <div class="eq-sh" style="margin-top:28px"><h3>Equipes</h3><span class="hint">Cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
   drawTeams(team,canManage);
   if($('#eqWaMe'))$('#eqWaMe').onclick=()=>meModal();
@@ -6987,23 +7010,6 @@ const VIEWS={
 {const emp=VIEWS.empresa;VIEWS.empresa=async()=>{await emp();if(ME.user.role!=='owner'||!$('#page'))return;
  $('#page').insertAdjacentHTML('beforeend','<div class="em-sh"><h3>Avisos para você</h3><span>Mensagens do Oi Nanda sobre a sua conta, não dos clientes.</span></div><div class="card em-c em-sws"><div class="em-sw" style="cursor:default"><span class="ic">'+svg('<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>')+'</span><span class="tx"><b>Avisos do Oi Nanda</b><small>Cobrança, fim do teste e uso da Nanda: escolha o que receber e por onde (WhatsApp ou e-mail).</small></span><button class="btn sm" id="goAv">Escolher</button></div></div>');
  $('#goAv').onclick=()=>go('avisos-conta')}}
-async function drawTeams(people,canManage){
-  const box=$('#tmL');if(!box)return;const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
-  const P=Object.fromEntries(people.map(p=>[p.id,p]));
-  if($('#tmNew'))$('#tmNew').onclick=()=>teamModal(null,people,stages);
-  if(!teams.length){box.innerHTML=`<div class="aempty"><div><b>Nenhuma equipe ainda</b><p>Com equipes, o pré-vendas passa o cliente para o vendedor com um motivo, o suporte tem a própria fila e a Nanda manda cada assunto para o lugar certo.</p></div>${canManage?'<button class="btn p" id="tmPack">Criar Pré-vendas, Vendas e Suporte</button>':''}</div>`;
-    if($('#tmPack'))$('#tmPack').onclick=async e=>{e.target.disabled=true;try{for(const [n,o] of [['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}],['Suporte',{topics:'cancelamento, reclamação, problema, troca'}]])await api('/teams',{method:'POST',body:{name:n,...o}});toast('Equipes criadas. Agora coloque as pessoas em cada uma.');VIEWS.equipe()}catch(x){toast(x.message);e.target.disabled=false}};return}
-  const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
-  box.innerHTML=`<div class="agrid">${teams.map(t=>`<div class="tm-c" style="--tc:${t.color}"><div class="hd"><span class="dot"></span><b>${esc(t.name)}</b>${t.mine?'<span class="pill ok">você</span>':''}<span class="hint" style="margin-left:auto">${t.queue} na fila</span></div>
-    <div class="mem">${(t.member_ids||[]).map(id=>P[id]?`<span class="av ${P[id].away?'away':''}" title="${esc(P[id].name)}${P[id].away?' · ausente':''}" style="background:${avc(P[id].name)}">${initials(P[id].name)}</span>`:'').join('')||'<span class="hint">Sem pessoas ainda</span>'}</div>
-    <ul class="rl"><li>${t.distribution==='roundrobin'?`<b>Rodízio:</b> cada conversa nova vai direto para a próxima pessoa disponível${t.max_open?`, até <b>${t.max_open}</b> abertas por pessoa`:''}`:'<b>Fila:</b> quem estiver livre pega a conversa'}</li>
-     ${(t.stages||[]).length?`<li>Recebe quem entra em <b>${t.stages.map(x=>esc(SN[x]||'?')).join(', ')}</b></li>`:''}
-     ${t.topics?`<li>A Nanda manda para cá: <b>${esc(t.topics)}</b></li>`:''}${t.handoff_default?'<li>Recebe os demais repasses da Nanda</li>':''}
-     ${t.sla_minutes?`<li>Alerta se o cliente esperar mais de <b>${t.sla_minutes} min</b> na fila</li>`:''}</ul>
-    ${canManage?`<div class="bt"><button class="btn sm" data-te="${t.id}">Editar</button><button class="btn sm icn danger" data-td="${t.id}" title="Apagar" aria-label="Apagar">${IC.trash}</button></div>`:''}</div>`).join('')}</div>`;
-  box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
-  box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar esta equipe? As conversas dela continuam com quem está.'))return;await api('/teams/'+b.dataset.td,{method:'DELETE'});VIEWS.equipe()});
-}
 /* aviso no WhatsApp do time: quando a Nanda passa um cliente ou alguém transfere uma conversa */
 function eqWa(n,canManage,team){const t=n.template&&n.template.status,me=(n.me||{}),tm=n.team||{on:0,total:0},mine=me.wa_notify&&me.wa_phone;
   const st=!n.connected?['grey','WhatsApp da empresa não conectado','Os avisos saem pelo número da empresa. Conecte o WhatsApp em Empresa para ligar.']
@@ -7051,27 +7057,79 @@ async function meModal(){
       $('#meDot').classList.toggle('off',!!u.away);$('#meSt').textContent=(ME.roles[u.role]||u.role)+' · '+(u.away?'ausente':'disponível');
       o.remove();toast(u.away?'Você está ausente. O rodízio vai pular você.':'Salvo.');if(VIEW==='equipe')VIEWS.equipe()}catch(x){$('#meE').textContent=x.message}};
 }
+async function drawTeams(people,canManage){
+  const box=$('#tmL');if(!box)return;
+  const can=ME.access&&(ME.access.features||[]).includes('equipes');
+  const act=people.filter(p=>p.active),PL=Object.fromEntries(people.map(p=>[p.id,p]));
+  if($('#tmNew'))$('#tmNew').style.display=can&&canManage?'':'none';
+  if(!can){box.innerHTML=`<div class="tq-lock"><span>${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}</span><div><b>Para operação com 3 ou mais pessoas atendendo</b><small>Separe Pré-vendas, Vendas e Suporte, divida as conversas por rodízio e receba alerta quando um cliente esperar demais. Faz parte do plano Equipe.</small></div>${ME.user.role==='owner'?'<button class="btn sm" id="tqUp">Conhecer o plano Equipe</button>':''}</div>`;
+    if($('#tqUp'))$('#tqUp').onclick=()=>go('empresa');return}
+  const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
+  if($('#tmNew'))$('#tmNew').onclick=()=>teamModal(null,people,stages);
+  if(!teams.length){
+    box.innerHTML=`<div class="tq-start"><div class="tq-sh"><b>Quer dividir o atendimento por equipes?</b><small>${act.length<3?'Com poucas pessoas, normalmente não precisa: todo mundo vê todas as conversas. ':''}Escolha um modelo e diga quem fica em cada equipe.</small></div>
+      <div class="tq-tp">${TQ_TPL.map((t,i)=>`<button type="button" class="tq-t" data-tq="${i}"><b>${t[0]}</b><small>${t[1]}</small><span>${t[2].map(x=>`<i>${x[0]}</i>`).join('')}</span></button>`).join('')}</div></div>`;
+    box.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>canManage?teamSetup(TQ_TPL[+b.dataset.tq],act):toast('Só o dono ou um gestor monta as equipes.'));return}
+  const empty=t=>!(t.member_ids||[]).some(id=>PL[id]&&PL[id].active);
+  const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
+  const gets=t=>[t.handoff_default?'Clientes que a Nanda passa para o time':'',t.topics?`Quando falam em ${esc(t.topics)}`:'',(t.stages||[]).length?`Quem chega em ${t.stages.map(x=>esc(SN[x]||'?')).join(', ')}`:''].filter(Boolean);
+  box.innerHTML=`<div class="tq-g">${teams.map(t=>`<div class="tq-c ${empty(t)?'warn':''}" style="--tc:${t.color}"><div class="tq-ch"><i></i><b>${esc(t.name)}</b><span class="tq-q">${t.queue?`<em>${t.queue}</em> esperando`:'fila vazia'}</span>${canManage?`<button type="button" class="btn sm" data-te="${t.id}">Editar</button><details class="pc-mn"><summary aria-label="Mais opções">⋯</summary><div><button type="button" class="danger" data-td="${t.id}">Apagar equipe</button></div></details>`:''}</div>
+      ${empty(t)?`<div class="tq-al">${svg('<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>')} Sem ninguém para atender. Enquanto isso, os clientes daqui avisam o dono e os gestores.</div>`:''}
+      <div class="tq-r"><span>Divide por</span><b>${t.distribution==='roundrobin'?`rodízio${t.max_open?` · até ${t.max_open} abertas por pessoa`:''}`:'fila (quem estiver livre pega)'}</b></div>
+      <div class="tq-r"><span>Recebe</span><b>${gets(t).join(' · ')||'só o que for transferido para ela'}</b></div>${t.sla_minutes?`<div class="tq-r"><span>Alerta</span><b>cliente esperando mais de ${t.sla_minutes} min</b></div>`:''}</div>`).join('')}</div>
+    <div class="tq-mx"><div class="tq-mh"><b>Quem atende em cada equipe</b><small>Uma pessoa pode estar em mais de uma. Marque e já fica salvo.</small></div>
+     <div class="tq-tb" style="--n:${teams.length}"><div class="tq-tr h"><span></span>${teams.map(t=>`<span style="--tc:${t.color}"><i></i>${esc(t.name)}</span>`).join('')}</div>
+      ${act.map(p=>`<div class="tq-tr"><span class="tq-p"><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span><b>${esc(p.name)}</b>${p.away?'<em>ausente</em>':''}</span>${teams.map(t=>`<label class="tq-ck"><input type="checkbox" data-mx="${t.id}" value="${p.id}" ${(t.member_ids||[]).includes(p.id)?'checked':''} ${canManage?'':'disabled'} aria-label="${esc(p.name)} em ${esc(t.name)}"><i></i></label>`).join('')}</div>`).join('')}
+      <div class="tq-tr f"><span>Pessoas</span>${teams.map(t=>{const n=(t.member_ids||[]).filter(id=>PL[id]&&PL[id].active).length;return `<span class="${n?'':'bad'}">${n||'ninguém'}</span>`}).join('')}</div></div></div>`;
+  box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
+  box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{const t=teams.find(x=>x.id===b.dataset.td);if(!await sure(`Apagar a equipe ${t.name}? As conversas dela continuam com quem está.`,{el:b.closest('.tq-c')}))return;await api('/teams/'+t.id,{method:'DELETE'});toast('Equipe apagada.');VIEWS.equipe()});
+  box.querySelectorAll('[data-mx]').forEach(x=>x.onchange=async()=>{const t=teams.find(y=>y.id===x.dataset.mx);const ids=new Set(t.member_ids||[]);x.checked?ids.add(x.value):ids.delete(x.value);
+    try{const r=await api('/teams/'+t.id,{method:'PUT',body:{name:t.name,member_ids:[...ids],distribution:t.distribution,stages:t.stages||[],topics:t.topics||'',handoff_default:!!t.handoff_default,sla_minutes:t.sla_minutes||null,max_open:t.max_open||null,color:t.color}});
+      t.member_ids=[...ids];drawTeams(people,canManage)}catch(e){toast(e.message);x.checked=!x.checked}});
+}
+const TQ_TPL=[
+ ['Um time só, com rodízio','Todo mundo atende e as conversas novas são divididas por vez.',[['Atendimento',{handoff_default:true,distribution:'roundrobin'}]]],
+ ['Pré-vendas e Vendas','O pré-vendas qualifica e passa para quem fecha a venda.',[['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}]]],
+ ['Vendas e Suporte','Suporte cuida de troca, cancelamento e reclamação; o resto é venda.',[['Vendas',{handoff_default:true,distribution:'roundrobin'}],['Suporte',{topics:'cancelamento, reclamação, problema, troca'}]]],
+ ['Pré-vendas, Vendas e Suporte','Para operação maior, cada etapa com a sua fila.',[['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}],['Suporte',{topics:'cancelamento, reclamação, problema, troca'}]]]];
+function teamSetup(tpl,people){
+  const T=tpl[2].map(x=>({name:x[0],o:x[1],m:new Set()}));
+  if(T.length===1)people.forEach(p=>T[0].m.add(p.id));
+  const o=overlay(`<form class="modal tq-m" id="tqF"><div class="fm-hd"><div><h2>${esc(tpl[0])}</h2><p class="sm-sub">Marque quem fica em cada equipe. Uma pessoa pode estar em mais de uma.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+    <div class="tq-tb" style="--n:${T.length}"><div class="tq-tr h"><span></span>${T.map(t=>`<span>${esc(t.name)}</span>`).join('')}</div>
+     ${people.map(p=>`<div class="tq-tr"><span class="tq-p"><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span><b>${esc(p.name)}</b></span>${T.map((t,i)=>`<label class="tq-ck"><input type="checkbox" data-s="${i}" value="${p.id}" ${t.m.has(p.id)?'checked':''}><i></i></label>`).join('')}</div>`).join('')}
+     <div class="tq-tr f" id="tqC"></div></div>
+    <ul class="tq-hw">${tpl[2].map(([n,x])=>`<li><b>${esc(n)}:</b> ${x.distribution==='roundrobin'?'divide por rodízio':'fila, quem estiver livre pega'}${x.handoff_default?' · recebe os clientes que a Nanda passa para o time':''}${x.topics?` · recebe quando falam em ${esc(x.topics)}`:''}</li>`).join('')}</ul>
+    <p class="hint" style="margin:0">Dá para ajustar tudo depois em Editar.</p>
+    <div class="row" style="gap:10px"><button class="btn p" id="tqGo">Criar equipes</button><span class="err" id="tqE"></span></div></form>`,true);
+  const cnt=()=>{$('#tqC').innerHTML='<span>Pessoas</span>'+T.map(t=>`<span class="${t.m.size?'':'bad'}">${t.m.size||'ninguém'}</span>`).join('');const miss=T.filter(t=>!t.m.size);$('#tqGo').classList.toggle('wait',!!miss.length);$('#tqGo').textContent=miss.length?`Falta gente em ${miss.map(t=>t.name).join(' e ')}`:'Criar equipes'};
+  o.querySelectorAll('[data-s]').forEach(x=>x.onchange=()=>{const t=T[+x.dataset.s];x.checked?t.m.add(x.value):t.m.delete(x.value);cnt()});cnt();
+  o.querySelector('#tqF').onsubmit=async ev=>{ev.preventDefault();if(T.some(t=>!t.m.size))return $('#tqE').textContent='Coloque pelo menos uma pessoa em cada equipe.';
+    $('#tqGo').disabled=true;try{for(const t of T)await api('/teams',{method:'POST',body:{name:t.name,...t.o,member_ids:[...t.m]}});o.remove();toast('Equipes criadas.');VIEWS.equipe()}catch(e){$('#tqE').textContent=e.message;$('#tqGo').disabled=false}};
+}
 function teamModal(t,people,stages){
   const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null,max_open:null};
-  const o=overlay(`<form class="modal" id="tmF" style="width:560px"><div class="row"><h2 style="font-size:20px">${t?'Editar equipe':'Nova equipe'}</h2><button type="button" class="x">×</button></div>
-   <div class="field"><label>Nome</label><input name="name" required minlength="2" maxlength="40" value="${esc(x.name)}" placeholder="Ex.: Vendas"></div>
-   <div class="field"><label>Pessoas</label><div class="chks">${people.filter(p=>p.active).map(p=>`<label><input type="checkbox" name="m" value="${p.id}" ${x.member_ids.includes(p.id)?'checked':''}><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</label>`).join('')}</div></div>
-   <div class="field"><label>Como as conversas chegam</label><div class="modes" style="grid-template-columns:1fr 1fr">
-     <label><input type="radio" name="distribution" value="queue" ${x.distribution!=='roundrobin'?'checked':''}><b>Fila</b>Ficam na fila da equipe e quem estiver livre pega.</label>
-     <label><input type="radio" name="distribution" value="roundrobin" ${x.distribution==='roundrobin'?'checked':''}><b>Rodízio</b>Cada conversa vai direto para a próxima pessoa.</label></div>
-     <div class="row" id="tmMx" style="gap:8px;margin-top:10px;font-size:13px;${x.distribution==='roundrobin'?'':'display:none'}">No rodízio, até <input name="max_open" type="number" min="1" max="500" value="${x.max_open||''}" placeholder="—" style="width:76px;padding:8px 10px"> conversas abertas por pessoa <span class="hint">(vazio = sem limite)</span></div>
-     <p class="hint" style="margin-top:6px">Quem marcar "ausente" no próprio nome fica fora do rodízio. Se ninguém puder receber, a conversa espera na fila.</p></div>
-   <details ${x.stages.length||x.topics||x.handoff_default||x.sla_minutes?'open':''}><summary style="cursor:pointer;font-weight:600;font-size:13.5px">Regras automáticas (opcional)</summary><div class="grid" style="gap:12px;margin-top:12px">
-    <div class="field"><label>Quando o contato entra nestas etapas do funil, vem para esta equipe</label><div class="chks">${stages.map(s=>`<label><input type="checkbox" name="st" value="${s.id}" ${x.stages.includes(s.id)?'checked':''}>${esc(s.name)}</label>`).join('')}</div></div>
-    <div class="field"><label>Assuntos que a Nanda manda para esta equipe</label><input name="topics" value="${esc(x.topics||'')}" placeholder="cancelamento, reclamação, troca" maxlength="300"><span class="hint">Separe por vírgula. Vale quando a Nanda passa a conversa para o time.</span></div>
-    <label class="ckl"><input type="checkbox" name="handoff_default" ${x.handoff_default?'checked':''}> Receber os demais repasses da Nanda</label>
-    <div class="field"><label>Avisar a gerência se o cliente esperar na fila mais de (minutos)</label><input name="sla_minutes" type="number" min="5" max="1440" value="${x.sla_minutes||''}" placeholder="ex.: 15" style="max-width:140px"></div></div></details>
-   <div class="row"><button class="btn p">Salvar</button><span class="err" id="tmE"></span></div></form>`,true);
-  o.querySelectorAll('[name=distribution]').forEach(r=>r.onchange=()=>{o.querySelector('#tmMx').style.display=o.querySelector('#tmF').distribution.value==='roundrobin'?'':'none'});
-  o.querySelector('#tmF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
-    const body={name:f.name.value,member_ids:[...f.querySelectorAll('[name=m]:checked')].map(i=>i.value),distribution:f.distribution.value,stages:[...f.querySelectorAll('[name=st]:checked')].map(i=>i.value),
-      topics:f.topics.value,handoff_default:f.handoff_default.checked,sla_minutes:f.sla_minutes.value?Number(f.sla_minutes.value):null,max_open:f.distribution.value==='roundrobin'&&f.max_open.value?Number(f.max_open.value):null};
-    try{await api('/teams'+(t?'/'+t.id:''),{method:t?'PUT':'POST',body});o.remove();toast('Equipe salva.');VIEWS.equipe()}catch(e){o.querySelector('#tmE').textContent=e.message}};
+  const act=people.filter(p=>p.active);
+  const o=overlay(`<form class="modal tq-m" id="tmF"><div class="fm-hd"><div><h2>${t?esc(t.name):'Nova equipe'}</h2><p class="sm-sub">Quem está nela, como divide as conversas e o que chega para ela.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+   <section class="tq-s"><h3><i>1</i>Nome e pessoas</h3><input class="tq-in" name="name" required minlength="2" maxlength="40" value="${esc(x.name)}" placeholder="Ex.: Vendas">
+    <div class="tq-pp">${act.map(p=>`<label class="sm-rp ${x.member_ids.includes(p.id)?'on':''}"><input type="checkbox" name="m" value="${p.id}" ${x.member_ids.includes(p.id)?'checked':''} hidden><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}${p.away?' <small>ausente</small>':''}</label>`).join('')}</div>
+    <p class="tq-wn" id="tmW" ${x.member_ids.length?'hidden':''}>Sem ninguém, os clientes desta equipe avisam o dono e os gestores.</p></section>
+   <section class="tq-s"><h3><i>2</i>Como divide as conversas</h3><div class="pm-yn"><button type="button" data-ds="queue" class="${x.distribution!=='roundrobin'?'on':''}"><b>Fila</b><small>A conversa espera e quem estiver livre pega.</small></button><button type="button" data-ds="roundrobin" class="${x.distribution==='roundrobin'?'on':''}"><b>Rodízio</b><small>Vai direto para a próxima pessoa, uma de cada vez.</small></button></div>
+    <div class="tq-rr" id="tmMx" ${x.distribution==='roundrobin'?'':'hidden'}>Até <input name="max_open" type="number" min="1" max="500" value="${x.max_open||''}" placeholder="—"> conversas abertas por pessoa <span class="hint">(vazio = sem limite). Quem está ausente ou fora do turno fica de fora.</span></div></section>
+   <section class="tq-s"><h3><i>3</i>O que chega para ela</h3>
+    <div class="tq-op"><label><input type="checkbox" name="handoff_default" ${x.handoff_default?'checked':''}><span><b>Clientes que a Nanda passa para o time</b><small>Quando ela não sabe responder ou o cliente pede uma pessoa. Só uma equipe recebe.</small></span></label></div>
+    <div class="tq-op"><label><input type="checkbox" id="tmTo" ${x.topics?'checked':''}><span><b>Quando o cliente falar de certos assuntos</b><small>Ex.: cancelamento, troca, reclamação. Separe por vírgula.</small></span></label><input class="tq-in" name="topics" value="${esc(x.topics||'')}" placeholder="cancelamento, troca, reclamação" maxlength="300" ${x.topics?'':'hidden'}></div>
+    <div class="tq-op"><label><input type="checkbox" id="tmSt" ${(x.stages||[]).length?'checked':''}><span><b>Quando o cliente chegar numa etapa do funil</b><small>Ex.: ao chegar em "Negociação", vai para Vendas.</small></span></label><span class="tq-pp" id="tmSts" ${(x.stages||[]).length?'':'hidden'}>${stages.map(s=>`<label class="sm-rp ${x.stages.includes(s.id)?'on':''}"><input type="checkbox" name="st" value="${s.id}" ${x.stages.includes(s.id)?'checked':''} hidden>${esc(s.name)}</label>`).join('')}</span></div>
+    <div class="tq-op"><label><input type="checkbox" id="tmSl" ${x.sla_minutes?'checked':''}><span><b>Avisar a gerência se o cliente esperar demais</b><small>Alerta quando alguém fica na fila sem resposta.</small></span></label><span class="tq-rr" id="tmSls" ${x.sla_minutes?'':'hidden'}>Mais de <input name="sla_minutes" type="number" min="5" max="1440" value="${x.sla_minutes||15}"> minutos</span></div></section>
+   <div class="row" style="gap:10px"><button class="btn p">Salvar</button><span class="err" id="tmE"></span></div></form>`,true);
+  const f=o.querySelector('#tmF');let dist=x.distribution==='roundrobin'?'roundrobin':'queue';
+  o.querySelectorAll('.tq-pp label').forEach(l=>l.querySelector('input').onchange=e=>{l.classList.toggle('on',e.target.checked);if(e.target.name==='m')$('#tmW').hidden=!!f.querySelectorAll('[name=m]:checked').length});
+  o.querySelectorAll('[data-ds]').forEach(b=>b.onclick=()=>{dist=b.dataset.ds;o.querySelectorAll('[data-ds]').forEach(y=>y.classList.toggle('on',y===b));$('#tmMx').hidden=dist!=='roundrobin'});
+  $('#tmTo').onchange=e=>{f.topics.hidden=!e.target.checked;if(e.target.checked)f.topics.focus()};$('#tmSt').onchange=e=>{$('#tmSts').hidden=!e.target.checked};$('#tmSl').onchange=e=>{$('#tmSls').hidden=!e.target.checked};
+  f.onsubmit=async ev=>{ev.preventDefault();
+    const body={name:f.name.value,member_ids:[...f.querySelectorAll('[name=m]:checked')].map(i=>i.value),distribution:dist,stages:$('#tmSt').checked?[...f.querySelectorAll('[name=st]:checked')].map(i=>i.value):[],
+      topics:$('#tmTo').checked?f.topics.value:'',handoff_default:f.handoff_default.checked,sla_minutes:$('#tmSl').checked&&f.sla_minutes.value?Number(f.sla_minutes.value):null,max_open:dist==='roundrobin'&&f.max_open.value?Number(f.max_open.value):null};
+    try{await api('/teams'+(t?'/'+t.id:''),{method:t?'PUT':'POST',body});o.remove();toast('Equipe salva.');VIEWS.equipe()}catch(e){$('#tmE').textContent=e.message}};
 }
 /* ---------- Jornada do cliente ---------- */
 const JNC={entrada:['Entrada','#2E7D5B'],conversa:['Conversa','#6B7A89'],etapa:['Etapa','#7C4DFF'],agenda:['Agenda','#1E88E5'],venda:['Venda','#1F9D55'],equipe:['Equipe','#E58A2B'],
