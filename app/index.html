@@ -2596,6 +2596,9 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .tq-tr.f{font-size:12px;color:var(--ink3)}.tq-tr.f span{text-align:center}.tq-tr.f span:first-child{text-align:left}.tq-tr.f .bad{color:#B23A22;font-weight:700}
 .tq-p{display:flex;align-items:center;gap:8px;min-width:0}.tq-p .av{width:28px;height:28px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:10.5px;font-weight:800;flex:none}.tq-p b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tq-p em{font-style:normal;font-size:11px;color:var(--warn);font-weight:700}
 .tq-ck{display:grid;place-items:center;cursor:pointer;position:relative}.tq-ck input{position:absolute;opacity:0;width:0;height:0}.tq-ck i{width:24px;height:24px;border-radius:8px;border:1.5px solid #D8CCC2;background:#fff;display:grid;place-items:center}.tq-ck input:checked+i{background:var(--c);border-color:var(--c)}.tq-ck input:checked+i:after{content:'';width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}.tq-ck input:focus-visible+i{box-shadow:0 0 0 3px var(--tint)}.tq-ck input:disabled+i{opacity:.6}
+.tq-qa{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px}.tq-qa>span{font-size:12.5px;color:var(--ink3);margin-right:4px}
+.tq-qb{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 14px;border:1px dashed var(--line);border-radius:12px;background:transparent;cursor:pointer;text-align:left;font:inherit}
+.tq-qb b{font-size:13.5px;color:var(--c2)}.tq-qb small{font-size:11.5px;color:var(--ink3)}.tq-qb:hover{border-style:solid;background:#fff}
 .tq-m [hidden]{display:none!important}.tq-m{max-width:640px;gap:10px}.tq-hw{margin:0;padding-left:18px;font-size:13px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
 .tq-s{border-top:1px solid var(--line);padding:14px 0 4px;display:flex;flex-direction:column;gap:10px}.tq-s h3{display:flex;align-items:center;gap:8px;font-size:14px;margin:0}.tq-s h3 i{width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--c2);font-style:normal;font-size:11.5px;display:grid;place-items:center}
 .tq-in{border:1px solid #DCD2C9;border-radius:12px;padding:10px 12px;font:inherit;font-size:14.5px;width:100%;box-sizing:border-box}
@@ -7072,21 +7075,26 @@ async function drawTeams(people,canManage){
     box.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>canManage?teamSetup(TQ_TPL[+b.dataset.tq],act):toast('Só o dono ou um gestor monta as equipes.'));return}
   const empty=t=>!(t.member_ids||[]).some(id=>PL[id]&&PL[id].active);
   const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
+  const nm=x=>x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+  const miss=TQ_QA.filter(m=>!teams.some(t=>nm(t.name)===nm(m[0])));
   const gets=t=>[t.handoff_default?'Clientes que a Nanda passa para o time':'',t.topics?`Quando falam em ${esc(t.topics)}`:'',(t.stages||[]).length?`Quem chega em ${t.stages.map(x=>esc(SN[x]||'?')).join(', ')}`:''].filter(Boolean);
   box.innerHTML=`<div class="tq-g">${teams.map(t=>`<div class="tq-c ${empty(t)?'warn':''}" style="--tc:${t.color}"><div class="tq-ch"><i></i><b>${esc(t.name)}</b><span class="tq-q">${t.queue?`<em>${t.queue}</em> esperando`:'fila vazia'}</span>${canManage?`<button type="button" class="btn sm" data-te="${t.id}">Editar</button><details class="pc-mn"><summary aria-label="Mais opções">⋯</summary><div><button type="button" class="danger" data-td="${t.id}">Apagar equipe</button></div></details>`:''}</div>
       ${empty(t)?`<div class="tq-al">${svg('<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>')} Sem ninguém para atender. Enquanto isso, os clientes daqui avisam o dono e os gestores.</div>`:''}
       <div class="tq-r"><span>Divide por</span><b>${t.distribution==='roundrobin'?`rodízio${t.max_open?` · até ${t.max_open} abertas por pessoa`:''}`:'fila (quem estiver livre pega)'}</b></div>
       <div class="tq-r"><span>Recebe</span><b>${gets(t).join(' · ')||'só o que for transferido para ela'}</b></div>${t.sla_minutes?`<div class="tq-r"><span>Alerta</span><b>cliente esperando mais de ${t.sla_minutes} min</b></div>`:''}</div>`).join('')}</div>
+    ${canManage&&miss.length?`<div class="tq-qa"><span>Adicionar equipe</span>${miss.map(m=>`<button type="button" class="tq-qb" data-qa="${esc(m[0])}"><b>+ ${esc(m[0])}</b><small>${m[2]}</small></button>`).join('')}</div>`:''}
     <div class="tq-mx"><div class="tq-mh"><b>Quem atende em cada equipe</b><small>Uma pessoa pode estar em mais de uma. Marque e já fica salvo.</small></div>
      <div class="tq-tb" style="--n:${teams.length}"><div class="tq-tr h"><span></span>${teams.map(t=>`<span style="--tc:${t.color}"><i></i>${esc(t.name)}</span>`).join('')}</div>
       ${act.map(p=>`<div class="tq-tr"><span class="tq-p"><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span><b>${esc(p.name)}</b>${p.away?'<em>ausente</em>':''}</span>${teams.map(t=>`<label class="tq-ck"><input type="checkbox" data-mx="${t.id}" value="${p.id}" ${(t.member_ids||[]).includes(p.id)?'checked':''} ${canManage?'':'disabled'} aria-label="${esc(p.name)} em ${esc(t.name)}"><i></i></label>`).join('')}</div>`).join('')}
       <div class="tq-tr f"><span>Pessoas</span>${teams.map(t=>{const n=(t.member_ids||[]).filter(id=>PL[id]&&PL[id].active).length;return `<span class="${n?'':'bad'}">${n||'ninguém'}</span>`}).join('')}</div></div></div>`;
   box.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>teamModal(teams.find(t=>t.id===b.dataset.te),people,stages));
+  box.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{const m=TQ_QA.find(x=>x[0]===b.dataset.qa);const pre={name:m[0],...m[1]};if(pre.handoff_default&&teams.some(t=>t.handoff_default))pre.handoff_default=false;teamModal(null,people,stages,pre)});
   box.querySelectorAll('[data-td]').forEach(b=>b.onclick=async()=>{const t=teams.find(x=>x.id===b.dataset.td);if(!await sure(`Apagar a equipe ${t.name}? As conversas dela continuam com quem está.`,{el:b.closest('.tq-c')}))return;await api('/teams/'+t.id,{method:'DELETE'});toast('Equipe apagada.');VIEWS.equipe()});
   box.querySelectorAll('[data-mx]').forEach(x=>x.onchange=async()=>{const t=teams.find(y=>y.id===x.dataset.mx);const ids=new Set(t.member_ids||[]);x.checked?ids.add(x.value):ids.delete(x.value);
     try{const r=await api('/teams/'+t.id,{method:'PUT',body:{name:t.name,member_ids:[...ids],distribution:t.distribution,stages:t.stages||[],topics:t.topics||'',handoff_default:!!t.handoff_default,sla_minutes:t.sla_minutes||null,max_open:t.max_open||null,color:t.color}});
       t.member_ids=[...ids];drawTeams(people,canManage)}catch(e){toast(e.message);x.checked=!x.checked}});
 }
+const TQ_QA=[['Pré-vendas',{handoff_default:true},'qualifica e passa para Vendas'],['Vendas',{distribution:'roundrobin'},'fecha a venda, por rodízio'],['Suporte',{topics:'cancelamento, reclamação, problema, troca'},'troca, cancelamento e reclamação']];
 const TQ_TPL=[
  ['Um time só, com rodízio','Todo mundo atende e as conversas novas são divididas por vez.',[['Atendimento',{handoff_default:true,distribution:'roundrobin'}]]],
  ['Pré-vendas e Vendas','O pré-vendas qualifica e passa para quem fecha a venda.',[['Pré-vendas',{handoff_default:true}],['Vendas',{distribution:'roundrobin'}]]],
@@ -7107,10 +7115,10 @@ function teamSetup(tpl,people){
   o.querySelector('#tqF').onsubmit=async ev=>{ev.preventDefault();if(T.some(t=>!t.m.size))return $('#tqE').textContent='Coloque pelo menos uma pessoa em cada equipe.';
     $('#tqGo').disabled=true;try{for(const t of T)await api('/teams',{method:'POST',body:{name:t.name,...t.o,member_ids:[...t.m]}});o.remove();toast('Equipes criadas.');VIEWS.equipe()}catch(e){$('#tqE').textContent=e.message;$('#tqGo').disabled=false}};
 }
-function teamModal(t,people,stages){
-  const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null,max_open:null};
+function teamModal(t,people,stages,pre){
+  const x=t||{name:'',member_ids:[],distribution:'queue',stages:[],topics:'',handoff_default:false,sla_minutes:null,max_open:null,...(pre||{})};
   const act=people.filter(p=>p.active);
-  const o=overlay(`<form class="modal tq-m" id="tmF"><div class="fm-hd"><div><h2>${t?esc(t.name):'Nova equipe'}</h2><p class="sm-sub">Quem está nela, como divide as conversas e o que chega para ela.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
+  const o=overlay(`<form class="modal tq-m" id="tmF"><div class="fm-hd"><div><h2>${t?esc(t.name):pre?'Nova equipe: '+esc(pre.name):'Nova equipe'}</h2><p class="sm-sub">Quem está nela, como divide as conversas e o que chega para ela.</p></div><button type="button" class="x" aria-label="Fechar">×</button></div>
    <section class="tq-s"><h3><i>1</i>Nome e pessoas</h3><input class="tq-in" name="name" required minlength="2" maxlength="40" value="${esc(x.name)}" placeholder="Ex.: Vendas">
     <div class="tq-pp">${act.map(p=>`<label class="sm-rp ${x.member_ids.includes(p.id)?'on':''}"><input type="checkbox" name="m" value="${p.id}" ${x.member_ids.includes(p.id)?'checked':''} hidden><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}${p.away?' <small>ausente</small>':''}</label>`).join('')}</div>
     <p class="tq-wn" id="tmW" ${x.member_ids.length?'hidden':''}>Sem ninguém, os clientes desta equipe avisam o dono e os gestores.</p></section>
