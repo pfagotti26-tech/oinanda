@@ -2538,7 +2538,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pm-f{display:flex;flex-direction:column;gap:6px}.pm-f>span{font-size:12.5px;font-weight:700;color:var(--ink2)}.pm-f input{border:1px solid #DCD2C9;border-radius:12px;padding:11px 12px;font:inherit;font-size:15px}.pm-f input:disabled{background:var(--bg);color:var(--ink2)}
 .pm-q b{display:block;font-size:15px}.pm-q small{font-size:12.5px;color:var(--ink3)}
 .pm-yn,.pm-rl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pm-yn button,.pm-rl button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 13px;font:inherit;cursor:pointer}.pm-yn button b,.pm-rl button b{font-size:14px}.pm-yn button small,.pm-rl button small{font-size:12px;color:var(--ink3)}.pm-yn button.on,.pm-rl button.on{border-color:var(--c);background:var(--tint)}
-.pm-in{display:flex;flex-direction:column;gap:12px;background:#FCFAF8;border:1px solid var(--line);border-radius:14px;padding:14px}
+.pm-in{width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;background:#FCFAF8;border:1px solid var(--line);border-radius:14px;padding:14px}
 .pm-lock{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);background:var(--bg);border-radius:12px;padding:10px 12px}.pm-lock svg{width:16px;height:16px;flex:none}
 .pm-cl{display:flex;gap:8px}.pm-cl button{width:28px;height:28px;border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}.pm-cl button.on{box-shadow:0 0 0 2px var(--c)}
 .pm-sv{display:flex;flex-wrap:wrap;gap:6px}.pm-sv .sm-rp{padding:6px 12px}
@@ -2546,6 +2546,9 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .pm-tm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}.pm-tm input{border:1px solid #DCD2C9;border-radius:10px;padding:8px 10px;font:inherit}
 .pm-ft{display:flex;align-items:center;gap:12px;padding-top:6px}.pm-ft .btn.p{padding:12px 22px}
 @media(max-width:560px){.pm-yn,.pm-rl{grid-template-columns:1fr}.pc-g{grid-template-columns:1fr}}
+.pp-l{display:flex;flex-direction:column;gap:6px}.pp-i{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font:inherit;text-align:left;cursor:pointer}.pp-i:hover{border-color:var(--c)}.pp-i.off{opacity:.55}.pp-i .av{width:36px;height:36px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none}.pp-i>span:nth-child(2){flex:1;display:flex;flex-direction:column;min-width:0}.pp-i b{font-size:14px}.pp-i small{font-size:12px;color:var(--ink3)}.pp-i em{font-style:normal;font-size:13px;font-weight:700;color:var(--c2)}
+.pp-e{display:flex;flex-direction:column;gap:2px;background:var(--bg);border-radius:12px;padding:12px 14px}.pp-e b{font-size:14px}.pp-e span{font-size:13px;color:var(--ink2)}
+.bk-nudge{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFF8F4;border:1.5px dashed #F0C6B4;border-radius:14px;padding:10px 12px;margin-top:2px}.bk-nudge>span{width:34px;height:34px;border-radius:50%;background:var(--tint);color:var(--c);display:grid;place-items:center;flex:none}.bk-nudge>span svg{width:18px;height:18px}.bk-nudge>div{flex:1;min-width:180px;display:flex;flex-direction:column}.bk-nudge b{font-size:13.5px}.bk-nudge small{font-size:12.5px;color:var(--ink2)}
 /* registrar venda v2 */
 .sm3 .sm-sub{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}.sm3 .fm-hd{align-items:flex-start}
 .sm3 .sm-sec{border-radius:18px;padding:16px 18px;gap:10px;background:#fff}
@@ -3897,7 +3900,11 @@ async function bookModal(pre,after){
   const drawSv=()=>{$('#bkSv').innerHTML=cfg.services.map(v=>`<button type="button" class="bk-s ${v.id===svc?'on':''}" data-sv="${v.id}"><b>${esc(v.name)}</b><small>${v.duration} min${v.price!=null?' · '+brl2(v.price):''}</small></button>`).join('');
     o.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{svc=b.dataset.sv;if(pro&&!pros().some(p=>p.id===pro))pro='';drawSv();drawP();counts={};drawD();load()});
   };
-  const drawP=()=>{const ps=pros();$('#bkPw').innerHTML=ps.length?`<div class="bk-pr"><span>Com quem</span><button type="button" class="sm-rp ${!pro?'on':''}" data-pr=""><span class="av" style="background:#9AA6B2">★</span>Quem estiver livre</button>${ps.map(p=>`<button type="button" class="sm-rp ${p.id===pro?'on':''}" data-pr="${p.id}"><span class="av" style="background:${p.color||avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</button>`).join('')}</div>`:'';
+  const mgr=['owner','manager'].includes(ME.user.role),soloK='soloAg:'+ME.company.id;const solo=(()=>{try{return localStorage.getItem(soloK)==='1'}catch(e){return false}})();
+  const addPro=()=>personModal({agenda:true,login:false,onDone:async pid=>{const c=await agCfg();cfg.pros=c.pros;if(pid&&pros().some(p=>p.id===pid))pro=pid;drawP();counts={};drawD();load()}});
+  const drawP=()=>{const ps=pros();$('#bkPw').innerHTML=ps.length?`<div class="bk-pr"><span>Com quem</span><button type="button" class="sm-rp ${!pro?'on':''}" data-pr=""><span class="av" style="background:#9AA6B2">★</span>Quem estiver livre</button>${ps.map(p=>`<button type="button" class="sm-rp ${p.id===pro?'on':''}" data-pr="${p.id}"><span class="av" style="background:${p.color||avc(p.name)}">${initials(p.name)}</span>${esc(p.name)}</button>`).join('')}${mgr?'<button type="button" class="sm-rp nw" id="bkPn"><span class="av">+</span>Novo</button>':''}</div>`
+      :mgr&&!solo?`<div class="bk-nudge"><span>${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7"/>')}</span><div><b>Quem vai atender?</b><small>Cadastre quem atende para escolher aqui e cada um ter a própria agenda.</small></div><button type="button" class="btn sm p" id="bkPn">+ Cadastrar</button><button type="button" class="lnk" id="bkSolo">Só eu atendo</button></div>`:'';
+    if($('#bkPn'))$('#bkPn').onclick=addPro;if($('#bkSolo'))$('#bkSolo').onclick=()=>{try{localStorage.setItem(soloK,'1')}catch(e){}$('#bkPw').innerHTML='';toast('Certo. Dá para cadastrar depois na Equipe.')};
     o.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{pro=b.dataset.pr;drawP();counts={};drawD();load()})};
   let start=(()=>{const d=dOf(date);return d<dOf(today)?dOf(date):dOf(today)})();
   const drawD=()=>{const days=[...Array(7)].map((_,k)=>{const d=new Date(start);d.setDate(d.getDate()+k);return ymd(d)});
@@ -4108,7 +4115,7 @@ async function drawAgCfg(){
      <div class="svrow hint" style="margin-bottom:4px"><span>Nome</span><span>Minutos</span><span>Vagas</span><span>Preço (R$)</span><span></span></div><div id="svL" class="grid" style="gap:8px"></div>
      <button class="btn sm" id="svAdd" style="margin-top:10px">+ Serviço</button></div>
     <div class="card"><h3 style="margin-bottom:4px">Profissionais <span class="hint" style="font-weight:500">(opcional)</span></h3><p class="hint" style="margin-bottom:12px">Para quem tem equipe: barbeiros, profissionais da clínica, professores. Cada um com seu horário e seus serviços. A Nanda marca com quem está livre, ou com quem o cliente pedir.</p>
-     <div id="prL" class="grid" style="gap:10px"></div><button class="btn sm" id="prAdd" style="margin-top:10px">+ Profissional</button></div>
+     <div id="prL"></div><div class="row" style="gap:10px;margin-top:12px"><button class="btn sm p" id="prAdd">+ Adicionar pessoa</button><button class="lnk" id="prEq">Ver todos na Equipe</button></div></div>
     <div class="card"><h3 style="margin-bottom:12px">A Nanda e a agenda</h3>
      <label class="row" style="gap:8px;font-weight:500"><input type="checkbox" id="nb" ${cfg.nanda_books?'checked':''}> A Nanda oferece horários e agenda sozinha</label>
      <p class="hint" style="margin:4px 0 12px">No modo copiloto ela só sugere; quem confirma é o time.</p>
@@ -4146,11 +4153,15 @@ async function drawAgCfg(){
       L.querySelectorAll(`[data-${pre}h]`).forEach(x=>x.onchange=()=>p.hours[x.dataset[pre+'h']][x.dataset.j][x.dataset.k]=x.value);
       L.querySelectorAll(`[data-${pre}hx]`).forEach(x=>x.onclick=()=>{const [a,b]=x.dataset[pre+'hx'].split(':');p.hours[a].splice(b,1);drawP()});
       L.querySelectorAll(`[data-${pre}ha]`).forEach(x=>x.onclick=()=>{const a=x.dataset[pre+'ha'];(p.hours[a]=p.hours[a]||[]).push(p.hours[a].length?['14:00','18:00']:['09:00','18:00']);drawP()})})};
-  drawS();drawH();drawP();
+  const drawPP=()=>{const ps=(AG.cfg.pros||[]);const SV=Object.fromEntries(svcs.map(v=>[v.id,v.name]));
+    $('#prL').innerHTML=ps.length?`<div class="pp-l">${ps.map(p=>`<button type="button" class="pp-i ${p.active===false?'off':''}" data-pp="${p.id}"><span class="av" style="background:${p.color||avc(p.name)}">${initials(p.name)}</span><span><b>${esc(p.name)}</b><small>${!(p.services||[]).length?'Todos os serviços':(p.services||[]).map(x=>SV[x]).filter(Boolean).join(', ')}${p.hours?' · horário próprio':''}${p.user_id?' · tem acesso ao sistema':''}</small></span><em>Editar</em></button>`).join('')}</div>`
+      :`<div class="pp-e"><b>Ninguém cadastrado ainda.</b><span>Se só você atende, pode deixar assim. Com equipe, cada pessoa ganha a própria agenda e a Nanda distribui os horários.</span></div>`;
+    $('#prL').querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>personModal({pro:ps.find(x=>x.id===b.dataset.pp),onDone:()=>drawAgCfg()}))};
+  drawS();drawH();drawPP();
   $('#svAdd').onclick=()=>{svcs.push({name:'Novo serviço',duration:60,capacity:1,price:null});drawS();drawP()};
-  $('#prAdd').onclick=()=>{pros.push({name:'',services:[],hours:null,active:true,color:PAL[pros.length%PAL.length]});drawP();const last=$('#prL').querySelector('.pro-c:last-child input[data-pf=name]');if(last)last.focus()};
-  $('#agSave').onclick=async()=>{if(pros.some(p=>!(p.name||'').trim()))return $('#agE').textContent='Dê um nome a cada profissional (ou remova a linha).';
-    try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,pros:pros.map(p=>({id:p.id,name:p.name,user_id:p.user_id||null,color:p.color||null,services:p.services,hours:p.hours,active:p.active!==false})),
+  $('#prAdd').onclick=()=>personModal({agenda:true,login:false,onDone:()=>drawAgCfg()});if($('#prEq'))$('#prEq').onclick=()=>go('equipe');
+  $('#agSave').onclick=async()=>{
+    try{AG.cfg=await api('/agenda/settings',{method:'PUT',body:{services:svcs.map(v=>({id:v.id,name:v.name,duration:v.duration||30,capacity:v.capacity||1,price:v.price})),hours,
     nanda_books:$('#nb').checked,stage_on_book:$('#sob').value,min_notice_hours:Number($('#mn').value),days_ahead:Number($('#da').value),step:Number($('#stp').value)}});toast('Agenda salva.');$('#agE').textContent=''}catch(e){$('#agE').textContent=e.message}};
   if($('#gOn'))$('#gOn').onclick=async()=>{try{location.href=(await api('/google/connect',{method:'POST'})).url}catch(e){toast(e.message)}};
   if($('#gOff'))$('#gOff').onclick=async()=>{if(!await sure('Desconectar o Google Agenda?'))return;await api('/google',{method:'DELETE'});drawAgCfg()};
@@ -6797,13 +6808,14 @@ const VIEWS={
     return `<div class="pc ${m&&!m.active?'off':''}" data-pf="${m?'m:'+m.id:'p:'+p.id}"><div class="pc-t"><span class="av" style="background:${p&&p.color||avc(nm)}">${initials(nm)}${m&&online(m)?'<i class="dot"></i>':''}</span>
       <span class="pc-n"><b>${esc(nm)}${me?' <small>(você)</small>':''}</b><small>${m?esc(m.email):'sem acesso ao sistema'}</small></span>
       ${canManage?`<span class="pc-a"><button type="button" class="btn sm" data-ed="${m?'m:'+m.id:'p:'+p.id}">Editar</button>${menu?`<details class="pc-mn"><summary aria-label="Mais opções">⋯</summary><div>${menu}</div></details>`:''}</span>`:''}</div>
-     <div class="pc-c">${r?`<span class="eq-rl ${r[0]}">${r[1]}</span>`:'<span class="eq-rl eq-x">Só agenda</span>'}${ag?`<span class="pc-ag" style="--pc:${p.color||'#999'}"><i></i>Agenda · ${esc(svTxt(p))}${p.hours?' · horário próprio':''}</span>`:''}${s&&s[1]!=='ativo'?`<span class="pill ${s[0]}">${s[1]}</span>`:''}</div>
+     <div class="pc-c">${r?`<span class="eq-rl ${r[0]}">${r[1]}</span>`:'<span class="eq-rl eq-x">Só agenda</span>'}${ag?`<span class="pc-ag" style="--pc:${p.color||'#999'}"><i></i>Agenda · ${esc(svTxt(p))}${p.hours?' · horário próprio':''}</span>`:''}${s&&s[1]!=='ativo'&&s[1]!=='online agora'?`<span class="pill ${s[0]}">${s[1]}</span>`:''}</div>
      ${m?`<div class="pc-m"><span>${l?(online(m)?'Online agora':'Último acesso há '+agoShort(l)):'Nunca entrou'}</span>${m.commission_pct!=null?`<span>Comissão ${String(m.commission_pct).replace('.',',')}%</span>`:''}${m.active&&m.shift?`<span class="${onShiftNow(m.shift)?'ok':''}">${onShiftNow(m.shift)?'No turno':'Fora do turno'} · ${shiftTxt(m.shift)}</span>`:''}</div>`:`<div class="pc-m"><span>Aparece na agenda e na Nanda. Não ocupa vaga do plano.</span></div>`}</div>`};
   const shown=people.filter(x=>EF==='all'||(EF==='acesso'?!!x.m:!!(x.p&&x.p.active!==false)));
   $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem usa o Oi Nanda e quem atende os clientes na agenda.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Adicionar pessoa</span></button>`:''}</div>
-   ${hero}${kp}${nt?eqWa(nt,canManage,team):''}<div id="invOut"></div>
+   <div id="invOut"></div>
    <div class="pc-bar"><div class="seg" id="eqF">${[['all','Todos',people.length],['acesso','Usam o sistema',team.length],['agenda','Atendem na agenda',PROS.filter(p=>p.active!==false).length]].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]} <em>${x[2]}</em></button>`).join('')}</div></div>
    <div class="pc-g">${shown.map(card).join('')}${canManage?`<button type="button" class="pc pc-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>Para atender no sistema, na agenda, ou os dois</small></button>`:''}</div>
+   <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">${nt?eqWa(nt,canManage,team):''}${hero}</div>
    ${team.some(m=>m.active&&!last(m)&&!m.must_change_password&&m.id!==u.id)?'<p class="note eq-tip">Quem nunca entrou continua com acesso liberado. Se a pessoa não vai usar, desative: dá para reativar quando quiser.</p>':''}
    <div class="sech" style="margin-top:26px"><h3 class="sec">Equipes</h3><span class="hint">Pré-vendas, vendas, suporte... cada equipe tem a sua fila de conversas.</span>${canManage?'<button class="btn sm p" id="tmNew" style="margin-left:auto">+ Nova equipe</button>':''}</div>
    <div id="tmL"></div>`;
@@ -7338,7 +7350,7 @@ async function personModal(opt={}){
   const [cfg,team]=await Promise.all([agCfg().catch(()=>({services:[],pros:[],hours:{}})),opt.team?opt.team:api('/team')]);
   const m=opt.member||null,pro=opt.pro||(m?(cfg.pros||[]).find(p=>p.user_id===m.id):null)||null,isNew=!m&&!pro;
   const svcs=cfg.services||[];const own=ME.user.role==='owner';
-  let login=m?true:pro?false:(opt.login??true),agenda=pro?pro.active!==false:(opt.agenda??!!svcs.length),role=m?m.role:'agent',color=pro?.color||PCOL[(cfg.pros||[]).length%PCOL.length];
+  let login=m?true:pro?false:(opt.login??true),agenda=pro?pro.active!==false:(opt.agenda??false),role=m?m.role:'agent',color=pro?.color||PCOL[(cfg.pros||[]).length%PCOL.length];
   let svSel=pro&&(pro.services||[]).length?[...pro.services]:[],ownH=!!(pro&&pro.hours);
   const h0=pro&&pro.hours||cfg.hours||{};const span=Object.values(h0).flat();
   let days=[0,1,2,3,4,5,6].filter(i=>(h0[String(i)]||[]).length),hs=span.length?span.map(x=>x[0]).sort()[0]:'09:00',he=span.length?span.map(x=>x[1]).sort().pop():'18:00';
