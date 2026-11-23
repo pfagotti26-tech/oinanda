@@ -35,15 +35,7 @@ async def todo(user=Depends(managers)):
         out.append({'k': 'tpl_late', 'tone': 'warn', 'n': len(late), 'to': 'automacoes', 'cta': 'Ver',
                     'title': f'"{late[0]["name"]}" espera a Meta há mais de um dia' + (f' (e mais {len(late) - 1})' if len(late) > 1 else ''),
                     'sub': 'Costuma sair em horas. Enquanto isso ela só sai para quem falou com você nas últimas 24 h.'})
-    # aviso do time no WhatsApp
-    if await db.wa_numbers.find_one({'company_id': cid}, {'_id': 1}):
-        team = await db.users.find({'company_id': cid, 'active': True}, {'_id': 0, 'wa_notify': 1, 'wa_phone': 1}).to_list(500)
-        on = sum(1 for u in team if u.get('wa_notify') and u.get('wa_phone'))
-        tpl = (user['company'].get('alert_tpl') or {}).get('status')
-        if not tpl or not on:
-            out.append({'k': 'alert', 'tone': 'info', 'n': len(team) - on, 'to': 'equipe', 'cta': 'Ativar',
-                        'title': 'O time ainda não recebe aviso no WhatsApp',
-                        'sub': 'Quando a Nanda passar um cliente, quem vai atender fica sabendo no celular, mesmo com o Oi Nanda fechado.'})
+    # aviso do time no WhatsApp agora fica no guia Configurar a conta (setup.py): aqui só o que é problema
     # conversas que parecem robô de outro perfil
     from inbox import looks_auto
     since = now() - timedelta(days=30)
