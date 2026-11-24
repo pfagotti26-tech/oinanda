@@ -14,6 +14,7 @@ class Signup(BaseModel):
 class Login(BaseModel):
     email: EmailStr
     password: str = Field(min_length=1, max_length=200)
+    code: Optional[str] = Field(default=None, max_length=20)  # código do autenticador (admin)
 class PasswordChange(BaseModel):
     current_password: str = Field(min_length=1, max_length=200)
     new_password: str = Field(min_length=8, max_length=200)

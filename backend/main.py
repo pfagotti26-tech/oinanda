@@ -153,6 +153,8 @@ app.include_router(voice_router, prefix="/api")
 app.include_router(home_router, prefix="/api")
 from setup import router as setup_router
 app.include_router(setup_router, prefix="/api")
+from mfa import router as mfa_router
+app.include_router(mfa_router, prefix="/api")
 from closing import router as closing_router
 app.include_router(closing_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
@@ -205,10 +207,10 @@ def out(user):
     u.pop('session_hash', None)
     return u
 
-async def open_session(user, response, acting_company_id=None):
+async def open_session(user, response, acting_company_id=None, mfa=False):
     token = secrets.token_urlsafe(40)
     await db.sessions.insert_one({'token_hash': digest(token), 'user_id': user['id'], 'auth_version': user.get('auth_version', 0),
-        'acting_company_id': acting_company_id, 'created_at': now(), 'expires_at': now() + timedelta(days=7)})
+        'acting_company_id': acting_company_id, 'mfa': bool(mfa), 'created_at': now(), 'expires_at': now() + timedelta(days=7)})
     response.set_cookie(COOKIE, token, httponly=True, secure=True, samesite='lax', max_age=7 * 86400, path='/api')
 
 async def throttle(key, limit=10, minutes=15):
@@ -271,10 +273,19 @@ async def login(body: Login, request: Request, response: Response):
     if not user or not verify_password(body.password, user['password_hash']):
         await strike(key, doc)
         raise HTTPException(401, 'E-mail ou senha incorretos.')
+    mfa = False
+    import core as _core
+    if user.get('mfa_on') and _core.ADMIN_MFA:  # admin com verificação em duas etapas: a senha certa ainda não basta
+        if not body.code: raise HTTPException(428, 'Digite o código de 6 números do aplicativo autenticador.')
+        from mfa import verify_login
+        if not await verify_login(user, body.code):
+            await strike(key, doc)
+            raise HTTPException(401, 'Código incorreto ou já usado. Digite o código que está aparecendo agora no aplicativo.')
+        mfa = True
     await db.login_limits.delete_one({'id': key})
     await db.users.update_one({'id': user['id']}, {'$set': {'last_login_at': now()}})
-    await audit(request, user, 'Entrou no sistema')
-    await open_session(user, response)
+    await audit(request, user, 'Entrou no sistema' + (' (com código do autenticador)' if mfa else ''))
+    await open_session(user, response, mfa=mfa)
     return {'ok': True}
 
 # ---------- esqueci a senha ----------
@@ -349,7 +360,9 @@ async def me(user=Depends(current_user)):
     trial_left = max(0, (end - now()).days + 1) if end else None
     lim = limits(c)
     if lim['state'] != 'trial': trial_left = None
-    return {'user': out({k: v for k, v in user.items() if k != 'company'}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'sub_cancelled': (c.get('billing') or {}).get('status') == 'cancelled', 'roles': ROLES, 'access': lim}
+    import core as _core
+    mf = {'on': bool(user.get('mfa_on')), 'ok': bool(user.get('mfa')), 'need': _core.ADMIN_MFA} if user['is_admin'] else None
+    return {'mfa': mf, 'user': out({k: v for k, v in user.items() if k not in ('company', 'mfa_on', 'mfa', 'mfa_at')}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'sub_cancelled': (c.get('billing') or {}).get('status') == 'cancelled', 'roles': ROLES, 'access': lim}
 
 @app.post('/api/auth/password')
 async def change_password(body: PasswordChange, request: Request, response: Response, user=Depends(current_user)):
@@ -364,7 +377,7 @@ async def change_password(body: PasswordChange, request: Request, response: Resp
     await db.users.update_one({'id': user['id']}, {'$set': {'password_hash': hash_password(body.new_password), 'must_change_password': False, 'auth_version': version}})
     await db.sessions.delete_many({'user_id': user['id']})
     await audit(request, user, 'Trocou a própria senha')
-    await open_session({**stored, 'auth_version': version}, response)
+    await open_session({**stored, 'auth_version': version}, response, mfa=user.get('mfa'))
     return {'ok': True}
 
 # ---------- empresa ----------
@@ -409,7 +422,7 @@ async def set_channels(body: ChannelsIn, request: Request, user=Depends(managers
 # ---------- equipe ----------
 @app.get('/api/team')
 async def team(user=Depends(current_user)):
-    return await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'password_hash': 0}).sort('created_at', 1).to_list(500)
+    return await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'password_hash': 0, 'mfa_secret': 0, 'mfa_pending': 0, 'mfa_recovery': 0, 'mfa_last_step': 0}).sort('created_at', 1).to_list(500)
 
 @app.post('/api/team')
 async def invite(body: Invite, request: Request, user=Depends(managers)):
@@ -464,13 +477,13 @@ async def admin_enter(company_id: str, request: Request, response: Response, use
     if not company: raise HTTPException(404, 'Empresa não encontrada.')
     await db.sessions.delete_many({'token_hash': user['session_hash']})
     await audit(request, {**user, 'company_id': company_id}, 'Admin entrou na conta para suporte', company['name'], company_id)
-    await open_session(user, response, acting_company_id=company_id)
+    await open_session(user, response, acting_company_id=company_id, mfa=user.get('mfa'))
     return {'ok': True}
 
 @app.post('/api/admin/exit')
 async def admin_exit(request: Request, response: Response, user=Depends(admin)):
     await db.sessions.delete_many({'token_hash': user['session_hash']})
-    await open_session(user, response)
+    await open_session(user, response, mfa=user.get('mfa'))
     return {'ok': True}
 
 @app.get('/api/admin/audit')
