@@ -25,7 +25,7 @@ def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa
 SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
 DEFS = {
  'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, sua conta no Oi Nanda está pronta', 'Converse com a Nanda e veja como ela atenderia seus clientes.',
-    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} já está criada e a Nanda está pronta para conversar com você do jeito que atenderia seus clientes. Leva 1 minuto e é o melhor jeito de entender o que ela faz.\nQuando gostar do que viu, ative os 14 dias grátis e conecte o WhatsApp. A gente acompanha você em cada passo.', ('Conversar com a Nanda', '/comecar'),
+    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} está pronta. Converse com a Nanda como se fosse um cliente seu: em 1 minuto você vê como ela atenderia.\nGostou? Aí é ativar os 14 dias grátis e conectar o WhatsApp. A gente acompanha você em cada passo.', ('Conversar com a Nanda', '/comecar'),
     '{primeiro_nome}, a conta da *{empresa}* está pronta. Converse com a Nanda como se fosse um cliente seu e, quando quiser, ative os *14 dias grátis*. Cancela quando quiser.',
     fig=('14 dias', 'grátis · cancele quando quiser'), steps=[(0, 'Conversar com a Nanda', 'veja como ela atende, em 1 minuto'), (0, 'Ativar os 14 dias grátis', 'hoje não é cobrado nada'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos, com o celular do chip na mão')],
     tip=('Quer ver o caminho completo antes? Montamos um guia curto, do cadastro à primeira venda.', 'Ler os primeiros passos', '/ajuda/primeiros-passos'), always=True),
@@ -127,6 +127,8 @@ async def texts(key):
     return {**{f: DEFS[key][f] for f in EDIT}, **{f: v for f, v in (d.get(key) or {}).items() if f in EDIT and v}}
 
 # ---------- e-mail ----------
+FOUNDER = {'welcome', 'week1', 'cancelled'}  # e-mails assinados pelo fundador: começo e despedida
+
 def email_html(key, t, v):
     n = DEFS[key]; e = html.escape; F = lambda x: fill(x, v)
     if key == 'tip_autos' and not v.get('_steps'):  # prévia e teste: as recomendadas do segmento do exemplo
@@ -139,7 +141,8 @@ def email_html(key, t, v):
          'tip': (F(n['tip'][0]), F(n['tip'][1]), APP + F(n['tip'][2])) if n.get('tip') else None,
          'button': (n['button'][0], APP + n['button'][1]), 'ghost': n.get('ghost'),
          'second': (n['second'], APP + n['button'][1]) if n.get('second') else None, 'foot': n.get('foot'),
-         'why': f'Você recebe este aviso por ser responsável pela conta {v.get("empresa", "")} no Oi Nanda.', 'prefs': True}
+         'why': f'Você recebe este aviso por ser responsável pela conta {v.get("empresa", "")} no Oi Nanda.', 'prefs': True,
+         'account': v.get('empresa') or None, 'sign': 'founder' if key in FOUNDER else None}
     if n.get('bar'):
         a, b, l, r = n['bar']; c['bar'] = (v.get('bar_now', a), v.get('bar_total', b), F(v.get('bar_label') or l), F(r))
     return mailer.render(c)
