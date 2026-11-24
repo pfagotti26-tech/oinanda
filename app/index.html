@@ -2144,6 +2144,24 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .em-st>button>span:last-child{display:flex;flex-direction:column;min-width:0}.em-st small{font-size:11.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
 .em-st b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.em-st em{font-style:normal;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .em-st .ok .ic{background:#E3F6EA;color:#1E9E57}.em-st .ok em{color:var(--ok);font-weight:600}.em-st .bad .ic{background:var(--badsoft);color:var(--bad)}.em-st .bad em{color:var(--bad);font-weight:600}.em-st .warn em{color:var(--warn);font-weight:600}
+.em2-todo{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--badsoft);border:1px solid #F3CFC9;border-radius:14px;padding:12px 16px;margin:0 0 16px;cursor:pointer;font:inherit;color:var(--ink)}
+.em2-todo>i{width:9px;height:9px;border-radius:50%;background:var(--bad);flex:none;box-shadow:0 0 0 4px #F7D5D0}.em2-todo span{flex:1;display:flex;flex-direction:column;min-width:0}.em2-todo b{font-size:14px}.em2-todo small{font-size:12.5px;color:var(--ink2)}.em2-todo em{font-style:normal;font-weight:700;font-size:13px;color:var(--bad);white-space:nowrap}
+.em2{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}
+.em2-n{position:sticky;top:16px;display:flex;flex-direction:column;gap:2px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px}
+.em2-n h6{margin:12px 10px 4px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}.em2-n h6:first-child{margin-top:4px}
+.em2-n button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:0;border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;color:var(--ink)}
+.em2-n button:hover{background:#FBF6F2}.em2-n button.on{background:var(--tint);box-shadow:inset 3px 0 0 var(--c)}
+.em2-n .ic,.em2-ph .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:#F6F1EC;color:var(--ink2)}.em2-n .ic svg{width:17px;height:17px}
+.em2-n .ic.ok,.em2-ph .ic.ok{background:#E3F6EA;color:#1E9E57}.em2-n .ic.bad,.em2-ph .ic.bad{background:var(--badsoft);color:var(--bad)}.em2-n .ic.warn,.em2-ph .ic.warn{background:var(--warnsoft);color:var(--warn)}
+.em2-n .tx{display:flex;flex-direction:column;min-width:0}.em2-n .tx b{font-size:14px}.em2-n .tx small{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
+.em2-n small i{width:6px;height:6px;border-radius:50%;flex:none;background:currentColor}.em2-n small.ok{color:var(--ok);font-weight:600}.em2-n small.bad{color:var(--bad);font-weight:600}.em2-n small.warn{color:var(--warn);font-weight:600}
+.em2-b{min-width:0;scroll-margin-top:12px}.em2-p{display:flex;flex-direction:column;gap:14px}.em2-p[hidden]{display:none}
+.em2-ph{display:flex;align-items:flex-start;gap:14px;margin:2px 2px 2px}.em2-ph .ic{width:42px;height:42px;border-radius:12px}.em2-ph .ic svg{width:21px;height:21px}.em2-ph h2{font-size:20px;letter-spacing:-.3px;margin:0 0 3px}.em2-ph p{margin:0;color:var(--ink2);font-size:14px;line-height:1.45;max-width:620px}
+.em2-p>.card{margin:0}
+@media(max-width:860px){.em2{grid-template-columns:1fr;gap:16px}.em2-n{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding:6px;border-radius:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.em2-n::-webkit-scrollbar{display:none}
+ .em2-n h6{display:none}.em2-n button{flex:none;width:auto;padding:7px 12px 7px 8px;border:1px solid var(--line);border-radius:999px;gap:8px}.em2-n button.on{box-shadow:none;border-color:var(--c)}
+ .em2-n .ic{width:26px;height:26px;border-radius:50%}.em2-n .ic svg{width:14px;height:14px}.em2-n .tx b{font-size:13px}.em2-n .tx small{display:none}.em2-n .ic.bad{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--bad)}
+ .em2-ph .ic{display:none}.em2-ph h2{font-size:18px}.em2-ph p{font-size:13.5px}.em2-todo{padding:11px 14px}}
 .em-sh{display:flex;flex-direction:column;gap:2px;margin:24px 2px 10px;scroll-margin-top:16px}.em-sh h3{font-size:16px;margin:0}.em-sh span{font-size:13px;color:var(--ink3)}
 .em-g{scroll-margin-top:16px;align-items:start}
 .em-f{display:flex;flex-direction:column;gap:14px}.em-f .field small{display:block;font-size:12px;color:var(--ink3);margin-top:5px;line-height:1.35}
@@ -2774,6 +2792,7 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 <script>
 let SEG={studio:'Studio, academia ou box',clinica:'Clínica de estética, odonto ou saúde',salao:'Salão, barbearia ou beleza',imobiliaria:'Imobiliária ou corretor',escola:'Escola, idiomas ou cursos presenciais',loja:'Loja ou e-commerce',servicos:'Serviços profissionais (contabilidade, advocacia, consultoria)',restaurante:'Restaurante, delivery ou confeitaria',lancamento:'Infoproduto, curso online ou mentoria',outro:'Outro tipo de negócio'};
 let SEGS={};
+const EM={tab:null};  // Empresa: seção aberta
 const PLAN={demo:'Demonstração',trial:'Teste grátis',oferta:'Profissional',completo:'Equipe',rede:'Equipe',essencial:'Essencial',profissional:'Profissional',equipe:'Equipe'};
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -3285,7 +3304,7 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Convidar pessoa para o time','equipe',()=>go('equipe'),m],
   ['Criar equipe (pré-vendas, vendas, suporte)','equipe',()=>go('equipe'),m],
   ['Ensinar a Nanda','nanda',()=>go('nanda'),m],
-  ['Conectar WhatsApp','empresa',()=>go('empresa'),m],
+  ['Conectar WhatsApp','empresa',()=>{EM.tab='whatsapp';return go('empresa')},m],
   ['Meu status e avisos','',()=>meModal()]].filter(a=>a[3]!==false&&(a[1]!=='metas'||modOn('metas')))}
 function gSearchInit(){
   const q=$('#gQ'),res=$('#gRes'),nav=$('#snav');let sel=0,items=[],t=null,n=0;
@@ -3337,7 +3356,7 @@ function shell(){
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>{if(b.dataset.v.startsWith('a-')){AD.open=null;AD.popen=AD.fopen=false;AD.f={}}go(b.dataset.v)});
   document.querySelectorAll('.ng>h6').forEach(h=>{const g=h.parentNode,hit=()=>{const shut=NAVG.toggle(g.dataset.g);g.classList.toggle('shut',shut);h.setAttribute('aria-expanded',String(!shut));h.title=(shut?'Abrir ':'Recolher ')+h.textContent.trim()};
     h.onclick=hit;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit()}}});
-  if($('#navX'))$('#navX').onclick=()=>{document.querySelector('.side').classList.remove('open');go('empresa').then(()=>setTimeout(()=>{const x=$('#extras');if(x){x.scrollIntoView({block:'center'});x.classList.add('flash')}},350))};
+  if($('#navX'))$('#navX').onclick=()=>{document.querySelector('.side').classList.remove('open');(EM.tab='recursos',go('empresa')).then(()=>setTimeout(()=>{const x=$('#extras');if(x){x.scrollIntoView({block:'center'});x.classList.add('flash')}},350))};
   document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('assinatura'));
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>ativarView());document.querySelectorAll('[data-talk]').forEach(b=>b.onclick=()=>comecarView());
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
@@ -3359,6 +3378,7 @@ function pathFor(v){
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
   if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
   if(v==='vendas'&&VD.tab!=='relatorio')p+='/'+VD.tab;
+  if(v==='empresa'&&EM.tab)p+='/'+EM.tab;
   if(v==='clientes'&&CL.tab&&CL.tab!=='seg')p+='/'+({camp:'campanhas',ren:'renovacao'}[CL.tab]);
   if(v==='funil'&&FN.pipe==='posvenda')p+='/pos-venda';
   if(v==='metas'&&MT.tab!=='painel')p+='/'+MT.tab;
@@ -3370,6 +3390,7 @@ function readPath(){
   const v=parts[0];
   if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
   if(v==='empresa'&&parts[1]==='avisos')return 'avisos-conta';
+  if(v==='empresa')EM.tab=parts[1]||null;
   if(v==='conversas')CV.open=parts[1]||null;
   if(v==='ajuda')HP.art=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
@@ -7206,42 +7227,60 @@ const VIEWS={
  async empresa(){
   const c=ME.company,own=ME.user.role==='owner';
   const mgr=['owner','manager'].includes(ME.user.role);
-  const [wn,ig,bl]=await Promise.all([api('/wa/number').catch(()=>null),api('/ig/status').catch(()=>null),api('/billing').catch(()=>null)]);const ia=ig&&ig.account;
-  const ST=[['emNeg',svg('<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>'),'Negócio',esc(c.name),SEG[c.segment]||'',''],
-    ['emPlan',svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>'),'Plano',esc(PLAN[c.plan]||c.plan),c.plan==='trial'?'teste até '+day(c.trial_ends_at):'desde '+day(c.created_at),c.plan==='trial'?'warn':''],
-    ['wa',WAI,'WhatsApp',wn?esc((wn.display_phone||'conectado').replace(/^\+55\s?/,'')):'não conectado',wn?'conectado':'conecte para atender',wn?'ok':'bad'],
-    ['igc',IGI,'Instagram',ia?'@'+esc(ia.username||''):'não conectado',ia?(ia.status==='connected'?'conectado':'reconectar'):'opcional',ia?(ia.status==='connected'?'ok':'bad'):'']];
-  $('#page').innerHTML=`<div class="fz-hd em-hd"><div class="agt"><h1>Empresa</h1><p>Dados do negócio, plano, canais de atendimento e o que aparece no menu.</p></div></div>
-   <div class="em-st">${ST.map(x=>`<button type="button" class="${x[5]}" data-go="${x[0]}"><span class="ic">${x[1]}</span><span><small>${x[2]}</small><b>${x[3]}</b><em>${x[4]}</em></span></button>`).join('')}</div>
-   <div class="em-sh" id="emNeg"><h3>Negócio e plano</h3><span>O nome aparece para o time e nas mensagens da Nanda. O segmento ajusta as ideias prontas de funil, automações e jornada.</span></div>
-   <div class="grid g2 em-g"><div class="card"><form id="co" class="em-f">
+  const [wn,ig,bl,ck]=await Promise.all([api('/wa/number').catch(()=>null),api('/ig/status').catch(()=>null),api('/billing').catch(()=>null),mgr?api('/checkout/hooks').catch(()=>null):null]);const ia=ig&&ig.account;
+  const b0=(bl&&bl.billing)||{},stt=bl&&bl.state,pnm=bl&&bl.plan&&bl.plans&&bl.plans[bl.plan]?bl.plans[bl.plan].name:(PLAN[c.plan]||c.plan);
+  const ckOn=ck?(ck.items||[]).filter(h=>h.has_secret).length:0,chN=['messenger','telegram'].filter(chOn).length,exN=['metas','jornada'].filter(modOn).length;
+  // seções: [chave, grupo, ícone, título, status, tom, descrição]
+  const I={neg:'<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>',pla:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',av:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+    ch:'<path d="M12 3C7 3 3 6.7 3 11.3c0 2.6 1.3 4.9 3.4 6.4V21l3.1-1.7c.8.2 1.6.3 2.5.3 5 0 9-3.7 9-8.3S17 3 12 3z"/>',ck:'<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',ex:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/>'};
+  const SEC=[
+    ['negocio','Sua conta',svg(I.neg),'Negócio',esc(c.name),'','O nome aparece para o time e nas mensagens da Nanda. O segmento ajusta as ideias prontas de funil, automações e jornada.'],
+    ['plano','Sua conta',svg(I.pla),'Plano',esc(pnm)+' · '+({active:'ativo',trial:'em teste',demo:'demonstração',readonly:'só leitura'}[stt]||''),stt==='readonly'?'bad':stt==='trial'||stt==='demo'?'warn':'','Plano, cobrança e quanto você já usou no mês.'],
+    ...(own?[['meus-avisos','Sua conta',svg(I.av),'Avisos para você','WhatsApp e e-mail','','Mensagens do Oi Nanda sobre a sua conta: cobrança, fim do teste e uso da Nanda. Não são dos clientes.']]:[]),
+    ['whatsapp','Canais de atendimento',WAI,'WhatsApp',wn?'conectado':'não conectado',wn?'ok':'bad','O número que seus clientes já conhecem, pelo canal oficial da Meta. É por ele que a Nanda atende.'],
+    ['instagram','Canais de atendimento',IGI,'Instagram',ia?'@'+esc(ia.username||'')+(ia.status==='connected'?'':' · reconectar'):'não conectado',ia?(ia.status==='connected'?'ok':'bad'):'','A conta profissional do Instagram da empresa. Cada empresa do Oi Nanda conecta a sua.'],
+    ...(mgr?[['canais','Canais de atendimento',svg(I.ch),'Mais canais',chN?chN+(chN===1?' ligado':' ligados'):'Messenger e Telegram',chN?'ok':'','Ligue outro canal só se os seus clientes usarem. Desligado, ele não aparece em lugar nenhum.'],
+      ['vendas','Vendas',svg(I.ck),'Plataformas de venda',ckOn?ckOn+(ckOn===1?' conectada':' conectadas'):'Hotmart, Kiwify e outras',ckOn?'ok':'','Vende ou cobra por outra plataforma? Cada venda, boleto, Pix e carrinho abandonado chega na ficha do cliente.'],
+      ['recursos','Menu',svg(I.ex),'Recursos extras',exN?exN+(exN===1?' ligado':' ligados'):'Metas e jornada','','Começam escondidos para o menu ficar simples. Desligar não apaga nada.']]:[])];
+  const keys=SEC.map(x=>x[0]),qIg=new URLSearchParams(location.search).get('ig');
+  if(qIg)EM.tab='instagram';if(!keys.includes(EM.tab))EM.tab=!wn&&own?'whatsapp':'negocio';
+  const todo=SEC.filter(x=>x[5]==='bad').length;
+  let grp='';const nav=SEC.map(x=>{const h=x[1]!==grp?`<h6>${x[1]}</h6>`:'';grp=x[1];
+    return h+`<button type="button" data-et="${x[0]}" class="${x[0]===EM.tab?'on':''}"><span class="ic ${x[5]}">${x[2]}</span><span class="tx"><b>${x[3]}</b><small class="${x[5]}">${x[5]?'<i></i>':''}${x[4]}</small></span></button>`}).join('');
+  const P=(k,body)=>{const x=SEC.find(y=>y[0]===k);if(!x)return '';return `<section class="em2-p" data-ep="${k}" ${k===EM.tab?'':'hidden'}><div class="em2-ph"><span class="ic ${x[5]}">${x[2]}</span><div><h2>${x[3]}</h2><p>${x[6]}</p></div></div>${body}</section>`};
+  $('#page').innerHTML=`<div class="fz-hd em-hd"><div class="agt"><h1>Empresa</h1><p>Dados do negócio, plano e por onde os clientes falam com você.</p></div></div>
+   ${todo?`<button type="button" class="em2-todo" data-et="${SEC.find(x=>x[5]==='bad')[0]}"><i></i><span><b>${todo===1?'Falta 1 coisa':'Faltam '+todo+' coisas'} para atender por todos os canais</b><small>${SEC.filter(x=>x[5]==='bad').map(x=>x[3]+': '+x[4]).join(' · ')}</small></span><em>Resolver ›</em></button>`:''}
+   <div class="em2"><nav class="em2-n" aria-label="Seções da empresa">${nav}</nav><div class="em2-b">
+   ${P('negocio',`<div class="card"><form id="co" class="em-f">
     <div class="field"><label>Nome do negócio</label><input name="name" value="${esc(c.name)}" maxlength="80" ${own?'':'disabled'}><small>Aparece para o time e a Nanda usa nas conversas.</small></div>
     <div class="field"><label>Segmento</label><select name="segment" ${own?'':'disabled'}>${Object.entries(SEG).map(([k,v])=>`<option value="${k}" ${k===c.segment?'selected':''}>${v}</option>`).join('')}</select><small>Muda as sugestões de funil, automações e jornada. O que você já criou não muda.</small></div>
     <div class="field"><label>Telefone do negócio</label><input name="phone" value="${esc(fmtPhone(c.phone)||c.phone||'')}" type="tel" inputmode="tel" placeholder="(11) 98765-4321" ${own?'':'disabled'}><small>Para os avisos do Oi Nanda. Esse número nunca entra na sua base de clientes.</small></div>
-    ${own?'<div class="em-sv"><button class="btn p" disabled>Salvar alterações</button><span class="hint" id="coH">Tudo salvo.</span></div>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>
-   <div class="card em-pl" id="emPlan">${(()=>{const b=(bl&&bl.billing)||{},u=(bl&&bl.usage)||{},lm=(bl&&bl.limits)||{},stt=bl&&bl.state;
-     const nm=bl&&bl.plan&&bl.plans&&bl.plans[bl.plan]?bl.plans[bl.plan].name:(PLAN[c.plan]||c.plan);
+    ${own?'<div class="em-sv"><button class="btn p" disabled>Salvar alterações</button><span class="hint" id="coH">Tudo salvo.</span></div>':'<p class="note">Só o dono da conta altera estes dados.</p>'}</form></div>`)}
+   ${P('plano',`<div class="card em-pl" id="emPlan">${(()=>{const b=b0,u=(bl&&bl.usage)||{},lm=(bl&&bl.limits)||{};
      const sl={active:['ok','ativo'],trial:['warn',bl&&bl.trial_left!=null?`teste · ${bl.trial_left} ${bl.trial_left===1?'dia':'dias'}`:'teste'],demo:['grey','demonstração'],readonly:['bad','só leitura']}[stt]||['grey',stt||''];
      const bar=(l,a,t)=>t?`<div class="em-us"><div><span>${l}</span><b>${a} de ${num(t)}</b></div><i><em style="width:${Math.min(100,Math.round(100*a/t))}%" class="${a/t>=.9?'hi':''}"></em></i></div>`:'';
-     return `<div class="em-ph"><div><small>Seu plano</small><h3>${esc(nm)}</h3></div><span class="pill ${sl[0]}">${sl[1]}</span></div>
+     return `<div class="em-ph"><div><small>Seu plano</small><h3>${esc(pnm)}</h3></div><span class="pill ${sl[0]}">${sl[1]}</span></div>
       <div class="em-pf">${b.amount?`<div><small>Valor</small><b>${brl(b.amount)}<em>/${b.cycle==='annual'?'ano':'mês'}</em></b></div>`:''}${b.next_payment?`<div><small>Próxima cobrança</small><b>${day(b.next_payment)}</b></div>`:''}<div><small>Cliente desde</small><b>${day(c.created_at)}</b></div></div>
       ${bar('Pessoas no time',u.users||0,lm.users)}${bar('Atendimentos da Nanda no mês',(u.atend!=null?u.atend:u.ai)||0,u.quota||lm.atend)}
-      <button class="btn sm ${stt==='trial'||stt==='demo'?'p':''}" data-sub2>${stt==='trial'||stt==='demo'?'Ver planos e assinar':'Ver assinatura e uso'}</button>`})()}</div></div>
-   <div class="em-sh"><h3>Canais de atendimento</h3><span>Por onde os clientes falam com você. Tudo chega na mesma caixa de Conversas.</span></div>
-   <div class="card em-c" id="wa"></div><div class="card em-c" id="igc"></div>
-   ${mgr?`<div class="card em-c" id="chmore"><h3 style="margin-bottom:4px">Mais canais</h3>
-    <p class="hint" style="margin:0 0 12px">WhatsApp e Instagram já vêm ligados. Ligue outro canal só se os seus clientes usarem — enquanto estiver desligado, ele não aparece em lugar nenhum.</p>
-    <div class="em-sws"><label class="em-sw"><span class="ic mg">${svg('<path d="M12 3C7 3 3 6.7 3 11.3c0 2.6 1.3 4.9 3.4 6.4V21l3.1-1.7c.8.2 1.6.3 2.5.3 5 0 9-3.7 9-8.3S17 3 12 3z"/><path d="m7.5 13.5 3-3.2 2 2 3-3.2"/>')}</span><span class="tx"><b>Messenger</b><small>Mensagens da sua Página do Facebook, na mesma caixa. Usa a conexão do Instagram, sem passo novo.</small><small id="mgSt" class="hint"></small></span><input type="checkbox" data-ch="messenger" ${chOn('messenger')?'checked':''}></label>
-    <label class="em-sw"><span class="ic tg">${svg('<path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/>')}</span><span class="tx"><b>Telegram</b><small>Para quem atende por lá. Você cria um bot gratuito e cola o código aqui.</small></span><input type="checkbox" data-ch="telegram" ${chOn('telegram')?'checked':''}></label></div>
-    </div>
-   <div class="card em-c" id="tgc" hidden></div>
-   ${mgr?`<div class="em-sh" id="emCk"><h3>Plataformas de venda</h3><span>Vende ou cobra por outra plataforma? Ligue aqui e cada venda, cobrança vencida, boleto, Pix e carrinho abandonado chega no Oi Nanda, na ficha do cliente.</span></div><div class="card em-c" id="ckc"></div>`:''}
-   <div class="em-sh"><h3>Recursos extras</h3><span>Começam escondidos para o menu ficar simples. Ligue quando fizer sentido para o seu time; desligar não apaga nada.</span></div>
-   <div class="card em-c em-sws" id="extras">
+      <button class="btn sm ${stt==='trial'||stt==='demo'?'p':''}" data-sub2>${stt==='trial'||stt==='demo'?'Ver planos e assinar':'Ver assinatura e uso'}</button>`})()}</div>`)}
+   ${P('meus-avisos',`<div class="card em-c em-sws"><div class="em-sw" style="cursor:default"><span class="ic">${svg(I.av)}</span><span class="tx"><b>Avisos do Oi Nanda</b><small>Cobrança, fim do teste e uso da Nanda: escolha o que receber e por onde (WhatsApp ou e-mail).</small></span><button class="btn sm" id="goAv">Escolher</button></div></div>`)}
+   ${P('whatsapp','<div class="card em-c" id="wa"></div>')}
+   ${P('instagram','<div class="card em-c" id="igc"></div>')}
+   ${P('canais',`<div class="card em-c" id="chmore"><div class="em-sws"><label class="em-sw"><span class="ic mg">${svg('<path d="M12 3C7 3 3 6.7 3 11.3c0 2.6 1.3 4.9 3.4 6.4V21l3.1-1.7c.8.2 1.6.3 2.5.3 5 0 9-3.7 9-8.3S17 3 12 3z"/><path d="m7.5 13.5 3-3.2 2 2 3-3.2"/>')}</span><span class="tx"><b>Messenger</b><small>Mensagens da sua Página do Facebook, na mesma caixa. Usa a conexão do Instagram, sem passo novo.</small><small id="mgSt" class="hint"></small></span><input type="checkbox" data-ch="messenger" ${chOn('messenger')?'checked':''}></label>
+    <label class="em-sw"><span class="ic tg">${svg('<path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/>')}</span><span class="tx"><b>Telegram</b><small>Para quem atende por lá. Você cria um bot gratuito e cola o código aqui.</small></span><input type="checkbox" data-ch="telegram" ${chOn('telegram')?'checked':''}></label></div></div>
+    <div class="card em-c" id="tgc" hidden></div>`)}
+   ${P('vendas','<div class="card em-c" id="ckc"></div>')}
+   ${P('recursos',`<div class="card em-c em-sws" id="extras">
     ${[['metas','Metas e ranking','Metas da empresa, de equipes e de cada vendedor, com desafios, prêmios e modo TV.'],['jornada','Jornada do cliente','Marcos como "fez a aula", "pediu orçamento", "comprou de novo". A Nanda marca sozinha pelas conversas e o relatório mostra onde os clientes travam.']]
-      .map(([k,l,h])=>`<label class="em-sw"><span class="ic">${svg(k==='metas'?'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>':'<circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3m4 0h3"/><circle cx="12" cy="12" r="2"/>')}</span><span class="tx"><b>${l}</b><small>${h}</small></span><input type="checkbox" data-mod="${k}" ${modOn(k)?'checked':''}></label>`).join('')}</div>`:''}`;
+      .map(([k,l,h])=>`<label class="em-sw"><span class="ic">${svg(k==='metas'?'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>':'<circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3m4 0h3"/><circle cx="12" cy="12" r="2"/>')}</span><span class="tx"><b>${l}</b><small>${h}</small></span><input type="checkbox" data-mod="${k}" ${modOn(k)?'checked':''}></label>`).join('')}</div>`)}
+   </div></div>`;
+  const show=k=>{EM.tab=k;document.querySelectorAll('.em2-n [data-et]').forEach(b=>b.classList.toggle('on',b.dataset.et===k));document.querySelectorAll('[data-ep]').forEach(x=>x.hidden=x.dataset.ep!==k);
+    history.replaceState(null,'','/empresa/'+k);const n=$('.em2-n .on');if(n&&innerWidth<=860)n.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+    const b=$('.em2-b');if(b&&b.getBoundingClientRect().top<0)b.scrollIntoView({block:'start',behavior:'smooth'})};
+  document.querySelectorAll('[data-et]').forEach(b=>b.onclick=()=>show(b.dataset.et));
+  if($('#goAv'))$('#goAv').onclick=()=>go('avisos-conta');
+  if(innerWidth<=860)setTimeout(()=>$('.em2-n .on')?.scrollIntoView({inline:'center',block:'nearest'}),50);
   renderWa(own);renderIg(own);renderTg(own);if(mgr)renderCk();
-  document.querySelectorAll('.em-st [data-go]').forEach(x=>x.onclick=()=>{const t=$('#'+x.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
   document.querySelectorAll('[data-ch]').forEach(x=>x.onchange=async()=>{x.disabled=true;try{const r=await api('/company/channels',{method:'PUT',body:{[x.dataset.ch]:x.checked}});ME.company.channels=r.channels;
     const l={messenger:'Messenger',telegram:'Telegram',email:'E-mail'}[x.dataset.ch]||x.dataset.ch;toast(x.checked?`${l} ligado. As mensagens novas chegam nas Conversas.`:`${l} desligado. Nada foi apagado.`);renderIg(own);renderTg(own)}
     catch(e){x.checked=!x.checked;toast(e.message)}finally{x.disabled=false}});
@@ -7286,9 +7325,6 @@ const VIEWS={
    <div class="card">${rows.length?rows.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${esc(r.error)}</b><small style="display:block;color:var(--ink3)">${dt(r.at)} · ${esc(r.method)} ${esc(r.path)}</small><pre>${esc(r.trace)}</pre></div>`).join(''):'<div class="empty">Nenhum erro registrado.</div>'}</div>`;
  }
 };
-{const emp=VIEWS.empresa;VIEWS.empresa=async()=>{await emp();if(ME.user.role!=='owner'||!$('#page'))return;
- $('#page').insertAdjacentHTML('beforeend','<div class="em-sh"><h3>Avisos para você</h3><span>Mensagens do Oi Nanda sobre a sua conta, não dos clientes.</span></div><div class="card em-c em-sws"><div class="em-sw" style="cursor:default"><span class="ic">'+svg('<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>')+'</span><span class="tx"><b>Avisos do Oi Nanda</b><small>Cobrança, fim do teste e uso da Nanda: escolha o que receber e por onde (WhatsApp ou e-mail).</small></span><button class="btn sm" id="goAv">Escolher</button></div></div>');
- $('#goAv').onclick=()=>go('avisos-conta')}}
 /* aviso no WhatsApp do time: quando a Nanda passa um cliente ou alguém transfere uma conversa */
 function eqWa(n,canManage,team){const t=n.template&&n.template.status,me=(n.me||{}),tm=n.team||{on:0,total:0},mine=me.wa_notify&&me.wa_phone;
   const st=!n.connected?['grey','WhatsApp da empresa não conectado','Os avisos saem pelo número da empresa. Conecte o WhatsApp em Empresa para ligar.']
@@ -7836,6 +7872,7 @@ async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
     if(s.act==='venda'){SU.cur=null;return saleModal({onDone:async()=>{await suLoad(true);suRefresh()}})}
     if(s.act==='catalogo'){VD.tab='produtos';await go('vendas');return after()}
     if(s.act==='meta'){if(!modOn('metas')){await api('/company/modules',{method:'PUT',body:{metas:true}});ME.company.modules={...(ME.company.modules||{}),metas:true};shell()}MT.tab='painel';await go('metas');return after()}
+    if(s.to==='empresa')EM.tab={whatsapp:'whatsapp',instagram:'instagram'}[s.key]||'negocio';
     await go(s.to);after()}catch(e){toast(e.message)}}
 async function suRefresh(){if(VIEW==='inicio')suHome();if($('.su-dw-bg'))suPanel()}
 async function suSkip(key,skip){try{SU.d=await api('/setup/skip',{method:'POST',body:{key,skip}});SU.at=Date.now();suPill();suRefresh();toast(skip?'Tirado do guia. Dá para voltar em Ver tudo.':'Voltou para o guia.')}catch(e){toast(e.message)}}
