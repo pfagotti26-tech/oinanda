@@ -315,6 +315,40 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 .bub.typing::after{content:"";position:absolute;left:16px;top:50%;width:34px;height:8px;margin-top:-4px;background:radial-gradient(circle,#9AA7B4 3.5px,transparent 4px) 0 0/13px 8px repeat-x;animation:dots 1s steps(4) infinite}
 @keyframes dots{0%{clip-path:inset(0 100% 0 0)}25%{clip-path:inset(0 66% 0 0)}50%{clip-path:inset(0 33% 0 0)}75%,100%{clip-path:inset(0 0 0 0)}}
 @media (prefers-reduced-motion:reduce){.tzp{animation:none}.float{animation:none}.feed .float{transition:none}html{scroll-behavior:auto}.btn,.segs a{transition:none}}
+
+/* faixa: textos mais longos */
+.band b{font-size:clamp(17px,1.65vw,21px);margin-bottom:2px}@media (min-width:901px){.band b{white-space:nowrap}}
+/* pilar 4: logos e celular desenhado */
+.lgs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.lg{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 5px}
+.lg i{width:22px;height:22px;border-radius:50%;background:var(--pc);color:#fff;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800}.lg.more{padding-left:12px;color:var(--ink3)}
+.phone.mk{background:#0B0F15}.mk-in{width:100%;height:100%;border-radius:32px;background:#EFEAE2;padding:30px 12px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden;position:relative;font-size:12.5px;line-height:1.4}
+.mk-ev{display:flex;align-items:center;gap:9px;background:#fff;border-radius:14px;padding:9px 10px;box-shadow:0 6px 16px rgba(23,33,43,.08)}.mk-ev div{flex:1;min-width:0}.mk-ev b{display:block;font-size:12.5px}.mk-ev small{display:block;color:var(--ink3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mk-ev time{font-size:10.5px;color:var(--ink3)}
+.mk-l{width:28px;height:28px;border-radius:9px;background:var(--pc);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}.mk-l.ok{background:var(--ok)}.mk-ev.ok{border:1px solid #BFE6D6}
+.mk-day{align-self:center;font-size:10.5px;font-weight:700;color:#6B7783;background:rgba(255,255,255,.7);border-radius:8px;padding:2px 9px;margin:4px 0}
+.mk-b{max-width:86%;padding:8px 10px;border-radius:12px;box-shadow:0 1px 1px rgba(0,0,0,.06)}.mk-b.out{align-self:flex-end;background:#D9FDD3;border-top-right-radius:3px}.mk-b.in{align-self:flex-start;background:#fff;border-top-left-radius:3px}.mk-b u{color:#027EB5}
+.mk-x{position:absolute;right:14px;bottom:8px;font-size:10px;color:#8593A1}
+/* gestor */
+.gs{background:var(--ink);color:#fff;position:relative;overflow:hidden}.gs::before{content:"";position:absolute;width:620px;height:620px;right:-220px;top:-300px;border-radius:50%;background:radial-gradient(closest-side,rgba(232,96,63,.28),rgba(232,96,63,0))}
+.gs .head h2{color:#fff}.gs .lead{color:#C6CFD8}.gs .eyb{color:#FFB79F}.gs .fine{color:#8593A1}
+.gsg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;position:relative}
+.gsc{background:#1F2B37;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:16px 16px 22px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.gsc h3{font-size:18px;color:#fff;margin-top:8px}.gsc p{font-size:14.5px;line-height:1.5;color:#B5C0CB}.gsc .pl{align-self:flex-start;font-size:11.5px;font-weight:800;color:#FFB79F;background:rgba(232,96,63,.14);border-radius:999px;padding:3px 10px;margin-top:4px}
+.gsv{background:#fff;color:var(--ink);border-radius:16px;padding:14px;height:156px;display:flex;flex-direction:column;justify-content:center;font-size:13px}
+.gs-mt>div{display:flex;justify-content:space-between;align-items:baseline}.gs-mt small{color:var(--ink3);font-weight:700;font-size:11.5px}.gs-mt b{font-size:22px}.gs-mt>i{display:block;height:8px;border-radius:99px;background:#F1EBE5;margin:6px 0 10px}.gs-mt>i em{display:block;height:100%;border-radius:99px;background:var(--coral)}
+.gs-mt ol{list-style:none;display:grid;gap:5px}.gs-mt li{display:flex;align-items:center;gap:8px;font-weight:700}.gs-mt li span{width:20px;height:20px;border-radius:50%;background:var(--coral-soft);color:var(--coral-ink);font-size:11px;display:grid;place-items:center}.gs-mt li:first-child span{background:#FFD873;color:#7A5600}.gs-mt li b{margin-left:auto;font-size:12.5px;color:var(--ink2)}
+.gs-q{display:flex;gap:12px;align-items:flex-start}.gs-q .sc{flex:none;width:52px;height:40px;border-radius:12px;background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px;display:grid;place-items:center}.gs-q b{display:block;margin-bottom:4px}.gs-q small{display:block;color:var(--ok);font-size:12px;line-height:1.4;margin-top:3px}.gs-q small.w{color:#9A6B00}
+.gs-n{display:flex;flex-direction:column;gap:7px}.bub.sm{font-size:12.5px;padding:8px 11px;box-shadow:none;background:#F4EFEA;max-width:90%}.bub.sm.me{align-self:flex-end;background:#D9FDD3;border-radius:18px 6px 18px 18px}.gs-nr{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:7px;margin-top:2px}.gs-nr span{color:var(--ink3);font-weight:700;font-size:11.5px}.gs-nr b{color:var(--ok);font-size:18px}
+.gs-r{display:grid;gap:9px}.gs-r>div{display:grid;grid-template-columns:92px 1fr;align-items:center;gap:8px;font-weight:700;font-size:12px}.gs-r i{display:block;height:8px;border-radius:99px;background:#F1EBE5}.gs-r em{display:block;height:100%;border-radius:99px;background:var(--coral)}.gs-r>div:nth-child(2) em{background:#F2A48C}.gs-r>div:nth-child(n+3) em{background:#C9BDB3}
+/* tudo junto */
+.tjg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.tjg>div{display:grid;grid-template-columns:40px 1fr;column-gap:12px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.tjg i{grid-row:span 2;width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-style:normal;font-size:19px}.tjg b{font-size:15px;line-height:1.3}.tjg span{font-size:13.5px;line-height:1.45;color:var(--ink2);margin-top:3px}
+/* fundador */
+.fdc{display:grid;grid-template-columns:auto 1fr 300px;gap:clamp(20px,3vw,40px);align-items:center;background:var(--soft);border-radius:var(--r);padding:clamp(24px,3.4vw,40px)}
+.fd-a{width:88px;height:88px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-weight:800;font-size:28px;align-self:start}
+.fdc h2{font-size:clamp(24px,2.6vw,30px);margin:6px 0 10px}.fdc p{color:var(--ink2);font-size:16px;line-height:1.55}.fdc>div>b{display:block;margin-top:12px}.fdc>div>small{color:var(--ink3);font-size:13.5px}
+.fd-o{background:#fff;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:6px;box-shadow:0 16px 40px rgba(23,33,43,.08)}.fd-o>b{font-size:20px}.fd-o p{font-size:14.5px}.fd-o .btn{margin-top:8px;justify-content:center}
+@media (max-width:1060px){.gsg,.tjg{grid-template-columns:1fr 1fr}.fdc{grid-template-columns:auto 1fr}.fd-o{grid-column:1/-1}}
+@media (max-width:620px){.gsv{height:auto;min-height:130px}.gsg,.tjg{grid-template-columns:1fr}.fdc{grid-template-columns:1fr}.fd-a{width:64px;height:64px;font-size:22px}.band b{font-size:18px}}
 </style>
 <script>(function(){var d=document.documentElement;if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;d.classList.add('js');setTimeout(function(){if(!window.__rv)d.classList.remove('js')},2500)})()</script>
 </head>
@@ -346,16 +380,16 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     <div class="feed" id="feed" aria-hidden="true">
      <div class="float"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></span><div><b>Helena</b><span>Quanto custa a limpeza de pele?</span></div><time>08:52</time></div>
      <div class="float"><span class="ic ok">✓</span><div><b>Respondido em 8&nbsp;s</b><span>Avaliação marcada · qui, 14h</span></div><time>08:52</time></div>
-     <div class="float"><span class="ic sale">🛍</span><div><b>Venda · R$ 389</b><span>Juliana Mendes · matrícula de inglês</span></div><time>09:14</time></div>
+     <div class="float"><span class="ic sale">🛍</span><div><b>Venda · R$ 389</b><span>Juliana Mendes · pacote 2 limpezas</span></div><time>09:14</time></div>
     </div>
-    <span class="ex">exemplo de um dia</span>
+    <span class="ex">exemplo · um dia numa clínica de estética</span>
   </div>
 </div></header>
 <div class="band"><div class="wrap">
-  <div><b>Segundos</b><span>até a primeira resposta</span></div>
-  <div><b>24 horas</b><span>atendendo, até de&nbsp;madrugada</span></div>
-  <div><b>15 minutos</b><span>para começar a usar</span></div>
-  <div><b>14 dias</b><span>grátis, cancele quando quiser</span></div>
+  <div><b>WhatsApp + Instagram</b><span>numa caixa só, com o histórico&nbsp;inteiro</span></div>
+  <div><b>API oficial da Meta</b><span>seu número e seus clientes continuam&nbsp;seus</span></div>
+  <div><b>Funil pronto</b><span>para o seu segmento, desde o primeiro&nbsp;dia</span></div>
+  <div><b>Time no mesmo número</b><span>cada conversa com um dono</span></div>
 </div></div>
 
 <section id="video" class="glow"><div class="wrap">
@@ -398,13 +432,60 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_b.mp4" poster="img/poster_b.jpg" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando a agenda do dia com um novo horário marcado"></video></div></div>
   </div>
   <div class="row">
-    <div class="txt"><span class="eyb">3 · Mostra de onde vem cada cliente</span><h2>Você sabe de onde vem cada&nbsp;cliente.</h2>
+    <div class="txt"><span class="eyb">3 · Mede</span><h2>Você sabe de onde vem cada&nbsp;cliente.</h2>
       <p>Anúncio, Instagram, indicação ou Google: a origem fica marcada no primeiro contato e segue até a venda. Você vê quanto vem do pago e quanto vem do orgânico, e o que cada um vendeu.</p>
       <ul><li><span><b>Pago e orgânico lado a lado.</b> Contatos, clientes e faturamento de cada origem.</span></li><li><span><b>Retorno por campanha.</b> Quanto investiu e quanto voltou em cada anúncio.</span></li></ul></div>
     <div class="phw"><span class="blob"></span><div class="phone"><span class="isl"></span><video src="img/loop_c.mp4?v=2" poster="img/poster_c.jpg?v=2" muted playsinline loop autoplay preload="metadata" aria-label="Celular mostrando de onde vêm os clientes, separados em pago e orgânico"></video></div></div>
   </div>
+  <div class="row flip">
+    <div class="txt"><span class="eyb">4 · Recupera</span><h2>A venda que ficou pelo caminho volta pelo&nbsp;WhatsApp.</h2>
+      <p>Conecte a plataforma onde você vende ou cobra. Carrinho abandonado, boleto e Pix sem pagar e mensalidade vencida viram uma mensagem no WhatsApp, com o link e a ajuda que&nbsp;faltava.</p>
+      <ul><li><span><b>Venda aprovada entra sozinha.</b> No funil e na ficha do cliente, sem digitar nada.</span></li><li><span><b>Quem parou de responder é chamado de volta.</b> No prazo certo, sem ninguém lembrar.</span></li><li><span><b>Leva uns 5 minutos por plataforma.</b> Sem técnico.</span></li></ul>
+      <div class="lgs"><span class="lg" style="--pc:#F04E23"><i>H</i>Hotmart</span><span class="lg" style="--pc:#22B14C"><i>K</i>Kiwify</span><span class="lg" style="--pc:#1E4FC2"><i>E</i>Eduzz</span><span class="lg" style="--pc:#1D63D6"><i>A</i>Asaas</span><span class="lg" style="--pc:#00A6E8"><i>M</i>Mercado Pago</span><span class="lg" style="--pc:#635BFF"><i>S</i>Stripe</span><span class="lg more">e mais 5</span></div></div>
+    <div class="phw"><span class="blob"></span><div class="phone mk"><div class="mk-in">
+      <div class="mk-ev"><span class="mk-l" style="--pc:#22B14C">K</span><div><b>Carrinho abandonado</b><small>Sofia Martins · Curso Voz Segura · R$ 497</small></div><time>14:02</time></div>
+      <div class="mk-day">WhatsApp · 14:20</div>
+      <p class="mk-b out">Oi, Sofia! Vi que você parou na hora do pagamento do Curso Voz Segura. Ficou alguma dúvida? Se quiser, te mando o link de novo 😊</p>
+      <p class="mk-b in">tava em dúvida se dá pra parcelar</p>
+      <p class="mk-b out">Dá sim! Em até 12x no cartão. Aqui está o link: <u>pay.kiwify.com.br/…</u></p>
+      <div class="mk-ev ok"><span class="mk-l ok">✓</span><div><b>Venda aprovada · R$ 497</b><small>entrou no funil e na ficha da Sofia</small></div><time>14:51</time></div>
+      <span class="mk-x">exemplo</span></div></div></div>
+  </div>
 </div></section>
 
+
+<section class="gs"><div class="wrap">
+  <div class="head center"><span class="eyb">Para o dono e o gestor</span><h2>Você vê o time vendendo, sem&nbsp;ficar&nbsp;em&nbsp;cima.</h2><p class="lead">Metas, qualidade do atendimento e o que o cliente achou. Tudo pronto, sem&nbsp;planilha.</p></div>
+  <div class="gsg">
+    <div class="gsc"><div class="gsv"><div class="gs-mt"><div><small>Meta de novembro</small><b>78%</b></div><i><em style="width:78%"></em></i><ol><li><span>1</span>Ana<b>R$ 14.200</b></li><li><span>2</span>Léo<b>R$ 11.900</b></li><li><span>3</span>Bia<b>R$ 9.350</b></li></ol></div></div>
+      <h3>Metas e ranking</h3><p>Meta da empresa, das equipes e de cada vendedor, com desafios, prêmios e modo TV para a parede.</p><span class="pl">Plano Equipe</span></div>
+    <div class="gsc"><div class="gsv"><div class="gs-q"><span class="sc">8,7</span><div><b>Nota do atendimento</b><small>✓ Respondeu rápido e com o preço certo</small><small class="w">↗ Faltou oferecer o próximo horário</small></div></div></div>
+      <h3>Nota de cada atendimento</h3><p>A IA lê a conversa e dá uma nota, com o que foi bem e o que melhorar. Avisa quando uma venda pode ter escapado.</p></div>
+    <div class="gsc"><div class="gsv"><div class="gs-n"><div class="bub sm">De 0 a 10, como foi o seu atendimento hoje?</div><div class="bub sm me">10! Super atenciosa 💛</div><div class="gs-nr"><span>Satisfação do mês</span><b>9,1</b></div></div></div>
+      <h3>O que o cliente achou</h3><p>Ao encerrar, o cliente recebe a pergunta no WhatsApp. Você vê a nota de cada atendente e o NPS.</p></div>
+    <div class="gsc"><div class="gsv"><div class="gs-r"><div><span>Comprou</span><i><em style="width:46%"></em></i></div><div><span>Agendou</span><i><em style="width:28%"></em></i></div><div><span>Sem interesse</span><i><em style="width:16%"></em></i></div><div><span>Sumiu</span><i><em style="width:10%"></em></i></div></div></div>
+      <h3>Por que cada conversa terminou</h3><p>Comprou, agendou, sem interesse, sumiu: você sabe onde o atendimento ganha e onde perde.</p></div>
+  </div>
+  <p class="fine center" style="margin-top:18px">Telas de exemplo.</p>
+</div></section>
+
+<section class="tj"><div class="wrap">
+  <div class="head center"><span class="eyb">E ainda vem junto</span><h2>Tudo o que um time precisa para vender pelo&nbsp;WhatsApp.</h2></div>
+  <div class="tjg">
+    <div><i>🎙</i><b>Responde áudio com áudio</b><span>A Nanda entende o áudio do cliente e pode responder falando.</span></div>
+    <div><i>💬</i><b>Comentou, recebeu no Direct</b><span>Quem comenta a palavra certa no seu post recebe a mensagem na hora.</span></div>
+    <div><i>📣</i><b>Campanhas por segmento</b><span>Mensagem para quem sumiu, comprou ou está para renovar.</span></div>
+    <div><i>🔁</i><b>Carteira e renovação</b><span>Quem vence este mês, com aviso para renovar no prazo.</span></div>
+    <div><i>💰</i><b>Comissão por vendedor</b><span>Venda dividida entre quem ajudou, com a conta pronta.</span></div>
+    <div><i>🏷</i><b>Cupons e promoções</b><span>A Nanda oferece a condição certa, só enquanto ela vale.</span></div>
+    <div><i>⚡</i><b>Respostas rápidas</b><span>Digite / e o texto entra pronto, com o nome do cliente.</span></div>
+    <div><i>🔔</i><b>Avisos no celular</b><span>Cliente novo para você chega no celular e no WhatsApp do time.</span></div>
+    <div><i>📅</i><b>Google Agenda</b><span>Os horários marcados aparecem na agenda que você já usa.</span></div>
+    <div><i>📥</i><b>Importe seus contatos</b><span>Traga a planilha de clientes e comece com a base inteira.</span></div>
+    <div><i>✉️</i><b>Messenger e Telegram</b><span>Também na mesma caixa, se os seus clientes usarem.</span></div>
+    <div><i>🔒</i><b>Cada um vê o que deve</b><span>Atendente vê as conversas e vendas dele. O dono vê tudo.</span></div>
+  </div>
+</div></section>
 
 <section class="soft wb"><div class="wrap">
   <div class="head center"><span class="eyb">"Mas eu já tenho WhatsApp Business"</span><h2>Você não troca o seu WhatsApp. <br class="dsk">Você para de depender&nbsp;dele.</h2><p class="lead">O app continua do seu jeito, no seu&nbsp;celular. A&nbsp;Nanda entra junto e cuida do que ele nunca&nbsp;fez.</p></div>
@@ -426,7 +507,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
         <label for="cT"><span>Ticket médio <b id="oT">R$ 290</b></span><input id="cT" type="range" min="50" max="3000" step="10" value="290"></label>
         <label for="cP"><span>Ficam mais de 5 min sem resposta <b id="oP">35%</b></span><input id="cP" type="range" min="5" max="90" value="35"></label>
       </div></div>
-    <div class="out"><small>Estimativa conservadora</small><strong id="oM">R$ 5.278</strong><span>por mês · <span id="oY">R$ 63.336</span> por ano</span><span class="out-f">Conta simples com os seus números. Serve para ter ordem de grandeza, não é promessa de&nbsp;resultado.</span><span style="margin-top:6px;color:#fff;font-weight:700">A Nanda começa em R$&nbsp;147 por&nbsp;mês.</span><a class="btn p" style="margin-top:14px" href="https://app.oinanda.com.br/cadastro">Parar de perder essa venda</a></div>
+    <div class="out"><small>Estimativa conservadora</small><strong id="oM">R$ 5.278</strong><span>por mês · <span id="oY">R$ 63.336</span> por ano</span><span class="out-f">Conta simples com os seus números. Serve para ter ordem de grandeza, não é promessa de&nbsp;resultado.</span><span style="margin-top:6px;color:#fff;font-weight:700">A Nanda respondendo sozinha, 24h: R$&nbsp;297 por&nbsp;mês.</span><a class="btn p" style="margin-top:14px" href="https://app.oinanda.com.br/cadastro">Parar de perder essa venda</a></div>
   </div>
 </div></section>
 
@@ -450,7 +531,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     </div>
     <div class="sgp" role="tabpanel" id="sgp-studio" aria-labelledby="sgt-studio" hidden>
       <div class="sgc"><span class="sgl">Funil pronto</span><h3>Studios, academias e boxes</h3><ol><li>Novo contato</li><li>Aula experimental marcada</li><li>Fez a aula</li><li>Negociando</li><li>Matriculou</li></ol></div>
-      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>Depois da aula: manda os planos</li><li>Aluno sumido há 30 dias: chama de volta</li></ul></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Lembrete na véspera e no dia</li><li>Faltou: oferece novo horário</li><li>Depois da aula: manda os planos</li><li>Aluno sumido há 30 dias: chama de volta</li><li>Plano vencendo: avisa para renovar</li></ul></div>
       <div class="sgc msg"><span class="sgl">Exemplo · Depois da aula experimental</span><p class="bub">Oi, Diego! O que achou da aula? Se quiser, já te mando os planos para começar.</p><a class="more" href="/segmentos/#studios">Ver a página do segmento →</a></div>
     </div>
     <div class="sgp" role="tabpanel" id="sgp-salao" aria-labelledby="sgt-salao" hidden>
@@ -470,7 +551,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     </div>
     <div class="sgp" role="tabpanel" id="sgp-info" aria-labelledby="sgt-info" hidden>
       <div class="sgc"><span class="sgl">Funil pronto</span><h3>Lançamentos, cursos e mentorias</h3><ol><li>Novo lead</li><li>Interessado</li><li>Link enviado</li><li>Comprou</li></ol></div>
-      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Sumiu há 1 e há 3 dias: retoma</li><li>Recebeu o link e não comprou: pergunta</li><li>Quem quer fechar vai direto para o time</li></ul></div>
+      <div class="sgc"><span class="sgl">Mensagens que saem sozinhas</span><ul><li>Sumiu há 1 e há 3 dias: retoma</li><li>Recebeu o link e não comprou: pergunta</li><li>Carrinho abandonado e boleto da Hotmart, Kiwify ou Eduzz: chama no WhatsApp</li><li>Quem quer fechar vai direto para o time</li></ul></div>
       <div class="sgc msg"><span class="sgl">Exemplo · Link enviado e não comprou</span><p class="bub">Oi, Sofia! Conseguiu acessar o link? Se tiver qualquer dúvida antes de entrar, me fala.</p><a class="more" href="/segmentos/#lancamentos">Ver a página do segmento →</a></div>
     </div>
     <div class="nope"><p><b>Não serve para todo mundo.</b> Se você vende sem conversar, se recebe uma ou duas mensagens por semana, ou se procura disparo em massa para lista comprada, a Nanda não é para você. Ela é para quem fecha venda conversando e está perdendo conversa pelo&nbsp;caminho.</p></div>
@@ -479,11 +560,19 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   <div class="meta" style="margin-top:clamp(40px,6vw,72px)"><b>Sobre a API oficial do WhatsApp</b><span>Seu número e seu histórico continuam seus</span><span>Conexão autorizada pela Meta</span><span>Bem menos risco de bloqueio</span></div>
 </div></section>
 
+<section class="fd"><div class="wrap"><div class="fdc">
+  <span class="fd-a" aria-hidden="true">PF</span>
+  <div><span class="eyb">Quem está por trás</span><h2>Feito no Brasil, por quem vende pelo WhatsApp há&nbsp;anos.</h2>
+   <p>“Criei o Oi Nanda depois de ver, em negócio atrás de negócio, a venda escapar na mensagem que ninguém respondeu a tempo. Não é mais um robô de disparo: é o atendimento que eu queria ter no meu time.”</p>
+   <b>Paulo Fagotti</b><small>fundador · mais de 20 anos em marketing e vendas</small></div>
+  <div class="fd-o"><span class="eyb">Primeiros clientes</span><b>Condição de fundador</b><p>Quem entra agora configura a conta com a gente, lado a lado, e ajuda a decidir o que vem a seguir.</p><a class="btn p" href="https://app.oinanda.com.br/cadastro">Quero ser fundador</a></div>
+</div></div></section>
+
 <section id="precos" class="soft"><div class="wrap">
-  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias grátis, hoje você não paga nada e cancela com um&nbsp;clique.</p><p class="anchor">Na conta que você fez acima, a demora custa <b id="oA">R$ 5.278</b> por&nbsp;mês. <span>O plano começa em R$&nbsp;147.</span></p></div>
+  <div class="head center"><span class="eyb">Investimento</span><h2>Um plano para cada momento</h2><p class="lead">Sem fidelidade e sem taxa de implantação. 14 dias grátis, hoje você não paga nada e cancela com um&nbsp;clique.</p><p class="anchor">Na conta que você fez acima, a demora custa <b id="oA">R$ 5.278</b> por&nbsp;mês. <span>A Nanda respondendo sozinha custa R$&nbsp;297.</span></p></div>
   <div class="plans">
     <div class="plan"><span class="who">Para quem está começando</span><h3>Essencial</h3><div class="price">R$ 147<small> /mês</small></div>
-      <ul><li>2 pessoas no time</li><li>WhatsApp oficial e Instagram na mesma caixa</li><li>Funil, agenda e registro de vendas</li><li>A Nanda sugere as respostas: até 1.000&nbsp;por&nbsp;mês</li><li>Automações e lembretes</li></ul>
+      <ul><li>2 pessoas no time</li><li>WhatsApp oficial e Instagram na mesma caixa</li><li>Funil, agenda e registro de vendas</li><li>A Nanda escreve a resposta e o time envia com um toque: até 1.000&nbsp;por&nbsp;mês</li><li>Automações e lembretes</li></ul>
       <a class="btn" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a></div>
     <div class="plan top"><span class="who">Mais escolhido · a Nanda atendendo sozinha</span><h3>Profissional</h3><div class="price">R$ 297<small> /mês</small></div>
       <ul><li>5 pessoas no time</li><li>Tudo do Essencial</li><li>A Nanda responde sozinha 24h</li><li>600 atendimentos da Nanda por mês</li><li>Campanhas, segmentos e retorno por anúncio</li></ul>
@@ -506,6 +595,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     <details><summary>E se os atendimentos da Nanda acabarem antes do fim do mês?</summary><p>Nada para. A Nanda passa a sugerir as respostas para o seu time enviar, e você recebe o aviso antes, aos 80%. Com um pacote de mais 500 atendimentos por R$&nbsp;59, ela volta a atender sozinha na hora. Dá para deixar o pacote automático, com o teto que você&nbsp;escolher.</p></details>
     <details><summary>Os dados dos meus clientes ficam seguros?</summary><p>Cada pessoa do time só vê o que a permissão dela libera, os acessos à Meta ficam guardados com criptografia e as conversas não são usadas para treinar IA. Seguimos a LGPD, e você pode excluir a conta e os dados quando quiser. Os detalhes estão na <a href="/privacidade/">política de privacidade</a>.</p></details>
     <details><summary>Serve para o meu segmento se não está na lista?</summary><p>Serve. Você começa com um funil simples e a Nanda tirando dúvidas, e monta o resto do seu jeito.</p></details>
+    <details><summary>Funciona com a plataforma onde eu vendo?</summary><p>Funciona com Hotmart, Kiwify, Eduzz, Cakto, Asaas, Vindi, iugu, Mercado Pago, Pagar.me, PagBank e Stripe. Você liga em uns 5 minutos, e cada venda, boleto, Pix e carrinho abandonado chega na ficha do cliente.</p></details>
+    <details><summary>A Nanda entende e responde áudio?</summary><p>Entende. E, se você quiser, responde em áudio também, com uma voz natural. Você liga e desliga quando quiser.</p></details>
     <details><summary>Precisa de cartão para testar?</summary><p>Para conversar com a Nanda e explorar o sistema, não. Para ela atender no seu WhatsApp, você cadastra o cartão e ganha 14 dias grátis: hoje não é cobrado nada, a gente avisa 3 dias antes do fim e a primeira mensalidade só entra no dia 15. Cancelou antes, não paga&nbsp;nada.</p></details>
     <details><summary>Como cancelo?</summary><p>Pelo próprio sistema, com um clique, quando quiser. Sem fidelidade.</p></details>
   </div>
@@ -585,16 +676,13 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     var feed=document.getElementById('feed');if(!feed||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
     var WA='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg>';
     var F=[
-      ['msg','Carlos','tem horário hoje com o Léo?','09:31'],['ok','Agendado · 15h com o Léo','Corte + barba · R$ 85','09:31'],
-      ['sale','Venda · R$ 1.200','Patrícia Reis · toxina botulínica','10:05'],['msg','Bianca','tem o vestido midi no 42?','10:22'],
-      ['sale','Venda · R$ 259','Bianca Alves · vestido midi Clara','10:40'],['cal','Agenda de amanhã','6 horários confirmados','11:00'],
-      ['msg','Marcelo','o apto do Campeche ainda está disponível?','11:18'],['ok','Visita marcada · sáb, 10h','Marcelo Santos · com o corretor Marcos','11:19'],
-      ['sale','Venda · R$ 997','Thiago Nunes · Método Voz Segura','12:07'],['goal','Meta do mês: 78%','faltam 4 matrículas','13:00'],
+      ['msg','Patrícia','ainda tem horário pra toxina essa semana?','09:40'],['ok','Agendado · sex, 16h','Patrícia Reis · com a Dra. Lívia','09:41'],
+      ['sale','Venda · R$ 1.200','Patrícia Reis · toxina botulínica','10:05'],['cal','Agenda de amanhã','9 horários confirmados','11:00'],
       ['msg','Fernanda','ainda tem a condição do anúncio?','14:26'],['sale','Venda · R$ 450','Fernanda Castro · pacote 4 limpezas','15:02'],
-      ['ok','Lembrete enviado','Rafael · aula experimental amanhã, 19h','16:00'],['sale','Venda · R$ 180','Camila Duarte · limpeza de pele','16:48'],
-      ['msg','Paula','quero remarcar pra sexta','17:15'],['ok','Remarcado · sex, 10h','Paula Ribeiro · drenagem','17:16'],
-      ['sale','Venda · R$ 2.400','Ana Souza · plano anual','18:30'],['ok','Dia fechado','11 vendas · R$ 7.390','19:02'],
-      ['msg','Helena','Quanto custa a limpeza de pele?','08:52'],['ok','Respondido em 8 s','Avaliação marcada · qui, 14h','08:52'],['sale','Venda · R$ 389','Juliana Mendes · matrícula de inglês','09:14']];
+      ['ok','Lembrete enviado','Rafael Lima · avaliação amanhã, 10h','16:00'],['msg','Paula','quero remarcar pra sexta','17:15'],
+      ['ok','Remarcado · sex, 10h','Paula Ribeiro · drenagem','17:16'],['ok','Pix pago','Camila Duarte · lembrada no WhatsApp','17:40'],
+      ['goal','Meta do mês: 78%','faltam R$ 6.200','18:00'],['ok','Dia fechado','11 vendas · R$ 7.390','19:02'],
+      ['msg','Helena','Quanto custa a limpeza de pele?','08:52'],['ok','Respondido em 8 s','Avaliação marcada · qui, 14h','08:52'],['sale','Venda · R$ 389','Juliana Mendes · pacote 2 limpezas','09:14']];
     var ICO={msg:'<span class="ic">'+WA+'</span>',ok:'<span class="ic ok">✓</span>',sale:'<span class="ic sale">🛍</span>',cal:'<span class="ic cal">📅</span>',goal:'<span class="ic goal">🎯</span>'};
     var hero=document.querySelector('.hero'),i=0,n=0,paused=false,GAP=10;
     var MAX=3,XS=[0,26,8];
