@@ -692,6 +692,23 @@ async def correct(body: CorrectIn, request: Request, user=Depends(managers)):
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return {**d, 'lesson': lesson, 'changes': word_changes(raw, fixed)}
 
+class ExampleIn(BaseModel):
+    text: str = Field(min_length=2, max_length=1500)
+
+@router.put('/ai/examples/{eid}')
+async def edit_example(eid: str, body: ExampleIn, request: Request, user=Depends(managers)):
+    """Editar uma resposta ensinada: também passa só pela correção de português."""
+    s = await settings_for(user['company_id']); ex = s.get('examples') or []
+    e = next((x for x in ex if x.get('id') == eid), None)
+    if not e: raise HTTPException(404, 'Resposta não encontrada.')
+    raw = re.sub(r'\s+', ' ', body.text).strip()
+    fixed, u = await fix_pt(raw)
+    if u: await track(user['company_id'], u, 'tests')
+    e['a' if e.get('a') else 'note'] = fixed; e['at'] = now().isoformat(); e['by'] = user.get('name')
+    await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'examples': ex}}, upsert=True)
+    await audit(request, user, 'Editou uma resposta ensinada da Nanda', e.get('q', '')[:120])
+    return {'examples': ex, 'changes': word_changes(raw, fixed)}
+
 @router.delete('/ai/examples/{eid}')
 async def del_example(eid: str, request: Request, user=Depends(managers)):
     s = await settings_for(user['company_id'])

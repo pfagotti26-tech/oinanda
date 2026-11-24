@@ -2290,7 +2290,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .fx-ok i{font-style:normal;font-weight:800}.fx-ok s{color:#8a6a6a}.fx-ok em{font-style:normal;font-weight:700}
 .nz-ls{background:#F3FAF5;border:1px solid #CDE8D6;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.nz-gi.ok{background:#DDF2E4;color:#1F7A45}
 .nz-lq{background:#fff;border:1px solid #E1EEE5;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
-.nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lq .lnk{align-self:center}
+.nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lqa{display:flex;gap:12px;align-self:center}.nz-lqe{grid-column:1/-1;display:grid;gap:8px;margin-top:4px}
 
 .ob-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13.5px;max-width:300px}
 .ob-cmp{margin-top:12px;display:grid;gap:10px}
@@ -7214,9 +7214,19 @@ const VIEWS={
   // respostas que o dono corrigiu no teste: ficam visíveis e dá para apagar
   const lessonsH=()=>{const L=(s.examples||[]).slice().reverse();if(!L.length)return '<div id="nzLs" hidden></div>';
     return `<div class="nz-ls" id="nzLs"><div class="nz-gh"><span class="nz-gi ok">✓</span><div><b>${L.length===1?'1 resposta que você ensinou':L.length+' respostas que você ensinou'}</b><span>Vieram das suas correções no teste. Ela responde desse jeito quando a conversa cair na mesma situação.</span></div></div>
-     ${L.slice(0,6).map(e=>`<div class="nz-lq"><small>Cliente: “${esc(e.q)}”</small><p>${e.a?esc(e.a):'<i>Você pediu:</i> '+esc(e.note)}</p><button type="button" class="lnk" data-lsd="${e.id}">Apagar</button></div>`).join('')}
+     ${L.slice(0,6).map(e=>`<div class="nz-lq" data-lq="${e.id}"><small>Cliente: “${esc(e.q)}”</small><p>${e.a?esc(e.a):'<i>Você pediu:</i> '+esc(e.note)}</p><span class="nz-lqa"><button type="button" class="lnk" data-lse="${e.id}">Editar</button><button type="button" class="lnk" data-lsd="${e.id}">Apagar</button></span></div>`).join('')}
      ${L.length>6?`<p class="hint">e mais ${L.length-6}</p>`:''}</div>`};
-  const bindLs=()=>document.querySelectorAll('[data-lsd]').forEach(b=>b.onclick=async()=>{try{const r=await api('/ai/examples/'+b.dataset.lsd,{method:'DELETE'});s.examples=r.examples;$('#nzLs').outerHTML=lessonsH();bindLs();toast('Apagada. Ela volta a responder do jeito dela.')}catch(e){toast(e.message)}});
+  const bindLs=()=>{document.querySelectorAll('[data-lse]').forEach(b=>b.onclick=()=>{const e=(s.examples||[]).find(x=>x.id===b.dataset.lse);if(!e)return;const row=b.closest('.nz-lq');
+      row.innerHTML=`<small>Cliente: “${esc(e.q)}”</small><div class="nz-lqe"><textarea class="fx-t" rows="3" maxlength="1500" aria-label="${e.a?'Resposta ensinada':'O que você pediu'}">${esc(e.a||e.note)}</textarea>
+       <p class="fx-h">A gente só corrige o português, sem mudar o que você escreveu.</p><div class="fx-a"><button type="button" class="btn sm p" data-lss>Salvar</button><button type="button" class="ob-lnk" data-lsc>Cancelar</button><span class="err" data-lsr></span></div></div>`;
+      const ta=row.querySelector('textarea');ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
+      row.querySelector('[data-lsc]').onclick=()=>{$('#nzLs').outerHTML=lessonsH();bindLs()};
+      row.querySelector('[data-lss]').onclick=async ev=>{const t=ta.value.trim(),bt=ev.currentTarget;if(t.length<2){row.querySelector('[data-lsr]').textContent='Escreva a resposta.';return}
+        bt.disabled=true;bt.textContent='Salvando...';
+        try{const r=await api('/ai/examples/'+e.id,{method:'PUT',body:{text:t}});s.examples=r.examples;$('#nzLs').outerHTML=lessonsH();bindLs();toast(r.changes&&r.changes.length?'Salvo. Ajustamos o português: '+r.changes.slice(0,2).map(c=>c[0]+' → '+c[1]).join(', '):'Salvo. Ela já responde assim.')}
+        catch(x){row.querySelector('[data-lsr]').textContent=x.message;bt.disabled=false;bt.textContent='Salvar'}}});
+   bindLsd()};
+  const bindLsd=()=>document.querySelectorAll('[data-lsd]').forEach(b=>b.onclick=async()=>{try{const r=await api('/ai/examples/'+b.dataset.lsd,{method:'DELETE'});s.examples=r.examples;$('#nzLs').outerHTML=lessonsH();bindLs();toast('Apagada. Ela volta a responder do jeito dela.')}catch(e){toast(e.message)}});
   const FS={edit:null};
   const takeR=(r,redo)=>{if(r.reply)hist.push({dir:'out',text:r.reply,lesson:redo?r.lesson:null,changes:redo?r.changes:null,gap:!redo&&!!r.faltou});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')});
     if(redo&&r.lesson){s.examples=[...(s.examples||[]).filter(e=>e.q.toLowerCase()!==r.lesson.q.toLowerCase()),r.lesson];const L=$('#nzLs');if(L)L.outerHTML=lessonsH()}

@@ -31,6 +31,9 @@ def test_corrigir_e_refazer(monkeypatch):
         ex = c.get('/api/ai/settings').json()['examples']
         assert len(ex) == 1 and ex[0]['note'].startswith('não chame o time') and ex[0]['a'] == ''
         assert 'O dono pediu: não chame o time' in seen[-1][0]
+        r = c.put('/api/ai/examples/' + ex[0]['id'], json={'text': 'pergunte qual horário a pessoa prefere e funcionamaos sábado'}).json()
+        assert r['examples'][0]['note'] == 'pergunte qual horário a pessoa prefere e funcionamos sábado' and r['examples'][0]['a'] == ''
+        assert c.put('/api/ai/examples/nao-existe', json={'text': 'oi oi'}).status_code == 404
         assert c.delete('/api/ai/examples/' + ex[0]['id']).json()['examples'] == []
 
 def test_revisao_que_muda_demais_fica_com_o_texto_do_dono(monkeypatch):
