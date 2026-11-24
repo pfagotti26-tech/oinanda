@@ -88,10 +88,16 @@ def knowledge_block(s):
 
 def handoff_block(t):
     """Assuntos que o dono marcou para ela não tratar: não responde, avisa com gentileza e chama o time."""
-    ls = [re.sub(r'^[-•*]\s*', '', l).strip() for l in (t or '').split('\n')]
-    ls = [l for l in ls if l]
-    if not ls: return ''
-    return 'Também nestes assuntos, que o dono pediu para você não tratar (não responda o mérito, avise que alguém do time vai continuar e chame o time):\n' + '\n'.join('- ' + l for l in ls)
+    topics, notes = [], []
+    for raw in (t or '').split('\n'):
+        l = raw.strip()
+        if not l or l.endswith(':'): continue
+        if re.match(r'^[^:\-•*]{2,40}:\s+\S', l): notes.append(l); continue  # "Quem atende: o Paulo" é orientação, não assunto
+        topics.append(re.sub(r'^[-•*]\s*', '', l).rstrip(';.,').strip())
+    out = ''
+    if topics: out += 'Também nestes assuntos, que o dono pediu para você não tratar (não responda o mérito, avise que alguém do time vai continuar e chame o time):\n' + '\n'.join('- ' + x for x in topics if x)
+    if notes: out += ('\n' if out else '') + 'Orientações do dono para quando chamar o time:\n' + '\n'.join(notes)
+    return out
 
 def examples_block(s):
     """Respostas que o dono corrigiu no teste: viram exemplo de como responder, com mais peso que o jeito padrão dela."""
@@ -101,7 +107,8 @@ def examples_block(s):
     return ('\nRESPOSTAS QUE O DONO ENSINOU (valem mais que o seu jeito padrão):\n' + '\n'.join(lines) +
             '\nQuando a conversa cair numa dessas situações, responda do jeito que o dono ensinou: as mesmas informações, o mesmo tom e,'
             ' se a resposta dele faz uma pergunta ao cliente, faça também. Ajuste só o que a conversa pedir (o nome do cliente, o que já foi dito).'
-            ' Se o dono pediu algo, obedeça, mesmo que antes você fosse chamar o time.\n')
+            ' Se o dono pediu algo, obedeça, mesmo que antes você fosse chamar o time.'
+            ' Se uma resposta ensinada contradiz o conhecimento acima, vale a resposta ensinada (é a mais recente), também quando o cliente perguntar do mesmo assunto com outras palavras.\n')
 
 def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30, notes='', stages=None, stage_id=None):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
@@ -135,7 +142,7 @@ COMO UMA BOA ATENDENTE CONVERSA:
 - Fale em nome do negócio ("atendemos", "fazemos", "temos"), nunca na primeira pessoa como se você fosse a profissional ("faço", "eu atendo").
 - Acolha antes de informar: se o cliente cumprimentou ou perguntou se está tudo bem, responda com calor em poucas palavras. Se ele contou um problema, uma dor ou uma insegurança, reconheça isso numa frase antes de seguir.
 - Não repita palavras na mesma mensagem (nada de "sim... sim", "você... você"), não comece nem termine do mesmo jeito que a sua mensagem anterior e não repita informação que já deu.
-- Termine com no máximo uma pergunta, que leve ao próximo passo. Emoji: no máximo um, e não em toda mensagem.
+- Faça no máximo UMA pergunta por mensagem (nunca duas), no fim, levando ao próximo passo. Emoji: no máximo um, e não em toda mensagem.
 - Escreva com português correto (acentos, pontuação, maiúscula no começo), mas com naturalidade de WhatsApp.
 
 O QUE VOCÊ SABE SOBRE O NEGÓCIO (única fonte de verdade):
