@@ -43,14 +43,31 @@ async def first_reply_minutes(company_id, contact_ids):
         if rep: out[cid] = (mins(aware(rep['at']) - aware(first_in['at'])), rep.get('by_id'), '(IA)' in (rep.get('by') or ''))
     return out
 
-async def period_totals(cid, kinds, won_ids, start, end, keep=lambda c: True):
+async def sales_won(cid, start, end, tz, keep=lambda c: True):
+    """Vendas registradas no período, uma linha por venda, com os dados do cliente.
+    É a mesma fonte da página Vendas: o relatório não depende de em qual coluna do funil o cartão está agora."""
+    rows = await db.sales.find({'company_id': cid, 'status': 'ok', 'date': {'$gte': start, '$lt': end}}, {'_id': 0, 'contact_id': 1, 'date': 1, 'total': 1, 'sellers': 1}).to_list(50000)
+    cs = {c['id']: c for c in await db.contacts.find({'company_id': cid, 'id': {'$in': list({r['contact_id'] for r in rows})}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(50000)}
+    out = []
+    for r in rows:
+        c = cs.get(r['contact_id'])
+        if not c: continue
+        sl = max(r.get('sellers') or [{}], key=lambda x: x.get('pct') or 0).get('user_id')
+        sl = sl or c.get('won_by_id')  # venda que veio do funil: conta para quem fechou
+        x = {**c, 'value': r.get('total') or 0, 'won_at': aware(r['date']), 'won_by_id': sl, 'assigned_to': sl or c.get('assigned_to')}
+        if keep(x): out.append(x)
+    return out
+
+async def period_totals(cid, kinds, won_ids, start, end, keep=lambda c: True, tz=None):
     """Números de um período fechado, para comparar com o atual."""
     new = [c for c in await db.contacts.find({'company_id': cid, 'created_at': {'$gte': start, '$lt': end}, 'source': {'$nin': ['historico', 'agenda do celular', 'importado']}},
                                  {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
-    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': {'$gte': start, '$lt': end}}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
+    from zoneinfo import ZoneInfo
+    won = await sales_won(cid, start, end, tz or ZoneInfo('America/Sao_Paulo'), keep)
     fr = await first_reply_minutes(cid, [c['id'] for c in new])
     vals = [v[0] for v in fr.values()]
-    conv = sum(1 for c in new if kinds.get(c.get('stage')) == 'won')
+    bought = {c['id'] for c in won}
+    conv = sum(1 for c in new if c['id'] in bought or kinds.get(c.get('stage')) == 'won')
     return {'new_contacts': len(new), 'won': len(won), 'won_value': sum(c.get('value') or 0 for c in won),
             'conversion': round(100 * conv / len(new), 1) if new else None, 'first_reply_min': median(vals) if vals else None}
 
@@ -90,13 +107,14 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
     all_new = [c for c in all_new if c['id'] in real]  # quem só veio da agenda do celular não é contato novo
     origin_opts = sorted({origin_key(c, onames, lnames)[0] for c in all_new if keep(c, True)})
     new = [c for c in all_new if keep(c)]
-    won = [c for c in await db.contacts.find({'company_id': cid, 'stage': {'$in': won_ids}, 'won_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c)]
+    won = await sales_won(cid, since, until, tz, keep)
     lost = sum(1 for c in await db.contacts.find({'company_id': cid, 'lost_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c))
     value = sum(c.get('value') or 0 for c in won)
     with_value = [c['value'] for c in won if c.get('value')]
     cycle = [(aware(c['won_at']) - aware(c['created_at'])).total_seconds() / 86400 for c in won if c.get('created_at') and c.get('won_at')]
     new_ids = {c['id'] for c in new}
-    converted = sum(1 for c in new if kinds.get(c.get('stage')) == 'won')
+    bought = {c['id'] for c in won}
+    converted = sum(1 for c in new if c['id'] in bought or kinds.get(c.get('stage')) == 'won')
 
     # funil: quantos dos contatos novos chegaram em cada etapa (ou além)
     ev = await db.stage_events.find({'company_id': cid, 'contact_id': {'$in': list(new_ids)}}, {'_id': 0, 'contact_id': 1, 'to': 1}).to_list(50000)
@@ -160,7 +178,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
     autos = await db.automation_runs.count_documents({'company_id': cid, 'at': rng, 'status': 'sent'})
     all_fr = [v[0] for v in fr.values()]
     wrote = set(await db.messages.distinct('contact_id', {'company_id': cid, 'contact_id': {'$in': list(new_ids)}, 'dir': 'in'}))  # quem escreveu e esperava resposta
-    prev = await period_totals(cid, kinds, won_ids, since - (until - since), since, keep)
+    prev = await period_totals(cid, kinds, won_ids, since - (until - since), since, keep, tz)
     # série por dia (ou por semana em períodos longos), no fuso da empresa
     bucket = 7 if days > 45 else 1
     nb = (days + bucket - 1) // bucket

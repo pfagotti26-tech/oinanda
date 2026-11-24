@@ -4597,21 +4597,21 @@ async function drawBoard(local){
   const openIds=d.stages.filter(s=>s.kind==='open').map(s=>s.id);
   const openCards=d.cards.filter(c=>openIds.includes(c.stage));const sm=FN.sum;
   const nStale=d.cards.filter(isStale).length,nWait=d.cards.filter(c=>c.waiting??c.last_dir==='in').length;
-  if($('#fnSum'))$('#fnSum').innerHTML=`<span><b>${openCards.length}</b> em andamento</span><span><b>${brl(openCards.reduce((a,c)=>a+(c.value||0),0))}</b> em negociação</span>${sm?`<span class="ok"><b>${sm.won_value?brl(sm.won_value):sm.won}</b> vendido no mês</span>`:''}`;
+  if($('#fnSum'))$('#fnSum').innerHTML=`<span><b>${openCards.length}</b> em andamento</span><span><b>${brl(openCards.reduce((a,c)=>a+(c.bought?0:(c.value||0)),0))}</b> em negociação</span>${sm?`<span class="ok"><b>${sm.won_value?brl(sm.won_value):sm.won}</b> vendido no mês</span>`:''}`;
   const cnt={mine:d.cards.filter(c=>c.assigned_to===me).length,unassigned:d.cards.filter(c=>!c.assigned_to).length,waiting:nWait,stale:nStale};
   document.querySelectorAll('.fz-ch [data-ff]').forEach(b=>{const i=b.querySelector('i');if(i)i.textContent=b.dataset.ff==='waiting'||b.dataset.ff==='stale'?(cnt[b.dataset.ff]||''):'';b.classList.toggle('warn',b.dataset.ff==='stale'&&nStale>0)});
   const kb=$('#kb');if(!kb)return;const sx=kb.scrollLeft;
   const lastTxt=c=>c.last_text==='📎 Anexo'&&c.channel==='instagram'?'🔗 Compartilhou um conteúdo':c.last_text||'';
   const card=c=>{const own=c.assigned_name;const st=isStale(c),wt=c.waiting??c.last_dir==='in';
     const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="nz">✦ Nanda:</em> ':'<em>Você:</em> ';
-    const bd=`${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:wt?`<span class="bd c">esperando${c.unread?' · '+c.unread+(c.unread>1?' novas':' nova'):''}</span>`:''}${st&&!wt?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.value?`<span class="money">${brl(c.value)}</span>`:''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}${own?`<span class="own" title="Responsável: ${esc(own)}">${initials(own)}</span>`:''}`;
+    const bd=`${c.needs_human?`<span class="bd red">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:wt?`<span class="bd c">esperando${c.unread?' · '+c.unread+(c.unread>1?' novas':' nova'):''}</span>`:''}${st&&!wt?`<span class="bd amber">parado ${ago(c.last_at)}</span>`:''}${c.value?(c.bought&&openIds.includes(c.stage)?`<span class="bd" title="Total que já comprou. Não entra em negociação.">já comprou ${brl(c.value)}</span>`:`<span class="money">${brl(c.value)}</span>`):''}${(c.tags||[]).slice(0,2).map(t=>`<span class="bd">${esc(t)}</span>`).join('')}${own?`<span class="own" title="Responsável: ${esc(own)}">${initials(own)}</span>`:''}`;
     return `<div class="kc fz ${st&&!wt?'stale':''} ${wt?'wt':''}" draggable="true" data-k="${c.id}" tabindex="0" role="button" aria-label="${esc(c.name)}">
      <div class="tp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}">${chIcon(c.channel)}</i>`:''}</span><b>${esc(dispName(c.name))}</b><time>${c.last_at?agoShort(c.last_at):''}</time></div>
      <span class="kq"><button class="mv" data-oc="${c.id}" title="Abrir conversa" aria-label="Abrir conversa">${svg('<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>')}</button><button class="mv" data-mv="${c.id}" title="Mover de etapa" aria-label="Mover de etapa">⇄</button></span>
      ${lastTxt(c)?`<span class="pv ${wt?'in':''}">${by}${esc(lastTxt(c))}</span>`:''}
      ${bd?`<div class="ft">${bd}</div>`:''}</div>`};
   const LIM=30;
-  kb.innerHTML=d.stages.map((s,i)=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.value||0),0);const col=stColor(s,i);
+  kb.innerHTML=d.stages.map((s,i)=>{const cs=cards.filter(c=>c.stage===s.id);const tot=cs.reduce((a,c)=>a+(c.bought&&s.kind==='open'?0:(c.value||0)),0);const col=stColor(s,i);
     if(s.kind==='lost'&&!FN.showLost)return `<div class="col min ${s.kind}" data-s="${s.id}" style="--sc:${col}" title="Mostrar ${esc(s.name)}"><span class="ct" style="background:#fff;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:700">${cs.length}</span><span class="vt">${esc(s.name)}</span></div>`;
     const pri=c=>c.needs_human?0:(c.waiting??c.last_dir==='in')?1:2;cs.sort((a,b)=>pri(a)-pri(b)||(pri(a)<2?((a.last_at||'')<(b.last_at||'')?-1:1):((a.last_at||'')>(b.last_at||'')?-1:1)));
     const lim=FN.more[s.id]||LIM,shown=cs.slice(0,lim);
@@ -7749,6 +7749,7 @@ async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   const after=()=>{suBar()};
   try{
     if(s.act==='comecar')return comecarView();
+    if(s.act==='ativar')return ativarView();
     if(s.act==='push'){await pushOn();await api('/push/test',{method:'POST'}).catch(()=>{});toast('Avisos ligados. Mandamos um teste.');SU.cur=null;await suLoad(true);return suRefresh()}
     if(s.act==='venda'){SU.cur=null;return saleModal({onDone:async()=>{await suLoad(true);suRefresh()}})}
     if(s.act==='catalogo'){VD.tab='produtos';await go('vendas');return after()}

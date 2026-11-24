@@ -89,14 +89,17 @@ async def funnel(mine: bool = False, user=Depends(current_user)):
         r['assigned_name'] = names.get(r.get('assigned_to'))
         from inbox import waiting
         r['waiting'] = waiting(r)
+        r['bought'] = bool(r.get('sales_count'))  # valor do card = o que já comprou, não negociação
         for k in ('resolved_at', 'noreply_at', 'internal', 'sales_count', 'wa_last_in_at', 'ig_last_in_at', 'fb_last_in_at', 'tg_last_in_at', 'em_last_in_at'): r.pop(k, None)
         li = aware(r.pop('last_in_at', None))
         from channels import window_of
         w = window_of(r.get('channel'))
         r['window_open'] = True if w is None else bool(li and now() - li < w)
     totals = {i: {'count': 0, 'value': 0} for i in ids}
+    kind = {s['id']: s['kind'] for s in stages}
     for r in rows:
-        totals[r['stage']]['count'] += 1; totals[r['stage']]['value'] += r.get('value') or 0
+        totals[r['stage']]['count'] += 1
+        if not (r['bought'] and kind.get(r['stage']) == 'open'): totals[r['stage']]['value'] += r.get('value') or 0
     return {'stages': stages, 'cards': rows, 'totals': totals}
 
 class StageIn(BaseModel):

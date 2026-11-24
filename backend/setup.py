@@ -35,6 +35,8 @@ KEYS = {s[0] for s in STEPS}
 
 async def status(user):
     cid = user['company_id']; c = user['company']
+    from billing import limits
+    lim = limits(c); demo = lim.get('state') == 'demo'; feats = set(lim.get('features') or [])
     ai = await db.ai_settings.find_one({'company_id': cid}, {'_id': 0}) or {}
     filled = lambda *k: any(str(ai.get(x) or '').strip() for x in k)
     ag = await db.agenda_settings.find_one({'company_id': cid}, {'_id': 0, 'hours_set': 1, 'pros': 1}) or {}
@@ -58,8 +60,14 @@ async def status(user):
         'voz': bool(ai.get('voice_reply')),
     }
     skip = set(c.get('setup_skip') or [])
+    defs = list(STEPS)
+    if demo:  # sem ativar, a Nanda não atende no WhatsApp e não dá para chamar o time
+        defs.insert(0, ('ativar', 1, 'Ativar os 14 dias grátis', 'Hoje não é cobrado nada. É o que libera a Nanda no seu WhatsApp e o convite para o time.', 2, False, '', '', 'ativar', 'Ativar agora'))
+        done['ativar'] = False
+        defs = [d if d[0] != 'time' else (d[0], d[1], d[2], 'Disponível depois de ativar os 14 dias grátis.', d[4], d[5], d[6], d[7], 'ativar', 'Ativar primeiro') for d in defs]
+    if 'metas' not in feats: defs = [d for d in defs if d[0] != 'meta']  # metas é do plano Equipe
     steps = [{'key': k, 'stage': st, 'title': t, 'why': w, 'mins': m, 'can_skip': cs, 'skip_label': sl, 'to': to, 'act': act, 'cta': cta,
-              'done': done[k], 'skipped': k in skip and not done[k]} for (k, st, t, w, m, cs, sl, to, act, cta) in STEPS]
+              'done': done[k], 'skipped': k in skip and not done[k]} for (k, st, t, w, m, cs, sl, to, act, cta) in defs]
     live = [s for s in steps if not s['skipped']]
     stages = []
     for n, name, sub in STAGES:
