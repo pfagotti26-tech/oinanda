@@ -166,6 +166,7 @@ async def edit_quick(rid: str, body: QuickIn, user=Depends(current_user)):
 @router.post('/quick-replies/{rid}/used')
 async def qr_used(rid: str, user=Depends(current_user)):
     await db.quick_replies.update_one({'id': rid, 'company_id': user['company_id']}, {'$inc': {'uses': 1}})
+    await db.quick_used.update_one({'company_id': user['company_id'], 'user_id': user['id']}, {'$set': {'at': now()}}, upsert=True)
     return {'ok': True}
 
 @router.delete('/quick-replies/{rid}')

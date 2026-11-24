@@ -180,7 +180,10 @@ async def create_sale(body: SaleIn, request: Request, user=Depends(current_user)
         from funnel import stages_for, move_stage
         stages = await stages_for(user['company'])
         won = next((s for s in stages if s['kind'] == 'won'), None)
-        if won and next((s['kind'] for s in stages if s['id'] == c.get('stage')), None) != 'won':
+        upcoming = await db.appointments.find_one({'company_id': user['company_id'], 'contact_id': c['id'], 'status': {'$in': ['scheduled', 'confirmed']}, 'start': {'$gt': now()}}, {'_id': 0, 'start': 1})
+        if won and upcoming:  # pagou antes: continua em "horário marcado" e vai para a etapa de venda depois do atendimento
+            await db.contacts.update_one({'id': c['id']}, {'$set': {'won_pending': True}})
+        elif won and next((s['kind'] for s in stages if s['id'] == c.get('stage')), None) != 'won':
             await move_stage(user['company'], c, won['id'], who, stages)
     sel = next((x.get('user_id') for x in sale.get('sellers') or [] if x.get('user_id')), None) or (None if user.get('impersonated_by') else user['id'])
     if sel: await db.contacts.update_one({'id': c['id']}, {'$set': {'won_by_id': sel}})  # quem vendeu: conta no relatório quando o card não tem responsável

@@ -80,9 +80,29 @@ async def status(user):
 def managers_only(user):
     if user['role'] not in ('owner', 'manager'): raise HTTPException(403, 'Só o dono ou um gestor configura a conta.')
 
+async def agent_status(user):
+    """Quem foi convidado para atender: só os passos dela, sem nada da configuração da empresa."""
+    cid, uid_ = user['company_id'], user['id']; c = user['company']
+    me = await db.users.find_one({'id': uid_}, {'_id': 0, 'wa_notify': 1, 'wa_phone': 1, 'setup_hidden': 1}) or {}
+    defs = [('push', 'Ligar os avisos no celular', 'Mensagem nova e cliente transferido para você, mesmo com o Oi Nanda fechado.', 1, '', 'push', 'Ligar avisos',
+             bool(await db.push_subs.find_one({'user_id': uid_}, {'_id': 1})))]
+    if (c.get('alert_tpl') or {}).get('status') == 'APPROVED':
+        defs.append(('aviso_wa', 'Receber aviso no seu WhatsApp', 'Quando a Nanda ou alguém do time passar um cliente para você.', 1, '', 'me', 'Cadastrar meu WhatsApp', bool(me.get('wa_notify') and me.get('wa_phone'))))
+    defs += [('responder', 'Responder o primeiro cliente', 'Abra Conversas, escolha quem espera há mais tempo e responda.', 2, 'conversas', '', 'Abrir conversas',
+              bool(await db.messages.find_one({'company_id': cid, 'dir': 'out', 'by_id': uid_}, {'_id': 1}))),
+             ('rapida', 'Usar uma resposta rápida', 'Na conversa, digite / e escolha. O texto entra pronto, com o nome do cliente.', 1, 'conversas', 'rapida', 'Experimentar',
+              bool(await db.quick_used.find_one({'company_id': cid, 'user_id': uid_}, {'_id': 1}))),
+             ('venda', 'Registrar uma venda', 'Fechou? Registre para contar na sua comissão e nas suas metas.', 1, '', 'venda', 'Registrar venda',
+              bool(await db.sales.find_one({'company_id': cid, 'created_by': uid_}, {'_id': 1})))]
+    steps = [{'key': k, 'stage': 1, 'title': t, 'why': w, 'mins': m, 'can_skip': False, 'skip_label': '', 'to': to, 'act': act, 'cta': cta, 'done': d, 'skipped': False}
+             for (k, t, w, m, to, act, cta, d) in defs]
+    nd = sum(s['done'] for s in steps)
+    return {'steps': steps, 'stages': [{'n': 1, 'name': 'Seus primeiros passos', 'sub': 'Para atender bem desde o primeiro dia.', 'done': nd, 'total': len(steps)}],
+            'done': nd, 'total': len(steps), 'pct': round(100 * nd / len(steps)), 'ready': False, 'hidden': bool(me.get('setup_hidden')), 'agent': True}
+
 @router.get('/setup')
 async def get_setup(user=Depends(current_user)):
-    managers_only(user)
+    if user['role'] not in ('owner', 'manager'): return await agent_status(user)
     return await status(user)
 
 class SkipIn(BaseModel):
@@ -103,7 +123,9 @@ class HideIn(BaseModel):
 
 @router.post('/setup/hide')
 async def hide(body: HideIn, user=Depends(current_user)):
-    managers_only(user)
+    if user['role'] not in ('owner', 'manager'):
+        await db.users.update_one({'id': user['id']}, {'$set': {'setup_hidden': body.hidden}})
+        return await agent_status(user)
     await db.companies.update_one({'id': user['company_id']}, {'$set': {'setup_hidden': body.hidden}})
     user['company'] = await db.companies.find_one({'id': user['company_id']}, {'_id': 0})
     return await status(user)

@@ -72,9 +72,22 @@ CARD_FIELDS = {'_id': 0, 'id': 1, 'name': 1, 'wa_id': 1, 'stage': 1, 'value': 1,
                'last_dir': 1, 'needs_human': 1, 'unread': 1, 'stage_at': 1, 'created_at': 1, 'source': 1, 'last_in_at': 1, 'ad': 1,
                'last_by': 1, 'channel': 1, 'handoff_urgent': 1, 'resolved_at': 1, 'noreply_at': 1}
 
+async def settle_won(company, stages=None, contact_id=None):
+    """Quem pagou antes do horário vai para a etapa de venda quando o atendimento passa (ou é marcado como feito)."""
+    stages = stages or await stages_for(company)
+    won = next((s for s in stages if s['kind'] == 'won'), None)
+    if not won: return
+    q = {'company_id': company['id'], 'won_pending': True, **({'id': contact_id} if contact_id else {})}
+    for c in await db.contacts.find(q, {'_id': 0}).to_list(500):
+        left = await db.appointments.find_one({'company_id': company['id'], 'contact_id': c['id'], 'status': {'$in': ['scheduled', 'confirmed']}, 'start': {'$gt': now()}}, {'_id': 1})
+        if left: continue
+        await db.contacts.update_one({'id': c['id']}, {'$unset': {'won_pending': 1}})
+        if c.get('stage') != won['id']: await move_stage(company, c, won['id'], 'Oi Nanda', stages)
+
 @router.get('/funnel')
 async def funnel(mine: bool = False, user=Depends(current_user)):
     stages = await stages_for(user['company'])
+    await settle_won(user['company'], stages)
     ids = [s['id'] for s in stages]
     q = {'company_id': user['company_id']}
     if mine: q['assigned_to'] = user['id']
@@ -191,17 +204,18 @@ async def summary(user=Depends(current_user)):
     from wallet import BASE_FIELDS, in_base, own_numbers
     from inbox import waiting as is_waiting
     own = await own_numbers(user['company'])
-    F = {'_id': 0, 'id': 1, 'value': 1, 'stage': 1, 'won_at': 1, 'created_at': 1, 'last_dir': 1, 'resolved_at': 1, 'noreply_at': 1, 'needs_human': 1, **BASE_FIELDS}
+    F = {'_id': 0, 'id': 1, 'value': 1, 'stage': 1, 'won_at': 1, 'created_at': 1, 'assigned_to': 1, 'last_dir': 1, 'resolved_at': 1, 'noreply_at': 1, 'needs_human': 1, **BASE_FIELDS}
     rows = [c for c in await db.contacts.find({**q, '$or': [{'created_at': {'$gte': start}}, {'won_at': {'$gte': start}}, {'last_dir': 'in'}, {'needs_human': True}]}, F).to_list(20000) if in_base(c, own)]
     new = sum(1 for c in rows if aware(c.get('created_at')) and aware(c['created_at']) >= start and c.get('source') != 'importado')
     # vendas do mês: as vendas registradas (as canceladas não contam); cards ganhos sem venda registrada entram pelo valor do card
-    sales_ok = await db.sales.find({**q, 'status': 'ok', 'imported': {'$ne': True}, 'date': {'$gte': start}}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(20000)
+    mine = user['role'] == 'agent'  # atendente vê só o que ela vendeu; o faturamento da empresa é do dono e dos gestores
+    sales_ok = await db.sales.find({**q, 'status': 'ok', 'imported': {'$ne': True}, 'date': {'$gte': start}, **({'sellers.user_id': user['id']} if mine else {})}, {'_id': 0, 'contact_id': 1, 'total': 1}).to_list(20000)
     keep = {c['id'] for c in rows}
     ext = {c['contact_id'] for c in sales_ok}
     base_ids = {c['id'] for c in await db.contacts.find({'id': {'$in': list(ext)}}, {'_id': 0, 'id': 1, **BASE_FIELDS}).to_list(20000) if in_base(c, own)}
     won_rows = [{'value': s.get('total') or 0} for s in sales_ok if s['contact_id'] in base_ids]
     with_sale = {s['contact_id'] for s in sales_ok}
-    won_rows += [c for c in rows if c.get('stage') in won and aware(c.get('won_at')) and aware(c['won_at']) >= start and c['id'] not in with_sale and not c.get('sales_count')]
+    won_rows += [c for c in rows if c.get('stage') in won and aware(c.get('won_at')) and aware(c['won_at']) >= start and c['id'] not in with_sale and not c.get('sales_count') and (not mine or c.get('assigned_to') == user['id'])]
     waiting = sum(1 for c in rows if is_waiting(c) and not c.get('needs_human'))  # quem pediu atendente aparece no aviso de cima
     human = sum(1 for c in rows if c.get('needs_human'))
     # o que a Nanda fez no mês: clientes atendidos, respostas fora do horário comercial, horários que ela marcou
