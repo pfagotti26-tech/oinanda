@@ -2763,7 +2763,8 @@ const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dt=v=>v?new Date(v).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
 const day=v=>v?new Date(v).toLocaleDateString('pt-BR'):'—';
-const initials=n=>(n||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+// iniciais só com letras e números: nome de WhatsApp pode ter emoji ou símbolos como "<" (que quebrariam a tela)
+const initials=n=>{const ws=String(n||'').split(/\s+/).map(w=>(w.match(/[\p{L}\p{N}]/u)||[''])[0]).filter(Boolean);return ws.slice(0,2).join('').toUpperCase()||'?'};
 ['input','focusin'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target;if(t&&t.matches&&t.matches('.nz-f textarea')&&!(window.CSS&&CSS.supports('field-sizing','content'))){t.style.height='auto';t.style.height=Math.min(Math.max(t.scrollHeight+4,80),460)+'px'}}));
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
 async function api(path,opt={}){
