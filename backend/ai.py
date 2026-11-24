@@ -86,6 +86,13 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
+def handoff_block(t):
+    """Assuntos que o dono marcou para ela não tratar: não responde, avisa com gentileza e chama o time."""
+    ls = [re.sub(r'^[-•*]\s*', '', l).strip() for l in (t or '').split('\n')]
+    ls = [l for l in ls if l]
+    if not ls: return ''
+    return 'Também nestes assuntos, que o dono pediu para você não tratar (não responda o mérito, avise que alguém do time vai continuar e chame o time):\n' + '\n'.join('- ' + l for l in ls)
+
 def examples_block(s):
     """Respostas que o dono corrigiu no teste: viram exemplo de como responder, com mais peso que o jeito padrão dela."""
     ex = [e for e in (s.get('examples') or []) if e.get('q') and (e.get('a') or e.get('note'))][-30:]
@@ -140,7 +147,8 @@ O QUE VOCÊ SABE SOBRE O NEGÓCIO (única fonte de verdade):
 {('PARA ENTENDER O CLIENTE (pergunte uma coisa de cada vez, só o que ainda não sabe, sem parecer formulário):' + chr(10) + s['qualify'].strip()) if s['qualify'].strip() else ''}
 
 QUANDO CHAMAR O TIME:
-{s['handoff'].strip() or 'Quando o cliente pedir para falar com uma pessoa, reclamar, ou quando a resposta não estiver no conhecimento.'}
+Sempre que o cliente pedir para falar com uma pessoa, reclamar, ou quando a resposta não estiver no conhecimento.
+{handoff_block(s['handoff'])}
 {('REGRAS DESTE NEGÓCIO:' + chr(10) + s['rules'].strip()) if s['rules'].strip() else ''}
 
 REGRAS QUE VOCÊ NUNCA QUEBRA:

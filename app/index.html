@@ -2282,12 +2282,20 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .fx{justify-self:stretch;background:#fff;border-radius:14px;padding:12px;display:grid;gap:8px;box-shadow:0 6px 20px rgba(60,40,20,.12);border:1px solid #EADFD3;animation:obIn .25s ease both}
 .fx-gap{margin:0;font-size:12.5px;color:#6B5200;background:#FFF6D9;border-radius:9px;padding:7px 10px}
 .fx-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.fx-hd b{font-size:14px}
-.fx-seg{display:inline-flex;background:#F3ECE4;border-radius:999px;padding:3px}.fx-seg button{border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--ink2);padding:5px 11px;border-radius:999px;cursor:pointer}
+.fx-seg{display:inline-flex;background:#F3ECE4;border-radius:999px;padding:3px}.fx-seg button{white-space:nowrap;border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--ink2);padding:5px 11px;border-radius:999px;cursor:pointer}
 .fx-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .fx-t{width:100%;border:1.5px solid #DCD2C9;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;line-height:1.45;resize:none;background:#fff;color:var(--ink);min-height:76px}.fx-t:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
 .fx-h{margin:0;font-size:12px;color:var(--ink3)}.fx-a{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.fx-a .err{font-size:12px}
 .fx-ok{justify-self:end;max-width:84%;display:flex;gap:7px;align-items:flex-start;font-size:12px;color:#20603D;background:#E6F5EC;border-radius:10px;padding:6px 10px;margin-top:-3px}
 .fx-ok i{font-style:normal;font-weight:800}.fx-ok s{color:#8a6a6a}.fx-ok em{font-style:normal;font-weight:700}
+
+.fx-tm{margin:0;font-size:13px;color:var(--ink2);background:#F7F2EC;border-radius:10px;padding:9px 11px}
+.nz-hol{display:grid;gap:6px}.nz-hor{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);cursor:pointer}
+.nz-hor i{width:22px;height:22px;border-radius:7px;border:1.5px solid #D8CDC2;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;color:#fff}
+.nz-hor.on i,.nz-hor.fix i{background:var(--c);border-color:var(--c)}.nz-hor.fix{background:#FAF6F2;cursor:default}.nz-hor.fix i{background:#B9ADA2;border-color:#B9ADA2}
+.nz-hor em{font-style:normal;font-size:11.5px;color:var(--ink3);white-space:nowrap}.nz-hor.on em{color:var(--c2);font-weight:600}.nz-hor.on{border-color:#F1C7B9;background:#FFF8F5}
+.nz-hor .ob-x{width:26px;height:26px}.nz-hoadd{display:flex;gap:8px}.nz-hoadd input{flex:1;min-width:0;border:1.5px solid #DCD2C9;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+@media(max-width:560px){.nz-hor em{display:none}}
 .nz-ls{background:#F3FAF5;border:1px solid #CDE8D6;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.nz-gi.ok{background:#DDF2E4;color:#1F7A45}
 .nz-lq{background:#fff;border:1px solid #E1EEE5;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
 .nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lqa{display:flex;gap:12px;align-self:center}.nz-lqe{grid-column:1/-1;display:grid;gap:8px;margin-top:4px}
@@ -3076,6 +3084,12 @@ const NZW_Q={
 const NZ_GOAL={clinica:['Agendar uma avaliação','Agendar uma consulta','Mandar orçamento'],salao:['Marcar um horário','Tirar dúvidas e marcar horário'],studio:['Agendar uma aula experimental','Fechar um plano'],escola:['Agendar uma aula experimental','Fazer a matrícula'],
  imobiliaria:['Agendar uma visita','Entender o que a pessoa busca e chamar um corretor'],loja:['Mandar o link do produto','Fechar o pedido pelo WhatsApp'],servicos:['Marcar uma reunião','Mandar orçamento'],restaurante:['Fazer o pedido','Reservar uma mesa'],
  lancamento:['Mandar o link de compra','Tirar dúvidas e mandar o link'],outro:['Mandar orçamento','Agendar um horário','Mandar o link de compra']};
+// assuntos que a Nanda não trata (passa para o time): os 3 de sempre + sugestões por ramo
+const NZ_HO_ALWAYS=['Pedido para falar com uma pessoa','Reclamação ou cliente irritado','Pergunta que ela não sabe responder'];
+const NZ_HO={geral:['Desconto ou negociação de preço','Cancelamento ou reembolso','Cobrança ou pagamento com problema'],
+ clinica:['Dúvida de saúde, reação ou pós-procedimento','Preço que depende de avaliação','Remarcar ou cancelar horário','Convênio'],salao:['Remarcar ou cancelar horário','Serviço para noiva ou evento'],
+ studio:['Lesão ou restrição de saúde','Remarcar ou cancelar aula'],imobiliaria:['Proposta de valor ou negociação','Documentação e financiamento'],loja:['Troca ou devolução','Pedido atrasado'],
+ restaurante:['Pedido atrasado ou com problema','Encomenda para evento'],escola:['Bolsa ou desconto','Assunto pedagógico de aluno'],servicos:['Prazo de entrega do serviço','Parecer técnico'],lancamento:['Reembolso','Acesso que não funciona']};
 const NZ_RULES={geral:['Não dar desconto sem falar com o time','Não prometer prazo que não está combinado','Não falar mal de concorrente'],clinica:['Não dar orientação médica','Não passar preço de procedimento sem avaliação'],
  salao:['Não marcar dois serviços longos seguidos sem confirmar'],imobiliaria:['Não confirmar disponibilidade sem checar com o corretor'],loja:['Não confirmar estoque de tamanho sem checar'],restaurante:['Não prometer tempo de entrega em dia de chuva'],escola:['Não garantir vaga sem confirmar a turma'],servicos:['Não dar parecer técnico pelo WhatsApp'],lancamento:['Não prometer resultado financeiro']};
 /* perguntas das outras seções: pagamento, dúvidas do dia a dia, limites e passagem para o time */
@@ -3232,27 +3246,28 @@ function fxMsgs(hist,nanda,edit){let out='',pend='';const flush=()=>{out+=pend;p
     (m.lesson?`<div class="fx-ok"><i>✓</i><span><b>Refeita com o que você ensinou.</b>${m.changes&&m.changes.length?` Ajustamos o português: ${m.changes.slice(0,3).map(c=>`<s>${esc(c[0]||'·')}</s> → <em>${esc(c[1]||'·')}</em>`).join(', ')}.`:''}</span></div>`:'');
    pend=ed?fxBox(m,edit):`<button type="button" class="fx-go" data-fx="${i}">${svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>')}${m.gap?'Ensinar a resposta':'Corrigir resposta'}</button>`});
   flush();return out}
-function fxBox(m,e){const t=e.mode==='texto';
+function fxBox(m,e){const t=e.mode==='texto',tm=e.mode==='time';
   return `<div class="fx" data-fxbox>${m.gap&&!e.touched?`<p class="fx-gap">Ela não sabia responder isso e chamaria o seu time. Se você ensinar, da próxima vez ela mesma responde.</p>`:''}
-   <div class="fx-hd"><b>${t?'Como ela deveria responder?':'O que ela deve mudar?'}</b><div class="fx-seg" role="tablist"><button type="button" class="${t?'on':''}" data-fm="texto">Reescrever</button><button type="button" class="${t?'':'on'}" data-fm="pedido">Dizer o que mudar</button></div></div>
-   <textarea class="fx-t" rows="3" maxlength="1500" placeholder="${t?'Escreva a resposta do seu jeito':'Ex.: não chame o time, pergunte qual dia e horário a pessoa prefere'}" aria-label="${t?'Resposta corrigida':'O que mudar'}">${esc(t?e.texto:e.pedido)}</textarea>
-   <p class="fx-h">${t?'Escreva como você responderia. A gente só corrige o português, sem mudar o que você disse.':'Ela segue o seu pedido nesta e nas próximas conversas parecidas.'}</p>
+   <div class="fx-hd"><b>${t?'Como ela deveria responder?':tm?'Ela não deve tratar isso':'O que ela deve mudar?'}</b><div class="fx-seg" role="tablist"><button type="button" class="${t?'on':''}" data-fm="texto">Reescrever</button><button type="button" class="${e.mode==='pedido'?'on':''}" data-fm="pedido">O que mudar</button><button type="button" class="${tm?'on':''}" data-fm="time">Passar ao time</button></div></div>
+   ${tm?`<p class="fx-tm">Quando perguntarem isso, ela não responde: avisa com gentileza que alguém do time vai continuar e passa a conversa para vocês.</p>`
+   :`<textarea class="fx-t" rows="3" maxlength="1500" placeholder="${t?'Escreva a resposta do seu jeito':'Ex.: não chame o time, pergunte qual dia e horário a pessoa prefere'}" aria-label="${t?'Resposta corrigida':'O que mudar'}">${esc(t?e.texto:e.pedido)}</textarea>
+   <p class="fx-h">${t?'Escreva como você responderia. A gente só corrige o português, sem mudar o que você disse.':'Ela segue o seu pedido nesta e nas próximas conversas parecidas.'}</p>`}
    <div class="fx-a"><button type="button" class="btn sm p" data-fs>Salvar e refazer</button><button type="button" class="ob-lnk" data-fc>Cancelar</button><span class="err" data-fe></span></div></div>`}
 // liga os botões depois de desenhar. o: {hist, nanda, redraw(), state:{edit}, done(r)}
 function fxBind(box,o){
   box.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fx,m=o.hist[i];o.state.edit={i,mode:'texto',texto:m.gap?'':m.text,pedido:''};o.redraw();
     const ta=box.querySelector('.fx-t');if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);ta.closest('.fx').scrollIntoView({block:'nearest',behavior:'smooth'})}});
-  const f=box.querySelector('[data-fxbox]');if(!f)return;const e=o.state.edit,ta=f.querySelector('.fx-t');
-  ta.style.height=Math.min(200,Math.max(76,ta.scrollHeight))+'px';
+  const f=box.querySelector('[data-fxbox]');if(!f)return;const e=o.state.edit,ta=f.querySelector('.fx-t')||{focus(){},style:{}};
+  if(ta.scrollHeight)ta.style.height=Math.min(200,Math.max(76,ta.scrollHeight))+'px';
   ta.oninput=()=>{e[e.mode]=ta.value;e.touched=true;ta.style.height='';ta.style.height=Math.min(200,Math.max(76,ta.scrollHeight))+'px'};
   f.querySelectorAll('[data-fm]').forEach(b=>b.onclick=()=>{e.mode=b.dataset.fm;e.touched=true;o.redraw();const t=box.querySelector('.fx-t');if(t)t.focus()});
   f.querySelector('[data-fc]').onclick=()=>{o.state.edit=null;o.redraw()};
-  f.querySelector('[data-fs]').onclick=async ev=>{const txt=(e[e.mode]||'').trim(),bt=ev.currentTarget;
+  f.querySelector('[data-fs]').onclick=async ev=>{const txt=e.mode==='time'?'Não responda isso: avise com gentileza que alguém do time vai continuar a conversa e chame o time.':(e[e.mode]||'').trim(),bt=ev.currentTarget;
     if(txt.length<2){f.querySelector('[data-fe]').textContent=e.mode==='texto'?'Escreva a resposta.':'Escreva o que ela deve mudar.';ta.focus();return}
     if(e.mode==='texto'&&txt===o.hist[e.i].text){f.querySelector('[data-fe]').textContent='Mude o texto antes de salvar.';ta.focus();return}
     bt.disabled=true;bt.textContent='Refazendo...';
     const real=o.hist.slice(0,e.i).filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}));
-    try{const r=await api('/ai/correct',{method:'POST',body:{messages:real,original:o.hist[e.i].text,text:txt,mode:e.mode}});
+    try{const r=await api('/ai/correct',{method:'POST',body:{messages:real,original:o.hist[e.i].text,text:txt,mode:e.mode==='time'?'pedido':e.mode}});
       o.hist.splice(e.i);o.state.edit=null;o.done(r)}
     catch(x){f.querySelector('[data-fe]').textContent=x.message;bt.disabled=false;bt.textContent='Salvar e refazer'}}}
 
@@ -7111,7 +7126,7 @@ const VIEWS={
    ['negocio','O seu negócio','🏪',[['about','Sobre o negócio','O que é, onde fica e para quem atende.',3],['goal','Objetivo da conversa','O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra.',1]],v=>v.about&&v.goal],
    ['precos','Preços e condições','🏷️',[['offer','Condições de pagamento e pacotes','Parcelamento, pacotes, descontos. Os valores ficam no Catálogo.',3]],v=>cat.length||v.offer],
    ['duvidas','Dúvidas e perguntas','❓',[['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','O que ela pergunta ao cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3]],v=>v.faq],
-   ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Quando chamar alguém do time','Pedido de atendente, reclamação e assunto fora do que ela sabe já passam sozinhos.',2]],v=>v.rules||v.handoff]];
+   ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Assuntos que ela não trata','',2]],v=>v.rules||v.handoff]];
   if(s.knowledge)SEC.push(['outras','Outras informações','📎',[['knowledge','Texto que você já tinha ensinado','Pode ir distribuindo nas seções acima.',6]],v=>true]);
   const V={};['name','tone','default_mode','about','goal','offer','faq','qualify','rules','handoff','knowledge'].forEach(k=>V[k]=s[k]||'');
   let saved=JSON.stringify(V),open=null,MT='l';
@@ -7120,7 +7135,20 @@ const VIEWS={
   const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
   const seg=ME.company.segment||'outro';
   const chipsFor=k=>k==='goal'?(NZ_GOAL[seg]||NZ_GOAL.outro):k==='rules'?[...(NZ_RULES[seg]||[]),...NZ_RULES.geral]:null;
-  const fieldH=([k,l,h,r])=>`<div class="nz-f" data-fk="${k}"><div class="nz-fl"><label for="nz_${k}">${l}</label><span class="nz-acts">${k==='about'?`<button type="button" class="nz-ex nz-wz" data-wz="${k}">✨ Me ajude a escrever</button>`:''}${ex[k]&&!V[k].trim()&&k!=='about'?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</span></div>
+  const hoLines=()=>V.handoff.split('\n').map(l=>l.replace(/^[-•*]\s*/,'').replace(/\.$/,'').trim()).filter(Boolean);
+  const hoSet=ls=>{V.handoff=ls.join('\n');const el=document.querySelector('.nz-ho');if(el){el.outerHTML=hoH();bindHo()}refreshHead()};
+  const hoH=()=>{const ls=hoLines(),sug=[...(NZ_HO[seg]||[]),...NZ_HO.geral],low=ls.map(x=>x.toLowerCase()),own=ls.filter(x=>!sug.some(y=>y.toLowerCase()===x.toLowerCase()));
+    return `<div class="nz-f nz-ho" data-fk="handoff"><div class="nz-fl"><label>Assuntos que ela não trata</label></div>
+     <p class="hint" style="margin:0">Nesses assuntos ela não responde: avisa com gentileza que alguém do time vai continuar e passa a conversa para vocês. Você recebe o aviso na hora.</p>
+     <div class="nz-hol">${NZ_HO_ALWAYS.map(x=>`<div class="nz-hor fix"><i>✓</i><span>${esc(x)}</span><em>sempre</em></div>`).join('')}
+      ${sug.map(x=>{const on=low.includes(x.toLowerCase());return `<button type="button" class="nz-hor ${on?'on':''}" data-ho="${esc(x)}" aria-pressed="${on}"><i>${on?'✓':''}</i><span>${esc(x)}</span><em>${on?'passa para o time':'ela responde'}</em></button>`}).join('')}
+      ${own.map(x=>`<div class="nz-hor on mine"><i>✓</i><span>${esc(x)}</span><button type="button" class="ob-x" data-hox="${esc(x)}" aria-label="Tirar">×</button></div>`).join('')}</div>
+     <div class="nz-hoadd"><input id="nzHoIn" placeholder="Outro assunto. Ex.: pedido de nota fiscal" maxlength="120" aria-label="Outro assunto que ela não trata"><button type="button" class="btn sm" id="nzHoB">Adicionar</button></div></div>`};
+  function bindHo(){document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>{const x=b.dataset.ho,ls=hoLines(),i=ls.findIndex(y=>y.toLowerCase()===x.toLowerCase());i>=0?ls.splice(i,1):ls.push(x);hoSet(ls)});
+    document.querySelectorAll('[data-hox]').forEach(b=>b.onclick=()=>hoSet(hoLines().filter(y=>y!==b.dataset.hox)));
+    const inp=$('#nzHoIn'),add=()=>{const t=obCap(inp.value.trim().replace(/\.$/,''));if(!t)return inp.focus();const ls=hoLines();if(!ls.some(y=>y.toLowerCase()===t.toLowerCase()))ls.push(t);hoSet(ls);const n=$('#nzHoIn');if(n)n.focus()};
+    if(inp){$('#nzHoB').onclick=add;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();add()}};inp.removeAttribute('name')}}
+  const fieldH=([k,l,h,r])=>k==='handoff'?hoH():`<div class="nz-f" data-fk="${k}"><div class="nz-fl"><label for="nz_${k}">${l}</label><span class="nz-acts">${k==='about'?`<button type="button" class="nz-ex nz-wz" data-wz="${k}">✨ Me ajude a escrever</button>`:''}${ex[k]&&!V[k].trim()&&k!=='about'?`<button type="button" class="nz-ex" data-ex="${k}">Usar exemplo</button>`:''}</span></div>
     ${k==='about'?'<div class="nz-wzb" id="wzBox"></div>':''}
     ${chipsFor(k)?`<div class="nz-qc">${chipsFor(k).filter(c=>!V[k].toLowerCase().includes(c.toLowerCase())).map(c=>`<button type="button" data-qc="${k}">+ ${esc(c)}</button>`).join('')}</div>`:''}
     ${r===1?`<input id="nz_${k}" name="${k}" value="${esc(V[k])}" maxlength="1000" placeholder="${esc(ex[k]||'')}">`:`<textarea id="nz_${k}" name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(V[k])}</textarea>`}<span class="hint">${h}</span></div>`;
@@ -7135,6 +7163,7 @@ const VIEWS={
     return (sw?`<div class="nz-sw" data-sw="${id}"><span>✨ <b>Responda algumas perguntas</b> e a gente escreve esta parte para você.</span><button type="button" class="btn sm" data-swb="${id}">Começar</button></div><div class="nz-wzb" id="swBox_${id}"></div>`:'')+(id==='precos'?catH():'')+S[3].map(fieldH).join('')};
   const summary=x=>{if(x[0]==='jeito')return `${esc(V.name||'Nanda')} · ${modeOf(V.default_mode)[1]} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]}`;
     if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'item':'itens'} no Catálogo${V.offer?' · condições preenchidas':''}`;
+    if(x[0]==='limites'&&V.handoff.trim()&&!V.rules.trim()){const ls=hoLines();return 'Passa para o time: '+esc(ls.slice(0,3).join(', '))+(ls.length>3?' e mais '+(ls.length-3):'')}
     const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
   const nf=n=>Number(n||0).toLocaleString('pt-BR');
   const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
@@ -7183,6 +7212,7 @@ const VIEWS={
    document.querySelectorAll('[data-swb]').forEach(b=>b.onclick=()=>{const id=b.dataset.swb,sec=b.closest('.nz-sb'),box=$('#swBox_'+id);sec.classList.add('swon');
      nzWizard(box,nzSecWizard(id,seg),{},o=>{sec.classList.remove('swon');box.innerHTML='';if(!o)return;
        for(const k in o){const cur=(V[k]||'').trim();V[k]=cur?cur+'\n'+o[k]:o[k];const el=$('#nz_'+k);if(el){el.value=V[k];el.style.height=Math.max(el.scrollHeight+4,80)+'px'}}refreshHead();toast('Pronto. Confira o texto e salve.')})});
+   bindHo();
    document.querySelectorAll('[data-qc]').forEach(b=>b.onclick=()=>{const k=b.dataset.qc,el=$('#nz_'+k),t=b.textContent.replace(/^\+ /,'');
      el.value=k==='goal'?t+'.':(el.value.trim()?el.value.trim()+'\n':'')+t+'.';V[k]=el.value;b.remove();refreshHead()});
    f.oninput=e=>{const t=e.target;if(!t.name)return;V[t.name]=t.value;refreshHead()};

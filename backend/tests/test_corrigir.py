@@ -45,3 +45,15 @@ def test_revisao_que_muda_demais_fica_com_o_texto_do_dono(monkeypatch):
         c.post('/api/auth/signup', json={'name': 'Lívia', 'email': 'lv3@x.com', 'password': 'senha-forte-1', 'company': 'Bella', 'segment': 'clinica'})
         r = c.post('/api/ai/correct', json={'messages': CONV, 'text': 'sabado abrimos das 8 as 12'}).json()
         assert r['lesson']['a'] == 'sabado abrimos das 8 as 12' and r['changes'] == []
+
+def test_assuntos_que_ela_nao_trata_entram_no_prompt(monkeypatch):
+    seen = []
+    async def fake_llm(system, msgs, **k):
+        seen.append(system); return '{"reply":"ok"}', {}
+    monkeypatch.setattr(ai, 'llm', fake_llm)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Lívia', 'email': 'lv4@x.com', 'password': 'senha-forte-1', 'company': 'Bella', 'segment': 'clinica'})
+        c.put('/api/ai/settings', json={'handoff': 'Convênio\n- Desconto ou negociação de preço'})
+        c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'atende convênio?'}]})
+        assert '- Convênio\n- Desconto ou negociação de preço' in seen[-1]
+        assert 'pedir para falar com uma pessoa, reclamar' in seen[-1]  # os de sempre continuam valendo com a lista preenchida
