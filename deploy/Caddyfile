@@ -21,9 +21,13 @@
 		rewrite * /api/l/{re.curto.1}{re.curto.2}
 		reverse_proxy api:8001
 	}
+	# formulário do guia grátis: só esta rota da API, no mesmo endereço do site (sem CORS)
+	handle /api/site/lead {
+		reverse_proxy api:8001
+	}
 	handle {
 		root * /srv/site
-		@html path / /index.html /segmentos/ /privacidade/ /termos/
+		@html path / /index.html /segmentos/ /privacidade/ /termos/ /guia/7-erros-whatsapp/
 		header @html Cache-Control "no-cache"
 		file_server
 	}

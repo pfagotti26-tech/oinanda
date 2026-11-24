@@ -349,6 +349,25 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 .fd-o{background:#fff;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:6px;box-shadow:0 16px 40px rgba(23,33,43,.08)}.fd-o>b{font-size:20px}.fd-o p{font-size:14.5px}.fd-o .btn{margin-top:8px;justify-content:center}
 @media (max-width:1060px){.gsg,.tjg{grid-template-columns:1fr 1fr}.fdc{grid-template-columns:auto 1fr}.fd-o{grid-column:1/-1}}
 @media (max-width:620px){.gsv{height:auto;min-height:130px}.gsg,.tjg{grid-template-columns:1fr}.fdc{grid-template-columns:1fr}.fd-a{width:64px;height:64px;font-size:22px}.band b{font-size:18px}}
+.hero .ex{transition:opacity .25s ease}.hero .ex.sw2{opacity:0}
+
+.gs-pc{margin:28px auto 0;max-width:1000px;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 30px 70px rgba(0,0,0,.35);position:relative}
+.gs-bar{display:flex;align-items:center;gap:6px;padding:9px 14px;background:#EEE8E2}.gs-bar i{width:10px;height:10px;border-radius:50%;background:#D8CEC5}.gs-bar i:first-child{background:#F2A48C}.gs-bar span{margin-left:12px;font-size:12px;color:#8593A1;background:#fff;border-radius:6px;padding:2px 12px}
+.gs-pc img{width:100%;height:auto}
+.hire{display:flex;gap:14px;align-items:center;max-width:820px;margin:22px auto 14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 20px}.hire-i{font-size:22px}.hire p{font-size:15.5px;color:var(--ink2);line-height:1.5}.hire b{color:var(--ink)}
+.gdc{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;background:var(--soft);border-radius:var(--r);padding:clamp(24px,3.6vw,48px)}
+.gd-t h2{font-size:clamp(26px,2.8vw,34px);margin-bottom:12px}.gd-t p{color:var(--ink2)}.gd-t ul{list-style:none;display:grid;gap:8px;margin-top:16px}.gd-t li::before{content:"✓";color:var(--ok);font-weight:800;margin-right:9px}.gd-t li{font-weight:600;font-size:15.5px}
+.gd-f,.gd-ok{background:#fff;border-radius:20px;padding:24px;display:grid;gap:12px;box-shadow:0 18px 44px rgba(23,33,43,.08)}
+.gd-f label{display:grid;gap:5px;font-size:13.5px;font-weight:700;color:var(--ink2)}.gd-f input:not([type=checkbox]),.gd-f select{font:inherit;font-size:16px;font-weight:500;color:var(--ink);border:1px solid #E2D6CC;border-radius:12px;padding:11px 13px;background:#fff;width:100%}
+.gd-f input:focus,.gd-f select:focus{outline:2px solid var(--coral);outline-offset:1px;border-color:transparent}
+.gd-f .gd-c{display:flex;gap:9px;align-items:flex-start;font-weight:500;font-size:13px;line-height:1.4}.gd-c input{margin-top:2px;width:16px;height:16px;accent-color:var(--coral);flex:none}
+.gd-f .btn{justify-content:center;width:100%}.gd-e{color:#9E2B1E;font-size:13.5px;font-weight:600;min-height:0}.gd-e:empty{display:none}.gd-p{font-size:12px;color:var(--ink3)}.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.gd-ok{text-align:center;justify-items:center}.gd-ok>span{width:52px;height:52px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-size:24px;font-weight:800}.gd-ok p{color:var(--ink2)}
+.stk{display:none}
+@media (max-width:900px){.gdc{grid-template-columns:1fr}
+ .stk{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:50;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:18px;padding:10px 10px 10px 16px;box-shadow:0 16px 40px rgba(23,33,43,.35);transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.8,.2,1);padding-bottom:max(10px,env(safe-area-inset-bottom))}
+ .stk.on{transform:none}.stk div{flex:1;display:flex;flex-direction:column;line-height:1.25}.stk b{font-size:14.5px}.stk span{font-size:12px;color:#B5C0CB}.stk .btn{padding:11px 18px;font-size:14.5px;white-space:nowrap}
+ body{padding-bottom:0}}
 </style>
 <script>(function(){var d=document.documentElement;if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;d.classList.add('js');setTimeout(function(){if(!window.__rv)d.classList.remove('js')},2500)})()</script>
 </head>
@@ -466,7 +485,8 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     <div class="gsc"><div class="gsv"><div class="gs-r"><div><span>Comprou</span><i><em style="width:46%"></em></i></div><div><span>Agendou</span><i><em style="width:28%"></em></i></div><div><span>Sem interesse</span><i><em style="width:16%"></em></i></div><div><span>Sumiu</span><i><em style="width:10%"></em></i></div></div></div>
       <h3>Por que cada conversa terminou</h3><p>Comprou, agendou, sem interesse, sumiu: você sabe onde o atendimento ganha e onde perde.</p></div>
   </div>
-  <p class="fine center" style="margin-top:18px">Telas de exemplo.</p>
+  <figure class="gs-pc"><div class="gs-bar"><i></i><i></i><i></i><span>app.oinanda.com.br/funil</span></div><img src="shots/painel-funil.webp" alt="Painel do Oi Nanda no computador: funil de vendas com cada cliente na etapa em que parou, valor em negociação e quem está esperando resposta" width="2880" height="1720" loading="lazy"></figure>
+  <p class="fine center" style="margin-top:18px">Telas de exemplo. No computador e no celular, com o mesmo acesso.</p>
 </div></section>
 
 <section class="tj"><div class="wrap">
@@ -581,6 +601,7 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
       <ul><li>12 pessoas no time</li><li>Tudo do Profissional</li><li>2.000 atendimentos da Nanda por mês</li><li>Equipes, fila por turno e rodízio</li><li>Metas, ranking e pós-venda</li></ul>
       <a class="btn" href="https://app.oinanda.com.br/cadastro">Testar 14 dias grátis</a></div>
   </div>
+  <div class="hire"><span class="hire-i">💡</span><p><b>R$ 297 por mês é menos que uma semana de salário de um atendente.</b> E a Nanda responde às 22h, no sábado e no feriado, sem férias e sem esquecer de voltar no cliente.</p></div>
   <p class="fine center" style="max-width:46em;margin-inline:auto">Atendimento é um cliente atendido pela Nanda num dia, não importa quantas mensagens. Precisou de mais? +500 por R$&nbsp;59. Conversas que o cliente inicia não custam nada. Mensagens que você inicia fora das 24 h são cobradas pela Meta, e o valor aparece antes de enviar.</p>
 </div></section>
 
@@ -602,6 +623,22 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   </div>
   <div class="cta"><span>Ficou com outra dúvida?</span><a class="btn" href="https://wa.me/5511975754765?text=Oi%2C%20Nanda!%20Quero%20te%20conhecer">Perguntar pelo WhatsApp</a></div>
 </div></section>
+
+<section class="gd" id="guia"><div class="wrap"><div class="gdc">
+  <div class="gd-t"><span class="eyb">Ainda não é a hora de testar?</span><h2>Leve o guia grátis: os 7 erros que fazem você perder venda no&nbsp;WhatsApp.</h2>
+   <p>Seis minutos de leitura, com o que fazer em cada caso. Serve mesmo que você nunca use a&nbsp;Nanda.</p>
+   <ul><li>A resposta que faz a cliente desistir</li><li>O que fazer com o "vou pensar"</li><li>Checklist para começar hoje</li></ul></div>
+  <form class="gd-f" id="gdF" novalidate>
+   <label>Seu nome<input name="name" required minlength="2" maxlength="80" autocomplete="name" placeholder="Como podemos te chamar"></label>
+   <label>Seu WhatsApp<input name="phone" required type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 91234-5678"></label>
+   <label>Seu negócio<select name="segment"><option value="">Escolha (opcional)</option><option>Clínica</option><option>Studio ou academia</option><option>Salão ou barbearia</option><option>Imobiliária</option><option>Loja</option><option>Infoproduto</option><option>Outro</option></select></label>
+   <input name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+   <label class="gd-c"><input type="checkbox" name="consent" checked> Aceito receber o guia e conteúdos do Oi Nanda pelo WhatsApp. Dá para sair quando quiser.</label>
+   <button class="btn p" type="submit">Quero o guia grátis</button><p class="gd-e" id="gdE" role="alert"></p>
+   <p class="gd-p">Seus dados ficam com o Oi Nanda e não são passados para ninguém. <a href="/privacidade/">Privacidade</a></p>
+  </form>
+  <div class="gd-ok" id="gdOk" hidden><span>✓</span><h3>Pronto! O guia é seu.</h3><p>Abra agora e, se quiser, guarde o link.</p><a class="btn p" href="/guia/7-erros-whatsapp/">Ler o guia agora</a></div>
+</div></div></section>
 
 <section style="padding-top:0"><div class="wrap">
   <div class="final"><h2>Mais conversa virando venda.</h2><p>Conecte o seu número e veja a Nanda atendendo ainda hoje. 14&nbsp;dias grátis, cancele quando&nbsp;quiser.</p>
@@ -677,19 +714,30 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
     var WA='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.4L3 21l4.7-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg>';
     var F=[
       ['msg','Patrícia','ainda tem horário pra toxina essa semana?','09:40'],['ok','Agendado · sex, 16h','Patrícia Reis · com a Dra. Lívia','09:41'],
-      ['sale','Venda · R$ 1.200','Patrícia Reis · toxina botulínica','10:05'],['cal','Agenda de amanhã','9 horários confirmados','11:00'],
-      ['msg','Fernanda','ainda tem a condição do anúncio?','14:26'],['sale','Venda · R$ 450','Fernanda Castro · pacote 4 limpezas','15:02'],
-      ['ok','Lembrete enviado','Rafael Lima · avaliação amanhã, 10h','16:00'],['msg','Paula','quero remarcar pra sexta','17:15'],
-      ['ok','Remarcado · sex, 10h','Paula Ribeiro · drenagem','17:16'],['ok','Pix pago','Camila Duarte · lembrada no WhatsApp','17:40'],
-      ['goal','Meta do mês: 78%','faltam R$ 6.200','18:00'],['ok','Dia fechado','11 vendas · R$ 7.390','19:02'],
+      ['sale','Venda · R$ 1.200','Patrícia Reis · toxina botulínica','10:05'],['ok','Pix pago','Camila Duarte · lembrada no WhatsApp','17:40'],
+      ['seg','numa barbearia'],
+      ['msg','Carlos','tem horário hoje com o Léo?','09:31'],['ok','Agendado · 15h com o Léo','Corte + barba · R$ 85','09:31'],
+      ['ok','Lembrete enviado','Rafael · corte amanhã, 10h','16:00'],['cal','Agenda de amanhã','14 horários confirmados','19:00'],
+      ['seg','numa loja'],
+      ['msg','Bianca','tem o vestido midi no 42?','10:22'],['sale','Venda · R$ 259','Bianca Alves · vestido midi Clara','10:40'],
+      ['ok','Carrinho recuperado','Júlia Prado · R$ 318','15:12'],['goal','Meta do mês: 78%','faltam R$ 6.200','18:00'],
+      ['seg','numa imobiliária'],
+      ['msg','Marcelo','o apto do Campeche ainda está disponível?','11:18'],['ok','Visita marcada · sáb, 10h','Marcelo Santos · com o corretor Marcos','11:19'],
+      ['ok','Proposta enviada','Marcelo Santos · apto 2 quartos','17:30'],
+      ['seg','num curso online'],
+      ['msg','Thiago','dá pra parcelar o curso?','11:02'],['ok','Boleto lembrado','Thiago Nunes · vence hoje','12:00'],
+      ['sale','Venda · R$ 997','Thiago Nunes · Método Voz Segura','12:07'],
+      ['seg','numa clínica de estética'],
       ['msg','Helena','Quanto custa a limpeza de pele?','08:52'],['ok','Respondido em 8 s','Avaliação marcada · qui, 14h','08:52'],['sale','Venda · R$ 389','Juliana Mendes · pacote 2 limpezas','09:14']];
     var ICO={msg:'<span class="ic">'+WA+'</span>',ok:'<span class="ic ok">✓</span>',sale:'<span class="ic sale">🛍</span>',cal:'<span class="ic cal">📅</span>',goal:'<span class="ic goal">🎯</span>'};
     var hero=document.querySelector('.hero'),i=0,n=0,paused=false,GAP=10;
     var MAX=3,XS=[0,26,8];
     hero.addEventListener('mouseenter',function(){paused=true});hero.addEventListener('mouseleave',function(){paused=false});
     function layout(){var cards=all('.float:not(.out)',feed),y=0;for(var k=cards.length-1;k>=0;k--){var c=cards[k];c.style.setProperty('--y',(-y)+'px');c.style.transform='translate('+c.style.getPropertyValue('--x')+','+(-y)+'px)';y+=c.offsetHeight+GAP}}
+    var EX=document.querySelector('.hero .ex');
     function add(){
       var f=F[i%F.length];i++;
+      if(f[0]==='seg'){var lb='exemplo · um dia '+f[1];if(EX){EX.classList.add('sw2');setTimeout(function(){EX.textContent=lb;EX.classList.remove('sw2')},250)}f=F[i%F.length];i++}
       var c=document.createElement('div');c.className='float inn';c.style.setProperty('--x',XS[n%XS.length]+'px');n++;
       c.innerHTML=ICO[f[0]]+'<div><b>'+f[1]+'</b><span>'+f[2]+'</span></div><time>'+f[3]+'</time>';
       feed.appendChild(c);layout();setTimeout(function(){c.classList.remove('inn')},520);
@@ -720,5 +768,21 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
 })();
 </script>
 
+<div class="stk" id="stk" aria-hidden="true"><div><b>14 dias grátis</b><span>cancele quando quiser</span></div><a class="btn p" href="https://app.oinanda.com.br/cadastro" tabindex="-1">Testar grátis</a></div>
+<script>
+(function(){
+  var f=document.getElementById('gdF');if(f){f.addEventListener('submit',function(ev){ev.preventDefault();var e=document.getElementById('gdE');e.textContent='';
+    var n=f.name.value.trim(),ph=f.phone.value.replace(/\D/g,'');if(n.length<2){e.textContent='Escreva o seu nome.';f.name.focus();return}if(ph.length<10){e.textContent='Confira o WhatsApp: DDD e número.';f.phone.focus();return}
+    var b=f.querySelector('button');b.disabled=true;b.textContent='Enviando...';
+    fetch('/api/site/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,phone:f.phone.value,segment:f.segment.value,consent:f.consent.checked,website:f.website.value,source:(location.search||'').slice(1,200)})})
+     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.detail&&j.detail.substring?j.detail:'Não deu certo. Tente de novo.');return j})})
+     .then(function(){f.hidden=true;document.getElementById('gdOk').hidden=false;try{if(window.fbq)fbq('track','Lead')}catch(x){}})
+     .catch(function(x){e.textContent=x.message||'Não deu certo. Tente de novo.';b.disabled=false;b.textContent='Quero o guia grátis'})})}
+  var st=document.getElementById('stk'),hero=document.querySelector('.hero'),fin=document.querySelector('.final');if(!st||!('IntersectionObserver' in window))return;
+  var hv=true,fv=false,upd=function(){var on=!hv&&!fv;st.classList.toggle('on',on);st.setAttribute('aria-hidden',on?'false':'true');st.querySelector('a').tabIndex=on?0:-1};
+  new IntersectionObserver(function(e){hv=e[0].isIntersecting;upd()}).observe(hero);
+  if(fin)new IntersectionObserver(function(e){fv=e[0].isIntersecting;upd()}).observe(fin);
+})();
+</script>
 </body>
 </html>
