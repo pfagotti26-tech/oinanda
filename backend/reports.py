@@ -111,7 +111,7 @@ async def sales(days: int = 30, start: Optional[str] = None, end: Optional[str] 
     lost = sum(1 for c in await db.contacts.find({'company_id': cid, 'lost_at': rng}, {'_id': 0, 'id': 1, 'source': 1, 'ad': 1, 'stage': 1, 'assigned_to': 1, 'created_at': 1, 'origin': 1, 'origin_link': 1, 'channel': 1, 'team_id': 1, 'value': 1, 'won_at': 1, 'internal': 1, 'wa_id': 1, 'won_by_id': 1}).to_list(10000) if keep(c))
     value = sum(c.get('value') or 0 for c in won)
     with_value = [c['value'] for c in won if c.get('value')]
-    cycle = [(aware(c['won_at']) - aware(c['created_at'])).total_seconds() / 86400 for c in won if c.get('created_at') and c.get('won_at')]
+    cycle = [max(0.0, (aware(c['won_at']) - aware(c['created_at'])).total_seconds() / 86400) for c in won if c.get('created_at') and c.get('won_at')]  # venda lançada com data anterior ao cadastro não vira ciclo negativo
     new_ids = {c['id'] for c in new}
     bought = {c['id'] for c in won}
     converted = sum(1 for c in new if c['id'] in bought or kinds.get(c.get('stage')) == 'won')
