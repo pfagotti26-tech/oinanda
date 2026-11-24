@@ -232,6 +232,8 @@ class SubIn(BaseModel):
 @router.get('/billing')
 async def status(user=Depends(current_user)):
     c = user['company']; lim = limits(c); b = c.get('billing') or {}
+    if user['role'] not in ('owner', 'manager'):  # atendente: só o que a tela dela precisa, sem valor nem dados da assinatura
+        return {'state': lim['state'], 'plan': lim['plan'], 'limits': lim}
     ct = card_trial(c)
     end = ct or (aware(c['trial_ends_at']) if c.get('plan') == 'trial' and c.get('trial_ends_at') else None)
     trial_left = max(0, (end - now()).days + 1) if end else None
