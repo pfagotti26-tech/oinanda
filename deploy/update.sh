@@ -20,7 +20,7 @@ echo "1/3 Testes automáticos..."
 if ! { docker build -q --target test -t oinanda-test -f api.Dockerfile .. >/tmp/oinanda-test.log 2>&1 && docker run --rm oinanda-test >>/tmp/oinanda-test.log 2>&1; }; then
   tail -30 /tmp/oinanda-test.log
   git -C .. reset -q --hard "$PREV"
-  echo "PAROU: os testes falharam. Nada mudou no ar, continua a versão $(git -C .. log -1 --format='%h')."
+  echo "PAROU: os testes falharam. Nada mudou no ar: o sistema segue com a versão que já estava rodando."
   exit 1
 fi
 echo "    $(grep -Eo '[0-9]+ passed' /tmp/oinanda-test.log | tail -1)"

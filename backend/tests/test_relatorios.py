@@ -39,7 +39,8 @@ def test_relatorio_honesto(monkeypatch):
         assert j['total'] == 2  # quem só está na agenda do celular não entra na jornada
         # período escolhido e filtros
         from datetime import date
-        hoje = date.today().isoformat()
+        from zoneinfo import ZoneInfo
+        hoje = __import__('datetime').datetime.now(ZoneInfo('America/Sao_Paulo')).date().isoformat()  # o relatório conta pelo fuso da empresa
         r = c.get(f'/api/reports/sales?start=2020-01-01&end=2020-01-31').json()
         assert r['days'] == 31 and r['totals']['new_contacts'] == 0
         r = c.get(f'/api/reports/sales?start={hoje}&end={hoje}').json()
