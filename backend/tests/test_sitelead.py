@@ -15,6 +15,10 @@ def test_lead_do_site():
         c.post('/api/site/lead', json={'name': 'Robô', 'phone': '11 90000-0000', 'website': 'http://spam'}, headers=H)  # campo escondido
         for _ in range(8): c.post('/api/site/lead', json={'name': 'Xu', 'phone': '11 98888-7777'}, headers={'x-forwarded-for': '8.8.8.8'})
         assert c.post('/api/site/lead', json={'name': 'Xu', 'phone': '11 98888-7777'}, headers={'x-forwarded-for': '8.8.8.8'}).status_code == 429
+        # vem do site (outro endereço que o do sistema): aceito só nesta rota
+        assert c.post('/api/site/lead', json={'name': 'Site', 'phone': '11 97777-6666'}, headers={'origin': 'https://oinanda.com.br', 'x-forwarded-for': '7.7.7.7'}).status_code == 200
+        assert c.post('/api/site/lead', json={'name': 'Mal', 'phone': '11 97777-6666'}, headers={'origin': 'https://malicioso.com', 'x-forwarded-for': '7.7.7.7'}).status_code == 403
+        assert c.post('/api/auth/logout', json={}, headers={'origin': 'https://oinanda.com.br'}).status_code == 403
         assert c.get('/api/admin/site-leads').status_code == 401
         c.post('/api/auth/signup', json={'name': 'Paulo', 'email': 'admin@oinanda.com.br', 'password': 'admin-forte-1', 'company': 'Oi Nanda', 'phone': '(11) 91234-5678'})
         rows = c.get('/api/admin/site-leads').json()

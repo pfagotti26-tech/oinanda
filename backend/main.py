@@ -187,10 +187,14 @@ app.include_router(profile_router, prefix="/api")
 from importer import router as import_router
 app.include_router(import_router, prefix="/api")
 
+SITE_ORIGINS = [o.strip() for o in os.environ.get('SITE_ORIGINS', 'https://oinanda.com.br,https://www.oinanda.com.br').split(',') if o.strip()]
+
 @app.middleware('http')
 async def guard(request: Request, call_next):
     origin = request.headers.get('origin')
     hook = request.url.path.startswith(('/api/checkout/hotmart/', '/api/checkout/kiwify/', '/api/checkout/eduzz/', '/api/checkout/iugu/', '/api/checkout/cakto/', '/api/checkout/asaas/', '/api/checkout/mercadopago/', '/api/checkout/vindi/', '/api/checkout/pagarme/', '/api/checkout/stripe/', '/api/checkout/pagbank/'))  # webhooks das plataformas: a assinatura é que valida
+    # formulário do guia grátis no site (oinanda.com.br): não usa sessão, então pode vir do endereço do site
+    if request.url.path == '/api/site/lead' and origin in SITE_ORIGINS: hook = True
     if request.method in ('POST', 'PATCH', 'PUT', 'DELETE') and origin and origin not in ORIGINS and not hook:
         return JSONResponse({'detail': 'Origem não autorizada.'}, status_code=403)
     try:
