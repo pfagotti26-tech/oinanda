@@ -163,6 +163,11 @@ async def edit_quick(rid: str, body: QuickIn, user=Depends(current_user)):
     await db.quick_replies.update_one({'id': rid}, {'$set': {'shortcut': sc, 'text': body.text.strip()}})
     return {**r, 'shortcut': sc, 'text': body.text.strip()}
 
+@router.post('/quick-replies/{rid}/used')
+async def qr_used(rid: str, user=Depends(current_user)):
+    await db.quick_replies.update_one({'id': rid, 'company_id': user['company_id']}, {'$inc': {'uses': 1}})
+    return {'ok': True}
+
 @router.delete('/quick-replies/{rid}')
 async def del_quick(rid: str, user=Depends(current_user)):
     r = await db.quick_replies.find_one({'id': rid, 'company_id': user['company_id']}, {'_id': 0})
@@ -196,6 +201,8 @@ async def internal_note(contact_id: str, body: NoteIn, user=Depends(current_user
 
 class ResolveIn(BaseModel):
     resolved: bool = True
+    reason: Optional[str] = Field(default=None, max_length=40)
+    survey: bool = False
 
 @router.post('/conversations/{contact_id}/resolve')
 async def resolve(contact_id: str, body: ResolveIn, user=Depends(current_user)):
@@ -205,7 +212,10 @@ async def resolve(contact_id: str, body: ResolveIn, user=Depends(current_user)):
         await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': now(), 'needs_human': False, 'unread': 0, 'handoff_urgent': False}})
         from ai import resume
         await resume(user['company_id'], c, user.get('impersonated_by') or user['name'])
-        await note(user['company_id'], c['id'], f'{who} marcou a conversa como resolvida')
+        if not body.reason: await note(user['company_id'], c['id'], f'{who} marcou a conversa como resolvida')
+        from closing import on_resolve
+        sv = await on_resolve(user, c, body.reason, body.survey)
+        return {'ok': True, 'survey': sv}
     else:
         await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': None}})
         await note(user['company_id'], c['id'], f'{who} reabriu a conversa')

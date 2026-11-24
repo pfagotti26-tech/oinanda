@@ -235,8 +235,11 @@ async def ingest(value):
             try:  # botão ou lista tocada (lembrete, horários) e respostas curtas ao lembrete ("confirmo", "preciso remarcar")
                 import wachoice
                 fresh = {**contact, **upd}
+                from closing import on_inbound as csat_in
+                if fresh.get('csat_wait') and await csat_in(cid, fresh, text): handled = True
                 choice = ((m.get('interactive') or {}).get('button_reply') or (m.get('interactive') or {}).get('list_reply') or {}).get('id') if m.get('type') == 'interactive' else None
-                if choice: handled = await wachoice.on_choice(cid, fresh, choice, text)
+                if handled: pass
+                elif choice: handled = await wachoice.on_choice(cid, fresh, choice, text)
                 else: handled = (await wachoice.on_text(cid, fresh, text)) == 'resched'
             except Exception: log.exception('falha ao tratar a resposta do botão ou do lembrete')
         if mm: schedule(mid)  # baixa (e transcreve o áudio) antes de chamar a Nanda
