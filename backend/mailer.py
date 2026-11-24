@@ -102,7 +102,7 @@ def render(c):
     acct = (f'<span style="display:inline-block;background:#ffffff;border:1px solid #E8DED5;border-radius:99px;padding:5px 12px;font-family:{FONT};font-size:12.5px;font-weight:700;color:#4B5968">{e(c["account"])}</span>'
             if c.get('account') else f'<a href="{APP}/" style="font-family:{FONT};font-size:13px;color:#6B7785;text-decoration:none;font-weight:700">Abrir o painel →</a>')
     if c.get('sign') == 'founder':  # quem assina é uma pessoa: o fundador, nos e-mails de começo e de despedida
-        av, who, line = 'PF', 'Paulo Fagotti, fundador do Oi Nanda', 'Responda este e-mail se quiser. Eu leio pessoalmente.'
+        av, who, line = 'PF', 'Paulo Fagotti, fundador do Oi Nanda', 'Responda este e-mail quando quiser: eu ou alguém do time lê e responde.'
     else:
         av, who, line = 'oi', 'Time do Oi Nanda', 'Ficou com dúvida? É só responder. Quem lê é uma pessoa do time.'
     sig = (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 0;border-top:1px solid #F0EAE3"><tr><td style="padding-top:18px">'
