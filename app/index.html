@@ -2436,6 +2436,9 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
  .fhd>div>h1,.nz-hd>div>h1{display:none}}
 .su{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,1fr);gap:36px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px 32px;margin-bottom:16px;position:relative;overflow:hidden}
 .su:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--c)}
+.igch{display:flex;flex-direction:column;gap:8px}.igo{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit}
+.igo:hover:not(:disabled){border-color:var(--c);background:var(--tint)}.igo:disabled{opacity:.5;cursor:not-allowed}.igo img,.igo .igi{width:40px;height:40px;border-radius:50%;flex:none;object-fit:cover}.igo .igi{display:grid;place-items:center;background:var(--tint)}
+.igo span{display:flex;flex-direction:column;min-width:0}.igo b{font-size:15px}.igo small{color:var(--ink3);font-size:12.5px}
 .mf{max-width:640px;margin:8px auto 40px}.mf .card{padding:30px 32px}.mf h2{font-size:23px;letter-spacing:-.4px;margin:10px 0 8px}.mf p.l{color:var(--ink2);font-size:14.5px;line-height:1.55;margin:0}
 .mf-ic{width:46px;height:46px;border-radius:14px;background:var(--oksoft);display:grid;place-items:center;color:var(--ok)}.mf-ic svg{width:24px;height:24px}
 .mf-why{display:grid;gap:10px;margin:20px 0 24px;padding:0;list-style:none}.mf-why li{display:flex;gap:10px;font-size:14px;color:var(--ink2);line-height:1.45}.mf-why li b{color:var(--ink)}.mf-why svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--ok)}
@@ -3390,9 +3393,17 @@ function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&[
 
 /* ---------- telas ---------- */
 /* Instagram Direct */
+async function igChoose(own){  // o login do Facebook trouxe mais de uma página com Instagram: a pessoa escolhe qual é desta empresa
+  let L;try{L=await api('/ig/choices')}catch(e){toast(e.message);return}
+  const o=overlay(`<div class="modal" style="max-width:480px"><div class="row"><h2 style="font-size:20px">Qual Instagram é da ${esc(ME.company.name)}?</h2><button class="x">×</button></div>
+    <p class="hint" style="margin:0 0 14px">Seu Facebook cuida de mais de uma página com Instagram. Escolha o que vai atender pelo Oi Nanda nesta empresa.</p>
+    <div class="igch">${L.map(x=>`<button type="button" class="igo" data-id="${esc(x.id)}" ${x.taken?'disabled':''}>
+      ${x.picture?`<img src="${esc(x.picture)}" alt="">`:`<span class="igi">${IGI}</span>`}<span><b>@${esc(x.username||'')}</b><small>${x.taken?'já conectado em outra empresa':'Página '+esc(x.page||x.name||'')}</small></span></button>`).join('')}</div>
+    <div class="err" id="igE"></div></div>`);
+  document.querySelectorAll('.igo').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await api('/ig/choose',{method:'POST',body:{id:b.dataset.id}});document.querySelectorAll('.ov').forEach(x=>x.remove());toast('Instagram conectado.');renderIg(own)}catch(e){b.disabled=false;$('#igE').textContent=e.message}})}
 async function renderIg(own){const box=$('#igc');if(!box)return;let d;try{d=await api('/ig/status')}catch(e){box.innerHTML='';return}
   const mg=$('#mgSt');if(mg)mg.textContent=!chOn('messenger')?'':!d.account?'Conecte o Instagram primeiro — o Messenger vem junto.':(d.page&&d.page.ready)?'Recebendo pela página '+(d.page.name||'do Facebook')+'.':'Reconecte o Instagram pelo login do Facebook para o Messenger funcionar.';
-  const q=new URLSearchParams(location.search).get('ig');if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.',sem_conta:'Nenhuma conta do Instagram foi compartilhada. Conecte de novo e marque a conta profissional.',aguardando:'Autorizado. Falta a Meta liberar a conta: o Oi Nanda vai conferir sozinho nos próximos minutos.',sem_pagina:'Nenhuma Página do Facebook com Instagram ligado. No Instagram: Configurações › Central de Contas, ligue a conta a uma Página e conecte de novo.'}[q]||'')}
+  const q=new URLSearchParams(location.search).get('ig');if(q==='escolher'){history.replaceState(null,'',location.pathname);igChoose(own)}else if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.',sem_conta:'Nenhuma conta do Instagram foi compartilhada. Conecte de novo e marque a conta profissional.',aguardando:'Autorizado. Falta a Meta liberar a conta: o Oi Nanda vai conferir sozinho nos próximos minutos.',sem_pagina:'Nenhuma Página do Facebook com Instagram ligado. No Instagram: Configurações › Central de Contas, ligue a conta a uma Página e conecte de novo.'}[q]||'')}
   const a=d.account,hd=`<div class="row" style="gap:10px;margin-bottom:8px"><span class="igl">${IGI}</span><h3 style="margin:0">Instagram Direct</h3>${a?`<span class="pill ${a.status==='connected'?'ok':'bad'}">${a.status==='connected'?'conectado':'reconectar'}</span>`:''}</div>`;
   if(!d.ready){box.innerHTML=hd+'<p class="hint">O Instagram ainda está sendo configurado no servidor do Oi Nanda.</p>';return}
   clearTimeout(renderIg._t);
