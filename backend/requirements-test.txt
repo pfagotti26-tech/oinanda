@@ -1,0 +1,5 @@
+# só para rodar os testes antes de cada atualização (não entra na imagem que atende os clientes)
+pytest==9.1.1
+mongomock==4.3.0
+mongomock-motor==0.0.36
+httpx==0.27.2

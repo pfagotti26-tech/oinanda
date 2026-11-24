@@ -123,7 +123,16 @@ async def via_page(company_id, user_id, tok):
     log.info('instagram: login do Facebook da empresa %s: %d página(s), %d com Instagram', company_id, len(pages), len(with_ig))
     if not pages: return None
     if not with_ig: return 'sem_pagina'
-    pg = with_ig[0]; acc = pg['instagram_business_account']
+    if len(with_ig) > 1:
+        # quem cuida de várias páginas (agência, sócio de outros negócios) escolhe qual Instagram é desta empresa
+        await db.ig_choice.update_one({'company_id': company_id}, {'$set': {'company_id': company_id, 'user_id': user_id, 'expires_at': now() + timedelta(minutes=20),
+            'pages': [{'id': str(pg['id']), 'name': pg.get('name'), 'token_enc': encrypt(pg['access_token']), 'ig': pg['instagram_business_account']} for pg in with_ig[:50]]}}, upsert=True)
+        return 'escolher'
+    return await link_page(company_id, user_id, with_ig[0], 1)
+
+async def link_page(company_id, user_id, pg, n):
+    """Liga a empresa ao Instagram desta página. pg traz o token da página em access_token."""
+    acc = pg['instagram_business_account']
     if await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': company_id}}):
         log.info('instagram: @%s já está em outra empresa', acc.get('username')); return 'outra_empresa'
     sub = None
@@ -134,7 +143,7 @@ async def via_page(company_id, user_id, tok):
     await db.ig_accounts.update_one({'company_id': company_id}, {'$set': {
         'company_id': company_id, 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name') or pg.get('name'), 'picture': acc.get('profile_picture_url'),
         'page_id': str(pg['id']), 'page_name': pg.get('name'), 'mode': 'page', 'token_enc': encrypt(pg['access_token']), 'expires_at': None,
-        'connected_at': now(), 'connected_by': user_id, 'status': 'connected', 'pages_with_ig': len(with_ig)}}, upsert=True)
+        'connected_at': now(), 'connected_by': user_id, 'status': 'connected', 'pages_with_ig': n}}, upsert=True)
     await db.ig_pending.delete_one({'company_id': company_id})
     await db.audit.insert_one({'id': uid(), 'company_id': company_id, 'actor_id': user_id, 'action': 'Conectou o Instagram', 'target': '@' + str(acc.get('username')),
                                'at': now(), 'expires_at': now() + timedelta(days=180)})
@@ -255,6 +264,28 @@ async def probe(body: ProbeIn, user=Depends(owners)):
         'connected_at': now(), 'connected_by': user['id'], 'status': 'connected'}}, upsert=True)
     await db.ig_pending.delete_one({'company_id': user['company_id']})
     return {'ok': True, 'account': {k: out.get(k) for k in ('id', 'username')}}
+
+@router.get('/ig/choices')
+async def choices(user=Depends(owners)):
+    c = await db.ig_choice.find_one({'company_id': user['company_id']}, {'_id': 0})
+    if not c or aware(c['expires_at']) < now(): raise HTTPException(404, 'A escolha expirou. Clique em Conectar de novo.')
+    taken = {a['ig_id'] for a in await db.ig_accounts.find({'ig_id': {'$in': [str(p['ig']['id']) for p in c['pages']]}, 'company_id': {'$ne': user['company_id']}}, {'_id': 0, 'ig_id': 1}).to_list(100)}
+    return [{'id': str(p['ig']['id']), 'username': p['ig'].get('username'), 'name': p['ig'].get('name'), 'picture': p['ig'].get('profile_picture_url'),
+             'page': p.get('name'), 'taken': str(p['ig']['id']) in taken} for p in c['pages']]
+
+class ChooseIn(BaseModel):
+    id: str = Field(min_length=1, max_length=40)
+
+@router.post('/ig/choose')
+async def choose(body: ChooseIn, user=Depends(owners)):
+    c = await db.ig_choice.find_one({'company_id': user['company_id']}, {'_id': 0})
+    if not c or aware(c['expires_at']) < now(): raise HTTPException(404, 'A escolha expirou. Clique em Conectar de novo.')
+    pg = next((p for p in c['pages'] if str(p['ig']['id']) == body.id), None)
+    if not pg: raise HTTPException(400, 'Conta não encontrada.')
+    r = await link_page(user['company_id'], user['id'], {'id': pg['id'], 'name': pg['name'], 'access_token': decrypt(pg['token_enc']), 'instagram_business_account': pg['ig']}, len(c['pages']))
+    if r == 'outra_empresa': raise HTTPException(409, 'Este Instagram já está conectado em outra empresa do Oi Nanda.')
+    await db.ig_choice.delete_one({'company_id': user['company_id']})
+    return {'ok': True}
 
 @router.delete('/ig/account')
 async def disconnect(request: Request, user=Depends(owners)):

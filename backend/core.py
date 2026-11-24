@@ -16,6 +16,8 @@ else:
 client = _Client(MONGO_URL, tz_aware=True) if MONGO_URL != 'mock' else _Client(tz_aware=True)
 db = client[os.environ.get('DB_NAME', 'oinanda')]
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', '').strip().lower()
+# chave de emergência: ADMIN_MFA=off no .env do servidor desliga a exigência (perdeu o celular e os códigos de recuperação)
+ADMIN_MFA = os.environ.get('ADMIN_MFA', 'on').strip().lower() != 'off'
 ORIGINS = [o.strip() for o in os.environ.get('APP_ORIGINS', 'https://app.oinanda.com.br').split(',') if o.strip()]
 TRIAL_DAYS = 14
 COOKIE = 'oinanda_session'
@@ -55,11 +57,12 @@ async def current_user(request: Request):
     token = request.cookies.get(COOKIE)
     if not token: raise HTTPException(401, 'Entre na sua conta para continuar.')
     session = await db.sessions.find_one({'token_hash': digest(token), 'expires_at': {'$gt': now()}}, {'_id': 0})
-    user = await db.users.find_one({'id': session['user_id'], 'active': True}, {'_id': 0, 'password_hash': 0}) if session else None
+    user = await db.users.find_one({'id': session['user_id'], 'active': True}, {'_id': 0, 'password_hash': 0, 'mfa_secret': 0, 'mfa_pending': 0, 'mfa_recovery': 0, 'mfa_last_step': 0}) if session else None
     if not user: raise HTTPException(401, 'Sessão expirada. Entre novamente.')
     if session.get('auth_version', 0) != user.get('auth_version', 0):
         raise HTTPException(401, 'Sua senha foi alterada. Entre novamente.')
     user['is_admin'] = bool(ADMIN_EMAIL) and user['email'] == ADMIN_EMAIL
+    user['mfa'] = bool(session.get('mfa'))  # entrou com o código do autenticador nesta sessão
     # suporte: o admin "entra como" uma empresa; age como dono dela, e tudo fica registrado com o nome dele
     if user['is_admin'] and session.get('acting_company_id'):
         user['impersonated_by'] = user['name']
@@ -87,4 +90,8 @@ managers = role_at_least('owner', 'manager')
 owners = role_at_least('owner')
 async def admin(user=Depends(current_user)):
     if not user['is_admin']: raise HTTPException(403, 'Área exclusiva do admin do Oi Nanda.')
+    # o admin entra na conta de qualquer cliente: exige o código do aplicativo autenticador além da senha
+    if not ADMIN_MFA: return user
+    if not user.get('mfa_on'): raise HTTPException(403, 'Ative a verificação em duas etapas para usar a área do admin.')
+    if not user.get('mfa'): raise HTTPException(403, 'Saia e entre de novo com o código do aplicativo autenticador.')
     return user

@@ -2436,6 +2436,22 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
  .fhd>div>h1,.nz-hd>div>h1{display:none}}
 .su{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,1fr);gap:36px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px 32px;margin-bottom:16px;position:relative;overflow:hidden}
 .su:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--c)}
+.igch{display:flex;flex-direction:column;gap:8px}.igo{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit}
+.igo:hover:not(:disabled){border-color:var(--c);background:var(--tint)}.igo:disabled{opacity:.5;cursor:not-allowed}.igo img,.igo .igi{width:40px;height:40px;border-radius:50%;flex:none;object-fit:cover}.igo .igi{display:grid;place-items:center;background:var(--tint)}
+.igo span{display:flex;flex-direction:column;min-width:0}.igo b{font-size:15px}.igo small{color:var(--ink3);font-size:12.5px}
+.mf{max-width:640px;margin:8px auto 40px}.mf .card{padding:30px 32px}.mf h2{font-size:23px;letter-spacing:-.4px;margin:10px 0 8px}.mf p.l{color:var(--ink2);font-size:14.5px;line-height:1.55;margin:0}
+.mf-ic{width:46px;height:46px;border-radius:14px;background:var(--oksoft);display:grid;place-items:center;color:var(--ok)}.mf-ic svg{width:24px;height:24px}
+.mf-why{display:grid;gap:10px;margin:20px 0 24px;padding:0;list-style:none}.mf-why li{display:flex;gap:10px;font-size:14px;color:var(--ink2);line-height:1.45}.mf-why li b{color:var(--ink)}.mf-why svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--ok)}
+.mf-st{display:flex;gap:16px;padding:20px 0;border-top:1px solid var(--line)}.mf-st:first-of-type{border-top:0;padding-top:6px}.mf-n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.mf-st>div{flex:1;min-width:0}.mf-st h3{font-size:15.5px;margin:3px 0 4px}.mf-st p{margin:0;color:var(--ink2);font-size:13.5px;line-height:1.5}
+.mf-qr{display:flex;gap:20px;align-items:center;margin-top:12px;flex-wrap:wrap}.mf-qr .q{width:176px;height:176px;border:1px solid var(--line);border-radius:14px;padding:6px;background:#fff}.mf-qr .q svg{width:100%;height:100%}
+.mf-key{font:600 13.5px/1.6 ui-monospace,Menlo,monospace;background:var(--tint);border-radius:10px;padding:8px 12px;word-spacing:4px;overflow-wrap:anywhere;margin-top:8px;user-select:all}
+.mf-code{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.mf-code input{width:170px;font:700 22px/1 ui-monospace,Menlo,monospace;letter-spacing:6px;text-align:center;padding:12px}
+.mf-rc{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}.mf-rc code{font:600 15px ui-monospace,Menlo,monospace;background:var(--tint);border-radius:10px;padding:10px;text-align:center;letter-spacing:1px}
+.mf-ok{display:flex;gap:10px;align-items:center;font-size:14px;margin:6px 0 18px;cursor:pointer}.mf-ok input{width:18px;height:18px}
+.mf-warn{background:var(--warnsoft);color:var(--warn);border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.45;margin-top:16px}
+.mf-f input{font:700 18px ui-monospace,Menlo,monospace;letter-spacing:4px;text-align:center}
+@media(max-width:640px){.mf .card{padding:22px 18px}.mf-qr .q{width:160px;height:160px}.mf-rc code{font-size:14px}}
 .su-l h2{font-size:25px;letter-spacing:-.5px;margin:8px 0 8px}.su-l p{color:var(--ink2);margin:0;font-size:14.5px;line-height:1.5;max-width:460px}
 .su-a{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}.su-a .btn svg{width:16px;height:16px;vertical-align:-3px;margin-left:2px}
 .su-t{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink3)}.su-t svg{width:14px;height:14px}.su-sk{font-size:13px;color:var(--ink3)!important;font-weight:600}
@@ -2913,9 +2929,54 @@ function authView(mode,email){
     if(signup&&taken){em.focus();return}
     b.disabled=true;const body=Object.fromEntries(new FormData(f));
     try{await api(signup?'/auth/signup':'/auth/login',{method:'POST',body});if(signup||location.pathname.startsWith('/cadastro')){history.replaceState(null,'','/');VIEW='inicio'}else VIEW=readPath();await boot()}
-    catch(e){b.disabled=false;if(signup&&e.status===409){taken=true;fieldErr(em,'Este e-mail já tem conta no Oi Nanda. <a id="goLogin">Entrar com ele</a>');$('#goLogin').onclick=()=>go('login',em.value.trim());em.focus()}else $('#e').textContent=e.message}};
+    catch(e){b.disabled=false;if(!signup&&e.status===428){mfaAsk(f);return}if(signup&&e.status===409){taken=true;fieldErr(em,'Este e-mail já tem conta no Oi Nanda. <a id="goLogin">Entrar com ele</a>');$('#goLogin').onclick=()=>go('login',em.value.trim());em.focus()}else $('#e').textContent=e.message}};
   (signup?f.querySelector('[name=name]'):(email?null:em))?.focus();
 }
+function mfaAsk(f){  // admin com verificação em duas etapas: a senha estava certa, falta o código do aplicativo
+  if(!$('#mfaF')){f.querySelector('[name=password]').closest('.field').insertAdjacentHTML('afterend',`<div class="field mfa-f" id="mfaF">
+    <label>Código do aplicativo autenticador</label><input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="000 000" required>
+    <small class="fh">Abra o aplicativo autenticador no celular e digite os 6 números do Oi Nanda. Sem o celular? Digite um dos códigos de recuperação.</small></div>`);
+    f.querySelector('[name=email]').readOnly=true}
+  $('#e').textContent='';const i=$('#mfaF input');i.value='';i.focus()}
+const MF_CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+const MF_SH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>';
+async function mfaView(){  // área do admin: só com a verificação em duas etapas ligada e usada neste acesso
+  const P=$('#page'),wrap=h=>{P.innerHTML=`<div class="mf"><div class="card">${h}</div></div>`};
+  if(ME.mfa.on){  // já ligada, mas este acesso entrou só com a senha (ex.: link de nova senha)
+    wrap(`<span class="mf-ic">${MF_SH}</span><h2>Confirme que é você</h2><p class="l">Para abrir a área do admin, entre de novo com o código do aplicativo autenticador. Leva 10 segundos.</p>
+      <div class="su-a"><button class="btn p" id="mfOut">Sair e entrar com o código</button></div>`);
+    $('#mfOut').onclick=async()=>{const em=ME.user.email;await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');VIEW='inicio';authView('login',em)};return}
+  wrap(`<span class="mf-ic">${MF_SH}</span><h2>Proteja a área do admin</h2>
+    <p class="l">Daqui você entra na conta de qualquer cliente. Por isso, além da senha, o Oi Nanda vai pedir um código que muda a cada 30 segundos no seu celular.</p>
+    <ul class="mf-why"><li>${MF_CHK}<span><b>Senha vazada não basta.</b> Sem o seu celular, ninguém entra aqui.</span></li>
+      <li>${MF_CHK}<span><b>Só no admin.</b> A conta da sua empresa e a dos clientes continuam entrando como hoje.</span></li>
+      <li>${MF_CHK}<span><b>3 minutos.</b> Você precisa do celular por perto.</span></li></ul>
+    <div class="su-a"><button class="btn p" id="mfGo">Começar</button></div>`);
+  $('#mfGo').onclick=async()=>{const b=$('#mfGo');b.disabled=true;let st;try{st=await api('/admin/2fa/start',{method:'POST',body:{}})}catch(e){b.disabled=false;toast(e.message);return}
+    wrap(`<h2 style="margin-top:0">Ligar a verificação em duas etapas</h2><p class="l" style="margin-bottom:14px">Siga os 3 passos com o celular na mão.</p>
+      <div class="mf-st"><span class="mf-n">1</span><div><h3>Instale um aplicativo autenticador</h3><p>Google Authenticator, Microsoft Authenticator ou o gerenciador de senhas que você já usa (1Password, Bitwarden). Todos são grátis.</p></div></div>
+      <div class="mf-st"><span class="mf-n">2</span><div><h3>Aponte a câmera do aplicativo para o código</h3><p>No aplicativo, toque em <b>+</b> e em <b>Ler QR code</b>.</p>
+        <div class="mf-qr"><div class="q">${st.qr.replace(/^[\s\S]*?(<svg)/,'$1')}</div><div style="flex:1;min-width:200px"><p>Está no celular e não dá para escanear? Escolha <b>Digitar chave</b> no aplicativo e use:</p><div class="mf-key">${esc(st.secret)}</div>
+        <a class="lnk" id="mfCp" style="font-size:13px;font-weight:700;cursor:pointer;display:inline-block;margin-top:6px">Copiar chave</a></div></div></div></div>
+      <div class="mf-st"><span class="mf-n">3</span><div><h3>Digite o código que apareceu</h3><p>São 6 números com o nome Oi Nanda. Eles mudam a cada 30 segundos.</p>
+        <form class="mf-code" id="mfF"><input id="mfC" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="000000" aria-label="Código de 6 números"><button class="btn p">Confirmar</button></form><div class="err" id="mfE"></div></div></div>`);
+    $('#mfCp').onclick=async()=>{try{await navigator.clipboard.writeText(st.secret.replace(/ /g,''));$('#mfCp').textContent='Copiada ✓'}catch(e){toast('Não consegui copiar.')}};
+    const c=$('#mfC');c.oninput=()=>{c.value=c.value.replace(/\D/g,'').slice(0,6);$('#mfE').textContent=''};
+    $('#mfF').onsubmit=async ev=>{ev.preventDefault();if(c.value.length!==6){$('#mfE').textContent='Digite os 6 números.';c.focus();return}
+      const b=ev.target.querySelector('button');b.disabled=true;let r;try{r=await api('/admin/2fa/confirm',{method:'POST',body:{code:c.value}})}catch(e){b.disabled=false;$('#mfE').textContent=e.message;c.select();return}
+      const txt='Oi Nanda — códigos de recuperação do admin\nCada código vale uma vez. Use quando estiver sem o celular.\n\n'+r.recovery.join('\n')+'\n';
+      wrap(`<span class="mf-ic">${MF_CHK}</span><h2>Ligada. Agora guarde estes códigos</h2>
+        <p class="l">Se perder ou trocar de celular, cada código abaixo substitui o aplicativo <b>uma vez</b>. Eles não aparecem de novo.</p>
+        <div class="mf-rc">${r.recovery.map(x=>`<code>${esc(x)}</code>`).join('')}</div>
+        <div class="su-a" style="margin:0 0 18px"><button class="btn" id="mfCc">Copiar códigos</button><button class="btn" id="mfDl">Baixar arquivo</button></div>
+        <label class="mf-ok"><input type="checkbox" id="mfK"> Guardei em um lugar seguro (gerenciador de senhas ou papel)</label>
+        <button class="btn p" id="mfEnd" disabled>Ir para a área do admin</button>
+        <div class="mf-warn">Não guarde no mesmo celular do aplicativo. Se perder os dois, o acesso ao admin só volta pelo servidor.</div>`);
+      $('#mfCc').onclick=async()=>{try{await navigator.clipboard.writeText(txt);$('#mfCc').textContent='Copiados ✓'}catch(e){toast('Não consegui copiar.')}};
+      $('#mfDl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download='oinanda-codigos-recuperacao.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+      $('#mfK').onchange=e=>$('#mfEnd').disabled=!e.target.checked;
+      $('#mfEnd').onclick=async()=>{await refresh();go(VIEW.startsWith('a-')?VIEW:'a-visao')}};
+    c.focus()}}
 function passwordView(){
   $('#root').innerHTML=`<div class="auth"><div class="card"><span class="logo"><i>oi</i><b>Nanda</b></span>
    <h1>Crie sua senha pessoal</h1><p class="l">Você entrou com uma senha provisória. Escolha a sua para continuar.</p>
@@ -3327,13 +3388,22 @@ function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&[
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
   if(v!=='inicio')suLoad().then(()=>suPill());
+  if(v.startsWith('a-')&&ME?.mfa?.need&&!(ME.mfa.on&&ME.mfa.ok))return mfaView();
   return (VIEWS[v]||VIEWS.inicio)().catch(e=>{$('#page').innerHTML=`<div class="card err">${esc(e.message)}</div>`})}
 
 /* ---------- telas ---------- */
 /* Instagram Direct */
+async function igChoose(own){  // o login do Facebook trouxe mais de uma página com Instagram: a pessoa escolhe qual é desta empresa
+  let L;try{L=await api('/ig/choices')}catch(e){toast(e.message);return}
+  const o=overlay(`<div class="modal" style="max-width:480px"><div class="row"><h2 style="font-size:20px">Qual Instagram é da ${esc(ME.company.name)}?</h2><button class="x">×</button></div>
+    <p class="hint" style="margin:0 0 14px">Seu Facebook cuida de mais de uma página com Instagram. Escolha o que vai atender pelo Oi Nanda nesta empresa.</p>
+    <div class="igch">${L.map(x=>`<button type="button" class="igo" data-id="${esc(x.id)}" ${x.taken?'disabled':''}>
+      ${x.picture?`<img src="${esc(x.picture)}" alt="">`:`<span class="igi">${IGI}</span>`}<span><b>@${esc(x.username||'')}</b><small>${x.taken?'já conectado em outra empresa':'Página '+esc(x.page||x.name||'')}</small></span></button>`).join('')}</div>
+    <div class="err" id="igE"></div></div>`);
+  document.querySelectorAll('.igo').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await api('/ig/choose',{method:'POST',body:{id:b.dataset.id}});document.querySelectorAll('.ov').forEach(x=>x.remove());toast('Instagram conectado.');renderIg(own)}catch(e){b.disabled=false;$('#igE').textContent=e.message}})}
 async function renderIg(own){const box=$('#igc');if(!box)return;let d;try{d=await api('/ig/status')}catch(e){box.innerHTML='';return}
   const mg=$('#mgSt');if(mg)mg.textContent=!chOn('messenger')?'':!d.account?'Conecte o Instagram primeiro — o Messenger vem junto.':(d.page&&d.page.ready)?'Recebendo pela página '+(d.page.name||'do Facebook')+'.':'Reconecte o Instagram pelo login do Facebook para o Messenger funcionar.';
-  const q=new URLSearchParams(location.search).get('ig');if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.',sem_conta:'Nenhuma conta do Instagram foi compartilhada. Conecte de novo e marque a conta profissional.',aguardando:'Autorizado. Falta a Meta liberar a conta: o Oi Nanda vai conferir sozinho nos próximos minutos.',sem_pagina:'Nenhuma Página do Facebook com Instagram ligado. No Instagram: Configurações › Central de Contas, ligue a conta a uma Página e conecte de novo.'}[q]||'')}
+  const q=new URLSearchParams(location.search).get('ig');if(q==='escolher'){history.replaceState(null,'',location.pathname);igChoose(own)}else if(q){history.replaceState(null,'',location.pathname);toast({ok:'Instagram conectado.',cancelado:'Conexão com o Instagram cancelada.',expirado:'O link expirou. Tente conectar de novo.',erro:'O Instagram não autorizou. Confira se a conta é profissional e tente de novo.',outra_empresa:'Este Instagram já está conectado em outra empresa.',sem_conta:'Nenhuma conta do Instagram foi compartilhada. Conecte de novo e marque a conta profissional.',aguardando:'Autorizado. Falta a Meta liberar a conta: o Oi Nanda vai conferir sozinho nos próximos minutos.',sem_pagina:'Nenhuma Página do Facebook com Instagram ligado. No Instagram: Configurações › Central de Contas, ligue a conta a uma Página e conecte de novo.'}[q]||'')}
   const a=d.account,hd=`<div class="row" style="gap:10px;margin-bottom:8px"><span class="igl">${IGI}</span><h3 style="margin:0">Instagram Direct</h3>${a?`<span class="pill ${a.status==='connected'?'ok':'bad'}">${a.status==='connected'?'conectado':'reconectar'}</span>`:''}</div>`;
   if(!d.ready){box.innerHTML=hd+'<p class="hint">O Instagram ainda está sendo configurado no servidor do Oi Nanda.</p>';return}
   clearTimeout(renderIg._t);
@@ -6360,7 +6430,11 @@ async function adVisao(){
     ${op(ops.email,'E-mails','envio pelo Resend '+(ops.email?'ativo':'desligado: nenhum e-mail sai'))}
     ${op(ops.wa_notices,'Avisos por WhatsApp',ops.wa_notices?'saindo pelo número do Oi Nanda':ops.wa_notices_why==='bloqueado'?'o número do Oi Nanda está com bloqueio na Meta: os avisos saem só por e-mail até liberar':'sem número conectado: os avisos saem só por e-mail')}
     ${op(ops.errors_24h?false:true,'Erros nas últimas 24h',ops.errors_24h?`${ops.errors_24h} ${ops.errors_24h===1?'erro':'erros'} · <a href="#" id="adErr">ver</a>`:'nenhum')}
-    ${op(ops.backup_at?true:null,'Backup',ops.backup_at?'última cópia em '+dt(ops.backup_at):'cópia fora do servidor ainda não configurada')}
+    ${(()=>{const old=x=>!x||Date.now()-new Date(x)>36e5*30;  // backup diário: mais de 30 h sem cópia é problema
+      return !ops.backup_at?op(false,'Backup','nenhuma cópia ainda. Rode deploy/backup.sh no servidor.'):old(ops.backup_at)?op(false,'Backup','última cópia em '+dt(ops.backup_at)+'. O backup diário parou.')
+       :!ops.offsite_at?op(null,'Backup','cópia diária só dentro do servidor. Falta ligar a cópia fora (setup-offsite.sh).')
+       :old(ops.offsite_at)?op(false,'Backup','a cópia fora do servidor parou em '+dt(ops.offsite_at)+'.')
+       :op(true,'Backup','cópia de hoje dentro e fora do servidor ('+dt(ops.offsite_at)+')')})()}
     <div class="ad-op"><i class="${A.wa_connected?'ok':'warn'}"></i><div><b>Canais dos clientes</b><small>${A.wa_connected||0} com WhatsApp · ${A.ig_connected||0} com Instagram</small></div></div></div>
    <div class="card"><h2>Recebido por mês</h2>${o.revenue_months.some(m=>m.total)?`<svg class="ad-chart" viewBox="0 0 100 38" role="img" aria-label="Recebido nos últimos meses">${o.revenue_months.map((m,i)=>{const h=Math.max(.6,24*m.total/max);return `<rect x="${i*bw+bw*.2}" y="${30-h}" width="${bw*.6}" height="${h}" rx="1" fill="${i===o.revenue_months.length-1?'#E8603F':'#F3C9BB'}"><title>${m.label}: ${brl(m.total)}</title></rect>${m.total?`<text x="${i*bw+bw/2}" y="${28-h}" font-size="2.4" text-anchor="middle" fill="#17212B">${brl(m.total).replace('R$ ','')}</text>`:''}<text x="${i*bw+bw/2}" y="36" font-size="2.6" text-anchor="middle" fill="#4B5968">${m.label}</text>`}).join('')}</svg>`:'<div class="empty">Nenhum pagamento recebido nos últimos 6 meses.</div>'}</div>
    <div class="card"><h2>Pagantes por plano</h2><div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">${o.plans.map(p=>`<div class="ad-plan"><span>${esc(p.name)}</span><div class="ad-meter"><i style="width:${o.paying?Math.round(100*p.count/o.paying):0}%"></i></div><span>${p.count} · ${brl(p.mrr)}</span></div>`).join('')}</div>
