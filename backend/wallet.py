@@ -31,7 +31,8 @@ def compute_holdings(sales, products, cancels=None):
             p = products.get(i.get('product_id')) or {}
             x = h.setdefault(key, {'key': key, 'product_id': i.get('product_id'), 'name': p.get('name') or i['name'], 'category': p.get('category') or i.get('category') or '',
                                    'first_at': d, 'last_at': d, 'count': 0, 'spent': 0.0, 'expires_at': None})
-            x['last_at'] = d; x['count'] += 1; x['spent'] = round(x['spent'] + (i.get('total') or 0), 2)
+            x['last_at'] = d; x['count'] += 1; x['_new'] = max(x.get('_new') or d, aware(s.get('created_at')) or d)  # quando foi registrada
+            x['spent'] = round(x['spent'] + (i.get('total') or 0), 2)
             dur = p.get('duration_days')
             if i.get('expires_at'): x['expires_at'] = max(aware(i['expires_at']), x['expires_at']) if x['expires_at'] else aware(i['expires_at'])  # vencimento informado (planilha)
             elif p.get('recurring'): x['recurring'] = True; x['expires_at'] = None  # assinatura: segue ativa, sem vencimento
@@ -40,7 +41,9 @@ def compute_holdings(sales, products, cancels=None):
                 x['expires_at'] = start + timedelta(days=dur * max(1, int(round(i.get('qty') or 1))))
     for x in h.values():  # assinatura cancelada: termina na data do cancelamento (se comprou de novo depois, voltou a valer)
         ca = aware((cancels or {}).get(x.get('product_id')))
-        if x.get('recurring') and ca and ca >= x['last_at']: x['cancelled_at'] = ca; x['expires_at'] = ca
+        # comprou de novo depois de cancelar (mesmo com a venda datada do mesmo dia, antes da hora do cancelamento): voltou a valer
+        if x.get('recurring') and ca and ca >= x['last_at'] and ca >= x.get('_new', x['last_at']): x['cancelled_at'] = ca; x['expires_at'] = ca
+        x.pop('_new', None)
     return list(h.values())
 
 def cancels_of(contact):
@@ -64,7 +67,7 @@ async def products_map(company_id):
 
 async def refresh_holdings(company_id, contact_id, products=None):
     products = products or await products_map(company_id)
-    sales = await db.sales.find({'company_id': company_id, 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'items': 1, 'date': 1}).to_list(1000)
+    sales = await db.sales.find({'company_id': company_id, 'contact_id': contact_id, 'status': 'ok'}, {'_id': 0, 'items': 1, 'date': 1, 'created_at': 1}).to_list(1000)
     ct = await db.contacts.find_one({'id': contact_id}, {'_id': 0, 'sub_cancel': 1})
     hs = compute_holdings(sales, products, cancels_of(ct))
     nxt = min((aware(x['expires_at']) for x in hs if x.get('expires_at') and aware(x['expires_at']) >= now()), default=None)
