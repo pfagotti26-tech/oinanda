@@ -153,6 +153,8 @@ app.include_router(voice_router, prefix="/api")
 app.include_router(home_router, prefix="/api")
 from setup import router as setup_router
 app.include_router(setup_router, prefix="/api")
+from closing import router as closing_router
+app.include_router(closing_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
 app.include_router(wallet_router, prefix="/api")
 app.include_router(campaigns_router, prefix="/api")
