@@ -57,3 +57,24 @@ def test_assuntos_que_ela_nao_trata_entram_no_prompt(monkeypatch):
         c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'atende convênio?'}]})
         assert '- Convênio\n- Desconto ou negociação de preço' in seen[-1]
         assert 'pedir para falar com uma pessoa, reclamar' in seen[-1]  # os de sempre continuam valendo com a lista preenchida
+
+def test_ensinar_a_partir_da_conversa_real(monkeypatch):
+    from core import db
+    async def fake_llm(system, msgs, **k):
+        if system == ai.FIX_PT: return msgs[0]['content'], {}
+        return '{"reply":"Atendemos Bradesco e Amil. Qual é o seu?"}', {}
+    monkeypatch.setattr(ai, 'llm', fake_llm)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Lívia', 'email': 'lv5@x.com', 'password': 'senha-forte-1', 'company': 'Bella', 'segment': 'clinica'})
+        cid = c.get('/api/auth/me').json()['user']['company_id']
+        c.portal.call(lambda: db.contacts.insert_one({'id': 'ct1', 'company_id': cid, 'name': 'Maria Souza'}))
+        c.portal.call(lambda: db.messages.insert_one({'id': 'm1', 'company_id': cid, 'contact_id': 'ct1', 'dir': 'out', 'text': 'Não sei', 'by': 'Nanda (IA)'}))
+        conv = [{'dir': 'in', 'text': 'atende convênio?'}]
+        r = c.post('/api/ai/correct', json={'messages': conv, 'msg_id': 'm1', 'mode': 'time'}).json()
+        assert r['lesson']['kind'] == 'time' and r['lesson']['source'] == 'conversa' and r['lesson']['contact_name'] == 'Maria Souza'
+        assert r['lesson']['before'] == 'Não sei' and r['lesson']['note'] == ai.TIME_NOTE
+        assert c.portal.call(lambda: db.messages.find_one({'id': 'm1'}))['taught'] == r['lesson']['id']
+        assert c.put('/api/ai/examples/' + r['lesson']['id'], json={'text': 'outra coisa'}).status_code == 400  # regra de passar ao time não se edita
+        c.delete('/api/ai/examples/' + r['lesson']['id'])
+        assert 'taught' not in c.portal.call(lambda: db.messages.find_one({'id': 'm1'}))
+        assert c.post('/api/ai/correct', json={'messages': conv, 'msg_id': 'outra-empresa', 'text': 'oi oi'}).status_code == 404
