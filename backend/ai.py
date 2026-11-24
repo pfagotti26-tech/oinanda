@@ -644,6 +644,8 @@ async def test(body: TestIn, user=Depends(managers)):
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
 
+TIME_NOTE = 'Não responda isso: avise com gentileza que alguém do time vai continuar a conversa e chame o time.'
+
 FIX_PT = """Você revisa mensagens curtas de WhatsApp em português do Brasil escritas pelo dono de um negócio.
 Corrija SOMENTE: ortografia, acentos, concordância, crase, pontuação e letra maiúscula no começo das frases.
 Não troque palavras por sinônimos. Não mude o sentido, o tom, a ordem nem o tamanho. Não acrescente nem tire informação. Não acrescente emoji.
@@ -672,8 +674,9 @@ async def fix_pt(text):
 class CorrectIn(BaseModel):
     messages: List[dict] = Field(min_length=1, max_length=30)  # a conversa até a mensagem do cliente (sem a resposta que está sendo corrigida)
     original: str = Field(default='', max_length=2000)          # o que a Nanda tinha respondido
-    text: str = Field(min_length=2, max_length=1500)            # a resposta reescrita pelo dono, ou o que ele quer que ela mude
-    mode: Literal['texto', 'pedido'] = 'texto'
+    text: str = Field(default='', max_length=1500)              # a resposta reescrita pelo dono, ou o que ele quer que ela mude
+    mode: Literal['texto', 'pedido', 'time'] = 'texto'           # time: ela não trata esse assunto, passa para o time
+    msg_id: Optional[str] = Field(default=None, max_length=40)  # corrigindo uma resposta de verdade, numa conversa com cliente
 
 @router.post('/ai/correct')
 async def correct(body: CorrectIn, request: Request, user=Depends(managers)):
@@ -683,17 +686,31 @@ async def correct(body: CorrectIn, request: Request, user=Depends(managers)):
     msgs = to_llm(body.messages)
     if not msgs or msgs[-1]['role'] != 'user': raise HTTPException(400, 'Falta a mensagem do cliente.')
     q = msgs[-1]['content'].strip().replace('\n', ' ')[:300]
-    raw = re.sub(r'\s+', ' ', body.text).strip()
-    fixed, u1 = await fix_pt(raw)
-    cid = user['company_id']; s = await settings_for(cid); key = gap_key(q)
-    lesson = {'id': uid(), 'q': q, 'a': fixed if body.mode == 'texto' else '', 'note': fixed if body.mode == 'pedido' else '',
-              'before': body.original.strip()[:600], 'at': now().isoformat(), 'by': user.get('name')}
+    cid = user['company_id']
+    msg = None
+    if body.msg_id:
+        msg = await db.messages.find_one({'id': body.msg_id, 'company_id': cid, 'dir': 'out'}, {'_id': 0, 'id': 1, 'contact_id': 1, 'text': 1})
+        if not msg: raise HTTPException(404, 'Mensagem não encontrada.')
+    if body.mode == 'time': raw, fixed, u1 = TIME_NOTE, TIME_NOTE, {}
+    else:
+        raw = re.sub(r'\s+', ' ', body.text).strip()
+        if len(raw) < 2: raise HTTPException(400, 'Escreva a resposta ou o que ela deve mudar.')
+        fixed, u1 = await fix_pt(raw)
+    s = await settings_for(cid); key = gap_key(q)
+    lesson = {'id': uid(), 'q': q, 'a': fixed if body.mode == 'texto' else '', 'note': fixed if body.mode != 'texto' else '',
+              'kind': {'texto': 'resposta', 'pedido': 'pedido', 'time': 'time'}[body.mode],
+              'before': (body.original or (msg or {}).get('text') or '').strip()[:600], 'at': now().isoformat(), 'by': user.get('name'), 'source': 'conversa' if msg else 'teste'}
+    if msg:
+        c = await db.contacts.find_one({'id': msg['contact_id'], 'company_id': cid}, {'_id': 0, 'name': 1})
+        lesson.update(contact_id=msg['contact_id'], contact_name=(c or {}).get('name') or '', msg_id=msg['id'])
+        await db.messages.update_one({'id': msg['id']}, {'$set': {'taught': lesson['id']}})
     ex = [e for e in (s.get('examples') or []) if gap_key(e.get('q', '')) != key][-59:] + [lesson]
     await db.ai_settings.update_one({'company_id': cid}, {'$set': {'examples': ex}}, upsert=True)
     await db.ai_gaps.update_many({'company_id': cid, 'key': key, 'status': 'open'}, {'$set': {'status': 'answered', 'answered_at': now()}})
     await audit(request, user, 'Corrigiu uma resposta da Nanda', q[:120])
     s['examples'] = ex
-    text, u2 = await llm(await system_for(s, user['company']), msgs)
+    try: text, u2 = await llm(await system_for(s, user['company']), msgs)
+    except HTTPException: text, u2 = '', {}  # aprendeu mesmo assim; só não deu para mostrar a resposta nova agora
     for u in (u1, u2):
         if u: await track(cid, u, 'tests')
     d = parse(text)
@@ -712,6 +729,7 @@ async def edit_example(eid: str, body: ExampleIn, request: Request, user=Depends
     raw = re.sub(r'\s+', ' ', body.text).strip()
     fixed, u = await fix_pt(raw)
     if u: await track(user['company_id'], u, 'tests')
+    if e.get('kind') == 'time': raise HTTPException(400, 'Esta é uma regra de passar para o time: apague se quiser que ela volte a responder.')
     e['a' if e.get('a') else 'note'] = fixed; e['at'] = now().isoformat(); e['by'] = user.get('name')
     await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'examples': ex}}, upsert=True)
     await audit(request, user, 'Editou uma resposta ensinada da Nanda', e.get('q', '')[:120])
@@ -722,6 +740,7 @@ async def del_example(eid: str, request: Request, user=Depends(managers)):
     s = await settings_for(user['company_id'])
     ex = [e for e in (s.get('examples') or []) if e.get('id') != eid]
     await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'examples': ex}}, upsert=True)
+    await db.messages.update_many({'company_id': user['company_id'], 'taught': eid}, {'$unset': {'taught': ''}})
     await audit(request, user, 'Apagou uma resposta ensinada da Nanda', eid)
     return {'examples': ex}
 
