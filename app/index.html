@@ -2273,8 +2273,25 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-float{position:absolute;background:#fff;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:700;box-shadow:0 14px 30px -14px rgba(23,33,43,.35);display:flex;gap:8px;align-items:center;z-index:2}.ob-float i{font-style:normal}
 /* 2 */
 .ob-b h1{font-size:28px}.ob-b .body{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:24px;padding:4px 28px 40px;max-width:1200px;width:100%;margin:0 auto;align-items:start}
-.ob-chat{background:#EFE7DE;border-radius:18px;padding:16px 14px;display:grid;gap:8px;align-content:end;margin-top:18px;height:min(52vh,460px);overflow-y:auto;scroll-behavior:smooth}
+.ob-chat{background:#EFE7DE;border-radius:18px;padding:16px 14px;display:grid;gap:8px;align-content:end;margin-top:18px;min-height:150px;max-height:min(60vh,520px);overflow-y:auto;scroll-behavior:smooth}.ob-chat.has{min-height:260px}
 .ob-chat .ob-m{font-size:14px;max-width:78%}
+/* corrigir resposta da Nanda no teste */
+.fx-go{justify-self:end;display:inline-flex;align-items:center;gap:5px;margin:-3px 2px 2px;padding:3px 9px;border-radius:999px;font:inherit;font-size:12px;font-weight:600;color:#6b5d51;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.06);cursor:pointer}
+.fx-go svg{width:12px;height:12px}.fx-go:hover{background:#fff;color:var(--c2)}
+.ob-m.fx-on{outline:2px solid var(--c);outline-offset:2px}
+.fx{justify-self:stretch;background:#fff;border-radius:14px;padding:12px;display:grid;gap:8px;box-shadow:0 6px 20px rgba(60,40,20,.12);border:1px solid #EADFD3;animation:obIn .25s ease both}
+.fx-gap{margin:0;font-size:12.5px;color:#6B5200;background:#FFF6D9;border-radius:9px;padding:7px 10px}
+.fx-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.fx-hd b{font-size:14px}
+.fx-seg{display:inline-flex;background:#F3ECE4;border-radius:999px;padding:3px}.fx-seg button{border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--ink2);padding:5px 11px;border-radius:999px;cursor:pointer}
+.fx-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.fx-t{width:100%;border:1.5px solid #DCD2C9;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;line-height:1.45;resize:none;background:#fff;color:var(--ink);min-height:76px}.fx-t:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
+.fx-h{margin:0;font-size:12px;color:var(--ink3)}.fx-a{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.fx-a .err{font-size:12px}
+.fx-ok{justify-self:end;max-width:84%;display:flex;gap:7px;align-items:flex-start;font-size:12px;color:#20603D;background:#E6F5EC;border-radius:10px;padding:6px 10px;margin-top:-3px}
+.fx-ok i{font-style:normal;font-weight:800}.fx-ok s{color:#8a6a6a}.fx-ok em{font-style:normal;font-weight:700}
+.nz-ls{background:#F3FAF5;border:1px solid #CDE8D6;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.nz-gi.ok{background:#DDF2E4;color:#1F7A45}
+.nz-lq{background:#fff;border:1px solid #E1EEE5;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
+.nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lqa{display:flex;gap:12px;align-self:center}.nz-lqe{grid-column:1/-1;display:grid;gap:8px;margin-top:4px}
+
 .ob-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13.5px;max-width:300px}
 .ob-cmp{margin-top:12px;display:grid;gap:10px}
 .ob-cmp textarea{width:100%;border:1.5px solid #DCD2C9;border-radius:14px;padding:13px 15px;font:inherit;font-size:15px;resize:none;min-height:54px;max-height:140px;background:#fff;color:var(--ink);line-height:1.4}
@@ -2295,6 +2312,15 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-ey{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--c2);background:var(--soft);border-radius:99px;padding:4px 11px;margin-bottom:10px}
 .ob-ey.ok{color:var(--ok);background:var(--oksoft);text-transform:none;letter-spacing:0;font-size:12.5px}.ob-ey.ok .ob-lnk{color:var(--ok);font-size:12.5px}.ob-ey.warn{color:var(--warn);background:var(--warnsoft)}
 .ob-tf{display:grid;gap:10px;margin-top:20px}.ob-lb{font-size:13.5px;font-weight:700;color:var(--ink)}
+
+.ob-hrs{display:grid;gap:8px;margin-top:10px}.ob-hr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.ob-dys{display:flex;gap:4px;flex-wrap:wrap}.ob-dys button{min-width:42px;height:36px;border-radius:10px;border:1.5px solid #DCD2C9;background:#fff;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}
+.ob-dys button.on{background:var(--c);border-color:var(--c);color:#fff}
+.ob-tm{display:inline-flex;align-items:center;gap:6px}.ob-tm select{height:36px;border:1.5px solid #DCD2C9;border-radius:10px;padding:0 8px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}.ob-tm em{font-style:normal;color:var(--ink3);font-size:13px;line-height:1}
+.ob-he{flex-basis:100%;font-size:12px}.ob-hft{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.ob-hsw{font-size:12.5px}
+.ob-hpv{margin:0;font-size:12.5px;color:#20603D;background:#EEF8F1;border-radius:9px;padding:6px 10px}
+#obHg{display:grid;gap:10px}#obHf{width:100%;border:1.5px solid #DCD2C9;border-radius:12px;padding:12px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+.ob-wh{display:grid;gap:6px;margin-top:14px}.ob-wh input{width:100%;border:1.5px solid #DCD2C9;border-radius:12px;padding:12px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}.ob-wh input:focus,#obHf:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
 .ob-its{display:grid;gap:8px}.ob-it{display:grid;grid-template-columns:minmax(0,1fr) 150px 32px;gap:8px;align-items:center}
 .ob-tf input{width:100%;border:1.5px solid #DCD2C9;border-radius:12px;padding:12px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}.ob-tf input:focus,.ob-gap textarea:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
 .ob-pr{position:relative;display:block}.ob-pr em{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-style:normal;font-size:14px;color:var(--ink3);font-weight:700}.ob-pr input{padding-left:38px}
@@ -3181,9 +3207,55 @@ function signupView(email){
   f.name.focus();
 }
 
+// horário em dias e horas (sem digitar): vira texto natural para a Nanda e para a prévia
+const OB_DN=['segunda','terça','quarta','quinta','sexta','sábado','domingo'],OB_DP=['segundas','terças','quartas','quintas','sextas','sábados','domingos'],OB_DS=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+const obHH=t=>{const [h,m]=String(t).split(':');return (+h)+'h'+(m&&m!=='00'?m:'')};
+function obDays(ds){ds=[...new Set(ds)].sort((a,b)=>a-b);if(!ds.length)return '';if(ds.length===7)return 'todos os dias';
+  if(ds.length>=3&&ds[ds.length-1]-ds[0]===ds.length-1)return `de ${OB_DN[ds[0]]} a ${OB_DN[ds[ds.length-1]]}`;
+  const art=k=>k>=5?'aos':'às';return ds.map((k,i)=>`${i===0||art(k)!==art(ds[i-1])?art(k)+' ':''}${OB_DP[k]}`).join(', ').replace(/, ([^,]*)$/,' e $1')}
+const obHrsParts=g=>(g||[]).filter(r=>r.days.length&&r.from&&r.to&&r.from<r.to).map(r=>`${obDays(r.days)}, das ${obHH(r.from)} às ${obHH(r.to)}`);
+const obCap=t=>t?t.charAt(0).toUpperCase()+t.slice(1):t;
+const OB_TIMES=Array.from({length:38},(_,i)=>{const m=300+i*30;return String(Math.floor(m/60)).padStart(2,'0')+':'+(m%60?'30':'00')});
 const OB_PH={clinica:[['Limpeza de pele','180'],['Drenagem linfática','120']],studio:[['Plano mensal','290'],['Aula avulsa','60']],salao:[['Corte','50'],['Corte + barba','85']],
   imobiliaria:[['Apartamento 2 quartos, Centro','450000'],['Aluguel casa 3 quartos','3200']],loja:[['Vestido midi','259'],['Frete para todo o Brasil','25']],escola:[['Mensalidade','390'],['Matrícula','100']],
   servicos:[['Abertura de MEI','350'],['Contabilidade mensal','290']],restaurante:[['Pizza grande','69'],['Taxa de entrega','8']],lancamento:[['Curso completo','997'],['Mentoria','2500']],outro:[['Seu principal serviço','150'],['Outro serviço','300']]};
+// ---------- Corrigir a resposta da Nanda no chat de teste (onboarding e página da Nanda) ----------
+// O dono reescreve a resposta do jeito dele (a gente só ajusta o português) ou diz o que ela deve mudar. Vira resposta ensinada e ela refaz no lugar.
+const FX={};
+function fxMsgs(hist,nanda,edit){let out='',pend='';const flush=()=>{out+=pend;pend=''};
+  hist.forEach((m,i)=>{
+   if(m.dir==='sys'){out+=`<div class="ob-m sys">${esc(m.text)}</div>`;return}
+   flush();
+   if(m.dir==='in'){out+=`<div class="ob-m in">${esc(m.text)}${m.at?`<small>${m.at}</small>`:''}</div>`;return}
+   const ed=edit&&edit.i===i;
+   out+=`<div class="ob-m out ${ed?'fx-on':''}"><b>${esc(nanda)}</b>${esc(m.text)}${m.at?`<small>${m.at}</small>`:''}</div>`+
+    (m.lesson?`<div class="fx-ok"><i>✓</i><span><b>Refeita com o que você ensinou.</b>${m.changes&&m.changes.length?` Ajustamos o português: ${m.changes.slice(0,3).map(c=>`<s>${esc(c[0]||'·')}</s> → <em>${esc(c[1]||'·')}</em>`).join(', ')}.`:''}</span></div>`:'');
+   pend=ed?fxBox(m,edit):`<button type="button" class="fx-go" data-fx="${i}">${svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>')}${m.gap?'Ensinar a resposta':'Corrigir resposta'}</button>`});
+  flush();return out}
+function fxBox(m,e){const t=e.mode==='texto';
+  return `<div class="fx" data-fxbox>${m.gap&&!e.touched?`<p class="fx-gap">Ela não sabia responder isso e chamaria o seu time. Se você ensinar, da próxima vez ela mesma responde.</p>`:''}
+   <div class="fx-hd"><b>${t?'Como ela deveria responder?':'O que ela deve mudar?'}</b><div class="fx-seg" role="tablist"><button type="button" class="${t?'on':''}" data-fm="texto">Reescrever</button><button type="button" class="${t?'':'on'}" data-fm="pedido">Dizer o que mudar</button></div></div>
+   <textarea class="fx-t" rows="3" maxlength="1500" placeholder="${t?'Escreva a resposta do seu jeito':'Ex.: não chame o time, pergunte qual dia e horário a pessoa prefere'}" aria-label="${t?'Resposta corrigida':'O que mudar'}">${esc(t?e.texto:e.pedido)}</textarea>
+   <p class="fx-h">${t?'Escreva como você responderia. A gente só corrige o português, sem mudar o que você disse.':'Ela segue o seu pedido nesta e nas próximas conversas parecidas.'}</p>
+   <div class="fx-a"><button type="button" class="btn sm p" data-fs>Salvar e refazer</button><button type="button" class="ob-lnk" data-fc>Cancelar</button><span class="err" data-fe></span></div></div>`}
+// liga os botões depois de desenhar. o: {hist, nanda, redraw(), state:{edit}, done(r)}
+function fxBind(box,o){
+  box.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fx,m=o.hist[i];o.state.edit={i,mode:'texto',texto:m.gap?'':m.text,pedido:''};o.redraw();
+    const ta=box.querySelector('.fx-t');if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);ta.closest('.fx').scrollIntoView({block:'nearest',behavior:'smooth'})}});
+  const f=box.querySelector('[data-fxbox]');if(!f)return;const e=o.state.edit,ta=f.querySelector('.fx-t');
+  ta.style.height=Math.min(200,Math.max(76,ta.scrollHeight))+'px';
+  ta.oninput=()=>{e[e.mode]=ta.value;e.touched=true;ta.style.height='';ta.style.height=Math.min(200,Math.max(76,ta.scrollHeight))+'px'};
+  f.querySelectorAll('[data-fm]').forEach(b=>b.onclick=()=>{e.mode=b.dataset.fm;e.touched=true;o.redraw();const t=box.querySelector('.fx-t');if(t)t.focus()});
+  f.querySelector('[data-fc]').onclick=()=>{o.state.edit=null;o.redraw()};
+  f.querySelector('[data-fs]').onclick=async ev=>{const txt=(e[e.mode]||'').trim(),bt=ev.currentTarget;
+    if(txt.length<2){f.querySelector('[data-fe]').textContent=e.mode==='texto'?'Escreva a resposta.':'Escreva o que ela deve mudar.';ta.focus();return}
+    if(e.mode==='texto'&&txt===o.hist[e.i].text){f.querySelector('[data-fe]').textContent='Mude o texto antes de salvar.';ta.focus();return}
+    bt.disabled=true;bt.textContent='Refazendo...';
+    const real=o.hist.slice(0,e.i).filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}));
+    try{const r=await api('/ai/correct',{method:'POST',body:{messages:real,original:o.hist[e.i].text,text:txt,mode:e.mode}});
+      o.hist.splice(e.i);o.state.edit=null;o.done(r)}
+    catch(x){f.querySelector('[data-fe]').textContent=x.message;bt.disabled=false;bt.textContent='Salvar e refazer'}}}
+
 async function comecarView(){
   history.replaceState(null,'','/comecar');document.title='Conheça a Nanda · Oi Nanda';
   const c=ME.company,seg=c.segment||'outro',[noun,nouns,aNoun]=obNoun(seg),ph=OB_PH[seg]||OB_PH.outro;
@@ -3191,6 +3263,8 @@ async function comecarView(){
   const nanda=s.name||'Nanda',cat=(s.catalog||[]).filter(x=>x.price>0),aboutL=(s.about||'').split('\n');
   const pick=p=>((aboutL.find(l=>l.startsWith(p))||'').slice(p.length)).trim();
   const T={items:cat.length?cat.slice(0,8).map(x=>({name:x.name,price:String(x.price)})):[{name:'',price:''},{name:'',price:''}],hours:pick('Horário de atendimento:'),where:pick('Onde fica / como atende:')};
+  T.grid=(s.hours_grid||[]).length?s.hours_grid.map(r=>({...r,days:[...r.days]})):[{days:[0,1,2,3,4],from:'09:00',to:'18:00'}];T.free=!(s.hours_grid||[]).length&&!!T.hours;
+  const agendaSeg=['clinica','studio','salao','servicos','escola'].includes(seg);
   const money=v=>{const n=Number(String(v).replace(/\./g,'').replace(',','.'));return isFinite(n)&&n>0?obMoney(n).replace(',00',''):''};
   const valid=()=>T.items.filter(x=>x.name.trim());
   const isDemo=(ME.access||{}).state==='demo';
@@ -3202,8 +3276,8 @@ async function comecarView(){
       <div class="ob-tf"><label class="ob-lb">O que você vende e quanto custa</label>
        <div class="ob-its" id="obIts"></div>
        <button type="button" class="ob-add" id="obAdd">+ Adicionar outro item</button>
-       <div class="ob-2"><div><label class="ob-lb" for="obH">Quando você atende</label><input id="obH" value="${esc(T.hours)}" placeholder="Ex.: seg a sex, 9h às 19h · sáb, 9h às 13h" maxlength="300"></div>
-        <div><label class="ob-lb" for="obW">Onde fica ou como atende</label><input id="obW" value="${esc(T.where)}" placeholder="${seg==='lancamento'?'Ex.: 100% online, com acesso pela plataforma':'Ex.: Moema, São Paulo · ou: atendimento online'}" maxlength="300"></div></div>
+       <div class="ob-hrs"><label class="ob-lb">Quando você atende</label><div id="obHg"></div></div>
+       <div class="ob-wh"><label class="ob-lb" for="obW">Onde fica ou como atende</label><input id="obW" value="${esc(T.where)}" placeholder="${seg==='lancamento'?'Ex.: 100% online, com acesso pela plataforma':'Ex.: Rua Augusta, 1200, Moema, São Paulo · ou: atendimento online'}" maxlength="300"></div>
        <div class="ob-acts"><button class="btn p big" id="obSave" type="button">Salvar e testar a ${esc(nanda)}</button><span class="err" id="obTE"></span></div>
        <p class="ob-fine">Dá para completar depois em <b>${esc(nanda)}</b>, no menu: serviços, regras, perguntas frequentes. Tudo que você salvar aqui já vale para o atendimento de verdade.</p></div></div>
      <div class="ob-side"><div class="ob-card ob-pv"><h3>Assim ela vai responder</h3><p class="ob-pvs">Prévia com o que você está escrevendo.</p>
@@ -3211,22 +3285,43 @@ async function comecarView(){
       <div class="ob-card ob-why"><h3>Por que começar por aqui</h3><ul><li><b>Sem inventar.</b> O que ela não souber, ela passa para o seu time.</li><li><b>Não é um teste perdido.</b> O que você salvar já é o treino de verdade dela.</li><li><b>Sem cartão.</b> Seus 14 dias grátis já começaram.</li></ul></div></div>
     </div></div>`;
     const its=$('#obIts');
-    const pv=()=>{const v=valid(),x=v[0];const h=$('#obH').value.trim();if(x)$('#obPvQ').innerHTML=esc(`Oi! Quanto custa ${x.name.trim().toLowerCase()}?`)+'<small>agora</small>';
-      $('#obPvA span').textContent=x?`Oi! ${x.name.trim()}${money(x.price)?' custa '+money(x.price):''}.${v.length>1?` Também temos ${v.slice(1,3).map(y=>y.name.trim()).join(' e ')}.`:''}${h?` Atendemos ${h}.`:''} Quer que eu reserve um horário pra você?`
-        :'Quando você preencher ao lado, a resposta aparece aqui, com o seu preço.'};
+    const curHours=()=>T.free?($('#obHf')?$('#obHf').value.trim():T.hours):obCap(obHrsParts(T.grid).join('; '));
+    const hrsSentence=()=>{if(T.free){const h=curHours();return h?` Nosso horário: ${h}.`:''}const p=obHrsParts(T.grid);if(!p.length)return '';
+      return ' Atendemos '+(p.length===1?p[0]:p.slice(0,-1).join(', ')+', e '+p[p.length-1])+'.'};
+    let pvT;const pv=()=>{clearTimeout(pvT);pvT=setTimeout(pvNow,450)};
+    const pvNow=()=>{const x=valid().find(y=>y.name.trim().length>=3);
+      if(!x){$('#obPvA span').textContent='Quando você preencher ao lado, a resposta aparece aqui, com o seu preço.';return}
+      const nm=x.name.trim(),pr=money(x.price);
+      $('#obPvQ').innerHTML=esc(`Oi, tudo bem? Quanto custa ${nm.toLowerCase()}?`)+'<small>agora</small>';
+      $('#obPvA span').textContent=`Oi! Tudo ótimo, e com você? 😊 ${pr?`${obCap(nm)} sai por ${pr}.`:`Temos ${nm.toLowerCase()}, e o valor o nosso time te passa certinho.`}${hrsSentence()} ${agendaSeg?'Quer que eu veja um horário pra você?':'Posso te ajudar com mais alguma coisa?'}`};
+    const drawHrs=()=>{const g=$('#obHg');
+      if(T.free){g.innerHTML=`<input id="obHf" value="${esc(T.hours)}" placeholder="Ex.: segunda a sexta, das 9h às 19h; sábado, das 9h às 13h" maxlength="300"><button type="button" class="ob-lnk ob-hsw" id="obHsw">Escolher dias e horários</button>`;
+        $('#obHf').oninput=()=>{T.hours=$('#obHf').value;pv()};$('#obHsw').onclick=()=>{T.free=false;drawHrs();pv()};return}
+      g.innerHTML=T.grid.map((r,i)=>`<div class="ob-hr"><div class="ob-dys" role="group" aria-label="Dias">${OB_DS.map((d,k)=>`<button type="button" class="${r.days.includes(k)?'on':''}" data-hd="${i},${k}" aria-pressed="${r.days.includes(k)}">${d}</button>`).join('')}</div>
+        <span class="ob-tm"><select data-hf="${i}" aria-label="Abre às">${OB_TIMES.map(t=>`<option ${t===r.from?'selected':''}>${t}</option>`).join('')}</select><em>às</em><select data-ht="${i}" aria-label="Fecha às">${OB_TIMES.map(t=>`<option ${t===r.to?'selected':''}>${t}</option>`).join('')}</select></span>
+        ${T.grid.length>1?`<button type="button" class="ob-x" data-hx="${i}" aria-label="Tirar este horário">×</button>`:''}${r.from>=r.to?'<span class="err ob-he">O horário de fechar precisa ser depois do de abrir.</span>':''}</div>`).join('')+
+        `<div class="ob-hft">${T.grid.length<4?`<button type="button" class="ob-add" id="obHadd">+ ${T.grid.length>1?'Outro horário':'Outro horário (ex.: sábado)'}</button>`:''}<button type="button" class="ob-lnk ob-hsw" id="obHsw">Prefiro escrever</button></div>
+        <p class="ob-hpv" id="obHpv">${esc(obCap(obHrsParts(T.grid).join('; '))||'Marque os dias em que você atende.')}</p>`;
+      g.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{const [i,k]=b.dataset.hd.split(',').map(Number),d=T.grid[i].days;d.includes(k)?d.splice(d.indexOf(k),1):d.push(k);T.grid.forEach((r,j)=>{if(j!==i&&r.days.includes(k))r.days.splice(r.days.indexOf(k),1)});drawHrs();pv()});
+      g.querySelectorAll('[data-hf]').forEach(x=>x.onchange=()=>{T.grid[+x.dataset.hf].from=x.value;drawHrs();pv()});
+      g.querySelectorAll('[data-ht]').forEach(x=>x.onchange=()=>{T.grid[+x.dataset.ht].to=x.value;drawHrs();pv()});
+      g.querySelectorAll('[data-hx]').forEach(x=>x.onclick=()=>{T.grid.splice(+x.dataset.hx,1);drawHrs();pv()});
+      if($('#obHadd'))$('#obHadd').onclick=()=>{const used=T.grid.flatMap(r=>r.days),nx=[5,6,0,1,2,3,4].find(k=>!used.includes(k));T.grid.push({days:nx==null?[]:[nx],from:'08:00',to:'12:00'});drawHrs();pv()};
+      $('#obHsw').onclick=()=>{T.free=true;T.hours=T.hours||obCap(obHrsParts(T.grid).join('; '));drawHrs();pv()}};
     const drawIts=()=>{its.innerHTML=T.items.map((x,i)=>`<div class="ob-it"><input data-n="${i}" value="${esc(x.name)}" placeholder="Ex.: ${esc((ph[i]||ph[0])[0])}" maxlength="80" aria-label="Item ${i+1}">
        <span class="ob-pr"><em>R$</em><input data-p="${i}" value="${esc(x.price)}" inputmode="decimal" placeholder="${esc(Number((ph[i]||ph[0])[1]).toLocaleString('pt-BR'))}" aria-label="Preço do item ${i+1}"></span>
        ${T.items.length>1?`<button type="button" class="ob-x" data-x="${i}" aria-label="Tirar item">×</button>`:'<span></span>'}</div>`).join('');
-      its.querySelectorAll('[data-n]').forEach(x=>x.oninput=()=>{T.items[+x.dataset.n].name=x.value;pv()});
+      its.querySelectorAll('[data-n]').forEach(x=>{x.oninput=()=>{T.items[+x.dataset.n].name=x.value;pv()};x.onblur=()=>{const v=obCap(x.value.trim());if(v!==x.value){x.value=v;T.items[+x.dataset.n].name=v;pv()}}});
       its.querySelectorAll('[data-p]').forEach(x=>x.oninput=()=>{x.value=x.value.replace(/[^\d.,]/g,'');T.items[+x.dataset.p].price=x.value;pv()});
       its.querySelectorAll('[data-x]').forEach(x=>x.onclick=()=>{T.items.splice(+x.dataset.x,1);drawIts();pv()});
       $('#obAdd').hidden=T.items.length>=8};
-    drawIts();pv();$('#obH').oninput=pv;
+    drawIts();drawHrs();pvNow();
     $('#obAdd').onclick=()=>{T.items.push({name:'',price:''});drawIts();its.querySelector(`[data-n="${T.items.length-1}"]`).focus()};
-    $('#obSave').onclick=async()=>{const v=valid();T.hours=$('#obH').value.trim();T.where=$('#obW').value.trim();
+    $('#obSave').onclick=async()=>{const v=valid();T.hours=curHours();T.where=$('#obW').value.trim();v.forEach(x=>x.name=obCap(x.name.trim()));
       if(!v.length){$('#obTE').textContent='Escreva pelo menos um item que você vende.';its.querySelector('[data-n]').focus();return}
+      if(!T.free&&T.grid.some(r=>r.days.length&&r.from>=r.to)){$('#obTE').textContent='Confira o horário: o de fechar precisa ser depois do de abrir.';return}
       const b=$('#obSave');b.disabled=true;b.textContent='Salvando...';
-      try{await api('/ai/quick',{method:'POST',body:{items:v.map(x=>{const n=Number(String(x.price).replace(/\./g,'').replace(',','.'));return{name:x.name.trim(),price:isFinite(n)&&x.price!==''?n:null}}),hours:T.hours,where:T.where}});T.items=v;test()}
+      try{await api('/ai/quick',{method:'POST',body:{items:v.map(x=>{const n=Number(String(x.price).replace(/\./g,'').replace(',','.'));return{name:x.name.trim(),price:isFinite(n)&&x.price!==''?n:null}}),hours:T.hours,where:T.where,hours_grid:T.free?[]:T.grid.filter(r=>r.days.length&&r.from<r.to)}});T.items=v;test()}
       catch(e){$('#obTE').textContent=e.message;b.disabled=false;b.textContent='Salvar e testar a '+nanda}};
     if(innerWidth>860)setTimeout(()=>its.querySelector('[data-n]')?.focus(),60)};
   // ---------- 2. testar ----------
@@ -3246,33 +3341,29 @@ async function comecarView(){
       <div class="ob-cmp"><textarea id="obIn" rows="1" placeholder="Escreva como se fosse ${aNoun}..." aria-label="Mensagem para a Nanda"></textarea>
        <button class="btn p big" id="obSend" type="button">Enviar mensagem</button></div></div>
      <div class="ob-side">
-      <div class="ob-card ob-gap" id="obGap" hidden></div>
       <div class="ob-card"><h3>O que a ${esc(nanda)} fez nessa conversa</h3><div class="ob-did" id="obDid"></div></div>
       <div class="ob-card ob-cta">${isDemo?`<h3>Pronto para ela atender os seus ${nouns} de verdade?</h3><p>No próximo passo você ativa os 14 dias grátis e conecta o WhatsApp.</p><button class="btn p big" id="obGo">Quero a Nanda no meu WhatsApp</button>`
         :`<span class="ob-ey ok">Seus 14 dias grátis já começaram · sem cartão</span><h3>Último passo: conectar o WhatsApp</h3><p>Leva uns 5 minutos. Faça pelo celular que tem o chip do número e a ${esc(nanda)} começa a atender os seus ${nouns}.</p><button class="btn p big" id="obGo">Conectar meu WhatsApp</button>`}
        <button class="ob-lnk" id="obExp" type="button">Explorar o sistema antes</button></div></div></div></div>`;
     const chat=$('#obChat'),inp=$('#obIn');
     const drawDid=()=>{$('#obDid').innerHTML=did.map((d,i)=>`<div class="${on[i]?'on':''}"><i>${on[i]?'✓':d[0]}</i><span>${d[1]}<small>${esc(det[i]||d[2])}</small></span></div>`).join('')};
-    const drawChat=typing=>{chat.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(nanda)}</b>`:''}${esc(m.text)}<small>${m.at}</small></div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':''):chat.innerHTML;chat.scrollTop=chat.scrollHeight};
-    const gap=q=>{const g=$('#obGap');g.hidden=false;g.innerHTML=`<span class="ob-ey warn">Ela não sabia responder</span><p class="ob-gq">“${esc(q)}”</p>
-       <label class="ob-lb" for="obGA">Como ela deve responder?</label><textarea id="obGA" rows="3" placeholder="Ex.: A drenagem custa R$ 120 e leva 50 minutos."></textarea>
-       <div class="ob-acts"><button class="btn p" id="obGS" type="button">Ensinar e perguntar de novo</button><button class="ob-lnk" id="obGX" type="button">Deixar para depois</button></div>`;
-      $('#obGX').onclick=()=>{g.hidden=true};
-      $('#obGS').onclick=async()=>{const t=$('#obGA').value.trim();if(!t){$('#obGA').focus();return}const b=$('#obGS');b.disabled=true;b.textContent='Ensinando...';
-        try{await api('/ai/quick',{method:'POST',body:{extra:`Pergunta: ${q}\nResposta: ${t}`}});g.hidden=true;hist.push({dir:'sys',text:'Você ensinou. Perguntando de novo...'});drawChat(false);send(q)}
-        catch(e){toast(e.message);b.disabled=false;b.textContent='Ensinar e perguntar de novo'}}};
+    const FS={edit:null};
+    const drawChat=(typing,keep)=>{if(!hist.length)return;chat.classList.add('has');chat.innerHTML=fxMsgs(hist,nanda,FS.edit)+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'');
+      fxBind(chat,{hist,nanda,state:FS,redraw:()=>drawChat(false,true),done:r=>{take(r,0,true);drawChat(false);drawDid()}});if(!keep)chat.scrollTop=chat.scrollHeight};
+    // o que a resposta fez: guarda a mensagem, acende o painel e, se ela não sabia, já abre o espaço para ensinar ali mesmo
+    const take=(r,secs,redo)=>{
+      if(r.reply){hist.push({dir:'out',text:r.reply,at:obHour(),lesson:redo?r.lesson:null,changes:redo?r.changes:null,gap:!redo&&!!r.faltou});on[0]=true;if(secs)det[0]=`Em ${secs} ${secs===1?'segundo':'segundos'}. De madrugada seria igual.`}
+      if(r.book){on[1]=true;det[1]=(r.book_label||'Horário escolhido')+'. No teste nada é marcado.';hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'})}
+      if(r.handoff){on[2]=true;det[2]=(r.reason?r.reason.charAt(0).toUpperCase()+r.reason.slice(1)+'. ':'')+'Você recebe o aviso na hora.';hist.push({dir:'sys',text:'Aqui ela passaria a conversa para o seu time'})}
+      if(r.anotar||r.valor||r.etapa||r.origin){on[3]=true;det[3]=r.anotar||(r.valor?'Possível venda de '+obMoney(r.valor):'Anotou no funil.')}
+      const gi=hist.findLastIndex(m=>m.dir==='out');if(gi>=0&&hist[gi].gap)FS.edit={i:gi,mode:'texto',texto:'',pedido:''}};
     drawDid();
-    const send=async txt=>{txt=(txt||'').trim();if(!txt||busy)return;busy=true;inp.value='';inp.style.height='';$('#obSend').disabled=true;lastQ=txt;
+    const send=async txt=>{txt=(txt||'').trim();if(!txt||busy)return;busy=true;FS.edit=null;inp.value='';inp.style.height='';$('#obSend').disabled=true;lastQ=txt;
       hist.push({dir:'in',text:txt,at:obHour()});drawChat(true);const t0=performance.now();
       try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});
-        const secs=Math.max(1,Math.round((performance.now()-t0)/1000));
-        if(r.reply){hist.push({dir:'out',text:r.reply,at:obHour()});on[0]=true;det[0]=`Em ${secs} ${secs===1?'segundo':'segundos'}. De madrugada seria igual.`}
-        if(r.book){on[1]=true;det[1]=(r.book_label||'Horário escolhido')+'. No teste nada é marcado.';hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'})}
-        if(r.handoff){on[2]=true;det[2]=(r.reason?r.reason.charAt(0).toUpperCase()+r.reason.slice(1)+'. ':'')+'Você recebe o aviso na hora.';hist.push({dir:'sys',text:'Aqui ela chamaria alguém do seu time'});
-          if(!/pessoa|humano|atendente|falar com/i.test(txt))gap(txt)}
-        if(r.anotar||r.valor||r.etapa||r.origin){on[3]=true;det[3]=r.anotar||(r.valor?'Possível venda de '+obMoney(r.valor):'Anotou no funil.')}
+        take(r,Math.max(1,Math.round((performance.now()-t0)/1000)));
       }catch(e){hist.push({dir:'sys',text:e.status===402?'As conversas de teste acabaram. Conecte o WhatsApp para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
-      busy=false;$('#obSend').disabled=false;drawChat(false);drawDid();if(innerWidth>860)inp.focus()};
+      busy=false;$('#obSend').disabled=false;drawChat(false);drawDid();if(FS.edit){const t=chat.querySelector('.fx-t');if(t)t.focus({preventScroll:true})}else if(innerWidth>860)inp.focus()};
     $('#obSend').onclick=()=>send(inp.value);
     inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(inp.value)}};
     inp.oninput=()=>{inp.style.height='';inp.style.height=Math.min(140,inp.scrollHeight)+'px'};
@@ -7064,6 +7155,7 @@ const VIEWS={
       ${G.slice(0,GN).map(g=>`<div class="nz-gq" data-g="${g.id}"><div class="nz-gqt"><b>${esc(g.q)}</b><small>${g.count===1?'1 cliente perguntou':g.count+' clientes perguntaram'} · última vez ${(a=>a==='agora'?'agora há pouco':'há '+a)(agoShort(g.last_at))}${g.last_contact?' ('+esc(g.last_contact.split(' ')[0])+')':''}</small></div>
        <div class="nz-gqa"><input data-gin placeholder="Escreva a resposta" maxlength="600" aria-label="Resposta para: ${esc(g.q)}"><button type="button" class="btn sm p" data-ga>Ensinar</button><button type="button" class="lnk" data-gd title="Ela continua chamando o time quando perguntarem isso">Deixar com o time</button></div></div>`).join('')}
       ${G.length>GN?`<button type="button" class="lnk nz-gm" id="nzGm">Ver mais ${G.length-GN}</button>`:''}</div>`:''}
+     ${lessonsH()}
      ${SEC.map((x,i)=>{const ok=x[4](V),isO=open===x[0];return `<section class="nz-s ${isO?'open':''}" data-s="${x[0]}">
       <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${summary(x)}</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
       ${isO?`<div class="nz-sb">${body(x[0])}</div>`:''}</section>`}).join('')}
@@ -7119,16 +7211,37 @@ const VIEWS={
     document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});tests.splice(0,tests.length,...await api('/ai/tests'));drawTests(tests)});
     const r=$('#tsRun');if(r)r.onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{if(dirty())await save(true);const x=await api('/ai/tests/run',{method:'POST'});tests.splice(0,tests.length,...x.tests);drawTests(tests);toast(`${x.passed} de ${x.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'}};
   const hist=[];
-  const drawChat=typing=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(V.name||'Nanda')}</b>`:''}${esc(m.text)}</div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
-    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Ao testar, o que está nesta tela é salvo e ela já usa.</div>`;box.scrollTop=box.scrollHeight};
-  function playBind(){drawChat(false);const ta=$('#plT');
-   const send=async t=>{t=(t||'').trim();if(!t)return;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
-    try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys')}});if(r.reply)hist.push({dir:'out',text:r.reply});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')})}
+  // respostas que o dono corrigiu no teste: ficam visíveis e dá para apagar
+  const lessonsH=()=>{const L=(s.examples||[]).slice().reverse();if(!L.length)return '<div id="nzLs" hidden></div>';
+    return `<div class="nz-ls" id="nzLs"><div class="nz-gh"><span class="nz-gi ok">✓</span><div><b>${L.length===1?'1 resposta que você ensinou':L.length+' respostas que você ensinou'}</b><span>Vieram das suas correções no teste. Ela responde desse jeito quando a conversa cair na mesma situação.</span></div></div>
+     ${L.slice(0,6).map(e=>`<div class="nz-lq" data-lq="${e.id}"><small>Cliente: “${esc(e.q)}”</small><p>${e.a?esc(e.a):'<i>Você pediu:</i> '+esc(e.note)}</p><span class="nz-lqa"><button type="button" class="lnk" data-lse="${e.id}">Editar</button><button type="button" class="lnk" data-lsd="${e.id}">Apagar</button></span></div>`).join('')}
+     ${L.length>6?`<p class="hint">e mais ${L.length-6}</p>`:''}</div>`};
+  const bindLs=()=>{document.querySelectorAll('[data-lse]').forEach(b=>b.onclick=()=>{const e=(s.examples||[]).find(x=>x.id===b.dataset.lse);if(!e)return;const row=b.closest('.nz-lq');
+      row.innerHTML=`<small>Cliente: “${esc(e.q)}”</small><div class="nz-lqe"><textarea class="fx-t" rows="3" maxlength="1500" aria-label="${e.a?'Resposta ensinada':'O que você pediu'}">${esc(e.a||e.note)}</textarea>
+       <p class="fx-h">A gente só corrige o português, sem mudar o que você escreveu.</p><div class="fx-a"><button type="button" class="btn sm p" data-lss>Salvar</button><button type="button" class="ob-lnk" data-lsc>Cancelar</button><span class="err" data-lsr></span></div></div>`;
+      const ta=row.querySelector('textarea');ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
+      row.querySelector('[data-lsc]').onclick=()=>{$('#nzLs').outerHTML=lessonsH();bindLs()};
+      row.querySelector('[data-lss]').onclick=async ev=>{const t=ta.value.trim(),bt=ev.currentTarget;if(t.length<2){row.querySelector('[data-lsr]').textContent='Escreva a resposta.';return}
+        bt.disabled=true;bt.textContent='Salvando...';
+        try{const r=await api('/ai/examples/'+e.id,{method:'PUT',body:{text:t}});s.examples=r.examples;$('#nzLs').outerHTML=lessonsH();bindLs();toast(r.changes&&r.changes.length?'Salvo. Ajustamos o português: '+r.changes.slice(0,2).map(c=>c[0]+' → '+c[1]).join(', '):'Salvo. Ela já responde assim.')}
+        catch(x){row.querySelector('[data-lsr]').textContent=x.message;bt.disabled=false;bt.textContent='Salvar'}}});
+   bindLsd()};
+  const bindLsd=()=>document.querySelectorAll('[data-lsd]').forEach(b=>b.onclick=async()=>{try{const r=await api('/ai/examples/'+b.dataset.lsd,{method:'DELETE'});s.examples=r.examples;$('#nzLs').outerHTML=lessonsH();bindLs();toast('Apagada. Ela volta a responder do jeito dela.')}catch(e){toast(e.message)}});
+  const FS={edit:null};
+  const takeR=(r,redo)=>{if(r.reply)hist.push({dir:'out',text:r.reply,lesson:redo?r.lesson:null,changes:redo?r.changes:null,gap:!redo&&!!r.faltou});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')});
+    if(redo&&r.lesson){s.examples=[...(s.examples||[]).filter(e=>e.q.toLowerCase()!==r.lesson.q.toLowerCase()),r.lesson];const L=$('#nzLs');if(L)L.outerHTML=lessonsH()}
+    const gi=hist.findLastIndex(m=>m.dir==='out');if(gi>=0&&hist[gi].gap)FS.edit={i:gi,mode:'texto',texto:'',pedido:''}};
+  const drawChat=(typing,keep)=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?fxMsgs(hist,V.name||'Nanda',FS.edit)+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
+    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b> embaixo dela.</div>`;
+    fxBind(box,{hist,nanda:V.name||'Nanda',state:FS,redraw:()=>drawChat(false,true),done:r=>{takeR(r,true);drawChat(false);bindLs()}});if(!keep)box.scrollTop=box.scrollHeight};
+  function playBind(){drawChat(false);bindLs();const ta=$('#plT');
+   const send=async t=>{t=(t||'').trim();if(!t)return;FS.edit=null;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
+    try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});takeR(r)}
     catch(e){hist.push({dir:'sys',text:e.message})}drawChat(false)};
    $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
    ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
    document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
-   $('#plR').onclick=()=>{hist.length=0;drawChat(false)};
+   $('#plR').onclick=()=>{hist.length=0;FS.edit=null;drawChat(false)};
    $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
     if(last<0)return toast('Escreva pelo menos uma mensagem como cliente.');const msgs=real.slice(0,last+1);
     const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar como teste</h2><button type="button" class="x">×</button></div>
