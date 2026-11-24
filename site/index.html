@@ -368,6 +368,19 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
  .stk{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:50;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:18px;padding:10px 10px 10px 16px;box-shadow:0 16px 40px rgba(23,33,43,.35);transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.8,.2,1);padding-bottom:max(10px,env(safe-area-inset-bottom))}
  .stk.on{transform:none}.stk div{flex:1;display:flex;flex-direction:column;line-height:1.25}.stk b{font-size:14.5px}.stk span{font-size:12px;color:#B5C0CB}.stk .btn{padding:11px 18px;font-size:14.5px;white-space:nowrap}
  body{padding-bottom:0}}
+
+/* faixa enxuta: ícone, título e 3 ou 4 palavras */
+.band .wrap{padding:20px clamp(18px,2.6vw,30px);gap:0}
+.band .wrap>div{display:flex;align-items:center;gap:12px;padding:4px clamp(10px,1.6vw,22px);min-width:0}
+.band .wrap>div+div{border-left:1px solid rgba(255,255,255,.12)}
+.band i{flex:none;width:38px;height:38px;border-radius:12px;background:rgba(232,96,63,.16);color:#FFB79F;display:grid;place-items:center}.band i svg{width:19px;height:19px}
+.band p{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.band b{font-size:16px!important;color:#fff;letter-spacing:-.01em;margin:0;white-space:nowrap}
+.band span{font-size:13.5px!important;color:#9FB0C0;white-space:nowrap}
+@media (max-width:1100px){.band b{font-size:15px!important}.band i{width:34px;height:34px}}
+@media (max-width:900px){.band .wrap{grid-template-columns:1fr 1fr;gap:14px 0;padding:18px 14px}.band .wrap>div:nth-child(3){border-left:0}.band .wrap>div{padding:2px 10px}}
+@media (max-width:560px){.band .wrap{grid-template-columns:1fr;gap:0;padding:6px 16px}.band .wrap>div{padding:11px 2px;border-left:0!important}.band .wrap>div+div{border-top:1px solid rgba(255,255,255,.1)}
+ .band p{flex-direction:row;align-items:baseline;gap:7px;flex-wrap:wrap}.band b{font-size:15px!important}.band span{font-size:13px!important}.band i{width:32px;height:32px;border-radius:10px}.band i svg{width:16px;height:16px}}
 </style>
 <script>(function(){var d=document.documentElement;if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;d.classList.add('js');setTimeout(function(){if(!window.__rv)d.classList.remove('js')},2500)})()</script>
 </head>
@@ -405,10 +418,10 @@ footer{padding-block:36px 48px;color:var(--ink3);font-size:14px;text-align:cente
   </div>
 </div></header>
 <div class="band"><div class="wrap">
-  <div><b>WhatsApp + Instagram</b><span>numa caixa só, com o histórico&nbsp;inteiro</span></div>
-  <div><b>API oficial da Meta</b><span>seu número e seus clientes continuam&nbsp;seus</span></div>
-  <div><b>Funil pronto</b><span>para o seu segmento, desde o primeiro&nbsp;dia</span></div>
-  <div><b>Time no mesmo número</b><span>cada conversa com um dono</span></div>
+  <div><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></i><p><b>WhatsApp + Instagram</b><span>numa caixa só</span></p></div>
+  <div><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><p><b>API oficial da Meta</b><span>seu número é seu</span></p></div>
+  <div><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg></i><p><b>Funil pronto</b><span>para o seu ramo</span></p></div>
+  <div><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.5c2.5.2 4 1.8 4.5 4.5"/></svg></i><p><b>Time no mesmo número</b><span>cada conversa com dono</span></p></div>
 </div></div>
 
 <section id="video" class="glow"><div class="wrap">
