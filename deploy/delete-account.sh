@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 E="$(echo "${1:-}" | tr 'A-Z' 'a-z' | tr -d ' ')"
-[[ "$E" == *@*.* ]] || { echo "Uso: bash delete-account.sh email@exemplo.com"; exit 1; }
+[[ "$E" =~ ^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$ ]] || { echo "Uso: bash delete-account.sh email@exemplo.com"; exit 1; }
 ADM="$(grep -m1 '^ADMIN_EMAIL=' .env | cut -d= -f2- | tr 'A-Z' 'a-z' || true)"
 [ "$E" != "$ADM" ] || { echo "Esse é o e-mail do admin. Não dá para excluir por aqui."; exit 1; }
 Q="const u=db.users.findOne({email:'$E'});
