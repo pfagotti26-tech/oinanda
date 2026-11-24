@@ -86,6 +86,16 @@ def knowledge_block(s):
     text = '\n\n'.join(f'{t}:\n{v.strip()}' for t, v in parts if (v or '').strip())
     return text or '(o dono ainda não preencheu)'
 
+def examples_block(s):
+    """Respostas que o dono corrigiu no teste: viram exemplo de como responder, com mais peso que o jeito padrão dela."""
+    ex = [e for e in (s.get('examples') or []) if e.get('q') and (e.get('a') or e.get('note'))][-30:]
+    if not ex: return ''
+    lines = [f'- Cliente: "{e["q"]}"\n  ' + (f'Resposta do dono: "{e["a"]}"' if e.get('a') else f'O dono pediu: {e["note"]}') for e in ex]
+    return ('\nRESPOSTAS QUE O DONO ENSINOU (valem mais que o seu jeito padrão):\n' + '\n'.join(lines) +
+            '\nQuando a conversa cair numa dessas situações, responda do jeito que o dono ensinou: as mesmas informações, o mesmo tom e,'
+            ' se a resposta dele faz uma pergunta ao cliente, faça também. Ajuste só o que a conversa pedir (o nome do cliente, o que já foi dito).'
+            ' Se o dono pediu algo, obedeça, mesmo que antes você fosse chamar o time.\n')
+
 def build_system(s, company, contact_name, agenda_text=None, upcoming=None, origin_opts=None, extra='', step=30, notes='', stages=None, stage_id=None):
     tz = agenda.tz_of(company); t = now().astimezone(tz)
     ag = ''
@@ -102,15 +112,30 @@ AGENDA (horários livres de verdade, já descontando o que está ocupado):
 """
         if upcoming:
             ag += 'Este cliente já tem agendado: ' + '; '.join(f"{a['service_name']} {agenda.WEEK[agenda.aware(a['start']).astimezone(tz).weekday()]} {agenda.aware(a['start']).astimezone(tz):%d/%m %H:%M}" for a in upcoming) + '\n'
+    else:
+        ag = """
+AGENDA: você não enxerga a agenda. Quando o cliente quiser marcar, não chame o time logo de cara: primeiro descubra o que falta,
+uma pergunta por vez (qual serviço, se ainda não disse, e qual dia e período prefere). Com o serviço e a preferência em mãos,
+chame o time (handoff true) dizendo que vai confirmar o horário. Nunca confirme um horário como marcado.
+"""
     # parte fixa primeiro (fica no cache da IA); o que muda a cada conversa vem depois do marcador
     fixed = f"""Você é {s['name']}, assistente de atendimento e vendas do negócio "{company['name']}" no WhatsApp.
 Fale em português do Brasil, num tom {TONES.get(s['tone'], TONES['proximo'])}. Mensagens curtas (até 3 frases), como no WhatsApp.
-Use o primeiro nome do cliente com naturalidade.
+Use o primeiro nome do cliente com naturalidade, sem repetir o nome em toda mensagem.
+
+COMO UMA BOA ATENDENTE CONVERSA:
+- Leia a conversa inteira antes de responder. Respostas curtas do cliente ("pode ser", "sim", "e no sábado?") se referem ao que foi dito antes: continue dali.
+- Fale em nome do negócio ("atendemos", "fazemos", "temos"), nunca na primeira pessoa como se você fosse a profissional ("faço", "eu atendo").
+- Acolha antes de informar: se o cliente cumprimentou ou perguntou se está tudo bem, responda com calor em poucas palavras. Se ele contou um problema, uma dor ou uma insegurança, reconheça isso numa frase antes de seguir.
+- Não repita palavras na mesma mensagem (nada de "sim... sim", "você... você"), não comece nem termine do mesmo jeito que a sua mensagem anterior e não repita informação que já deu.
+- Termine com no máximo uma pergunta, que leve ao próximo passo. Emoji: no máximo um, e não em toda mensagem.
+- Escreva com português correto (acentos, pontuação, maiúscula no começo), mas com naturalidade de WhatsApp.
 
 O QUE VOCÊ SABE SOBRE O NEGÓCIO (única fonte de verdade):
 <conhecimento>
 {knowledge_block(s)}
 </conhecimento>
+{examples_block(s)}
 {('SEU OBJETIVO NA CONVERSA: ' + s['goal'].strip()) if s['goal'].strip() else 'SEU OBJETIVO NA CONVERSA: tirar as dúvidas e levar o cliente ao próximo passo.'}
 {('PARA ENTENDER O CLIENTE (pergunte uma coisa de cada vez, só o que ainda não sabe, sem parecer formulário):' + chr(10) + s['qualify'].strip()) if s['qualify'].strip() else ''}
 
@@ -127,7 +152,7 @@ REGRAS QUE VOCÊ NUNCA QUEBRA:
 Responda SOMENTE com um JSON, sem nada antes ou depois (comece direto com a chave de abertura). O texto da reply é mensagem de WhatsApp: sem markdown, sem asteriscos, curto.
 {{"reply": "texto para o cliente (ou vazio)", "handoff": true|false, "reason": "motivo curto se handoff", "book": null ou {{"service_id": "id", "start": "AAAA-MM-DDTHH:MM", "pro_id": null}}, "slots": null ou {{"service_id": "id"}}, "origin": null ou "id da origem", "origin_detail": "", "marcos": [], "anotar": "", "valor": null, "valor_item": "", "etapa": null, "urgente": false, "faltou": ""}}
 "faltou": quando o cliente perguntou algo que NÃO está no que você sabe e por isso você não respondeu ou chamou o time, escreva a dúvida como uma pergunta frequente curta e genérica, sem o nome do cliente (ex.: "Tem estacionamento?", "Atende convênio?"). Se você soube responder, ou o assunto é negociação, reclamação ou pedido de pessoa, deixe "".
-Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar (ex.: "Vou chamar a Camila, ela já te responde!").
+Se handoff for true, a reply deve avisar com gentileza que alguém do time vai continuar, sem inventar nome de pessoa (ex.: "Vou passar para o nosso time confirmar com você, já já te respondem por aqui.").
 "urgente" só com handoff true e só quando não pode esperar: problema de saúde ou reação a procedimento, cliente irritado ou reclamando, pedido de reembolso, ameaça (Procon, advogado), situação de segurança. Pedir desconto, preço ou vaga não é urgente."""
     now_part = f"""Hoje é {agenda.WEEK[t.weekday()]} {t:%d/%m/%Y}, {t:%H:%M}.
 O cliente se chama {contact_name or 'cliente'}.
@@ -567,6 +592,7 @@ class QuickIn(BaseModel):
     hours: str = Field(default='', max_length=300)
     where: str = Field(default='', max_length=300)
     extra: str = Field(default='', max_length=2000)  # resposta ensinada durante o teste ("ela ainda não sabia")
+    hours_grid: Optional[List[dict]] = Field(default=None, max_length=7)  # os dias e horários marcados na tela, para reabrir do mesmo jeito
 
 @router.post('/ai/quick')
 async def quick(body: QuickIn, request: Request, user=Depends(managers)):
@@ -588,6 +614,9 @@ async def quick(body: QuickIn, request: Request, user=Depends(managers)):
         upd['about'] = '\n'.join(x for x in [keep.strip(), *lines] if x)
     if body.extra.strip():
         upd['knowledge'] = ((s.get('knowledge') or '').strip() + '\n' + body.extra.strip()).strip()
+    if body.hours_grid is not None:
+        upd['hours_grid'] = [{'days': sorted({int(d) for d in (g.get('days') or []) if str(d).isdigit() and 0 <= int(d) <= 6}),
+                              'from': str(g.get('from') or '')[:5], 'to': str(g.get('to') or '')[:5]} for g in body.hours_grid]
     if upd: await db.ai_settings.update_one({'company_id': cid}, {'$set': upd}, upsert=True)
     await audit(request, user, 'Ensinou a Nanda (primeiros passos)', ', '.join(i.name for i in body.items)[:200])
     return {'ok': True, 'catalog': await catalog_items(cid)}
@@ -606,6 +635,70 @@ async def test(body: TestIn, user=Depends(managers)):
     d = parse(text)
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
     return d
+
+FIX_PT = """Você revisa mensagens curtas de WhatsApp em português do Brasil escritas pelo dono de um negócio.
+Corrija SOMENTE: ortografia, acentos, concordância, crase, pontuação e letra maiúscula no começo das frases.
+Não troque palavras por sinônimos. Não mude o sentido, o tom, a ordem nem o tamanho. Não acrescente nem tire informação. Não acrescente emoji.
+Valores, horários e nomes ficam como estão (pode ajustar só a preposição, ex.: "das 08:00 ao 12:00" vira "das 08:00 às 12:00").
+Devolva apenas o texto corrigido, sem aspas e sem comentário."""
+
+def word_changes(a, b):
+    """O que a revisão mudou, palavra por palavra, para mostrar ao dono (ex.: funcionamaos → funcionamos)."""
+    import difflib
+    wa, wb = a.split(), b.split(); out = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, wa, wb).get_opcodes():
+        if op != 'equal': out.append([' '.join(wa[i1:i2]), ' '.join(wb[j1:j2])])
+    return out[:8]
+
+async def fix_pt(text):
+    """Só português: se a IA mexer demais no texto do dono (ou não estiver ligada), fica o texto dele como veio."""
+    import difflib
+    try:
+        out, usage = await llm(FIX_PT, [{'role': 'user', 'content': text}], max_tokens=600)
+    except Exception:
+        return text, {}
+    out = out.strip().strip('"“”').strip()
+    if not out or difflib.SequenceMatcher(None, text.lower(), out.lower()).ratio() < 0.8: return text, usage
+    return out, usage
+
+class CorrectIn(BaseModel):
+    messages: List[dict] = Field(min_length=1, max_length=30)  # a conversa até a mensagem do cliente (sem a resposta que está sendo corrigida)
+    original: str = Field(default='', max_length=2000)          # o que a Nanda tinha respondido
+    text: str = Field(min_length=2, max_length=1500)            # a resposta reescrita pelo dono, ou o que ele quer que ela mude
+    mode: Literal['texto', 'pedido'] = 'texto'
+
+@router.post('/ai/correct')
+async def correct(body: CorrectIn, request: Request, user=Depends(managers)):
+    """Corrigir uma resposta no teste: ajusta só o português do que o dono escreveu, guarda como resposta ensinada e refaz a resposta."""
+    from billing import ai_allowed
+    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
+    msgs = to_llm(body.messages)
+    if not msgs or msgs[-1]['role'] != 'user': raise HTTPException(400, 'Falta a mensagem do cliente.')
+    q = msgs[-1]['content'].strip().replace('\n', ' ')[:300]
+    raw = re.sub(r'\s+', ' ', body.text).strip()
+    fixed, u1 = await fix_pt(raw)
+    cid = user['company_id']; s = await settings_for(cid); key = gap_key(q)
+    lesson = {'id': uid(), 'q': q, 'a': fixed if body.mode == 'texto' else '', 'note': fixed if body.mode == 'pedido' else '',
+              'before': body.original.strip()[:600], 'at': now().isoformat(), 'by': user.get('name')}
+    ex = [e for e in (s.get('examples') or []) if gap_key(e.get('q', '')) != key][-59:] + [lesson]
+    await db.ai_settings.update_one({'company_id': cid}, {'$set': {'examples': ex}}, upsert=True)
+    await db.ai_gaps.update_many({'company_id': cid, 'key': key, 'status': 'open'}, {'$set': {'status': 'answered', 'answered_at': now()}})
+    await audit(request, user, 'Corrigiu uma resposta da Nanda', q[:120])
+    s['examples'] = ex
+    text, u2 = await llm(await system_for(s, user['company']), msgs)
+    for u in (u1, u2):
+        if u: await track(cid, u, 'tests')
+    d = parse(text)
+    if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
+    return {**d, 'lesson': lesson, 'changes': word_changes(raw, fixed)}
+
+@router.delete('/ai/examples/{eid}')
+async def del_example(eid: str, request: Request, user=Depends(managers)):
+    s = await settings_for(user['company_id'])
+    ex = [e for e in (s.get('examples') or []) if e.get('id') != eid]
+    await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'examples': ex}}, upsert=True)
+    await audit(request, user, 'Apagou uma resposta ensinada da Nanda', eid)
+    return {'examples': ex}
 
 async def apply_facts(company_id, contact, d):
     """O que a Nanda aprendeu vai para as Anotações do cliente e para o valor previsto, para o time não ter que reler a conversa."""
