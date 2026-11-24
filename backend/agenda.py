@@ -353,6 +353,9 @@ async def patch(appt_id: str, body: ApptPatch, request: Request, user=Depends(cu
     if upd:
         await db.appointments.update_one({'id': appt_id}, {'$set': upd})
         a.update(upd); await gcal.sync_event(a)
+        if upd.get('status') == 'done' and c.get('won_pending'):
+            from funnel import settle_won
+            await settle_won(user['company'], contact_id=c['id'])
     return appt_out(a, tz)
 
 # ---------- cliente confirma o horário respondendo o lembrete ----------
