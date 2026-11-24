@@ -1398,7 +1398,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-tabs button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer}
 .nz-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.1)}.nz-tabs span{background:var(--soft);color:var(--c2);border-radius:999px;padding:0 7px;font-size:11.5px;margin-left:4px}
 #nzChat{padding:12px;display:grid;gap:10px}
-.nz-msgs{background:#EFE7DE;border-radius:14px;padding:12px;display:grid;gap:7px;align-content:end;height:min(46vh,420px);overflow-y:auto}
+.nz-msgs{background:#EFE7DE;border-radius:14px;padding:12px;display:grid;gap:7px;align-content:start;align-content:safe end;height:min(56vh,520px);overflow-y:auto}
 .nz-msgs .ob-m{font-size:13.5px;max-width:85%}.nz-msgs .ob-m:not(:last-child),.ob-chat .ob-m:not(:last-child){animation:none}
 .nz-empty{align-self:center;justify-self:center;text-align:center;color:#6f6257;font-size:13px;max-width:280px;line-height:1.5}
 #nzTests .nz-empty{color:var(--ink3);padding:20px 0}
@@ -2273,7 +2273,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-float{position:absolute;background:#fff;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:700;box-shadow:0 14px 30px -14px rgba(23,33,43,.35);display:flex;gap:8px;align-items:center;z-index:2}.ob-float i{font-style:normal}
 /* 2 */
 .ob-b h1{font-size:28px}.ob-b .body{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:24px;padding:4px 28px 40px;max-width:1200px;width:100%;margin:0 auto;align-items:start}
-.ob-chat{background:#EFE7DE;border-radius:18px;padding:16px 14px;display:grid;gap:8px;align-content:end;margin-top:18px;min-height:150px;max-height:min(60vh,520px);overflow-y:auto;scroll-behavior:smooth}.ob-chat.has{min-height:260px}
+.ob-chat{background:#EFE7DE;border-radius:18px;padding:16px 14px;display:grid;gap:8px;align-content:start;align-content:safe end;margin-top:18px;min-height:150px;max-height:min(60vh,520px);overflow-y:auto;scroll-behavior:smooth}.ob-chat.has{min-height:260px}
 .ob-chat .ob-m{font-size:14px;max-width:78%}
 /* corrigir resposta da Nanda no teste */
 .fx-go{justify-self:end;display:inline-flex;align-items:center;gap:5px;margin:-3px 2px 2px;padding:3px 9px;border-radius:999px;font:inherit;font-size:12px;font-weight:600;color:#6b5d51;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.06);cursor:pointer}
@@ -2294,7 +2294,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .nz-hor i{width:22px;height:22px;border-radius:7px;border:1.5px solid #D8CDC2;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;color:#fff}
 .nz-hor.on i,.nz-hor.fix i{background:var(--c);border-color:var(--c)}.nz-hor.fix{background:#FAF6F2;cursor:default}.nz-hor.fix i{background:#B9ADA2;border-color:#B9ADA2}
 .nz-hor em{font-style:normal;font-size:11.5px;color:var(--ink3);white-space:nowrap}.nz-hor.on em{color:var(--c2);font-weight:600}.nz-hor.on{border-color:#F1C7B9;background:#FFF8F5}
-.nz-hor .ob-x{width:26px;height:26px}.nz-hoadd{display:flex;gap:8px}.nz-hoadd input{flex:1;min-width:0;border:1.5px solid #DCD2C9;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.nz-hor .ob-x{width:26px;height:26px}.nz-hoadd{display:flex;gap:8px}.nz-hon{background:#FAF6F2;border-radius:12px;padding:9px 12px;font-size:13px;color:var(--ink2)}.nz-hon b{display:block;font-size:12px;color:var(--ink3);margin-bottom:2px}.nz-hon p{margin:2px 0}.nz-hoadd input{flex:1;min-width:0;border:1.5px solid #DCD2C9;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
 @media(max-width:560px){.nz-hor em{display:none}}
 
 /* ensinar a partir da conversa e página do que ela aprendeu */
@@ -3332,7 +3332,7 @@ async function teachConv(id){const L=CV.msgs||[],i=L.findIndex(m=>m.id===id),c=C
 // O que a Nanda aprendeu: só consulta (com editar e apagar) de tudo que o time ensinou nas correções e dos assuntos que ela não trata
 async function aprView(){
   const s=await api('/ai/settings'),nanda=s.name||'Nanda',F={q:'',k:'all'};
-  const ho=(s.handoff||'').split('\n').map(l=>l.replace(/^[-•*]\s*/,'').replace(/\.$/,'').trim()).filter(Boolean);
+  const ho=(s.handoff||'').split('\n').map(l=>l.trim()).filter(l=>l&&!/:$/.test(l)&&!(/^[^:]{2,40}:\s+\S/.test(l)&&!/^[-•*]/.test(l))).map(l=>obCap(l.replace(/^[-•*]\s*/,'').replace(/[;.,]$/,'').trim()));
   const kindOf=e=>e.kind||(e.a?'resposta':'pedido');
   const KL={resposta:['Resposta','Ela responde do jeito que você escreveu.'],pedido:['Pedido','Ela segue o que você pediu.'],time:['Passa ao time','Ela não responde: chama o time.']};
   const dt=x=>{try{return new Date(x).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).replace('.','')}catch(e){return ''}};
@@ -7240,15 +7240,19 @@ const VIEWS={
   const modeOf=k=>MODES.find(m=>m[0]===k)||MODES[1];
   const seg=ME.company.segment||'outro';
   const chipsFor=k=>k==='goal'?(NZ_GOAL[seg]||NZ_GOAL.outro):k==='rules'?[...(NZ_RULES[seg]||[]),...NZ_RULES.geral]:null;
-  const hoLines=()=>V.handoff.split('\n').map(l=>l.replace(/^[-•*]\s*/,'').replace(/\.$/,'').trim()).filter(Boolean);
-  const hoSet=ls=>{V.handoff=ls.join('\n');const el=document.querySelector('.nz-ho');if(el){el.outerHTML=hoH();bindHo()}refreshHead()};
+  // texto livre antigo: título ("Chamar o time quando:") some, "Quem atende: ..." vira orientação, o resto vira assunto
+  const hoParse=()=>{const T=[],N=[];V.handoff.split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{const t=l.replace(/^[-•*]\s*/,'').replace(/[;.,]$/,'').trim();
+    if(!t||/:$/.test(t))return;if(/^[^:]{2,40}:\s+\S/.test(t)&&!/^[-•*]/.test(l))N.push(l);else T.push(obCap(t))});return {T,N}};
+  const hoLines=()=>hoParse().T;
+  const hoSet=ls=>{const N=hoParse().N;V.handoff=[...ls,...N].join('\n');const el=document.querySelector('.nz-ho');if(el){el.outerHTML=hoH();bindHo()}refreshHead()};
   const hoH=()=>{const ls=hoLines(),sug=[...(NZ_HO[seg]||[]),...NZ_HO.geral],low=ls.map(x=>x.toLowerCase()),own=ls.filter(x=>!sug.some(y=>y.toLowerCase()===x.toLowerCase()));
     return `<div class="nz-f nz-ho" data-fk="handoff"><div class="nz-fl"><label>Assuntos que ela não trata</label></div>
      <p class="hint" style="margin:0">Nesses assuntos ela não responde: avisa com gentileza que alguém do time vai continuar e passa a conversa para vocês. Você recebe o aviso na hora.</p>
      <div class="nz-hol">${NZ_HO_ALWAYS.map(x=>`<div class="nz-hor fix"><i>✓</i><span>${esc(x)}</span><em>sempre</em></div>`).join('')}
       ${sug.map(x=>{const on=low.includes(x.toLowerCase());return `<button type="button" class="nz-hor ${on?'on':''}" data-ho="${esc(x)}" aria-pressed="${on}"><i>${on?'✓':''}</i><span>${esc(x)}</span><em>${on?'passa para o time':'ela responde'}</em></button>`}).join('')}
       ${own.map(x=>`<div class="nz-hor on mine"><i>✓</i><span>${esc(x)}</span><button type="button" class="ob-x" data-hox="${esc(x)}" aria-label="Tirar">×</button></div>`).join('')}</div>
-     <div class="nz-hoadd"><input id="nzHoIn" placeholder="Outro assunto. Ex.: pedido de nota fiscal" maxlength="120" aria-label="Outro assunto que ela não trata"><button type="button" class="btn sm" id="nzHoB">Adicionar</button></div></div>`};
+     <div class="nz-hoadd"><input id="nzHoIn" placeholder="Outro assunto. Ex.: pedido de nota fiscal" maxlength="120" aria-label="Outro assunto que ela não trata"><button type="button" class="btn sm" id="nzHoB">Adicionar</button></div>
+     ${hoParse().N.length?`<div class="nz-hon"><b>Orientações ao passar para o time</b>${hoParse().N.map(x=>`<p>${esc(x)}</p>`).join('')}</div>`:''}</div>`};
   function bindHo(){document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>{const x=b.dataset.ho,ls=hoLines(),i=ls.findIndex(y=>y.toLowerCase()===x.toLowerCase());i>=0?ls.splice(i,1):ls.push(x);hoSet(ls)});
     document.querySelectorAll('[data-hox]').forEach(b=>b.onclick=()=>hoSet(hoLines().filter(y=>y!==b.dataset.hox)));
     const inp=$('#nzHoIn'),add=()=>{const t=obCap(inp.value.trim().replace(/\.$/,''));if(!t)return inp.focus();const ls=hoLines();if(!ls.some(y=>y.toLowerCase()===t.toLowerCase()))ls.push(t);hoSet(ls);const n=$('#nzHoIn');if(n)n.focus()};

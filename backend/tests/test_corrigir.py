@@ -78,3 +78,9 @@ def test_ensinar_a_partir_da_conversa_real(monkeypatch):
         c.delete('/api/ai/examples/' + r['lesson']['id'])
         assert 'taught' not in c.portal.call(lambda: db.messages.find_one({'id': 'm1'}))
         assert c.post('/api/ai/correct', json={'messages': conv, 'msg_id': 'outra-empresa', 'text': 'oi oi'}).status_code == 404
+
+def test_texto_livre_antigo_de_quando_chamar_o_time():
+    t = 'Chamar o time quando o cliente:\n- pedir desconto;\n- estiver irritado.\nQuem atende: o Paulo, do time.\nFora do horário: dizer que o time responde depois.'
+    b = ai.handoff_block(t)
+    assert '- pedir desconto\n- estiver irritado' in b and 'Chamar o time quando o cliente' not in b
+    assert 'Orientações do dono para quando chamar o time:\nQuem atende: o Paulo, do time.\nFora do horário' in b
