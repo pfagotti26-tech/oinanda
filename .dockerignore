@@ -1,0 +1,7 @@
+# o build da API só precisa da pasta backend/: o resto (backups, .env, site) não entra
+deploy/
+site/
+app/
+.git/
+**/__pycache__/
+**/.pytest_cache/
