@@ -47,18 +47,19 @@ def _btn(label, url, tone='i', ghost=False):
             f'text-decoration:none;text-align:center">{e(label)}</a></td></tr></table>')
 
 def render(c):
-    """Monta o e-mail. c: tone, icon, eyebrow, title, pre, body (lista de parágrafos, HTML já seguro), fig (número, legenda),
+    """Monta o e-mail. c: tone, eyebrow, title, pre, body (lista de parágrafos, HTML já seguro), fig (número, legenda),
     bar (atual, total, rótulo, direita), steps [(estado, título, sub)], rows [(rótulo, valor)], button (texto, url), second (texto, url),
-    foot, why (por que recebe), prefs (link de preferências)."""
+    tip, foot, why (por que recebe), prefs (link de preferências), account (nome da conta), sign ('founder' ou time).
+    Ordem pensada para quem lê no celular: o que aconteceu, o número que importa, o botão. Os detalhes vêm depois."""
     e = html.escape; t = c.get('tone') or 'i'; bg, fg, acc = TONE.get(t, TONE['i'])
-    icon = c.get('icon')
     out = []
-    head = (f'<td width="44" valign="middle" style="padding-right:12px"><img src="{APP}/mail/{icon}.png" width="44" height="44" alt="" style="display:block;border:0;border-radius:13px"></td>' if icon else '')
-    out.append(f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 18px"><tr>{head}<td valign="middle" style="font-family:{FONT};font-size:12px;'
-               f'font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{fg}">{e(c.get("eyebrow") or "")}</td></tr></table>')
-    out.append(f'<h1 style="margin:0 0 12px;font-family:{FONT};font-size:25px;line-height:1.22;font-weight:800;letter-spacing:-.4px;color:#17212B">{e(c["title"])}</h1>')
+    # selo do assunto: bolinha da cor do tom + o rótulo (sem imagem: chega igual mesmo com imagens bloqueadas)
+    out.append(f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px"><tr><td style="background:{bg};border-radius:99px;padding:6px 12px 6px 10px;'
+               f'font-family:{FONT};font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:{fg}">'
+               f'<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:{acc};margin-right:7px;vertical-align:1px"></span>{e(c.get("eyebrow") or "")}</td></tr></table>')
+    out.append(f'<h1 style="margin:0 0 12px;font-family:{FONT};font-size:26px;line-height:1.2;font-weight:800;letter-spacing:-.5px;color:#17212B">{e(c["title"])}</h1>')
     for p in c.get('body') or []:
-        out.append(f'<p style="margin:0 0 12px;font-family:{FONT};font-size:15.5px;line-height:1.6;color:#3B4754">{p}</p>')
+        out.append(f'<p style="margin:0 0 12px;font-family:{FONT};font-size:16px;line-height:1.6;color:#3B4754">{p}</p>')
     if c.get('fig'):
         bar = ''
         if c.get('bar'):
@@ -66,53 +67,61 @@ def render(c):
             bar = (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px"><tr><td style="background:#ffffff;border-radius:99px;height:8px;font-size:0;line-height:0">'
                    f'<div style="width:{pct}%;height:8px;background:{acc};border-radius:99px"></div></td></tr></table>'
                    f'<table role="presentation" width="100%" style="margin-top:8px;font-family:{FONT};font-size:12.5px;color:#4B5968"><tr><td style="font-weight:700;color:#17212B">{e(l)}</td><td align="right">{e(r)}</td></tr></table>')
-        out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 6px"><tr><td style="background:{bg};border-radius:16px;padding:18px 20px">'
+        out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0 0"><tr><td style="background:{bg};border-radius:16px;padding:18px 20px">'
                    f'<div style="font-family:{FONT};font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-.5px;color:#17212B">{e(c["fig"][0])}</div>'
-                   f'<div style="font-family:{FONT};font-size:13px;color:{fg};margin-top:4px;font-weight:600">{e(c["fig"][1])}</div>{bar}</td></tr></table>')
-    if c.get('steps'):
-        out.append(f'<div style="font-family:{FONT};font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8593A1;margin:20px 0 10px">{e(c.get("steps_title") or "Próximos passos")}</div>')
-        for i, (st, a, b) in enumerate(c['steps'], 1):
-            dot = ('#E3F6EE', '#0A5C50', '✓') if st == 1 else (acc, '#ffffff', str(i)) if st == 2 else ('#F3EDE7', '#4B5968', str(i))
-            out.append(f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px"><tr><td valign="top" style="padding-right:12px">'
-                       f'<div style="width:26px;height:26px;line-height:26px;border-radius:50%;text-align:center;font-family:{FONT};font-size:12.5px;font-weight:800;background:{dot[0]};color:{dot[1]}">{dot[2]}</div></td>'
-                       f'<td style="font-family:{FONT};font-size:14.5px;line-height:1.35;color:#17212B;font-weight:{400 if st == 1 else 700};{"text-decoration:line-through;color:#8593A1;" if st == 1 else ""}">{e(a)}'
-                       + (f'<br><span style="font-size:12.5px;font-weight:400;color:#6B7785;text-decoration:none">{e(b)}</span>' if b else '') + '</td></tr></table>')
-    rows = [(a, b) for a, b in c.get('rows') or [] if str(b).strip()]
-    if rows:
-        cells = ''.join(f'<tr><td style="padding:11px 16px;font-family:{FONT};font-size:13.5px;color:#6B7785;{"border-top:1px solid #F0EAE3;" if k else ""}">{e(a)}</td>'
-                        f'<td align="right" style="padding:11px 16px;font-family:{FONT};font-size:13.5px;font-weight:700;color:#17212B;{"border-top:1px solid #F0EAE3;" if k else ""}">{e(b)}</td></tr>'
-                        for k, (a, b) in enumerate(rows))
-        out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0 0;border:1px solid #EFE7DF;border-radius:14px;border-collapse:separate">{cells}</table>')
+                   f'<div style="font-family:{FONT};font-size:13.5px;color:{fg};margin-top:4px;font-weight:700">{e(c["fig"][1])}</div>{bar}</td></tr></table>')
     if c.get('button'): out.append(_btn(c['button'][0], c['button'][1], t, c.get('ghost')))
     if c.get('second'):
-        out.append(f'<p style="margin:14px 0 0;text-align:center;font-family:{FONT};font-size:13.5px"><a href="{e(c["second"][1])}" style="color:#C44A2C;font-weight:700;text-decoration:none">{e(c["second"][0])} →</a></p>')
+        out.append(f'<p style="margin:14px 0 0;text-align:center;font-family:{FONT};font-size:14px"><a href="{e(c["second"][1])}" style="color:#C44A2C;font-weight:700;text-decoration:none">{e(c["second"][0])} →</a></p>')
+    rows = [(a, b) for a, b in c.get('rows') or [] if str(b).strip()]
+    if c.get('steps') or rows:
+        out.append(f'<div style="height:1px;background:#F0EAE3;margin:26px 0 18px;font-size:0;line-height:0">&nbsp;</div>')
+    if c.get('steps'):
+        out.append(f'<div style="font-family:{FONT};font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8593A1;margin:0 0 12px">{e(c.get("steps_title") or "O caminho")}</div>')
+        for i, (st, a, b) in enumerate(c['steps'], 1):
+            dot = ('#E3F6EE', '#0A5C50', '✓') if st == 1 else (acc, '#ffffff', str(i)) if st == 2 else ('#F3EDE7', '#4B5968', str(i))
+            tag = (f' <span style="display:inline-block;font-size:11px;font-weight:800;color:{fg};background:{bg};border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px">agora</span>' if st == 2 else '')
+            out.append(f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px"><tr><td valign="top" style="padding-right:12px">'
+                       f'<div style="width:26px;height:26px;line-height:26px;border-radius:50%;text-align:center;font-family:{FONT};font-size:12.5px;font-weight:800;background:{dot[0]};color:{dot[1]}">{dot[2]}</div></td>'
+                       f'<td style="font-family:{FONT};font-size:15px;line-height:1.35;color:#17212B;font-weight:{400 if st == 1 else 700};{"text-decoration:line-through;color:#8593A1;" if st == 1 else ""}">{e(a)}{tag}'
+                       + (f'<br><span style="font-size:13px;font-weight:400;color:#6B7785;text-decoration:none">{e(b)}</span>' if b else '') + '</td></tr></table>')
+    if rows:
+        cells = ''.join(f'<tr><td style="padding:12px 16px;font-family:{FONT};font-size:14px;color:#6B7785;{"border-top:1px solid #F0EAE3;" if k else ""}">{e(a)}</td>'
+                        f'<td align="right" style="padding:12px 16px;font-family:{FONT};font-size:14px;font-weight:700;color:#17212B;{"border-top:1px solid #F0EAE3;" if k else ""}">{e(b)}</td></tr>'
+                        for k, (a, b) in enumerate(rows))
+        out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:{"6px" if c.get("steps") else "0"} 0 0;border:1px solid #EFE7DF;border-radius:14px;border-collapse:separate">{cells}</table>')
     if c.get('tip'):  # guia curto da Central de ajuda que responde a dúvida mais provável deste e-mail
         tt, tl, tu = c['tip']
         out.append(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:22px 0 0"><tr><td style="background:#F7F3EE;border-radius:14px;padding:14px 16px">'
-                   f'<div style="font-family:{FONT};font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8A817A;margin-bottom:4px">Guia rápido</div>'
-                   f'<div style="font-family:{FONT};font-size:14px;line-height:1.5;color:#3B4754">{e(tt)}</div>'
+                   f'<div style="font-family:{FONT};font-size:14px;line-height:1.5;color:#3B4754"><b style="color:#17212B">💡 Dica:</b> {e(tt)}</div>'
                    f'<a href="{e(tu)}" style="display:inline-block;margin-top:6px;font-family:{FONT};font-size:14px;font-weight:700;color:#C44A2C;text-decoration:none">{e(tl)} →</a></td></tr></table>')
     if c.get('foot'):
-        out.append(f'<p style="margin:18px 0 0;padding-top:16px;border-top:1px solid #F0EAE3;font-family:{FONT};font-size:12.5px;line-height:1.5;color:#6B7785">{e(c["foot"])}</p>')
+        out.append(f'<p style="margin:18px 0 0;font-family:{FONT};font-size:13px;line-height:1.5;color:#6B7785">{e(c["foot"])}</p>')
     why = e(c.get('why') or 'Você recebe este e-mail porque tem uma conta no Oi Nanda.')
     prefs = f' · <a href="{APP}/empresa/avisos" style="color:#8A817A">Escolher meus avisos</a>' if c.get('prefs') else ''
+    acct = (f'<span style="display:inline-block;background:#ffffff;border:1px solid #E8DED5;border-radius:99px;padding:5px 12px;font-family:{FONT};font-size:12.5px;font-weight:700;color:#4B5968">{e(c["account"])}</span>'
+            if c.get('account') else f'<a href="{APP}/" style="font-family:{FONT};font-size:13px;color:#6B7785;text-decoration:none;font-weight:700">Abrir o painel →</a>')
+    if c.get('sign') == 'founder':  # quem assina é uma pessoa: o fundador, nos e-mails de começo e de despedida
+        av, who, line = 'PF', 'Paulo Fagotti, fundador do Oi Nanda', 'Responda este e-mail quando quiser: eu ou alguém do time lê e responde.'
+    else:
+        av, who, line = 'oi', 'Time do Oi Nanda', 'Ficou com dúvida? É só responder. Quem lê é uma pessoa do time.'
+    sig = (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 0;border-top:1px solid #F0EAE3"><tr><td style="padding-top:18px">'
+           f'<table role="presentation" cellpadding="0" cellspacing="0"><tr><td valign="middle" style="padding-right:12px"><div style="width:40px;height:40px;line-height:40px;border-radius:50%;background:#E8603F;color:#fff;'
+           f'text-align:center;font-family:{FONT};font-weight:800;font-size:{15 if av == "PF" else 14}px">{av}</div></td>'
+           f'<td valign="middle" style="font-family:{FONT};font-size:14px;line-height:1.45;color:#3B4754"><b style="color:#17212B">{e(who)}</b><br>{e(line)}</td></tr></table></td></tr></table>')
     return (f'<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">'
             f'<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"></head>'
             f'<body style="margin:0;padding:0;background:#F4EFEA">'
             f'<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F4EFEA">{e(c.get("pre") or "")}</div>'
-            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4EFEA"><tr><td align="center" style="padding:28px 14px 36px">'
+            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4EFEA"><tr><td align="center" style="padding:24px 12px 36px">'
             f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">'
-            f'<tr><td style="padding:0 6px 18px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
+            f'<tr><td style="padding:0 4px 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
             f'<td><a href="{APP}/"><img src="{APP}/mail/logo.png" width="68" height="40" alt="Oi Nanda" style="display:block;border:0"></a></td>'
-            f'<td align="right" style="font-family:{FONT};font-size:13px"><a href="{APP}/" style="color:#6B7785;text-decoration:none;font-weight:600">Abrir o painel →</a></td></tr></table></td></tr>'
-            f'<tr><td style="background:#ffffff;border-radius:22px;border:1px solid #EDE5DC;overflow:hidden">'
-            f'<div style="height:5px;background:{acc};border-radius:22px 22px 0 0;font-size:0;line-height:0">&nbsp;</div>'
-            f'<div style="padding:30px 28px 30px">{"".join(out)}</div></td></tr>'
-            f'<tr><td style="padding:22px 10px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr>'
-            f'<td valign="top" style="padding-right:12px"><div style="width:36px;height:36px;line-height:36px;border-radius:50%;background:#E8603F;color:#fff;text-align:center;font-family:{FONT};font-weight:800;font-size:15px">N</div></td>'
-            f'<td style="font-family:{FONT};font-size:13.5px;line-height:1.45;color:#3B4754"><b style="color:#17212B">Equipe Oi Nanda</b><br>Ficou com dúvida? É só responder este e-mail: quem lê é uma pessoa do time.</td></tr></table></td></tr>'
-            f'<tr><td style="padding:22px 10px 0;font-family:{FONT};font-size:12px;line-height:1.6;color:#8A817A">'
+            f'<td align="right">{acct}</td></tr></table></td></tr>'
+            f'<tr><td style="background:#ffffff;border-radius:22px;border:1px solid #EDE5DC">'
+            f'<div style="padding:30px 26px 26px">{"".join(out)}{sig}</div></td></tr>'
+            f'<tr><td style="padding:20px 8px 0;font-family:{FONT};font-size:12px;line-height:1.6;color:#8A817A;text-align:center">'
             f'<a href="{APP}/" style="color:#6B7785;font-weight:700;text-decoration:none">Painel</a> &nbsp;·&nbsp; <a href="https://oinanda.com.br/" style="color:#6B7785;font-weight:700;text-decoration:none">Site</a>'
             f' &nbsp;·&nbsp; <a href="https://instagram.com/oinanda.app" style="color:#6B7785;font-weight:700;text-decoration:none">Instagram</a><br>{why}{prefs}<br>{LEGAL}</td></tr>'
             f'</table></td></tr></table></body></html>')

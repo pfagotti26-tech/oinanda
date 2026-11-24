@@ -77,3 +77,21 @@ def test_assinatura_webhook():
         r.headers = {'x-signature': f'ts={ts},v1=errado', 'x-request-id': 'rq1'}
         assert not billing.signature_ok(r, 'abc')
     finally: del os.environ['MP_WEBHOOK_SECRET']
+
+def test_teste_sem_cartao_assina_no_meio_guarda_os_dias(monkeypatch):
+    """Conta nova começa nos 14 dias sem cartão, com teto de 200 atendimentos; assinar no meio do teste só cobra quando ele acaba."""
+    calls = []
+    async def fake(method, path, body=None):
+        calls.append((method, path, body))
+        return {'id': 'sub1', 'init_point': 'https://mp/x'} if method == 'POST' else {}
+    monkeypatch.setattr(billing, 'mp', fake); monkeypatch.setenv('MP_ACCESS_TOKEN', 'APP_USR-x')
+    monkeypatch.delenv('SIGNUP_MODE', raising=False)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona T', 'email': 'dt@x.com', 'password': 'senha-forte-1', 'company': 'Loja T', 'segment': 'loja'})
+        b = c.get('/api/billing').json()
+        assert b['state'] == 'trial' and b['limits']['atend'] == 200
+        async def avanca():
+            await db.companies.update_many({'name': 'Loja T'}, {'$set': {'trial_ends_at': now() + timedelta(days=5, hours=2)}})
+        c.portal.call(avanca)
+        c.post('/api/billing/subscribe', json={'plan': 'profissional', 'cycle': 'monthly', 'email': 'dt@x.com'})
+        assert calls[-1][2]['auto_recurring']['free_trial'] == {'frequency': 6, 'frequency_type': 'days'}

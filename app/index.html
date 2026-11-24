@@ -2241,7 +2241,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
 .ob-top .logo{text-decoration:none}
 .ob-st{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink3)}
-.ob-st>span{display:flex;align-items:center;gap:7px}.ob-st i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;background:#EEE9E4;color:var(--ink2)}
+.ob-st>span{display:flex;align-items:center;gap:7px;white-space:nowrap}.ob-st i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;background:#EEE9E4;color:var(--ink2)}
 .ob-st .on{color:var(--ink)}.ob-st .on i{background:var(--c);color:#fff;box-shadow:0 0 0 4px rgba(232,96,63,.15)}.ob-st .dn i{background:var(--oksoft);color:var(--ok)}
 .ob-st .sep{width:22px;height:2px;border-radius:2px;background:#E5DED7}.ob-st .dn+.sep{background:#BFE3D6}
 .ob h1{font-size:32px;line-height:1.12;letter-spacing:-.8px;font-weight:800;margin:0}.ob .sub{color:var(--ink2);margin:8px 0 0;font-size:15.5px}
@@ -2292,11 +2292,26 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-cta .ob-lnk{display:block;margin:12px auto 0;font-size:13.5px}
 /* 3 */
 .ob-c .body{padding:4px 28px 44px;max-width:1080px;width:100%;margin:0 auto}
-.ob-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.ob-ey{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--c2);background:var(--soft);border-radius:99px;padding:4px 11px;margin-bottom:10px}
+.ob-ey.ok{color:var(--ok);background:var(--oksoft);text-transform:none;letter-spacing:0;font-size:12.5px}.ob-ey.ok .ob-lnk{color:var(--ok);font-size:12.5px}.ob-ey.warn{color:var(--warn);background:var(--warnsoft)}
+.ob-tf{display:grid;gap:10px;margin-top:20px}.ob-lb{font-size:13.5px;font-weight:700;color:var(--ink)}
+.ob-its{display:grid;gap:8px}.ob-it{display:grid;grid-template-columns:minmax(0,1fr) 150px 32px;gap:8px;align-items:center}
+.ob-tf input{width:100%;border:1.5px solid #DCD2C9;border-radius:12px;padding:12px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}.ob-tf input:focus,.ob-gap textarea:focus{outline:0;border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.12)}
+.ob-pr{position:relative;display:block}.ob-pr em{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-style:normal;font-size:14px;color:var(--ink3);font-weight:700}.ob-pr input{padding-left:38px}
+.ob-x{width:32px;height:32px;border-radius:50%;border:0;background:#F3EEE9;color:var(--ink2);font-size:18px;cursor:pointer}.ob-x:hover{background:var(--badsoft);color:var(--bad)}
+.ob-add{justify-self:start;background:none;border:1.5px dashed #DCD2C9;border-radius:12px;padding:9px 14px;font:inherit;font-size:13.5px;font-weight:700;color:var(--c2);cursor:pointer}.ob-add:hover{border-color:var(--c)}
+.ob-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}.ob-2>div{display:grid;gap:6px;min-width:0}
+.ob-acts{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}.ob-fine{font-size:12.5px;color:var(--ink3);margin:4px 0 0}
+.ob-pv .ob-pvs{margin:2px 0 12px;font-size:12.5px;color:var(--ink3)}.ob-pvc{background:#EFE7DE;border-radius:16px;padding:14px 12px;display:grid;gap:8px}.ob-pvc .ob-m{font-size:13.5px;max-width:90%}
+.ob-why ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:9px;font-size:13.5px;color:var(--ink2);line-height:1.45}.ob-why b{color:var(--ink)}
+.ob-gap[hidden]{display:none}.ob-gap{border-color:#F2DDA6;background:linear-gradient(170deg,#FFF8E6,#fff 70%);display:grid;gap:8px}.ob-gq{margin:0;font-size:14px;font-weight:700}
+.ob-gap textarea{width:100%;border:1.5px solid #DCD2C9;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;resize:vertical;background:#fff;color:var(--ink)}
+@media(max-width:860px){.ob-it{grid-template-columns:minmax(0,1fr) 110px 30px}.ob-2{grid-template-columns:1fr}.ob-pv{order:-1}}
+.ob-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
 .ob-pl{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:6px;align-content:start;position:relative;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:.15s}
 .ob-pl:hover{border-color:#E8C7B9}.ob-pl.on{border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.10)}
 .ob-pl .tag{position:absolute;top:-11px;left:18px;background:var(--c);color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px}
-.ob-pl h3{margin:0;font-size:16px}.ob-pl .pr{font-size:28px;font-weight:800;letter-spacing:-.6px}.ob-pl .pr small{font-size:13px;color:var(--ink3);font-weight:600;letter-spacing:0}
+.ob-pl h3{margin:0;font-size:16px}.ob-pl .ob-price{display:block;white-space:nowrap;font-size:30px;font-weight:800;letter-spacing:-.6px;margin-top:4px}.ob-pl .ob-price small{font-size:13px;color:var(--ink3);font-weight:600;letter-spacing:0}
 .ob-pl .pi{font-size:13px;color:var(--ink2);margin:0}
 .ob-pl ul{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:5px;font-size:13px;color:var(--ink2)}.ob-pl li:before{content:'✓';color:var(--ok);font-weight:800;margin-right:7px}
 .ob-pl .rd{position:absolute;top:18px;right:18px;width:20px;height:20px;border-radius:50%;border:2px solid #CFC6BE}.ob-pl.on .rd{border-color:var(--c);background:var(--c);box-shadow:inset 0 0 0 4px #fff}
@@ -3108,7 +3123,7 @@ const obNoun=s=>OB_NOUN[s]||['cliente','clientes','um cliente'];
 const obLogo='<a class="logo" href="https://oinanda.com.br/" title="Ir para o site do Oi Nanda"><i>oi</i><b>Nanda</b></a>';
 const obAppLogo='<a class="logo" href="/" data-home title="Ir para o início do Oi Nanda"><i>oi</i><b>Nanda</b></a>';
 document.addEventListener('click',e=>{const a=e.target.closest('[data-home]');if(!a||!ME||e.metaKey||e.ctrlKey)return;e.preventDefault();history.replaceState(null,'','/');VIEW='inicio';if($('#page'))go('inicio');else shell()});
-function obSteps(n){return `<div class="ob-st" aria-label="Passo ${n} de 3">${['Sua conta','Conheça a Nanda','Ativar'].map((l,i)=>`${i?'<span class="sep"></span>':''}<span class="${i+1<n?'dn':i+1===n?'on':''}"><i>${i+1<n?'✓':i+1}</i><span class="tx">${l}</span></span>`).join('')}</div>`}
+function obSteps(n){return `<div class="ob-st" aria-label="Passo ${n} de 3">${['Sua conta','Ensine a Nanda',(ME&&ME.access&&ME.access.state==='demo')?'Ativar':'WhatsApp'].map((l,i)=>`${i?'<span class="sep"></span>':''}<span class="${i+1<n?'dn':i+1===n?'on':''}"><i>${i+1<n?'✓':i+1}</i><span class="tx">${l}</span></span>`).join('')}</div>`}
 const obMoney=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const obDay=d=>new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
 const obHour=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
@@ -3166,50 +3181,107 @@ function signupView(email){
   f.name.focus();
 }
 
+const OB_PH={clinica:[['Limpeza de pele','180'],['Drenagem linfática','120']],studio:[['Plano mensal','290'],['Aula avulsa','60']],salao:[['Corte','50'],['Corte + barba','85']],
+  imobiliaria:[['Apartamento 2 quartos, Centro','450000'],['Aluguel casa 3 quartos','3200']],loja:[['Vestido midi','259'],['Frete para todo o Brasil','25']],escola:[['Mensalidade','390'],['Matrícula','100']],
+  servicos:[['Abertura de MEI','350'],['Contabilidade mensal','290']],restaurante:[['Pizza grande','69'],['Taxa de entrega','8']],lancamento:[['Curso completo','997'],['Mentoria','2500']],outro:[['Seu principal serviço','150'],['Outro serviço','300']]};
 async function comecarView(){
   history.replaceState(null,'','/comecar');document.title='Conheça a Nanda · Oi Nanda';
-  const c=ME.company,seg=c.segment||'outro',[noun,nouns,aNoun]=obNoun(seg);
+  const c=ME.company,seg=c.segment||'outro',[noun,nouns,aNoun]=obNoun(seg),ph=OB_PH[seg]||OB_PH.outro;
   let s={};try{s=await api('/ai/settings')}catch(e){}
-  const nanda=s.name||'Nanda',hist=[];let busy=false;
-  const did=[['⚡','Respondeu na hora','Responde em segundos, de dia ou de madrugada.'],['📅','Marcaria o horário na sua agenda','Quando o '+noun+' escolhe um horário livre.'],
-    ['🙋','Chamaria o seu time','Quando o '+noun+' pede uma pessoa ou o assunto é delicado.'],['📝','Anotaria o interesse no funil','O que o '+noun+' quer, para ninguém esquecer.']];
-  const on=[false,false,false,false],det=['','','',''];
-  $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obAppLogo}${obSteps(2)}</div><div class="body">
-   <div class="ob-card"><h1>Fale com a Nanda como se fosse ${aNoun} seu</h1>
-    <p class="sub">${seg==='outro'?'Ela já veio pronta para atender o seu negócio.':`Ela já veio ajustada para <b>${esc((SEGS[seg]||SEG[seg]||'o seu ramo').toLowerCase())}</b>.`} Pergunte preço, horário ou o que ${aNoun} perguntaria. É só um teste: nada sai para o WhatsApp de ninguém.</p>
-    <div class="ob-chat" id="obChat"><div class="ob-empty">Escreva abaixo ou toque numa das perguntas prontas. A Nanda responde como responderia ${aNoun} de verdade.</div></div>
-    <div class="ob-cmp"><textarea id="obIn" rows="1" placeholder="Escreva como se fosse ${aNoun}..." aria-label="Mensagem para a Nanda"></textarea>
-     <button class="btn p big" id="obSend" type="button">Enviar mensagem</button></div>
-    <div class="ob-chips" id="obChips">${(OB_ASK[seg]||OB_ASK.outro).map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
-   </div>
-   <div class="ob-side">
-    <div class="ob-card"><h3>O que a ${esc(nanda)} fez nessa conversa</h3><div class="ob-did" id="obDid"></div></div>
-    <div class="ob-card ob-cta"><h3>Pronto para ela atender os seus ${nouns} de verdade?</h3>
-     <p>No próximo passo você ativa os 14 dias grátis e conecta o WhatsApp do seu negócio. Hoje não é cobrado nada.</p>
-     <button class="btn p big" id="obGo">Quero a Nanda no meu WhatsApp</button>
-     <button class="ob-lnk" id="obExp" type="button">Explorar o sistema antes</button></div>
-   </div></div></div>`;
-  const chat=$('#obChat'),inp=$('#obIn');
-  const drawDid=()=>{$('#obDid').innerHTML=did.map((d,i)=>`<div class="${on[i]?'on':''}"><i>${on[i]?'✓':d[0]}</i><span>${d[1]}<small>${esc(det[i]||d[2])}</small></span></div>`).join('')};
-  const drawChat=typing=>{chat.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(nanda)}</b>`:''}${esc(m.text)}<small>${m.at}</small></div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':''):chat.innerHTML;chat.scrollTop=chat.scrollHeight};
-  drawDid();
-  const send=async txt=>{txt=(txt||'').trim();if(!txt||busy)return;busy=true;inp.value='';inp.style.height='';$('#obSend').disabled=true;
-    hist.push({dir:'in',text:txt,at:obHour()});drawChat(true);const t0=performance.now();
-    try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});
-      const secs=Math.max(1,Math.round((performance.now()-t0)/1000));
-      if(r.reply){hist.push({dir:'out',text:r.reply,at:obHour()});on[0]=true;det[0]=`Em ${secs} ${secs===1?'segundo':'segundos'}. De madrugada seria igual.`}
-      if(r.book){on[1]=true;det[1]=(r.book_label||'Horário escolhido')+'. No teste nada é marcado.';hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'})}
-      if(r.handoff){on[2]=true;det[2]=(r.reason?r.reason.charAt(0).toUpperCase()+r.reason.slice(1)+'. ':'')+'Você recebe o aviso na hora.';hist.push({dir:'sys',text:'Aqui ela chamaria alguém do seu time'})}
-      if(r.anotar||r.valor||r.etapa||r.origin){on[3]=true;det[3]=r.anotar||(r.valor?'Possível venda de '+obMoney(r.valor):'Anotou no funil.')}
-    }catch(e){hist.push({dir:'sys',text:e.status===402?'As conversas de teste deste mês acabaram. Ative os 14 dias grátis para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
-    busy=false;$('#obSend').disabled=false;drawChat(false);drawDid();if(innerWidth>860)inp.focus()};
-  $('#obSend').onclick=()=>send(inp.value);
-  inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(inp.value)}};
-  inp.oninput=()=>{inp.style.height='';inp.style.height=Math.min(140,inp.scrollHeight)+'px'};
-  document.querySelectorAll('#obChips button').forEach(b=>b.onclick=()=>send(b.textContent));
-  $('#obGo').onclick=()=>ativarView();
-  $('#obExp').onclick=()=>{history.replaceState(null,'','/');VIEW='inicio';shell()};
-  if(innerWidth>860)inp.focus();
+  const nanda=s.name||'Nanda',cat=(s.catalog||[]).filter(x=>x.price>0),aboutL=(s.about||'').split('\n');
+  const pick=p=>((aboutL.find(l=>l.startsWith(p))||'').slice(p.length)).trim();
+  const T={items:cat.length?cat.slice(0,8).map(x=>({name:x.name,price:String(x.price)})):[{name:'',price:''},{name:'',price:''}],hours:pick('Horário de atendimento:'),where:pick('Onde fica / como atende:')};
+  const money=v=>{const n=Number(String(v).replace(/\./g,'').replace(',','.'));return isFinite(n)&&n>0?obMoney(n).replace(',00',''):''};
+  const valid=()=>T.items.filter(x=>x.name.trim());
+  const isDemo=(ME.access||{}).state==='demo';
+  // ---------- 1. ensinar ----------
+  const teach=()=>{
+    $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obAppLogo}${obSteps(2)}</div><div class="body">
+     <div class="ob-card"><span class="ob-ey">Leva 1 minuto</span><h1>Ensine a ${esc(nanda)} sobre o seu negócio</h1>
+      <p class="sub">Ela só fala o que você contar aqui. Nunca inventa preço nem promessa. Depois você testa como ${aNoun} e vê ela responder com as suas informações.</p>
+      <div class="ob-tf"><label class="ob-lb">O que você vende e quanto custa</label>
+       <div class="ob-its" id="obIts"></div>
+       <button type="button" class="ob-add" id="obAdd">+ Adicionar outro item</button>
+       <div class="ob-2"><div><label class="ob-lb" for="obH">Quando você atende</label><input id="obH" value="${esc(T.hours)}" placeholder="Ex.: seg a sex, 9h às 19h · sáb, 9h às 13h" maxlength="300"></div>
+        <div><label class="ob-lb" for="obW">Onde fica ou como atende</label><input id="obW" value="${esc(T.where)}" placeholder="${seg==='lancamento'?'Ex.: 100% online, com acesso pela plataforma':'Ex.: Moema, São Paulo · ou: atendimento online'}" maxlength="300"></div></div>
+       <div class="ob-acts"><button class="btn p big" id="obSave" type="button">Salvar e testar a ${esc(nanda)}</button><span class="err" id="obTE"></span></div>
+       <p class="ob-fine">Dá para completar depois em <b>${esc(nanda)}</b>, no menu: serviços, regras, perguntas frequentes. Tudo que você salvar aqui já vale para o atendimento de verdade.</p></div></div>
+     <div class="ob-side"><div class="ob-card ob-pv"><h3>Assim ela vai responder</h3><p class="ob-pvs">Prévia com o que você está escrevendo.</p>
+       <div class="ob-pvc"><div class="ob-m in" id="obPvQ">${esc((OB_ASK[seg]||OB_ASK.outro)[0])}<small>agora</small></div><div class="ob-m out" id="obPvA"><b>${esc(nanda)}</b><span></span><small>agora</small></div></div></div>
+      <div class="ob-card ob-why"><h3>Por que começar por aqui</h3><ul><li><b>Sem inventar.</b> O que ela não souber, ela passa para o seu time.</li><li><b>Não é um teste perdido.</b> O que você salvar já é o treino de verdade dela.</li><li><b>Sem cartão.</b> Seus 14 dias grátis já começaram.</li></ul></div></div>
+    </div></div>`;
+    const its=$('#obIts');
+    const pv=()=>{const v=valid(),x=v[0];const h=$('#obH').value.trim();if(x)$('#obPvQ').innerHTML=esc(`Oi! Quanto custa ${x.name.trim().toLowerCase()}?`)+'<small>agora</small>';
+      $('#obPvA span').textContent=x?`Oi! ${x.name.trim()}${money(x.price)?' custa '+money(x.price):''}.${v.length>1?` Também temos ${v.slice(1,3).map(y=>y.name.trim()).join(' e ')}.`:''}${h?` Atendemos ${h}.`:''} Quer que eu reserve um horário pra você?`
+        :'Quando você preencher ao lado, a resposta aparece aqui, com o seu preço.'};
+    const drawIts=()=>{its.innerHTML=T.items.map((x,i)=>`<div class="ob-it"><input data-n="${i}" value="${esc(x.name)}" placeholder="Ex.: ${esc((ph[i]||ph[0])[0])}" maxlength="80" aria-label="Item ${i+1}">
+       <span class="ob-pr"><em>R$</em><input data-p="${i}" value="${esc(x.price)}" inputmode="decimal" placeholder="${esc(Number((ph[i]||ph[0])[1]).toLocaleString('pt-BR'))}" aria-label="Preço do item ${i+1}"></span>
+       ${T.items.length>1?`<button type="button" class="ob-x" data-x="${i}" aria-label="Tirar item">×</button>`:'<span></span>'}</div>`).join('');
+      its.querySelectorAll('[data-n]').forEach(x=>x.oninput=()=>{T.items[+x.dataset.n].name=x.value;pv()});
+      its.querySelectorAll('[data-p]').forEach(x=>x.oninput=()=>{x.value=x.value.replace(/[^\d.,]/g,'');T.items[+x.dataset.p].price=x.value;pv()});
+      its.querySelectorAll('[data-x]').forEach(x=>x.onclick=()=>{T.items.splice(+x.dataset.x,1);drawIts();pv()});
+      $('#obAdd').hidden=T.items.length>=8};
+    drawIts();pv();$('#obH').oninput=pv;
+    $('#obAdd').onclick=()=>{T.items.push({name:'',price:''});drawIts();its.querySelector(`[data-n="${T.items.length-1}"]`).focus()};
+    $('#obSave').onclick=async()=>{const v=valid();T.hours=$('#obH').value.trim();T.where=$('#obW').value.trim();
+      if(!v.length){$('#obTE').textContent='Escreva pelo menos um item que você vende.';its.querySelector('[data-n]').focus();return}
+      const b=$('#obSave');b.disabled=true;b.textContent='Salvando...';
+      try{await api('/ai/quick',{method:'POST',body:{items:v.map(x=>{const n=Number(String(x.price).replace(/\./g,'').replace(',','.'));return{name:x.name.trim(),price:isFinite(n)&&x.price!==''?n:null}}),hours:T.hours,where:T.where}});T.items=v;test()}
+      catch(e){$('#obTE').textContent=e.message;b.disabled=false;b.textContent='Salvar e testar a '+nanda}};
+    if(innerWidth>860)setTimeout(()=>its.querySelector('[data-n]')?.focus(),60)};
+  // ---------- 2. testar ----------
+  const test=()=>{
+    const hist=[];let busy=false,lastQ='';
+    const knows=[`${valid().length} ${valid().length===1?'item':'itens'} com preço`,T.hours?'horário':'',T.where?'onde fica':''].filter(Boolean).join(', ');
+    const chips=[...valid().slice(0,2).map(x=>`Quanto custa ${x.name.trim().toLowerCase()}?`),T.hours?'Vocês abrem sábado?':'Qual o horário de vocês?',(OB_ASK[seg]||OB_ASK.outro).find(q=>!/custa|horário/i.test(q))||'Quero falar com uma pessoa'];
+    const did=[['⚡','Respondeu na hora','Responde em segundos, de dia ou de madrugada.'],['📅','Marcaria o horário na sua agenda','Quando '+aNoun+' escolhe um horário livre.'],
+      ['🙋','Chamaria o seu time','Quando não sabe a resposta ou '+aNoun+' pede uma pessoa.'],['📝','Anotaria o interesse no funil','O que '+aNoun+' quer, para ninguém esquecer.']];
+    const on=[false,false,false,false],det=['','','',''];
+    $('#root').innerHTML=`<div class="ob ob-b"><div class="ob-top">${obAppLogo}${obSteps(2)}</div><div class="body">
+     <div class="ob-card"><span class="ob-ey ok">Ela já sabe: ${esc(knows)} · <button type="button" class="ob-lnk" id="obEd">editar</button></span>
+      <h1>Agora teste como se fosse ${aNoun}</h1>
+      <p class="sub">Pergunte preço, horário ou o que ${aNoun} perguntaria. É só um teste: nada sai para o WhatsApp de ninguém.</p>
+      <div class="ob-chat" id="obChat"><div class="ob-empty">Toque numa pergunta abaixo ou escreva a sua. Ela responde só com o que você ensinou.</div></div>
+      <div class="ob-chips" id="obChips">${chips.map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
+      <div class="ob-cmp"><textarea id="obIn" rows="1" placeholder="Escreva como se fosse ${aNoun}..." aria-label="Mensagem para a Nanda"></textarea>
+       <button class="btn p big" id="obSend" type="button">Enviar mensagem</button></div></div>
+     <div class="ob-side">
+      <div class="ob-card ob-gap" id="obGap" hidden></div>
+      <div class="ob-card"><h3>O que a ${esc(nanda)} fez nessa conversa</h3><div class="ob-did" id="obDid"></div></div>
+      <div class="ob-card ob-cta">${isDemo?`<h3>Pronto para ela atender os seus ${nouns} de verdade?</h3><p>No próximo passo você ativa os 14 dias grátis e conecta o WhatsApp.</p><button class="btn p big" id="obGo">Quero a Nanda no meu WhatsApp</button>`
+        :`<span class="ob-ey ok">Seus 14 dias grátis já começaram · sem cartão</span><h3>Último passo: conectar o WhatsApp</h3><p>Leva uns 5 minutos. Faça pelo celular que tem o chip do número e a ${esc(nanda)} começa a atender os seus ${nouns}.</p><button class="btn p big" id="obGo">Conectar meu WhatsApp</button>`}
+       <button class="ob-lnk" id="obExp" type="button">Explorar o sistema antes</button></div></div></div></div>`;
+    const chat=$('#obChat'),inp=$('#obIn');
+    const drawDid=()=>{$('#obDid').innerHTML=did.map((d,i)=>`<div class="${on[i]?'on':''}"><i>${on[i]?'✓':d[0]}</i><span>${d[1]}<small>${esc(det[i]||d[2])}</small></span></div>`).join('')};
+    const drawChat=typing=>{chat.innerHTML=hist.length?hist.map(m=>m.dir==='sys'?`<div class="ob-m sys">${esc(m.text)}</div>`:`<div class="ob-m ${m.dir}">${m.dir==='out'?`<b>${esc(nanda)}</b>`:''}${esc(m.text)}<small>${m.at}</small></div>`).join('')+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':''):chat.innerHTML;chat.scrollTop=chat.scrollHeight};
+    const gap=q=>{const g=$('#obGap');g.hidden=false;g.innerHTML=`<span class="ob-ey warn">Ela não sabia responder</span><p class="ob-gq">“${esc(q)}”</p>
+       <label class="ob-lb" for="obGA">Como ela deve responder?</label><textarea id="obGA" rows="3" placeholder="Ex.: A drenagem custa R$ 120 e leva 50 minutos."></textarea>
+       <div class="ob-acts"><button class="btn p" id="obGS" type="button">Ensinar e perguntar de novo</button><button class="ob-lnk" id="obGX" type="button">Deixar para depois</button></div>`;
+      $('#obGX').onclick=()=>{g.hidden=true};
+      $('#obGS').onclick=async()=>{const t=$('#obGA').value.trim();if(!t){$('#obGA').focus();return}const b=$('#obGS');b.disabled=true;b.textContent='Ensinando...';
+        try{await api('/ai/quick',{method:'POST',body:{extra:`Pergunta: ${q}\nResposta: ${t}`}});g.hidden=true;hist.push({dir:'sys',text:'Você ensinou. Perguntando de novo...'});drawChat(false);send(q)}
+        catch(e){toast(e.message);b.disabled=false;b.textContent='Ensinar e perguntar de novo'}}};
+    drawDid();
+    const send=async txt=>{txt=(txt||'').trim();if(!txt||busy)return;busy=true;inp.value='';inp.style.height='';$('#obSend').disabled=true;lastQ=txt;
+      hist.push({dir:'in',text:txt,at:obHour()});drawChat(true);const t0=performance.now();
+      try{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});
+        const secs=Math.max(1,Math.round((performance.now()-t0)/1000));
+        if(r.reply){hist.push({dir:'out',text:r.reply,at:obHour()});on[0]=true;det[0]=`Em ${secs} ${secs===1?'segundo':'segundos'}. De madrugada seria igual.`}
+        if(r.book){on[1]=true;det[1]=(r.book_label||'Horário escolhido')+'. No teste nada é marcado.';hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'})}
+        if(r.handoff){on[2]=true;det[2]=(r.reason?r.reason.charAt(0).toUpperCase()+r.reason.slice(1)+'. ':'')+'Você recebe o aviso na hora.';hist.push({dir:'sys',text:'Aqui ela chamaria alguém do seu time'});
+          if(!/pessoa|humano|atendente|falar com/i.test(txt))gap(txt)}
+        if(r.anotar||r.valor||r.etapa||r.origin){on[3]=true;det[3]=r.anotar||(r.valor?'Possível venda de '+obMoney(r.valor):'Anotou no funil.')}
+      }catch(e){hist.push({dir:'sys',text:e.status===402?'As conversas de teste acabaram. Conecte o WhatsApp para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
+      busy=false;$('#obSend').disabled=false;drawChat(false);drawDid();if(innerWidth>860)inp.focus()};
+    $('#obSend').onclick=()=>send(inp.value);
+    inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(inp.value)}};
+    inp.oninput=()=>{inp.style.height='';inp.style.height=Math.min(140,inp.scrollHeight)+'px'};
+    document.querySelectorAll('#obChips button').forEach(b=>b.onclick=()=>send(b.textContent));
+    $('#obEd').onclick=teach;
+    $('#obGo').onclick=()=>{if(isDemo)return ativarView();history.replaceState(null,'','/empresa/whatsapp');EM.tab='whatsapp';VIEW='empresa';shell()};
+    $('#obExp').onclick=()=>{history.replaceState(null,'','/');VIEW='inicio';shell()};
+    if(innerWidth>860)inp.focus()};
+  cat.length&&T.hours?test():teach();
 }
 
 async function ativarView(){
@@ -3224,11 +3296,11 @@ async function ativarView(){
   const sub={essencial:'Para quem está começando',profissional:'A Nanda atendendo sozinha',equipe:'Para operação com time'};
   const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x};
   const draw=()=>{const p=P[S.plan];
-    $('#root').innerHTML=`<div class="ob ob-c"><div class="ob-top">${obAppLogo}${obSteps(3)}</div><div class="body">
-     <h1>${offer?'Ative seus 14 dias grátis':'Escolha o seu plano'}</h1>
-     <p class="sub">${offer?'Você só paga se continuar. Escolha o plano para depois do teste, dá para trocar quando quiser.':'Pagamento no cartão pelo Mercado Pago, sem fidelidade.'}</p>
+    $('#root').innerHTML=`<div class="ob ob-c"><div class="ob-top">${obAppLogo}${b.state==='demo'?obSteps(3):''}</div><div class="body">
+     <h1>${offer?'Ative seus 14 dias grátis':b.state==='readonly'?'Seu teste acabou. Continue de onde parou':'Escolha o seu plano'}</h1>
+     <p class="sub">${offer?'Você só paga se continuar. Escolha o plano para depois do teste, dá para trocar quando quiser.':b.state==='readonly'?'Conversas, contatos e tudo o que a Nanda aprendeu estão guardados. Escolha um plano e o atendimento volta na hora.':'Pagamento no cartão pelo Mercado Pago, sem fidelidade.'}</p>
      <div class="ob-plans">${['essencial','profissional','equipe'].map(k=>`<button type="button" class="ob-pl ${S.plan===k?'on':''}" data-pl="${k}">${k==='profissional'?'<span class="tag">Mais escolhido</span>':''}<span class="rd"></span>
-       <h3>${P[k].name}</h3><span class="pr">${obMoney(P[k].price).replace(',00','')} <small>/mês</small></span><p class="pi">${sub[k]}</p><ul>${bullets[k].map(x=>`<li>${x}</li>`).join('')}</ul></button>`).join('')}</div>
+       <h3>${P[k].name}</h3><span class="ob-price">${obMoney(P[k].price).replace(',00','')} <small>/mês</small></span><p class="pi">${sub[k]}</p><ul>${bullets[k].map(x=>`<li>${x}</li>`).join('')}</ul></button>`).join('')}</div>
      <p class="hint" style="margin-top:10px">Atendimento é um cliente atendido pela Nanda num dia, não importa quantas mensagens. Precisou de mais? +500 por R$ 59.</p>
      <div class="ob-pay">
       ${offer?`<div class="ob-card"><h3 style="margin:0">Como funciona</h3><div class="ob-tl">
@@ -3247,11 +3319,12 @@ async function ativarView(){
        :'<p class="note">Só o dono da conta ativa o plano.</p>'}
        <div class="ob-safe">🔒 Pagamento seguro pelo Mercado Pago · Sem fidelidade</div>
       </div></div>
-     <p class="ob-demo">Quer explorar mais antes? <button class="ob-lnk" id="obDemo" type="button">Continuar no modo demonstração</button> (sem conectar o WhatsApp) · <button class="ob-lnk" id="obBack" type="button">Voltar a conversar com a Nanda</button></p>
+     ${b.state==='demo'?`<p class="ob-demo">Quer explorar mais antes? <button class="ob-lnk" id="obDemo" type="button">Continuar no modo demonstração</button> (sem conectar o WhatsApp) · <button class="ob-lnk" id="obBack" type="button">Voltar a conversar com a Nanda</button></p>`
+      :`<p class="ob-demo"><button class="ob-lnk" id="obDemo" type="button">Ver minha conta antes</button> (só para consulta enquanto não escolher um plano)</p>`}
     </div></div>`;
     document.querySelectorAll('[data-pl]').forEach(x=>x.onclick=()=>{S.plan=x.dataset.pl;draw()});
     $('#obDemo').onclick=()=>{history.replaceState(null,'','/');VIEW='inicio';shell()};
-    $('#obBack').onclick=()=>comecarView();
+    if($('#obBack'))$('#obBack').onclick=()=>comecarView();
     if($('#obF'))$('#obF').onsubmit=async ev=>{ev.preventDefault();const bt=ev.target.querySelector('.btn');bt.disabled=true;bt.textContent='Abrindo o Mercado Pago...';
       try{const r=await api('/billing/subscribe',{method:'POST',body:{plan:S.plan,cycle:'monthly',extra_users:0,email:ev.target.email.value}});location.href=r.url}
       catch(e){$('#obE').textContent=e.message;bt.disabled=false;bt.textContent=offer?'Cadastrar cartão e começar':'Ir para o pagamento'}};};

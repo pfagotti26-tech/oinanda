@@ -558,16 +558,47 @@ async def example(user=Depends(current_user)):
     from niches import niche
     return niche(user['company'].get('segment'))['ai']
 
+class QuickItem(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
+
+class QuickIn(BaseModel):
+    items: List[QuickItem] = Field(default_factory=list, max_length=20)
+    hours: str = Field(default='', max_length=300)
+    where: str = Field(default='', max_length=300)
+    extra: str = Field(default='', max_length=2000)  # resposta ensinada durante o teste ("ela ainda não sabia")
+
+@router.post('/ai/quick')
+async def quick(body: QuickIn, request: Request, user=Depends(managers)):
+    """Ensinar em 1 minuto: o que vende e quanto custa (vai para o Catálogo), quando atende e onde fica. É o treino de verdade da Nanda."""
+    cid = user['company_id']; s = await settings_for(cid); upd = {}
+    for it in body.items:
+        nm = it.name.strip()
+        if not nm: continue
+        cur = await db.products.find_one({'company_id': cid, 'name': {'$regex': f'^{re.escape(nm)}$', '$options': 'i'}}, {'_id': 0, 'id': 1})
+        if cur:
+            if it.price is not None: await db.products.update_one({'id': cur['id']}, {'$set': {'price': it.price, 'active': True}})
+        else:
+            await db.products.insert_one({'id': uid(), 'company_id': cid, 'name': nm, 'category': '', 'price': it.price or 0, 'kind': 'servico', 'active': True, 'created_at': now()})
+    lines = [x for x in ((f'Horário de atendimento: {body.hours.strip()}' if body.hours.strip() else ''), (f'Onde fica / como atende: {body.where.strip()}' if body.where.strip() else '')) if x]
+    if lines:
+        about = s.get('about') or ''
+        drop = tuple(p for p, v in (('Horário de atendimento:', body.hours), ('Onde fica / como atende:', body.where)) if v.strip())  # troca só o que veio
+        keep = '\n'.join(l for l in about.split('\n') if not l.startswith(drop))
+        upd['about'] = '\n'.join(x for x in [keep.strip(), *lines] if x)
+    if body.extra.strip():
+        upd['knowledge'] = ((s.get('knowledge') or '').strip() + '\n' + body.extra.strip()).strip()
+    if upd: await db.ai_settings.update_one({'company_id': cid}, {'$set': upd}, upsert=True)
+    await audit(request, user, 'Ensinou a Nanda (primeiros passos)', ', '.join(i.name for i in body.items)[:200])
+    return {'ok': True, 'catalog': await catalog_items(cid)}
+
 @router.post('/ai/test')
 async def test(body: TestIn, user=Depends(managers)):
     """Conversa de teste no painel: nada vai para o WhatsApp."""
     from billing import ai_allowed
     if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
     s = await settings_for(user['company_id'])
-    if not s['taught']:  # ainda não ensinou: a Nanda conversa com o exemplo do ramo (modo demonstração e primeiros passos)
-        from niches import niche
-        ex = niche(user['company'].get('segment'))['ai']
-        s = {**s, **{k: v for k, v in ex.items() if not (s.get(k) or '').strip()}}
+    # só o que a empresa ensinou: o exemplo do ramo nunca vira informação do negócio (a Nanda inventaria preço e condição)
     msgs = to_llm(body.messages)
     if not msgs: raise HTTPException(400, 'Escreva uma mensagem como cliente.')
     text, usage = await llm(await system_for(s, user['company']), msgs)

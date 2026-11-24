@@ -16,7 +16,7 @@ def test_esqueci_a_senha():
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Rita Gomes', 'email': 'rita@x.com', 'password': 'senha-forte-1', 'company': 'Studio R', 'segment': 'studio'})
         c.portal.call(lambda: __import__('asyncio').sleep(0.05))
-        assert any('sua conta no Oi Nanda está pronta' in m['subject'] for m in mailer.SENT)
+        assert any('seus 14 dias grátis começaram' in m['subject'] for m in mailer.SENT)
         c.post('/api/auth/logout')
         # e-mail sem conta: mesma resposta, nada enviado
         n = len(mailer.SENT)
