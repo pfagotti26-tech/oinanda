@@ -24,10 +24,10 @@ def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa
 
 SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
 DEFS = {
- 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, sua conta no Oi Nanda está pronta', 'Converse com a Nanda e veja como ela atenderia seus clientes.',
-    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} está pronta. Converse com a Nanda como se fosse um cliente seu: em 1 minuto você vê como ela atenderia.\nGostou? Aí é ativar os 14 dias grátis e conectar o WhatsApp. A gente acompanha você em cada passo.', ('Conversar com a Nanda', '/comecar'),
-    '{primeiro_nome}, a conta da *{empresa}* está pronta. Converse com a Nanda como se fosse um cliente seu e, quando quiser, ative os *14 dias grátis*. Cancela quando quiser.',
-    fig=('14 dias', 'grátis · cancele quando quiser'), steps=[(0, 'Conversar com a Nanda', 'veja como ela atende, em 1 minuto'), (0, 'Ativar os 14 dias grátis', 'hoje não é cobrado nada'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos, com o celular do chip na mão')],
+ 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, seus 14 dias grátis começaram', 'Sem cartão. Ensine a Nanda em 1 minuto e conecte o WhatsApp.',
+    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} está pronta e os 14 dias grátis já começaram, sem cartão.\nO primeiro passo leva 1 minuto: conte à Nanda o que você vende e quanto custa. Depois é conectar o WhatsApp e ver ela atendendo.', ('Ensinar a Nanda', '/comecar'),
+    '{primeiro_nome}, a conta da *{empresa}* está pronta e os *14 dias grátis* já começaram, sem cartão. Ensine a Nanda em 1 minuto e conecte o WhatsApp para ela começar a atender.',
+    fig=('14 dias', 'grátis · sem cartão'), steps=[(2, 'Ensinar a Nanda', 'o que você vende e quanto custa, em 1 minuto'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos, com o celular do chip na mão'), (0, 'Ver a Nanda atendendo', 'seus clientes respondidos em segundos')],
     tip=('Quer ver o caminho completo antes? Montamos um guia curto, do cadastro à primeira venda.', 'Ler os primeiros passos', '/ajuda/primeiros-passos'), always=True),
  'activate': D('Lembrete para ativar', '1 dia depois do cadastro, se ainda não ativou', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda está esperando por você, {primeiro_nome}', 'Ative os 14 dias grátis e ela começa a atender no seu WhatsApp.',
     'A Nanda está pronta para atender', '{primeiro_nome}, ativando os 14 dias grátis a Nanda começa a responder seus clientes no WhatsApp, a qualquer hora.\nHoje não é cobrado nada. A gente avisa 3 dias antes do fim e dá para cancelar com um clique.', ('Ativar meus 14 dias', '/ativar'),

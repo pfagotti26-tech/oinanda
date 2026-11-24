@@ -15,7 +15,7 @@ Cobrança: assinatura do Mercado Pago (preapproval) no cartão, mensal ou anual.
 página do Mercado Pago, paga e volta. O status vem pelo aviso (webhook) do Mercado Pago e é sempre conferido na API.
 O token fica só no servidor (deploy/set-mercadopago.sh).
 """
-import os, hmac, hashlib, logging
+import math, os, hmac, hashlib, logging
 from datetime import timedelta, datetime
 from typing import Optional, Literal
 import httpx
@@ -29,7 +29,8 @@ log = logging.getLogger('oinanda.billing')
 MP = 'https://api.mercadopago.com'
 EXTRA_USER = 39
 ANNUAL_MONTHS = 10  # anual: paga 10, leva 12
-TRIAL_AI = 1000  # sugestões no teste antigo (sem cartão), para contas criadas antes do modo demonstração
+TRIAL_AI = 1000  # sugestões da Nanda no teste sem cartão
+TRIAL_ATEND = int(os.environ.get('TRIAL_ATEND', '200'))  # atendimentos da Nanda sozinha nos 14 dias sem cartão (custo de IA sob controle)
 TRIAL_DAYS_CARD = 14
 DEMO_TESTS = 60  # conversas de teste com a Nanda no modo demonstração (por mês)
 PACK = {'size': 500, 'price': 59}
@@ -102,7 +103,7 @@ def limits(company):
     P = PLANS[p]; b = company.get('billing') or {}; extra = b.get('extra_users') or 0
     if st == 'demo': return {'state': st, 'plan': p, 'users': 1, 'ai': 0, 'atend': 0, 'sug': 0, 'tests': DEMO_TESTS, 'features': P['features']}
     legacy = st == 'trial' and not card_trial(company)  # teste antigo, sem cartão: tudo liberado com a cota de antes
-    atend, sug = (P['atend'], TRIAL_AI) if legacy else (P['atend'], P['sug'])
+    atend, sug = (min(P['atend'], TRIAL_ATEND), TRIAL_AI) if legacy else (P['atend'], P['sug'])
     return {'state': st, 'plan': p, 'users': P['users'] + (extra if st in ('active', 'trial') and not legacy else 0), 'ai': atend or sug, 'atend': atend, 'sug': sug,
             'features': P['features']}
 
@@ -253,10 +254,14 @@ async def subscribe(body: SubIn, request: Request, user=Depends(owners)):
     amount = price_of(body.plan, body.cycle, body.extra_users)
     base = app_url(request)
     trial = c.get('plan') == 'demo' and not c.get('trial_used') and not b.get('since')  # 14 dias grátis uma vez, ao sair do modo demonstração
+    days = TRIAL_DAYS_CARD
+    te = aware(c.get('trial_ends_at'))
+    if c.get('plan') == 'trial' and te and te > now() and not b.get('since'):  # assinou durante o teste sem cartão: a cobrança só começa quando o teste acaba
+        trial, days = True, max(1, math.ceil((te - now()).total_seconds() / 86400))
     rec = {'frequency': 12 if body.cycle == 'annual' else 1, 'frequency_type': 'months', 'transaction_amount': amount, 'currency_id': 'BRL'}
-    if trial: rec['free_trial'] = {'frequency': TRIAL_DAYS_CARD, 'frequency_type': 'days'}
+    if trial: rec['free_trial'] = {'frequency': days, 'frequency_type': 'days'}
     sub = await mp('POST', '/preapproval', {
-        'reason': f'Oi Nanda · plano {PLANS[body.plan]["name"]}' + (' (anual)' if body.cycle == 'annual' else '') + (f' · {TRIAL_DAYS_CARD} dias grátis' if trial else ''),
+        'reason': f'Oi Nanda · plano {PLANS[body.plan]["name"]}' + (' (anual)' if body.cycle == 'annual' else '') + (f' · {days} dias grátis' if trial else ''),
         'external_reference': c['id'], 'payer_email': body.email, 'back_url': f'{base}/empresa/assinatura', 'status': 'pending', 'auto_recurring': rec})
     nb = {**b, 'pending': {'sub_id': sub['id'], 'plan': body.plan, 'cycle': body.cycle, 'extra_users': body.extra_users, 'amount': amount, 'email': body.email, 'at': now(),
                            'trial': trial},

@@ -241,8 +241,8 @@ async def signup(body: Signup, request: Request, response: Response):
     doc = await throttle(key, limit=5, minutes=60)
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
-    # conta nova nasce em modo demonstração; os 14 dias grátis começam ao cadastrar o cartão (SIGNUP_MODE=trial: teste antigo, sem cartão)
-    start = {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True} if os.environ.get('SIGNUP_MODE') == 'trial' else {'plan': 'demo'}
+    # conta nova já começa nos 14 dias grátis, sem cartão (o cartão só entra ao assinar). SIGNUP_MODE=demo volta ao modo com cartão no começo.
+    start = {'plan': 'demo'} if os.environ.get('SIGNUP_MODE', 'trial') == 'demo' else {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True}
     company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
                **start, 'status': 'active', 'created_at': now(), 'notice_wa': body.wa_optin,
                'wa_optin': {'on': body.wa_optin, 'at': now(), 'ip': client_ip(request), 'text': 'Quero receber pelo WhatsApp os avisos da minha conta e dicas para vender mais.'},

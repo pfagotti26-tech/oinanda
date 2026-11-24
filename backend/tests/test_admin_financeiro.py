@@ -28,6 +28,10 @@ def fake(monkeypatch):
     return subs, invs
 
 def assina(c, subs, plan='essencial', nxt=None):
+    # estes testes são de conta que já paga: o teste grátis acabou antes (assinar no meio do teste guarda os dias que faltam; ver test_teste_sem_cartao)
+    cid = c.get('/api/auth/me').json()['company']['id']
+    async def fim(): await db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() - timedelta(minutes=1)}})
+    c.portal.call(fim)
     c.post('/api/billing/subscribe', json={'plan': plan, 'cycle': 'monthly', 'email': 'x@x.com'})
     sid = sorted(subs)[-1]
     subs[sid].update(status='authorized', next_payment_date=(nxt or now() + timedelta(days=30)).isoformat())
