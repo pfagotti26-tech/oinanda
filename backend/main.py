@@ -155,6 +155,8 @@ from setup import router as setup_router
 app.include_router(setup_router, prefix="/api")
 from mfa import router as mfa_router
 app.include_router(mfa_router, prefix="/api")
+from sitelead import router as sitelead_router
+app.include_router(sitelead_router, prefix="/api")
 from closing import router as closing_router
 app.include_router(closing_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
