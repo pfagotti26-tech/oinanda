@@ -97,7 +97,7 @@ def to_m4a(data, mime):
     with tempfile.TemporaryDirectory() as d:
         src, dst = Path(d) / 'in', Path(d) / 'out.m4a'
         src.write_bytes(data)
-        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-c:a', 'aac', '-b:a', '64k', '-movflags', '+faststart', str(dst)], capture_output=True, timeout=60)
+        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-c:a', 'aac', '-b:a', '96k', '-movflags', '+faststart', str(dst)], capture_output=True, timeout=60)
         if p.returncode != 0 or not dst.exists(): raise HTTPException(400, 'Não foi possível converter o áudio.')
         return dst.read_bytes(), 'audio/mp4'
 
@@ -110,7 +110,7 @@ def to_voice(data, mime):
     with tempfile.TemporaryDirectory() as d:
         src, dst = Path(d) / 'in', Path(d) / 'out.ogg'
         src.write_bytes(data)
-        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-ar', '48000', '-c:a', 'libopus', '-b:a', '32k', str(dst)],
+        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-ar', '48000', '-c:a', 'libopus', '-b:a', '48k', '-application', 'voip', str(dst)],
                            capture_output=True, timeout=60)
         if p.returncode != 0 or not dst.exists(): raise HTTPException(400, 'Não foi possível converter o áudio.')
         return dst.read_bytes(), 'audio/ogg'

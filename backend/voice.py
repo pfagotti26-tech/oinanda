@@ -13,7 +13,11 @@ from core import db, now, uid, current_user, managers
 log = logging.getLogger('oinanda.voz')
 router = APIRouter()
 API = 'https://api.elevenlabs.io/v1'
-MODEL = os.environ.get('ELEVENLABS_MODEL', 'eleven_flash_v2_5')
+# multilingual v2: entonação bem mais natural em português que o flash (que soava "mole"); custa o dobro de créditos por caractere
+MODEL = os.environ.get('ELEVENLABS_MODEL', 'eleven_multilingual_v2')
+# um pouco menos estável = mais expressiva; um pouco mais rápida = soa como conversa de WhatsApp, não como leitura
+SETTINGS = {'stability': float(os.environ.get('VOICE_STABILITY', '0.38')), 'similarity_boost': 0.8, 'style': float(os.environ.get('VOICE_STYLE', '0.3')),
+            'use_speaker_boost': True, 'speed': float(os.environ.get('VOICE_SPEED', '1.08'))}
 MAX_CHARS = 600            # resposta maior que isso vai em texto (áudio longo cansa e custa mais)
 QUOTA = {'essencial': 100, 'profissional': 300, 'equipe': 1000, 'trial': 30}
 # vozes em português do Brasil (biblioteca da ElevenLabs); a amostra é a prévia pública da própria voz, sem custo
@@ -44,9 +48,10 @@ async def used(company_id):
 async def tts(text, voice_id):
     """Texto vira áudio (mp3). Isolado para os testes trocarem."""
     async with httpx.AsyncClient(timeout=40) as c:
-        r = await c.post(f'{API}/text-to-speech/{voice_id}', params={'output_format': 'mp3_44100_64'},
-                         headers={'xi-api-key': os.environ['ELEVENLABS_API_KEY']},
-                         json={'text': text, 'model_id': MODEL, 'language_code': 'pt'})
+        body = {'text': text, 'model_id': MODEL, 'voice_settings': SETTINGS}
+        if 'flash' in MODEL or 'turbo' in MODEL: body['language_code'] = 'pt'  # o multilingual v2 detecta o idioma sozinho
+        r = await c.post(f'{API}/text-to-speech/{voice_id}', params={'output_format': 'mp3_44100_128'},
+                         headers={'xi-api-key': os.environ['ELEVENLABS_API_KEY']}, json=body)
     if r.status_code >= 400:
         log.warning('ElevenLabs recusou: %s %s', r.status_code, r.text[:200])
         global LAST_ERR; LAST_ERR = why(r); return None
@@ -71,6 +76,30 @@ def speakable(text):
     t = re.sub(r'[*_~`]', '', text)
     t = re.sub(r'[\U0001F000-\U0001FAFF☀-➿️]', '', t)
     return re.sub(r'\s+', ' ', t).strip() or None
+
+FALA = """Você transforma uma mensagem escrita de WhatsApp em fala natural, para virar áudio na voz de uma atendente brasileira.
+Regras:
+- Mantenha exatamente as mesmas informações, na mesma ordem. Não acrescente nem tire nada, não cumprimente de novo.
+- Escreva como se fala: frases curtas, ligadas com naturalidade ("então", "e", "aí"), sem listas, sem dois-pontos, sem ponto e vírgula, sem parênteses.
+- Valores e números por extenso como se diz: "R$ 147" vira "cento e quarenta e sete reais"; "R$ 1.299,90" vira "mil duzentos e noventa e nove e noventa"; "10h" vira "dez horas"; "08:30" vira "oito e meia".
+- Siglas e abreviações por extenso quando for o normal falar ("p/" vira "para", "vc" vira "você").
+- Sem emoji e sem símbolos. Pontuação de fala: vírgulas para respirar, ponto final, interrogação no fim da pergunta.
+Devolva só o texto falado, sem aspas."""
+
+def money_fallback(t):
+    """Sem a IA: pelo menos "R$ 147" vira "147 reais", que a voz lê melhor."""
+    t = re.sub(r'R\$\s?(\d[\d.]*)(?:,00)?\b', lambda m: m.group(1).replace('.', '') + ' reais', t)
+    return re.sub(r'\s*[;:]\s*', ', ', t).replace('(', ', ').replace(')', ',')
+
+async def spoken(say):
+    """Texto escrito vira texto para falar (números por extenso, sem listas). Falhou: usa o texto com um ajuste simples."""
+    try:
+        from ai import llm
+        out, _ = await llm(FALA, [{'role': 'user', 'content': say}], max_tokens=700)
+        out = (out or '').strip().strip('"“”').strip()
+        if 0.5 * len(say) <= len(out) <= 2.6 * len(say) + 40: return out
+    except Exception: log.exception('falha ao preparar o texto falado')
+    return money_fallback(say)
 
 async def reply(company_id, contact, text, by_name, trigger_id=None):
     """Responde em áudio se a empresa ligou a voz, o cliente mandou áudio e ainda há franquia. Senão, texto."""
@@ -107,7 +136,7 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     if not say: WHY[trigger_id] = 'a resposta tem link ou é longa demais para áudio'; return None
     company = await db.companies.find_one({'id': company_id}, {'_id': 0})
     if await used(company_id) >= await quota_of(company): WHY[trigger_id] = 'os áudios do mês acabaram'; return None
-    data = await tts(say, s.get('voice_id') or DEFAULT)
+    data = await tts(await spoken(say), s.get('voice_id') or DEFAULT)
     if not data: WHY[trigger_id] = (LAST_ERR or 'a ElevenLabs não gerou o áudio').rstrip('.'); return None
     if ch != 'whatsapp': return await _voice_meta(company_id, c, ch, text, say, data, by_name, trigger_id)
     import media, whatsapp
@@ -164,7 +193,7 @@ async def test_voice(body: VoiceIn, user=Depends(current_user)):
     name = s.get('name') or 'Nanda'
     text = f'Oi! Eu sou a {name}, do {user["company"]["name"]}. Recebi seu áudio, já te ajudo. Quer que eu veja um horário para você?'
     import media, hashlib
-    key = hashlib.sha1(f'{vid}|{text}'.encode()).hexdigest()[:20]
+    key = hashlib.sha1(f'{vid}|{MODEL}|{sorted(SETTINGS.items())}|{text}'.encode()).hexdigest()[:20]  # trocou o modelo ou o ajuste: gera de novo
     p = media.media_dir() / 'voz-teste' / f'{key}.mp3'
     if p.exists(): return Response(p.read_bytes(), media_type='audio/mpeg')
     day = now().strftime('%Y-%m-%d')
