@@ -2319,6 +2319,62 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ap-box ul{margin:0 0 12px;padding:0;list-style:none;display:grid;gap:6px}.ap-box li{font-size:13.5px;display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:9px;background:#FFF8F5}.ap-box li.fix{background:#FAF6F2;color:var(--ink2)}.ap-box li em{font-style:normal;font-size:11px;color:var(--ink3)}
 .ap-how li{display:block;background:none;padding:0;font-size:13px;color:var(--ink2)}
 @media(max-width:860px){.ap-g{grid-template-columns:1fr}.ap-r{position:static}.ap-hd h1{font-size:22px}}
+
+/* tour do primeiro acesso */
+.tr-ov{position:fixed;inset:0;z-index:900;background:transparent}
+.tr-hole{position:fixed;z-index:901;border-radius:12px;box-shadow:0 0 0 9999px rgba(17,22,30,.55),0 0 0 3px #fff,0 0 0 7px rgba(232,96,63,.55);pointer-events:none;transition:all .35s cubic-bezier(.3,.8,.3,1);display:none}
+.tr-card{position:fixed;z-index:902;width:min(420px,calc(100vw - 32px));background:#fff;border-radius:22px;box-shadow:0 30px 70px -20px rgba(10,15,25,.55);overflow:hidden;transition:opacity .22s,transform .3s,left .35s,top .35s;color:var(--ink)}
+.tr-card.out{opacity:0;transform:translateY(8px) scale(.98)}
+.tr-card.pt::before{content:"";position:absolute;left:-8px;top:calc(var(--ay,110px) - 8px);width:16px;height:16px;background:#FFF4EE;transform:rotate(45deg);border-radius:3px}
+.tr-sc{background:linear-gradient(160deg,#FFF4EE,#FDEBE2 60%,#F9E1D6);height:168px;position:relative;overflow:hidden}
+.tr-in{padding:16px 20px 18px;display:grid;gap:10px}
+.tr-hd{display:flex;align-items:center;gap:10px}.tr-ch{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--c2);text-transform:uppercase;letter-spacing:.05em}
+.tr-ch i{font-style:normal;background:var(--ink);color:#fff;border-radius:6px;padding:2px 6px;font-size:11px;letter-spacing:0}.tr-n{margin-left:auto;font-size:12px;color:var(--ink3);font-weight:600}
+.tr-x{margin-left:8px;width:28px;height:28px;border-radius:50%;border:0;background:#F3EEE9;color:var(--ink2);font-size:17px;cursor:pointer;flex:none}.tr-hd .tr-ch+.tr-x{margin-left:auto}
+.tr-pg{display:flex;gap:5px}.tr-pg i{flex:1;height:5px;border-radius:9px;background:#EEE6DF}.tr-pg i.ok{background:var(--c)}.tr-pg i.on{background:linear-gradient(90deg,var(--c) 50%,#EEE6DF 50%);background-size:200% 100%;animation:trFill .6s ease forwards}
+@keyframes trFill{from{background-position:100% 0}to{background-position:0 0}}
+.tr-in h3{margin:2px 0 0;font-size:21px;line-height:1.2;text-wrap:balance}.tr-b{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.tr-ac{display:flex;align-items:center;justify-content:space-between;margin-top:4px}.tr-ac .btn{min-width:150px}
+.tr-ms{display:grid;gap:6px}.tr-ms small{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3)}
+.tr-ms button{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:14px;text-align:left;cursor:pointer;color:var(--ink)}
+.tr-ms button:hover{border-color:var(--c);background:#FFF8F5}.tr-ms i{width:26px;height:26px;border-radius:50%;background:#FDEBE2;color:var(--c2);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}.tr-ms em{font-style:normal;color:var(--ink3);font-size:18px}
+.tr-again{margin:0;font-size:12.5px;color:var(--ink3)}
+.tr-pill{position:fixed;z-index:60;right:24px;bottom:24px;display:flex;align-items:center;background:var(--ink);color:#fff;border-radius:999px;box-shadow:0 14px 34px -12px rgba(10,15,25,.55);animation:obIn .4s ease both}
+.tr-pill #trGo{display:flex;align-items:center;gap:10px;border:0;background:none;color:inherit;font:inherit;padding:10px 6px 10px 12px;cursor:pointer;text-align:left}
+.tr-pill #trGo i{width:30px;height:30px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-style:normal;font-size:12px}.tr-pill b{display:block;font-size:14px}.tr-pill small{font-size:12px;opacity:.7}
+.tr-px{border:0;background:none;color:#fff;opacity:.6;font-size:18px;padding:0 14px 0 8px;cursor:pointer}
+.hp-tour{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,#FFF4EE,#fff 70%);border-color:#F4D5C8;margin-bottom:14px}.hp-tour>div{flex:1;display:grid;gap:2px}.hp-tour b{font-size:15.5px}.hp-tour span{font-size:13.5px;color:var(--ink2)}
+.hp-tri{width:42px;height:42px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;flex:none;font-size:15px}
+/* cenas */
+.tsc{position:absolute;inset:0;padding:14px 22px;display:flex;flex-direction:column;justify-content:center;gap:6px}.ts-nz .tsb{font-size:12.5px;padding:6px 10px}
+.tsc .d1{animation:trUp .45s .15s ease both}.tsc .d2{animation:trUp .45s .9s ease both}.tsc .d3{animation:trUp .45s 1.7s ease both}
+@keyframes trUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tsb{max-width:80%;padding:7px 11px;border-radius:13px;font-size:13px;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}.tsb b{display:block;font-size:10.5px;color:var(--c2)}
+.tsb.in{background:#fff;align-self:flex-start;border-top-left-radius:4px}.tsb.out{background:#DCF8C6;align-self:flex-end;border-top-right-radius:4px}.tsb.st{text-decoration:line-through;opacity:.6}
+.tsty{align-self:flex-end;background:#DCF8C6;border-radius:12px;padding:8px 10px;display:flex;gap:3px;animation:trUp .3s .9s both,trHide .2s 1.6s forwards}.tsty i{width:6px;height:6px;border-radius:50%;background:#6c8a6a;animation:trDot 1s infinite}.tsty i:nth-child(2){animation-delay:.15s}.tsty i:nth-child(3){animation-delay:.3s}
+.ts-chat .tsb.out.d3{margin-top:-38px}
+@keyframes trHide{to{opacity:0;height:0;padding:0}}@keyframes trDot{50%{transform:translateY(-3px)}}
+.ts-fast{align-self:flex-end;font-style:normal;font-size:11px;font-weight:700;color:#1F7A45;background:#E6F5EC;border-radius:999px;padding:2px 8px}
+.ts-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#F7A58A,#E8603F);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}.ts-av.sm{width:34px;height:34px;font-size:14px}
+.ts-oi{flex-direction:row;align-items:center;gap:14px}.ts-bubs{display:flex;flex-direction:column;gap:7px;flex:1}.ts-sun{position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(#FFD27A,#FFB347 60%,transparent 62%);opacity:.55}
+.ts-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:10px 12px;box-shadow:0 4px 14px -8px rgba(0,0,0,.25)}.ts-row span{flex:1;display:grid}.ts-row b{font-size:14px}.ts-row small{font-size:12.5px;color:var(--ink2)}
+.ts-row em{font-style:normal;font-size:11px;font-weight:700;color:var(--c2);background:#FDEBE2;border-radius:999px;padding:3px 8px}
+.ts-bell{position:absolute;right:26px;top:14px;font-style:normal;font-size:24px;animation:trUp .4s .9s both,trRing .5s 1.3s 3}@keyframes trRing{25%{transform:rotate(16deg)}75%{transform:rotate(-16deg)}}
+.ts-toast{align-self:center;background:var(--ink);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:6px 12px}
+.ts-fix{align-self:flex-end;font-size:11.5px;font-weight:700;color:var(--c2);background:#fff;border-radius:999px;padding:3px 9px;border:1px solid #F1C7B9}.ts-ok{align-self:flex-end;font-size:11.5px;font-weight:700;color:#1F7A45}
+.ts-fn{flex-direction:row;align-items:stretch;gap:8px}.ts-col{flex:1;background:rgba(255,255,255,.55);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}.ts-col small{font-size:10.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.ts-card{background:#fff;border-radius:9px;padding:7px 9px;font-size:13px;font-weight:700;box-shadow:0 3px 10px -6px rgba(0,0,0,.3);display:grid}.ts-card em{font-style:normal;font-weight:600;font-size:11.5px;color:#1F7A45}
+.ts-card.ghost{background:transparent;border:1.5px dashed #E8C9BC;box-shadow:none;height:44px}
+.ts-card.mv{animation:trMove 1.1s .9s cubic-bezier(.5,0,.3,1) forwards;position:relative;z-index:2}@keyframes trMove{to{transform:translateX(calc(100% + 24px))}}
+.ts-cal{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.ts-cal>div{background:rgba(255,255,255,.6);border-radius:9px;height:86px;padding:5px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.ts-cal small{font-size:10.5px;font-weight:700;color:var(--ink3)}.ts-cal i{width:70%;height:6px;border-radius:4px;background:#EADBD2;margin-top:auto}.ts-slot{background:var(--c);color:#fff;border-radius:7px;font-size:10.5px;font-weight:700;padding:4px 5px;text-align:center;line-height:1.2;width:100%}
+.ts-vd{align-items:center}.ts-coin{font-size:34px;font-weight:800;color:#1F7A45;letter-spacing:-.02em}.ts-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.ts-tags span{background:#fff;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--ink2)}
+.ts-rl{flex-direction:row;align-items:flex-end;gap:10px;padding-bottom:26px}.ts-rl>i{flex:1;height:var(--h);background:linear-gradient(180deg,#F4936F,var(--c));border-radius:8px 8px 3px 3px;transform-origin:bottom;animation:trBar .7s var(--d) cubic-bezier(.3,.8,.3,1) both}
+@keyframes trBar{from{transform:scaleY(0)}}.ts-kpi{position:absolute;left:22px;top:16px;background:#fff;border-radius:12px;padding:6px 11px;display:grid;box-shadow:0 6px 18px -10px rgba(0,0,0,.35)}.ts-kpi b{font-size:15px;color:#1F7A45}.ts-kpi small{font-size:11.5px;color:var(--ink2)}
+.ts-fim{align-items:center}.ts-medal{font-size:62px;animation:trPop .6s .1s cubic-bezier(.3,1.6,.5,1) both}@keyframes trPop{from{transform:scale(.3);opacity:0}}
+.ts-cf{position:absolute;top:-12px;left:var(--x);width:8px;height:12px;background:var(--c);border-radius:2px;animation:trFall 1.8s var(--d) ease-in forwards}@keyframes trFall{to{transform:translateY(200px) rotate(400deg);opacity:0}}
+@media(max-width:860px){.tr-card{left:16px!important;right:16px;top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;border-radius:20px}.tr-card.pt::before{display:none}.tr-sc{height:150px}.tr-in h3{font-size:19px}.tr-pill{right:16px;left:16px;bottom:calc(80px + env(safe-area-inset-bottom));justify-content:space-between}}
+@media(prefers-reduced-motion:reduce){.tsc *,.tr-card,.tr-hole{animation:none!important;transition:none!important}}
 .nz-ls{background:#F3FAF5;border:1px solid #CDE8D6;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.nz-gi.ok{background:#DDF2E4;color:#1F7A45}
 .nz-lq{background:#fff;border:1px solid #E1EEE5;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
 .nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lqa{display:flex;gap:12px;align-self:center}.nz-lqe{grid-column:1/-1;display:grid;gap:8px;margin-top:4px}
@@ -3371,6 +3427,97 @@ async function aprView(){
         catch(x){c.querySelector('[data-er]').textContent=x.message;bt.disabled=false;bt.textContent='Salvar'}}})};
   draw()}
 
+
+// ================= TOUR DO PRIMEIRO ACESSO =================
+// "Um dia com a Nanda": acompanha uma cliente (Marina) do primeiro "oi" até a venda, passando pelas telas de verdade.
+// Cada capítulo acende o item do menu, mostra uma cena animada e avança o relógio do dia. Dá para pausar, continuar e ver de novo.
+const TOUR={i:0,on:false,steps:null};
+const TOUR_EX={clinica:['limpeza de pele',180,'paciente','sexta às 10h'],salao:['corte e escova',90,'cliente','sábado às 9h'],studio:['aula experimental',60,'aluna','terça às 18h'],
+  escola:['matrícula do curso',390,'aluna','segunda às 19h'],servicos:['abertura de MEI',350,'cliente','quinta às 14h'],imobiliaria:['visita ao apartamento',0,'cliente','sábado às 11h'],
+  loja:['vestido midi',259,'cliente',''],restaurante:['pizza grande',69,'cliente',''],lancamento:['curso completo',997,'aluna',''],outro:['seu serviço principal',150,'cliente','sexta às 10h']};
+function tourSteps(){const u=ME.user,mgr=['owner','manager'].includes(u.role),seg=ME.company.segment||'outro',[item,price,who,when]=TOUR_EX[seg]||TOUR_EX.outro;
+  const ag=NZ_AGENDA.includes(seg)&&when,brl=v=>'R$ '+Number(v).toLocaleString('pt-BR'),nanda=(CV.ai&&CV.ai.name)||'Nanda',ic=x=>svg(NI[x]||NI.inicio);
+  const S=[
+   {id:'oi',view:'inicio',t:'08:30',ch:'Bom dia',title:`Oi, ${esc(u.name.split(' ')[0])}! Vamos viver um dia com a ${esc(nanda)}?`,
+    body:`Em 2 minutos você acompanha a <b>Marina</b>, uma ${who} que chega pelo WhatsApp, e vê cada parte do Oi Nanda trabalhando por você. Nada aqui é enviado para ninguém.`,scene:'oi'},
+   {id:'conversas',view:'conversas',nav:'conversas',t:'08:47',ch:'A primeira mensagem',title:'A Marina chamou no WhatsApp',
+    body:`Toda conversa do WhatsApp e do Instagram chega em <b>Conversas</b>. A ${esc(nanda)} responde em segundos, com o seu preço e o seu jeito, até de madrugada.`,scene:'chat'},
+   {id:'precisa',view:'conversas',nav:'conversas',t:'09:05',ch:'Quando precisa de você',title:'A Marina quis falar com alguém',
+    body:`Quando o cliente pede uma pessoa ou a ${esc(nanda)} não sabe a resposta, a conversa vai para <b>Precisa de você</b> e você recebe o aviso na hora. Ninguém fica sem resposta.`,scene:'precisa'},
+   ...(mgr?[{id:'nanda',view:'nanda',nav:'nanda',t:'09:20',ch:'Ela aprende com você',title:`A ${esc(nanda)} só fala o que você ensina`,
+    body:`Em <b>Nanda (IA)</b> você ensina preços, horários e regras. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b>: ela aprende na hora e responde assim nas próximas.`,scene:'nanda'}]:[]),
+   {id:'funil',view:'funil',nav:'funil',t:'10:10',ch:'Ninguém se perde',title:'A Marina virou oportunidade',
+    body:`Cada conversa vira um card no <b>Funil</b>. Você vê quem está perto de fechar e quem esfriou, e a ${esc(nanda)} move o card sozinha quando a conversa avança.`,scene:'funil'},
+   ...(ag?[{id:'agenda',view:'agenda',nav:'agenda',t:'11:30',ch:'Horário marcado',title:`${when.charAt(0).toUpperCase()+when.slice(1)}: marcado`,
+    body:`A ${esc(nanda)} oferece só horários livres da <b>Agenda</b>, marca e manda o lembrete um dia antes. Menos falta, menos ida e volta.`,scene:'agenda'}]:[]),
+   {id:'vendas',view:'vendas',nav:'vendas',t:'16:40',ch:'Virou venda',title:price?`${brl(price)} entrou`:'Negócio fechado',
+    body:`Registre a venda em <b>Vendas</b> em dois toques. O Oi Nanda guarda de onde a Marina veio, quem atendeu e quanto cada canal está trazendo.`,scene:'venda'},
+   ...(mgr?[{id:'relatorios',view:'relatorios',nav:'relatorios',t:'18:30',ch:'Fim do dia',title:'Você vê o resultado, sem planilha',
+    body:'Em <b>Relatórios</b> estão as conversas, o tempo de resposta, as vendas e quanto a Nanda atendeu sozinha. Dá para acompanhar pelo celular.',scene:'rel'}]:[]),
+   {id:'fim',view:'inicio',t:'18:45',ch:'Conquista',title:'Você conheceu o Oi Nanda 🎉',body:'',scene:'fim'}];
+  return S.map(x=>({...x,item,price,who,when,brl,ic}))}
+function tourScene(x){const nanda=esc((CV.ai&&CV.ai.name)||'Nanda'),it=esc(x.item);
+  const b=(d,t,k='')=>`<div class="tsb ${d} ${k}">${d==='out'?`<b>${nanda}</b>`:''}${t}</div>`;
+  switch(x.scene){
+   case 'oi':return `<div class="tsc ts-oi"><span class="ts-av">M</span><div class="ts-bubs">${b('in','Oi! Tudo bem? 😊','d1')}${b('out','Oi, Marina! Tudo ótimo, e com você?','d2')}</div><i class="ts-sun"></i></div>`;
+   case 'chat':return `<div class="tsc ts-chat">${b('in',`Quanto custa ${it}?`,'d1')}<div class="tsty d2"><i></i><i></i><i></i></div>${b('out',`Oi, Marina! ${x.price?`${it.charAt(0).toUpperCase()+it.slice(1)} sai por ${x.brl(x.price)}.`:'Te passo todos os detalhes.'} Quer que eu veja ${x.when?'um horário':'as opções'} pra você?`,'d3')}<em class="ts-fast d3">respondeu em 3 s</em></div>`;
+   case 'precisa':return `<div class="tsc ts-pr"><div class="ts-row d1"><span class="ts-av sm">M</span><span><b>Marina</b><small>Quero falar com alguém, por favor</small></span><em>pediu atendente</em></div><i class="ts-bell d2">🔔</i><div class="ts-toast d3">Marina precisa de você · agora</div></div>`;
+   case 'nanda':return `<div class="tsc ts-nz"><div class="tsb out st d1">Fazemos em domicílio também.</div><span class="ts-fix d2">✎ Corrigir resposta</span>${b('out','Atendemos só aqui no nosso espaço, com hora marcada.','d3')}<span class="ts-ok d3">✓ Ela aprendeu</span></div>`;
+   case 'funil':return `<div class="tsc ts-fn"><div class="ts-col"><small>Novo contato</small><div class="ts-card mv">Marina<em>${x.price?x.brl(x.price):'interessada'}</em></div></div><div class="ts-col"><small>Negociando</small></div><div class="ts-col"><small>Fechou</small></div></div>`;
+   case 'agenda':return `<div class="tsc ts-ag"><div class="ts-cal">${['S','T','Q','Q','S','S'].map((d,i)=>`<div><small>${d}</small>${i===4?`<span class="ts-slot d1">10:00<br>Marina</span>`:'<i></i>'}</div>`).join('')}</div><div class="ts-toast d2">Lembrete enviado para a Marina · 1 dia antes</div></div>`;
+   case 'venda':return `<div class="tsc ts-vd"><div class="ts-coin d1">${x.price?'+ '+x.brl(x.price):'✓ Fechou'}</div><div class="ts-tags d2"><span>veio do Instagram</span><span>atendida pela ${nanda}</span><span>${esc(x.item)}</span></div></div>`;
+   case 'rel':return `<div class="tsc ts-rl">${[38,52,46,70,64,88].map((h,i)=>`<i style="--h:${h}%;--d:${i*.08}s"></i>`).join('')}<div class="ts-kpi d2"><b>+ vendas</b><small>e a ${nanda} atendeu sozinha fora do horário</small></div></div>`;
+   case 'fim':return `<div class="tsc ts-fim"><div class="ts-medal">🏅</div>${Array.from({length:14},(_,i)=>`<i class="ts-cf" style="--x:${(i*37)%100}%;--d:${(i%7)*.12}s;--c:${['#E8603F','#F4B23E','#3BA776','#5B7CE6'][i%4]}"></i>`).join('')}</div>`}
+  return ''}
+async function tourSave(done){try{const t=await api('/me/tour',{method:'PUT',body:{step:TOUR.i,done:!!done}});ME.user.tour=t}catch(e){}}
+function tourClose(pause){document.querySelectorAll('.tr-ov,.tr-hole,.tr-card').forEach(x=>x.remove());removeEventListener('keydown',tourKey);removeEventListener('resize',tourPlace);TOUR.on=false;
+  if(pause){tourSave(false);tourPill()}}
+function tourKey(e){if(!TOUR.on)return;if(e.key==='Escape'){e.preventDefault();tourClose(true)}else if(e.key==='ArrowRight'||(e.key==='Enter'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName))){e.preventDefault();tourGo(TOUR.i+1)}else if(e.key==='ArrowLeft'){e.preventDefault();tourGo(TOUR.i-1)}}
+function tourTarget(x){if(!x.nav)return null;const mob=innerWidth<=860;let el=mob?document.querySelector(`.bnav [data-v="${x.nav}"]`):document.querySelector(`.side [data-v="${x.nav}"]`);
+  if(!mob&&el){const g=el.closest('.ng.shut');if(g)g.classList.remove('shut');el.scrollIntoView({block:'nearest'})}
+  return el&&el.offsetParent?el:null}
+function tourPlace(){const x=TOUR.steps[TOUR.i],hole=$('.tr-hole'),card=$('.tr-card');if(!card)return;const el=tourTarget(x),mob=innerWidth<=860;
+  if(el){const r=el.getBoundingClientRect();Object.assign(hole.style,{display:'block',left:r.left-6+'px',top:r.top-5+'px',width:r.width+12+'px',height:r.height+10+'px'})}else hole.style.display='none';
+  $('.tr-ov').style.background=el?'transparent':'rgba(17,22,30,.55)';
+  card.classList.toggle('pt',!!el&&!mob);
+  if(mob){card.style.left='';card.style.top='';return}
+  if(el){const r=el.getBoundingClientRect(),h=card.offsetHeight;card.style.left=r.right+22+'px';card.style.top=Math.max(16,Math.min(innerHeight-h-16,r.top+r.height/2-110))+'px';card.style.setProperty('--ay',(r.top+r.height/2-parseFloat(card.style.top))+'px')}
+  else{card.style.left=`calc(50% - ${card.offsetWidth/2}px)`;card.style.top=Math.max(16,(innerHeight-card.offsetHeight)/2)+'px'}}
+async function tourGo(i){const S=TOUR.steps;if(i<0)return;if(i>=S.length){tourClose(false);tourSave(true);$('#trPill')?.remove();toast('Tour concluído. Dá para ver de novo na Central de ajuda.');return}
+  TOUR.i=i;const x=S[i],card=$('.tr-card');card.classList.add('out');
+  if(x.view&&VIEW!==x.view){if(x.view==='conversas')CV.open=null;if(x.view==='nanda')NZV.tab=null;try{await go(x.view)}catch(e){}}
+  if(x.id==='precisa'){const tb=document.querySelector('.cvt [data-f="need"]');if(tb)tb.click()}
+  const last=i===S.length-1,real=S.filter(y=>y.id!=='oi'&&y.id!=='fim'),n=real.indexOf(x)+1;
+  let extra='';
+  if(x.id==='fim'){let d=null;try{d=await suLoad(true)}catch(e){}const nx=d?d.steps.filter(s=>!s.done&&!s.skipped).slice(0,3):[];
+    extra=`<p class="tr-b">Você viu o caminho completo, do primeiro "oi" à venda. Agora é deixar a ${esc((CV.ai&&CV.ai.name)||'Nanda')} trabalhar com os seus clientes de verdade.</p>
+     ${nx.length?`<div class="tr-ms"><small>Suas próximas missões</small>${nx.map((s,k)=>`<button type="button" data-ms="${s.key}"><i>${k+1}</i><span>${esc(s.title)}</span><em>›</em></button>`).join('')}</div>`:''}
+     <p class="tr-again">Quer ver de novo? Está na <b>Central de ajuda</b> e no seu menu, no canto de baixo.</p>`;
+    tourSave(true);$('#trPill')?.remove()}
+  card.innerHTML=`<div class="tr-sc">${tourScene(x)}</div>
+   <div class="tr-in"><div class="tr-hd">${x.id==='oi'||x.id==='fim'?`<span class="tr-ch">${x.id==='oi'?'Tour de 2 minutos':'Conquista desbloqueada'}</span>`:`<span class="tr-ch"><i>${x.t}</i>${esc(x.ch)}</span><span class="tr-n">${n} de ${real.length}</span>`}
+    <button type="button" class="tr-x" aria-label="Pausar o tour" title="Pausar (continua depois)">×</button></div>
+    ${x.id!=='oi'&&x.id!=='fim'?`<div class="tr-pg">${real.map((y,k)=>`<i class="${k<n-1?'ok':k===n-1?'on':''}" title="${esc(y.ch)}"></i>`).join('')}</div>`:''}
+    <h3>${x.title}</h3>${x.body?`<p class="tr-b">${x.body}</p>`:''}${extra}
+    <div class="tr-ac">${i>0&&!last?`<button type="button" class="ob-lnk" data-tb>Voltar</button>`:x.id==='oi'?`<button type="button" class="ob-lnk" data-tl>Agora não</button>`:'<span></span>'}
+     <button type="button" class="btn p" data-tn>${x.id==='oi'?'Começar o tour':last?'Ir para o Oi Nanda':i===S.length-2?'Ver a conquista':'Próximo'}</button></div></div>`;
+  card.querySelector('.tr-x').onclick=()=>tourClose(true);
+  card.querySelector('[data-tn]').onclick=()=>tourGo(i+1);
+  if(card.querySelector('[data-tb]'))card.querySelector('[data-tb]').onclick=()=>tourGo(i-1);
+  if(card.querySelector('[data-tl]'))card.querySelector('[data-tl]').onclick=()=>tourClose(true);
+  card.querySelectorAll('[data-ms]').forEach(b=>b.onclick=async()=>{tourClose(false);const d=await suLoad(true);const s=d&&d.steps.find(y=>y.key===b.dataset.ms);if(s)suDo(s)});
+  requestAnimationFrame(()=>{tourPlace();card.classList.remove('out');card.querySelector('[data-tn]').focus({preventScroll:true})});
+  if(i>0&&!last)tourSave(false)}
+async function tourStart(from=0){if(TOUR.on)return;$('#trPill')?.remove();TOUR.steps=tourSteps();TOUR.on=true;
+  document.body.insertAdjacentHTML('beforeend','<div class="tr-ov"></div><div class="tr-hole"></div><div class="tr-card out" role="dialog" aria-modal="true" aria-label="Tour do Oi Nanda"></div>');
+  addEventListener('keydown',tourKey);addEventListener('resize',tourPlace);await tourGo(Math.min(from,TOUR.steps.length-1))}
+function tourPill(){$('#trPill')?.remove();const t=ME.user.tour;if(!t||t.done_at||VIEW!=='inicio'||TOUR.on)return;const S=tourSteps(),n=Math.max(1,Math.min(t.step,S.length-2));
+  document.body.insertAdjacentHTML('beforeend',`<div class="tr-pill" id="trPill"><button type="button" id="trGo"><i>▶</i><span><b>Continuar o tour</b><small>Capítulo ${n} de ${S.length-2} · 2 min</small></span></button><button type="button" class="tr-px" id="trNo" aria-label="Não mostrar">×</button></div>`);
+  $('#trGo').onclick=()=>tourStart(t.step||0);$('#trNo').onclick=()=>{$('#trPill').remove();TOUR.i=0;tourSave(true)}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tour]');if(!b||!ME)return;e.preventDefault();document.querySelectorAll('.ov').forEach(o=>o.remove&&o.remove());tourStart(0)});
+function tourAuto(){if(!ME||TOUR.on||ME.user.impersonated_by||ME.user.is_admin&&!ME.company)return;const st=(ME.access||{}).state;if(st==='readonly')return;
+  if(!ME.user.tour){if(VIEW==='inicio')tourStart(0)}else tourPill()}
+
 async function comecarView(){
   history.replaceState(null,'','/comecar');document.title='Conheça a Nanda · Oi Nanda';
   const c=ME.company,seg=c.segment||'outro',[noun,nouns,aNoun]=obNoun(seg),ph=OB_PH[seg]||OB_PH.outro;
@@ -3651,6 +3798,7 @@ function shell(){
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
   go(VIEW);
+  setTimeout(tourAuto,1400);
 }
 let POLL=null;
 const NZV={tab:null};
@@ -3691,7 +3839,7 @@ function syncUrl(replace){
   if(location.pathname!==p)history[replace?'replaceState':'pushState'](null,'',p);
   const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===VIEW);const k=CV.counts?(CV.counts.waiting||0)+(CV.counts.human||0)+(CV.counts.transfers||[]).length:0;document.title=(k?`(${k}) `:'')+(n&&VIEW!=='inicio'?n[1]+' · ':'')+'Oi Nanda'}
 addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
-function go(v,fromHistory){if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
   if(v!=='inicio')suLoad().then(()=>suPill());
@@ -7670,7 +7818,7 @@ function eqWa(n,canManage,team){const t=n.template&&n.template.status,me=(n.me||
      ${tm.on<tm.total&&canManage?'<small>Cada pessoa liga o seu em “Meu status e avisos”, no menu do nome dela.</small>':''}</div></div>`}
 async function meModal(){
   const u=ME.user,canManage=['owner','manager'].includes(u.role);
-  const o=overlay(`<form class="modal" id="meF" style="width:500px"><div class="row"><h2 style="font-size:20px">Seu status e avisos</h2><button type="button" class="x">×</button></div><div id="meBody"><div class="empty">Carregando…</div></div></form>`,true);
+  const o=overlay(`<form class="modal" id="meF" style="width:500px"><div class="row"><h2 style="font-size:20px">Seu status e avisos</h2><span style="display:flex;align-items:center;gap:12px"><button type="button" class="lnk" data-tour>▶ Ver o tour</button><button type="button" class="x">×</button></span></div><div id="meBody"><div class="empty">Carregando…</div></div></form>`,true);
   let n;try{n=await api('/notify')}catch(e){$('#meBody').innerHTML=`<p class="err">${esc(e.message)}</p>`;return}
   const me=n.me||{},tpl=n.template&&n.template.status;
   const nt='Notification' in window?Notification.permission:'na';
@@ -8458,6 +8606,7 @@ async function hpView(){
      <label class="hp-sr">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="hpQ" placeholder="${innerWidth<=860?'Qual é a sua dúvida?':'Busque uma dúvida: conectar WhatsApp, lembrete, cancelar…'}" value="${esc(HP.q)}" autocomplete="off" aria-label="Buscar na ajuda"></label>
      <div id="hpRes"></div>
      <div id="hpHome">
+      <section class="card hp-tour"><span class="hp-tri">▶</span><div><b>Tour de 2 minutos: um dia com a Nanda</b><span>Acompanhe uma cliente do primeiro "oi" até a venda e veja cada parte do Oi Nanda funcionando.</span></div><button type="button" class="btn p" data-tour>Ver o tour</button></section>
       <div class="hp-top"><section class="card hp-start"><h3 class="sec">Comece por aqui</h3><div class="hp-as">${start.map((a,i)=>`<button class="hp-a" data-art="${a.id}"><i class="hp-n">${i+1}</i><span><b>${esc(a.title)}</b><em>${esc(a.sum)}</em></span><small>${a.min} min</small></button>`).join('')}</div></section>
        <section class="card hp-seg"><span class="hp-ey">Guia do seu segmento</span><h3>${esc(g.t)}</h3><p class="hint">Como montar o funil, o que ensinar a Nanda e quais automações ligar primeiro para <b>${esc(g.goal)}</b></p><div class="hp-flow sm">${g.flow.map((x,i)=>`<span>${esc(x)}</span>${i<g.flow.length-1?'<i>›</i>':''}`).join('')}</div><button class="btn p" data-art="seg-${sk}">Ler o guia</button></section></div>
       <div class="hp-cats">${H.cats.map(c=>{const xs=H.arts.filter(a=>a.cat===c[0]);return `<section class="card hp-cat"><div class="hp-ch"><span class="hp-ci">${c[3]}</span><div><h3>${esc(c[1])}</h3><p class="hint">${esc(c[2])}</p></div></div><ul>${xs.map(a=>`<li><button class="lnk" data-art="${a.id}">${esc(a.title)}</button></li>`).join('')}</ul></section>`}).join('')}</div>
