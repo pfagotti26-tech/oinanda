@@ -8419,7 +8419,7 @@ let VZ_AUD=null;
 async function nzVoice(){const w=$('#nzVoz');if(!w||w.dataset.on)return;w.dataset.on='1';let v;try{v=await api('/ai/voice')}catch(e){return}
   const mgr=['owner','manager'].includes(ME.user.role);
   const draw=()=>{const pct=v.quota?Math.min(100,Math.round(100*v.used/v.quota)):0;
-    w.innerHTML=`<div class="vz"><div class="vz-h"><span class="vz-i">${svg('<path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/>')}</span><div><b>Voz da Nanda <em>Novo</em></b><small>Quando o cliente manda áudio no WhatsApp, ela responde em áudio, com a voz que você escolher.</small></div>
+    w.innerHTML=`<div class="vz"><div class="vz-h"><span class="vz-i">${svg('<path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/>')}</span><div><b>Voz da Nanda <em>Novo</em></b><small>Quando o cliente manda áudio no WhatsApp ou no Instagram, ela responde em áudio, com a voz que você escolher.</small></div>
       <label class="sw" title="${v.ready?'':'A voz ainda está sendo ativada no Oi Nanda'}"><input type="checkbox" id="vzOn" ${v.on?'checked':''} ${!v.ready||!mgr?'disabled':''}><i></i></label></div>
       ${!v.ready?'<p class="vz-n">Estamos ativando a voz no Oi Nanda. Logo dá para ligar aqui.</p>':''}
       <div class="vz-v ${v.on?'':'dim'}">${v.voices.map(x=>`<button type="button" class="vz-c ${x.id===v.voice_id?'on':''}" data-vz="${x.id}" ${!mgr?'disabled':''}><span class="vz-p" data-pl="${x.id}" title="Ouvir">${svg('<path d="M8 5v14l11-7z"/>')}</span><span><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></span></button>`).join('')}</div>

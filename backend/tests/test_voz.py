@@ -66,3 +66,29 @@ def test_ouvir(monkeypatch, tmp_path):
         monkeypatch.setattr(voice, 'tts', no)
         r = c.post('/api/ai/voice/test', json={'voice_id': voice.VOICES[2]['id']})
         assert r.status_code == 400 and 'não liberou' in r.json()['detail']
+
+def test_voz_no_instagram(monkeypatch, tmp_path):
+    import instagram
+    monkeypatch.setenv('ELEVENLABS_API_KEY', 'xi-teste-1234567890abcdef'); monkeypatch.setenv('MEDIA_DIR', str(tmp_path))
+    sent = []
+    async def fake_tts(text, vid): return b'mp3'
+    async def fake_send(cid, c, message, human, ch='instagram'): sent.append((message, human, ch)); return {'message_id': 'mid.1'}
+    monkeypatch.setattr(voice, 'tts', fake_tts); monkeypatch.setattr(instagram, 'send', fake_send)
+    monkeypatch.setattr(media, 'to_m4a', lambda d, m: (b'm4a', 'audio/mp4'))
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Vera Dona', 'email': 'vera-ig@voz.com', 'password': 'senha-forte-1', 'company': 'Clínica Vera', 'segment': 'clinica'})
+        c.put('/api/ai/voice', json={'voice_reply': True})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        ct = {'id': uid(), 'company_id': cid, 'name': 'Lia', 'ig_id': '178400', 'channel': 'instagram', 'last_in_at': now(), 'created_at': now()}
+        audio = uid()
+        async def setup():
+            await db.contacts.insert_one(ct.copy())
+            await db.messages.insert_one({'id': audio, 'company_id': cid, 'contact_id': ct['id'], 'channel': 'instagram', 'dir': 'in', 'type': 'audio', 'at': now()})
+        c.portal.call(setup)
+        m = c.portal.call(lambda: voice.reply(cid, ct, 'Oi, Lia! Temos horário amanhã 😊', 'Nanda (IA)', audio))
+        assert m['type'] == 'audio' and m['channel'] == 'instagram' and m['tts'] and m['wa_msg_id'] == 'mid.1'
+        msg, human, ch = sent[-1]
+        assert msg['attachment']['type'] == 'audio' and '/api/media/pub/' + m['id'] in msg['attachment']['payload']['url'] and human is False and ch == 'instagram'
+        assert c.get('/api/ai/voice').json()['used'] == 1
+        r = c.get(msg['attachment']['payload']['url'].split('testserver')[-1] if 'testserver' in msg['attachment']['payload']['url'] else '/api' + msg['attachment']['payload']['url'].split('/api', 1)[1])
+        assert r.status_code == 200 and r.content == b'm4a'  # a Meta consegue baixar pelo link assinado
