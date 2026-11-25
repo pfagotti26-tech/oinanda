@@ -128,3 +128,22 @@ def test_texto_falado():
     ai.llm = bad_llm
     try: assert asyncio.run(voice.spoken('Custa R$ 90.')) == 'Custa 90 reais.'
     finally: ai.llm = old
+
+def test_tts_tenta_modelo_mais_simples(monkeypatch):
+    import asyncio, httpx
+    monkeypatch.setenv('ELEVENLABS_API_KEY', 'xi-teste')
+    seen = []
+    class R:
+        def __init__(self, st): self.status_code = st; self.text = '{"detail":{"status":"invalid","message":"model not available"}}'; self.content = b'mp3' if st == 200 else b''
+        def json(self): return {'detail': {'status': 'invalid', 'message': 'model not available'}}
+    class C:
+        def __init__(self, **k): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): pass
+        async def post(self, url, params=None, headers=None, json=None):
+            seen.append((json['model_id'], 'voice_settings' in json)); return R(200 if json['model_id'] == voice.FALLBACK_MODEL else 400)
+    monkeypatch.setattr(voice.httpx, 'AsyncClient', C); voice.SKIP.clear()
+    assert asyncio.run(voice.tts('oi', 'v')) == b'mp3'
+    assert seen == [(voice.MODEL, True), (voice.MODEL, False), (voice.FALLBACK_MODEL, True)]
+    seen.clear(); asyncio.run(voice.tts('oi', 'v')); assert seen == [(voice.FALLBACK_MODEL, True)]  # lembra que o modelo não está liberado
+    voice.SKIP.clear()
