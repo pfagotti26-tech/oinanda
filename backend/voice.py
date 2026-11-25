@@ -1,4 +1,4 @@
-"""Voz da Nanda (fase 1): quando o cliente manda áudio no WhatsApp, a Nanda pode responder em áudio.
+"""Voz da Nanda (fase 1): quando o cliente manda áudio no WhatsApp, no Instagram ou no Messenger, a Nanda pode responder em áudio.
 
 O texto da resposta vira voz na ElevenLabs (modelo rápido, português), é convertido para mensagem de voz do WhatsApp
 (ogg/opus) e sai como áudio. A conta da ElevenLabs é do Oi Nanda (ELEVENLABS_API_KEY); cada plano tem uma franquia
@@ -85,7 +85,9 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     from channels import view
     if not ready() or not trigger_id: return None
     c = view(contact)
-    if (c.get('channel') or 'whatsapp') != 'whatsapp' or not c.get('wa_id'): return None
+    ch = c.get('channel') or 'whatsapp'
+    if ch == 'whatsapp' and not c.get('wa_id'): return None
+    if ch not in ('whatsapp', 'instagram', 'messenger'): return None
     s = await db.ai_settings.find_one({'company_id': company_id}, {'_id': 0, 'voice_reply': 1, 'voice_id': 1}) or {}
     if not s.get('voice_reply'): return None
     t = await db.messages.find_one({'id': trigger_id}, {'_id': 0, 'type': 1})
@@ -96,6 +98,7 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     if await used(company_id) >= await quota_of(company): return None
     data = await tts(say, s.get('voice_id') or DEFAULT)
     if not data: return None
+    if ch != 'whatsapp': return await _voice_meta(company_id, c, ch, text, say, data, by_name)
     import media, whatsapp
     data, mime = media.to_voice(data, 'audio/mpeg')
     n = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
@@ -106,6 +109,22 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': c['id'], 'dir': 'out', 'type': 'audio', 'voice': True, 'tts': True, 'text': text, 'mime': mime,
            'media_id': media_id, 'size': len(data), 'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}
     p = media.path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name
+    await db.messages.insert_one(msg.copy())
+    await db.contacts.update_one({'id': c['id']}, {'$set': {'last_at': msg['at'], 'last_text': '🔊 ' + text[:190], 'last_dir': 'out', 'last_by': by_name}})
+    await db.voice_usage.update_one({'company_id': company_id, 'month': month()}, {'$inc': {'count': 1, 'chars': len(say)}}, upsert=True)
+    msg.pop('_id', None)
+    return msg
+
+async def _voice_meta(company_id, c, ch, text, say, data, by_name):
+    """Instagram e Messenger: o áudio vira m4a, fica num link assinado e a Meta baixa de lá. Falhou: a resposta vai em texto."""
+    import media, instagram
+    if not instagram.window(c)[0]: return None
+    data, mime = media.to_m4a(data, 'audio/mpeg')
+    msg = {'id': uid(), 'company_id': company_id, 'contact_id': c['id'], 'channel': ch, 'dir': 'out', 'type': 'audio', 'voice': True, 'tts': True, 'text': text, 'mime': mime,
+           'size': len(data), 'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}
+    p = media.path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name
+    res = await instagram.send(company_id, c, {'attachment': {'type': 'audio', 'payload': {'url': instagram.media_link(msg['id'])}}}, False, ch)
+    msg['wa_msg_id'] = res.get('message_id')
     await db.messages.insert_one(msg.copy())
     await db.contacts.update_one({'id': c['id']}, {'$set': {'last_at': msg['at'], 'last_text': '🔊 ' + text[:190], 'last_dir': 'out', 'last_by': by_name}})
     await db.voice_usage.update_one({'company_id': company_id, 'month': month()}, {'$inc': {'count': 1, 'chars': len(say)}}, upsert=True)
