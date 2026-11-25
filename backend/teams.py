@@ -207,6 +207,19 @@ async def my_status(body: StatusIn, user=Depends(current_user)):
     await db.users.update_one({'id': user['id']}, {'$set': {'away': body.away, 'away_at': now() if body.away else None}})
     return {'away': body.away}
 
+# ---------- tour do primeiro acesso ----------
+class TourIn(BaseModel):
+    step: int = Field(default=0, ge=0, le=30)
+    done: bool = False
+
+@router.put('/me/tour')
+async def my_tour(body: TourIn, user=Depends(current_user)):
+    """Onde a pessoa parou no tour (para continuar depois) e se terminou. O tour pode ser visto de novo quando quiser."""
+    prev = user.get('tour') or {}
+    t = {'step': body.step, 'at': now(), 'done_at': now() if body.done else prev.get('done_at')}
+    await db.users.update_one({'id': user['id']}, {'$set': {'tour': t}})
+    return t
+
 async def route_handoff(company, contact, reason, last_text=''):
     """Para onde vai a conversa que a Nanda passou para o time."""
     text = norm(f'{reason} {last_text}')
