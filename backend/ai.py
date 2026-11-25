@@ -591,6 +591,23 @@ async def put_settings(body: SettingsIn, request: Request, user=Depends(managers
 
 class TestIn(BaseModel):
     messages: List[dict] = Field(min_length=1, max_length=30)
+    example: bool = False  # primeira entrada: conta ainda sem nada ensinado conversa com um exemplo do ramo
+
+# preços de exemplo por ramo (os mesmos do cadastro), só para a conversa de demonstração da primeira entrada
+EX_ITEMS = {'clinica': [('Limpeza de pele', 180, 60), ('Drenagem linfática', 120, 50)], 'studio': [('Plano mensal', 290, 0), ('Aula avulsa', 60, 50)],
+            'salao': [('Corte', 50, 40), ('Corte + barba', 85, 60)], 'imobiliaria': [('Apartamento 2 quartos no Centro', 450000, 0), ('Aluguel de casa 3 quartos', 3200, 0)],
+            'loja': [('Vestido midi', 259, 0), ('Frete para todo o Brasil', 25, 0)], 'escola': [('Mensalidade', 390, 0), ('Matrícula', 100, 0)],
+            'servicos': [('Abertura de MEI', 350, 0), ('Contabilidade mensal', 290, 0)], 'restaurante': [('Pizza grande', 69, 0), ('Taxa de entrega', 8, 0)],
+            'lancamento': [('Curso completo', 997, 0), ('Mentoria', 2500, 0)], 'outro': [('Serviço principal', 150, 0), ('Outro serviço', 300, 0)]}
+
+def example_settings(s, company):
+    """Conta sem nada ensinado: a Nanda conversa com um exemplo do ramo. Só na conversa de teste da primeira entrada, nunca no atendimento real."""
+    from niches import niche
+    seg = company.get('segment') or 'outro'
+    ex = niche(seg)['ai']
+    its = '; '.join(f'{n}: {brl(p)}' + (f' ({m} min)' if m else '') for n, p, m in EX_ITEMS.get(seg, EX_ITEMS['outro']))
+    know = f'Preços: {its}.\nHorário de atendimento: segunda a sexta, das 9h às 19h; sábado, das 9h às 13h.'
+    return {**s, **{k: v for k, v in ex.items() if k in BLOCKS}, 'knowledge': know, 'taught': True}
 
 def to_llm(messages):
     msgs = []
@@ -652,13 +669,17 @@ async def test(body: TestIn, user=Depends(managers)):
     from billing import ai_allowed
     if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
     s = await settings_for(user['company_id'])
-    # só o que a empresa ensinou: o exemplo do ramo nunca vira informação do negócio (a Nanda inventaria preço e condição)
+    # só o que a empresa ensinou: o exemplo do ramo nunca vira informação do negócio (a Nanda inventaria preço e condição).
+    # A exceção é a demonstração da primeira entrada, pedida de propósito e marcada como exemplo na tela, enquanto nada foi ensinado.
+    ex = body.example and not s['taught'] and not await db.products.find_one({'company_id': user['company_id'], 'price': {'$gt': 0}}, {'_id': 1})
+    if ex: s = example_settings(s, user['company'])
     msgs = to_llm(body.messages)
     if not msgs: raise HTTPException(400, 'Escreva uma mensagem como cliente.')
     text, usage = await llm(await system_for(s, user['company']), msgs)
     await track(user['company_id'], usage, 'tests')
     d = parse(text)
     if d['book']: d['book_label'] = describe_book(user['company'], d['book'])
+    d['example'] = bool(ex)
     return d
 
 TIME_NOTE = 'Não responda isso: avise com gentileza que alguém do time vai continuar a conversa e chame o time.'

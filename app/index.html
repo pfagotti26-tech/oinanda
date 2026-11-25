@@ -2641,7 +2641,45 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .su-gt{display:flex;flex-direction:column;min-width:0}.su-gt b{font-size:13.5px;font-weight:600}.su-gt small{font-size:12px;color:var(--ink3)}
 .su-gb{height:5px;border-radius:9px;background:var(--line);overflow:hidden}.su-gb i{display:block;height:100%;background:var(--c);border-radius:9px}li.ok .su-gb i{background:var(--ok)}
 .su-slim{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 16px;margin-bottom:16px}.su-st{flex:1;display:flex;flex-direction:column;min-width:0}.su-st small{font-size:12px;color:var(--ink3)}.su-st b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.su-pill{display:flex;align-items:center;gap:9px;width:100%;margin:-4px 0 12px;background:rgba(232,96,63,.12);border:1px solid rgba(232,96,63,.25);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;text-align:left;color:#fff}.su-pill:hover{background:rgba(232,96,63,.2)}.su-pill span{flex:1;display:flex;flex-direction:column;min-width:0}.su-pill b{font-size:12.5px;color:#fff}.su-pill small{font-size:11px;color:#C9D2DB}.su-pill em{font-style:normal;font-size:12px;font-weight:800;color:#FFB59E}
+/* primeira entrada */
+.banner.su-tb{background:#fff;color:var(--ink);border-bottom:1px solid var(--line);gap:12px;padding:10px 28px}
+.su-tb .tb-ic{width:34px;height:34px;border-radius:10px;background:var(--tint);color:var(--c2);display:grid;place-items:center;flex:none}.su-tb .tb-ic svg{width:18px;height:18px}
+.su-tb .tb-tx{display:grid;line-height:1.3}.su-tb .tb-tx b{font-size:13.5px}.su-tb .tb-tx small{font-size:12px;color:var(--ink3);font-weight:600}
+.su-tb .tb-pb{width:150px;height:6px;border-radius:9px;background:#EEE8E3;overflow:hidden}.su-tb .tb-pb i{display:block;height:100%;background:var(--c);border-radius:9px}
+.su-tb .tb-sp{flex:1}.su-tb .tb-pl{font-size:13px;color:var(--ink2)}.su-tb .btn{display:inline-flex;align-items:center;gap:6px}.su-tb .btn svg{width:15px;height:15px}
+.fr{max-width:1180px}.fr-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.fr-hd h1{font-size:27px;letter-spacing:-.03em}.fr-hd p{color:var(--ink2);margin-top:4px}
+.fr-skip{font-size:13px;color:var(--ink3)}
+.fr-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}.fr-grid>*,.fr-row>*{min-width:0}
+.fr-hero{background:linear-gradient(150deg,#FFF1EA,#fff 60%);border-color:#F6D3C5;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.fr-hero>*{min-width:0}
+.fr-ey{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c2)}.fr-hero h2{font-size:21px;letter-spacing:-.02em;line-height:1.2}
+.fr-demo{background:#F4EFEA;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.fr-dh{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink2)}.fr-av{width:28px;height:28px;border-radius:50%;background:#B4487A;color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px}
+.fr-dh em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:800;color:var(--ok);background:var(--oksoft);padding:3px 9px;border-radius:99px;white-space:nowrap}
+.fr-ms{display:flex;flex-direction:column;gap:8px;max-height:340px;min-height:150px;overflow-y:auto;padding:2px}
+.fr-m{max-width:82%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.45;white-space:pre-wrap}.fr-m.in{background:#fff;align-self:flex-start;border-bottom-left-radius:4px}.fr-m.out{background:#DCF8E8;align-self:flex-end;border-bottom-right-radius:4px}
+.fr-m small{display:block;font-size:11px;color:var(--ink3);text-align:right;margin-top:2px}.fr-m small b{color:var(--ok)}
+.fr-sys{align-self:center;background:#FFF4C9;color:#6B5200;font-size:12.5px;font-weight:700;border-radius:10px;padding:6px 10px}
+.fr-ty{align-self:flex-end;display:flex;gap:4px;padding:11px 14px;background:#DCF8E8;border-radius:14px}.fr-ty i{width:6px;height:6px;border-radius:50%;background:#5BAA86;animation:frd 1s infinite}.fr-ty i:nth-child(2){animation-delay:.15s}.fr-ty i:nth-child(3){animation-delay:.3s}@keyframes frd{50%{opacity:.3}}
+.fr-empty{margin:auto;color:var(--ink3);font-size:13.5px}
+.fr-cmp{display:flex;gap:8px;align-items:center;background:#fff;border-radius:12px;padding:6px 6px 6px 12px}.fr-cmp input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:14.5px;background:transparent}
+.fr-sug{display:flex;flex-wrap:wrap;gap:6px}.fr-sug button{border:1px solid #EAD8CF;background:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer}.fr-sug button:hover{border-color:var(--c);color:var(--c2)}
+.fr-note{font-size:12.5px;color:var(--ink3)}
+.fr-sh{display:flex;justify-content:space-between;align-items:center}.fr-sh h3{font-size:17px}.fr-sh em{font-style:normal;font-size:13px;font-weight:800;color:var(--ink2)}
+.fr-pb{height:6px;border-radius:9px;background:#EEE8E3;margin:10px 0 8px;overflow:hidden}.fr-pb i{display:block;height:100%;background:var(--c);border-radius:9px}
+.fr-st{display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.fr-n{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--ink3)}
+.fr-st.ok .fr-n{background:var(--ok);border-color:var(--ok);color:#fff}.fr-st.ok b{color:var(--ink3);text-decoration:line-through}.fr-st b{display:block;font-size:14.5px}.fr-st small{color:var(--ink3);font-size:12.5px}
+.fr-st.cur{background:var(--tint);margin:0 -12px;padding:12px;border-radius:14px;border-top-color:transparent}.fr-st.cur .fr-n{border-color:var(--c);color:var(--c2)}.fr-st.cur+.fr-st{border-top-color:transparent}
+.fr-ac{display:grid;justify-items:end;gap:4px}.fr-ac .lnk{font-size:12px;color:var(--ink3)}
+.fr-go{border:0;background:transparent;font-size:22px;color:var(--c2);cursor:pointer;padding:0 6px}
+.fr-bd{display:inline-flex;font-size:11.5px;font-weight:800;color:var(--ok);background:var(--oksoft);border-radius:99px;padding:2px 8px;margin-top:4px}
+.fr-more{font-size:12.5px;color:var(--ink3);margin-top:10px}.fr-more .lnk{font-size:12.5px}
+.fr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.fr-tile{display:flex;gap:14px;align-items:center;text-align:left;font:inherit;color:inherit;cursor:pointer;text-decoration:none;margin:0;width:100%}.fr-tile:hover{border-color:var(--c)}
+.fr-ti{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--ink);color:#fff}.fr-ti svg{width:20px;height:20px}.fr-tile.g .fr-ti{background:#25D366}
+.fr-tile>span:nth-child(2){flex:1;display:grid;gap:2px}.fr-tile b{font-size:15px}.fr-tile small{color:var(--ink2);font-size:13.5px}.fr-tile>i{font-style:normal;font-size:22px;color:var(--ink3)}
+@media(max-width:860px){.fr-grid,.fr-row{grid-template-columns:minmax(0,1fr)}.banner.su-tb{padding:10px 16px;flex-wrap:wrap}.su-tb .tb-pb,.su-tb .tb-pl{display:none}.su-tb .btn{width:100%;justify-content:center}.fr-hd h1{font-size:23px}}
+.su-pill[hidden]{display:none}.su-pill{display:flex;align-items:center;gap:9px;width:100%;margin:-4px 0 12px;background:rgba(232,96,63,.12);border:1px solid rgba(232,96,63,.25);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;text-align:left;color:#fff}.su-pill:hover{background:rgba(232,96,63,.2)}.su-pill span{flex:1;display:flex;flex-direction:column;min-width:0}.su-pill b{font-size:12.5px;color:#fff}.su-pill small{font-size:11px;color:#C9D2DB}.su-pill em{font-style:normal;font-size:12px;font-weight:800;color:#FFB59E}
 .app.mini .su-pill span,.app.mini .su-pill em{display:none}
 .su-bar{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:16px;padding:10px 12px 10px 14px;margin-bottom:16px}.su-bi{color:#fff;display:grid}.su-bt{flex:1;display:flex;flex-direction:column;min-width:0}.su-bt small{font-size:11.5px;color:#AEB9C4}.su-bt b{font-size:14px}.su-bar .btn:not(.p){background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}.su-bar .sm-x{color:#AEB9C4}
 .su-dw-bg{position:fixed;inset:0;background:rgba(23,33,43,0);z-index:90;transition:background .2s}.su-dw-bg.on{background:rgba(23,33,43,.35)}
@@ -3604,7 +3642,7 @@ function tourPill(){$('#trPill')?.remove();const t=ME.user.tour;if(!t||t.done_at
   $('#trGo').onclick=()=>tourStart(t.step||0);$('#trNo').onclick=()=>{$('#trPill').remove();TOUR.i=0;tourSave(true)}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tour]');if(!b||!ME)return;e.preventDefault();document.querySelectorAll('.ov').forEach(o=>o.remove&&o.remove());tourStart(0)});
 function tourAuto(){if(!ME||TOUR.on||ME.user.impersonated_by||ME.user.is_admin&&!ME.company)return;const st=(ME.access||{}).state;if(st==='readonly')return;
-  if(!ME.user.tour){if(VIEW==='inicio')tourStart(0)}else tourPill()}
+  if(!ME.user.tour){if(VIEW==='inicio'&&!['owner','manager'].includes(ME.user.role))tourStart(0)}else tourPill()}
 
 
 // ---------- Admin › Jornada dos clientes: de lead a pagante, quem está em cada etapa e o que fazer ----------
@@ -3917,7 +3955,7 @@ function shell(){
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
      :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b><span class="bn-long"> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span></span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
-     :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${ME.card_trial&&u.role!=='agent'?(ME.sub_cancelled?` Assinatura cancelada: o acesso vai até ${obDay(ME.card_trial)} e nada será cobrado.`:` A primeira mensalidade entra em ${obDay(ME.card_trial)}.`):''}${u.role==='owner'?`<button class="lnk" data-sub>${ME.card_trial&&!ME.sub_cancelled?'Ver assinatura':'Ver planos e assinar'}</button>`:''}</div>`:''}
+     :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial" id="trialBn">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${ME.card_trial&&u.role!=='agent'?(ME.sub_cancelled?` Assinatura cancelada: o acesso vai até ${obDay(ME.card_trial)} e nada será cobrado.`:` A primeira mensalidade entra em ${obDay(ME.card_trial)}.`):''}${u.role==='owner'?`<button class="lnk" data-sub>${ME.card_trial&&!ME.sub_cancelled?'Ver assinatura':'Ver planos e assinar'}</button>`:''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>{if(b.dataset.v.startsWith('a-')){AD.open=null;AD.popen=AD.fopen=false;AD.f={}}go(b.dataset.v)});
@@ -7681,6 +7719,7 @@ const VIEWS={
  },
  async inicio(){
   const u=ME.user,mgr=['owner','manager'].includes(u.role),own=u.role==='owner';
+  if(mgr&&!u.impersonated_by){const d0=await suLoad(true);if(d0&&d0.core&&!d0.core_ready&&!d0.hidden)return homeFirst(d0)}
   const tz=new Date(),ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,today=ymd(tz);
   const [team,num,ai,sm,au,td,ap,rp]=await Promise.all([api('/team').catch(()=>[]),api('/wa/number').catch(()=>null),api('/ai/settings').catch(()=>null),api('/funnel/summary').catch(()=>null),
     mgr?api('/automations').catch(()=>null):null,mgr?api('/home/todo').catch(()=>[]):[],api(`/appointments?start=${today}&end=${today}`).catch(()=>[]),mgr?api('/reports/sales?days=30').catch(()=>null):null]);
@@ -8475,8 +8514,69 @@ const SUI={1:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'
 const suRing=(p,sz=44,w=5)=>{const r=(sz-w)/2,c=2*Math.PI*r;return `<svg class="su-ring" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" aria-hidden="true"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".14" stroke-width="${w}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--c)" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${(c*p/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg>`};
 const suNext=d=>d.steps.find(s=>!s.done&&!s.skipped);
 async function suLoad(force){if(!force&&SU.d&&Date.now()-SU.at<20000)return SU.d;
-  try{SU.d=await api('/setup');SU.at=Date.now()}catch(e){return SU.d}suPill();return SU.d}
-function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100){b.hidden=true;return}b.hidden=false;
+  try{SU.d=await api('/setup');SU.at=Date.now()}catch(e){return SU.d}suPill();suTop();return SU.d}
+/* faixa do topo enquanto faltam os passos essenciais: dias de teste, quanto falta e o próximo passo */
+function suTop(){const b=$('#trialBn'),d=SU.d;if(!b||!d||!d.core||!ME||!['owner','manager'].includes(ME.user.role))return;
+  if(d.core_ready||d.hidden){if(b.classList.contains('su-tb')){b.classList.remove('su-tb');b.innerHTML=b.dataset.orig||b.innerHTML}return}
+  if(!b.dataset.orig)b.dataset.orig=b.innerHTML;b.classList.add('su-tb');const dl=ME.trial_days_left,nx=d.core.find(x=>!x.done);
+  b.innerHTML=`<span class="tb-ic">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}</span><span class="tb-tx"><b>Teste grátis: ${dl} ${dl===1?'dia':'dias'}</b><small>Configuração ${d.core_pct}% · ${d.core_done} de ${d.core_total} passos</small></span><span class="tb-pb"><i style="width:${d.core_pct}%"></i></span><span class="tb-sp"></span>${ME.user.role==='owner'?'<button class="lnk tb-pl" data-sub>Ver planos</button>':''}${nx?`<button class="btn sm p" id="tbGo">Continuar configuração ${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button>`:''}`;
+  b.querySelectorAll('[data-sub]').forEach(x=>x.onclick=()=>go('assinatura'));if($('#tbGo'))$('#tbGo').onclick=()=>VIEW==='inicio'?suDo(nx):go('inicio')}
+/* Início da primeira entrada: ver a Nanda funcionando antes de configurar + os 5 passos essenciais */
+const FR={hist:null,busy:false,seg:null};
+// primeira troca da conversa de exemplo, com os mesmos preços de exemplo que a Nanda usa no teste
+const FR_EX={clinica:['Oi! Quanto custa a limpeza de pele?','Oi! A limpeza de pele sai por R$ 180 e leva uns 60 minutos. Quer que eu veja um horário para você? 😊'],
+ studio:['Oi! Quanto custa o plano mensal?','Oi! O plano mensal sai por R$ 290 e a aula avulsa por R$ 60. Quer agendar uma aula para conhecer? 😊'],
+ salao:['Oi! Quanto custa o corte?','Oi! O corte sai por R$ 50 e com barba fica R$ 85. Quer que eu veja um horário para você? 😊'],
+ imobiliaria:['Oi! O apartamento de 2 quartos no Centro ainda está disponível?','Oi! Está sim, por R$ 450 mil. Você procura para morar ou para investir? 😊'],
+ loja:['Oi! Quanto está o vestido midi?','Oi! O vestido midi sai por R$ 259 e o frete para todo o Brasil é R$ 25. Quer que eu separe o seu? 😊'],
+ escola:['Oi! Quanto é a mensalidade?','Oi! A mensalidade é R$ 390 e a matrícula R$ 100. Quer agendar uma visita para conhecer? 😊'],
+ servicos:['Oi! Quanto custa abrir um MEI?','Oi! A abertura de MEI sai por R$ 350. Quer que eu já te explique o que precisa? 😊'],
+ restaurante:['Oi! Quanto está a pizza grande?','Oi! A pizza grande sai por R$ 69 e a entrega R$ 8. Qual sabor você quer? 😊'],
+ lancamento:['Oi! Quanto custa o curso completo?','Oi! O curso completo sai por R$ 997. Quer que eu te conte o que vem nele? 😊'],
+ outro:['Oi! Quanto custa o serviço?','Oi! O serviço principal sai por R$ 150. Posso te ajudar com mais alguma coisa? 😊']};
+async function homeFirst(d){
+  const u=ME.user,c=ME.company,seg=c.segment||'outro',first=esc(u.name.split(' ')[0]),[noun,,aNoun]=obNoun(seg);
+  const [ai,sup]=await Promise.all([api('/ai/settings').catch(()=>({})),api('/help/contact').catch(()=>null)]);
+  const nanda=esc(ai.name||'Nanda'),taught=!!(ai.taught||(ai.catalog||[]).some(x=>x.price>0)),ph=OB_PH[seg]||OB_PH.outro,ag=['clinica','studio','salao','servicos','escola'].includes(seg);
+  if(FR.seg!==seg+(taught?'1':'0')){FR.seg=seg+(taught?'1':'0');const cx=FR_EX[seg]||FR_EX.outro;
+    FR.hist=taught?[]:[{dir:'in',text:cx[0],at:'agora'},{dir:'out',text:cx[1],at:'agora'}]}
+  const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3);
+  const I=p=>svg(p),ST={sobre:'Contar sobre o negócio',precos:'Ensinar seus preços',whatsapp:'Conectar o WhatsApp',time:'Convidar o time',ativar:'Ativar os 14 dias grátis'};
+  const nx=d.core.find(x=>!x.done);
+  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':x.mins+' min'+(x.can_skip?' · opcional':'')}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
+    ${x.done?'<span></span>':cur?`<span class="fr-ac"><button class="btn sm p" data-do="${x.key}">${esc(x.key==='sobre'||x.key==='precos'?'Começar':x.cta)}</button>${x.can_skip?`<button class="lnk" data-sk="${x.key}">${esc(x.skip_label)}</button>`:''}</span>`:`<button class="fr-go" data-do="${x.key}" aria-label="${esc(x.title)}">›</button>`}</div>`};
+  $('#page').innerHTML=`<div class="fr">
+   <div class="fr-hd"><div><h1>Oi, ${first}! 👋</h1><p>${taught?`Teste a ${nanda} com o que você ensinou, como se fosse ${aNoun}.`:`Antes de configurar, veja a ${nanda} atendendo ${aNoun} da ${esc(c.name)}.`}</p></div><button class="lnk fr-skip" id="frHide">Já conheço, ir para o painel</button></div>
+   <div class="fr-grid">
+    <section class="card fr-hero"><span class="fr-ey">Experimente agora · 1 minuto</span><h2>Converse com a ${nanda} como se fosse ${aNoun}</h2>
+     <div class="fr-demo"><div class="fr-dh"><span class="fr-av">${esc(noun[0].toUpperCase())}</span>${obCap(noun)} de teste<em>● ${nanda} atendendo</em></div>
+      <div class="fr-ms" id="frMs"></div>
+      <form class="fr-cmp" id="frF"><input id="frIn" placeholder="${innerWidth<=520?'Escreva aqui…':'Escreva como se fosse '+esc(aNoun)+'…'}" autocomplete="off" aria-label="Mensagem de teste"><button class="btn p sm" id="frSend">Enviar</button></form></div>
+     <div class="fr-sug">${asks.map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
+     <p class="fr-note">${taught?'Ela responde só com o que você ensinou. Nada sai para o WhatsApp de ninguém.':`Ela está usando um <b>exemplo de ${esc((SEG[seg]||'negócio').split(',')[0].toLowerCase())}</b>. No passo 2 ela aprende os <b>seus</b> preços. Nada sai para o WhatsApp de ninguém.`}</p></section>
+    <section class="card fr-steps"><div class="fr-sh"><h3>Seus ${d.core_total} passos</h3><em>${d.core_done} de ${d.core_total}</em></div><div class="fr-pb"><i style="width:${d.core_pct}%"></i></div>
+     <div class="fr-st ok"><span class="fr-n">✓</span><div><b>Criar a conta</b><small>Feito</small></div><span></span></div>${d.core.map(row).join('')}
+     <p class="fr-more">Agenda, funil e automações aparecem como próximos passos depois desses ${d.core_total}. <button class="lnk" id="frAll">Ver tudo</button></p></section>
+   </div>
+   <div class="fr-row"><button type="button" class="card fr-tile" data-tour><span class="fr-ti">${I('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>')}</span><span><b>Tour de 2 minutos</b><small>Um dia com a ${nanda}, do primeiro "oi" até a venda.</small></span><i>›</i></button>
+    ${sup&&sup.whatsapp?`<a class="card fr-tile g" target="_blank" rel="noopener" href="https://wa.me/${sup.whatsapp}?text=${encodeURIComponent('Oi! Sou da '+c.name+' e quero ajuda para configurar o Oi Nanda.')}"><span class="fr-ti">${I('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}</span><span><b>Prefere configurar junto?</b><small>A gente te ajuda pelo WhatsApp, passo a passo.</small></span><i>›</i></a>`
+     :`<button type="button" class="card fr-tile" data-to="ajuda"><span class="fr-ti">${I('<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>')}</span><span><b>Ficou com dúvida?</b><small>Guias curtos de cada tela e do seu ramo.</small></span><i>›</i></button>`}</div></div>`;
+  const box=$('#frMs'),inp=$('#frIn');
+  const draw=t=>{box.innerHTML=FR.hist.length?FR.hist.map(m=>m.dir==='sys'?`<div class="fr-sys">${esc(m.text)}</div>`:`<div class="fr-m ${m.dir}">${esc(m.text)}${m.dir==='out'?`<small><b>${nanda}</b> · ${esc(m.at||'')}</small>`:''}</div>`).join('')+(t?'<div class="fr-ty"><i></i><i></i><i></i></div>':'')
+    :`<p class="fr-empty">Toque numa pergunta abaixo ou escreva a sua.</p>`;box.scrollTop=box.scrollHeight};draw();
+  const send=async q=>{q=(q||'').trim();if(!q||FR.busy)return;FR.busy=true;inp.value='';FR.hist.push({dir:'in',text:q});draw(true);
+    try{const r=await api('/ai/test',{method:'POST',body:{messages:FR.hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text})),example:!taught}});
+      if(r.reply)FR.hist.push({dir:'out',text:r.reply,at:obHour()});if(r.book)FR.hist.push({dir:'sys',text:'📅 Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'});if(r.handoff)FR.hist.push({dir:'sys',text:'🙋 Aqui ela passaria a conversa para o seu time'})}
+    catch(e){FR.hist.push({dir:'sys',text:e.status===402?'As conversas de teste acabaram. Ative os 14 dias grátis para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
+    FR.busy=false;draw();if(innerWidth>860)inp.focus()};
+  $('#frF').onsubmit=e=>{e.preventDefault();send(inp.value)};
+  document.querySelectorAll('.fr-sug button').forEach(b=>b.onclick=()=>send(b.textContent));
+  document.querySelectorAll('.fr [data-do]').forEach(b=>b.onclick=()=>suDo(d.core.find(x=>x.key===b.dataset.do)));
+  document.querySelectorAll('.fr [data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));
+  document.querySelectorAll('.fr [data-to]').forEach(b=>b.onclick=()=>{HP.art=null;go(b.dataset.to)});
+  $('#frAll').onclick=()=>suPanel();
+  $('#frHide').onclick=async()=>{SU.d=await api('/setup/hide',{method:'POST',body:{hidden:true}});SU.at=Date.now();suTop();suPill();toast('Pronto. Os passos continuam no menu, em Configurar a conta.');VIEWS.inicio()}}
+function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
   b.innerHTML=`${suRing(d.pct,22,3.5)}<span><b>${d.agent?'Primeiros passos':'Configurar a conta'}</b><small>${d.done} de ${d.total} prontos</small></span><em>${d.pct}%</em>`;b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
 async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   const after=()=>{suBar()};
@@ -8491,12 +8591,13 @@ async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
     if(s.act==='meta'){if(!modOn('metas')){await api('/company/modules',{method:'PUT',body:{metas:true}});ME.company.modules={...(ME.company.modules||{}),metas:true};shell()}MT.tab='painel';await go('metas');return after()}
     if(s.to==='empresa')EM.tab={whatsapp:'whatsapp',instagram:'instagram'}[s.key]||'negocio';
     await go(s.to);after()}catch(e){toast(e.message)}}
-async function suRefresh(){if(VIEW==='inicio')suHome();if($('.su-dw-bg'))suPanel()}
+async function suRefresh(){if(VIEW==='inicio'){if($('.fr'))return VIEWS.inicio();suHome()}if($('.su-dw-bg'))suPanel()}
 async function suSkip(key,skip){try{SU.d=await api('/setup/skip',{method:'POST',body:{key,skip}});SU.at=Date.now();suPill();suRefresh();toast(skip?'Tirado do guia. Dá para voltar em Ver tudo.':'Voltou para o guia.')}catch(e){toast(e.message)}}
 function suBar(){const d=SU.d,s=d&&d.steps.find(x=>x.key===SU.cur);if(!s||!$('#page'))return;$('#suBar')?.remove();
-  const n=d.steps.filter(x=>!x.skipped).indexOf(s)+1;
+  const inCore=d.core&&!d.core_ready&&!d.hidden&&d.core.some(x=>x.key===s.key);
+  const n=inCore?d.core.findIndex(x=>x.key===s.key)+2:d.steps.filter(x=>!x.skipped).indexOf(s)+1,tot=inCore?d.core_total:d.total;
   const el=document.createElement('div');el.id='suBar';el.className='su-bar';
-  el.innerHTML=`<span class="su-bi">${suRing(d.pct,26,3.5)}</span><span class="su-bt"><small>Configurar a conta · passo ${n} de ${d.total}</small><b>${esc(s.title)}</b></span><button type="button" class="btn sm p" id="suOk">Já fiz</button><button type="button" class="btn sm" id="suAll">Ver o guia</button><button type="button" class="sm-x" id="suX" aria-label="Fechar">×</button>`;
+  el.innerHTML=`<span class="su-bi">${suRing(d.pct,26,3.5)}</span><span class="su-bt"><small>Configurar a conta · passo ${n} de ${tot}</small><b>${esc(s.title)}</b></span><button type="button" class="btn sm p" id="suOk">Já fiz</button><button type="button" class="btn sm" id="suAll">Ver o guia</button><button type="button" class="sm-x" id="suX" aria-label="Fechar">×</button>`;
   $('#page').prepend(el);
   $('#suX').onclick=()=>{SU.cur=null;el.remove()};$('#suAll').onclick=()=>suPanel();
   $('#suOk').onclick=async()=>{const d2=await suLoad(true);const x=d2.steps.find(y=>y.key===s.key);if(x&&x.done){el.remove();SU.cur=null;const nx=suNext(d2);toast(nx?`Pronto! Próximo: ${nx.title}.`:'Conta configurada! 🎉');suPanel()}else toast('Ainda não aparece como feito. Termine por aqui e clique de novo.')}}

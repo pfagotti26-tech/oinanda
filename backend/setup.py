@@ -74,7 +74,12 @@ async def status(user):
         ss = [s for s in live if s['stage'] == n]
         stages.append({'n': n, 'name': name, 'sub': sub, 'done': sum(s['done'] for s in ss), 'total': len(ss)})
     nd = sum(s['done'] for s in live)
-    return {'steps': steps, 'stages': stages, 'done': nd, 'total': len(live), 'pct': round(100 * nd / len(live)) if live else 100,
+    # os passos essenciais da primeira entrada (o resto aparece depois deles); "criar a conta" já conta como feito
+    ck = [k for k in ('ativar', 'sobre', 'precos', 'whatsapp', 'time') if any(s['key'] == k and not s['skipped'] for s in steps)]
+    core = [{**next(s for s in steps if s['key'] == k)} for k in ck]
+    cd = 1 + sum(s['done'] for s in core); ct = 1 + len(core)
+    return {'core': core, 'core_done': cd, 'core_total': ct, 'core_pct': round(100 * cd / ct), 'core_ready': cd == ct,
+            'steps': steps, 'stages': stages, 'done': nd, 'total': len(live), 'pct': round(100 * nd / len(live)) if live else 100,
             'ready': all(s['done'] for s in live if s['stage'] == 1), 'hidden': bool(c.get('setup_hidden'))}
 
 def managers_only(user):
