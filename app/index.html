@@ -2362,7 +2362,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ts-bell{position:absolute;right:26px;top:14px;font-style:normal;font-size:24px;animation:trUp .4s .9s both,trRing .5s 1.3s 3}@keyframes trRing{25%{transform:rotate(16deg)}75%{transform:rotate(-16deg)}}
 .ts-toast{align-self:center;background:var(--ink);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:6px 12px}
 .ts-fix{align-self:flex-end;font-size:11.5px;font-weight:700;color:var(--c2);background:#fff;border-radius:999px;padding:3px 9px;border:1px solid #F1C7B9}.ts-ok{align-self:flex-end;font-size:11.5px;font-weight:700;color:#1F7A45}
-.ts-fn{flex-direction:row;align-items:stretch;gap:8px}.ts-col{flex:1;background:rgba(255,255,255,.55);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}.ts-col small{font-size:10.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.ts-fn{flex-direction:row;align-items:stretch;gap:8px}.ts-col{flex:1;background:rgba(255,255,255,.55);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}.ts-col small{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.03em;line-height:1.25;min-height:2.5em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ts-card{background:#fff;border-radius:9px;padding:7px 9px;font-size:13px;font-weight:700;box-shadow:0 3px 10px -6px rgba(0,0,0,.3);display:grid}.ts-card em{font-style:normal;font-weight:600;font-size:11.5px;color:#1F7A45}
 .ts-card.ghost{background:transparent;border:1.5px dashed #E8C9BC;box-shadow:none;height:44px}
 .ts-card.mv{animation:trMove 1.1s .9s cubic-bezier(.5,0,.3,1) forwards;position:relative;z-index:2}@keyframes trMove{to{transform:translateX(calc(100% + 24px))}}
@@ -3432,40 +3432,68 @@ async function aprView(){
 // "Um dia com a Nanda": acompanha uma cliente (Marina) do primeiro "oi" até a venda, passando pelas telas de verdade.
 // Cada capítulo acende o item do menu, mostra uma cena animada e avança o relógio do dia. Dá para pausar, continuar e ver de novo.
 const TOUR={i:0,on:false,steps:null};
-const TOUR_EX={clinica:['limpeza de pele',180,'paciente','sexta às 10h'],salao:['corte e escova',90,'cliente','sábado às 9h'],studio:['aula experimental',60,'aluna','terça às 18h'],
-  escola:['matrícula do curso',390,'aluna','segunda às 19h'],servicos:['abertura de MEI',350,'cliente','quinta às 14h'],imobiliaria:['visita ao apartamento',0,'cliente','sábado às 11h'],
-  loja:['vestido midi',259,'cliente',''],restaurante:['pizza grande',69,'cliente',''],lancamento:['curso completo',997,'aluna',''],outro:['seu serviço principal',150,'cliente','sexta às 10h']};
-function tourSteps(){const u=ME.user,mgr=['owner','manager'].includes(u.role),seg=ME.company.segment||'outro',[item,price,who,when]=TOUR_EX[seg]||TOUR_EX.outro;
-  const ag=NZ_AGENDA.includes(seg)&&when,brl=v=>'R$ '+Number(v).toLocaleString('pt-BR'),nanda=(CV.ai&&CV.ai.name)||'Nanda',ic=x=>svg(NI[x]||NI.inicio);
+// cada ramo tem a sua história: o que a Marina pergunta, o erro típico que o dono corrige, de onde ela veio e a hora do dia em que tudo acontece
+const TOUR_A={clinica:'Oi, Marina! A limpeza de pele sai por R$ 180 e leva cerca de 1 hora. Quer que eu veja um horário pra você?',
+ salao:'Oi, Marina! Corte e escova sai por R$ 90. Quer que eu veja um horário pra você?',studio:'Temos, sim! A aula experimental custa R$ 60. Prefere de manhã ou à noite?',
+ escola:'Oi, Marina! Vou confirmar a vaga na turma da noite. A matrícula é R$ 390. Quer agendar uma aula experimental?',servicos:'Oi, Marina! A abertura de MEI sai por R$ 350. Quer que eu marque uma conversa rápida?',
+ imobiliaria:'Oi, Marina! Vou confirmar com o corretor. Enquanto isso, quer agendar uma visita?',loja:'Oi, Marina! Temos no M, sim: o vestido midi sai por R$ 259. Me passa o seu CEP para eu calcular o frete?',
+ restaurante:'Entregamos, sim! A pizza grande sai por R$ 69, e a entrega leva de 40 a 50 minutos. Quer fazer o pedido?',lancamento:'Tem, sim! Ao concluir você recebe o certificado. O curso completo sai por R$ 997, com 7 dias de garantia.',
+ outro:'Oi, Marina! O serviço sai por R$ 150. Quer que eu veja um horário pra você?'};
+const TOUR_N={
+ clinica:{who:'paciente',item:'limpeza de pele',price:180,ch:'WhatsApp',q:'Oi! Quanto custa a limpeza de pele?',vis:'consulta',when:'sexta às 10h',slot:4,from:'Instagram',
+  wrong:'Fazemos o atendimento na sua casa também.',right:'Atendemos só aqui na clínica, com hora marcada.',hrs:['08:30','08:47','09:05','09:20','10:10','11:30','16:40','18:30','18:45']},
+ salao:{who:'cliente',item:'corte e escova',price:90,ch:'WhatsApp',q:'Oi! Quanto fica corte e escova?',vis:'horário',when:'sábado às 9h',slot:5,from:'Instagram',
+  wrong:'Pode chegar a qualquer hora, sem marcar.',right:'Atendemos só com horário marcado, para você não esperar.',hrs:['08:00','08:21','08:40','09:00','10:15','10:30','15:50','19:00','19:10']},
+ studio:{who:'aluna',item:'aula experimental',price:60,ch:'Instagram',q:'Oi! Vocês têm aula experimental?',vis:'aula',when:'terça às 18h',slot:1,from:'Instagram',
+  wrong:'A aula experimental é grátis.',right:'A aula experimental custa R$ 60 e vira desconto na matrícula.',hrs:['06:30','06:52','07:10','07:30','09:00','10:20','18:40','21:00','21:10']},
+ escola:{who:'aluna',item:'matrícula do curso',price:390,ch:'WhatsApp',q:'Oi! Ainda tem vaga na turma da noite?',vis:'aula experimental',when:'segunda às 19h',slot:0,from:'Google',
+  wrong:'Tem vaga, pode vir direto.',right:'Vou confirmar a vaga na turma e já te aviso.',hrs:['08:00','08:35','09:10','09:30','11:00','14:00','17:20','19:30','19:40']},
+ servicos:{who:'cliente',item:'abertura de MEI',price:350,ch:'WhatsApp',q:'Oi! Quanto custa para abrir um MEI?',vis:'reunião',when:'quinta às 14h',slot:3,from:'Google',
+  wrong:'Fica pronto no mesmo dia, garantido.',right:'O prazo depende da prefeitura, em média 3 dias úteis.',hrs:['08:30','08:58','09:20','09:40','10:30','11:15','16:10','18:00','18:10']},
+ imobiliaria:{who:'cliente',item:'apartamento de 2 quartos',price:0,ch:'Instagram',q:'Oi! Esse apartamento ainda está disponível?',vis:'visita',when:'sábado às 11h',slot:5,from:'anúncio',
+  wrong:'Está disponível, sim.',right:'Vou confirmar a disponibilidade com o corretor e já te respondo.',hrs:['08:30','09:12','09:40','10:00','11:00','12:30','17:30','19:00','19:10'],done:'Proposta aceita'},
+ loja:{who:'cliente',item:'vestido midi',price:259,ch:'Instagram',q:'Oi! Tem o vestido midi no tamanho M?',from:'Instagram',
+  wrong:'Entregamos em 2 dias para todo o Brasil.',right:'O prazo de entrega depende do CEP: me passa o seu que eu calculo.',hrs:['09:00','09:14','09:40','10:00','11:20','','14:05','20:00','20:10']},
+ restaurante:{who:'cliente',item:'pizza grande',price:69,ch:'WhatsApp',q:'Oi! Vocês entregam no Centro?',from:'Google',
+  wrong:'Entregamos em 20 minutos.',right:'A entrega leva de 40 a 50 minutos, dependendo do bairro.',hrs:['18:00','19:12','19:20','19:25','19:30','','19:58','23:30','23:40']},
+ lancamento:{who:'aluna',item:'curso completo',price:997,ch:'Instagram',q:'Oi! O curso tem certificado?',from:'anúncio',
+  wrong:'Com o curso você vai faturar R$ 10 mil no primeiro mês.',right:'Cada resultado depende da aplicação. O curso tem 7 dias de garantia.',hrs:['02:10','02:14','02:18','02:22','02:26','','02:31','08:00','08:10'],night:true},
+ outro:{who:'cliente',item:'seu serviço principal',price:150,ch:'WhatsApp',q:'Oi! Quanto custa o serviço?',vis:'horário',when:'sexta às 10h',slot:4,from:'Instagram',
+  wrong:'Conseguimos fazer hoje mesmo, garantido.',right:'Vou confirmar a disponibilidade com o time e já te respondo.',hrs:['08:30','08:47','09:05','09:20','10:10','11:30','16:40','18:30','18:45']}};
+function tourSteps(stg){const u=ME.user,mgr=['owner','manager'].includes(u.role),seg=ME.company.segment||'outro',N=TOUR_N[seg]||TOUR_N.outro,H=N.hrs;
+  const ag=NZ_AGENDA.includes(seg)&&N.when,brl=v=>'R$ '+Number(v).toLocaleString('pt-BR'),nanda=esc((CV.ai&&CV.ai.name)||'Nanda'),art=N.who==='aluna'||N.who==='paciente'&&false?'a':'a';
+  const um=N.who==='aluna'?'uma aluna':N.who==='paciente'?'uma paciente':'uma cliente';
   const S=[
-   {id:'oi',view:'inicio',t:'08:30',ch:'Bom dia',title:`Oi, ${esc(u.name.split(' ')[0])}! Vamos viver um dia com a ${esc(nanda)}?`,
-    body:`Em 2 minutos você acompanha a <b>Marina</b>, uma ${who} que chega pelo WhatsApp, e vê cada parte do Oi Nanda trabalhando por você. Nada aqui é enviado para ninguém.`,scene:'oi'},
-   {id:'conversas',view:'conversas',nav:'conversas',t:'08:47',ch:'A primeira mensagem',title:'A Marina chamou no WhatsApp',
-    body:`Toda conversa do WhatsApp e do Instagram chega em <b>Conversas</b>. A ${esc(nanda)} responde em segundos, com o seu preço e o seu jeito, até de madrugada.`,scene:'chat'},
-   {id:'precisa',view:'conversas',nav:'conversas',t:'09:05',ch:'Quando precisa de você',title:'A Marina quis falar com alguém',
-    body:`Quando o cliente pede uma pessoa ou a ${esc(nanda)} não sabe a resposta, a conversa vai para <b>Precisa de você</b> e você recebe o aviso na hora. Ninguém fica sem resposta.`,scene:'precisa'},
-   ...(mgr?[{id:'nanda',view:'nanda',nav:'nanda',t:'09:20',ch:'Ela aprende com você',title:`A ${esc(nanda)} só fala o que você ensina`,
-    body:`Em <b>Nanda (IA)</b> você ensina preços, horários e regras. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b>: ela aprende na hora e responde assim nas próximas.`,scene:'nanda'}]:[]),
-   {id:'funil',view:'funil',nav:'funil',t:'10:10',ch:'Ninguém se perde',title:'A Marina virou oportunidade',
-    body:`Cada conversa vira um card no <b>Funil</b>. Você vê quem está perto de fechar e quem esfriou, e a ${esc(nanda)} move o card sozinha quando a conversa avança.`,scene:'funil'},
-   ...(ag?[{id:'agenda',view:'agenda',nav:'agenda',t:'11:30',ch:'Horário marcado',title:`${when.charAt(0).toUpperCase()+when.slice(1)}: marcado`,
-    body:`A ${esc(nanda)} oferece só horários livres da <b>Agenda</b>, marca e manda o lembrete um dia antes. Menos falta, menos ida e volta.`,scene:'agenda'}]:[]),
-   {id:'vendas',view:'vendas',nav:'vendas',t:'16:40',ch:'Virou venda',title:price?`${brl(price)} entrou`:'Negócio fechado',
-    body:`Registre a venda em <b>Vendas</b> em dois toques. O Oi Nanda guarda de onde a Marina veio, quem atendeu e quanto cada canal está trazendo.`,scene:'venda'},
-   ...(mgr?[{id:'relatorios',view:'relatorios',nav:'relatorios',t:'18:30',ch:'Fim do dia',title:'Você vê o resultado, sem planilha',
-    body:'Em <b>Relatórios</b> estão as conversas, o tempo de resposta, as vendas e quanto a Nanda atendeu sozinha. Dá para acompanhar pelo celular.',scene:'rel'}]:[]),
-   {id:'fim',view:'inicio',t:'18:45',ch:'Conquista',title:'Você conheceu o Oi Nanda 🎉',body:'',scene:'fim'}];
-  return S.map(x=>({...x,item,price,who,when,brl,ic}))}
-function tourScene(x){const nanda=esc((CV.ai&&CV.ai.name)||'Nanda'),it=esc(x.item);
+   {id:'oi',view:'inicio',t:H[0],title:`Oi, ${esc(u.name.split(' ')[0])}! Vamos viver um dia com a ${nanda}?`,
+    body:`Em 2 minutos você acompanha a <b>Marina</b>, ${um} que chega pelo ${N.ch}, e vê cada parte do Oi Nanda trabalhando por você. Nada aqui é enviado para ninguém.`,scene:'oi'},
+   {id:'conversas',view:'conversas',nav:'conversas',t:H[1],ch:N.night?'De madrugada':'A primeira mensagem',title:N.night?`${H[1].replace(/^0/,'').replace(':','h')}: a Marina chamou no ${N.ch}`:`A Marina chamou no ${N.ch}`,
+    body:`Toda conversa do WhatsApp e do Instagram chega em <b>Conversas</b>. A ${nanda} responde em segundos, com o seu preço e o seu jeito${N.night?', enquanto você dorme':', até de madrugada'}.`,scene:'chat'},
+   {id:'precisa',view:'conversas',nav:'conversas',t:H[2],ch:'Quando precisa de você',title:'A Marina quis falar com alguém',
+    body:`Quando ${um.replace('uma','a')} pede uma pessoa ou a ${nanda} não sabe a resposta, a conversa vai para <b>Precisa de você</b> e você recebe o aviso na hora. Ninguém fica sem resposta.`,scene:'precisa'},
+   ...(mgr?[{id:'nanda',view:'nanda',nav:'nanda',t:H[3],ch:'Ela aprende com você',title:`A ${nanda} só fala o que você ensina`,
+    body:`Em <b>Nanda (IA)</b> você ensina preços, regras e o que ela nunca deve prometer. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b>: ela aprende na hora.`,scene:'nanda'}]:[]),
+   {id:'funil',view:'funil',nav:'funil',t:H[4],ch:'Ninguém se perde',title:'A Marina virou oportunidade',
+    body:`Cada conversa vira um card no seu <b>Funil</b>, com as suas etapas. Você vê quem está perto de fechar e quem esfriou, e a ${nanda} move o card quando a conversa avança.`,scene:'funil'},
+   ...(ag?[{id:'agenda',view:'agenda',nav:'agenda',t:H[5],ch:'Horário marcado',title:`${N.when.charAt(0).toUpperCase()+N.when.slice(1)}: ${N.vis} marcad${/^(consulta|aula|visita|reunião|aula experimental)$/.test(N.vis)?'a':'o'}`,
+    body:`A ${nanda} oferece só horários livres da <b>Agenda</b>, marca e manda o lembrete um dia antes. Menos falta, menos ida e volta.`,scene:'agenda'}]:[]),
+   {id:'vendas',view:'vendas',nav:'vendas',t:H[6],ch:N.night?'Vendeu enquanto você dormia':'Virou venda',title:N.price?`${brl(N.price)} entrou`:(N.done||'Negócio fechado'),
+    body:`Registre a venda em <b>Vendas</b> em dois toques. O Oi Nanda guarda que a Marina veio ${N.from==='anúncio'?'do anúncio':'do '+N.from}, quem atendeu e quanto cada canal está trazendo.`,scene:'venda'},
+   ...(mgr?[{id:'relatorios',view:'relatorios',nav:'relatorios',t:H[7],ch:N.night?'Bom dia':'Fim do dia',title:N.night?'Você acorda com a venda feita':'Você vê o resultado, sem planilha',
+    body:`Em <b>Relatórios</b> estão as conversas, o tempo de resposta, as vendas e quanto a ${nanda} atendeu sozinha. Dá para acompanhar pelo celular.`,scene:'rel'}]:[]),
+   {id:'fim',view:'inicio',t:H[8],ch:'Conquista',title:'Você conheceu o Oi Nanda 🎉',body:'',scene:'fim'}];
+  const op=(stg||[]).filter(x=>x.kind==='open').map(x=>x.name),won=((stg||[]).find(x=>x.kind==='won')||{}).name;
+  const cols=[op[0]||'Novo contato',op[1]||'Negociando',won||'Fechou'];
+  return S.map(x=>({...x,N,brl,cols}))}
+function tourScene(x){const nanda=esc((CV.ai&&CV.ai.name)||'Nanda'),N=x.N,it=esc(N.item),cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
   const b=(d,t,k='')=>`<div class="tsb ${d} ${k}">${d==='out'?`<b>${nanda}</b>`:''}${t}</div>`;
   switch(x.scene){
    case 'oi':return `<div class="tsc ts-oi"><span class="ts-av">M</span><div class="ts-bubs">${b('in','Oi! Tudo bem? 😊','d1')}${b('out','Oi, Marina! Tudo ótimo, e com você?','d2')}</div><i class="ts-sun"></i></div>`;
-   case 'chat':return `<div class="tsc ts-chat">${b('in',`Quanto custa ${it}?`,'d1')}<div class="tsty d2"><i></i><i></i><i></i></div>${b('out',`Oi, Marina! ${x.price?`${it.charAt(0).toUpperCase()+it.slice(1)} sai por ${x.brl(x.price)}.`:'Te passo todos os detalhes.'} Quer que eu veja ${x.when?'um horário':'as opções'} pra você?`,'d3')}<em class="ts-fast d3">respondeu em 3 s</em></div>`;
+   case 'chat':return `<div class="tsc ts-chat">${b('in',esc(N.q),'d1')}<div class="tsty d2"><i></i><i></i><i></i></div>${b('out',esc(TOUR_A[ME.company.segment]||TOUR_A.outro),'d3')}<em class="ts-fast d3">respondeu em 3 s${N.night?' · 02:14':''}</em></div>`;
    case 'precisa':return `<div class="tsc ts-pr"><div class="ts-row d1"><span class="ts-av sm">M</span><span><b>Marina</b><small>Quero falar com alguém, por favor</small></span><em>pediu atendente</em></div><i class="ts-bell d2">🔔</i><div class="ts-toast d3">Marina precisa de você · agora</div></div>`;
-   case 'nanda':return `<div class="tsc ts-nz"><div class="tsb out st d1">Fazemos em domicílio também.</div><span class="ts-fix d2">✎ Corrigir resposta</span>${b('out','Atendemos só aqui no nosso espaço, com hora marcada.','d3')}<span class="ts-ok d3">✓ Ela aprendeu</span></div>`;
-   case 'funil':return `<div class="tsc ts-fn"><div class="ts-col"><small>Novo contato</small><div class="ts-card mv">Marina<em>${x.price?x.brl(x.price):'interessada'}</em></div></div><div class="ts-col"><small>Negociando</small></div><div class="ts-col"><small>Fechou</small></div></div>`;
-   case 'agenda':return `<div class="tsc ts-ag"><div class="ts-cal">${['S','T','Q','Q','S','S'].map((d,i)=>`<div><small>${d}</small>${i===4?`<span class="ts-slot d1">10:00<br>Marina</span>`:'<i></i>'}</div>`).join('')}</div><div class="ts-toast d2">Lembrete enviado para a Marina · 1 dia antes</div></div>`;
-   case 'venda':return `<div class="tsc ts-vd"><div class="ts-coin d1">${x.price?'+ '+x.brl(x.price):'✓ Fechou'}</div><div class="ts-tags d2"><span>veio do Instagram</span><span>atendida pela ${nanda}</span><span>${esc(x.item)}</span></div></div>`;
+   case 'nanda':return `<div class="tsc ts-nz"><div class="tsb out st d1">${esc(N.wrong)}</div><span class="ts-fix d2">✎ Corrigir resposta</span>${b('out',esc(N.right),'d3')}<span class="ts-ok d3">✓ Ela aprendeu</span></div>`;
+   case 'funil':return `<div class="tsc ts-fn"><div class="ts-col"><small>${esc(x.cols[0])}</small><div class="ts-card mv">Marina<em>${N.price?x.brl(N.price):cap(it)}</em></div></div><div class="ts-col"><small>${esc(x.cols[1])}</small></div><div class="ts-col"><small>${esc(x.cols[2])}</small></div></div>`;
+   case 'agenda':{const hr=(N.when.match(/(\d+)h/)||[0,'10'])[1].padStart(2,'0')+':00';return `<div class="tsc ts-ag"><div class="ts-cal">${['S','T','Q','Q','S','S'].map((d,i)=>`<div><small>${d}</small>${i===N.slot?`<span class="ts-slot d1">${hr}<br>Marina</span>`:'<i></i>'}</div>`).join('')}</div><div class="ts-toast d2">Lembrete enviado para a Marina · 1 dia antes</div></div>`}
+   case 'venda':return `<div class="tsc ts-vd"><div class="ts-coin d1">${N.price?'+ '+x.brl(N.price):'✓ '+esc(N.done||'Fechou')}</div><div class="ts-tags d2"><span>veio ${N.from==='anúncio'?'do anúncio':'do '+esc(N.from)}</span><span>atendida pela ${nanda}</span><span>${cap(it)}</span></div></div>`;
    case 'rel':return `<div class="tsc ts-rl">${[38,52,46,70,64,88].map((h,i)=>`<i style="--h:${h}%;--d:${i*.08}s"></i>`).join('')}<div class="ts-kpi d2"><b>+ vendas</b><small>e a ${nanda} atendeu sozinha fora do horário</small></div></div>`;
    case 'fim':return `<div class="tsc ts-fim"><div class="ts-medal">🏅</div>${Array.from({length:14},(_,i)=>`<i class="ts-cf" style="--x:${(i*37)%100}%;--d:${(i%7)*.12}s;--c:${['#E8603F','#F4B23E','#3BA776','#5B7CE6'][i%4]}"></i>`).join('')}</div>`}
   return ''}
@@ -3508,10 +3536,10 @@ async function tourGo(i){const S=TOUR.steps;if(i<0)return;if(i>=S.length){tourCl
   card.querySelectorAll('[data-ms]').forEach(b=>b.onclick=async()=>{tourClose(false);const d=await suLoad(true);const s=d&&d.steps.find(y=>y.key===b.dataset.ms);if(s)suDo(s)});
   requestAnimationFrame(()=>{tourPlace();card.classList.remove('out');card.querySelector('[data-tn]').focus({preventScroll:true})});
   if(i>0&&!last)tourSave(false)}
-async function tourStart(from=0){if(TOUR.on)return;$('#trPill')?.remove();TOUR.steps=tourSteps();TOUR.on=true;
+async function tourStart(from=0){if(TOUR.on)return;$('#trPill')?.remove();TOUR.on=true;let stg=null;try{stg=STAGES||await api('/funnel/stages')}catch(e){}TOUR.steps=tourSteps(stg);
   document.body.insertAdjacentHTML('beforeend','<div class="tr-ov"></div><div class="tr-hole"></div><div class="tr-card out" role="dialog" aria-modal="true" aria-label="Tour do Oi Nanda"></div>');
   addEventListener('keydown',tourKey);addEventListener('resize',tourPlace);await tourGo(Math.min(from,TOUR.steps.length-1))}
-function tourPill(){$('#trPill')?.remove();const t=ME.user.tour;if(!t||t.done_at||VIEW!=='inicio'||TOUR.on)return;const S=tourSteps(),n=Math.max(1,Math.min(t.step,S.length-2));
+function tourPill(){$('#trPill')?.remove();const t=ME.user.tour;if(!t||t.done_at||VIEW!=='inicio'||TOUR.on)return;const S=tourSteps(STAGES),n=Math.max(1,Math.min(t.step,S.length-2));
   document.body.insertAdjacentHTML('beforeend',`<div class="tr-pill" id="trPill"><button type="button" id="trGo"><i>▶</i><span><b>Continuar o tour</b><small>Capítulo ${n} de ${S.length-2} · 2 min</small></span></button><button type="button" class="tr-px" id="trNo" aria-label="Não mostrar">×</button></div>`);
   $('#trGo').onclick=()=>tourStart(t.step||0);$('#trNo').onclick=()=>{$('#trPill').remove();TOUR.i=0;tourSave(true)}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-tour]');if(!b||!ME)return;e.preventDefault();document.querySelectorAll('.ov').forEach(o=>o.remove&&o.remove());tourStart(0)});
