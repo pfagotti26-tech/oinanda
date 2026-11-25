@@ -487,7 +487,9 @@ async def auto_reply(company_id, contact_id, msg_id):
             text, usage = await llm(await system_for(s, company, contact) + await cover_block(company, contact), msgs)
             await track(company_id, usage, 'replies', contact_id)
             d = parse(text)
-            if d['reply']: await deliver(company_id, contact, d['reply'], None, s['name'] + ' (IA)')
+            if d['reply']:
+                import voice
+                await voice.reply(company_id, contact, d['reply'], s['name'] + ' (IA)', msg_id)  # cliente mandou áudio: responde em áudio aqui também
             await apply_facts(company_id, contact, d)
             return
         if mode != 'auto' or not key_ok():
@@ -501,7 +503,8 @@ async def auto_reply(company_id, contact_id, msg_id):
                 except Exception: log.exception('falha no aviso de repasse')
             return
         if asks_human:
-            await deliver(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', None, s['name'] + ' (IA)')
+            import voice
+            await voice.reply(company_id, contact, 'Claro! Vou chamar alguém do time para continuar com você. 😊', s['name'] + ' (IA)', msg_id)
             return await handoff(company_id, contact, 'cliente pediu uma pessoa')
         d, usage = await think(company_id, contact)
         await track(company_id, usage, 'replies', contact_id)

@@ -74,12 +74,21 @@ def speakable(text):
 
 async def reply(company_id, contact, text, by_name, trigger_id=None):
     """Responde em áudio se a empresa ligou a voz, o cliente mandou áudio e ainda há franquia. Senão, texto."""
-    from whatsapp import deliver
+    from whatsapp import deliver, note
+    why_text = None
     try:
         msg = await _voice(company_id, contact, text, by_name, trigger_id)
         if msg: return msg
-    except Exception: log.exception('falha na resposta em áudio; vai em texto')
-    return await deliver(company_id, contact, text, None, by_name)
+        why_text = WHY.pop(trigger_id, None) if trigger_id else None
+    except Exception:
+        log.exception('falha na resposta em áudio; vai em texto'); why_text = 'o envio do áudio falhou'
+    out = await deliver(company_id, contact, text, None, by_name)
+    if why_text:  # o cliente mandou áudio e a voz está ligada: o time vê por que foi em texto
+        try: await note(company_id, contact['id'], f'A Nanda respondeu em texto em vez de áudio: {why_text}.')
+        except Exception: pass
+    return out
+
+WHY = {}  # motivo de a resposta não ter saído em áudio, por mensagem do cliente
 
 async def _voice(company_id, contact, text, by_name, trigger_id):
     from channels import view
@@ -93,12 +102,12 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     t = await db.messages.find_one({'id': trigger_id}, {'_id': 0, 'type': 1})
     if not t or t.get('type') != 'audio': return None
     say = speakable(text)
-    if not say: return None
+    if not say: WHY[trigger_id] = 'a resposta tem link ou é longa demais para áudio'; return None
     company = await db.companies.find_one({'id': company_id}, {'_id': 0})
-    if await used(company_id) >= await quota_of(company): return None
+    if await used(company_id) >= await quota_of(company): WHY[trigger_id] = 'os áudios do mês acabaram'; return None
     data = await tts(say, s.get('voice_id') or DEFAULT)
-    if not data: return None
-    if ch != 'whatsapp': return await _voice_meta(company_id, c, ch, text, say, data, by_name)
+    if not data: WHY[trigger_id] = (LAST_ERR or 'a ElevenLabs não gerou o áudio').rstrip('.'); return None
+    if ch != 'whatsapp': return await _voice_meta(company_id, c, ch, text, say, data, by_name, trigger_id)
     import media, whatsapp
     data, mime = media.to_voice(data, 'audio/mpeg')
     n = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
@@ -115,10 +124,10 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     msg.pop('_id', None)
     return msg
 
-async def _voice_meta(company_id, c, ch, text, say, data, by_name):
+async def _voice_meta(company_id, c, ch, text, say, data, by_name, trig=None):
     """Instagram e Messenger: o áudio vira m4a, fica num link assinado e a Meta baixa de lá. Falhou: a resposta vai em texto."""
     import media, instagram
-    if not instagram.window(c)[0]: return None
+    if not instagram.window(c)[0]: WHY[trig] = 'passou a janela de 24 horas do Instagram'; return None
     data, mime = media.to_m4a(data, 'audio/mpeg')
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': c['id'], 'channel': ch, 'dir': 'out', 'type': 'audio', 'voice': True, 'tts': True, 'text': text, 'mime': mime,
            'size': len(data), 'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}

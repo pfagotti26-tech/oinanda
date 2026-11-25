@@ -92,3 +92,24 @@ def test_voz_no_instagram(monkeypatch, tmp_path):
         assert c.get('/api/ai/voice').json()['used'] == 1
         r = c.get(msg['attachment']['payload']['url'].split('testserver')[-1] if 'testserver' in msg['attachment']['payload']['url'] else '/api' + msg['attachment']['payload']['url'].split('/api', 1)[1])
         assert r.status_code == 200 and r.content == b'm4a'  # a Meta consegue baixar pelo link assinado
+
+def test_voz_recusada_avisa_na_conversa(monkeypatch, tmp_path):
+    monkeypatch.setenv('ELEVENLABS_API_KEY', 'xi-teste-1234567890abcdef'); monkeypatch.setenv('MEDIA_DIR', str(tmp_path))
+    async def fake_tts(text, vid): voice.LAST_ERR = 'A ElevenLabs não liberou essa voz pela API.'; return None
+    async def fake_graph(method, path, token, body=None): return {'messages': [{'id': 'wamid.y'}]}
+    monkeypatch.setattr(voice, 'tts', fake_tts); monkeypatch.setattr(whatsapp, 'graph', fake_graph)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Vera Dona', 'email': 'vera-no@voz.com', 'password': 'senha-forte-1', 'company': 'Clínica Vera', 'segment': 'clinica'})
+        c.put('/api/ai/voice', json={'voice_reply': True})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        ct = {'id': uid(), 'company_id': cid, 'name': 'Lia', 'wa_id': '5511955551111', 'last_in_at': now(), 'created_at': now()}
+        audio = uid()
+        async def setup():
+            await db.wa_numbers.insert_one({'company_id': cid, 'phone_number_id': '124', 'token_enc': whatsapp.encrypt('tok'), 'status': 'connected'})
+            await db.contacts.insert_one(ct.copy())
+            await db.messages.insert_one({'id': audio, 'company_id': cid, 'contact_id': ct['id'], 'dir': 'in', 'type': 'audio', 'at': now()})
+        c.portal.call(setup)
+        m = c.portal.call(lambda: voice.reply(cid, ct, 'Oi, Lia!', 'Nanda (IA)', audio))
+        assert m['type'] == 'text'
+        notes = c.portal.call(lambda: db.messages.find({'contact_id': ct['id'], 'dir': 'sys'}, {'_id': 0}).to_list(10))
+        assert any('em texto em vez de áudio' in n['text'] and 'liberou essa voz' in n['text'] for n in notes)
