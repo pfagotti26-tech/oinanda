@@ -116,3 +116,15 @@ def test_voz_recusada_avisa_na_conversa(monkeypatch, tmp_path):
         assert m['type'] == 'text'
         notes = c.portal.call(lambda: db.messages.find({'contact_id': ct['id'], 'dir': 'sys'}, {'_id': 0}).to_list(10))
         assert any('em texto em vez de áudio' in n['text'] and 'liberou essa voz' in n['text'] for n in notes)
+
+def test_texto_falado():
+    import asyncio
+    assert voice.money_fallback('Custa R$ 1.597,00; ou R$ 90') == 'Custa 1597 reais, ou 90 reais'
+    async def fake_llm(system, msgs, **k): return 'O Essencial sai por cento e quarenta e sete reais por mês.', {}
+    import ai; old = ai.llm; ai.llm = fake_llm
+    try: assert asyncio.run(voice.spoken('O Essencial custa R$ 147 por mês.')) == 'O Essencial sai por cento e quarenta e sete reais por mês.'
+    finally: ai.llm = old
+    async def bad_llm(system, msgs, **k): return 'x', {}  # resposta estranha: fica o texto original ajustado
+    ai.llm = bad_llm
+    try: assert asyncio.run(voice.spoken('Custa R$ 90.')) == 'Custa 90 reais.'
+    finally: ai.llm = old
