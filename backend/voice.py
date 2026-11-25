@@ -13,11 +13,13 @@ from core import db, now, uid, current_user, managers
 log = logging.getLogger('oinanda.voz')
 router = APIRouter()
 API = 'https://api.elevenlabs.io/v1'
-# multilingual v2: entonação bem mais natural em português que o flash (que soava "mole"); custa o dobro de créditos por caractere
-MODEL = os.environ.get('ELEVENLABS_MODEL', 'eleven_multilingual_v2')
-# um pouco menos estável = mais expressiva; um pouco mais rápida = soa como conversa de WhatsApp, não como leitura
-SETTINGS = {'stability': float(os.environ.get('VOICE_STABILITY', '0.38')), 'similarity_boost': 0.8, 'style': float(os.environ.get('VOICE_STYLE', '0.3')),
-            'use_speaker_boost': True, 'speed': float(os.environ.get('VOICE_SPEED', '1.08'))}
+# Eleven v4 Turbo: o modelo mais expressivo da ElevenLabs para conversa em tempo real. Se a conta não tiver acesso
+# (ou recusar algum ajuste), cai para o multilingual v2, que já soa natural em português.
+MODEL = os.environ.get('ELEVENLABS_MODEL', 'eleven_v4_turbo')
+FALLBACK_MODEL = 'eleven_multilingual_v2'
+# menos estável = mais expressiva; um pouco mais rápida = conversa de WhatsApp, não leitura
+SETTINGS = {'stability': float(os.environ.get('VOICE_STABILITY', '0.3')), 'similarity_boost': 0.75, 'style': float(os.environ.get('VOICE_STYLE', '0.45')),
+            'use_speaker_boost': True, 'speed': float(os.environ.get('VOICE_SPEED', '1.1'))}
 MAX_CHARS = 600            # resposta maior que isso vai em texto (áudio longo cansa e custa mais)
 QUOTA = {'essencial': 100, 'profissional': 300, 'equipe': 1000, 'trial': 30}
 # vozes em português do Brasil (biblioteca da ElevenLabs); a amostra é a prévia pública da própria voz, sem custo
@@ -46,18 +48,24 @@ async def used(company_id):
     return int(r.get('count', 0))
 
 async def tts(text, voice_id):
-    """Texto vira áudio (mp3). Isolado para os testes trocarem."""
-    async with httpx.AsyncClient(timeout=40) as c:
-        body = {'text': text, 'model_id': MODEL, 'voice_settings': SETTINGS}
-        if 'flash' in MODEL or 'turbo' in MODEL: body['language_code'] = 'pt'  # o multilingual v2 detecta o idioma sozinho
-        r = await c.post(f'{API}/text-to-speech/{voice_id}', params={'output_format': 'mp3_44100_128'},
-                         headers={'xi-api-key': os.environ['ELEVENLABS_API_KEY']}, json=body)
-    if r.status_code >= 400:
-        log.warning('ElevenLabs recusou: %s %s', r.status_code, r.text[:200])
-        global LAST_ERR; LAST_ERR = why(r); return None
-    return r.content
+    """Texto vira áudio (mp3). Tenta o modelo principal; se a ElevenLabs recusar o modelo ou o ajuste, tenta de forma mais simples. Isolado para os testes trocarem."""
+    global LAST_ERR
+    tries = [t for t in [(MODEL, SETTINGS), (MODEL, None)] + ([(FALLBACK_MODEL, SETTINGS)] if MODEL != FALLBACK_MODEL else []) if (t[0], bool(t[1])) not in SKIP] or [(FALLBACK_MODEL, None)]
+    r = None
+    async with httpx.AsyncClient(timeout=45) as c:
+        for model, vs in tries:
+            body = {'text': text, 'model_id': model, 'language_code': 'pt'}
+            if vs: body['voice_settings'] = vs
+            r = await c.post(f'{API}/text-to-speech/{voice_id}', params={'output_format': 'mp3_44100_128'},
+                             headers={'xi-api-key': os.environ['ELEVENLABS_API_KEY']}, json=body)
+            if r.status_code < 400: return r.content
+            log.warning('ElevenLabs recusou (%s): %s %s', model, r.status_code, r.text[:200])
+            if r.status_code in (400, 404, 422): SKIP.add((model, bool(vs)))  # não tenta de novo o que a conta não aceita (até reiniciar)
+            if r.status_code in (401, 429) or 'quota' in r.text: break  # chave ou créditos: trocar de modelo não resolve
+    LAST_ERR = why(r); return None
 
 LAST_ERR = ''
+SKIP = set()
 def why(r):
     """Motivo da recusa em português, para o painel."""
     try: d = r.json().get('detail') or {}
@@ -80,7 +88,8 @@ def speakable(text):
 FALA = """Você transforma uma mensagem escrita de WhatsApp em fala natural, para virar áudio na voz de uma atendente brasileira.
 Regras:
 - Mantenha exatamente as mesmas informações, na mesma ordem. Não acrescente nem tire nada, não cumprimente de novo.
-- Escreva como se fala: frases curtas, ligadas com naturalidade ("então", "e", "aí"), sem listas, sem dois-pontos, sem ponto e vírgula, sem parênteses.
+- Escreva como uma pessoa fala no WhatsApp, de um jeito leve e acolhedor: "pra", "tá", "a gente", "você"; frases curtas, ligadas com naturalidade ("então", "e", "aí", "olha"), sem exagerar nas muletas.
+- Sem listas, sem dois-pontos, sem ponto e vírgula, sem parênteses. Uma ideia por frase.
 - Valores e números por extenso como se diz: "R$ 147" vira "cento e quarenta e sete reais"; "R$ 1.299,90" vira "mil duzentos e noventa e nove e noventa"; "10h" vira "dez horas"; "08:30" vira "oito e meia".
 - Siglas e abreviações por extenso quando for o normal falar ("p/" vira "para", "vc" vira "você").
 - Sem emoji e sem símbolos. Pontuação de fala: vírgulas para respirar, ponto final, interrogação no fim da pergunta.
