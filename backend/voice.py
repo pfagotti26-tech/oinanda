@@ -134,9 +134,13 @@ async def _voice_meta(company_id, c, ch, text, say, data, by_name, trig=None):
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': c['id'], 'channel': ch, 'dir': 'out', 'type': 'audio', 'voice': True, 'tts': True, 'text': text, 'mime': mime,
            'size': len(data), 'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}
     p = media.path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name
-    res = await instagram.send(company_id, c, {'attachment': {'type': 'audio', 'payload': {'url': instagram.media_link(msg['id'])}}}, False, ch)
+    # a Meta baixa o arquivo pelo link durante o envio: a mensagem precisa existir antes, senão o link responde 404
+    await db.messages.insert_one({**msg, 'status': 'sending'})
+    try: res = await instagram.send(company_id, c, {'attachment': {'type': 'audio', 'payload': {'url': instagram.media_link(msg['id'])}}}, False, ch)
+    except Exception:
+        await db.messages.delete_one({'id': msg['id']}); raise
     msg['wa_msg_id'] = res.get('message_id')
-    await db.messages.insert_one(msg.copy())
+    await db.messages.update_one({'id': msg['id']}, {'$set': {'status': 'sent', 'wa_msg_id': msg['wa_msg_id']}})
     await db.contacts.update_one({'id': c['id']}, {'$set': {'last_at': msg['at'], 'last_text': '🔊 ' + text[:190], 'last_dir': 'out', 'last_by': by_name}})
     await db.voice_usage.update_one({'company_id': company_id, 'month': month()}, {'$inc': {'count': 1, 'chars': len(say)}}, upsert=True)
     msg.pop('_id', None)

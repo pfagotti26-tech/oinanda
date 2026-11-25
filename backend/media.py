@@ -97,7 +97,7 @@ def to_m4a(data, mime):
     with tempfile.TemporaryDirectory() as d:
         src, dst = Path(d) / 'in', Path(d) / 'out.m4a'
         src.write_bytes(data)
-        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-c:a', 'aac', '-b:a', '64k', str(dst)], capture_output=True, timeout=60)
+        p = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(src), '-vn', '-ac', '1', '-c:a', 'aac', '-b:a', '64k', '-movflags', '+faststart', str(dst)], capture_output=True, timeout=60)
         if p.returncode != 0 or not dst.exists(): raise HTTPException(400, 'Não foi possível converter o áudio.')
         return dst.read_bytes(), 'audio/mp4'
 
@@ -228,9 +228,13 @@ async def send_ig(user, c, data, mime, kind, filename, caption, ch='instagram'):
     msg = {'id': uid(), 'company_id': user['company_id'], 'contact_id': c['id'], 'channel': ch, 'dir': 'out', 'type': kind, 'mime': mime, 'size': len(data),
            'filename': fname if kind == 'document' else None, 'text': LABEL[kind], 'status': 'sent', 'by_id': user['id'], 'by': who, 'at': now()}
     p = path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name
-    res = await instagram.send(user['company_id'], c, {'attachment': {'type': {'document': 'file'}.get(kind, kind), 'payload': {'url': instagram.media_link(msg['id'])}}}, True, ch)
+    # a Meta baixa o arquivo pelo link durante o envio: a mensagem precisa existir antes, senão o link responde 404
+    await db.messages.insert_one({**msg, 'status': 'sending'})
+    try: res = await instagram.send(user['company_id'], c, {'attachment': {'type': {'document': 'file'}.get(kind, kind), 'payload': {'url': instagram.media_link(msg['id'])}}}, True, ch)
+    except Exception:
+        await db.messages.delete_one({'id': msg['id']}); raise
     msg['wa_msg_id'] = res.get('message_id')
-    await db.messages.insert_one(msg.copy())
+    await db.messages.update_one({'id': msg['id']}, {'$set': {'status': 'sent', 'wa_msg_id': msg['wa_msg_id']}})
     cap = (caption or '').strip()
     if cap: await instagram.deliver(user['company_id'], c, cap, user['id'], who, ch=ch)
     upd = {'last_at': now(), 'last_text': (cap or LABEL[kind])[:200], 'last_dir': 'out'}
