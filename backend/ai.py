@@ -70,13 +70,20 @@ async def llm(system, messages, max_tokens=900):
     """Chamada ao Claude. Isolada para os testes substituírem. Devolve (texto, uso)."""
     key = os.environ.get('ANTHROPIC_API_KEY')
     if not key: raise HTTPException(400, 'A chave de IA ainda não foi configurada no servidor.')
-    async with httpx.AsyncClient(timeout=45) as c:
-        r = await c.post('https://api.anthropic.com/v1/messages', headers={'x-api-key': key, 'anthropic-version': '2023-06-01'},
-                         json={'model': os.environ.get('AI_MODEL', 'claude-haiku-5-5'), 'max_tokens': max_tokens, 'system': cached(system), 'messages': messages})
+    # O Haiku 5.5 pensa antes de responder (pensamento adaptativo, ligado por padrão) e esse pensamento gasta o max_tokens:
+    # com limite curto a resposta saía cortada no meio ou vazia. Para mensagem de WhatsApp, desligado: mais rápido e barato.
+    # AI_THINKING=on religa, com folga maior no limite.
+    think = os.environ.get('AI_THINKING', 'off').strip().lower() == 'on'
+    body = {'model': os.environ.get('AI_MODEL', 'claude-haiku-5-5'), 'max_tokens': max(max_tokens, 4000) if think else max_tokens,
+            'system': cached(system), 'messages': messages}
+    if not think: body['thinking'] = {'type': 'disabled'}
+    async with httpx.AsyncClient(timeout=60) as c:
+        r = await c.post('https://api.anthropic.com/v1/messages', headers={'x-api-key': key, 'anthropic-version': '2023-06-01'}, json=body)
     data = r.json() if r.content else {}
     if r.status_code >= 400:
         raise HTTPException(502, 'A IA recusou: ' + ((data.get('error') or {}).get('message') or f'erro {r.status_code}'))
     text = ''.join(b.get('text', '') for b in data.get('content', []) if b.get('type') == 'text')
+    if data.get('stop_reason') == 'max_tokens': log.warning('resposta da IA cortada no limite de tokens (%s caracteres de texto)', len(text))
     return text, data.get('usage') or {}
 
 def knowledge_block(s):
