@@ -72,7 +72,10 @@ def test_voz_no_instagram(monkeypatch, tmp_path):
     monkeypatch.setenv('ELEVENLABS_API_KEY', 'xi-teste-1234567890abcdef'); monkeypatch.setenv('MEDIA_DIR', str(tmp_path))
     sent = []
     async def fake_tts(text, vid): return b'mp3'
-    async def fake_send(cid, c, message, human, ch='instagram'): sent.append((message, human, ch)); return {'message_id': 'mid.1'}
+    async def fake_send(cid, c, message, human, ch='instagram'):
+        mid = message['attachment']['payload']['url'].split('/api/media/pub/')[1].split('?')[0]
+        sent.append((message, human, ch, bool(await db.messages.find_one({'id': mid}))))  # a Meta baixa durante o envio: já precisa existir
+        return {'message_id': 'mid.1'}
     monkeypatch.setattr(voice, 'tts', fake_tts); monkeypatch.setattr(instagram, 'send', fake_send)
     monkeypatch.setattr(media, 'to_m4a', lambda d, m: (b'm4a', 'audio/mp4'))
     with TestClient(app, base_url='https://testserver') as c:
@@ -87,8 +90,8 @@ def test_voz_no_instagram(monkeypatch, tmp_path):
         c.portal.call(setup)
         m = c.portal.call(lambda: voice.reply(cid, ct, 'Oi, Lia! Temos horário amanhã 😊', 'Nanda (IA)', audio))
         assert m['type'] == 'audio' and m['channel'] == 'instagram' and m['tts'] and m['wa_msg_id'] == 'mid.1'
-        msg, human, ch = sent[-1]
-        assert msg['attachment']['type'] == 'audio' and '/api/media/pub/' + m['id'] in msg['attachment']['payload']['url'] and human is False and ch == 'instagram'
+        msg, human, ch, existed = sent[-1]
+        assert existed and msg['attachment']['type'] == 'audio' and '/api/media/pub/' + m['id'] in msg['attachment']['payload']['url'] and human is False and ch == 'instagram'
         assert c.get('/api/ai/voice').json()['used'] == 1
         r = c.get(msg['attachment']['payload']['url'].split('testserver')[-1] if 'testserver' in msg['attachment']['payload']['url'] else '/api' + msg['attachment']['payload']['url'].split('/api', 1)[1])
         assert r.status_code == 200 and r.content == b'm4a'  # a Meta consegue baixar pelo link assinado
