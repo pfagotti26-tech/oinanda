@@ -265,7 +265,14 @@ footer{padding-block:44px;font-size:14px;color:var(--ink3)}footer .wrap{display:
   <details><summary>Preciso entender de tecnologia?</summary><p>Não. Você conecta seguindo o passo a passo na tela, escolhe o seu segmento e escreve preços e horários. O funil e as mensagens já vêm prontos.</p></details>
   <details><summary>Pago alguma coisa além do plano?</summary><p>Não há taxa de implantação. Conversas que o cliente começa não têm custo. A Meta cobra só mensagens que você inicia fora da janela de 24 horas, e o valor aparece antes de enviar.</p></details>
   <details><summary>Como cancelo?</summary><p>Pelo próprio sistema, com um clique, quando quiser. Sem fidelidade.</p></details>
+  <details class="xq" hidden><summary>E se os atendimentos da Nanda acabarem antes do fim do mês?</summary><p>Nada para. A Nanda passa a sugerir as respostas para o seu time enviar, e você recebe o aviso antes, aos 80%. Com um pacote de mais 500 atendimentos por R$&nbsp;59, ela volta a atender sozinha na hora. Dá para deixar o pacote automático, com o teto que você&nbsp;escolher.</p></details>
+  <details class="xq" hidden><summary>Os dados dos meus clientes ficam seguros?</summary><p>Cada pessoa do time só vê o que a permissão dela libera, os acessos à Meta ficam guardados com criptografia e as conversas não são usadas para treinar IA. Seguimos a LGPD, e você pode excluir a conta e os dados quando quiser. Os detalhes estão na <a href="/privacidade/">política de privacidade</a>.</p></details>
+  <details class="xq" hidden><summary>Serve para o meu segmento se não está na lista?</summary><p>Serve. Você começa com um funil simples e a Nanda tirando dúvidas, e monta o resto do seu jeito.</p></details>
+  <details class="xq" hidden><summary>Funciona com a plataforma onde eu vendo?</summary><p>Funciona com Hotmart, Kiwify, Eduzz, Cakto, Asaas, Vindi, iugu, Mercado Pago, Pagar.me, PagBank e Stripe. Você liga em uns 5 minutos, e cada venda, boleto, Pix e carrinho abandonado chega na ficha do cliente.</p></details>
+  <details class="xq" hidden><summary>A Nanda entende e responde áudio?</summary><p>Entende. E, se você quiser, responde em áudio também, com uma voz natural. Você liga e desliga quando quiser.</p></details>
+  <details class="xq" hidden><summary>Precisa de cartão para testar?</summary><p>Não. Você cria a conta e usa os 14 dias grátis sem cadastrar cartão, com a Nanda atendendo no seu WhatsApp. O cartão só entra se você decidir continuar, e a gente avisa antes de o teste acabar. Não continuou? A conta fica só para consulta, sem cobrança nenhuma.</p></details>
  </div>
+ <p class="more" id="fqm"><button type="button" class="btn" id="fqAll">Ver mais 6 perguntas</button></p>
  <p class="more">Ficou outra dúvida? <a class="lk" href="https://wa.me/5511975754765?text=Oi!%20Tenho%20uma%20d%C3%BAvida">Pergunte para a Nanda no WhatsApp</a></p>
 </div></section>
 
@@ -320,6 +327,7 @@ function play(k){timers.forEach(clearTimeout);timers=[];cur=k;const d=N[k];
 }
 play('clinica');
 addEventListener('scroll',()=>$('#nav').classList.toggle('sc',scrollY>10),{passive:true});
+$('#fqAll').onclick=()=>{document.querySelectorAll('.xq').forEach(d=>d.hidden=false);$('#fqm').remove()};
 $('#play').onclick=()=>{const v=document.createElement('video');v.src='video/historia-renata.mp4?v=4';v.controls=true;v.autoplay=true;v.playsInline=true;$('#vbox').innerHTML='';$('#vbox').appendChild(v)};
 </script>
 </body>
