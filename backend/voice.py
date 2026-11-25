@@ -80,8 +80,10 @@ async def reply(company_id, contact, text, by_name, trigger_id=None):
         msg = await _voice(company_id, contact, text, by_name, trigger_id)
         if msg: return msg
         why_text = WHY.pop(trigger_id, None) if trigger_id else None
-    except Exception:
-        log.exception('falha na resposta em áudio; vai em texto'); why_text = 'o envio do áudio falhou'
+    except Exception as e:
+        log.exception('falha na resposta em áudio; vai em texto')
+        det = getattr(e, 'detail', None) or f'{type(e).__name__}: {e}'
+        why_text = 'o envio do áudio falhou (' + str(det).strip()[:220] + ')'
     out = await deliver(company_id, contact, text, None, by_name)
     if why_text:  # o cliente mandou áudio e a voz está ligada: o time vê por que foi em texto
         try: await note(company_id, contact['id'], f'A Nanda respondeu em texto em vez de áudio: {why_text}.')
