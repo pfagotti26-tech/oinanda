@@ -40,15 +40,15 @@ def brl(v): return f'R$ {v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X
 
 async def catalog_items(company_id):
     """Itens ativos do Catálogo: a fonte oficial de preços que a Nanda usa."""
-    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'duration_days': 1, 'service_id': 1, 'recurring': 1}).sort('name', 1).to_list(300)
+    rows = await db.products.find({'company_id': company_id, 'active': {'$ne': False}}, {'_id': 0, 'name': 1, 'category': 1, 'price': 1, 'price_from': 1, 'duration_days': 1, 'service_id': 1, 'recurring': 1}).sort('name', 1).to_list(300)
     # serviço da agenda sem preço: já aparece na AGENDA; aqui só confundiria ("preço sob consulta" ao lado de "aula experimental grátis")
-    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'duration_days': r.get('duration_days'), 'recurring': bool(r.get('recurring'))} for r in rows
+    return [{'name': r['name'], 'category': r.get('category') or '', 'price': r.get('price'), 'price_from': bool(r.get('price_from')), 'duration_days': r.get('duration_days'), 'recurring': bool(r.get('recurring'))} for r in rows
             if not (r.get('service_id') and r.get('price') is None)]
 
 def catalog_text(items):
     out = []
     for r in items:
-        bits = [brl(r['price']) if r.get('price') is not None else 'preço sob consulta (chame o time se perguntarem)']
+        bits = [('a partir de ' if r.get('price_from') else '') + brl(r['price']) if r.get('price') is not None else 'preço sob consulta (chame o time se perguntarem)']
         d = r.get('duration_days'); per = {30: 'por mês', 90: 'por trimestre', 180: 'por semestre', 365: 'por ano'}.get(d)
         if r.get('recurring'): bits[0] += ' ' + per if per and r.get('price') is not None else ''; bits.append('assinatura' + ('' if per else f', cobrada a cada {d or 30} dias'))
         elif d: bits.append({30: 'vale 1 mês', 90: 'vale 3 meses', 180: 'vale 6 meses', 365: 'vale 1 ano'}.get(d, f'vale {d} dias'))
@@ -628,6 +628,8 @@ async def example(user=Depends(current_user)):
 class QuickItem(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
+    price_from: bool = False  # "a partir de": o valor final depende do caso
+    consult: bool = False  # sob consulta: a Nanda não passa valor
 
 class QuickIn(BaseModel):
     items: List[QuickItem] = Field(default_factory=list, max_length=20)
@@ -645,9 +647,11 @@ async def quick(body: QuickIn, request: Request, user=Depends(managers)):
         if not nm: continue
         cur = await db.products.find_one({'company_id': cid, 'name': {'$regex': f'^{re.escape(nm)}$', '$options': 'i'}}, {'_id': 0, 'id': 1})
         if cur:
-            if it.price is not None: await db.products.update_one({'id': cur['id']}, {'$set': {'price': it.price, 'active': True}})
+            if it.consult: await db.products.update_one({'id': cur['id']}, {'$set': {'price': None, 'price_from': False, 'active': True}})
+            elif it.price is not None: await db.products.update_one({'id': cur['id']}, {'$set': {'price': it.price, 'price_from': it.price_from, 'active': True}})
         else:
-            await db.products.insert_one({'id': uid(), 'company_id': cid, 'name': nm, 'category': '', 'price': it.price or 0, 'kind': 'servico', 'active': True, 'created_at': now()})
+            await db.products.insert_one({'id': uid(), 'company_id': cid, 'name': nm, 'category': '', 'price': None if it.consult else (it.price or 0), 'price_from': it.price_from and not it.consult,
+                                          'kind': 'servico', 'active': True, 'created_at': now()})
     lines = [x for x in ((f'Horário de atendimento: {body.hours.strip()}' if body.hours.strip() else ''), (f'Onde fica / como atende: {body.where.strip()}' if body.where.strip() else '')) if x]
     if lines:
         about = s.get('about') or ''

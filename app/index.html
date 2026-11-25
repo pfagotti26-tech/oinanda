@@ -2679,6 +2679,41 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .fr-ti{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--ink);color:#fff}.fr-ti svg{width:20px;height:20px}.fr-tile.g .fr-ti{background:#25D366}
 .fr-tile>span:nth-child(2){flex:1;display:grid;gap:2px}.fr-tile b{font-size:15px}.fr-tile small{color:var(--ink2);font-size:13.5px}.fr-tile>i{font-style:normal;font-size:22px;color:var(--ink3)}
 @media(max-width:860px){.fr-grid,.fr-row{grid-template-columns:minmax(0,1fr)}.banner.su-tb{padding:10px 16px;flex-wrap:wrap}.su-tb .tb-pb,.su-tb .tb-pl{display:none}.su-tb .btn{width:100%;justify-content:center}.fr-hd h1{font-size:23px}}
+/* monte com toques */
+.tq{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start;max-width:1120px}.tq>*{min-width:0}
+.pz-main{padding:26px}.pz-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pz-bar i{height:5px;border-radius:9px;background:#EEE8E3}.pz-bar i.on{background:var(--c)}
+.pz-top{display:flex;justify-content:space-between;align-items:center;margin:8px 0 14px;font-size:12.5px;font-weight:800;color:var(--ink3);letter-spacing:.04em}.pz-top .lnk{font-size:13px;letter-spacing:0;color:var(--ink3)}
+.tq h1{font-size:23px;letter-spacing:-.03em;line-height:1.2}.pz-sub{color:var(--ink2);margin:4px 0 16px}
+.pz-mode{display:flex;gap:6px;margin-bottom:16px;background:var(--bg);padding:4px;border-radius:12px;width:max-content;max-width:100%;overflow-x:auto}.pz-mode button{border:0;background:none;padding:8px 14px;border-radius:9px;font:inherit;font-weight:700;font-size:13.5px;color:var(--ink2);cursor:pointer;white-space:nowrap}.pz-mode button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pz-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pz-ch{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 15px;font:inherit;font-weight:700;font-size:14px;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.pz-ch.on{border-color:var(--c);background:var(--tint);color:var(--c2)}.pz-ch.on::before{content:"✓";font-weight:800}.pz-ch.add{border-style:dashed;color:var(--c2)}
+.pz-addf{display:flex;gap:8px;margin-top:10px}.pz-addf input{flex:1;min-width:0;border:1.5px solid #E3D9D0;border-radius:10px;padding:9px 11px;font:inherit;font-size:14px}
+.pz-lb{font-size:13.5px;font-weight:800;margin:20px 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}.pz-lb small{font-weight:600;color:var(--ink3);font-size:12.5px}
+.pz-its{display:grid;gap:8px}.pz-it{border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
+.pz-ih{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.pz-ih b{font-size:15px}
+.pz-seg{display:inline-flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;max-width:100%;overflow-x:auto}.pz-seg button{border:0;background:none;padding:6px 10px;border-radius:8px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);white-space:nowrap;cursor:pointer}.pz-seg button.on{background:#fff;color:var(--c2);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pz-seg.sm{margin-top:6px}.pz-ir{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pz-pr{display:flex;align-items:center;gap:4px;border:1.5px solid #E3D9D0;border-radius:10px;padding:0 10px;min-width:150px;background:#fff}.pz-pr:focus-within{border-color:var(--c);box-shadow:0 0 0 3px var(--tint)}.pz-pr em{font-style:normal;font-size:12px;color:var(--ink3);font-weight:600;white-space:nowrap}.pz-pr i{font-style:normal;color:var(--ink3);font-size:13px}
+.pz-pr input{border:0;outline:0;width:90px;padding:9px 0;font:inherit;font-size:15px;font-weight:700;background:transparent}
+.pz-sc{font-size:13px;color:var(--ink2);background:var(--bg);border-radius:10px;padding:9px 12px;margin:0}
+.pz-du{display:flex;gap:4px}.pz-du button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 9px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer}.pz-du button.on{border-color:var(--c);color:var(--c2);background:var(--tint)}
+.pz-hint{font-size:12.5px;color:var(--ink3);margin-top:10px}
+.pz-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.pz-days button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 0;font:inherit;font-weight:800;font-size:14px;color:var(--ink2);cursor:pointer}.pz-days button.on{background:var(--c);border-color:var(--c);color:#fff}
+.pz-oth{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--ink2)}.pz-oth select{border:1.5px solid #E3D9D0;border-radius:10px;padding:8px 10px;font:inherit}
+.pz-tg{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:14px;font-weight:700;cursor:pointer}.pz-tg.lt{font-weight:600;color:var(--ink2)}
+.pz-sub2{margin-top:8px;padding:12px 14px;background:var(--bg);border-radius:14px}
+.pz-big{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.pz-bg{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 8px;display:grid;justify-items:center;gap:6px;font:inherit;font-weight:700;font-size:13.5px;color:var(--ink2);text-align:center;cursor:pointer}.pz-bg span{font-size:22px}.pz-bg.on{border-color:var(--c);background:var(--tint);color:var(--c2);box-shadow:0 0 0 3px var(--tint)}
+.pz-cep{display:grid;grid-template-columns:140px minmax(0,1fr) 100px;gap:8px}.pz-cep input{border:1.5px solid #E3D9D0;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;min-width:0}.pz-cep input.auto{background:var(--oksoft);border-color:#BFE6D6;color:var(--ok);font-weight:600}
+.pz-ft{display:flex;align-items:center;gap:10px;margin-top:24px;flex-wrap:wrap}.pz-ft .sp{flex:1}.pz-ft .err{margin:0;font-size:13px}.pz-ft .btn{display:inline-flex;align-items:center;gap:6px}.pz-ft .btn svg{width:16px;height:16px}.pz-ft .lnk{color:var(--ink3)}
+.pz-pvc{position:sticky;top:76px;display:grid;gap:12px}.pz-pvh{display:flex;align-items:center;gap:10px}.pz-av{width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800}.pz-pvh b{font-size:15px;display:block}.pz-pvh small{color:var(--ok);font-size:12px;font-weight:700}
+.pz-chat{background:#F4EFEA;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:200px}
+.pz-m{max-width:88%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.45}.pz-m.in{background:#fff;align-self:flex-start;border-bottom-left-radius:4px}.pz-m.out{background:#DCF8E8;align-self:flex-end;border-bottom-right-radius:4px}.pz-m mark{background:#FFE7A8;border-radius:4px;padding:0 2px;color:inherit}.pz-m small{display:block;font-size:11px;color:var(--ink3);text-align:right}
+.pz-kn{border-top:1px solid var(--line);padding-top:12px}.pz-kn h4{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px}.pz-kn ul{list-style:none;margin:0;padding:0}.pz-kn li{display:flex;gap:8px;font-size:13.5px;padding:3px 0;color:var(--ink2)}.pz-kn li::before{content:"✓";color:var(--ok);font-weight:800}.pz-kn li.no{color:var(--ink3)}.pz-kn li.no::before{content:"○";color:#C9BFB6}
+.pz-mb{display:none}.ds-it2{display:grid;padding-bottom:8px;border-bottom:1px dashed var(--line)}.ds-sc{color:var(--ink3);font-size:13px;padding:9px 10px}
+@media(max-width:860px){.tq{grid-template-columns:minmax(0,1fr)}.pz-pvc{display:none}.pz-main{padding:20px}.pz-big{grid-template-columns:repeat(2,minmax(0,1fr))}.pz-cep{grid-template-columns:1fr 90px}.pz-cep #tqSt{grid-column:1/-1;order:3}
+ .pz-mb{display:flex;gap:8px;align-items:flex-start;background:#DCF8E8;border-radius:14px;padding:10px 12px;font-size:13px;margin-bottom:14px}.pz-mb b{color:var(--ok)}.pz-ft .err{order:-1;width:100%}}
+.pz-addf[hidden]{display:none}
 /* ensinar numa frase */
 .modal.ds{max-width:640px;display:grid;gap:12px}.ds-hh{display:flex;gap:12px;align-items:center}.ds-hh h2{font-size:20px;letter-spacing:-.02em}.ds-hh small{color:var(--ink3);font-size:13px}.ds-hh .x{margin-left:auto}
 .ds-ic{width:40px;height:40px;border-radius:12px;background:var(--tint);color:var(--c2);display:grid;place-items:center;font-size:19px;flex:none}.ds-ic.ok{background:var(--oksoft);color:var(--ok);font-weight:800}
@@ -8536,6 +8571,136 @@ function suTop(){const b=$('#trialBn'),d=SU.d;if(!b||!d||!d.core||!ME||!['owner'
   if(!b.dataset.orig)b.dataset.orig=b.innerHTML;b.classList.add('su-tb');const dl=ME.trial_days_left,nx=d.core.find(x=>!x.done);
   b.innerHTML=`<span class="tb-ic">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}</span><span class="tb-tx"><b>Teste grátis: ${dl} ${dl===1?'dia':'dias'}</b><small>Configuração ${d.core_pct}% · ${d.core_done} de ${d.core_total} passos</small></span><span class="tb-pb"><i style="width:${d.core_pct}%"></i></span><span class="tb-sp"></span>${ME.user.role==='owner'?'<button class="lnk tb-pl" data-sub>Ver planos</button>':''}${nx?`<button class="btn sm p" id="tbGo">Continuar configuração ${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button>`:''}`;
   b.querySelectorAll('[data-sub]').forEach(x=>x.onclick=()=>go('assinatura'));if($('#tbGo'))$('#tbGo').onclick=()=>VIEW==='inicio'?suDo(nx):go('inicio')}
+/* monte com toques: o perfil do negócio quase sem digitar (só preço e endereço) */
+const TQ_SVC={clinica:['Limpeza de pele','Drenagem linfática','Botox','Preenchimento','Peeling','Depilação a laser','Massagem modeladora','Microagulhamento','Design de sobrancelha','Avaliação'],
+ studio:['Plano mensal','Aula avulsa','Aula experimental','Pacote de aulas','Personal','Avaliação física','Plano trimestral'],
+ salao:['Corte','Corte + barba','Barba','Escova','Progressiva','Coloração','Mechas','Manicure','Pedicure','Design de sobrancelha','Hidratação'],
+ imobiliaria:['Venda de imóveis','Aluguel residencial','Aluguel comercial','Avaliação de imóvel','Administração de aluguel','Lançamentos'],
+ escola:['Mensalidade','Matrícula','Aula experimental','Material didático','Curso intensivo','Aula particular'],
+ loja:['Roupas','Calçados','Acessórios','Frete','Troca','Kit presente','Encomenda'],
+ servicos:['Consulta','Orçamento','Visita técnica','Mensalidade','Abertura de MEI','Contabilidade mensal','Instalação','Manutenção'],
+ restaurante:['Pizza grande','Pizza broto','Marmita','Prato executivo','Lanche','Bebidas','Sobremesa','Taxa de entrega'],
+ lancamento:['Curso completo','Mentoria','Comunidade','Ebook','Consultoria','Imersão'],
+ outro:['Serviço principal','Consulta','Orçamento','Produto','Visita','Mensalidade']};
+const TQ_RULES={clinica:['Avaliação gratuita','Precisa agendar antes','Cobra sinal para reservar','Tolerância de 15 min de atraso','Remarcar até 24h antes','Não atende convênio','Não passa preço de injetável pelo WhatsApp','Atende só maiores de 18'],
+ studio:['Aula experimental gratuita','Precisa agendar a aula','Remarcar até 2h antes','Sem taxa de matrícula','Plano sem fidelidade','Precisa de atestado'],
+ salao:['Precisa agendar antes','Tolerância de 10 min de atraso','Remarcar até 24h antes','Atende por ordem de chegada','Cobra sinal em química'],
+ imobiliaria:['Visita só com hora marcada','Aceita financiamento','Aceita FGTS','Aluguel com fiador ou seguro-fiança','Aceita pet','Não faz permuta'],
+ escola:['Aula experimental gratuita','Matrícula o ano todo','Desconto para irmãos','Material incluso','Turmas pequenas'],
+ loja:['Troca em até 7 dias','Envia para todo o Brasil','Retirada na loja','Não faz reserva sem pagamento','Frete grátis acima de um valor'],
+ servicos:['Orçamento gratuito','Precisa agendar antes','Atende só com hora marcada','Garantia do serviço','Atende em domicílio'],
+ restaurante:['Pedido mínimo para entrega','Entrega só no bairro e região','Não troca sabores depois do pedido','Retirada no balcão','Aceita encomenda'],
+ lancamento:['Garantia de 7 dias','Acesso vitalício','Certificado incluso','Suporte por e-mail','Vagas limitadas'],
+ outro:['Precisa agendar antes','Orçamento gratuito','Atende em domicílio','Garantia do serviço']};
+const TQ={};
+function tqInit(){const seg=ME.company.segment||'outro';if(TQ.seg===seg)return;Object.assign(TQ,{seg,step:1,sel:[],items:{},days:[0,1,2,3,4],h:'09:00-19:00',hOther:['09:00','18:00'],sat:false,satH:'09:00-13:00',lunch:false,
+  modes:['fisico'],cep:'',street:'',num:'',park:false,pay:['pix','credito'],parc:'3',pixd:'',rules:[],custom:[]})}
+function tqView(n){tqInit();TQ.step=n||TQ.step||1;const seg=TQ.seg,c=ME.company,I=p=>svg(p),nanda=esc((SU.ai&&SU.ai.name)||'Nanda');
+  const ag=['clinica','studio','salao','servicos','escola'].includes(seg);
+  const money=v=>v==null||v===''?'':obMoney(Number(v)).replace(',00','');
+  const D=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const hs=v=>{const [a,b]=v.split('-');return `${obHH(a)} às ${obHH(b)}`};
+  const grid=()=>{const [f,t]=TQ.h==='outro'?TQ.hOther:TQ.h.split('-');const wd=TQ.days.filter(d=>!(TQ.sat&&d===5));const g=wd.length?[{days:wd,from:f,to:t}]:[];
+    if(TQ.sat&&TQ.days.includes(5)){const [a,b]=TQ.satH.split('-');g.push({days:[5],from:a,to:b})}return g};
+  const its=()=>TQ.sel.map(nm=>({name:nm,...(TQ.items[nm]||{mode:'fixo',price:'',mins:null})}));
+  const priceTxt=x=>x.mode==='consulta'?'sob consulta':x.price===''||x.price==null?'':(x.mode==='apartir'?'a partir de ':'')+money(x.price);
+  const PAY={pix:'Pix',credito:'Crédito',debito:'Débito',dinheiro:'Dinheiro',boleto:'Boleto',link:'Link de pagamento'};
+  const payTxt=()=>{const m=TQ.pay.map(k=>k==='pix'?'Pix':PAY[k].toLowerCase());if(m.length)m[0]=obCap(m[0]);if(!m.length)return '';let t=m.length>1?m.slice(0,-1).join(', ')+' e '+m[m.length-1]:m[0];
+    if(TQ.pay.includes('credito'))t+=TQ.parc==='1'?' · cartão só à vista':` · até ${TQ.parc}x no cartão`;if(TQ.pixd&&TQ.pay.includes('pix'))t+=` · ${TQ.pixd}% de desconto no Pix`;return t};
+  const MODES={fisico:['📍','Endereço físico'],online:['💻','Online'],delivery:['🛵','Delivery'],casa:['🚗','Vou até o cliente']};
+  const addr=()=>{if(!TQ.street)return '';const pp=TQ.street.split(', ');return TQ.num?[pp[0]+', '+TQ.num,...pp.slice(1)].join(' - ').replace(/ - ([^-]*)$/,', $1'):TQ.street};
+  const whereTxt=()=>{const p=[];if(TQ.modes.includes('fisico')&&TQ.street)p.push(addr());TQ.modes.filter(m=>m!=='fisico').forEach(m=>p.push(MODES[m][1].toLowerCase()));return p.join(' · ')};
+  const hrsTxt=()=>obCap(obHrsParts(grid()).join('; '));
+  // prévia: a pergunta do passo e a resposta com o que já foi escolhido
+  const pv=()=>{const it=its().filter(x=>x.mode==='consulta'||x.price!==''&&x.price!=null),x=it[0];
+    if(TQ.step===1){if(!x)return ['Oi! Quanto custa?','Assim que você escolher um serviço e o preço, a resposta aparece aqui.'];const nm=x.name.toLowerCase();
+      if(x.mode==='consulta')return [`Oi! Quanto custa ${nm}?`,`Oi! O valor de ${nm} é <mark>sob consulta</mark>, porque depende do seu caso. ${ag?'Quer que eu marque uma avaliação? 😊':'Posso chamar alguém do time para te passar certinho? 😊'}`];
+      return [`Oi! Quanto custa ${nm}?`,`Oi! ${obCap(nm)} ${x.mode==='apartir'?'começa em':'sai por'} <mark>${money(x.price)}</mark>${x.mins?` e leva <mark>${x.mins>=60?(x.mins/60+'').replace('.',',')+(x.mins===60?' hora':' horas'):x.mins+' minutos'}</mark>`:''}${x.mode==='apartir'?', o valor final depende do que você precisar':''}. ${ag?'Quer que eu veja um horário para você? 😊':'Posso te ajudar com mais alguma coisa? 😊'}`]}
+    if(TQ.step===2){const h=hrsTxt();return ['Vocês atendem sábado?',h?(TQ.days.includes(5)?'Atendemos sim! ':'Aos sábados não abrimos. ')+`Nosso horário: <mark>${esc(h)}</mark>.${TQ.lunch?' Fechamos para almoço das 12h às 13h.':''} ${ag?'Quer marcar? 😊':''}`:'Marque os dias e o horário ao lado.']}
+    if(TQ.step===3){const w=whereTxt();return ['Onde vocês ficam?',w?`${TQ.modes.includes('fisico')&&TQ.street?'Ficamos na <mark>'+esc(addr())+'</mark>.':''}${TQ.modes.filter(m=>m!=='fisico').map(m=>' Atendemos também <mark>'+MODES[m][1].toLowerCase()+'</mark>.').join('')}${TQ.park?' Temos estacionamento.':''} 😊`:'Escolha como você atende ao lado.']}
+    if(TQ.step===4){const p=payTxt();return ['Dá pra parcelar?',p?`Aceitamos <mark>${esc(p)}</mark>. 😊`:'Escolha as formas de pagamento ao lado.']}
+    const r=[...TQ.rules,...TQ.custom];return ['Se eu atrasar um pouco tudo bem?',r.length?`Te explico como funciona: <mark>${esc(r.slice(0,3).join('; ').toLowerCase())}</mark>. 😊`:'O que não estiver nas suas regras, ela não inventa: chama o seu time.']};
+  const know=()=>{const L=[[1,'Serviços e preços',its().filter(x=>x.mode==='consulta'||x.price!==''&&x.price!=null).map(x=>`${x.name}: ${priceTxt(x)}${x.mins?' · '+x.mins+' min':''}`)],[2,'Horários',TQ.step>2||TQ.step===2?[hrsTxt()].filter(Boolean):[]],
+    [3,'Onde fica',TQ.step>=3?[whereTxt()].filter(Boolean):[]],[4,'Pagamento',TQ.step>=4?[payTxt()].filter(Boolean):[]],[5,'Regras',TQ.step>=5?[...TQ.rules,...TQ.custom]:[]]];
+    return `<h4>O que ela já sabe</h4><ul>${L.map(([i,t,v])=>v.length?v.map(x=>`<li>${esc(x)}</li>`).join(''):`<li class="no">${t}</li>`).join('')}</ul>`};
+  const drawPv=()=>{const [q,a]=pv();const p=$('#tqPv');if(p)p.innerHTML=`<div class="pz-m in">${esc(q)}</div><div class="pz-m out">${a}<small>agora</small></div>`;const k=$('#tqKn');if(k)k.innerHTML=know();
+    const mb=$('#tqMb');if(mb)mb.innerHTML=`💬 <span><b>${nanda}:</b> ${a.replace(/<[^>]+>/g,'').slice(0,110)}${a.length>110?'…':''}</span>`};
+  const chip=(on,lb,attr)=>`<button type="button" class="pz-ch ${on?'on':''}" ${attr}>${esc(lb)}</button>`;
+  let body='';const st=TQ.step;
+  if(st===1){const list=[...new Set([...(TQ_SVC[seg]||TQ_SVC.outro),...TQ.sel])];
+    body=`<div class="pz-mode"><button class="on">👆 Montar com toques</button><button id="tqWr">✍️ Escrever ou usar o site</button></div>
+     <h1>O que você oferece?</h1><p class="pz-sub">Toque nos que você faz. Depois é só colocar o preço.</p><div class="pz-mb" id="tqMb"></div>
+     <div class="pz-chips">${list.map(x=>chip(TQ.sel.includes(x),x,`data-sv="${esc(x)}"`)).join('')}<button type="button" class="pz-ch add" id="tqAdd">+ Outro</button></div>
+     <form id="tqAddF" class="pz-addf" hidden><input id="tqAddI" maxlength="80" placeholder="Nome do serviço ou produto"><button class="btn sm p">Adicionar</button></form>
+     ${TQ.sel.length?`<div class="pz-lb">Preço e duração<small>Escolha como você cobra cada um</small></div><div class="pz-its">${its().map((x,i)=>`<div class="pz-it"><div class="pz-ih"><b>${esc(x.name)}</b><div class="pz-seg">${[['fixo','Preço fixo'],['apartir','A partir de'],['consulta','Sob consulta']].map(m=>`<button type="button" class="${x.mode===m[0]?'on':''}" data-md="${i},${m[0]}">${m[1]}</button>`).join('')}</div></div>
+       <div class="pz-ir">${x.mode==='consulta'?`<p class="pz-sc">A ${nanda} não passa valor: ${ag?'oferece a avaliação':'chama o seu time'} quando perguntarem.</p>`:`<label class="pz-pr">${x.mode==='apartir'?'<em>a partir de</em>':''}<i>R$</i><input data-pr="${i}" value="${x.price===''||x.price==null?'':String(x.price).replace('.',',')}" inputmode="decimal" placeholder="0" aria-label="Preço de ${esc(x.name)}"></label>`}
+       ${ag?`<div class="pz-du">${[[30,'30 min'],[60,'1 h'],[90,'1h30']].map(d=>`<button type="button" class="${x.mins===d[0]?'on':''}" data-du="${i},${d[0]}">${d[1]}</button>`).join('')}</div>`:''}</div></div>`).join('')}</div>`:'<p class="pz-hint">Escolha pelo menos um para continuar.</p>'}`}
+  if(st===2){body=`<h1>Quando vocês atendem?</h1><p class="pz-sub">Toque nos dias e escolha o horário.</p><div class="pz-mb" id="tqMb"></div>
+     <div class="pz-days">${D.map((d,i)=>`<button type="button" class="${TQ.days.includes(i)?'on':''}" data-dy="${i}" aria-pressed="${TQ.days.includes(i)}">${d}</button>`).join('')}</div>
+     <div class="pz-lb">Horário</div><div class="pz-chips">${['08:00-18:00','09:00-19:00','10:00-20:00'].map(h=>chip(TQ.h===h,hs(h),`data-h="${h}"`)).join('')}${chip(TQ.h==='outro','Outro','data-h="outro"')}</div>
+     ${TQ.h==='outro'?`<div class="pz-oth">das <select id="tqF">${OB_TIMES.map(t=>`<option ${t===TQ.hOther[0]?'selected':''}>${t}</option>`).join('')}</select> às <select id="tqT">${OB_TIMES.map(t=>`<option ${t===TQ.hOther[1]?'selected':''}>${t}</option>`).join('')}</select></div>`:''}
+     ${TQ.days.includes(5)?`<label class="pz-tg"><span>Sábado tem outro horário</span><span class="sw"><input type="checkbox" id="tqSat" ${TQ.sat?'checked':''}><i></i></span></label>
+     ${TQ.sat?`<div class="pz-sub2"><div class="pz-chips">${['08:00-12:00','09:00-13:00','09:00-17:00'].map(h=>chip(TQ.satH===h,hs(h),`data-sh="${h}"`)).join('')}</div></div>`:''}`:''}
+     <label class="pz-tg lt"><span>Fecha para almoço (12h às 13h)</span><span class="sw"><input type="checkbox" id="tqLn" ${TQ.lunch?'checked':''}><i></i></span></label>`}
+  if(st===3){body=`<h1>Onde e como vocês atendem?</h1><p class="pz-sub">Pode escolher mais de um.</p><div class="pz-mb" id="tqMb"></div>
+     <div class="pz-big">${Object.entries(MODES).map(([k,v])=>`<button type="button" class="pz-bg ${TQ.modes.includes(k)?'on':''}" data-wm="${k}"><span>${v[0]}</span>${v[1]}</button>`).join('')}</div>
+     ${TQ.modes.includes('fisico')?`<div class="pz-lb">Endereço<small>Digite o CEP e o resto vem sozinho</small></div><div class="pz-cep"><input id="tqCep" value="${esc(TQ.cep)}" inputmode="numeric" maxlength="9" placeholder="CEP"><input id="tqSt" value="${esc(TQ.street)}" placeholder="Rua, bairro e cidade" class="${TQ.street?'auto':''}"><input id="tqNum" value="${esc(TQ.num)}" placeholder="Nº" maxlength="20"></div><p class="pz-hint" id="tqCepH"></p>
+      <label class="pz-tg lt"><span>Tem estacionamento</span><span class="sw"><input type="checkbox" id="tqPk" ${TQ.park?'checked':''}><i></i></span></label>`:''}`}
+  if(st===4){body=`<h1>Como o cliente pode pagar?</h1><p class="pz-sub">Toque em todas que você aceita.</p><div class="pz-mb" id="tqMb"></div>
+     <div class="pz-big">${[['pix','⚡'],['credito','💳'],['debito','💳'],['dinheiro','💵'],['boleto','📄'],['link','🔗']].map(([k,e])=>`<button type="button" class="pz-bg ${TQ.pay.includes(k)?'on':''}" data-py="${k}"><span>${e}</span>${PAY[k]}</button>`).join('')}</div>
+     ${TQ.pay.includes('credito')?`<div class="pz-lb">Parcelamento no cartão</div><div class="pz-chips">${[['1','Só à vista'],['3','Até 3x'],['6','Até 6x'],['10','Até 10x'],['12','Até 12x']].map(x=>chip(TQ.parc===x[0],x[1],`data-pc="${x[0]}"`)).join('')}</div>`:''}
+     ${TQ.pay.includes('pix')?`<div class="pz-lb">Desconto no Pix?</div><div class="pz-chips">${[['','Não'],['5','5%'],['10','10%']].map(x=>chip(TQ.pixd===x[0],x[1],`data-pd="${x[0]}"`)).join('')}</div>`:''}`}
+  if(st===5){body=`<h1>Alguma regra que a ${nanda} precisa saber?</h1><p class="pz-sub">As mais comuns no seu ramo. Toque nas que valem para você.</p><div class="pz-mb" id="tqMb"></div>
+     <div class="pz-chips">${[...(TQ_RULES[seg]||TQ_RULES.outro),...TQ.custom].map(x=>chip(TQ.rules.includes(x)||TQ.custom.includes(x),x,`data-rl="${esc(x)}"`)).join('')}<button type="button" class="pz-ch add" id="tqAdd">+ Outra regra</button></div>
+     <form id="tqAddF" class="pz-addf" hidden><input id="tqAddI" maxlength="120" placeholder="Ex.: crianças só com acompanhante"><button class="btn sm p">Adicionar</button></form>
+     <p class="pz-hint">Tudo o que não estiver aqui, ela não inventa: chama o seu time.</p>`}
+  $('#page').innerHTML=`<div class="tq"><section class="card pz-main"><div class="pz-bar">${[1,2,3,4,5].map(i=>`<i class="${i<=st?'on':''}"></i>`).join('')}</div><div class="pz-top"><span>PASSO ${st} DE 5</span><button class="lnk" id="tqOut">Continuar depois</button></div>${body}
+   <div class="pz-ft">${st>1?`<button class="btn" id="tqBk" aria-label="Voltar">${I('<path d="m15 6-6 6 6 6"/>')}</button>`:''}${st===5?'<button class="lnk" id="tqSk">Pular</button>':''}<span class="sp"></span><p class="err" id="tqE"></p><button class="btn p" id="tqNx">${st===5?'Ver o resumo':'Continuar'} ${I('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button></div></section>
+   <aside class="card pz-pvc"><div class="pz-pvh"><span class="pz-av">N</span><div><b>${nanda}</b><small>● assim ela responde agora</small></div></div><div class="pz-chat" id="tqPv"></div><div class="pz-kn" id="tqKn"></div></aside></div>`;
+  drawPv();scrollTo({top:0});
+  const re=()=>tqView(st),pg=$('#page');
+  // passo 1
+  pg.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{const v=b.dataset.sv;if(TQ.sel.includes(v))TQ.sel=TQ.sel.filter(x=>x!==v);else{TQ.sel.push(v);TQ.items[v]=TQ.items[v]||{mode:'fixo',price:'',mins:null}}re()});
+  pg.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>{const [i,m]=b.dataset.md.split(',');TQ.items[TQ.sel[+i]].mode=m;re();const p=pg.querySelector(`[data-pr="${i}"]`);if(p&&!p.value)p.focus()});
+  pg.querySelectorAll('[data-pr]').forEach(e=>e.oninput=()=>{e.value=e.value.replace(/[^\d.,]/g,'');const n=Number(e.value.replace(/\./g,'').replace(',','.'));TQ.items[TQ.sel[+e.dataset.pr]].price=e.value&&isFinite(n)?n:'';drawPv()});
+  pg.querySelectorAll('[data-du]').forEach(b=>b.onclick=()=>{const [i,d]=b.dataset.du.split(',');const it=TQ.items[TQ.sel[+i]];it.mins=it.mins===+d?null:+d;re()});
+  if($('#tqAdd'))$('#tqAdd').onclick=()=>{$('#tqAddF').hidden=false;$('#tqAddI').focus()};
+  if($('#tqAddF'))$('#tqAddF').onsubmit=e=>{e.preventDefault();const v=obCap($('#tqAddI').value.trim());if(!v)return;
+    if(st===1){if(!TQ.sel.includes(v)){TQ.sel.push(v);TQ.items[v]={mode:'fixo',price:'',mins:null}}}else if(!TQ.custom.includes(v))TQ.custom.push(v);re()};
+  if($('#tqWr'))$('#tqWr').onclick=()=>descModal(SU.d&&SU.d.core&&SU.d.core.find(x=>x.key==='sobre'));
+  // passo 2
+  pg.querySelectorAll('[data-dy]').forEach(b=>b.onclick=()=>{const d=+b.dataset.dy;TQ.days=TQ.days.includes(d)?TQ.days.filter(x=>x!==d):[...TQ.days,d].sort();re()});
+  pg.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{TQ.h=b.dataset.h;re()});pg.querySelectorAll('[data-sh]').forEach(b=>b.onclick=()=>{TQ.satH=b.dataset.sh;re()});
+  if($('#tqF'))$('#tqF').onchange=e=>{TQ.hOther[0]=e.target.value;drawPv()};if($('#tqT'))$('#tqT').onchange=e=>{TQ.hOther[1]=e.target.value;drawPv()};
+  if($('#tqSat'))$('#tqSat').onchange=e=>{TQ.sat=e.target.checked;re()};if($('#tqLn'))$('#tqLn').onchange=e=>{TQ.lunch=e.target.checked;re()};
+  // passo 3
+  pg.querySelectorAll('[data-wm]').forEach(b=>b.onclick=()=>{const k=b.dataset.wm;TQ.modes=TQ.modes.includes(k)?TQ.modes.filter(x=>x!==k):[...TQ.modes,k];re()});
+  if($('#tqCep')){const ce=$('#tqCep');ce.oninput=async()=>{let v=ce.value.replace(/\D/g,'').slice(0,8);ce.value=v.length>5?v.slice(0,5)+'-'+v.slice(5):v;TQ.cep=ce.value;
+      if(v.length===8){$('#tqCepH').textContent='Buscando o endereço…';try{const r=await fetch(`https://viacep.com.br/ws/${v}/json/`).then(x=>x.json());
+        if(r.erro)throw 0;TQ.street=[r.logradouro,r.bairro,r.localidade+(r.uf?'/'+r.uf:'')].filter(Boolean).join(', ');$('#tqSt').value=TQ.street;$('#tqSt').classList.add('auto');$('#tqCepH').textContent='';$('#tqNum').focus();drawPv()}
+      catch(e){$('#tqCepH').textContent='Não achei esse CEP. Escreva a rua ao lado.'}}};
+    $('#tqSt').oninput=e=>{TQ.street=e.target.value;e.target.classList.remove('auto');drawPv()};$('#tqNum').oninput=e=>{TQ.num=e.target.value;drawPv()};$('#tqPk').onchange=e=>{TQ.park=e.target.checked;re()}}
+  // passo 4
+  pg.querySelectorAll('[data-py]').forEach(b=>b.onclick=()=>{const k=b.dataset.py;TQ.pay=TQ.pay.includes(k)?TQ.pay.filter(x=>x!==k):[...TQ.pay,k];re()});
+  pg.querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>{TQ.parc=b.dataset.pc;re()});pg.querySelectorAll('[data-pd]').forEach(b=>b.onclick=()=>{TQ.pixd=b.dataset.pd;re()});
+  // passo 5
+  pg.querySelectorAll('[data-rl]').forEach(b=>b.onclick=()=>{const v=b.dataset.rl;if(TQ.custom.includes(v))TQ.custom=TQ.custom.filter(x=>x!==v);else TQ.rules=TQ.rules.includes(v)?TQ.rules.filter(x=>x!==v):[...TQ.rules,v];re()});
+  // navegação
+  $('#tqOut').onclick=()=>{toast('Guardamos o que você já tocou. Continue quando quiser.');go('inicio')};
+  if($('#tqBk'))$('#tqBk').onclick=()=>tqView(st-1);if($('#tqSk'))$('#tqSk').onclick=()=>tqDone();
+  $('#tqNx').onclick=()=>{const e=$('#tqE');e.textContent='';
+    if(st===1){if(!TQ.sel.length)return e.textContent='Escolha pelo menos um.';const f=its().find(x=>x.mode!=='consulta'&&(x.price===''||x.price==null));if(f)return e.textContent=`Falta o preço de ${f.name} (ou toque em "Sob consulta").`}
+    if(st===2&&!TQ.days.length)return e.textContent='Escolha pelo menos um dia.';
+    if(st===2&&TQ.h==='outro'&&TQ.hOther[0]>=TQ.hOther[1])return e.textContent='O horário de fechar precisa ser depois do de abrir.';
+    if(st===3&&!TQ.modes.length)return e.textContent='Escolha pelo menos uma opção.';
+    if(st===4&&!TQ.pay.length)return e.textContent='Escolha pelo menos uma forma de pagamento.';
+    st<5?tqView(st+1):tqDone()};
+  function tqDone(){const segL=(SEG[seg]||'').split(',')[0].toLowerCase(),bairro=TQ.modes.includes('fisico')&&TQ.street?TQ.street.split(', ').slice(1,2).join(''):'';
+    const notes=[TQ.lunch?'Fecha para almoço das 12h às 13h':'',TQ.park?'Tem estacionamento':'',TQ.modes.includes('casa')?'Atende na casa do cliente':''].filter(Boolean);
+    const r={about:`${c.name}, ${segL}${bairro?' em '+bairro:''}.`,where:whereTxt(),payment:payTxt(),hours_grid:grid(),items:its().map(x=>({name:x.name,price:x.mode==='consulta'?null:x.price,from:x.mode==='apartir',consult:x.mode==='consulta',mins:x.mins})),
+      rules:[...TQ.rules,...TQ.custom],notes,missing:[],tq:true};
+    descCheck(r)}
+}
 /* ensinar numa frase: a IA organiza, o dono confere e só então salva */
 const DS={text:'',url:''};
 function descModal(step){
@@ -8556,28 +8721,36 @@ function descModal(step){
    $('#dsMan').onclick=()=>{o.remove();suDo(step)};
    $('#dsGo').onclick=async()=>{const b=$('#dsGo');$('#dsE').textContent='';if(DS.text.trim().length<15&&!DS.url.trim())return $('#dsE').textContent='Escreva um pouco mais: o que você faz, os preços e quando atende.';
      b.disabled=true;b.textContent='Organizando…';try{const r=await api('/ai/describe',{method:'POST',body:{text:DS.text,url:DS.url}});o.remove();check(r)}catch(e){$('#dsE').textContent=/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message;b.disabled=false;b.textContent='✨ Organizar para mim'}}};
-  const check=r=>{const hrs=r.hours_grid.map(g=>`${obCap(obHrsParts([g]).join(''))}`).join(' · ');
+  const check=r=>descCheck(r,write);
+  write()}
+function descCheck(r,back){
+  {const hrs=r.hours_grid.map(g=>`${obCap(obHrsParts([g]).join(''))}`).join(' · ');
+   r.items.forEach(x=>{x.mode=x.consult?'consulta':x.from?'apartir':'fixo'});
    const o=overlay(`<div class="modal ds"><div class="ds-hh"><span class="ds-ic ok">✓</span><div><h2>Confira o que a Nanda entendeu</h2><small>Ajuste o que precisar. Nada vai para os clientes antes de você ligar a Nanda.</small></div><button class="x" aria-label="Fechar">×</button></div>
     <div class="ds-b"><h4>Sobre o negócio</h4><input id="dsA" value="${esc(r.about)}" maxlength="300" placeholder="O que é o negócio e onde fica"></div>
     <div class="ds-b"><h4>Serviços e preços</h4><div id="dsI"></div><button type="button" class="ob-add" id="dsAdd">+ Adicionar item</button></div>
     <div class="ds-b"><h4>Horários</h4><p>${hrs?esc(hrs):'<span class="hint">Não encontrei os horários. Dá para marcar depois, na Nanda.</span>'}</p></div>
     ${r.where?`<div class="ds-b"><h4>Onde fica ou como atende</h4><input id="dsW" value="${esc(r.where)}" maxlength="300"></div>`:''}
     <div class="ds-b"><h4>Pagamento</h4><input id="dsP" value="${esc(r.payment)}" maxlength="300" placeholder="Ex.: Pix e cartão em até 3x"></div>
+    ${(r.rules||[]).length?`<div class="ds-b"><h4>Regras</h4><p>${esc(r.rules.join(' · '))}</p></div>`:''}
     ${r.missing.length?`<div class="ds-w">⚠️ Faltou: ${esc(r.missing.join('; '))}. Se um cliente perguntar, a Nanda chama o seu time.</div>`:''}
-    <div class="ds-ft"><button type="button" class="lnk" id="dsBk">Voltar e reescrever</button><button class="btn p" id="dsSv">Está certo, salvar</button></div><p class="err" id="dsE2"></p></div>`);
+    <div class="ds-ft"><button type="button" class="lnk" id="dsBk">${back?'Voltar e reescrever':'Voltar e ajustar'}</button><button class="btn p" id="dsSv">Está certo, salvar</button></div><p class="err" id="dsE2"></p></div>`);
    const its=r.items.map(x=>({...x}));const box=$('#dsI');
-   const draw=()=>{box.innerHTML=its.map((x,i)=>`<div class="ds-it"><input data-n="${i}" value="${esc(x.name)}" maxlength="80" aria-label="Item"><span class="ds-pr">${x.from?'<em>a partir de</em>':''}<i>R$</i><input data-p="${i}" value="${x.price!=null?String(x.price).replace('.',','):''}" inputmode="decimal" placeholder="—" aria-label="Preço"></span>${x.mins?`<small>${x.mins} min</small>`:'<small></small>'}<button type="button" class="ob-x" data-x="${i}" aria-label="Tirar">×</button></div>`).join('')||'<p class="hint">Nenhum item. Adicione o que você vende.</p>';
+   const draw=()=>{box.innerHTML=its.map((x,i)=>`<div class="ds-it2"><div class="ds-it"><input data-n="${i}" value="${esc(x.name)}" maxlength="80" aria-label="Item">${x.mode==='consulta'?'<span class="ds-pr ds-sc">sob consulta</span>':`<span class="ds-pr">${x.mode==='apartir'?'<em>a partir de</em>':''}<i>R$</i><input data-p="${i}" value="${x.price!=null?String(x.price).replace('.',','):''}" inputmode="decimal" placeholder="—" aria-label="Preço"></span>`}${x.mins?`<small>${x.mins} min</small>`:'<small></small>'}<button type="button" class="ob-x" data-x="${i}" aria-label="Tirar">×</button></div>
+     <div class="pz-seg sm">${[['fixo','Preço fixo'],['apartir','A partir de'],['consulta','Sob consulta']].map(m=>`<button type="button" class="${x.mode===m[0]?'on':''}" data-md="${i},${m[0]}">${m[1]}</button>`).join('')}</div></div>`).join('')||'<p class="hint">Nenhum item. Adicione o que você vende.</p>';
+    box.querySelectorAll('[data-md]').forEach(e=>e.onclick=()=>{const [i,m]=e.dataset.md.split(',');its[+i].mode=m;draw()});
     box.querySelectorAll('[data-n]').forEach(e=>e.oninput=()=>its[+e.dataset.n].name=e.value);
     box.querySelectorAll('[data-p]').forEach(e=>e.oninput=()=>{e.value=e.value.replace(/[^\d.,]/g,'');const n=Number(e.value.replace(/\./g,'').replace(',','.'));its[+e.dataset.p].price=e.value&&isFinite(n)?n:null});
     box.querySelectorAll('[data-x]').forEach(e=>e.onclick=()=>{its.splice(+e.dataset.x,1);draw()})};draw();
-   $('#dsAdd').onclick=()=>{its.push({name:'',price:null,from:false,mins:null});draw();box.querySelector(`[data-n="${its.length-1}"]`).focus()};
-   $('#dsBk').onclick=()=>{o.remove();write()};
+   $('#dsAdd').onclick=()=>{its.push({name:'',price:null,mode:'fixo',mins:null});draw();box.querySelector(`[data-n="${its.length-1}"]`).focus()};
+   $('#dsBk').onclick=()=>{o.remove();back?back():tqView(5)};
    $('#dsSv').onclick=async()=>{const b=$('#dsSv'),v=its.filter(x=>x.name.trim());if(!v.length&&!$('#dsA').value.trim())return $('#dsE2').textContent='Escreva pelo menos o que é o negócio ou um item.';
      b.disabled=true;b.textContent='Salvando…';
-     try{await api('/ai/describe/save',{method:'POST',body:{about:$('#dsA').value,where:$('#dsW')?$('#dsW').value:'',payment:$('#dsP').value,hours_grid:r.hours_grid,items:v.map(x=>({name:x.name.trim(),price:x.price,mins:x.mins,from:!!x.from}))}});
-       DS.text='';DS.url='';FR.seg=null;o.remove();toast('Pronto! A Nanda já sabe. Teste na conversa ao lado.');await suLoad(true);if(VIEW==='inicio')VIEWS.inicio()}
-     catch(e){$('#dsE2').textContent=e.message;b.disabled=false;b.textContent='Está certo, salvar'}}};
-  write()}
+     const bad=v.find(x=>x.mode!=='consulta'&&(x.price==null||x.price===''));if(bad){b.disabled=false;b.textContent='Está certo, salvar';return $('#dsE2').textContent=`Falta o preço de ${bad.name} (ou escolha "Sob consulta").`}
+     try{await api('/ai/describe/save',{method:'POST',body:{about:$('#dsA').value,where:$('#dsW')?$('#dsW').value:'',payment:$('#dsP').value,hours_grid:r.hours_grid,rules:r.rules||[],notes:r.notes||[],
+         items:v.map(x=>({name:x.name.trim(),price:x.mode==='consulta'?null:x.price,mins:x.mins,from:x.mode==='apartir',consult:x.mode==='consulta'}))}});
+       DS.text='';DS.url='';FR.seg=null;delete TQ.seg;o.remove();toast('Pronto! A Nanda já sabe. Teste a conversa.');await suLoad(true);go('inicio')}
+     catch(e){$('#dsE2').textContent=e.message;b.disabled=false;b.textContent='Está certo, salvar'}}}}
 /* Início da primeira entrada: ver a Nanda funcionando antes de configurar + os 5 passos essenciais */
 const FR={hist:null,busy:false,seg:null};
 // primeira troca da conversa de exemplo, com os mesmos preços de exemplo que a Nanda usa no teste
@@ -8600,7 +8773,7 @@ async function homeFirst(d){
   const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3);
   const I=p=>svg(p),ST={sobre:'Contar sobre o negócio',precos:'Ensinar seus preços',whatsapp:'Conectar o WhatsApp',time:'Convidar o time',ativar:'Ativar os 14 dias grátis'};
   const nx=d.core.find(x=>!x.done);
-  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':(cur&&(x.key==='sobre'||x.key==='precos')?'Escreva uma frase e a Nanda organiza · 2 min':x.mins+' min'+(x.can_skip?' · opcional':''))}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
+  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':(cur&&(x.key==='sobre'||x.key==='precos')?'Toque nas opções do seu ramo · 2 min':x.mins+' min'+(x.can_skip?' · opcional':''))}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
     ${x.done?'<span></span>':cur?`<span class="fr-ac"><button class="btn sm p" ${x.key==='sobre'||x.key==='precos'?'data-desc':'data-do'}="${x.key}">${esc(x.key==='sobre'||x.key==='precos'?'Começar':x.cta)}</button>${x.can_skip?`<button class="lnk" data-sk="${x.key}">${esc(x.skip_label)}</button>`:''}</span>`:`<button class="fr-go" data-do="${x.key}" aria-label="${esc(x.title)}">›</button>`}</div>`};
   $('#page').innerHTML=`<div class="fr">
    <div class="fr-hd"><div><h1>Oi, ${first}! 👋</h1><p>${taught?`Teste a ${nanda} com o que você ensinou, como se fosse ${aNoun}.`:`Antes de configurar, veja a ${nanda} atendendo ${aNoun} da ${esc(c.name)}.`}</p></div><button class="lnk fr-skip" id="frHide">Já conheço, ir para o painel</button></div>
@@ -8629,7 +8802,7 @@ async function homeFirst(d){
   $('#frF').onsubmit=e=>{e.preventDefault();send(inp.value)};
   document.querySelectorAll('.fr-sug button').forEach(b=>b.onclick=()=>send(b.textContent));
   document.querySelectorAll('.fr [data-do]').forEach(b=>b.onclick=()=>suDo(d.core.find(x=>x.key===b.dataset.do)));
-  document.querySelectorAll('.fr [data-desc]').forEach(b=>b.onclick=()=>descModal(d.core.find(x=>x.key===b.dataset.desc)));
+  document.querySelectorAll('.fr [data-desc]').forEach(b=>b.onclick=()=>{SU.ai=ai;tqView(1)});
   document.querySelectorAll('.fr [data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));
   document.querySelectorAll('.fr [data-to]').forEach(b=>b.onclick=()=>{HP.art=null;go(b.dataset.to)});
   $('#frAll').onclick=()=>suPanel();

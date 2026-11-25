@@ -107,6 +107,7 @@ class SaveItem(BaseModel):
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
     mins: Optional[int] = Field(default=None, ge=5, le=600)
     from_: bool = Field(default=False, alias='from')
+    consult: bool = False
 
 class SaveIn(BaseModel):
     about: str = Field(default='', max_length=300)
@@ -114,6 +115,8 @@ class SaveIn(BaseModel):
     items: List[SaveItem] = Field(default_factory=list, max_length=20)
     hours_grid: List[dict] = Field(default_factory=list, max_length=7)
     payment: str = Field(default='', max_length=300)
+    rules: List[str] = Field(default_factory=list, max_length=20)  # regras tocadas (tolerância, sinal...)
+    notes: List[str] = Field(default_factory=list, max_length=10)  # detalhes curtos (almoço, estacionamento, desconto no Pix)
 
 def hours_text(grid):
     names = ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo']
@@ -130,14 +133,20 @@ async def save(body: SaveIn, request: Request, user=Depends(managers)):
     """Salva o que o dono conferiu: itens no Catálogo, horário e endereço no 'sobre', pagamento e as condições de preço no que a Nanda sabe."""
     cid = user['company_id']
     grid = normalize({'horarios': [{'dias': g.get('days'), 'de': g.get('from'), 'ate': g.get('to')} for g in body.hours_grid]})['hours_grid']
-    q = ai.QuickIn(items=[ai.QuickItem(name=i.name, price=i.price) for i in body.items], hours=hours_text(grid), where=body.where.strip(), hours_grid=grid or None)
+    q = ai.QuickIn(items=[ai.QuickItem(name=i.name, price=None if i.consult else i.price, price_from=i.from_ and not i.consult, consult=i.consult) for i in body.items], hours=hours_text(grid), where=body.where.strip(), hours_grid=grid or None)
     await ai.quick(q, request, user)
     s = await ai.settings_for(cid); upd = {}
     if body.about.strip():
         rest = [l for l in (s.get('about') or '').split('\n') if l.startswith(('Horário de atendimento:', 'Onde fica / como atende:'))]
         upd['about'] = '\n'.join([body.about.strip(), *rest])
-    notes = [f'{i.name}: a partir de {ai.brl(i.price)}' for i in body.items if i.from_ and i.price] + [f'{i.name} leva cerca de {i.mins} minutos' for i in body.items if i.mins]
+    notes = [f'{i.name} leva cerca de {i.mins} minutos' for i in body.items if i.mins]
+    notes += [f'{i.name}: valor sob consulta. Não passe preço: ofereça a avaliação ou chame o time.' for i in body.items if i.consult]
     if body.payment.strip(): notes.append(f'Formas de pagamento: {body.payment.strip()}')
+    notes += [n.strip()[:200] for n in body.notes if n.strip()]
+    rules = [r.strip()[:200] for r in body.rules if r.strip()]
+    if rules:
+        cur = s.get('rules') or ''
+        upd['rules'] = (cur.strip() + '\n' + '\n'.join(r for r in rules if r not in cur)).strip()
     if notes:
         k = s.get('knowledge') or ''
         upd['knowledge'] = (k.strip() + '\n' + '\n'.join(n for n in notes if n not in k)).strip()

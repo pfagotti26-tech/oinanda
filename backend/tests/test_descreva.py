@@ -25,7 +25,7 @@ def test_descreve_confere_e_salva(monkeypatch):
         c.post('/api/ai/describe/save', json=r)
         s = c.get('/api/ai/settings').json()
         assert s['about'].startswith('Clínica de estética em Moema') and 'Horário de atendimento: de segunda a sexta, das 09:00 às 19:00; sábado, das 09:00 às 13:00' in s['about']
-        assert 'Botox: a partir de R$ 900' in s['knowledge'] and 'Limpeza de pele leva cerca de 60 minutos' in s['knowledge'] and 'Pix e cartão em até 3x' in s['knowledge']
+        assert 'Limpeza de pele' in s['knowledge'] and 'Limpeza de pele leva cerca de 60 minutos' in s['knowledge'] and 'Pix e cartão em até 3x' in s['knowledge']
         assert {x['name']: x['price'] for x in s['catalog']}['Limpeza de pele'] == 180
         core = {x['key']: x['done'] for x in c.get('/api/setup').json()['core']}
         assert core['sobre'] and core['precos']
@@ -36,3 +36,19 @@ def test_site_so_endereco_publico():
         for u in ['http://127.0.0.1:8000', 'http://localhost/x', 'http://169.254.169.254/latest', 'ftp://x.com']:
             assert c.post('/api/ai/describe', json={'url': u}).status_code == 400
         r = c.post('/api/ai/describe', json={'url': 'instagram.com/clinicabella'}); assert r.status_code == 400 and 'bio' in r.json()['detail']
+
+def test_monte_com_toques_preco_fixo_a_partir_e_sob_consulta(monkeypatch):
+    seen = []
+    async def fake_llm(system, msgs, **k):
+        seen.append(system); return '{"reply":"ok"}', {}
+    monkeypatch.setattr(ai, 'llm', fake_llm)
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Lívia', 'email': 'ds3@x.com', 'password': 'senha-forte-1', 'company': 'Bella', 'segment': 'clinica'})
+        c.post('/api/ai/describe/save', json={'about': 'Clínica Bella, clínica de estética em Moema.', 'where': 'Rua Gaivota, 1200, Moema', 'payment': 'Pix, crédito e débito · até 3x no cartão',
+            'items': [{'name': 'Limpeza de pele', 'price': 180, 'mins': 60}, {'name': 'Drenagem', 'price': 150, 'from': True}, {'name': 'Botox', 'price': 900, 'consult': True}],
+            'hours_grid': [{'days': [0, 1, 2, 3, 4], 'from': '09:00', 'to': '19:00'}], 'rules': ['Tolerância de 15 minutos de atraso'], 'notes': ['Tem estacionamento']})
+        s = c.get('/api/ai/settings').json(); cat = {x['name']: x for x in s['catalog']}
+        assert cat['Botox']['price'] is None and cat['Drenagem']['price_from'] and not cat['Limpeza de pele']['price_from']
+        assert 'Tolerância de 15 minutos' in s['rules'] and 'Tem estacionamento' in s['knowledge'] and 'Botox: valor sob consulta' in s['knowledge']
+        c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'oi'}]})
+        assert '- Drenagem: a partir de R$ 150' in seen[-1] and '- Limpeza de pele: R$ 180' in seen[-1] and '- Botox: preço sob consulta' in seen[-1]
