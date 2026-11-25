@@ -2679,6 +2679,21 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .fr-ti{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--ink);color:#fff}.fr-ti svg{width:20px;height:20px}.fr-tile.g .fr-ti{background:#25D366}
 .fr-tile>span:nth-child(2){flex:1;display:grid;gap:2px}.fr-tile b{font-size:15px}.fr-tile small{color:var(--ink2);font-size:13.5px}.fr-tile>i{font-style:normal;font-size:22px;color:var(--ink3)}
 @media(max-width:860px){.fr-grid,.fr-row{grid-template-columns:minmax(0,1fr)}.banner.su-tb{padding:10px 16px;flex-wrap:wrap}.su-tb .tb-pb,.su-tb .tb-pl{display:none}.su-tb .btn{width:100%;justify-content:center}.fr-hd h1{font-size:23px}}
+/* ensinar numa frase */
+.modal.ds{max-width:640px;display:grid;gap:12px}.ds-hh{display:flex;gap:12px;align-items:center}.ds-hh h2{font-size:20px;letter-spacing:-.02em}.ds-hh small{color:var(--ink3);font-size:13px}.ds-hh .x{margin-left:auto}
+.ds-ic{width:40px;height:40px;border-radius:12px;background:var(--tint);color:var(--c2);display:grid;place-items:center;font-size:19px;flex:none}.ds-ic.ok{background:var(--oksoft);color:var(--ok);font-weight:800}
+.ds textarea{width:100%;min-height:130px;border:1.5px solid #E3D9D0;border-radius:14px;padding:13px;font:inherit;font-size:15px;line-height:1.55;resize:vertical}.ds textarea:focus{border-color:var(--c);box-shadow:0 0 0 4px var(--tint);outline:0}
+.ds-cnt{text-align:right;font-size:12px;color:var(--ink3);margin-top:-6px}
+.ds-chips{display:flex;flex-wrap:wrap;gap:6px}.ds-chips button{border:1px solid #EAD8CF;background:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer}
+.ds-or{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);flex-wrap:wrap}.ds-or input{flex:1;min-width:180px;border:1.5px solid #E3D9D0;border-radius:10px;padding:9px 11px;font:inherit;font-size:14px}
+.ds-ft{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}.ds-ft .lnk{font-size:13.5px;color:var(--ink3)}
+.ds-b{border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:8px}.ds-b h4{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin:0}
+.ds-b>input{border:1.5px solid #E3D9D0;border-radius:10px;padding:9px 11px;font:inherit;font-size:14.5px;width:100%}.ds-b p{font-size:14.5px;margin:0}
+.ds-it{display:grid;grid-template-columns:minmax(0,1fr) auto 52px 28px;gap:8px;align-items:center}.ds-it>input{border:1.5px solid #E3D9D0;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;min-width:0}
+.ds-pr{display:flex;align-items:center;gap:4px;border:1.5px solid #E3D9D0;border-radius:10px;padding:0 8px}.ds-pr em{font-style:normal;font-size:11.5px;color:var(--ink3);white-space:nowrap}.ds-pr i{font-style:normal;font-size:13px;color:var(--ink3)}
+.ds-pr input{border:0;outline:0;width:84px;padding:8px 0;font:inherit;font-size:14px}.ds-it small{font-size:12px;color:var(--ink3);text-align:right}
+.ds-w{background:#FFF7E0;color:#6B5200;border-radius:12px;padding:10px 12px;font-size:13.5px}
+@media(max-width:560px){.ds-it{grid-template-columns:minmax(0,1fr) 28px;padding-bottom:10px;border-bottom:1px dashed var(--line)}.ds-it>input{grid-column:1/-1}.ds-it .ds-pr{grid-column:1}.ds-it small{display:none}.ds-pr input{width:100%}}
 .su-pill[hidden]{display:none}.su-pill{display:flex;align-items:center;gap:9px;width:100%;margin:-4px 0 12px;background:rgba(232,96,63,.12);border:1px solid rgba(232,96,63,.25);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;text-align:left;color:#fff}.su-pill:hover{background:rgba(232,96,63,.2)}.su-pill span{flex:1;display:flex;flex-direction:column;min-width:0}.su-pill b{font-size:12.5px;color:#fff}.su-pill small{font-size:11px;color:#C9D2DB}.su-pill em{font-style:normal;font-size:12px;font-weight:800;color:#FFB59E}
 .app.mini .su-pill span,.app.mini .su-pill em{display:none}
 .su-bar{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:16px;padding:10px 12px 10px 14px;margin-bottom:16px}.su-bi{color:#fff;display:grid}.su-bt{flex:1;display:flex;flex-direction:column;min-width:0}.su-bt small{font-size:11.5px;color:#AEB9C4}.su-bt b{font-size:14px}.su-bar .btn:not(.p){background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}.su-bar .sm-x{color:#AEB9C4}
@@ -8521,6 +8536,48 @@ function suTop(){const b=$('#trialBn'),d=SU.d;if(!b||!d||!d.core||!ME||!['owner'
   if(!b.dataset.orig)b.dataset.orig=b.innerHTML;b.classList.add('su-tb');const dl=ME.trial_days_left,nx=d.core.find(x=>!x.done);
   b.innerHTML=`<span class="tb-ic">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}</span><span class="tb-tx"><b>Teste grátis: ${dl} ${dl===1?'dia':'dias'}</b><small>Configuração ${d.core_pct}% · ${d.core_done} de ${d.core_total} passos</small></span><span class="tb-pb"><i style="width:${d.core_pct}%"></i></span><span class="tb-sp"></span>${ME.user.role==='owner'?'<button class="lnk tb-pl" data-sub>Ver planos</button>':''}${nx?`<button class="btn sm p" id="tbGo">Continuar configuração ${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button>`:''}`;
   b.querySelectorAll('[data-sub]').forEach(x=>x.onclick=()=>go('assinatura'));if($('#tbGo'))$('#tbGo').onclick=()=>VIEW==='inicio'?suDo(nx):go('inicio')}
+/* ensinar numa frase: a IA organiza, o dono confere e só então salva */
+const DS={text:'',url:''};
+function descModal(step){
+  const seg=ME.company.segment||'outro',ex=(FR_EX[seg]||FR_EX.outro);
+  const PH={clinica:'Ex.: Clínica de estética em Moema. Limpeza de pele R$ 180, drenagem R$ 150 e botox a partir de R$ 900. Atendo de segunda a sábado, das 9h às 19h, sábado até 13h. Aceito Pix e cartão em até 3x.',
+   salao:'Ex.: Salão no Centro. Corte R$ 50, escova R$ 60, progressiva a partir de R$ 250. Terça a sábado, das 9h às 19h. Pix e cartão.',
+   restaurante:'Ex.: Pizzaria no Jardim América, só delivery. Pizza grande R$ 69, broto R$ 39, entrega R$ 8. Todos os dias das 18h às 23h. Pix ou cartão na entrega.',
+   imobiliaria:'Ex.: Imobiliária em Campinas, venda e aluguel. Atendo de segunda a sexta, das 9h às 18h, e sábado até 12h. Visitas com hora marcada.',
+   loja:'Ex.: Loja de roupas femininas, vendo pelo Instagram e envio para todo o Brasil. Vestidos de R$ 159 a R$ 289, frete R$ 25. Pix com 5% de desconto ou cartão em até 3x.'};
+  const ph=PH[seg]||'Ex.: o que você faz, onde fica, os principais serviços com preço, os dias e horários de atendimento e as formas de pagamento.';
+  const write=()=>{const o=overlay(`<div class="modal ds"><div class="ds-hh"><span class="ds-ic">✨</span><div><h2>Conte em poucas palavras</h2><small>A Nanda organiza tudo para você conferir antes de salvar</small></div><button class="x" aria-label="Fechar">×</button></div>
+    <textarea id="dsT" maxlength="1500" placeholder="${esc(ph)}">${esc(DS.text)}</textarea><div class="ds-cnt"><span id="dsC">${DS.text.length}</span> / 1500</div>
+    <div class="ds-chips">${['Endereço','Formas de pagamento','Como agendar','O que vocês não fazem'].map(x=>`<button type="button" data-add="${x}">+ ${x}</button>`).join('')}</div>
+    <label class="ds-or">ou traga do seu site <input id="dsU" value="${esc(DS.url)}" placeholder="www.seunegocio.com.br" inputmode="url"></label>
+    <div class="ds-ft"><button type="button" class="lnk" id="dsMan">Prefiro preencher campo a campo</button><button class="btn p" id="dsGo">✨ Organizar para mim</button></div><p class="err" id="dsE"></p></div>`);
+   const t=$('#dsT');t.oninput=()=>{DS.text=t.value;$('#dsC').textContent=t.value.length};$('#dsU').oninput=e=>DS.url=e.target.value;
+   o.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{t.value=(t.value.trim()?t.value.trim()+' ':'')+b.dataset.add+': ';DS.text=t.value;t.focus();t.setSelectionRange(t.value.length,t.value.length)});
+   $('#dsMan').onclick=()=>{o.remove();suDo(step)};
+   $('#dsGo').onclick=async()=>{const b=$('#dsGo');$('#dsE').textContent='';if(DS.text.trim().length<15&&!DS.url.trim())return $('#dsE').textContent='Escreva um pouco mais: o que você faz, os preços e quando atende.';
+     b.disabled=true;b.textContent='Organizando…';try{const r=await api('/ai/describe',{method:'POST',body:{text:DS.text,url:DS.url}});o.remove();check(r)}catch(e){$('#dsE').textContent=/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message;b.disabled=false;b.textContent='✨ Organizar para mim'}}};
+  const check=r=>{const hrs=r.hours_grid.map(g=>`${obCap(obHrsParts([g]).join(''))}`).join(' · ');
+   const o=overlay(`<div class="modal ds"><div class="ds-hh"><span class="ds-ic ok">✓</span><div><h2>Confira o que a Nanda entendeu</h2><small>Ajuste o que precisar. Nada vai para os clientes antes de você ligar a Nanda.</small></div><button class="x" aria-label="Fechar">×</button></div>
+    <div class="ds-b"><h4>Sobre o negócio</h4><input id="dsA" value="${esc(r.about)}" maxlength="300" placeholder="O que é o negócio e onde fica"></div>
+    <div class="ds-b"><h4>Serviços e preços</h4><div id="dsI"></div><button type="button" class="ob-add" id="dsAdd">+ Adicionar item</button></div>
+    <div class="ds-b"><h4>Horários</h4><p>${hrs?esc(hrs):'<span class="hint">Não encontrei os horários. Dá para marcar depois, na Nanda.</span>'}</p></div>
+    ${r.where?`<div class="ds-b"><h4>Onde fica ou como atende</h4><input id="dsW" value="${esc(r.where)}" maxlength="300"></div>`:''}
+    <div class="ds-b"><h4>Pagamento</h4><input id="dsP" value="${esc(r.payment)}" maxlength="300" placeholder="Ex.: Pix e cartão em até 3x"></div>
+    ${r.missing.length?`<div class="ds-w">⚠️ Faltou: ${esc(r.missing.join('; '))}. Se um cliente perguntar, a Nanda chama o seu time.</div>`:''}
+    <div class="ds-ft"><button type="button" class="lnk" id="dsBk">Voltar e reescrever</button><button class="btn p" id="dsSv">Está certo, salvar</button></div><p class="err" id="dsE2"></p></div>`);
+   const its=r.items.map(x=>({...x}));const box=$('#dsI');
+   const draw=()=>{box.innerHTML=its.map((x,i)=>`<div class="ds-it"><input data-n="${i}" value="${esc(x.name)}" maxlength="80" aria-label="Item"><span class="ds-pr">${x.from?'<em>a partir de</em>':''}<i>R$</i><input data-p="${i}" value="${x.price!=null?String(x.price).replace('.',','):''}" inputmode="decimal" placeholder="—" aria-label="Preço"></span>${x.mins?`<small>${x.mins} min</small>`:'<small></small>'}<button type="button" class="ob-x" data-x="${i}" aria-label="Tirar">×</button></div>`).join('')||'<p class="hint">Nenhum item. Adicione o que você vende.</p>';
+    box.querySelectorAll('[data-n]').forEach(e=>e.oninput=()=>its[+e.dataset.n].name=e.value);
+    box.querySelectorAll('[data-p]').forEach(e=>e.oninput=()=>{e.value=e.value.replace(/[^\d.,]/g,'');const n=Number(e.value.replace(/\./g,'').replace(',','.'));its[+e.dataset.p].price=e.value&&isFinite(n)?n:null});
+    box.querySelectorAll('[data-x]').forEach(e=>e.onclick=()=>{its.splice(+e.dataset.x,1);draw()})};draw();
+   $('#dsAdd').onclick=()=>{its.push({name:'',price:null,from:false,mins:null});draw();box.querySelector(`[data-n="${its.length-1}"]`).focus()};
+   $('#dsBk').onclick=()=>{o.remove();write()};
+   $('#dsSv').onclick=async()=>{const b=$('#dsSv'),v=its.filter(x=>x.name.trim());if(!v.length&&!$('#dsA').value.trim())return $('#dsE2').textContent='Escreva pelo menos o que é o negócio ou um item.';
+     b.disabled=true;b.textContent='Salvando…';
+     try{await api('/ai/describe/save',{method:'POST',body:{about:$('#dsA').value,where:$('#dsW')?$('#dsW').value:'',payment:$('#dsP').value,hours_grid:r.hours_grid,items:v.map(x=>({name:x.name.trim(),price:x.price,mins:x.mins,from:!!x.from}))}});
+       DS.text='';DS.url='';FR.seg=null;o.remove();toast('Pronto! A Nanda já sabe. Teste na conversa ao lado.');await suLoad(true);if(VIEW==='inicio')VIEWS.inicio()}
+     catch(e){$('#dsE2').textContent=e.message;b.disabled=false;b.textContent='Está certo, salvar'}}};
+  write()}
 /* Início da primeira entrada: ver a Nanda funcionando antes de configurar + os 5 passos essenciais */
 const FR={hist:null,busy:false,seg:null};
 // primeira troca da conversa de exemplo, com os mesmos preços de exemplo que a Nanda usa no teste
@@ -8543,8 +8600,8 @@ async function homeFirst(d){
   const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3);
   const I=p=>svg(p),ST={sobre:'Contar sobre o negócio',precos:'Ensinar seus preços',whatsapp:'Conectar o WhatsApp',time:'Convidar o time',ativar:'Ativar os 14 dias grátis'};
   const nx=d.core.find(x=>!x.done);
-  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':x.mins+' min'+(x.can_skip?' · opcional':'')}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
-    ${x.done?'<span></span>':cur?`<span class="fr-ac"><button class="btn sm p" data-do="${x.key}">${esc(x.key==='sobre'||x.key==='precos'?'Começar':x.cta)}</button>${x.can_skip?`<button class="lnk" data-sk="${x.key}">${esc(x.skip_label)}</button>`:''}</span>`:`<button class="fr-go" data-do="${x.key}" aria-label="${esc(x.title)}">›</button>`}</div>`};
+  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':(cur&&(x.key==='sobre'||x.key==='precos')?'Escreva uma frase e a Nanda organiza · 2 min':x.mins+' min'+(x.can_skip?' · opcional':''))}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
+    ${x.done?'<span></span>':cur?`<span class="fr-ac"><button class="btn sm p" ${x.key==='sobre'||x.key==='precos'?'data-desc':'data-do'}="${x.key}">${esc(x.key==='sobre'||x.key==='precos'?'Começar':x.cta)}</button>${x.can_skip?`<button class="lnk" data-sk="${x.key}">${esc(x.skip_label)}</button>`:''}</span>`:`<button class="fr-go" data-do="${x.key}" aria-label="${esc(x.title)}">›</button>`}</div>`};
   $('#page').innerHTML=`<div class="fr">
    <div class="fr-hd"><div><h1>Oi, ${first}! 👋</h1><p>${taught?`Teste a ${nanda} com o que você ensinou, como se fosse ${aNoun}.`:`Antes de configurar, veja a ${nanda} atendendo ${aNoun} da ${esc(c.name)}.`}</p></div><button class="lnk fr-skip" id="frHide">Já conheço, ir para o painel</button></div>
    <div class="fr-grid">
@@ -8572,6 +8629,7 @@ async function homeFirst(d){
   $('#frF').onsubmit=e=>{e.preventDefault();send(inp.value)};
   document.querySelectorAll('.fr-sug button').forEach(b=>b.onclick=()=>send(b.textContent));
   document.querySelectorAll('.fr [data-do]').forEach(b=>b.onclick=()=>suDo(d.core.find(x=>x.key===b.dataset.do)));
+  document.querySelectorAll('.fr [data-desc]').forEach(b=>b.onclick=()=>descModal(d.core.find(x=>x.key===b.dataset.desc)));
   document.querySelectorAll('.fr [data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));
   document.querySelectorAll('.fr [data-to]').forEach(b=>b.onclick=()=>{HP.art=null;go(b.dataset.to)});
   $('#frAll').onclick=()=>suPanel();

@@ -159,6 +159,8 @@ from sitelead import router as sitelead_router
 app.include_router(sitelead_router, prefix="/api")
 from owneralerts import router as owneralerts_router
 app.include_router(owneralerts_router, prefix="/api")
+from describe import router as describe_router
+app.include_router(describe_router, prefix="/api")
 from closing import router as closing_router
 app.include_router(closing_router, prefix="/api")
 app.include_router(promos_router, prefix="/api")
