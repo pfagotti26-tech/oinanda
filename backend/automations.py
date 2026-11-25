@@ -570,6 +570,10 @@ async def loop():
             await notices_tick()
         except Exception: log.exception('falha nos avisos automáticos')
         try:
+            from owneralerts import tick as owner_tick
+            await owner_tick()
+        except Exception: log.exception('falha nos avisos para o admin')
+        try:
             from instagram import refresh_tokens
             await refresh_tokens()
         except Exception: log.exception('falha ao renovar o acesso do Instagram')

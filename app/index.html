@@ -2375,6 +2375,30 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ts-cf{position:absolute;top:-12px;left:var(--x);width:8px;height:12px;background:var(--c);border-radius:2px;animation:trFall 1.8s var(--d) ease-in forwards}@keyframes trFall{to{transform:translateY(200px) rotate(400deg);opacity:0}}
 @media(max-width:860px){.tr-card{left:16px!important;right:16px;top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;border-radius:20px}.tr-card.pt::before{display:none}.tr-sc{height:150px}.tr-in h3{font-size:19px}.tr-pill{right:16px;left:16px;bottom:calc(80px + env(safe-area-inset-bottom));justify-content:space-between}}
 @media(prefers-reduced-motion:reduce){.tsc *,.tr-card,.tr-hole{animation:none!important;transition:none!important}}
+
+/* admin: jornada e avisos para mim */
+.jr-k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.jr-k>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid}
+.jr-k b{font-size:22px;letter-spacing:-.02em}.jr-k span{font-size:12.5px;color:var(--ink3)}
+.jr-b{display:grid;grid-template-columns:repeat(6,minmax(205px,1fr));gap:10px;overflow-x:auto;padding-bottom:10px}
+.jr-c{background:#F6F2EE;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0;border-top:4px solid var(--t)}
+.jr-c header{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:2px 4px}.jr-c header b{font-size:14px}.jr-c header em{font-style:normal;font-weight:800;font-size:13px;background:#fff;border-radius:99px;padding:1px 9px;color:var(--t)}
+.jr-c header small{grid-column:1/-1;font-size:11.5px;color:var(--ink3);line-height:1.35}
+.jr-l{display:grid;gap:7px;max-height:62vh;overflow-y:auto}.jr-i{background:#fff;border-radius:12px;padding:9px 11px;display:grid;gap:3px;cursor:pointer;border:1px solid transparent;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.jr-i:hover,.jr-i:focus{border-color:var(--t);outline:0}.jr-n{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.jr-n b{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.jr-n small{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.jr-s{font-size:12px;color:var(--ink3)}.jr-h{margin:2px 0 0;font-size:12.5px;color:var(--ink2);background:#FAF6F2;border-radius:8px;padding:4px 8px}
+.jr-w{justify-self:start;display:inline-flex;align-items:center;gap:5px;margin-top:3px;font-size:12px;font-weight:700;color:#128C7E;text-decoration:none}.jr-w svg{width:13px;height:13px}
+.jr-e{margin:4px;font-size:12.5px;color:var(--ink3);text-align:center}
+.alm{max-width:860px} .alm .card{margin-top:14px} .alm h3{margin:0 0 4px;font-size:16px}
+.al-to{display:grid;gap:10px} .al-em{display:flex;flex-wrap:wrap;gap:8px;align-items:center} .al-em span{display:inline-flex;align-items:center;gap:6px;background:#F3EEE9;border-radius:99px;padding:6px 8px 6px 12px;font-size:13.5px;font-weight:600}
+.al-em span button{border:0;background:#fff;border-radius:50%;width:20px;height:20px;cursor:pointer;color:var(--ink2)} .al-em form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;flex:1 1 260px;max-width:420px;min-width:0} .al-em form input{flex:1 1 0;width:auto;min-width:0} .al-em form .btn{flex:none} .al-em input{border:1.5px solid #DCD2C9;border-radius:10px;padding:7px 10px;font:inherit;font-size:13.5px;min-width:0}
+.al-to>.btn{justify-self:start}
+.al-hd,.al-r{display:grid;grid-template-columns:minmax(0,1fr) 70px 80px;gap:10px;align-items:center} .al-hd{font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 2px}
+.al-hd span:not(:first-child),.al-r>*:not(:first-child){justify-self:center} .al-r{padding:10px 0;border-top:1px solid var(--line)} .al-r b{font-size:14px;display:block} .al-r small{font-size:12.5px;color:var(--ink3)}
+.al-soon{white-space:nowrap;font-size:11px;font-weight:700;color:var(--ink3);background:#F3EEE9;border-radius:99px;padding:3px 8px}
+.al-log{display:grid} .al-log>div{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px;align-items:center}
+.al-log span{color:var(--ink3);font-size:12px} .al-log b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .al-log em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--ink3)} .al-log em.ok{color:#1F7A45}
+@media(max-width:860px){.jr-k{grid-template-columns:repeat(2,minmax(0,1fr))}.jr-b{grid-template-columns:repeat(6,minmax(250px,82vw))} .al-hd,.al-r{grid-template-columns:minmax(0,1fr) 52px 70px} .al-log>div{grid-template-columns:1fr auto} .al-log span{grid-column:1/-1}}
+.jr-hd .btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;margin-left:auto}.jr-hd .btn svg{width:16px;height:16px}.jr-hd>div{flex:1;min-width:260px}
 .nz-ls{background:#F3FAF5;border:1px solid #CDE8D6;border-radius:16px;padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.nz-gi.ok{background:#DDF2E4;color:#1F7A45}
 .nz-lq{background:#fff;border:1px solid #E1EEE5;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
 .nz-lq small{grid-column:1/-1;color:var(--ink3);font-size:12px}.nz-lq p{margin:0;font-size:13.5px;line-height:1.45}.nz-lq p i{color:var(--ink3)}.nz-lqa{display:flex;gap:12px;align-self:center}.nz-lqe{grid-column:1/-1;display:grid;gap:8px;margin-top:4px}
@@ -3546,6 +3570,55 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function tourAuto(){if(!ME||TOUR.on||ME.user.impersonated_by||ME.user.is_admin&&!ME.company)return;const st=(ME.access||{}).state;if(st==='readonly')return;
   if(!ME.user.tour){if(VIEW==='inicio')tourStart(0)}else tourPill()}
 
+
+// ---------- Admin › Jornada dos clientes: de lead a pagante, quem está em cada etapa e o que fazer ----------
+async function adJornada(){
+  const pg=$('#page');pg.innerHTML='<div class="card"><p class="hint">Carregando a jornada…</p></div>';
+  const d=await api('/admin/journey'),k=d.kpi,pct=(a,b)=>b?Math.round(100*a/b)+'%':'—';
+  const ago=n=>n==null?'':n===0?'hoje':n===1?'há 1 dia':`há ${n} dias`;
+  const tone={lead:'#5B7CE6',testando:'#D99A00',ativou:'#14946F',pagante:'#1F7A45',risco:'#D9412F',saiu:'#8A8F98'};
+  const help={lead:'Chamaram o Oi Nanda ou criaram a conta',testando:'No teste, sem WhatsApp conectado',ativou:'No teste, com WhatsApp conectado',pagante:'Assinatura em dia',risco:'Pagamento recusado, cancelou ou teste acabando sem WhatsApp',saiu:'Teste acabou ou parou de pagar'};
+  pg.innerHTML=`<div class="jr">
+   <div class="fhd jr-hd"><div><h1>Jornada dos clientes</h1><p class="sub">Do primeiro contato ao cliente pagante. Cada cartão mostra há quanto tempo está na etapa e o próximo passo.</p></div>
+    <button type="button" class="btn" id="jrAl">${svg('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>')}Avisos para mim</button></div>
+   <div class="jr-k"><div><b>${obMoney(k.mrr).replace(',00','')}</b><span>faturamento mensal</span></div><div><b>${k.made30}</b><span>contas novas em 30 dias</span></div>
+    <div><b>${pct(k.act30,k.made30)}</b><span>conectaram o WhatsApp</span></div><div><b>${pct(k.pay30,k.made30)}</b><span>assinaram</span></div></div>
+   <div class="jr-b">${d.stages.map(st=>`<section class="jr-c" style="--t:${tone[st.key]}"><header><b>${st.name}</b><em>${st.total}</em><small>${help[st.key]}</small></header>
+     <div class="jr-l">${st.items.length?st.items.map(x=>`<article class="jr-i" ${x.contact?`data-cv="${x.id}"`:`data-co="${x.id}"`} tabindex="0">
+       <div class="jr-n"><b>${esc(x.name)}</b>${x.days!=null?`<small>${ago(x.days)}</small>`:''}</div><span class="jr-s">${esc(x.segment||'')}${x.mrr?' · '+obMoney(x.mrr).replace(',00','')+'/mês':''}</span>
+       ${x.hint?`<p class="jr-h">${esc(x.hint)}</p>`:''}${x.wa_link?`<a class="jr-w" href="${esc(x.wa_link)}" target="_blank" rel="noopener" data-stop>${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}WhatsApp</a>`:''}</article>`).join('')
+      :'<p class="jr-e">Ninguém aqui agora.</p>'}${st.total>st.items.length?`<p class="jr-e">e mais ${st.total-st.items.length}</p>`:''}</div></section>`).join('')}</div></div>`;
+  $('#jrAl').onclick=()=>go('a-alertas');
+  pg.querySelectorAll('[data-stop]').forEach(a=>a.onclick=e=>e.stopPropagation());
+  pg.querySelectorAll('[data-co]').forEach(x=>x.onclick=()=>{AD.open=x.dataset.co;go('a-clientes')});
+  pg.querySelectorAll('[data-cv]').forEach(x=>x.onclick=()=>{CV.open=x.dataset.cv;go('conversas')})}
+
+// ---------- Admin › Avisos para mim: o que chega no e-mail do admin, com liga e desliga ----------
+async function adAlertas(){
+  const pg=$('#page');let d=await api('/admin/alerts');
+  const draw=()=>{const groups=[...new Set(d.events.map(e=>e.group))];
+   pg.innerHTML=`<div class="alm">
+    <div class="fhd jr-hd"><div><h1>Avisos para mim</h1><p class="sub">O que chega no seu e-mail sobre a jornada dos clientes do Oi Nanda: leads, ativação, assinaturas e pagamentos.</p></div>
+     <button type="button" class="btn" id="alJr">Ver a jornada</button></div>
+    ${d.mail_ready?'':'<div class="nz-warn"><b>O envio de e-mail não está configurado no servidor.</b> Os avisos ficam registrados abaixo, mas não saem.</div>'}
+    <section class="card al-to"><div><h3>Quem recebe</h3><p class="hint">Até 5 e-mails. Todos recebem os mesmos avisos.</p></div>
+     <div class="al-em">${d.emails.map(e=>`<span>${esc(e)}${d.emails.length>1?`<button type="button" data-rm="${esc(e)}" aria-label="Tirar ${esc(e)}">×</button>`:''}</span>`).join('')}
+      ${d.emails.length<5?`<form id="alAdd"><input type="email" placeholder="Adicionar e-mail" aria-label="Adicionar e-mail"><button class="btn sm">Adicionar</button></form>`:''}</div>
+     <button type="button" class="btn sm" id="alTest">Enviar um e-mail de teste</button></section>
+    ${groups.map(g=>`<section class="card al-g"><h3>${g}</h3><div class="al-hd"><span></span><span>E-mail</span><span>WhatsApp</span></div>
+     ${d.events.filter(e=>e.group===g).map(e=>`<div class="al-r"><div><b>${e.name}</b><small>${e.when}${e.sent30?` · ${e.sent30} nos últimos 30 dias`:''}</small></div>
+      <label class="sw"><input type="checkbox" data-k="${e.key}" ${e.on?'checked':''} aria-label="E-mail: ${esc(e.name)}"><i></i></label>
+      <span class="al-soon" title="Liga quando o número novo do Oi Nanda estiver conectado">em breve</span></div>`).join('')}</section>`).join('')}
+    <section class="card"><h3>Últimos avisos enviados</h3>${d.log.length?`<div class="al-log">${d.log.map(l=>`<div><span>${dt(l.at)}</span><b>${esc(l.subject)}</b><em class="${l.ok?'ok':''}">${l.test?'teste':l.ok?'enviado':'não saiu'}</em></div>`).join('')}</div>`:'<p class="hint">Nenhum ainda. Eles aparecem aqui conforme os clientes avançam.</p>'}</section></div>`;
+   $('#alJr').onclick=()=>go('a-jornada');
+   pg.querySelectorAll('[data-k]').forEach(i=>i.onchange=async()=>{const off=d.events.filter(e=>e.key===i.dataset.k?!i.checked:!e.on).map(e=>e.key);
+     try{d=await api('/admin/alerts',{method:'PUT',body:{off}});toast(i.checked?'Ligado.':'Desligado: esse aviso não chega mais.')}catch(x){toast(x.message);i.checked=!i.checked}});
+   pg.querySelectorAll('[data-rm]').forEach(b=>b.onclick=async()=>{try{d=await api('/admin/alerts',{method:'PUT',body:{emails:d.emails.filter(e=>e!==b.dataset.rm)}});draw()}catch(x){toast(x.message)}});
+   if($('#alAdd'))$('#alAdd').onsubmit=async ev=>{ev.preventDefault();const v=ev.target.querySelector('input').value.trim();if(!v)return;
+     try{d=await api('/admin/alerts',{method:'PUT',body:{emails:[...d.emails,v]}});draw();toast('E-mail adicionado.')}catch(x){toast(x.message)}};
+   $('#alTest').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{await api('/admin/alerts/test',{method:'POST'});d=await api('/admin/alerts');draw();toast('Teste enviado para '+d.emails.join(', ')+'.')}catch(x){toast(x.message);b.disabled=false}}};
+  draw()}
+
 async function comecarView(){
   history.replaceState(null,'','/comecar');document.title='Conheça a Nanda · Oi Nanda';
   const c=ME.company,seg=c.segment||'outro',[noun,nouns,aNoun]=obNoun(seg),ph=OB_PH[seg]||OB_PH.outro;
@@ -3726,7 +3799,7 @@ const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversa
   atividade:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   jornada:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
-  'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-financeiro':'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/>','a-avisos':'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2H4.500zM10 20h4"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
+  'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-jornada':'<path d="M3 5h18l-7 8v6l-4-2v-4z"/>','a-alertas':'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>','a-financeiro':'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/>','a-avisos':'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2H4.500zM10 20h4"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
 NI.ajuda='<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.8h.01"/>';
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
 const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','metas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
@@ -3782,7 +3855,7 @@ function gSearchInit(){
   q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(items.length-1,sel+1);draw()}else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(0,sel-1);draw()}else if(e.key==='Enter'){e.preventDefault();pick(sel)}else if(e.key==='Escape'){close();q.blur()}};
 }
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gQ')){e.preventDefault();const sd=document.querySelector('.side');if(innerWidth<=860){sd.classList.add('open')}if(document.querySelector('.app.mini')){document.querySelector('.app').classList.remove('mini')}$('#gQ').focus()}});
-const ADMIN_NAV=[['a-visao','Visão geral'],['a-financeiro','Financeiro'],['a-clientes','Clientes'],['a-avisos','Avisos aos clientes'],['a-atividade','Atividade geral'],['a-erros','Erros']];
+const ADMIN_NAV=[['a-visao','Visão geral'],['a-jornada','Jornada dos clientes'],['a-financeiro','Financeiro'],['a-clientes','Clientes'],['a-avisos','Avisos aos clientes'],['a-alertas','Avisos para mim'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
   const canManage=['owner','manager'].includes(u.role);
@@ -7815,6 +7888,8 @@ const VIEWS={
  },
  'avisos-conta':avisosConta,
  'a-visao':adVisao,
+ 'a-jornada':adJornada,
+ 'a-alertas':adAlertas,
  'a-financeiro':adFin,
  'a-clientes':()=>AD.open?adFicha():adClientes(),
  'a-avisos':adAvisos,
