@@ -3531,6 +3531,24 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 
 /* menu recolhido abre por cima ao passar o mouse */
 @media(min-width:861px){.app.pk:not(.cfx){grid-template-columns:76px 1fr}.app.pk:not(.cfx) .side{width:232px;z-index:45;box-shadow:18px 0 40px -18px rgba(23,33,43,.55)}}
+
+/* menu recolhido x aberto: mesma posição de tudo nos dois estados, só a largura anima (abre suave, sem tremer) */
+@media(min-width:861px){
+ .side{overflow:hidden;width:232px;transition:width .26s cubic-bezier(.22,.8,.24,1),box-shadow .26s ease}
+ .app.mini .side{width:76px;padding:18px 12px 12px}
+ .app.mini .side .sbar{flex-direction:row;height:47px;align-items:center;gap:0}
+ .app.mini .side .sbar .mini-t{display:none}
+ .app.mini .side .logo{margin:0}
+ .app.mini .snav{gap:4px}.app.mini .ng,.app.mini .ngi{gap:2px}
+ .app.mini .side button.nav{justify-content:flex-start;padding:7px 10px}
+ .app.mini .side .su-pill{justify-content:flex-start;padding:7px 10px}
+ .app.mini .side .lb,.app.mini .side .logo b{display:inline-block!important;width:0;min-width:0;overflow:hidden;opacity:0;margin:0;padding:0}
+ .app.mini .side .me{justify-content:flex-start;padding:6px}.app.mini .side .me .meb{padding:2px 2px 2px 0}
+ .app.mini .side .nav .nb{right:auto;left:28px}
+ .side .lb,.side .co,.side .snav,.side .me{white-space:nowrap}
+ .app.pk .side .lb,.app.pk .side .co,.app.pk .side kbd,.app.pk .side .logo b,.app.pk .side .mini-t,.app.pk .side .nqs,.app.pk .side .nqc,.app.pk .side .atag{animation:sdIn .3s ease both}
+ @keyframes sdIn{from{opacity:0}40%{opacity:0}to{opacity:1}}
+}
 </style>
 </head>
 <body>
@@ -4725,8 +4743,9 @@ function shell(){
   {const sd=document.querySelector('.side'),ap=document.querySelector('.app');let pt=null;  // em Configurações: o menu principal recolhido abre por cima ao passar o mouse ou clicar no espaço vazio
    // regra geral: com o menu recolhido, passar o mouse abre por cima (sem empurrar a tela) e tirar o mouse recolhe de novo
    const peek=o=>{if(innerWidth<=860)return;if(o){if(!ap.classList.contains('mini'))return;ap.classList.remove('mini');ap.classList.add('pk')}else{if(!ap.classList.contains('pk'))return;ap.classList.remove('pk');ap.classList.add('mini')}};
-   sd.addEventListener('mouseenter',()=>{clearTimeout(pt);pt=setTimeout(()=>peek(true),280)});sd.addEventListener('mouseleave',()=>{clearTimeout(pt);peek(false)});
+   sd.addEventListener('mouseenter',()=>{clearTimeout(pt);pt=setTimeout(()=>peek(true),140)});sd.addEventListener('mouseleave',()=>{clearTimeout(pt);pt=setTimeout(()=>peek(false),120)});
    sd.addEventListener('click',e=>{if(e.target===sd||e.target.classList.contains('sp')||e.target.id==='snav')peek(true)})}
+  document.querySelectorAll('.side .snav button.nav[data-v][title]').forEach(b=>b.removeAttribute('title'));  // o menu abre ao passar o mouse e mostra o nome: a dica do navegador só atrapalhava
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
