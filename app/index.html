@@ -3402,6 +3402,7 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 @container (max-width:820px){.sm3 .sm-sticky{box-shadow:none;border:1px solid var(--line)}.sm3 .sm-act{position:static;margin:0;padding:0;border:0;background:none}}
 @container (max-width:560px){.sm3 .sm-ct{flex-wrap:wrap}.sm3 .sm-ct .lnk{margin-left:0}.sm3 .sm-ctn{flex-basis:calc(100% - 50px)}.sm3 .sm-ct .lnk:first-of-type{margin-left:44px}.sm-sl2{flex-wrap:wrap}.sm-sl2 select{flex-basis:calc(100% - 84px)}.sm-cm{margin-left:42px}.sm-pays{grid-template-columns:repeat(2,1fr)}}
 /* primeira experiência (f3) e ligar o WhatsApp (cn) */
+.f3 [hidden],.cn [hidden]{display:none!important}
 .f3{max-width:1180px}.f3-hi{margin-bottom:16px}.f3-hi h1{font-size:27px;letter-spacing:-.03em}.f3-hi p{color:var(--ink2);margin-top:4px}
 .f3-g{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
 .f3-g2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
@@ -9610,9 +9611,11 @@ const FR_EX={clinica:['Oi! Quanto custa a limpeza de pele?','Oi! A limpeza de pe
  restaurante:['Oi! Quanto está a pizza grande?','Oi! A pizza grande sai por R$ 69 e a entrega R$ 8. Qual sabor você quer? 😊'],
  lancamento:['Oi! Quanto custa o curso completo?','Oi! O curso completo sai por R$ 997. Quer que eu te conte o que vem nele? 😊'],
  outro:['Oi! Quanto custa o serviço?','Oi! O serviço principal sai por R$ 150. Posso te ajudar com mais alguma coisa? 😊']};
-async function homeFirst(d){
+let CN_T=0;
+async function homeFirst(d){const t0=Date.now();
   const u=ME.user,c=ME.company,seg=c.segment||'outro',first=esc(u.name.split(' ')[0]),[noun,,aNoun]=obNoun(seg);
   const [ai,ob]=await Promise.all([api('/ai/settings').catch(()=>({})),ME.user.role==='owner'?api('/onboard').catch(()=>null):null]);
+  if(CN_T>=t0||location.pathname.startsWith('/conectar'))return;
   const nanda=esc(ai.name||'Nanda'),taught=!!(ai.taught||(ai.catalog||[]).some(x=>x.price>0)),I=p=>svg(p);
   const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3),cx=FR_EX[seg]||FR_EX.outro;
   if(FR.seg!==seg+(taught?'1':'0')){FR.seg=seg+(taught?'1':'0');FR.hist=taught?[]:[{dir:'in',text:cx[0],at:'agora'},{dir:'out',text:cx[1],at:'agora',ex:1}]}
@@ -9671,16 +9674,17 @@ async function homeFirst(d){
   if(taught&&wow&&!FR.hist.length){if(isMin())mn(false);send(cx[0])}}
 const WAI_P='<path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 9c0 3 2.5 6 6 6l1-1.5-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/>';
 /* Ligar a Nanda no WhatsApp: fazer junto com o time (horário livre da agenda do Oi Nanda) ou sozinha */
-async function conectarView(mode){history.pushState(null,'','/conectar');document.title='Ligar a Nanda no WhatsApp · Oi Nanda';
+async function conectarView(mode){CN_T=Date.now();if(mode!=='self')history.pushState(null,'','/conectar');document.title='Ligar a Nanda no WhatsApp · Oi Nanda';
   if(!$('#page')){VIEW='inicio';await shell()}
   const c=ME.company,nanda=esc((SU.ai&&SU.ai.name)||(ME.nanda||{}).name||'Nanda'),I=p=>svg(p);
   if(mode==='self'){EM.tab='whatsapp';return go('empresa')}
+  const leave=v=>{history.replaceState(null,'','/');go(v)};
   let ob=null;try{ob=await api('/onboard')}catch(e){}
   const pick={i:null};
   const draw=()=>{const booked=ob&&ob.booked,req=ob&&ob.requested;
     $('#page').innerHTML=`<div class="cn"><button type="button" class="cn-bk" id="cnBk">${I('<path d="m15 6-6 6 6 6"/>')}Voltar</button>
      <div class="cn-dots"><i>✓</i><span></span><i>✓</i><span></span><i class="on">3</i>Último passo</div>
-     <div class="cn-hero"><span class="cn-ph">${I(WAI_P)}<em>N</em></span><div><h1>Falta só ligar a ${nanda}<br>no seu WhatsApp</h1><p>Seus clientes continuam no mesmo número. Os 7 dias grátis começam aqui, sem cartão.</p></div></div>
+     <div class="cn-hero"><span class="cn-ph">${I(WAI_P)}<em>N</em></span><div><h1>Falta só ligar a ${nanda} <br>no seu WhatsApp</h1><p>Seus clientes continuam no mesmo número. Os 7 dias grátis começam aqui, sem cartão.</p></div></div>
      ${booked?`<section class="card cn-ok"><span>✓</span><div><b>Chamada marcada: ${esc(booked.label)}${booked.pro_name?' com '+esc(booked.pro_name.split(' ')[0]):''}</b><small>30 minutos por vídeo. Mandamos a confirmação para ${esc(ME.user.email)}. Deixe por perto o celular do WhatsApp do negócio e o login do Facebook da empresa.</small></div></section>`:''}
      <div class="cn-op">${booked?'':`<section class="card cn-o r" id="cnTime"><span class="cn-tag">Mais escolhido</span><h2>Fazer junto com a gente</h2><div class="cn-who"><span>${I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>')}</span>Time de treinamento do Oi Nanda</div>
         <p>Numa chamada de vídeo, a gente liga o WhatsApp com você e mostra como usar o Oi Nanda no seu dia a dia.</p><div class="cn-mt"><span><b>30 min</b> por vídeo</span><span><b>Grátis</b></span></div>
@@ -9690,7 +9694,7 @@ async function conectarView(mode){history.pushState(null,'','/conectar');documen
       <section class="card cn-o"><span class="cn-tag g">Rapidinho</span><h2>Fazer agora sozinha</h2><p>A gente te guia tela por tela. Se travar em algum momento, é só chamar o time.</p><div class="cn-mt"><span><b>Uns 10 min</b></span></div><button type="button" class="btn cn-go" id="cnSelf">Começar agora →</button></section></div>
      <section class="card cn-need"><h3>Deixe por perto</h3><div><span><i>${I('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>')}</i><span><b>O celular do WhatsApp do negócio</b>para receber um código</span></span><span><i>${I('<path d="M15 3h-2a4 4 0 0 0-4 4v3H7v4h2v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h2z"/>')}</i><span><b>O login do Facebook da empresa</b>de quem cuida da página</span></span></div></section>
      <p class="cn-ft">Tem dúvida se tem tudo isso? <button type="button" class="lnk" id="cnHelp">Veja em 1 minuto</button> · <button type="button" class="lnk" id="cnLater">Agora não, quero continuar testando</button></p></div>`;
-    $('#cnBk').onclick=$('#cnLater').onclick=()=>go('inicio');$('#cnSelf').onclick=()=>{EM.tab='whatsapp';go('empresa')};$('#cnHelp').onclick=()=>{HP.art='conectar-whatsapp';go('ajuda')};
+    $('#cnBk').onclick=$('#cnLater').onclick=()=>leave('inicio');$('#cnSelf').onclick=()=>{EM.tab='whatsapp';leave('empresa')};$('#cnHelp').onclick=()=>{HP.art='conectar-whatsapp';leave('ajuda')};
     document.querySelectorAll('[data-sl]').forEach(b=>b.onclick=()=>{pick.i=+b.dataset.sl;draw()});
     if($('#cnBook'))$('#cnBook').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='Marcando…';
       try{const r=await api('/onboard',{method:'POST',body:{start:ob.slots[pick.i].start}});ob.booked=r.booked;draw();toast('Chamada marcada! A confirmação chegou no seu e-mail.')}
