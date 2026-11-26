@@ -24,15 +24,19 @@ def D(name, when, ch, tone, eyebrow, icon, subject, pre, title, body, button, wa
 
 SUB, PLANS_URL = '/empresa/assinatura', '/assinatura'
 DEFS = {
- 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, seus 14 dias grátis começaram', 'Sem cartão. Ensine a Nanda em 1 minuto e conecte o WhatsApp.',
-    'Que bom ter você aqui, {primeiro_nome}', 'A conta {empresa} está pronta e os 14 dias grátis já começaram, sem cartão.\nO primeiro passo leva 1 minuto: conte à Nanda o que você vende e quanto custa. Depois é conectar o WhatsApp e ver ela atendendo.', ('Ensinar a Nanda', '/comecar'),
-    '{primeiro_nome}, a conta da *{empresa}* está pronta e os *14 dias grátis* já começaram, sem cartão. Ensine a Nanda em 1 minuto e conecte o WhatsApp para ela começar a atender.',
-    fig=('14 dias', 'grátis · sem cartão'), steps=[(2, 'Ensinar a Nanda', 'o que você vende e quanto custa, em 1 minuto'), (0, 'Conectar o WhatsApp da empresa', 'uns 5 minutos, com o celular do chip na mão'), (0, 'Ver a Nanda atendendo', 'seus clientes respondidos em segundos')],
-    tip=('Quer ver o caminho completo antes? Montamos um guia curto, do cadastro à primeira venda.', 'Ler os primeiros passos', '/ajuda/primeiros-passos'), always=True),
- 'activate': D('Lembrete para ativar', '1 dia depois do cadastro, se ainda não ativou', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda está esperando por você, {primeiro_nome}', 'Ative os 14 dias grátis e ela começa a atender no seu WhatsApp.',
-    'A Nanda está pronta para atender', '{primeiro_nome}, ativando os 14 dias grátis a Nanda começa a responder seus clientes no WhatsApp, a qualquer hora.\nHoje não é cobrado nada. A gente avisa 3 dias antes do fim e dá para cancelar com um clique.', ('Ativar meus 14 dias', '/ativar'),
-    '{primeiro_nome}, a Nanda da *{empresa}* está pronta. Ativando os *14 dias grátis*, ela começa a atender no seu WhatsApp. Hoje não é cobrado nada e dá para cancelar quando quiser.',
-    steps=[(1, 'Conta criada', ''), (2, 'Ativar os 14 dias grátis', 'hoje R$ 0,00'), (0, 'Conectar o WhatsApp', 'uns 5 minutos')], second='Ficou alguma dúvida? É só responder', reply='Tenho uma dúvida'),
+ 'welcome': D('Boas-vindas', 'ao criar a conta', 'we', 'i', 'Primeiros passos', 'smile', '{primeiro_nome}, a Nanda da {empresa} já está pronta 🎉', 'Ensine seus preços em 2 minutos e veja ela atendendo.',
+    'Que bom ter você aqui, {primeiro_nome}', 'A conta da {empresa} está criada. A Nanda já sabe conversar como uma atendente do seu ramo, e agora falta ela aprender os seus preços e horários.\nQuando ligar a Nanda no seu WhatsApp, começam os seus 7 dias grátis, sem cartão. Se quiser, a gente faz esse passo junto com você numa chamada de 30 minutos, sem custo.', ('Continuar de onde parei', '/'),
+    '{primeiro_nome}, aqui é o time do Oi Nanda 👋 A conta da *{empresa}* está pronta. Quer que a gente ligue a Nanda no seu WhatsApp junto com você? É uma chamada de 30 min, sem custo.',
+    steps=[(1, 'Criar a conta', 'feito'), (2, 'Ensinar seus preços e horários', 'uns 2 minutos, com toques'), (0, 'Ligar a Nanda no seu WhatsApp', 'seus 7 dias grátis começam aqui · sem cartão')],
+    tip=('Prefere fazer junto com a gente? Escolha um horário com o nosso time, sem custo.', 'Escolher um horário', '/conectar'), always=True),
+ 'activate': D('Lembrete para continuar', '1 dia depois do cadastro, se ainda não ligou o WhatsApp', 'we', 'i', 'Sua Nanda está pronta', 'spark', 'A Nanda está esperando por você, {primeiro_nome}', 'Faltam 2 minutos para ela responder com os seus preços.',
+    'A Nanda está pronta para atender', '{primeiro_nome}, a Nanda da {empresa} já conversa como uma atendente do seu ramo. Ensinando seus preços e ligando o WhatsApp, ela começa a responder seus clientes a qualquer hora.\nOs 7 dias grátis só começam quando ela estiver no seu WhatsApp, e não pedimos cartão.', ('Continuar de onde parei', '/'),
+    '{primeiro_nome}, a Nanda da *{empresa}* está pronta. Quer que a gente ligue ela no seu WhatsApp junto com você? É uma chamada de 30 min, sem custo.',
+    steps=[(1, 'Conta criada', ''), (2, 'Ensinar seus preços e horários', 'uns 2 minutos'), (0, 'Ligar a Nanda no seu WhatsApp', '7 dias grátis, sem cartão')], second='Ficou alguma dúvida? É só responder', reply='Tenho uma dúvida'),
+ 'trial_on': D('Teste começou', 'quando o WhatsApp conecta', 'we', 'i', 'Teste grátis', 'smile', 'Pronto! Seus 7 dias grátis começaram', 'A Nanda já está atendendo no seu WhatsApp.',
+    'A Nanda está no seu WhatsApp', '{primeiro_nome}, o WhatsApp da {empresa} está conectado e a Nanda já responde seus clientes. Seus 7 dias grátis vão até {data}, sem cartão.\nDica: acompanhe as primeiras conversas em Conversas e corrija qualquer resposta com um toque. Ela aprende na hora.', ('Ver as conversas', '/conversas'),
+    '{primeiro_nome}, pronto! A Nanda já está atendendo no WhatsApp da *{empresa}*. Seus *7 dias grátis* vão até *{data}*, sem cartão.',
+    fig=('7 dias', 'grátis · até {data}'), always=True),
  'trial_card_3d': D('Teste com cartão acaba em 3 dias', '3 dias antes da primeira mensalidade', 'we', 'i', 'Teste grátis', 'clock', 'Seu teste grátis termina em {data}', 'A primeira mensalidade entra no cartão em {data}.',
     'Faltam 3 dias de teste', '{primeiro_nome}, passando para avisar com antecedência: em {data} entra a primeira mensalidade de {valor} no cartão cadastrado, e a Nanda segue atendendo sem intervalo.\nSe preferir não continuar, é um clique em Configurações › Plano e cobrança, sem multa.', ('Ver assinatura', SUB),
     '{primeiro_nome}, o teste grátis da {empresa} termina em *{data}*. Nesse dia entra a primeira mensalidade de *{valor}* no cartão. Para cancelar, é um clique em Configurações › Plano e cobrança.',
@@ -40,20 +44,20 @@ DEFS = {
  'ai_pack': D('Pacote extra automático', 'quando entra um pacote automático da Nanda', 'e', 'i', 'Uso da Nanda', 'spark', 'Entrou um pacote extra de 500 atendimentos', 'A Nanda segue atendendo sozinha. {valor} na próxima mensalidade.',
     'A Nanda segue atendendo', '{primeiro_nome}, os atendimentos do mês acabaram e, como o pacote automático está ligado, entraram mais 500. Ninguém fica sem resposta.\nO valor de {valor} vem junto da próxima mensalidade.', ('Ver uso da Nanda', SUB),
     fig=('+500', 'atendimentos da Nanda este mês'), rows=[('Valor', '{valor} na próxima mensalidade'), ('Para desligar', 'Configurações › Plano e cobrança')]),
- 'wa_missing': D('WhatsApp ainda não conectado', '1 e 3 dias depois do cadastro, se não conectou', 'we', 'i', 'Falta um passo', 'chat', 'Falta um passo para a Nanda atender', 'Conectar o WhatsApp leva uns 5 minutos.',
-    'Falta só conectar o WhatsApp', '{primeiro_nome}, sem o WhatsApp conectado as mensagens dos seus clientes não chegam no Oi Nanda e a Nanda não tem como ajudar.\nSeparamos o que deixa a conexão tranquila: faça pelo celular que tem o chip do número e tenha um cartão para cadastrar na Meta depois.', ('Conectar agora', '/empresa'),
-    '{primeiro_nome}, falta só um passo: conectar o WhatsApp da *{empresa}*. Leva uns 5 minutos. Se travar, responde aqui que eu acompanho.',
-    steps=[(1, 'Conta criada', ''), (2, 'Conectar o WhatsApp da empresa', 'pelo celular que tem o chip, uns 5 minutos'), (0, 'Ensinar a Nanda', 'preços, horários e serviços')],
-    tip=('Antes de conectar, leia o guia de 4 minutos que evita bloqueio do número pela Meta.', 'Conectar sem risco de bloqueio', '/ajuda/conectar-whatsapp'), second='Prefere ajuda? É só responder este e-mail', reply='Quero ajuda'),
- 'trial_3d': D('Teste acaba em 3 dias', '3 dias antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Faltam 3 dias do seu teste grátis', 'Escolha um plano e continue sem intervalo.',
-    'Faltam 3 dias de teste', '{primeiro_nome}, para a Nanda continuar atendendo sem intervalo, é só escolher um plano. Nada do que você cadastrou se perde: conversas, contatos e o que você ensinou continuam lá.', ('Ver planos', PLANS_URL),
-    '{primeiro_nome}, faltam *3 dias* do teste da {empresa}. Escolhendo um plano até *{data}*, o atendimento segue sem intervalo.',
-    fig=('3 dias', 'de teste grátis pela frente'), bar=(11, 14, 'Dia 11 de 14', 'termina em {data}'),
+ 'wa_missing': D('WhatsApp ainda não conectado', '2 dias depois do cadastro, se não ligou o WhatsApp', 'we', 'i', 'Falta um passo', 'chat', 'Sua Nanda está pronta. Ligamos com você?', 'Conectar o WhatsApp leva uns 10 minutos, ou 30 com a gente por vídeo.',
+    'Falta só ligar a Nanda no seu WhatsApp', '{primeiro_nome}, seus clientes continuam no mesmo número e a Nanda passa a responder em segundos. Os 7 dias grátis começam quando ela estiver ligada, sem cartão.\nDeixe por perto o celular do WhatsApp do negócio e o login do Facebook da empresa. Se preferir, a gente faz junto com você.', ('Ligar a Nanda', '/conectar'),
+    '{primeiro_nome}, falta só ligar a Nanda no WhatsApp da *{empresa}*. Quer que a gente faça junto com você? É uma chamada de 30 min, sem custo.',
+    steps=[(1, 'Conta criada', ''), (1, 'Nanda pronta', ''), (2, 'Ligar a Nanda no seu WhatsApp', 'uns 10 minutos')],
+    tip=('Prefere fazer junto com a gente? Escolha um horário com o nosso time.', 'Escolher um horário', '/conectar'), second='Prefere ajuda? É só responder este e-mail', reply='Quero ajuda'),
+ 'trial_3d': D('Teste acaba em 2 dias', '2 dias antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Faltam 2 dias do seu teste grátis', 'Cadastre o cartão e a Nanda segue sem parar. Só cobra no fim do teste.',
+    'Faltam 2 dias de teste', '{primeiro_nome}, para a Nanda continuar atendendo sem intervalo, é só escolher um plano e cadastrar o cartão. Nada é cobrado antes de {data}, quando o teste acaba.\nConversas, contatos e o que você ensinou continuam lá.', ('Escolher meu plano', PLANS_URL),
+    '{primeiro_nome}, faltam *2 dias* do teste da {empresa}. Cadastrando o cartão até *{data}*, a Nanda segue atendendo sem intervalo e nada é cobrado antes disso.',
+    fig=('2 dias', 'de teste grátis pela frente'), bar=(5, 7, 'Dia 5 de 7', 'termina em {data}'),
     tip=('Na dúvida entre os planos? O guia explica a diferença em 3 minutos.', 'Planos e cobrança', '/ajuda/assinatura')),
  'trial_1d': D('Teste acaba amanhã', '1 dia antes do fim do teste', 'we', 'i', 'Teste grátis', 'clock', 'Amanhã termina o seu teste grátis', 'Suas conversas e contatos continuam como estão.',
     'O teste termina amanhã', '{primeiro_nome}, escolhendo um plano hoje, a Nanda segue atendendo sem intervalo. Conversas, contatos e respostas continuam como estão.', ('Escolher meu plano', PLANS_URL),
     '{primeiro_nome}, o teste da {empresa} termina *amanhã, {data}*. Escolhendo um plano hoje, a Nanda segue atendendo sem intervalo.',
-    fig=('Amanhã', '{data} é o último dia do teste'), bar=(13, 14, 'Dia 13 de 14', 'termina em {data}')),
+    fig=('Amanhã', '{data} é o último dia do teste'), bar=(6, 7, 'Dia 6 de 7', 'termina em {data}')),
  'trial_end': D('Teste acabou', 'no dia em que o teste termina', 'we', 'n', 'Conta em consulta', 'pause', 'Seu teste terminou, e está tudo guardado', 'Escolha um plano e volte a atender na hora.',
     'O teste terminou', '{primeiro_nome}, a conta ficou só para consulta: dá para ver tudo, mas não para responder. Escolhendo um plano, o atendimento volta na hora, do ponto onde parou.', ('Escolher meu plano', PLANS_URL),
     '{primeiro_nome}, o teste da {empresa} terminou hoje. Está *tudo guardado*. Com um plano, o atendimento volta na hora.',
@@ -284,16 +288,19 @@ async def tick():
     n = now()
     for c in await db.companies.find({'plan': 'trial', 'trial_ends_at': {'$gt': n - timedelta(days=2), '$lte': n + timedelta(days=3)}}, {'_id': 0}).to_list(500):
         end = aware(c['trial_ends_at']); left = end - n; v = {'data': day(end)}
-        total = max(1, round((end - aware(c.get('created_at') or end - timedelta(days=14))).total_seconds() / 86400))
-        if timedelta(days=2) < left <= timedelta(days=3) and not c.get('mail_trial_3d'):
-            await deliver(c, 'trial_3d', {**v, 'bar_now': total - 3, 'bar_total': total, 'bar_label': f'Dia {total - 3} de {total}'}, once='trial_3d')
+        total = max(1, round((end - aware(c.get('trial_started_at') or c.get('created_at') or end - timedelta(days=7))).total_seconds() / 86400))
+        if timedelta(days=1) < left <= timedelta(days=2) and not c.get('mail_trial_3d'):
+            await deliver(c, 'trial_3d', {**v, 'bar_now': total - 2, 'bar_total': total, 'bar_label': f'Dia {total - 2} de {total}'}, once='trial_3d')
         elif timedelta(0) < left <= timedelta(days=1):
             await deliver(c, 'trial_1d', {**v, 'bar_now': total - 1, 'bar_total': total, 'bar_label': f'Dia {total - 1} de {total}'}, once='trial_1d')
         elif left <= timedelta(0) and not c.get('mail_trial_end'):
             await deliver(c, 'trial_end', v, once='trial_end')
-    # criou a conta e não ativou os 14 dias: um lembrete gentil no dia seguinte
+    # criou a conta e ainda não ligou o WhatsApp: um lembrete gentil no dia seguinte e um convite no segundo dia
     for c in await db.companies.find({'plan': 'demo', 'created_at': {'$gt': n - timedelta(days=3), '$lte': n - timedelta(days=1)}}, {'_id': 0}).to_list(500):
-        await deliver(c, 'activate', {}, once='activate_1')
+        if await db.wa_numbers.find_one({'company_id': c['id']}, {'_id': 1}): continue
+        age = n - aware(c['created_at'])
+        if age < timedelta(days=2): await deliver(c, 'activate', {}, once='activate_1')
+        else: await deliver(c, 'wa_missing', {}, once='wa_missing_demo')
     # teste com cartão: 3 dias antes da primeira mensalidade
     from billing import PLANS
     for c in await db.companies.find({'billing.trial_until': {'$gt': n + timedelta(days=2), '$lte': n + timedelta(days=3)}, 'billing.status': 'active'}, {'_id': 0}).to_list(500):

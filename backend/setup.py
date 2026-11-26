@@ -18,7 +18,7 @@ STEPS = [
     ('sobre', 1, 'Contar sobre o seu negócio', 'O que você faz, onde fica e como atende. É a base de tudo que a Nanda fala.', 3, False, '', 'nanda', '', 'Contar agora'),
     ('precos', 1, 'Ensinar preços e serviços', 'Para ela responder "quanto custa?" certo, sem chamar você.', 5, False, '', 'nanda', '', 'Ensinar a Nanda'),
     ('testar', 1, 'Testar uma conversa', 'Converse como se fosse um cliente e veja como ela responde.', 1, False, '', '', 'comecar', 'Conversar com a Nanda'),
-    ('whatsapp', 1, 'Conectar o WhatsApp', 'O número que seus clientes já conhecem, pelo canal oficial da Meta.', 5, False, '', 'empresa', '', 'Conectar'),
+    ('whatsapp', 1, 'Ligar a Nanda no WhatsApp', 'Seus clientes continuam no mesmo número. Os 7 dias grátis começam aqui, sem cartão.', 10, False, '', '', 'conectar', 'Ligar agora'),
     ('modo', 1, 'Escolher como a Nanda trabalha', 'No copiloto ela sugere e você envia. No automático ela responde sozinha.', 1, False, '', 'nanda', 'modo', 'Escolher'),
     ('catalogo', 2, 'Cadastrar produtos ou serviços', 'Preço certo na venda, no comprovante e nas respostas da Nanda.', 5, True, 'Não vendo itens fixos', 'vendas', 'catalogo', 'Abrir o catálogo'),
     ('agenda', 2, 'Ajustar a agenda', 'Horários de atendimento e quem atende. A Nanda marca sozinha.', 5, True, 'Não trabalho com horário marcado', 'agenda', '', 'Ajustar a agenda'),
@@ -61,10 +61,8 @@ async def status(user):
     }
     skip = set(c.get('setup_skip') or [])
     defs = list(STEPS)
-    if demo:  # sem ativar, a Nanda não atende no WhatsApp e não dá para chamar o time
-        defs.insert(0, ('ativar', 1, 'Ativar os 14 dias grátis', 'Hoje não é cobrado nada. É o que libera a Nanda no seu WhatsApp e o convite para o time.', 2, False, '', '', 'ativar', 'Ativar agora'))
-        done['ativar'] = False
-        defs = [d if d[0] != 'time' else (d[0], d[1], d[2], 'Disponível depois de ativar os 14 dias grátis.', d[4], d[5], d[6], d[7], 'ativar', 'Ativar primeiro') for d in defs]
+    if demo:  # em teste livre: chamar o time só depois de ligar o WhatsApp (é aí que começam os 7 dias)
+        defs = [d if d[0] != 'time' else (d[0], d[1], d[2], 'Disponível depois de ligar a Nanda no WhatsApp.', d[4], d[5], d[6], '', 'conectar', 'Ligar o WhatsApp primeiro') for d in defs]
     if 'metas' not in feats: defs = [d for d in defs if d[0] != 'meta']  # metas é do plano Equipe
     steps = [{'key': k, 'stage': st, 'title': t, 'why': w, 'mins': m, 'can_skip': cs, 'skip_label': sl, 'to': to, 'act': act, 'cta': cta,
               'done': done[k], 'skipped': k in skip and not done[k]} for (k, st, t, w, m, cs, sl, to, act, cta) in defs]
@@ -74,10 +72,12 @@ async def status(user):
         ss = [s for s in live if s['stage'] == n]
         stages.append({'n': n, 'name': name, 'sub': sub, 'done': sum(s['done'] for s in ss), 'total': len(ss)})
     nd = sum(s['done'] for s in live)
-    # os passos essenciais da primeira entrada (o resto aparece depois deles); "criar a conta" já conta como feito
-    ck = [k for k in ('ativar', 'sobre', 'precos', 'whatsapp', 'time') if any(s['key'] == k and not s['skipped'] for s in steps)]
-    core = [{**next(s for s in steps if s['key'] == k)} for k in ck]
-    cd = 1 + sum(s['done'] for s in core); ct = 1 + len(core)
+    # os 3 passos da primeira entrada: ver a Nanda funcionando, ensinar os seus dados e ligar no WhatsApp (o resto aparece depois)
+    by = {s['key']: s for s in steps}
+    core = [{**by['testar'], 'title': 'Ver a Nanda funcionando', 'why': 'Converse com ela como se fosse um cliente.'},
+            {**by['precos'], 'title': 'Ensinar seus preços e horários', 'why': 'É o que evita resposta errada para o seu cliente.', 'done': by['sobre']['done'] and by['precos']['done']},
+            {**by['whatsapp']}]
+    cd = sum(s['done'] for s in core); ct = len(core)
     return {'core': core, 'core_done': cd, 'core_total': ct, 'core_pct': round(100 * cd / ct), 'core_ready': cd == ct,
             'steps': steps, 'stages': stages, 'done': nd, 'total': len(live), 'pct': round(100 * nd / len(live)) if live else 100,
             'ready': all(s['done'] for s in live if s['stage'] == 1), 'hidden': bool(c.get('setup_hidden'))}

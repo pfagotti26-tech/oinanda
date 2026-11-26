@@ -184,7 +184,7 @@ async def nanda_context(company):
     if not s.get('nanda_books') or not s.get('services'): return None, s
     tz = tz_of(company); today = now().astimezone(tz).date()
     lines = []
-    for sv in s['services']:
+    for sv in [x for x in s['services'] if not x.get('internal')]:  # serviço interno (onboarding do Oi Nanda) a Nanda não oferece
         free = await free_slots(company, sv, today, min(s.get('days_ahead') or 7, 6))
         step = s.get('step') or 30
         days = [f'{WEEK[datetime.fromisoformat(d).weekday()]} {datetime.fromisoformat(d):%d/%m}: ' + ranges_text(ts, step) for d, ts in free.items()]

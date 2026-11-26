@@ -73,8 +73,6 @@ async def get_number(user=Depends(current_user)):
     return number_out(await db.wa_numbers.find_one({'company_id': user['company_id']}, {'_id': 0}))
 
 async def save_number(user, request, pnid, waba_id, token, extra=None):
-    from billing import require_live
-    require_live(user)
     other = await db.wa_numbers.find_one({'phone_number_id': pnid})
     if other and other['company_id'] != user['company_id']: raise HTTPException(409, 'Este número já está conectado em outra conta.')
     info = await graph('GET', f'/{pnid}', token, params={'fields': 'display_phone_number,verified_name,quality_rating'})
@@ -91,6 +89,8 @@ async def save_number(user, request, pnid, waba_id, token, extra=None):
            'webhook': webhook, 'connected_at': now(), 'mode': 'cloud', **(extra or {})}
     await db.wa_numbers.update_one({'company_id': user['company_id']}, {'$set': doc}, upsert=True)
     await audit(request, user, 'Conectou o WhatsApp' + (' (junto com o app do celular)' if doc.get('mode') == 'coexistence' else ''), doc['display_phone'])
+    from billing import start_trial
+    await start_trial(user['company'], pnid)  # conta em teste livre: os 7 dias grátis começam agora
     return doc
 
 @router.post('/wa/connect')
@@ -114,8 +114,6 @@ class SignupIn(BaseModel):
 
 @router.post('/wa/signup')
 async def signup(body: SignupIn, request: Request, user=Depends(owners)):
-    from billing import require_live
-    require_live(user)
     cfg = es_config()
     if not cfg['enabled']: raise HTTPException(400, 'O botão da Meta ainda não foi ativado no servidor.')
     tok = await graph('GET', '/oauth/access_token', None, params={'client_id': cfg['app_id'], 'client_secret': os.environ['META_APP_SECRET'], 'code': body.code})

@@ -19,7 +19,7 @@ ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', '').strip().lower()
 # chave de emergência: ADMIN_MFA=off no .env do servidor desliga a exigência (perdeu o celular e os códigos de recuperação)
 ADMIN_MFA = os.environ.get('ADMIN_MFA', 'on').strip().lower() != 'off'
 ORIGINS = [o.strip() for o in os.environ.get('APP_ORIGINS', 'https://app.oinanda.com.br').split(',') if o.strip()]
-TRIAL_DAYS = 14
+TRIAL_DAYS = 7
 COOKIE = 'oinanda_session'
 ROLES = {'owner': 'Dono', 'manager': 'Gestor', 'agent': 'Atendente'}
 

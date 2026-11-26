@@ -3,7 +3,7 @@
 Planos: Essencial, Profissional e Equipe. Cada um tem número de usuários, atendimentos da Nanda por mês e módulos.
 
 Entrada: a conta nasce em modo demonstração (conversa com a Nanda, explora o sistema, mas não conecta o WhatsApp).
-Para atender de verdade, ativa os 14 dias grátis cadastrando o cartão no Mercado Pago (assinatura com free_trial):
+Para atender de verdade, ativa os 7 dias grátis cadastrando o cartão no Mercado Pago (assinatura com free_trial):
 hoje não cobra nada, avisa 3 dias antes e a primeira mensalidade entra no dia 15. Cancela com um clique.
 Acabou a assinatura sem pagamento: a conta fica só para leitura até assinar.
 
@@ -30,8 +30,9 @@ MP = 'https://api.mercadopago.com'
 EXTRA_USER = 39
 ANNUAL_MONTHS = 10  # anual: paga 10, leva 12
 TRIAL_AI = 1000  # sugestões da Nanda no teste sem cartão
-TRIAL_ATEND = int(os.environ.get('TRIAL_ATEND', '200'))  # atendimentos da Nanda sozinha nos 14 dias sem cartão (custo de IA sob controle)
-TRIAL_DAYS_CARD = 14
+TRIAL_ATEND = int(os.environ.get('TRIAL_ATEND', '200'))  # atendimentos da Nanda sozinha nos 7 dias sem cartão (custo de IA sob controle)
+TRIAL_DAYS_CARD = 7
+TRIAL_DAYS_FREE = 7  # teste sem cartão: começa quando o WhatsApp conecta
 DEMO_TESTS = 60  # conversas de teste com a Nanda no modo demonstração (por mês)
 PACK = {'size': 500, 'price': 59}
 FLOOR = 0.08  # nunca vender atendimento abaixo disso (custo de IA com margem de segurança ~R$ 0,06)
@@ -78,7 +79,7 @@ def plan_of(company):
     return 'readonly', None
 
 def card_trial(company):
-    """Teste de 14 dias com cartão cadastrado (assinatura com free_trial): data em que a primeira mensalidade entra."""
+    """Teste de 7 dias com cartão cadastrado (assinatura com free_trial): data em que a primeira mensalidade entra."""
     b = company.get('billing') or {}; tu = aware(b.get('trial_until'))
     return tu if tu and tu > now() and b.get('sub_id') else None
 
@@ -185,9 +186,24 @@ async def auto_pack(company):
 async def users_used(company_id): return await db.users.count_documents({'company_id': company_id, 'active': True})
 
 def require_live(user, what='conectar o WhatsApp'):
-    """Modo demonstração: explora tudo, mas para atender de verdade precisa ativar os 14 dias grátis."""
+    """Modo demonstração: explora e testa a Nanda à vontade. Os 7 dias grátis começam quando o WhatsApp conecta."""
     if limits(user['company'])['state'] == 'demo':
-        raise HTTPException(402, f'Para {what}, ative seus 14 dias grátis em Configurações › Plano e cobrança. Hoje não é cobrado nada.')
+        raise HTTPException(402, f'Para {what}, conecte primeiro o WhatsApp: é aí que começam os seus 7 dias grátis, sem cartão.')
+
+async def start_trial(company, pnid=None):
+    """WhatsApp conectado numa conta em teste livre: começam os 7 dias grátis, sem cartão. Um teste por número."""
+    c = await db.companies.find_one({'id': company['id']}, {'_id': 0}) or company
+    if c.get('plan') != 'demo' or c.get('trial_used') or (c.get('billing') or {}).get('since'): return None
+    dup = bool(pnid) and await db.trial_numbers.find_one({'pnid': pnid, 'company_id': {'$ne': c['id']}})
+    end = now() if dup else now() + timedelta(days=TRIAL_DAYS_FREE)
+    await db.companies.update_one({'id': c['id']}, {'$set': {'plan': 'trial', 'trial_ends_at': end, 'trial_started_at': now(), 'trial_used': True, 'trial_v2': True, **({'trial_dup': True} if dup else {})}})
+    if pnid and not dup: await db.trial_numbers.update_one({'pnid': pnid}, {'$setOnInsert': {'pnid': pnid, 'company_id': c['id'], 'at': now()}}, upsert=True)
+    if not dup:
+        try:
+            import notices
+            await notices.deliver({**c, 'plan': 'trial', 'trial_ends_at': end}, 'trial_on', {'data': notices.day(end)}, once='trial_on')
+        except Exception: log.exception('falha no aviso de início do teste')
+    return end
 
 async def check_seat(user):
     lim = limits(user['company'])
@@ -253,7 +269,7 @@ async def subscribe(body: SubIn, request: Request, user=Depends(owners)):
         except HTTPException: pass
     amount = price_of(body.plan, body.cycle, body.extra_users)
     base = app_url(request)
-    trial = c.get('plan') == 'demo' and not c.get('trial_used') and not b.get('since')  # 14 dias grátis uma vez, ao sair do modo demonstração
+    trial = c.get('plan') == 'demo' and not c.get('trial_used') and not b.get('since')  # 7 dias grátis uma vez, ao sair do modo demonstração
     days = TRIAL_DAYS_CARD
     te = aware(c.get('trial_ends_at'))
     if c.get('plan') == 'trial' and te and te > now() and not b.get('since'):  # assinou durante o teste sem cartão: a cobrança só começa quando o teste acaba
@@ -292,7 +308,7 @@ async def apply(company, sub):
                    status='active', next_payment=nxt_dt, paid_until=paid_until)
         if not b.get('since') or b.get('sub_id') != sub['id']: upd['since'] = b.get('since') or now()
         extra = {}
-        if cur.get('trial') and b.get('sub_id') != sub['id']:  # assinatura nova com 14 dias grátis: a primeira mensalidade entra no fim do teste
+        if cur.get('trial') and b.get('sub_id') != sub['id']:  # assinatura nova com dias grátis: a primeira mensalidade entra no fim do teste
             tu = nxt_dt or now() + timedelta(days=TRIAL_DAYS_CARD)
             upd['trial_until'] = tu; extra = {'trial_used': True, 'trial_ends_at': tu}
         upd.pop('pending', None); upd.pop('pending_url', None)
@@ -326,7 +342,7 @@ async def cancel(request: Request, user=Depends(owners)):
     ct = card_trial(user['company'])
     upd = {'billing.status': 'cancelled', 'billing.cancelled_at': now()}
     until = b.get('paid_until')
-    if ct: until = ct; upd['billing.paid_until'] = ct  # cancelou no teste: usa até o fim dos 14 dias e nada é cobrado
+    if ct: until = ct; upd['billing.paid_until'] = ct  # cancelou no teste: usa até o fim dos 7 dias e nada é cobrado
     await db.companies.update_one({'id': user['company_id']}, {'$set': upd})
     await audit(request, user, 'Cancelou a assinatura' + (' no teste grátis' if ct else ''), b.get('plan'))
     import notices
