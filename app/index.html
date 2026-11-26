@@ -528,7 +528,7 @@ td>.sure,tr+.sure{margin:4px}
 .gav{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:grid!important;place-items:center;flex:none}
 .gno{color:#8794A0;font-size:13px;padding:8px 10px}
 .mini-t{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;color:#8794A0;font-size:13px;font-weight:500;width:100%}.mini-t:hover{background:rgba(255,255,255,.06);color:#fff}.mini-t svg{width:18px;height:18px;flex:none;transition:transform .2s}
-.app.mini{grid-template-columns:76px 1fr}.app.mini .side{padding:12px 10px}
+.app.mini{grid-template-columns:76px 1fr;color:inherit;font-size:inherit;line-height:inherit}.app.mini .side{padding:12px 10px}
 .app.mini .snav,.app.mini .ng,.app.mini .ngi{gap:1px}
 .app.mini .side .lb,.app.mini .side .co,.app.mini .side h6,.app.mini .gsr input,.app.mini .gsr kbd,.app.mini .side .logo b{display:none}
 .app.mini .side .logo{margin:0 auto 12px}.app.mini .gsr{justify-content:center;padding:0;width:44px;margin:0 auto 8px}.app.mini .side button.nav{justify-content:center;padding:6px 0;position:relative}
@@ -595,6 +595,24 @@ td>.sure,tr+.sure{margin:4px}
 
 
 /* Mensagens automáticas */
+.cside{display:none}
+@media(min-width:861px){
+ .app.cfx,.app.cfx.mini{grid-template-columns:76px 252px minmax(0,1fr)}
+ .app.cfx .mini-t{display:none}
+ .app.cfx .cside{display:flex;flex-direction:column;gap:2px;background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+ .cside .cx-t{font-size:18px;font-weight:800;letter-spacing:-.02em;text-align:left;padding:0 10px 14px;color:var(--ink)}
+ .cside .cx-q{display:flex;align-items:center;gap:8px;margin:0 2px 12px;padding:9px 11px;border-radius:11px;background:#F6F1EC;color:var(--ink3);font-size:13.5px;text-align:left}.cside .cx-q:hover{background:#F0E9E3}.cside .cx-q svg{width:16px;height:16px}.cside .cx-q kbd{margin-left:auto;font:600 10.5px var(--f);color:var(--ink3);border:1px solid #E2D8CF;border-radius:6px;padding:1px 6px;background:#fff}
+ .cside .cx-s{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px;border-radius:11px;font-weight:600;font-size:14px;color:var(--ink2)}
+ .cside .cx-s:hover{background:#F7F2EE;color:var(--ink)}.cside .cx-s svg{width:18px;height:18px;color:var(--ink3)}
+ .cside .cx-s.on{color:var(--ink)}.cside .cx-s.on svg{color:var(--c2)}.cside .cx-s.only.on{background:var(--tint);color:var(--c2)}
+ .cside .cx-b{margin-left:auto;font-size:11px;font-weight:800;color:#fff;background:var(--c);border-radius:99px;padding:1px 7px}
+ .cside .cx-sub{display:flex;flex-direction:column;gap:1px;margin:0 0 6px 19px;padding-left:8px;border-left:1px solid var(--line)}
+ .cside .cx-i{display:flex;align-items:center;gap:8px;text-align:left;padding:7px 10px;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--ink2)}.cside .cx-i:hover{background:#F7F2EE;color:var(--ink)}
+ .cside .cx-i.on{background:var(--tint);color:var(--c2);font-weight:700}.cside .cx-i i{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--c)}
+ .cside .cx-sep{height:1px;background:var(--line);margin:10px 8px}
+ .app.cfx .mx-bk,.app.cfx .mx-sub{display:none}
+ .app.cfx .em-hd,.app.cfx .em2-n,.app.cfx .em2-todo{display:none}.app.cfx .em2{grid-template-columns:minmax(0,1fr);max-width:860px}.app.cfx .em2-p{padding-top:6px}.app.cfx .mx-two{grid-template-columns:minmax(0,1fr)}.app.cfx .mx{max-width:820px}
+}
 .mx{max-width:1100px}.mx-bk{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink2);font-size:13.5px;margin-bottom:12px}.mx-bk svg{width:16px;height:16px}.mx-bk:hover{color:var(--ink)}
 .mx-two{display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;align-items:start}
 .mx-sub{position:sticky;top:20px;display:grid;gap:2px}.mx-sub h6{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:4px 11px 4px}
@@ -4311,12 +4329,43 @@ function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=[
       ['ajuda','Central de ajuda','Guias e suporte','',()=>go('ajuda'),'ajuda duvida suporte tutorial como']]]]}
 function cfgFlat(){return cfgGroups(CFGD).flatMap(g=>g[3].map(i=>({k:i[0],l:i[1],grp:g[1].replace(/<[^>]+>/g,''),run:i[4],kw:i[5]||''})))}
 let CFGD={};
+/* Configurações com segundo menu: o menu principal recolhe em ícones e abre ao lado um menu só de ajustes */
+const CFX={keep:false,pend:null,item:null,itemView:null,open:null,loaded:false};
+const CFX_VIEWS=['config','msgauto','empresa','equipe','automacoes','atividade','jornada','avisos-conta','assinatura','nanda'];
+const CFX_SECS=[['nanda',null,['nz-sabe','nz-modo','nz-apr']],['store','Seu negócio',['negocio','horario']],['plug','Canais',['whatsapp','instagram','canais']],['msg','Atendimento',['automsg','qr','encerrar','automacoes']],['team','Time',['equipe']],['bag','Vendas',['catalogo','promocoes','origens','plataformas','metas','jornada']],0,['card','Sua conta',['plano','avisos','atividade','me','ajuda']]];
+function cfxOn(v){if(!ME||admOn())return false;return CFX_VIEWS.includes(v)||(CFX.keep&&['vendas','agenda','metas','ajuda'].includes(v))}
+function cfxCur(){const v=VIEW;if(CFX.item&&CFX.itemView===v)return CFX.item;
+  return {nanda:NZV.tab==='aprendeu'?'nz-apr':'nz-sabe',msgauto:'automsg',equipe:'equipe',automacoes:'automacoes',atividade:'atividade','avisos-conta':'avisos',assinatura:'plano',jornada:'jornada',metas:'metas',agenda:'horario',
+    vendas:{produtos:'catalogo',promocoes:'promocoes',retorno:'origens',origens:'origens'}[VD.tab]||'catalogo',
+    empresa:{negocio:'negocio',plano:'plano',whatsapp:'whatsapp',instagram:'instagram',canais:'canais',vendas:'plataformas',recursos:'metas'}[EM.tab]||'negocio'}[v]||null}
+function cfxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.cfx'))return;
+  if(!CFX.loaded){CFX.loaded=true;cfgData().then(cfxDraw).catch(()=>{})}
+  const all=Object.fromEntries(cfgGroups(CFGD).flatMap(g=>g[3]).map(i=>[i[0],i]));const cur=cfxCur();
+  const secs=CFX_SECS.map(s=>s&&[s[0],s[1]||esc((ME.nanda||{}).name||'Nanda'),s[2].filter(k=>all[k])]).filter(s=>s===0||s[2].length);
+  const curSec=secs.find(s=>s&&s[2].includes(cur));const openK=curSec?curSec[0]:CFX.open;
+  el.innerHTML=`<div class="cx-t">Configurações</div><button type="button" class="cx-q" data-cxq>${NI.buscar}Buscar ajuste<kbd>Ctrl K</kbd></button>`+
+    secs.map((s,i)=>{if(s===0)return i&&i<secs.length-1?'<div class="cx-sep"></div>':'';const go_=s[2].filter(k=>all[k][3]==='go').length,on=s[0]===openK,one=s[2].length===1;
+      return `<button type="button" class="cx-s ${on?'on':''} ${one?'only':''}" data-cxs="${s[0]}">${svg(CFG_IC[s[0]]||CFG_IC.star)}${s[1]}${go_&&!on?`<span class="cx-b">${go_}</span>`:''}</button>`+
+        (on&&!one?`<div class="cx-sub">${s[2].map(k=>`<button type="button" class="cx-i ${k===cur?'on':''}" data-cxi="${k}">${all[k][1]}${all[k][3]==='go'?'<i></i>':''}</button>`).join('')}</div>`:'')}).join('');
+  const run=k=>{const it=all[k];if(!it)return;CFX.pend=k;CFX.keep=true;try{it[4]()}finally{setTimeout(()=>{CFX.pend=null;CFX.keep=false},0)}};
+  el.querySelector('[data-cxq]').onclick=()=>gPal();
+  el.querySelectorAll('[data-cxi]').forEach(b=>b.onclick=()=>run(b.dataset.cxi));
+  el.querySelectorAll('[data-cxs]').forEach(b=>b.onclick=()=>{const s=secs.find(x=>x&&x[0]===b.dataset.cxs);const modal=['qr','encerrar','me'];
+    const k=s[2].find(k=>all[k][3]==='go'&&!modal.includes(k))||s[2].find(k=>!modal.includes(k))||s[2][0];CFX.open=s[0];
+    if(modal.includes(k)){cfxDraw();return run(k)}run(k)})}
 const CFG_IC={nanda:NI.nanda,store:'<path d="M3 9l1.5-5h15L21 9M4 9v11h16V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>',plug:'<path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0zM12 17v5"/>',msg:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
-  team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',bag:'<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>'};
-async function cfgView(){const u=ME.user,mgr=['owner','manager'].includes(u.role);
+  team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',bag:'<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>'};
+async function cfgData(){const u=ME.user,mgr=['owner','manager'].includes(u.role);
   const [wn,ig,ai,qr,cl,tm,su,am]=await Promise.all(mgr?[api('/wa/number').catch(()=>null),api('/ig/status').catch(()=>null),api('/ai/settings').catch(()=>null),api('/quick-replies').catch(()=>null),clCfg(true).catch(()=>null),api('/team').catch(()=>null),suLoad().catch(()=>null),api('/automsg').catch(()=>null)]:[null,null,null,api('/quick-replies').catch(()=>null),null,null,null]);
   if(ai){ME.nanda={...ME.nanda,taught:ai.taught,mode:ai.default_mode,paused:ai.paused,pause_until:ai.pause_until,pause_by:ai.pause_by||''};nzRedraw()}
-  CFGD={am:am?['welcome','away','bye'].filter(k=>am[k].on).length+(am.sign?1:0):null,wa:!!wn,ig:ig?(ig.account?ig.account.username||'conectado':''):null,cat:ai&&ai.catalog?ai.catalog.length:null,qr:qr?qr.length:null,cl,team:tm?(Array.isArray(tm)?tm:(tm.members||tm.team||[])).filter(m=>m.active!==false).length||null:null};
+  CFGD={am:am?['welcome','away','bye'].filter(k=>am[k].on).length+(am.sign?1:0):null,wa:!!wn,ig:ig?(ig.account?ig.account.username||'conectado':''):null,cat:ai&&ai.catalog?ai.catalog.length:null,qr:qr?qr.length:null,cl,team:tm?(Array.isArray(tm)?tm:(tm.members||tm.team||[])).filter(m=>m.active!==false).length||null:null};CFX.loaded=true;
+  return su}
+async function cfgView(){const u=ME.user,mgr=['owner','manager'].includes(u.role);
+  const su=await cfgData();
+  if(mgr&&innerWidth>860){  // computador: Configurações abre direto no primeiro ajuste pendente (ou no que a Nanda sabe); o menu ao lado mostra o resto
+    const all=Object.fromEntries(cfgGroups(CFGD).flatMap(g=>g[3]).map(i=>[i[0],i])),ord=CFX_SECS.filter(Boolean).flatMap(x=>x[2]).filter(k=>all[k]&&!['qr','encerrar','me'].includes(k));
+    const k=ord.find(k=>all[k][3]==='go')||'nz-sabe';if(all[k]&&VIEW==='config'){CFX.pend=k;CFX.keep=true;try{all[k][4]()}finally{setTimeout(()=>{CFX.pend=null;CFX.keep=false},0)}return}}
+  cfxDraw();
   const G=cfgGroups(CFGD);
   const core=su&&su.core&&!su.core_ready&&!su.hidden?su.core.filter(s=>!s.done):null;
   const ring=su&&su.core?`<span class="cg-ring" style="--p:${su.core_pct||0}"><i>${su.core_done}/${su.core_total}</i></span>`:'';
@@ -4396,7 +4445,7 @@ function shell(){
     <div class="sp"></div>
     ${am?'':navBtn('config','Configurações')}
     <div class="me sw2"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status, avisos e sair'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span><span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span></button><button id="out" class="lb">Sair</button></div>
-  </aside><main>
+  </aside><aside class="cside" id="cside" aria-label="Configurações"></aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
      :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b><span class="bn-long"> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span></span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
@@ -4459,7 +4508,9 @@ function syncUrl(replace){
 addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
 function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';
   if(ME&&ME.user.is_admin&&!ME.user.impersonated_by&&$('.side')){const want=v.startsWith('a-')||(v==='ajuda'&&$('.side').classList.contains('adm'));if(want!==$('.side').classList.contains('adm')){ADMODE.set(v.startsWith('a-'));VIEW=v;return shell()}}
-  VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));
+  VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');if(CFX.pend){CFX.item=CFX.pend;CFX.itemView=v;CFX.pend=null}
+  const ap=document.querySelector('.app'),cx=cfxOn(v);if(ap){ap.classList.toggle('cfx',cx);ap.classList.toggle('mini',cx||NAVMINI.get())}if(!cx){CFX.item=null;CFX.open=null}
+  document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',cx?b.dataset.v==='config':b.dataset.v===v||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));cfxDraw();
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
   if(v!=='inicio')suLoad().then(()=>suPill());
