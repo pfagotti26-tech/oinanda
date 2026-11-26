@@ -707,7 +707,7 @@ async def quick(body: QuickIn, request: Request, user=Depends(managers)):
 async def test(body: TestIn, user=Depends(managers)):
     """Conversa de teste no painel: nada vai para o WhatsApp."""
     from billing import ai_allowed
-    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
+    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste deste mês acabaram. Ligue a Nanda no seu WhatsApp para começar os 7 dias grátis, sem cartão.')
     s = await settings_for(user['company_id'])
     # só o que a empresa ensinou: o exemplo do ramo nunca vira informação do negócio (a Nanda inventaria preço e condição).
     # A exceção é a demonstração da primeira entrada, pedida de propósito e marcada como exemplo na tela, enquanto nada foi ensinado.
@@ -782,7 +782,7 @@ class CorrectIn(BaseModel):
 async def correct(body: CorrectIn, request: Request, user=Depends(managers)):
     """Corrigir uma resposta no teste: ajusta só o português do que o dono escreveu, guarda como resposta ensinada e refaz a resposta."""
     from billing import ai_allowed
-    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste do modo demonstração acabaram este mês. Ative seus 14 dias grátis para continuar.')
+    if not await ai_allowed(user['company'], 'test'): raise HTTPException(402, 'As conversas de teste deste mês acabaram. Ligue a Nanda no seu WhatsApp para começar os 7 dias grátis, sem cartão.')
     msgs = to_llm(body.messages)
     if not msgs or msgs[-1]['role'] != 'user': raise HTTPException(400, 'Falta a mensagem do cliente.')
     q = msgs[-1]['content'].strip().replace('\n', ' ')[:300]

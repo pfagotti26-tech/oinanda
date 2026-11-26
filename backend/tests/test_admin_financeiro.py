@@ -170,7 +170,7 @@ def test_admin_financeiro_clientes_e_ficha(monkeypatch):
         a.portal.call(vence)
         assert a.get(f'/api/admin/companies/{dom["id"]}').json()['kind'] == 'readonly'
         # avisos automáticos
-        nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 20 and all(nn['notices'].values())
+        nn = a.get('/api/admin/notices').json(); assert len(nn['items']) == 21 and all(nn['notices'].values())
         assert nn['totals_30']['sent'] >= 1 and all('stats' in i and 'optional' in i for i in nn['items'])
         assert a.get('/api/admin/notices?days=7').json()['days'] == 7 and isinstance(a.get('/api/admin/notices/upcoming').json(), list)
         lg = a.get('/api/admin/notices/log?channel=failed&how=auto&days=30').json(); assert all(not (x['email'] or x['wa']) and not x.get('manual') for x in lg)

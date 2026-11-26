@@ -16,7 +16,7 @@ arts: [
  ['p', 'O Oi Nanda junta num lugar só as conversas do WhatsApp e do Instagram, o funil de vendas, a agenda e a Nanda, a assistente que responde seus clientes com o que você ensinou. A ordem abaixo é a que funciona melhor.'],
  ['steps', [
   '<b>Converse com a Nanda.</b> No Início, toque em "Conversar com a Nanda" e escreva como se fosse um cliente seu. Leva 1 minuto e você já vê como ela responde.',
-  '<b>Ative os 14 dias grátis.</b> Hoje não é cobrado nada. A gente avisa 3 dias antes do fim e dá para cancelar com um clique.',
+  '<b>Ligue o WhatsApp e começam os 7 dias grátis.</b> Sem cartão. A gente avisa antes do fim, e a conta só segue ativa se você cadastrar o cartão.',
   '<b>Ensine o seu negócio.</b> Em Nanda (IA), preencha preços, horários, regras e perguntas frequentes. O botão "Preencher com exemplo" já traz um modelo do seu segmento para você só ajustar.',
   '<b>Conecte o WhatsApp da empresa.</b> Em Empresa › WhatsApp. Leva uns 5 minutos. Leia antes o guia de conexão sem risco de bloqueio.',
   '<b>Ligue as automações recomendadas.</b> Em Automações, o bloco "Comece por estas 3" já mostra as que mais trazem venda no seu segmento.',
@@ -269,9 +269,9 @@ arts: [
  ['go', 'Abrir Origens', 'vendas']]},
 
 /* ---------------- Conta ---------------- */
-{id: 'assinatura', cat: 'conta', title: 'Planos, teste grátis e cobrança', sum: 'Como funcionam os 14 dias, os planos e o pacote extra da Nanda.', min: 3, to: 'assinatura', body: [
+{id: 'assinatura', cat: 'conta', title: 'Planos, teste grátis e cobrança', sum: 'Como funcionam os 7 dias grátis, os planos e o pacote extra da Nanda.', min: 3, to: 'assinatura', body: [
  ['list', [
-  '<b>Teste grátis de 14 dias</b> com tudo liberado. Cadastrando o cartão, a primeira mensalidade só entra no fim do teste, e a gente avisa 3 dias antes.',
+  '<b>Teste grátis de 7 dias, sem cartão</b>, com tudo liberado. Os 7 dias começam quando você liga o WhatsApp. Se cadastrar o cartão no meio do teste, a primeira mensalidade só entra no dia em que o teste acaba; sem cartão, a conta fica só para leitura depois dos 7 dias.',
   '<b>Essencial (R$ 147/mês):</b> 2 pessoas, a Nanda sugerindo as respostas, conversas, agenda, funil, vendas e automações.',
   '<b>Profissional (R$ 297/mês):</b> 5 pessoas e 600 atendimentos da Nanda sozinha por mês, campanhas, públicos e retorno por anúncio.',
   '<b>Equipe (R$ 597/mês):</b> 12 pessoas, 2.000 atendimentos, equipes com rodízio, metas, ranking e pós-venda.',

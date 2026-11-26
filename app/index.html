@@ -2528,7 +2528,7 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .rp-fb .lnk{font-weight:700;color:var(--c);font-size:12.5px;margin-left:auto}
 @media (max-width:860px){.rp-pre{display:grid!important;grid-template-columns:repeat(3,1fr);width:100%}.rp-pre button{padding:7px 4px;font-size:12.5px}.rp-per{font-size:12.5px}
  .rp-sel{flex:1 1 100%;min-width:0;justify-content:space-between}.rp-sel select{max-width:none;flex:1;min-width:0;text-align:right;text-overflow:ellipsis}.rp-cus{display:grid;grid-template-columns:1fr 1fr}.rp-cus label{flex-direction:column;align-items:stretch;gap:4px;min-width:0}.rp-cus input{width:100%;min-width:0;box-sizing:border-box}.rp-cus .btn{grid-column:1/-1}.rp-cus .hint{grid-column:1/-1}}
-/* entrada: criar conta, conhecer a Nanda, ativar os 14 dias */
+/* entrada: criar conta, conhecer a Nanda, ativar os 7 dias */
 .ob{min-height:100vh;background:var(--bg);display:grid;grid-template-rows:auto 1fr}
 .ob-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;max-width:1200px;width:100%;margin:0 auto}
 .ob-top .logo{text-decoration:none}
@@ -3401,6 +3401,60 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .sm-will{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}.sm-will:empty{display:none}.sm-will li{font-size:12.5px;color:var(--ink2);padding-left:20px;position:relative}.sm-will li:before{content:'✓';position:absolute;left:2px;color:var(--ok);font-weight:800}
 @container (max-width:820px){.sm3 .sm-sticky{box-shadow:none;border:1px solid var(--line)}.sm3 .sm-act{position:static;margin:0;padding:0;border:0;background:none}}
 @container (max-width:560px){.sm3 .sm-ct{flex-wrap:wrap}.sm3 .sm-ct .lnk{margin-left:0}.sm3 .sm-ctn{flex-basis:calc(100% - 50px)}.sm3 .sm-ct .lnk:first-of-type{margin-left:44px}.sm-sl2{flex-wrap:wrap}.sm-sl2 select{flex-basis:calc(100% - 84px)}.sm-cm{margin-left:42px}.sm-pays{grid-template-columns:repeat(2,1fr)}}
+/* primeira experiência (f3) e ligar o WhatsApp (cn) */
+.f3 [hidden],.cn [hidden]{display:none!important}
+.f3{max-width:1180px}.f3-hi{margin-bottom:16px}.f3-hi h1{font-size:27px;letter-spacing:-.03em}.f3-hi p{color:var(--ink2);margin-top:4px}
+.f3-g{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
+.f3-g2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.f3-hero{padding:22px}.f3-eb{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c2);background:var(--tint);border-radius:99px;padding:4px 10px;margin-bottom:10px}
+.f3-hero h2{font-size:20px;letter-spacing:-.02em;margin-bottom:14px}
+.f3-ch{background:#F4EFEA;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.f3-dh{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}.f3-dh em{font-style:normal;font-size:12px;color:var(--ok);font-weight:700}.f3-dh .lnk{margin-left:auto;font-size:12.5px}
+.f3-av{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;color:var(--ink2)}
+.f3-ms{display:flex;flex-direction:column;gap:8px;min-height:170px;max-height:320px;overflow-y:auto;padding:2px}.f3-ch.big .f3-ms{min-height:300px;max-height:440px}
+.f3-ms .fr-empty{color:var(--ink3);font-size:13.5px;text-align:center;margin:auto}
+.f3-tg{align-self:flex-end;font-size:11.5px;font-weight:700;color:var(--warn);background:var(--warnsoft);border-radius:99px;padding:2px 9px;margin-top:-4px}.f3-tg.ok{color:var(--ok);background:var(--oksoft)}
+.f3-cmp{display:flex;gap:8px;align-items:center;background:#fff;border-radius:12px;padding:6px 6px 6px 12px}.f3-cmp input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:14.5px;background:transparent}
+.f3-sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.f3-sug button{border:1px solid #EAD8CF;background:#fff;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--ink2)}.f3-sug button:hover{border-color:var(--c);color:var(--c2)}
+.f3-inv{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--tint);border:1px solid var(--soft);flex-wrap:wrap}.f3-inv>div{flex:1;min-width:200px}.f3-inv small{display:block;color:var(--ink2);font-size:13px}.f3-ii{font-size:22px}
+.f3-st{padding:20px}.f3-st h3{font-size:16px}.f3-st>small{color:var(--ink3);font-size:12.5px}
+.f3-pb{height:6px;border-radius:9px;background:#F1E9E3;margin:10px 0 6px;overflow:hidden}.f3-pb i{display:block;height:100%;background:var(--c);border-radius:9px}
+.f3-s{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.f3-s:first-of-type{border-top:0}.f3-s>div{flex:1;min-width:0}.f3-s b{display:block;font-size:14px}.f3-s small{color:var(--ink3);font-size:12.5px}
+.f3-s em{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:#F1E9E3;color:var(--ink3);flex:none}
+.f3-s.ok em{background:var(--oksoft);color:var(--ok)}.f3-s.ok b{color:var(--ink2)}.f3-s.now em{background:var(--c);color:#fff}
+.f3-wa{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:18px;flex-wrap:wrap}.f3-wa>div{flex:1;min-width:220px}.f3-wa small{display:block;color:var(--ink2);font-size:13px}
+.f3-wi{width:40px;height:40px;border-radius:12px;background:#E3F6EC;color:#128C4B;display:grid;place-items:center;flex:none}.f3-wi svg{width:22px;height:22px}
+.f3-wa.ok{background:var(--oksoft);border-color:transparent}
+.f3-ah{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.f3-ah h2{font-size:18px;letter-spacing:-.02em}
+.f3-strip{display:flex;align-items:center;gap:14px;padding:12px 16px;margin-bottom:18px;flex-wrap:wrap}.f3-strip>div{flex:1;min-width:200px}.f3-strip small{display:block;color:var(--ink2);font-size:13px}.f3-strip small em{font-style:normal;color:var(--warn);font-weight:700}
+.f3-sa{position:relative;width:40px;height:40px;border-radius:12px;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}.f3-sa i{position:absolute;right:-2px;top:-2px;width:11px;height:11px;border-radius:50%;background:#2BB673;border:2px solid #fff}
+.f3-stage{padding:16px}
+.f3-kn{padding:6px 0 0}.f3-kh{padding:12px 16px 8px}.f3-kh b{display:block;font-size:15px}.f3-kh small{color:var(--ink3);font-size:12.5px}
+.f3-ki{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 16px;border-top:1px solid var(--line)}.f3-ki:hover{background:var(--tint)}.f3-ki>span:nth-child(2){flex:1;min-width:0}
+.f3-ki b{display:block;font-size:13.5px}.f3-ki small{display:block;color:var(--ink3);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.f3-ki em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--c2)}
+.f3-ki.miss small{color:var(--warn)}.f3-kic{width:30px;height:30px;border-radius:9px;background:#F6F1EC;display:grid;place-items:center;font-size:15px;flex:none}
+.f3-add{padding:12px 16px 14px;border-top:1px solid var(--line)}.f3-add>span{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.f3-add form{display:flex;gap:6px}.f3-add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13.5px}
+.f3-sec{font-size:15px;margin:26px 0 10px}
+.f3-ex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.f3-x{display:flex;gap:12px;text-align:left;padding:14px}.f3-x:hover{border-color:var(--c)}.f3-x b{display:block;font-size:14px}.f3-x small{display:block;color:var(--ink2);font-size:12.5px}.f3-x em{display:block;font-style:normal;font-size:12.5px;font-weight:700;color:var(--c2);margin-top:6px}
+.f3-xi{width:34px;height:34px;border-radius:10px;background:var(--tint);color:var(--c2);display:grid;place-items:center;flex:none}.f3-xi svg{width:18px;height:18px}
+@media(max-width:900px){.f3-g,.f3-g2{grid-template-columns:minmax(0,1fr)}.f3-ex{grid-template-columns:minmax(0,1fr)}.f3-hi h1{font-size:23px}.f3-hero{padding:16px}}
+.cn{max-width:860px;margin:0 auto}.cn-bk{display:inline-flex;align-items:center;gap:4px;color:var(--ink2);font-weight:700;font-size:13.5px;margin-bottom:10px}.cn-bk svg{width:16px;height:16px}
+.cn-dots{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink3);margin-bottom:18px}.cn-dots i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:var(--oksoft);color:var(--ok);font-size:12px}.cn-dots i.on{background:var(--c);color:#fff}.cn-dots span{width:18px;height:2px;background:var(--line)}
+.cn-hero{display:flex;gap:16px;align-items:center;margin-bottom:20px}.cn-hero h1{font-size:26px;letter-spacing:-.03em;line-height:1.2}.cn-hero p{color:var(--ink2);margin-top:6px}
+.cn-ph{position:relative;width:56px;height:56px;border-radius:16px;background:#E3F6EC;color:#128C4B;display:grid;place-items:center;flex:none}.cn-ph svg{width:30px;height:30px}.cn-ph em{position:absolute;right:-6px;bottom:-6px;width:24px;height:24px;border-radius:50%;background:var(--c);color:#fff;font-style:normal;font-weight:800;font-size:12px;display:grid;place-items:center;border:2px solid #fff}
+.cn-op{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;align-items:start}
+.cn-o{position:relative;padding:20px;display:flex;flex-direction:column;gap:10px}.cn-o.r{border:1.5px solid var(--c)}.cn-o h2{font-size:18px}.cn-o p{color:var(--ink2);font-size:13.5px}
+.cn-tag{align-self:flex-start;font-size:11.5px;font-weight:800;color:var(--c2);background:var(--tint);border-radius:99px;padding:3px 9px}.cn-tag.g{color:var(--ok);background:var(--oksoft)}
+.cn-who{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink2)}.cn-who span{width:30px;height:30px;border-radius:50%;background:#F6F1EC;display:grid;place-items:center}.cn-who svg{width:16px;height:16px}
+.cn-mt{display:flex;gap:14px;font-size:13px;color:var(--ink2)}.cn-mt b{color:var(--ink)}
+.cn-sl h6{font-size:12.5px;font-weight:700;color:var(--ink2);margin-bottom:8px}.cn-hr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.cn-hr button{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;font-weight:700;background:#fff}.cn-hr button:hover{border-color:var(--c)}.cn-hr button.on{border-color:var(--c);background:var(--tint);color:var(--c2)}
+.cn-go{width:100%;justify-content:center;margin-top:10px}.cn-none{display:block;margin:8px auto 0;font-size:12.5px}.cn-req{background:var(--oksoft);color:var(--ok);border-radius:10px;padding:10px 12px;font-weight:600}
+.cn-ok{display:flex;gap:12px;align-items:flex-start;padding:16px;margin-bottom:14px;background:var(--oksoft);border-color:transparent}.cn-ok>span{width:28px;height:28px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}.cn-ok small{display:block;color:var(--ink2);font-size:13px;margin-top:2px}
+.cn-need{padding:16px 20px;margin-top:14px}.cn-need h3{font-size:14px;margin-bottom:10px}.cn-need>div{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cn-need>div>span{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink3)}.cn-need b{display:block;font-size:13.5px;color:var(--ink)}
+.cn-need i{width:34px;height:34px;border-radius:10px;background:#F6F1EC;display:grid;place-items:center;flex:none;color:var(--ink2)}.cn-need i svg{width:18px;height:18px}
+.cn-ft{text-align:center;color:var(--ink3);font-size:13px;margin:18px 0 30px}.cn-ft .lnk{font-size:13px}
+@media(max-width:760px){.cn-op,.cn-need>div{grid-template-columns:minmax(0,1fr)}.cn-hero{align-items:flex-start}.cn-hero h1{font-size:21px}.cn-hero h1 br{display:none}}
 </style>
 </head>
 <body>
@@ -3615,7 +3669,7 @@ function passwordView(){
   $('#f').onsubmit=async ev=>{ev.preventDefault();try{await api('/auth/password',{method:'POST',body:Object.fromEntries(new FormData(ev.target))});await boot()}catch(e){$('#e').textContent=e.message}};
 }
 
-/* ---------- entrada: criar conta → conhecer a Nanda → ativar os 14 dias ---------- */
+/* ---------- entrada: criar conta → conhecer a Nanda → ativar os 7 dias ---------- */
 /* "Me ajude a escrever": perguntas por ramo que montam o texto da Nanda */
 const NZW_Q={
  clinica:{tipo:'clínica',q:[['faz','Quais tratamentos ou procedimentos vocês fazem?','harmonização facial, limpeza de pele, depilação a laser'],['onde','Onde fica a clínica?','Rua das Flores, 120, Moema, São Paulo'],['quem','Quem atende?','Dra. Ana, dermatologista, e equipe de esteticistas'],['pub','Que público mais procura vocês?','mulheres de 25 a 55 anos'],['dif','Por que escolher vocês?','avaliação gratuita, 10 anos de experiência, estacionamento no local']],
@@ -3782,7 +3836,7 @@ async function signupView(email){
   const bar=`<div class="sg-bar">${[1,2,3].map(i=>`<i class="${i<=SG.step?'on':''}"></i>`).join('')}</div>`;
   const who=SG.g?`<div class="sg-who"><span class="sg-av">${esc((SG.gname||'?')[0].toUpperCase())}</span><div><b>${esc(SG.gname)}</b><small>${esc(SG.gemail)} · pelo Google</small></div></div>`:'';
   let body='';
-  if(SG.step===1)body=`<h1>Crie sua conta grátis</h1><p class="sub">14 dias para ver a Nanda atendendo o seu negócio. Sem cartão.</p>
+  if(SG.step===1)body=`<h1>Crie sua conta grátis</h1><p class="sub">Teste a Nanda à vontade. Quando ligar o WhatsApp, são 7 dias grátis, sem cartão.</p>
     ${gOn?`<a class="btn sg-g" href="/api/auth/google?mode=signup">${GG}Continuar com Google</a><div class="sg-or">ou use seu e-mail</div>`:''}
     <form id="f" novalidate><div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(SG.email)}" placeholder="voce@seunegocio.com.br"><div class="fe" id="eE"></div></div>
      <div class="field"><label>Crie uma senha</label><input name="password" type="password" required minlength="8" autocomplete="new-password" value="${esc(SG.password)}" placeholder="Mínimo de 8 caracteres"><small class="fh" id="pwH"></small></div>
@@ -3800,7 +3854,7 @@ async function signupView(email){
   SG.err='';
   const lbl=['Sua conta','Seu negócio','Contato'][SG.step-1];
   auShell(`<div class="sg"><div class="sg-st"><span>Passo ${SG.step} de 3 · ${lbl}</span>${bar}</div>${body}
-   <div class="ob-trust"><span>14 dias grátis</span><span>Sem cartão</span><span>Cancele quando quiser</span></div>
+   <div class="ob-trust"><span>7 dias grátis</span><span>Sem cartão</span><span>Cancele quando quiser</span></div>
    ${SG.step===1?'<p class="ob-small">Ao continuar você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</p>':''}</div>`,
    auArtSignup(),`<span class="au-q">Já tem conta?</span><a class="btn sm" data-go="login" href="/">Entrar</a>`);
   AUX.key='';auPlay(SG.segment,SG.company);
@@ -4158,7 +4212,7 @@ async function comecarView(){
        <p class="ob-fine">Dá para completar depois em <b>${esc(nanda)}</b>, no menu: serviços, regras, perguntas frequentes. Tudo que você salvar aqui já vale para o atendimento de verdade.</p></div></div>
      <div class="ob-side"><div class="ob-card ob-pv"><h3>Assim ela vai responder</h3><p class="ob-pvs">Prévia com o que você está escrevendo.</p>
        <div class="ob-pvc"><div class="ob-m in" id="obPvQ">${esc((OB_ASK[seg]||OB_ASK.outro)[0])}<small>agora</small></div><div class="ob-m out" id="obPvA"><b>${esc(nanda)}</b><span></span><small>agora</small></div></div></div>
-      <div class="ob-card ob-why"><h3>Por que começar por aqui</h3><ul><li><b>Sem inventar.</b> O que ela não souber, ela passa para o seu time.</li><li><b>Não é um teste perdido.</b> O que você salvar já é o treino de verdade dela.</li><li><b>Sem cartão.</b> Seus 14 dias grátis já começaram.</li></ul></div></div>
+      <div class="ob-card ob-why"><h3>Por que começar por aqui</h3><ul><li><b>Sem inventar.</b> O que ela não souber, ela passa para o seu time.</li><li><b>Não é um teste perdido.</b> O que você salvar já é o treino de verdade dela.</li><li><b>Sem cartão.</b> Os 7 dias grátis só começam quando você ligar o WhatsApp.</li></ul></div></div>
     </div></div>`;
     const its=$('#obIts');
     const curHours=()=>T.free?($('#obHf')?$('#obHf').value.trim():T.hours):obCap(obHrsParts(T.grid).join('; '));
@@ -4218,8 +4272,8 @@ async function comecarView(){
        <button class="btn p big" id="obSend" type="button">Enviar mensagem</button></div></div>
      <div class="ob-side">
       <div class="ob-card"><h3>O que a ${esc(nanda)} fez nessa conversa</h3><div class="ob-did" id="obDid"></div></div>
-      <div class="ob-card ob-cta">${isDemo?`<h3>Pronto para ela atender os seus ${nouns} de verdade?</h3><p>No próximo passo você ativa os 14 dias grátis e conecta o WhatsApp.</p><button class="btn p big" id="obGo">Quero a Nanda no meu WhatsApp</button>`
-        :`<span class="ob-ey ok">Seus 14 dias grátis já começaram · sem cartão</span><h3>Último passo: conectar o WhatsApp</h3><p>Leva uns 5 minutos. Faça pelo celular que tem o chip do número e a ${esc(nanda)} começa a atender os seus ${nouns}.</p><button class="btn p big" id="obGo">Conectar meu WhatsApp</button>`}
+      <div class="ob-card ob-cta">${isDemo?`<h3>Pronto para ela atender os seus ${nouns} de verdade?</h3><p>No próximo passo você liga o WhatsApp e começam os 7 dias grátis, sem cartão.</p><button class="btn p big" id="obGo">Quero a Nanda no meu WhatsApp</button>`
+        :`<span class="ob-ey ok">Seus 7 dias grátis já começaram · sem cartão</span><h3>Último passo: conectar o WhatsApp</h3><p>Leva uns 5 minutos. Faça pelo celular que tem o chip do número e a ${esc(nanda)} começa a atender os seus ${nouns}.</p><button class="btn p big" id="obGo">Conectar meu WhatsApp</button>`}
        <button class="ob-lnk" id="obExp" type="button">Explorar o sistema antes</button></div></div></div></div>`;
     const chat=$('#obChat'),inp=$('#obIn');
     const drawDid=()=>{$('#obDid').innerHTML=did.map((d,i)=>`<div class="${on[i]?'on':''}"><i>${on[i]?'✓':d[0]}</i><span>${d[1]}<small>${esc(det[i]||d[2])}</small></span></div>`).join('')};
@@ -4252,7 +4306,7 @@ async function comecarView(){
 }
 
 async function ativarView(){
-  history.replaceState(null,'','/ativar');document.title='Ative seus 14 dias grátis · Oi Nanda';
+  history.replaceState(null,'','/ativar');document.title='Ative seus 7 dias grátis · Oi Nanda';
   let b;try{b=await api('/billing')}catch(e){toast(e.message);return}
   if(b.state!=='demo'&&b.state!=='readonly'){VIEW='assinatura';shell();return}
   const own=ME.user.role==='owner',offer=b.trial_offer,S={plan:'profissional'};
@@ -4264,7 +4318,7 @@ async function ativarView(){
   const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x};
   const draw=()=>{const p=P[S.plan];
     $('#root').innerHTML=`<div class="ob ob-c"><div class="ob-top">${obAppLogo}${b.state==='demo'?obSteps(3):''}</div><div class="body">
-     <h1>${offer?'Ative seus 14 dias grátis':b.state==='readonly'?'Seu teste acabou. Continue de onde parou':'Escolha o seu plano'}</h1>
+     <h1>${offer?'Ative seus 7 dias grátis':b.state==='readonly'?'Seu teste acabou. Continue de onde parou':'Escolha o seu plano'}</h1>
      <p class="sub">${offer?'Você só paga se continuar. Escolha o plano para depois do teste, dá para trocar quando quiser.':b.state==='readonly'?'Conversas, contatos e tudo o que a Nanda aprendeu estão guardados. Escolha um plano e o atendimento volta na hora.':'Pagamento no cartão pelo Mercado Pago, sem fidelidade.'}</p>
      <div class="ob-plans">${['essencial','profissional','equipe'].map(k=>`<button type="button" class="ob-pl ${S.plan===k?'on':''}" data-pl="${k}">${k==='profissional'?'<span class="tag">Mais escolhido</span>':''}<span class="rd"></span>
        <h3>${P[k].name}</h3><span class="ob-price">${obMoney(P[k].price).replace(',00','')} <small>/mês</small></span><p class="pi">${sub[k]}</p><ul>${bullets[k].map(x=>`<li>${x}</li>`).join('')}</ul></button>`).join('')}</div>
@@ -4576,14 +4630,14 @@ function shell(){
   </aside><aside class="cside" id="cside" aria-label="Configurações"></aside><main>${am?'':`<button type="button" class="bellf" id="bellB" aria-label="Avisos" title="Avisos">${svg(BELL_I)}<em class="belln" hidden></em></button>`}
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
-     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b><span class="bn-long"> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span></span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
+     :ME.access&&ME.access.state==='demo'&&!u.impersonated_by&&VIEW!=='inicio'?`<div class="banner trial demo"><span class="bn-tx"><b>Você está testando.</b><span class="bn-long"> Os 7 dias grátis começam quando você ligar a Nanda no WhatsApp. Sem cartão.</span></span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ligar o WhatsApp</button>':''}<button class="lnk" data-v="inicio">Testar a Nanda</button></span></div>`
      :ME.trial_days_left!=null&&!u.impersonated_by?`<div class="banner trial" id="trialBn">Teste grátis: ${ME.trial_days_left} ${ME.trial_days_left===1?'dia':'dias'} restantes.${ME.card_trial&&u.role!=='agent'?(ME.sub_cancelled?` Assinatura cancelada: o acesso vai até ${obDay(ME.card_trial)} e nada será cobrado.`:` A primeira mensalidade entra em ${obDay(ME.card_trial)}.`):''}${u.role==='owner'?`<button class="lnk" data-sub>${ME.card_trial&&!ME.sub_cancelled?'Ver assinatura':'Ver planos e assinar'}</button>`:''}</div>`:''}
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${(am?['a-visao','a-clientes','a-financeiro','a-erros']:['inicio','conversas','funil','vendas'].filter(allowed)).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':v.startsWith('a-')?{'a-visao':'Visão','a-clientes':'Clientes','a-financeiro':'Financeiro','a-erros':'Erros'}[v]:lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>{if(b.dataset.v.startsWith('a-')){AD.open=null;AD.popen=AD.fopen=false;AD.f={}}go(b.dataset.v)});
   $('#gOpen').onclick=()=>gPal();$('#mSrch').onclick=()=>gPal();nzBind();
   document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('assinatura'));
-  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>ativarView());document.querySelectorAll('[data-talk]').forEach(b=>b.onclick=()=>comecarView());
+  document.querySelectorAll('.banner [data-act]').forEach(b=>b.onclick=()=>conectarView());document.querySelectorAll('.banner [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
   if(!am){document.querySelectorAll('#bellB,#bellM').forEach(b=>b.onclick=e=>{e.stopPropagation();bellOpen()});bellPoll();clearInterval(BELL.t);BELL.t=setInterval(()=>{if(!document.hidden)bellPoll()},60000)}
@@ -8567,7 +8621,7 @@ const VIEWS={
   const talked=ai&&((ai.usage||{}).tests>0||ai.taught);
   const S=[['nanda','Conversar com a Nanda','Veja como ela responderia os seus clientes.','1 min',talked,'Conversar agora',()=>comecarView()],
     ['ensinar','Ensinar preços e horários','O que ela precisa saber para responder certo.','10 min',ai&&ai.taught,'Ensinar a Nanda',()=>go('nanda')],
-    ...(demo&&own?[['ativar','Ativar os 14 dias grátis','Hoje não é cobrado nada. Cancele quando quiser.','2 min',false,'Ativar agora',()=>ativarView()]]:[]),
+    ...(demo&&own?[['ativar','Ligar a Nanda no WhatsApp','Os 7 dias grátis começam aqui. Sem cartão.','10 min',false,'Ligar agora',()=>conectarView()]]:[]),
     ['wa','Conectar o WhatsApp','O número que seus clientes já conhecem, pelo canal oficial.','5 min',!!num,'Conectar',()=>go('empresa')],
     ...(au?[['lembretes','Ligar lembretes automáticos','Confirmação de horário e retomada de quem sumiu.','1 min',au.items.some(a=>a.active),'Ver sugestões',()=>go('automacoes')]]:[]),
     ['time','Chamar o seu time','Cada pessoa com o seu acesso. Pode pular se é só você.','2 min',team.length>1,'Convidar',()=>go('equipe')]];
@@ -9205,7 +9259,7 @@ VIEWS.assinatura=async function(){
   const own=ME.user.role==='owner';let b=await api('/billing');
   const q=new URLSearchParams(location.search);if(q.get('preapproval_id')||b.billing.status==='pending'||b.billing.pending_url){try{b=await api('/billing/sync',{method:'POST'})}catch(e){}if(q.get('preapproval_id'))history.replaceState(null,'','/assinatura')}
   if(b.state==='demo'&&own)return ativarView();
-  if(b.state!==ME.access?.state||b.plan!==ME.access?.plan){const was=ME.access?.state;await refresh();if(was==='demo'&&b.state==='trial'){VIEW='inicio';shell();toast('Pronto! Seus 14 dias grátis começaram. Agora é conectar o WhatsApp.');return}shell();return}
+  if(b.state!==ME.access?.state||b.plan!==ME.access?.plan){const was=ME.access?.state;await refresh();if(was==='demo'&&b.state==='trial'){VIEW='inicio';shell();toast('Pronto! Seus 7 dias grátis começaram.');return}shell();return}
   let A=null;try{A=await api('/billing/ai')}catch(e){}
   const ct=b.card_trial;
   const S={cycle:b.billing.cycle||'monthly',plan:b.plan&&b.state==='active'?b.plan:'profissional',extra:b.billing.extra_users||0};
@@ -9269,6 +9323,8 @@ async function boot(){
   }
   if(ME.user.must_change_password)return passwordView();
   if(location.pathname.startsWith('/comecar'))return comecarView();
+  if(location.pathname.startsWith('/conectar')&&ME.user.role==='owner'&&!ME.user.impersonated_by){VIEW='inicio';await shell();return conectarView()}
+  if(location.pathname.startsWith('/ativar')&&ME.access&&ME.access.state==='demo'){history.replaceState(null,'','/conectar');VIEW='inicio';await shell();return conectarView()}
   if(location.pathname.startsWith('/ativar'))return ME.user.role==='owner'?ativarView():(history.replaceState(null,'','/'),VIEW='inicio',shell());
   if(location.pathname.startsWith('/cadastro')){history.replaceState(null,'','/');VIEW='inicio'}
   const gq=new URLSearchParams(location.search).get('google');
@@ -9483,6 +9539,7 @@ function tqView(n){tqInit();TQ.step=n||TQ.step||1;const seg=TQ.seg,c=ME.company,
     if(st===2&&!TQ.days.length)return e.textContent='Escolha pelo menos um dia.';
     if(st===2&&TQ.h==='outro'&&TQ.hOther[0]>=TQ.hOther[1])return e.textContent='O horário de fechar precisa ser depois do de abrir.';
     if(st===3&&!TQ.modes.length)return e.textContent='Escolha pelo menos uma opção.';
+    if(st===3&&TQ.modes.includes('fisico')&&!(TQ.street||'').trim())return e.textContent='Falta o endereço. Digite o CEP que o resto vem sozinho.';
     if(st===4&&!TQ.pay.length)return e.textContent='Escolha pelo menos uma forma de pagamento.';
     st<5?tqView(st+1):tqDone()};
   function tqDone(){const segL=(SEG[seg]||'').split(',')[0].toLowerCase(),bairro=TQ.modes.includes('fisico')&&TQ.street?TQ.street.split(', ').slice(1,2).join(''):'';
@@ -9539,7 +9596,7 @@ function descCheck(r,back){
      const bad=v.find(x=>x.mode!=='consulta'&&(x.price==null||x.price===''));if(bad){b.disabled=false;b.textContent='Está certo, salvar';return $('#dsE2').textContent=`Falta o preço de ${bad.name} (ou escolha "Sob consulta").`}
      try{await api('/ai/describe/save',{method:'POST',body:{about:$('#dsA').value,where:$('#dsW')?$('#dsW').value:'',payment:$('#dsP').value,hours_grid:r.hours_grid,rules:r.rules||[],notes:r.notes||[],
          items:v.map(x=>({name:x.name.trim(),price:x.mode==='consulta'?null:x.price,mins:x.mins,from:x.mode==='apartir',consult:x.mode==='consulta'}))}});
-       DS.text='';DS.url='';FR.seg=null;delete TQ.seg;o.remove();toast('Pronto! A Nanda já sabe. Teste a conversa.');await suLoad(true);go('inicio')}
+       DS.text='';DS.url='';FR.seg=null;FR.wow=true;FR.hist=[];delete TQ.seg;o.remove();await suLoad(true);go('inicio')}
      catch(e){$('#dsE2').textContent=e.message;b.disabled=false;b.textContent='Está certo, salvar'}}}}
 /* Início da primeira entrada: ver a Nanda funcionando antes de configurar + os 5 passos essenciais */
 const FR={hist:null,busy:false,seg:null};
@@ -9554,49 +9611,97 @@ const FR_EX={clinica:['Oi! Quanto custa a limpeza de pele?','Oi! A limpeza de pe
  restaurante:['Oi! Quanto está a pizza grande?','Oi! A pizza grande sai por R$ 69 e a entrega R$ 8. Qual sabor você quer? 😊'],
  lancamento:['Oi! Quanto custa o curso completo?','Oi! O curso completo sai por R$ 997. Quer que eu te conte o que vem nele? 😊'],
  outro:['Oi! Quanto custa o serviço?','Oi! O serviço principal sai por R$ 150. Posso te ajudar com mais alguma coisa? 😊']};
-async function homeFirst(d){
+let CN_T=0;
+async function homeFirst(d){const t0=Date.now();
   const u=ME.user,c=ME.company,seg=c.segment||'outro',first=esc(u.name.split(' ')[0]),[noun,,aNoun]=obNoun(seg);
-  const [ai,sup]=await Promise.all([api('/ai/settings').catch(()=>({})),api('/help/contact').catch(()=>null)]);
-  const nanda=esc(ai.name||'Nanda'),taught=!!(ai.taught||(ai.catalog||[]).some(x=>x.price>0)),ph=OB_PH[seg]||OB_PH.outro,ag=['clinica','studio','salao','servicos','escola'].includes(seg);
-  if(FR.seg!==seg+(taught?'1':'0')){FR.seg=seg+(taught?'1':'0');const cx=FR_EX[seg]||FR_EX.outro;
-    FR.hist=taught?[]:[{dir:'in',text:cx[0],at:'agora'},{dir:'out',text:cx[1],at:'agora'}]}
-  const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3);
-  const I=p=>svg(p),ST={sobre:'Contar sobre o negócio',precos:'Ensinar seus preços',whatsapp:'Conectar o WhatsApp',time:'Convidar o time',ativar:'Ativar os 14 dias grátis'};
-  const nx=d.core.find(x=>!x.done);
-  const row=(x,i)=>{const cur=x===nx;return `<div class="fr-st ${x.done?'ok':cur?'cur':''}"><span class="fr-n">${x.done?'✓':i+2}</span><div><b>${esc(ST[x.key]||x.title)}</b><small>${x.done?'Feito':(cur&&(x.key==='sobre'||x.key==='precos')?'Toque nas opções do seu ramo · 2 min':x.mins+' min'+(x.can_skip?' · opcional':''))}</small>${x.key==='whatsapp'&&!x.done?'<span class="fr-bd">✓ API oficial · sem risco de bloqueio</span>':''}</div>
-    ${x.done?'<span></span>':cur?`<span class="fr-ac"><button class="btn sm p" ${x.key==='sobre'||x.key==='precos'?'data-desc':'data-do'}="${x.key}">${esc(x.key==='sobre'||x.key==='precos'?'Começar':x.cta)}</button>${x.can_skip?`<button class="lnk" data-sk="${x.key}">${esc(x.skip_label)}</button>`:''}</span>`:`<button class="fr-go" data-do="${x.key}" aria-label="${esc(x.title)}">›</button>`}</div>`};
-  $('#page').innerHTML=`<div class="fr">
-   <div class="fr-hd"><div><h1>Oi, ${first}! 👋</h1><p>${taught?`Teste a ${nanda} com o que você ensinou, como se fosse ${aNoun}.`:`Antes de configurar, veja a ${nanda} atendendo ${aNoun} da ${esc(c.name)}.`}</p></div><button class="lnk fr-skip" id="frHide">Já conheço, ir para o painel</button></div>
-   <div class="fr-grid">
-    <section class="card fr-hero"><span class="fr-ey">Experimente agora · 1 minuto</span><h2>Converse com a ${nanda} como se fosse ${aNoun}</h2>
-     <div class="fr-demo"><div class="fr-dh"><span class="fr-av">${esc(noun[0].toUpperCase())}</span>${obCap(noun)} de teste<em>● ${nanda} atendendo</em></div>
-      <div class="fr-ms" id="frMs"></div>
-      <form class="fr-cmp" id="frF"><input id="frIn" placeholder="${innerWidth<=520?'Escreva aqui…':'Escreva como se fosse '+esc(aNoun)+'…'}" autocomplete="off" aria-label="Mensagem de teste"><button class="btn p sm" id="frSend">Enviar</button></form></div>
-     <div class="fr-sug">${asks.map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
-     <p class="fr-note">${taught?'Ela responde só com o que você ensinou. Nada sai para o WhatsApp de ninguém.':`Ela está usando um <b>exemplo de ${esc((SEG[seg]||'negócio').split(',')[0].toLowerCase())}</b>. No passo 2 ela aprende os <b>seus</b> preços. Nada sai para o WhatsApp de ninguém.`}</p></section>
-    <section class="card fr-steps"><div class="fr-sh"><h3>Seus ${d.core_total} passos</h3><em>${d.core_done} de ${d.core_total}</em></div><div class="fr-pb"><i style="width:${d.core_pct}%"></i></div>
-     <div class="fr-st ok"><span class="fr-n">✓</span><div><b>Criar a conta</b><small>Feito</small></div><span></span></div>${d.core.map(row).join('')}
-     <p class="fr-more">Agenda, funil e automações aparecem como próximos passos depois desses ${d.core_total}. <button class="lnk" id="frAll">Ver tudo</button></p></section>
-   </div>
-   <div class="fr-row"><button type="button" class="card fr-tile" data-tour><span class="fr-ti">${I('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>')}</span><span><b>Tour de 2 minutos</b><small>Um dia com a ${nanda}, do primeiro "oi" até a venda.</small></span><i>›</i></button>
-    ${sup&&sup.whatsapp?`<a class="card fr-tile g" target="_blank" rel="noopener" href="https://wa.me/${sup.whatsapp}?text=${encodeURIComponent('Oi! Sou da '+c.name+' e quero ajuda para configurar o Oi Nanda.')}"><span class="fr-ti">${I('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}</span><span><b>Prefere configurar junto?</b><small>A gente te ajuda pelo WhatsApp, passo a passo.</small></span><i>›</i></a>`
-     :`<button type="button" class="card fr-tile" data-to="ajuda"><span class="fr-ti">${I('<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>')}</span><span><b>Ficou com dúvida?</b><small>Guias curtos de cada tela e do seu ramo.</small></span><i>›</i></button>`}</div></div>`;
+  const [ai,ob]=await Promise.all([api('/ai/settings').catch(()=>({})),ME.user.role==='owner'?api('/onboard').catch(()=>null):null]);
+  if(CN_T>=t0||location.pathname.startsWith('/conectar'))return;
+  const nanda=esc(ai.name||'Nanda'),taught=!!(ai.taught||(ai.catalog||[]).some(x=>x.price>0)),I=p=>svg(p);
+  const asks=(OB_ASK[seg]||OB_ASK.outro).slice(0,3),cx=FR_EX[seg]||FR_EX.outro;
+  if(FR.seg!==seg+(taught?'1':'0')){FR.seg=seg+(taught?'1':'0');FR.hist=taught?[]:[{dir:'in',text:cx[0],at:'agora'},{dir:'out',text:cx[1],at:'agora',ex:1}]}
+  const wow=!!FR.wow;FR.wow=false;
+  const minK='f3min_'+c.id,isMin=()=>{try{return localStorage.getItem(minK)==='1'}catch(e){return false}},setMin=v=>{try{localStorage.setItem(minK,v?'1':'0')}catch(e){}};
+  const steps=d.core||[],nx=steps.find(x=>!x.done);
+  const stepsH=`<section class="card f3-st"><h3>Para a ${nanda} atender seus clientes</h3><small>${d.core_done} de ${d.core_total}${nx?' · uns '+steps.filter(x=>!x.done).reduce((a,x)=>a+(x.key==='testar'?1:x.key==='precos'?2:x.mins),0)+' minutos no total':''}</small><div class="f3-pb"><i style="width:${d.core_pct}%"></i></div>
+    ${steps.map((x,i)=>`<div class="f3-s ${x.done?'ok':x===nx?'now':'nx'}"><em>${x.done?'✓':i+1}</em><div><b>${esc(x.title)}</b><small>${x.done?(x.key==='testar'?'Ela respondeu seu primeiro '+esc(noun):'Feito'):esc(x.key==='testar'?'30 segundos':x.key==='precos'?'2 min · é o que evita resposta errada':'10 min · ela começa a atender de verdade')}</small></div>${x===nx&&x.key!=='testar'?`<button type="button" class="btn sm p" data-st="${x.key}">${x.key==='precos'?'Ensinar':'Ligar'}</button>`:''}</div>`).join('')}</section>`;
+  const chatH=(big)=>`<div class="f3-ch ${big?'big':''}"><div class="f3-dh"><span class="f3-av">${esc(noun[0].toUpperCase())}</span>${obCap(noun)} de teste<em>● ${nanda} atendendo</em>${big?'<button type="button" class="lnk" id="f3Clr">Limpar</button>':''}</div><div class="f3-ms" id="frMs"></div>
+    <form class="f3-cmp" id="frF"><input id="frIn" placeholder="${innerWidth<=520?'Escreva aqui…':'Escreva como se fosse '+esc(aNoun)+'…'}" autocomplete="off" aria-label="Mensagem de teste"><button class="btn p sm" id="frSend">Enviar</button></form></div>
+    <div class="f3-sug">${asks.map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>`;
+  const conn=ob&&ob.booked?`<section class="card f3-wa ok"><span class="f3-wi">${I(WAI_P)}</span><div><b>Chamada marcada: ${esc(ob.booked.label)}${ob.booked.pro_name?' com '+esc(ob.booked.pro_name.split(' ')[0]):''}</b><small>A gente liga a ${nanda} no seu WhatsApp junto com você. Deixe por perto o celular do WhatsApp do negócio e o login do Facebook da empresa.</small></div><button type="button" class="btn sm" data-cn="self">Fazer agora sozinha</button></section>`
+    :`<section class="card f3-wa"><span class="f3-wi">${I(WAI_P)}</span><div><b>Quando quiser, ligue a ${nanda} no seu WhatsApp</b><small>${taught?'Ela já sabe seus preços e horários. ':''}Leva uns 10 minutos, ou 30 com a gente por vídeo. Os 7 dias grátis começam aqui, sem cartão.</small></div><button type="button" class="btn sm" data-cn="time">Fazer com a gente</button><button type="button" class="btn sm p" data-cn="self">Ligar agora</button></section>`;
+  if(!taught){
+    $('#page').innerHTML=`<div class="f3"><div class="f3-hi"><h1>Oi, ${first}! 👋</h1><p>Antes de tudo, veja a ${nanda} atendendo ${aNoun} da ${esc(c.name)}.</p></div>
+     <div class="f3-g"><section class="card f3-hero"><span class="f3-eb">Experimente agora · 30 segundos</span><h2>Converse com a ${nanda} como se fosse ${aNoun}</h2>${chatH(false)}
+      <div class="f3-inv"><span class="f3-ii">✨</span><div><b>Agora faça ela responder com os SEUS preços</b><small>Ela só fala o que você ensinar. Sem isso, ela pode errar com o seu cliente.</small></div><button type="button" class="btn p" data-st="precos">Ensinar em 2 min →</button></div></section>
+     ${stepsH}</div></div>`}
+  else{
+    const ab=(ai.about||'').split('\n'),line=pre=>(ab.find(l=>l.startsWith(pre))||'').slice(pre.length).trim(),kn=(ai.knowledge||'').split('\n');
+    const pay=((kn.find(l=>/^Formas de pagamento:/.test(l))||'').replace(/^Formas de pagamento:\s*/,''));
+    const cat=(ai.catalog||[]).filter(x=>x.active!==false),faq=(ai.faq||'').split('\n').filter(x=>x.trim()),ho=((ai.handoff||'')+'\n'+(ai.rules||'')).split('\n').map(x=>x.trim()).filter(x=>x&&!/:$/.test(x));
+    const TONE={proximo:'Próximo e direto',descontraido:'Descontraído',formal:'Mais formal'};
+    const K=[['🏷️','Serviços e preços',cat.length?cat.slice(0,3).map(x=>esc(x.name)+(x.price!=null?' '+brl(x.price):'')).join(' · ')+(cat.length>3?` · +${cat.length-3}`:''):'',1],
+      ['🕘','Horário',esc(line('Horário de atendimento:')),2],['📍','Onde fica',esc(line('Onde fica / como atende:')),3],['💳','Pagamento',esc(pay),4],
+      ['❓','Dúvidas frequentes',faq.length?faq.length+(faq.length===1?' pergunta':' perguntas'):'','nanda'],['🛟','O que ela não trata',ho.length?esc(ho.slice(0,2).join(' · ')):'','nanda'],['💬','Jeito de falar',TONE[ai.tone]||TONE.proximo,'voz']];
+    const miss=K.filter(k=>!k[2]).length;
+    const knowH=`<aside class="card f3-kn"><div class="f3-kh"><b>O que a ${nanda} sabe</b><small>Toque para mudar. Ela usa na hora.</small></div>
+      ${K.map(k=>`<button type="button" class="f3-ki ${k[2]?'':'miss'}" data-kn="${k[3]}"><span class="f3-kic">${k[0]}</span><span><b>${k[1]}</b><small>${k[2]||'Ainda não ensinado · ela chama você'}</small></span><em>${k[2]?'Editar':'Adicionar'}</em></button>`).join('')}
+      <div class="f3-add"><span>Ensinar outra coisa</span><form id="f3Add"><input id="f3AddIn" maxlength="300" placeholder="Ex.: “Não atendemos convênio”" aria-label="Ensinar outra coisa"><button class="btn sm d">Ensinar</button></form></div></aside>`;
+    $('#page').innerHTML=`<div class="f3"><div class="f3-hi"><h1>${wow?'Pronto, '+first+'! 🎉':'Oi, '+first+'! 👋'}</h1><p>${wow?`A ${nanda} já sabe os preços e horários da ${esc(c.name)}.`:`Converse com a ${nanda} como se fosse ${aNoun}. Se algo sair errado, ajuste ao lado e teste de novo.`}</p></div>
+     ${ME.user.role==='owner'?conn:''}
+     <div class="f3-ah" ${isMin()?'hidden':''}><h2>Teste e ajuste a ${nanda}</h2><button type="button" class="btn sm" id="f3Min">— Minimizar</button></div>
+     <section class="card f3-strip" ${isMin()?'':'hidden'}><span class="f3-sa">N<i></i></span><div><b>Teste e ajuste a ${nanda}</b><small>Ela sabe ${K.length-miss} de ${K.length} coisas${miss?` · <em>${miss} ${miss===1?'coisa':'coisas'} para ensinar</em>`:''} · nada é enviado</small></div><button type="button" class="btn sm" data-kn="${(K.find(k=>!k[2])||K[0])[3]}">Ensinar</button><button type="button" class="btn sm p" id="f3Open">Abrir teste</button></section>
+     <div class="f3-g2" ${isMin()?'hidden':''}><section class="card f3-stage">${wow?`<span class="f3-eb">Agora é a ${nanda} da ${esc(c.name)}</span>`:''}${chatH(true)}</section>${knowH}</div>
+     <h3 class="f3-sec">Explore enquanto isso</h3><div class="f3-ex">${[['<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>','Tour de 2 minutos','Um dia com a '+nanda+', do primeiro "oi" até a venda.','Ver o tour','tour'],['<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>','Sua agenda','Os horários que a '+nanda+' marca aparecem aqui.','Ver agenda','agenda'],['<path d="M4 5h16l-6 7v6l-4 2v-8z"/>','O funil de vendas','Cada cliente na etapa certa, sem planilha.','Ver funil','funil']].map(t=>`<button type="button" class="card f3-x" ${t[4]==='tour'?'data-tour':`data-to="${t[4]}"`}><span class="f3-xi">${I(t[0])}</span><span><b>${t[1]}</b><small>${t[2]}</small><em>${t[3]} →</em></span></button>`).join('')}</div></div>`}
   const box=$('#frMs'),inp=$('#frIn');
-  const draw=t=>{box.innerHTML=FR.hist.length?FR.hist.map(m=>m.dir==='sys'?`<div class="fr-sys">${esc(m.text)}</div>`:`<div class="fr-m ${m.dir}">${esc(m.text)}${m.dir==='out'?`<small><b>${nanda}</b> · ${esc(m.at||'')}</small>`:''}</div>`).join('')+(t?'<div class="fr-ty"><i></i><i></i><i></i></div>':'')
+  const draw=t=>{box.innerHTML=FR.hist.length?FR.hist.map(m=>m.dir==='sys'?`<div class="fr-sys">${esc(m.text)}</div>`:`<div class="fr-m ${m.dir}">${esc(m.text)}${m.dir==='out'?`<small><b>${nanda}</b> · ${esc(m.at||'')}</small>`:''}</div>${m.ex?'<span class="f3-tg">Preço de exemplo, não é o seu</span>':m.dir==='out'&&taught&&wow?'<span class="f3-tg ok">✓ Com os seus dados</span>':''}`).join('')+(t?'<div class="fr-ty"><i></i><i></i><i></i></div>':'')
     :`<p class="fr-empty">Toque numa pergunta abaixo ou escreva a sua.</p>`;box.scrollTop=box.scrollHeight};draw();
   const send=async q=>{q=(q||'').trim();if(!q||FR.busy)return;FR.busy=true;inp.value='';FR.hist.push({dir:'in',text:q});draw(true);
     try{const r=await api('/ai/test',{method:'POST',body:{messages:FR.hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text})),example:!taught}});
-      if(r.reply)FR.hist.push({dir:'out',text:r.reply,at:obHour()});if(r.book)FR.hist.push({dir:'sys',text:'📅 Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'});if(r.handoff)FR.hist.push({dir:'sys',text:'🙋 Aqui ela passaria a conversa para o seu time'})}
-    catch(e){FR.hist.push({dir:'sys',text:e.status===402?'As conversas de teste acabaram. Ative os 14 dias grátis para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
-    FR.busy=false;draw();if(innerWidth>860)inp.focus()};
+      if(r.reply)FR.hist.push({dir:'out',text:r.reply,at:obHour(),ex:r.example?1:0});if(r.book)FR.hist.push({dir:'sys',text:'📅 Aqui ela marcaria '+(r.book_label||'o horário')+' na sua agenda'});if(r.handoff)FR.hist.push({dir:'sys',text:'🙋 Aqui ela passaria a conversa para o seu time'})}
+    catch(e){FR.hist.push({dir:'sys',text:e.status===402?'As conversas de teste deste mês acabaram. Ligue a Nanda no WhatsApp para continuar.':/chave de IA/.test(e.message)?'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.':e.message})}
+    FR.busy=false;draw();if(innerWidth>860&&!$('#f3AddIn')?.matches(':focus'))inp.focus()};
   $('#frF').onsubmit=e=>{e.preventDefault();send(inp.value)};
-  document.querySelectorAll('.fr-sug button').forEach(b=>b.onclick=()=>send(b.textContent));
-  document.querySelectorAll('.fr [data-do]').forEach(b=>b.onclick=()=>suDo(d.core.find(x=>x.key===b.dataset.do)));
-  document.querySelectorAll('.fr [data-desc]').forEach(b=>b.onclick=()=>{SU.ai=ai;tqView(1)});
-  document.querySelectorAll('.fr [data-sk]').forEach(b=>b.onclick=()=>suSkip(b.dataset.sk,true));
-  document.querySelectorAll('.fr [data-to]').forEach(b=>b.onclick=()=>{HP.art=null;go(b.dataset.to)});
-  $('#frAll').onclick=()=>suPanel();
-  $('#frHide').onclick=async()=>{SU.d=await api('/setup/hide',{method:'POST',body:{hidden:true}});SU.at=Date.now();suTop();suPill();toast('Pronto. Os passos continuam no menu, em Configurar a conta.');VIEWS.inicio()}}
+  document.querySelectorAll('.f3-sug button').forEach(b=>b.onclick=()=>send(b.textContent));
+  document.querySelectorAll('.f3 [data-st]').forEach(b=>b.onclick=()=>b.dataset.st==='precos'?(SU.ai=ai,tqView(1)):conectarView());
+  document.querySelectorAll('.f3 [data-cn]').forEach(b=>b.onclick=()=>conectarView(b.dataset.cn));
+  document.querySelectorAll('.f3 [data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
+  document.querySelectorAll('.f3 [data-kn]').forEach(b=>b.onclick=()=>{const k=b.dataset.kn;if(k==='nanda'||k==='voz'){NZV.tab=k==='voz'?'voz':null;return go('nanda')}SU.ai=ai;tqView(+k)});
+  if($('#f3Clr'))$('#f3Clr').onclick=()=>{FR.hist=[];FR.wow=false;draw()};
+  const mn=v=>{setMin(v);$('.f3-ah').hidden=v;$('.f3-g2').hidden=v;$('.f3-strip').hidden=!v};
+  if($('#f3Min'))$('#f3Min').onclick=()=>mn(true);if($('#f3Open'))$('#f3Open').onclick=()=>mn(false);
+  if($('#f3Add'))$('#f3Add').onsubmit=async e=>{e.preventDefault();const t=$('#f3AddIn').value.trim();if(t.length<3)return $('#f3AddIn').focus();
+    try{await api('/ai/settings',{method:'PUT',body:{knowledge:((ai.knowledge||'').trim()+'\n'+t).trim()}});ai.knowledge=((ai.knowledge||'').trim()+'\n'+t).trim();$('#f3AddIn').value='';toast('Pronto: a '+(ai.name||'Nanda')+' já sabe. Teste no chat.')}catch(x){toast(x.message)}};
+  if(taught&&wow&&!FR.hist.length){if(isMin())mn(false);send(cx[0])}}
+const WAI_P='<path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 9c0 3 2.5 6 6 6l1-1.5-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/>';
+/* Ligar a Nanda no WhatsApp: fazer junto com o time (horário livre da agenda do Oi Nanda) ou sozinha */
+async function conectarView(mode){CN_T=Date.now();if(mode!=='self')history.pushState(null,'','/conectar');document.title='Ligar a Nanda no WhatsApp · Oi Nanda';
+  if(!$('#page')){VIEW='inicio';await shell()}
+  const c=ME.company,nanda=esc((SU.ai&&SU.ai.name)||(ME.nanda||{}).name||'Nanda'),I=p=>svg(p);
+  if(mode==='self'){EM.tab='whatsapp';return go('empresa')}
+  const leave=v=>{history.replaceState(null,'','/');go(v)};
+  let ob=null;try{ob=await api('/onboard')}catch(e){}
+  const pick={i:null};
+  const draw=()=>{const booked=ob&&ob.booked,req=ob&&ob.requested;
+    $('#page').innerHTML=`<div class="cn"><button type="button" class="cn-bk" id="cnBk">${I('<path d="m15 6-6 6 6 6"/>')}Voltar</button>
+     <div class="cn-dots"><i>✓</i><span></span><i>✓</i><span></span><i class="on">3</i>Último passo</div>
+     <div class="cn-hero"><span class="cn-ph">${I(WAI_P)}<em>N</em></span><div><h1>Falta só ligar a ${nanda} <br>no seu WhatsApp</h1><p>Seus clientes continuam no mesmo número. Os 7 dias grátis começam aqui, sem cartão.</p></div></div>
+     ${booked?`<section class="card cn-ok"><span>✓</span><div><b>Chamada marcada: ${esc(booked.label)}${booked.pro_name?' com '+esc(booked.pro_name.split(' ')[0]):''}</b><small>30 minutos por vídeo. Mandamos a confirmação para ${esc(ME.user.email)}. Deixe por perto o celular do WhatsApp do negócio e o login do Facebook da empresa.</small></div></section>`:''}
+     <div class="cn-op">${booked?'':`<section class="card cn-o r" id="cnTime"><span class="cn-tag">Mais escolhido</span><h2>Fazer junto com a gente</h2><div class="cn-who"><span>${I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>')}</span>Time de treinamento do Oi Nanda</div>
+        <p>Numa chamada de vídeo, a gente liga o WhatsApp com você e mostra como usar o Oi Nanda no seu dia a dia.</p><div class="cn-mt"><span><b>30 min</b> por vídeo</span><span><b>Grátis</b></span></div>
+        ${req?`<p class="cn-req">Recebemos seu pedido de outro horário. A gente te chama por e-mail para combinar.</p>`:ob&&ob.slots&&ob.slots.length?`<div class="cn-sl"><h6>Escolha um horário livre</h6><div class="cn-hr">${ob.slots.map((s,i)=>`<button type="button" class="${pick.i===i?'on':''}" data-sl="${i}">${esc(s.label)}</button>`).join('')}</div>
+          <button type="button" class="btn p cn-go" id="cnBook" ${pick.i==null?'disabled':''}>${pick.i==null?'Escolha um horário':'Marcar '+esc(ob.slots[pick.i].label)}</button><button type="button" class="lnk cn-none" id="cnNone">Nenhum desses horários serve</button></div>`
+          :`<button type="button" class="btn p cn-go" id="cnNone">Pedir um horário</button>`}</section>`}
+      <section class="card cn-o"><span class="cn-tag g">Rapidinho</span><h2>Fazer agora sozinha</h2><p>A gente te guia tela por tela. Se travar em algum momento, é só chamar o time.</p><div class="cn-mt"><span><b>Uns 10 min</b></span></div><button type="button" class="btn cn-go" id="cnSelf">Começar agora →</button></section></div>
+     <section class="card cn-need"><h3>Deixe por perto</h3><div><span><i>${I('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>')}</i><span><b>O celular do WhatsApp do negócio</b>para receber um código</span></span><span><i>${I('<path d="M15 3h-2a4 4 0 0 0-4 4v3H7v4h2v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h2z"/>')}</i><span><b>O login do Facebook da empresa</b>de quem cuida da página</span></span></div></section>
+     <p class="cn-ft">Tem dúvida se tem tudo isso? <button type="button" class="lnk" id="cnHelp">Veja em 1 minuto</button> · <button type="button" class="lnk" id="cnLater">Agora não, quero continuar testando</button></p></div>`;
+    $('#cnBk').onclick=$('#cnLater').onclick=()=>leave('inicio');$('#cnSelf').onclick=()=>{EM.tab='whatsapp';leave('empresa')};$('#cnHelp').onclick=()=>{HP.art='conectar-whatsapp';leave('ajuda')};
+    document.querySelectorAll('[data-sl]').forEach(b=>b.onclick=()=>{pick.i=+b.dataset.sl;draw()});
+    if($('#cnBook'))$('#cnBook').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='Marcando…';
+      try{const r=await api('/onboard',{method:'POST',body:{start:ob.slots[pick.i].start}});ob.booked=r.booked;draw();toast('Chamada marcada! A confirmação chegou no seu e-mail.')}
+      catch(x){toast(x.message);try{ob=await api('/onboard')}catch(_){}pick.i=null;draw()}};
+    if($('#cnNone'))$('#cnNone').onclick=()=>{const o=overlay(`<form class="modal" id="cnF"><div class="row"><h2 style="font-size:20px">Qual horário fica bom?</h2><button type="button" class="x">×</button></div><p class="hint">A gente combina com você por e-mail.</p><div class="field"><label>Dias e horários que funcionam</label><input name="note" maxlength="300" placeholder="Ex.: terça ou quinta depois das 18h" required></div><div class="row"><button class="btn p">Pedir horário</button></div></form>`,true);
+      o.querySelector('#cnF').onsubmit=async ev=>{ev.preventDefault();try{const r=await api('/onboard',{method:'POST',body:{note:new FormData(ev.target).get('note')}});ob.requested=r.requested;o.remove();draw();toast('Pedido enviado. A gente te chama por e-mail.')}catch(x){toast(x.message)}}}};
+  draw()}
 function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
   b.innerHTML=`${suRing(d.pct,17,2.6)}<span class="lb"><b>${d.agent?'Primeiros passos':'Configurar'}</b></span><em class="lb">${d.pct}%</em>`;b.setAttribute('aria-label',(d.agent?'Primeiros passos':'Configurar a conta')+`: ${d.done} de ${d.total} prontos`);b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
 async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
@@ -9604,6 +9709,7 @@ async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   try{
     if(s.act==='comecar')return comecarView();
     if(s.act==='ativar')return ativarView();
+    if(s.act==='conectar')return conectarView();
     if(s.act==='me'){SU.cur=null;return meModal()}
     if(s.act==='rapida'){CV.open=null;await go('conversas');toast('Abra uma conversa e digite / na caixa de mensagem.');return after()}
     if(s.act==='push'){await pushOn();await api('/push/test',{method:'POST'}).catch(()=>{});toast('Avisos ligados. Mandamos um teste.');SU.cur=null;await suLoad(true);return suRefresh()}

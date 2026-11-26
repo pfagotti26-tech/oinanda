@@ -19,13 +19,13 @@ def test_avisos_do_teste_e_whatsapp_sem_conectar():
     mailer.SENT.clear()
     with mk() as c:
         cid = signup(c, 'p1@av.com', 'Studio Um')
-        assert subjects('p1@av.com') == ['Paula, seus 14 dias grátis começaram']
+        assert subjects('p1@av.com') == ['Paula, a Nanda da Studio Um já está pronta 🎉']
         html = mailer.SENT[-1]['html']
-        assert '14 dias' in html and 'Conectar o WhatsApp' in html and '{' not in html.split('<body')[1]
+        assert '7 dias' in html and 'Ligar a Nanda no seu WhatsApp' in html and '{' not in html.split('<body')[1]
         # 1 dia depois, sem WhatsApp: lembra uma vez
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'created_at': now() - timedelta(days=1, hours=2)}}))
         c.portal.call(notices.tick); c.portal.call(notices.tick)
-        assert subjects('p1@av.com').count('Falta um passo para a Nanda atender') == 1
+        assert subjects('p1@av.com').count('Sua Nanda está pronta. Ligamos com você?') == 1
         # teste acaba amanhã (o limite de um aviso por dia segura o segundo no mesmo dia)
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(hours=20)}}))
         c.portal.call(notices.tick)
@@ -35,13 +35,13 @@ def test_avisos_do_teste_e_whatsapp_sem_conectar():
         assert subjects('p1@av.com').count('Amanhã termina o seu teste grátis') == 1
         # fora do horário, aviso que não é urgente espera
         c.portal.call(lambda: db.notice_log.delete_many({}))
-        c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
+        c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=1, hours=12)}}))
         import pytest
         mp = pytest.MonkeyPatch(); mp.setattr(notices, 'quiet', lambda: True)
         c.portal.call(notices.tick); mp.undo()
-        assert 'Faltam 3 dias do seu teste grátis' not in subjects('p1@av.com')
+        assert 'Faltam 2 dias do seu teste grátis' not in subjects('p1@av.com')
         c.portal.call(notices.tick)
-        assert 'Faltam 3 dias do seu teste grátis' in subjects('p1@av.com')
+        assert 'Faltam 2 dias do seu teste grátis' in subjects('p1@av.com')
 
 def test_recusa_ultimo_aviso_pausa_e_cancelamento(monkeypatch):
     subs, invs = fake(monkeypatch); mailer.SENT.clear()
@@ -118,7 +118,7 @@ def test_cliente_escolhe_os_avisos(monkeypatch):
         assert not p['whatsapp'] and [o['key'] for o in p['optional'] if not o['on']] == ['trial_3d']  # recusada não dá para desligar
         c.portal.call(lambda: db.companies.update_one({'id': cid}, {'$set': {'trial_ends_at': now() + timedelta(days=2, hours=12)}}))
         c.portal.call(notices.tick)
-        assert 'Faltam 3 dias do seu teste grátis' not in subjects('p5@av.com')
+        assert 'Faltam 2 dias do seu teste grátis' not in subjects('p5@av.com')
 
 def test_avisos_saem_pelo_numero_da_conta_do_oi_nanda():
     """Sem variáveis no servidor: vale o WhatsApp conectado na conta do admin."""

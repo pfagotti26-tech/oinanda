@@ -21,14 +21,14 @@ def test_descreve_confere_e_salva(monkeypatch):
         assert [i['name'] for i in r['items']] == ['Limpeza de pele', 'Botox', 'Massagem'] and r['items'][2]['price'] is None and r['items'][1]['from']
         assert r['hours_grid'] == [{'days': [0, 1, 2, 3, 4], 'from': '09:00', 'to': '19:00'}, {'days': [5], 'from': '09:00', 'to': '13:00'}]  # o horário impossível sai
         assert r['missing'] == ['Duração do botox']
-        assert c.get('/api/setup').json()['core'][0]['done'] is False  # nada salvo antes de conferir
+        assert c.get('/api/setup').json()['core'][1]['done'] is False  # nada salvo antes de conferir
         c.post('/api/ai/describe/save', json=r)
         s = c.get('/api/ai/settings').json()
         assert s['about'].startswith('Clínica de estética em Moema') and 'Horário de atendimento: de segunda a sexta, das 09:00 às 19:00; sábado, das 09:00 às 13:00' in s['about']
         assert 'Limpeza de pele' in s['knowledge'] and 'Limpeza de pele leva cerca de 60 minutos' in s['knowledge'] and 'Pix e cartão em até 3x' in s['knowledge']
         assert {x['name']: x['price'] for x in s['catalog']}['Limpeza de pele'] == 180
         core = {x['key']: x['done'] for x in c.get('/api/setup').json()['core']}
-        assert core['sobre'] and core['precos']
+        assert core['precos']
 
 def test_site_so_endereco_publico():
     with TestClient(app, base_url='https://testserver') as c:

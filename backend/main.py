@@ -115,7 +115,7 @@ async def lifespan(app):
     await db.admin_notes.create_index([('company_id', 1), ('at', -1)])
     await db.notice_log.create_index([('company_id', 1), ('at', -1)])
     await db.notice_templates.create_index([('key', 1), ('version', -1)])
-    # contas em teste quando os planos chegaram: ganham 14 dias a partir de hoje, para ninguém cair em "só leitura" de surpresa
+    # contas em teste quando os planos chegaram: ganham 7 dias a partir de hoje, para ninguém cair em "só leitura" de surpresa
     for c in await db.companies.find({'plan': 'trial', 'trial_v2': {'$ne': True}}, {'_id': 0, 'id': 1, 'trial_ends_at': 1}).to_list(10000):
         end = max(c.get('trial_ends_at') or now(), now() + timedelta(days=TRIAL_DAYS)) if c.get('trial_ends_at') and c['trial_ends_at'].tzinfo else now() + timedelta(days=TRIAL_DAYS)
         await db.companies.update_one({'id': c['id']}, {'$set': {'trial_ends_at': end, 'trial_v2': True}})
@@ -195,6 +195,8 @@ from importer import router as import_router
 app.include_router(import_router, prefix="/api")
 from automsg import router as automsg_router
 app.include_router(automsg_router, prefix="/api")
+from onboard import router as onboard_router
+app.include_router(onboard_router, prefix="/api")
 from alerts import router as alerts_router
 app.include_router(alerts_router, prefix="/api")
 
@@ -247,9 +249,10 @@ async def health():
 
 # ---------- conta ----------
 async def create_account(request, response, *, name, email, company, segment, phone, wa_optin, team='', password=None, google_sub=None):
-    """Cria a empresa e o dono, já nos 14 dias grátis, e abre a sessão. Usado pelo cadastro com e-mail e com Google."""
-    # conta nova já começa nos 14 dias grátis, sem cartão (o cartão só entra ao assinar). SIGNUP_MODE=demo volta ao modo com cartão no começo.
-    start = {'plan': 'demo'} if os.environ.get('SIGNUP_MODE', 'trial') == 'demo' else {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True}
+    """Cria a empresa e o dono, já nos 7 dias grátis, e abre a sessão. Usado pelo cadastro com e-mail e com Google."""
+    # conta nova já começa nos 7 dias grátis, sem cartão (o cartão só entra ao assinar). SIGNUP_MODE=demo volta ao modo com cartão no começo.
+    # conta nova nasce em teste livre (modo demonstração): os 7 dias grátis começam quando o WhatsApp conecta (billing.start_trial)
+    start = {'plan': 'demo'} if os.environ.get('SIGNUP_MODE', 'demo') == 'demo' else {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True}
     co = {'id': uid(), 'name': company.strip(), 'segment': segment, 'phone': phone.strip(), 'timezone': 'America/Sao_Paulo',
           **start, 'status': 'active', 'created_at': now(), 'notice_wa': wa_optin, 'team_size': team,
           'wa_optin': {'on': wa_optin, 'at': now(), 'ip': client_ip(request), 'text': 'Quero receber pelo WhatsApp os avisos da minha conta e dicas para vender mais.'},

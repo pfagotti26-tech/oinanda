@@ -46,9 +46,8 @@ def test_demo_teste_com_cartao_e_atendimentos(monkeypatch):
         assert b['state'] == 'demo' and b['trial_offer'] and b['limits']['users'] == 1
         # demonstração: conversa com a Nanda, mas não conecta o WhatsApp nem chama o time
         assert c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'Quanto custa?'}]}).status_code == 200
-        r = c.post('/api/wa/connect', json={'phone_number_id': '5550001', 'waba_id': '5550002', 'token': 'EAA' + 'q' * 30})
-        assert r.status_code == 402 and '14 dias grátis' in r.json()['detail']
-        assert c.post('/api/team', json={'name': 'Ana', 'email': 'a@x.com', 'role': 'agent'}).status_code == 402
+        r = c.post('/api/team', json={'name': 'Ana', 'email': 'a@x.com', 'role': 'agent'})
+        assert r.status_code == 402 and '7 dias grátis' in r.json()['detail']
         # limite de conversas de teste no modo demonstração
         c.portal.call(lambda: db.ai_usage.update_one({'company_id': cid, 'month': billing.month()}, {'$set': {'tests': billing.DEMO_TESTS}}))
         assert c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'Oi'}]}).status_code == 402
@@ -58,15 +57,15 @@ def test_demo_teste_com_cartao_e_atendimentos(monkeypatch):
         c.portal.call(notices.tick); c.portal.call(notices.tick)
         assert [m['subject'] for m in mailer.SENT].count('A Nanda está esperando por você, Renata') == 1
 
-        # ativa: assinatura com 14 dias grátis
+        # ativa: assinatura com 7 dias grátis
         r = c.post('/api/billing/subscribe', json={'plan': 'profissional', 'email': 'r@x.com'}).json()
         assert r['trial'] and r['amount'] == 297
         rec = calls[-1][2]['auto_recurring']
-        assert rec['free_trial'] == {'frequency': 14, 'frequency_type': 'days'} and rec['transaction_amount'] == 297
-        first = now() + timedelta(days=14)
+        assert rec['free_trial'] == {'frequency': 7, 'frequency_type': 'days'} and rec['transaction_amount'] == 297
+        first = now() + timedelta(days=7)
         subs['sub1'].update(status='authorized', next_payment_date=first.isoformat().replace('+00:00', 'Z'))
         b = c.post('/api/billing/sync').json()
-        assert b['state'] == 'trial' and b['plan'] == 'profissional' and b['trial_left'] in (14, 15) and not b['trial_offer']
+        assert b['state'] == 'trial' and b['plan'] == 'profissional' and b['trial_left'] in (7, 8) and not b['trial_offer']
         assert b['limits']['atend'] == 600 and b['limits']['users'] == 5
         co = c.portal.call(lambda: db.companies.find_one({'id': cid}, {'_id': 0}))
         assert co['trial_used'] and co['plan'] == 'profissional'

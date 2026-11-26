@@ -23,7 +23,7 @@ def test_planos(monkeypatch):
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Dona B', 'email': 'db@x.com', 'password': 'senha-forte-1', 'company': 'Loja B', 'segment': 'loja'})
         b = c.get('/api/billing').json()
-        assert b['state'] == 'trial' and b['trial_left'] == 14 and b['limits']['users'] == 12 and b['plans']['essencial']['price'] == 147
+        assert b['state'] == 'trial' and b['trial_left'] == 7 and b['limits']['users'] == 12 and b['plans']['essencial']['price'] == 147
         assert c.get('/api/auth/me').json()['access']['state'] == 'trial'
         # fim do teste: só leitura
         async def vence():
@@ -85,7 +85,7 @@ def test_teste_sem_cartao_assina_no_meio_guarda_os_dias(monkeypatch):
         calls.append((method, path, body))
         return {'id': 'sub1', 'init_point': 'https://mp/x'} if method == 'POST' else {}
     monkeypatch.setattr(billing, 'mp', fake); monkeypatch.setenv('MP_ACCESS_TOKEN', 'APP_USR-x')
-    monkeypatch.delenv('SIGNUP_MODE', raising=False)
+    monkeypatch.setenv('SIGNUP_MODE', 'trial')
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Dona T', 'email': 'dt@x.com', 'password': 'senha-forte-1', 'company': 'Loja T', 'segment': 'loja'})
         b = c.get('/api/billing').json()

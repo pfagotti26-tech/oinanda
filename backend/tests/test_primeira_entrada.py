@@ -15,7 +15,7 @@ def test_passos_essenciais_e_exemplo(monkeypatch):
     with TestClient(app, base_url='https://testserver') as c:
         c.post('/api/auth/signup', json={'name': 'Lívia', 'email': 'pe1@x.com', 'password': 'senha-forte-1', 'company': 'Bella', 'segment': 'clinica'})
         d = c.get('/api/setup').json()
-        assert [s['key'] for s in d['core']] == ['sobre', 'precos', 'whatsapp', 'time'] and d['core_done'] == 1 and d['core_total'] == 5 and d['core_pct'] == 20
+        assert [s['key'] for s in d['core']] == ['testar', 'precos', 'whatsapp'] and d['core_done'] == 0 and d['core_total'] == 3 and d['core_pct'] == 0
         r = c.post('/api/ai/test', json={'messages': [{'dir': 'in', 'text': 'quanto custa a limpeza de pele?'}], 'example': True}).json()
         assert r['example'] and 'Limpeza de pele: R$ 180' in seen[-1]
         # sem pedir exemplo, nada de preço inventado
@@ -26,4 +26,4 @@ def test_passos_essenciais_e_exemplo(monkeypatch):
         assert not r['example'] and 'R$ 180' not in seen[-1] and 'Peeling R$ 250' in seen[-1]
         # quem trabalha sozinho pula o time e os passos essenciais ficam prontos com o resto
         c.post('/api/setup/skip', json={'key': 'time'})
-        d = c.get('/api/setup').json(); assert [s['key'] for s in d['core']] == ['sobre', 'precos', 'whatsapp'] and d['core_done'] == 3
+        d = c.get('/api/setup').json(); assert [s['key'] for s in d['core']] == ['testar', 'precos', 'whatsapp'] and d['core_done'] == 2

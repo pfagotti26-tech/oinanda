@@ -24,10 +24,12 @@ PLAN = {'essencial': 'Essencial', 'profissional': 'Profissional', 'equipe': 'Equ
 
 # chave, grupo, nome, quando, ligado de saída
 EVENTS = [
-    ('lead_conta', 'Leads', 'Nova conta criada', 'Alguém criou a conta e começou o teste grátis. Na hora.', True),
+    ('lead_conta', 'Leads', 'Nova conta criada', 'Alguém criou a conta. Na hora.', True),
     ('lead_contato', 'Leads', 'Novo contato no WhatsApp ou Instagram do Oi Nanda', 'Juntos, no máximo um e-mail a cada 15 minutos.', True),
     ('ativou_wa', 'Ativação', 'Conectou o WhatsApp', 'O passo que mais leva à assinatura. Na hora.', True),
     ('travado', 'Ativação', 'Parado no começo', 'Criou a conta e não ensinou a Nanda em 48 h, ou está há 5 dias sem entrar no teste.', True),
+    ('onboard_book', 'Ativação', 'Marcou a chamada de onboarding', 'O cliente escolheu um horário do time. Já entra na Agenda.', True),
+    ('onboard_req', 'Ativação', 'Pediu outro horário de onboarding', 'Nenhum horário serviu: combine um com ele.', True),
     ('teste_3d', 'Ativação', 'Teste acaba em 3 dias', 'Ainda não assinou. Bom momento para uma conversa.', True),
     ('teste_fim', 'Ativação', 'Teste acabou sem assinar', 'A conta ficou só para consulta.', True),
     ('assinou', 'Virou cliente', 'Assinou um plano', 'Plano e valor. Na hora.', True),
@@ -132,7 +134,7 @@ async def tick():
         # teste acabou sem assinar
         if r['kind'] == 'readonly' and old.get('kind') == 'trial':
             await send('teste_fim', f'Teste acabou sem assinar: {co.get("name")}', {'tone': 'a', 'eyebrow': 'Teste acabou',
-                       'title': f'{co.get("name")} não assinou', 'body': ['Os 14 dias acabaram e a conta ficou só para consulta. ' + ('Chegou a conectar o WhatsApp.' if cur['wa'] else 'Não chegou a conectar o WhatsApp.')],
+                       'title': f'{co.get("name")} não assinou', 'body': ['Os 7 dias acabaram e a conta ficou só para consulta. ' + ('Chegou a conectar o WhatsApp.' if cur['wa'] else 'Não chegou a conectar o WhatsApp.')],
                        'rows': who_rows(r), **contact_btn(r)}, cid, once=f'teste_fim:{cid}')
         await db.owner_state.update_one({'company_id': cid}, {'$set': cur})
         # cancelou
