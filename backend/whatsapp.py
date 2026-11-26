@@ -505,7 +505,9 @@ async def note(company_id, contact_id, text):
 @router.post('/conversations/{contact_id}/send')
 async def send(contact_id: str, body: SendIn, request: Request, user=Depends(current_user)):
     c = await get_contact(user, contact_id)
-    msg = await deliver(user['company_id'], c, body.text, user['id'], user.get('impersonated_by') or user['name'], assign_to=user['id'])
+    import automsg
+    text = body.text if user.get('impersonated_by') else automsg.signed(user['company'], user, c, body.text)
+    msg = await deliver(user['company_id'], c, text, user['id'], user.get('impersonated_by') or user['name'], assign_to=user['id'])
     if c.get('needs_human'): await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': False, 'handoff_urgent': False}})
     if ON_HUMAN_SEND: await ON_HUMAN_SEND(user, c)
     return msg

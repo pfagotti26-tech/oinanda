@@ -501,6 +501,9 @@ async def auto_reply(company_id, contact_id, msg_id):
             await apply_facts(company_id, contact, d)
             return
         if mode != 'auto' or not key_ok():
+            try:
+                import automsg; await automsg.on_quiet(company_id, contact)  # boas-vindas / fora do horário quando a Nanda não responde
+            except Exception: log.exception('falha nas mensagens automáticas')
             if asks_human:  # mesmo sem a Nanda respondendo, o time fica sabendo
                 await db.contacts.update_one({'id': contact_id}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'cliente pediu uma pessoa'}})
                 await route(company_id, contact, 'cliente pediu uma pessoa')

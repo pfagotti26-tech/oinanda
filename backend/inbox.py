@@ -216,7 +216,9 @@ async def resolve(contact_id: str, body: ResolveIn, user=Depends(current_user)):
         if not body.reason: await note(user['company_id'], c['id'], f'{who} marcou a conversa como resolvida')
         from closing import on_resolve
         sv = await on_resolve(user, c, body.reason, body.survey)
-        return {'ok': True, 'survey': sv}
+        import automsg
+        bye = await automsg.on_resolve(user, c, sv)
+        return {'ok': True, 'survey': sv, 'bye': bye}
     else:
         await db.contacts.update_one({'id': c['id']}, {'$set': {'resolved_at': None}})
         await note(user['company_id'], c['id'], f'{who} reabriu a conversa')
