@@ -565,6 +565,14 @@ td>.sure,tr+.sure{margin:4px}
 .admp .ao b{display:block;font-size:13.5px}.admp .ao small{font-size:12px;color:var(--ink3)}.admp .ao>svg{margin-left:auto;width:16px;height:16px;color:var(--c2);flex:none}
 .al2{height:1px;background:var(--line);margin:6px 4px}.admp .ax{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--ink2)}.admp .ax:hover{background:var(--bg)}.admp .ax svg{width:16px;height:16px}
 .admp.sheet{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+/* "Configurar a conta" no menu: uma linha, do tamanho de um item */
+.side .su-pill{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 6px;padding:7px 10px;border:0;border-radius:9px;background:transparent;color:#B3BEC9;text-align:left}
+.side .su-pill:hover{background:rgba(255,255,255,.06);color:#fff}
+.side .su-pill svg{width:17px;height:17px;flex:none}
+.side .su-pill span{flex:1;min-width:0;display:block}.side .su-pill b{font-size:13px;font-weight:500;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.side .su-pill small{display:none}.side .su-pill em{font-style:normal;font-size:11px;font-weight:700;color:#FFB59E;background:rgba(232,96,63,.14);border-radius:99px;padding:1px 7px}
+.app.mini .side .su-pill{justify-content:center;padding:7px 0}.side .su-pill[hidden]{display:none}
+
 /* menu com mais respiro: fonte e ícones menores, ativo mais suave */
 .side{padding:18px 12px 12px}
 .side .sbar .logo{transform:scale(.82);transform-origin:left center}.side .logo{margin-bottom:12px}
@@ -9230,7 +9238,7 @@ async function homeFirst(d){
   $('#frAll').onclick=()=>suPanel();
   $('#frHide').onclick=async()=>{SU.d=await api('/setup/hide',{method:'POST',body:{hidden:true}});SU.at=Date.now();suTop();suPill();toast('Pronto. Os passos continuam no menu, em Configurar a conta.');VIEWS.inicio()}}
 function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
-  b.innerHTML=`${suRing(d.pct,22,3.5)}<span><b>${d.agent?'Primeiros passos':'Configurar a conta'}</b><small>${d.done} de ${d.total} prontos</small></span><em>${d.pct}%</em>`;b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
+  b.innerHTML=`${suRing(d.pct,17,2.6)}<span class="lb"><b>${d.agent?'Primeiros passos':'Configurar conta'}</b></span><em class="lb">${d.pct}%</em>`;b.setAttribute('aria-label',(d.agent?'Primeiros passos':'Configurar a conta')+`: ${d.done} de ${d.total} prontos`);b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
 async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   const after=()=>{suBar()};
   try{
