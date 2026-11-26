@@ -195,6 +195,8 @@ from importer import router as import_router
 app.include_router(import_router, prefix="/api")
 from automsg import router as automsg_router
 app.include_router(automsg_router, prefix="/api")
+from alerts import router as alerts_router
+app.include_router(alerts_router, prefix="/api")
 
 SITE_ORIGINS = [o.strip() for o in os.environ.get('SITE_ORIGINS', 'https://oinanda.com.br,https://www.oinanda.com.br').split(',') if o.strip()]
 
