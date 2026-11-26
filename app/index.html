@@ -599,6 +599,7 @@ td>.sure,tr+.sure{margin:4px}
 @media(min-width:861px){
  .app.cfx,.app.cfx.mini{grid-template-columns:76px 252px minmax(0,1fr)}
  .app.cfx .mini-t{display:none}
+ .app.cfx:not(.mini) .side{width:232px;z-index:45;box-shadow:18px 0 40px -18px rgba(23,33,43,.55)}
  .app.cfx .cside{display:flex;flex-direction:column;gap:2px;background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
  .cside .cx-t{font-size:18px;font-weight:800;letter-spacing:-.02em;text-align:left;padding:0 10px 14px;color:var(--ink)}
  .cside .cx-q{display:flex;align-items:center;gap:8px;margin:0 2px 12px;padding:9px 11px;border-radius:11px;background:#F6F1EC;color:var(--ink3);font-size:13.5px;text-align:left}.cside .cx-q:hover{background:#F0E9E3}.cside .cx-q svg{width:16px;height:16px}.cside .cx-q kbd{margin-left:auto;font:600 10.5px var(--f);color:var(--ink3);border:1px solid #E2D8CF;border-radius:6px;padding:1px 6px;background:#fff}
@@ -1607,7 +1608,28 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-pth .nz-clr{margin-left:auto;background:none;border:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer}
 .nz-nw{margin:12px 12px 0;background:var(--tint);border:1px solid #F6CDBD;border-radius:12px;padding:9px 10px 9px 12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:8px}.nz-nw b{color:var(--c2)}.nz-nw button{margin-left:auto;flex:none}
 .nz-fab{display:none}.nz.nzpp #plR{display:none}
-@media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 24px);display:flex;flex-direction:column}
+.nz.nzpp .nz-msgs{background:#EFE7DE url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23E2D6C9' stroke-width='1.2'%3E%3Ccircle cx='10' cy='12' r='3'/%3E%3Cpath d='M38 8l4 4-4 4M24 44h9M50 46a4 4 0 1 0 0 .1'/%3E%3C/g%3E%3C/svg%3E")}
+.nz-tk{font-style:normal;color:#53BDEB;font-weight:800;letter-spacing:-3px;margin-left:2px}
+.ob-m.au{min-width:250px}.nz-au{display:flex;align-items:center;gap:8px}.nz-aup{width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.05);display:grid;place-items:center;color:#54656F;cursor:pointer;flex:none}.nz-aup svg{width:16px;height:16px;fill:currentColor;stroke:none}
+.nz-awv{flex:1;display:flex;align-items:center;gap:2px;height:24px}.nz-awv i{width:3px;height:12px;border-radius:2px;background:#AEBAC1}.nz-awv i:nth-child(3n){height:16px}.nz-awv i:nth-child(3n+1){height:9px}.nz-awv i:nth-child(3n+2){height:20px}.nz-awv i:nth-child(5n){height:12px}
+.nz-au.on .nz-awv i,.nz-rec .nz-awv i{background:var(--c);animation:nzWv .9s ease-in-out infinite alternate}.nz-au.on .nz-awv i:nth-child(2n),.nz-rec .nz-awv i:nth-child(2n){animation-delay:.3s}@keyframes nzWv{to{transform:scaleY(.45)}}
+.nz-atr{font-size:12px;color:var(--ink2);border-top:1px solid rgba(0,0,0,.07);margin-top:6px;padding-top:5px;white-space:normal}.nz-atr em{display:block;font-style:normal;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+.nz-avn{font-size:10.5px;font-weight:700;color:var(--c2);margin-top:2px}
+.nz-wa{display:flex!important;align-items:center;gap:8px;position:relative}.nz-wab{flex:1;display:flex;align-items:center;gap:4px;border:1.5px solid #E2D9D1;border-radius:24px;padding:4px 6px;background:#fff;min-width:0}.nz-wab[hidden]{display:none}
+.nz-wab:focus-within{border-color:var(--c);box-shadow:0 0 0 4px rgba(232,96,63,.1)}.nz-wa .nz-wab textarea{border:0!important;box-shadow:none!important;padding:8px 6px!important;min-height:38px!important;background:none;flex:1;min-width:0}
+.nz-ib{width:34px;height:34px;border-radius:50%;border:0;background:none;color:#54656F;display:grid;place-items:center;cursor:pointer;flex:none}.nz-ib:hover{background:#F6F1EC;color:var(--c2)}.nz-ib svg{width:20px;height:20px}
+.nz-wa .nz-snd{width:46px!important;height:46px;border-radius:50%!important;padding:0!important;display:grid!important;place-items:center;flex:none}.nz-snd span{display:none}.nz-snd svg{width:20px;height:20px}
+.nz-mic{border:0;background:var(--c);color:#fff;cursor:pointer;box-shadow:0 6px 16px -6px rgba(232,96,63,.7)}.nz-wa:not(.typed) #plB{display:none!important}.nz-wa.typed .nz-mic{display:none!important}
+.nz-wa.recording #plB{display:none!important}.nz-wa.recording .nz-mic{display:grid!important;background:#E5484D;box-shadow:0 0 0 7px rgba(229,72,77,.16)}
+.nz-rec{flex:1;display:flex;align-items:center;gap:10px;border:1.5px solid #F6CDBD;background:var(--tint);border-radius:24px;padding:9px 12px;min-width:0}.nz-rec[hidden]{display:none}.nz-rd{width:10px;height:10px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 4px rgba(229,72,77,.18);flex:none}.nz-rec b{font-variant-numeric:tabular-nums}
+.nz-recx{border:0;background:none;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer}
+.nz-msgs.empty{align-content:center!important;justify-items:center}.nz-msgs.empty~.nz-chips{display:none}
+.nz-st0{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;max-width:340px;padding:10px 6px}
+.nz-st0i{width:52px;height:52px;border-radius:16px;background:#fff;color:var(--c);display:grid;place-items:center;box-shadow:0 8px 20px -12px rgba(23,33,43,.35)}.nz-st0i svg{width:24px;height:24px}
+.nz-st0>b{font-size:16px;line-height:1.3;color:var(--ink);margin-top:4px}.nz-st0>span{font-size:13px;color:var(--ink2);line-height:1.45}
+.nz-st0q{display:grid;gap:7px;width:100%;margin-top:8px}.nz-st0q button{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1.5px solid #fff;border-radius:12px;padding:11px 14px;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;box-shadow:0 1px 2px rgba(23,33,43,.06)}
+.nz-st0q button:hover{border-color:var(--c)}.nz-st0q i{font-style:normal;color:var(--c);font-weight:800}.nz-st0>small{font-size:12px;color:var(--ink3);margin-top:6px}
+@media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 48px);display:flex;flex-direction:column}
  .nz.nzpp #nzChat{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}.nz.nzpp .nz-msgs{flex:1;height:auto;min-height:0}
  .nz.nzpp .nz-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nz.nzpp .nz-chips button{white-space:nowrap;flex:none}}
 @media(max-width:1100px){.nz.nzpp .nz-mt{display:none}.nz.nzpp .nz-pth .nz-pbk{display:inline-flex}
@@ -1616,7 +1638,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .nz-grid.mt-r~.nz-fab{display:none}}
 @media(min-width:861px) and (max-width:1100px){.nz-fab{bottom:20px}}
 @media(max-width:700px){.nz-hd2{flex-wrap:wrap;gap:12px}.nz-hd2>div{flex:1 1 calc(100% - 72px)}.nz-hd2 h1{font-size:22px}.nz-hd2 .nz-st{order:3;width:100%}}
-.nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}
+.nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}.nz.nzpp .nz-l .nz-hd2{margin-bottom:6px}
 .page:has(.nz.nzpp){max-width:1480px}
 @media(min-width:1301px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 460px;gap:22px}}@media(min-width:1600px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 520px}}
 .nz-vz{max-width:760px;display:grid;gap:14px}.nz.nzpp .nz-sh{grid-template-columns:30px minmax(0,1fr) auto!important}.nz-vz .nz-hd2{margin-bottom:0}
@@ -3769,9 +3791,11 @@ function fxMsgs(hist,nanda,edit){let out='',pend='';const flush=()=>{out+=pend;p
   hist.forEach((m,i)=>{
    if(m.dir==='sys'){out+=`<div class="ob-m sys">${esc(m.text)}</div>`;return}
    flush();
-   if(m.dir==='in'){out+=`<div class="ob-m in">${esc(m.text)}${m.at?`<small>${m.at}</small>`:''}</div>`;return}
+   const auP=m.audio?`<div class="nz-au" data-au="${esc(m.audio)}"><button type="button" class="nz-aup" aria-label="Ouvir">${svg('<path d="M8 5v14l11-7z"/>')}</button><span class="nz-awv">${'<i></i>'.repeat(26)}</span></div>`:'';
+   if(m.dir==='in'){out+=m.audio?`<div class="ob-m in au">${auP}${m.at?`<small>${m.at}</small>`:''}<div class="nz-atr"><em>Transcrição</em>${m.text?esc(m.text):'<i>entendendo o áudio…</i>'}</div></div>`:`<div class="ob-m in">${esc(m.text)}${m.at?`<small>${m.at}</small>`:''}</div>`;return}
    const ed=edit&&edit.i===i;
-   out+=`<div class="ob-m out ${ed?'fx-on':''}"><b>${esc(nanda)}</b>${esc(m.text)}${m.at?`<small>${m.at}</small>`:''}</div>`+
+   const tk=m.at?`<small>${m.at}${m.tk?' <i class="nz-tk">✓✓</i>':''}</small>`:'';
+   out+=(m.audio?`<div class="ob-m out au ${ed?'fx-on':''}"><b>${esc(nanda)}</b>${auP}${tk}<div class="nz-avn">Respondeu em áudio${m.voice?' · voz '+esc(m.voice):''}</div><div class="nz-atr"><em>O que ela falou</em>${esc(m.text)}</div></div>`:`<div class="ob-m out ${ed?'fx-on':''}"><b>${esc(nanda)}</b>${esc(m.text)}${tk}</div>`)+
     (m.lesson?`<div class="fx-ok"><i>✓</i><span><b>Refeita com o que você ensinou.</b>${m.changes&&m.changes.length?` Ajustamos o português: ${m.changes.slice(0,3).map(c=>`<s>${esc(c[0]||'·')}</s> → <em>${esc(c[1]||'·')}</em>`).join(', ')}.`:''}</span></div>`:'');
    pend=ed?fxBox(m,edit):`<button type="button" class="fx-go" data-fx="${i}">${svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>')}${m.gap?'Ensinar a resposta':'Corrigir resposta'}</button>`});
   flush();return out}
@@ -4501,6 +4525,10 @@ function shell(){
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
   $('#meB').onclick=admSw;
+  {const sd=document.querySelector('.side'),ap=document.querySelector('.app');let pt=null;  // em Configurações: o menu principal recolhido abre por cima ao passar o mouse ou clicar no espaço vazio
+   const peek=o=>{if(!ap.classList.contains('cfx')||innerWidth<=860)return;ap.classList.toggle('mini',!o)};
+   sd.addEventListener('mouseenter',()=>{clearTimeout(pt);pt=setTimeout(()=>peek(true),280)});sd.addEventListener('mouseleave',()=>{clearTimeout(pt);peek(false)});
+   sd.addEventListener('click',e=>{if(e.target===sd||e.target.classList.contains('sp')||e.target.id==='snav')peek(true)})}
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
@@ -5094,9 +5122,9 @@ function drawComposer(c,w,draft){
 // ---------- caixa de mensagem: emoji e atalhos que aparecem quando a conversa pede ----------
 const EMO_I='<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>';
 const EMO=[['Mais usados','😊 🙏 ❤️ 👍 😉 🥰 ✨ 👏 😄 🤩 🙌 💪 😅 🤗 👋 🎉'],['Atendimento','📅 ⏰ 📍 💳 💰 🎁 ✅ 📦 🚚 📞 💬 ⭐ 🔥 💆 💇 🍕']];
-function emoPick(ta,after){$('.emo-p')?.remove();const p=document.createElement('div');p.className='emo-p';
+function emoPick(ta,after,host){$('.emo-p')?.remove();const p=document.createElement('div');p.className='emo-p';
   p.innerHTML=EMO.map(([t,l])=>`<h6>${t}</h6><div class="emo-g">${l.split(' ').map(e=>`<button type="button">${e}</button>`).join('')}</div>`).join('');
-  const f=$('#cvF');f.style.position='relative';f.appendChild(p);
+  const f=host||$('#cvF');f.style.position='relative';f.appendChild(p);
   p.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+b.textContent+ta.value.slice(ta.selectionEnd??i);ta.focus();const k=i+b.textContent.length;ta.setSelectionRange(k,k);after&&after()});
   setTimeout(()=>document.addEventListener('click',function off(e){if(!p.contains(e.target)){p.remove();document.removeEventListener('click',off)}}),0)}
 const CTX_AG=/(hor[aá]rio|agend|marcar|remarcar|amanh[ãa]|\bhoje\b|s[aá]bado|domingo|segunda|ter[cç]a|quarta|quinta|sexta|semana que vem|\b\d{1,2}\s?h(\d{2})?\b)/i;
@@ -8208,12 +8236,13 @@ const VIEWS={
    $('#nzOk').onclick=()=>save();$('#nzUndo').onclick=()=>{Object.assign(V,JSON.parse(saved));drawVoz()};nzVoice()};
   const draw=()=>{if(NZV.tab==='voz')return drawVoz();const d=done(),m=modeOf(V.default_mode),left=total-d;
    $('#page').innerHTML=`<div class="nz nzpp">
+    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Preparar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
+    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
     <div class="nz-hd2"><span class="nz-rg ${d===total?'done':''}" style="--p:${Math.round(100*d/total)}"><i>${d===total?'✓':d+'/'+total}</i></span><div><h1>${d===total?'A Nanda está pronta':'Prepare a Nanda'}</h1>
       <p>${d===total?'Ela já sabe o básico. Teste com perguntas reais e ajuste o que quiser.':`Falta${left===1?'':'m'} ${left} ${left===1?'passo':'passos'}, uns ${left} ${left===1?'minuto':'minutos'}, para ela atender seus clientes.`}${d<total&&Object.keys(ex).length?` <button type="button" class="nz-exl" id="aiEx">Sem tempo? Preencher com um exemplo</button>`:''}</p></div>
      <button type="button" class="nz-st" id="nzStB" title="Mudar como ela atende"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span><i class="nz-chg">mudar</i></button></div>
-    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Preparar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
     ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
-    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
+
      <div class="nz-steps">${STEPS.map((x,i)=>{const ok=stepOk(x[0]),isO=open===x[0],n=nxt(x[0]);return `<section class="nz-s ${isO?'open now':''} ${!ok&&!isO?'next':''}" data-s="${x[0]}">
       <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${stepSum(x)}</small></span>${isO?(ok?'<span></span>':'<span class="nz-tm">1 min</span>'):ok?'<span class="nz-edt">Editar</span>':'<span></span>'}</button>
       ${isO?`<div class="nz-sb">${body(x[0])}<div class="nz-sft"><button type="button" class="btn p" data-go="${x[0]}">${x[0]==='ligar'?'Ligar a Nanda':n?'Salvar e continuar →':'Salvar'}</button>${x[0]!=='ligar'&&n?`<small>Próximo: <b>${n[1]}</b></small>`:''}<span class="sp"></span>${x[0]!=='ligar'&&!ok?'<button type="button" class="nz-skip" data-skip>Pular</button>':''}</div></div>`:''}</section>`}).join('')}</div>
@@ -8233,8 +8262,10 @@ const VIEWS={
      ${NEWQ?`<div class="nz-nw" id="nzNw">✨ <span><b>Ela acabou de aprender.</b> Teste: “${esc(NEWQ)}”</span><button type="button" class="btn sm p" id="nzNwB">Testar</button></div>`:''}<div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
       <div id="nzChat"><div class="nz-msgs" id="plM"></div>
        <div class="nz-chips">${[...new Set([...faqRows().map(r=>r[0]).filter(Boolean).slice(-2),...(OB_ASK[ME.company.segment]||OB_ASK.outro)])].slice(0,4).map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
-       <form class="nz-comp" id="plF"><textarea id="plT" rows="1" placeholder="Escreva como se fosse um cliente..." aria-label="Mensagem de teste"></textarea><button class="btn p" type="submit">Enviar mensagem</button></form>
-       <div class="nz-pf"><span class="hint">Não envia nada.</span><button type="button" class="nz-ex" id="plS">Salvar como teste</button><button type="button" class="nz-ex" id="plR">Limpar</button></div></div>
+       <form class="nz-comp nz-wa" id="plF"><div class="nz-wab" id="plBox"><button type="button" class="nz-ib" id="plE" title="Emoji" aria-label="Emoji">${svg(EMO_I)}</button><textarea id="plT" rows="1" placeholder="Escreva como se fosse um cliente..." aria-label="Mensagem de teste"></textarea></div>
+        <div class="nz-rec" id="plRec" hidden><i class="nz-rd"></i><b id="plRecT">0:00</b><span class="nz-awv on">${'<i></i>'.repeat(18)}</span><button type="button" class="nz-recx" id="plRecX">Cancelar</button></div>
+        <button class="btn p nz-snd" type="submit" id="plB" aria-label="Enviar">${svg('<path d="m4 12 16-8-6 16-2-7z"/>')}<span>Enviar mensagem</span></button><button type="button" class="nz-snd nz-mic" id="plMic" title="Gravar áudio como cliente" aria-label="Gravar áudio">${svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>')}</button></form>
+       <div class="nz-pf"><span class="hint" id="plHint">Não envia nada.</span><button type="button" class="nz-ex" id="plS">Salvar como teste</button><button type="button" class="nz-ex" id="plR">Limpar</button></div></div>
       <div id="nzTests" hidden><div class="nz-th"><p class="hint">Situações que ela precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><button class="btn sm p" id="tsRun" type="button">Rodar todos</button></div><div id="tsL" class="grid" style="gap:8px"></div></div>
      </div></aside></div>
     <button type="button" class="nz-fab" id="nzFab"><i>${esc((V.name||'N')[0].toUpperCase())}</i>Testar a ${esc(V.name||'Nanda')}${NEWQ?'<em></em>':''}</button>
@@ -8296,7 +8327,7 @@ const VIEWS={
      ${t.last&&!t.last.ok?`<small>${esc(t.last.why)}</small>`:''}${t.last&&t.last.reply?`<small>Resposta: ${esc(t.last.reply)}</small>`:''}</div>`).join(''):'<div class="nz-empty">Converse em "Testar conversa" e toque em "Salvar como teste" para guardar a situação.</div>';
     document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{await api('/ai/tests/'+b.dataset.tdel,{method:'DELETE'});tests.splice(0,tests.length,...await api('/ai/tests'));drawTests(tests)});
     const r=$('#tsRun');if(r)r.onclick=async e=>{const b=e.target;b.disabled=true;b.textContent='Rodando...';try{if(dirty())await save(true);const x=await api('/ai/tests/run',{method:'POST'});tests.splice(0,tests.length,...x.tests);drawTests(tests);toast(`${x.passed} de ${x.total} testes passaram.`)}catch(x){toast(x.message)}b.disabled=false;b.textContent='Rodar todos'}};
-  const hist=[];
+  const hist=[];let PREC=null;
   // respostas que o dono corrigiu no teste: ficam visíveis e dá para apagar
   const lessonsH=()=>{const L=(s.examples||[]).slice().reverse();if(!L.length)return '<div id="nzLs" hidden></div>';
     return `<div class="nz-ls" id="nzLs"><div class="nz-gh"><span class="nz-gi ok">✓</span><div><b>${L.length===1?'1 resposta que você ensinou':L.length+' respostas que você ensinou'}</b><span>Vieram das suas correções no teste. Ela responde desse jeito quando a conversa cair na mesma situação.</span></div></div>
@@ -8317,14 +8348,44 @@ const VIEWS={
   const takeR=(r,redo)=>{if(r.reply)hist.push({dir:'out',text:r.reply,lesson:redo?r.lesson:null,changes:redo?r.changes:null,gap:!redo&&!!r.faltou});if(r.book)hist.push({dir:'sys',text:'Aqui ela marcaria '+(r.book_label||'o horário')+' na agenda'});if(r.handoff)hist.push({dir:'sys',text:'Aqui ela chamaria o time'+(r.reason?' · '+r.reason:'')});
     if(redo&&r.lesson){s.examples=[...(s.examples||[]).filter(e=>e.q.toLowerCase()!==r.lesson.q.toLowerCase()),r.lesson];const L=$('#nzLs');if(L)L.outerHTML=lessonsH()}
     const gi=hist.findLastIndex(m=>m.dir==='out');if(gi>=0&&hist[gi].gap)FS.edit={i:gi,mode:'texto',texto:'',pedido:''}};
-  const drawChat=(typing,keep)=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?fxMsgs(hist,V.name||'Nanda',FS.edit)+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
-    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b> embaixo dela.</div>`;
+  const hm=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+  const drawChat=(typing,keep)=>{const box=$('#plM');if(!box)return;hist.forEach(m=>{if(!m.at&&m.dir!=='sys'){m.at=hm();if(m.dir==='out')m.tk=1}});box.innerHTML=hist.length?fxMsgs(hist,V.name||'Nanda',FS.edit)+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
+    :`<div class="nz-st0"><span class="nz-st0i">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 10.5h7M8.5 13.5h4"/>')}</span><b>Converse com a ${esc(V.name||'Nanda')} como se fosse um cliente</b><span>Faça uma pergunta e veja na hora como ela responde. Nada é enviado para ninguém.</span>
+     <div class="nz-st0q">${[...document.querySelectorAll('.nz-chips button')].slice(0,3).map(b=>`<button type="button" data-q="${esc(b.textContent)}">${esc(b.textContent)}<i>→</i></button>`).join('')}</div><small>Resposta não ficou boa? Toque em <b>Corrigir resposta</b> embaixo dela.</small></div>`;
+    box.classList.toggle('empty',!hist.length);
     fxBind(box,{hist,nanda:V.name||'Nanda',state:FS,redraw:()=>drawChat(false,true),done:r=>{takeR(r,true);drawChat(false);bindLs()}});if(!keep)box.scrollTop=box.scrollHeight};
   function playBind(){drawChat(false);bindLs();const ta=$('#plT');
    const send=async t=>{t=(t||'').trim();if(!t)return;FS.edit=null;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
     try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});takeR(r)}
     catch(e){hist.push({dir:'sys',text:e.message})}drawChat(false)};
-   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
+   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value).then(()=>wa())};
+   const wa=()=>{const f=$('#plF');if(f)f.classList.toggle('typed',!!ta.value.trim())};ta.addEventListener('input',wa);wa();
+   if($('#plE'))$('#plE').onclick=e=>{e.stopPropagation();emoPick(ta,wa,$('#plBox'))};
+   let AU=null;$('#plM').addEventListener('click',e=>{const b=e.target.closest('.nz-aup');if(!b)return;const w=b.closest('.nz-au'),u=w.dataset.au;
+     if(AU&&AU.src.endsWith(u)&&!AU.paused){AU.pause();return}if(AU)AU.pause();document.querySelectorAll('.nz-au.on').forEach(x=>x.classList.remove('on'));
+     AU=new Audio(u);w.classList.add('on');AU.onended=AU.onpause=()=>w.classList.remove('on');AU.play().catch(()=>w.classList.remove('on'))});
+   const ask=async()=>{const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys'&&m.text).map(m=>({dir:m.dir,text:m.text}))}});takeR(r);return r};
+   if($('#plMic'))$('#plMic').onclick=async()=>{const F=$('#plF');
+     if(F.classList.contains('recording')){F.dataset.send='1';PREC&&PREC.stop();return}
+     if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return toast('Este navegador não grava áudio.');
+     let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){return toast('Libere o microfone no navegador para gravar.')}
+     const type=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+     const rec=PREC=new MediaRecorder(st,type?{mimeType:type}:{}),parts=[],t0=Date.now();rec.ondataavailable=e=>e.data.size&&parts.push(e.data);
+     F.classList.add('recording');F.dataset.send='';$('#plRec').hidden=false;$('#plBox').hidden=true;
+     const tick=setInterval(()=>{const s2=Math.round((Date.now()-t0)/1000),el=$('#plRecT');if(el)el.textContent=Math.floor(s2/60)+':'+String(s2%60).padStart(2,'0');if(s2>=60){F.dataset.send='1';rec.stop()}},300);
+     $('#plRecX').onclick=()=>{F.dataset.send='';rec.stop()};
+     rec.onstop=async()=>{PREC=null;clearInterval(tick);st.getTracks().forEach(t=>t.stop());F.classList.remove('recording');$('#plRec').hidden=true;$('#plBox').hidden=false;
+       if(F.dataset.send!=='1'||Date.now()-t0<700)return;
+       const mt=(rec.mimeType||type||'audio/webm').split(';')[0],blob=new Blob(parts,{type:mt}),url=URL.createObjectURL(blob);
+       FS.edit=null;const m={dir:'in',text:'',audio:url};hist.push(m);drawChat(true);
+       try{if(dirty())await save(true);const fd=new FormData();fd.append('file',new File([blob],'teste.'+(mt.includes('ogg')?'ogg':mt.includes('mp4')?'m4a':'webm'),{type:mt}));
+         const rr=await fetch('/api/ai/test/audio',{method:'POST',body:fd,credentials:'same-origin'});const a=await rr.json().catch(()=>({}));if(!rr.ok)throw new Error(a.detail||'Não deu para enviar o áudio.');
+         m.text=a.text;$('#plHint').textContent=`Não envia nada · ${a.left} ${a.left===1?'áudio de teste':'áudios de teste'} hoje`;drawChat(true);
+         const r=await ask();const o=[...hist].reverse().find(x=>x.dir==='out');
+         if(a.voice&&r.reply&&o){drawChat(true);try{const sr=await fetch('/api/ai/test/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:r.reply}),credentials:'same-origin'});
+           if(sr.ok){o.audio=URL.createObjectURL(await sr.blob());o.voice=a.voice_name}}catch(e){}}}
+       catch(e){if(!m.text)hist.splice(hist.indexOf(m),1);hist.push({dir:'sys',text:e.message})}drawChat(false)};
+     rec.start(250)};$('#plM').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b)send(b.dataset.q)});
    ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
    document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
    $('#plR').onclick=()=>{hist.length=0;FS.edit=null;drawChat(false)};if($('#plR2'))$('#plR2').onclick=()=>$('#plR').click();

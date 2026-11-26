@@ -227,3 +227,46 @@ async def put_voice(body: VoiceIn, user=Depends(managers)):
         upd['voice_id'] = body.voice_id
     if upd: await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': upd}, upsert=True)
     return await get_voice(user)
+
+
+# ---- teste no painel da Nanda: o dono grava um áudio como cliente e ouve a resposta na voz dela ----
+from fastapi import UploadFile, File
+TEST_DAY = 10  # áudios de teste por dia (não contam na franquia do mês)
+
+async def _test_slot(company_id, kind):
+    day = now().strftime('%Y-%m-%d')
+    r = await db.voice_tests.find_one_and_update({'company_id': company_id, 'day': day, 'kind': kind}, {'$inc': {'n': 1}}, upsert=True, return_document=True)
+    n = (r or {}).get('n', 1)
+    if n > TEST_DAY:
+        raise HTTPException(429, f'Você já testou {TEST_DAY} áudios hoje. Amanhã libera de novo; por texto continua sem limite.')
+    return TEST_DAY - n
+
+@router.post('/ai/test/audio')
+async def test_audio(file: UploadFile = File(...), user=Depends(managers)):
+    """Áudio gravado no teste vira texto, como acontece com o áudio do cliente no WhatsApp. Nada é enviado."""
+    import media
+    if not media.transcribe_ready(): raise HTTPException(400, 'A transcrição de áudio ainda não está ligada no Oi Nanda.')
+    data = await file.read()
+    if not data: raise HTTPException(400, 'O áudio veio vazio. Tente gravar de novo.')
+    if len(data) > 8 * 1024 * 1024: raise HTTPException(400, 'Áudio muito longo para o teste. Grave até 1 minuto.')
+    left = await _test_slot(user['company_id'], 'stt')
+    text = await media.transcribe(data, (file.content_type or 'audio/webm').split(';')[0], file.filename or 'teste.webm')
+    if not text: raise HTTPException(400, 'Não deu para entender o áudio. Tente falar mais perto do microfone.')
+    s = await db.ai_settings.find_one({'company_id': user['company_id']}, {'_id': 0, 'voice_reply': 1, 'voice_id': 1}) or {}
+    vid = s.get('voice_id') or DEFAULT
+    return {'text': text, 'left': left, 'voice': bool(s.get('voice_reply')) and ready(), 'voice_name': next((v['name'] for v in VOICES if v['id'] == vid), '')}
+
+class SpeakIn(BaseModel):
+    text: str
+
+@router.post('/ai/test/speak')
+async def test_speak(body: SpeakIn, user=Depends(managers)):
+    """Resposta do teste em áudio, com a voz escolhida: igual ao que o cliente ouviria. Resposta longa ou com link vai em texto, como no real."""
+    if not ready(): raise HTTPException(400, 'A voz ainda não foi ativada no Oi Nanda.')
+    say = speakable(body.text or '')
+    if not say: raise HTTPException(400, 'Essa resposta iria em texto: é longa ou tem link.')
+    s = await db.ai_settings.find_one({'company_id': user['company_id']}, {'_id': 0, 'voice_id': 1}) or {}
+    await _test_slot(user['company_id'], 'tts')
+    data = await tts(await spoken(say), s.get('voice_id') or DEFAULT)
+    if not data: raise HTTPException(400, LAST_ERR or 'A voz não respondeu agora. Tente de novo.')
+    return Response(data, media_type='audio/mpeg')
