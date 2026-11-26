@@ -565,6 +565,18 @@ td>.sure,tr+.sure{margin:4px}
 .admp .ao b{display:block;font-size:13.5px}.admp .ao small{font-size:12px;color:var(--ink3)}.admp .ao>svg{margin-left:auto;width:16px;height:16px;color:var(--c2);flex:none}
 .al2{height:1px;background:var(--line);margin:6px 4px}.admp .ax{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--ink2)}.admp .ax:hover{background:var(--bg)}.admp .ax svg{width:16px;height:16px}
 .admp.sheet{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+/* menu com mais respiro: fonte e ícones menores, ativo mais suave */
+.side{padding:18px 12px 12px}
+.side .sbar .logo{transform:scale(.82);transform-origin:left center}.side .logo{margin-bottom:12px}
+.side button.nav{font-size:13px;font-weight:500;padding:7px 10px;gap:12px;color:#A9B4BF;border-radius:9px}
+.side button.nav svg{width:16px;height:16px;stroke-width:1.75}
+.side button.nav:hover{color:#fff}.side button.nav.on{background:rgba(255,255,255,.08);color:#fff;font-weight:600}
+.side .snav{gap:4px}.side .nav.gsb{margin-bottom:6px}
+.side button.nav.nq{background:rgba(232,96,63,.11);margin-top:0}.nqw{margin-top:12px}.side button.nav.nq.on{background:rgba(232,96,63,.18)}
+.su-pill{background:transparent;border:1px solid rgba(255,255,255,.09);padding:7px 10px;margin:0 0 10px;border-radius:10px}.su-pill:hover{background:rgba(255,255,255,.05)}.su-pill b{font-size:12px;font-weight:600}.su-pill small{font-size:10.5px}
+.side .mini-t{font-size:12.5px;padding:7px 10px}
+.side .me.sw2 .meb .lb b{font-size:12.5px;font-weight:600}.side .me.sw2 .meb .lb span{font-size:11px;white-space:nowrap}.side .me .avw .av{width:30px;height:30px;font-size:11.5px}
+
 
 /* Mensagens automáticas */
 .mx{max-width:1100px}.mx-bk{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink2);font-size:13.5px;margin-bottom:12px}.mx-bk svg{width:16px;height:16px}.mx-bk:hover{color:var(--ink)}
@@ -4340,9 +4352,10 @@ function admOn(){return !!(ME&&ME.user.is_admin&&!ME.user.impersonated_by&&(VIEW
 function admSw(){if($('#admP')){$('#admP').remove();return}const c=ME.company,on=admOn(),a=$('#meB');
   const ck=svg('<path d="m5 12 5 5 9-10"/>');
   const p=document.createElement('div');p.className='admp';p.id='admP';
-  p.innerHTML=`<h5>Trocar para</h5><button type="button" class="ao ${on?'':'on'}" data-to="emp"><span class="ai" style="background:var(--c)">${esc(initials(c.name))}</span><span><b>${esc(c.name)}</b><small>Sua empresa</small></span>${on?'':ck}</button>
+  const adm=ME.user.is_admin&&!ME.user.impersonated_by;
+  p.innerHTML=(adm?`<h5>Trocar para</h5><button type="button" class="ao ${on?'':'on'}" data-to="emp"><span class="ai" style="background:var(--c)">${esc(initials(c.name))}</span><span><b>${esc(c.name)}</b><small>Sua empresa</small></span>${on?'':ck}</button>
     <button type="button" class="ao ${on?'on':''}" data-to="adm"><span class="ai" style="background:#5B6BE8">${NI['a-visao']}</span><span><b>Admin da plataforma</b><small>Contas e financeiro</small></span>${on?ck:''}</button>
-    <div class="al2"></div><button type="button" class="ax" data-to="me">${NI.conversas}Meu status e avisos</button><button type="button" class="ax" data-to="out">${svg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>')}Sair</button>`;
+    <div class="al2"></div>`:'')+`<button type="button" class="ax" data-to="me">${NI.conversas}Meu status e avisos</button><button type="button" class="ax" data-to="out">${svg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>')}Sair</button>`;
   document.body.append(p);const r=a.getBoundingClientRect();
   if(innerWidth>860){p.style.left=r.left+'px';p.style.width=Math.max(240,r.width)+'px';p.style.bottom=(innerHeight-r.top+8)+'px'}else p.classList.add('sheet');
   const close=()=>{p.remove();document.removeEventListener('mousedown',out);document.removeEventListener('keydown',ek)},out=e=>{if(!p.contains(e.target)&&!a.contains(e.target))close()},ek=e=>{if(e.key==='Escape')close()};
@@ -4366,7 +4379,7 @@ function shell(){
     <div class="sp"></div>
     ${am?'':navBtn('config','Configurações')}${navBtn('ajuda','Central de ajuda')}
     <button class="mini-t" id="miniT" title="Recolher ou abrir o menu">${svg('<path d="m15 6-6 6 6 6"/>')}<span class="lb">Recolher menu</span></button>
-    <div class="me ${adm&&!u.impersonated_by?'sw2':''}"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status e avisos'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span>${adm&&!u.impersonated_by?`<span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span>`:''}</button><button id="out" class="lb">Sair</button></div>
+    <div class="me sw2"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status, avisos e sair'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span><span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span></button><button id="out" class="lb">Sair</button></div>
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
@@ -4381,7 +4394,7 @@ function shell(){
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
-  $('#meB').onclick=adm&&!u.impersonated_by?admSw:meModal;
+  $('#meB').onclick=admSw;
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
   $('#out').onclick=async()=>{await api('/auth/logout',{method:'POST'});ME=null;history.replaceState(null,'','/');document.title='Oi Nanda';VIEW='inicio';authView('login')};
   if($('#exit'))$('#exit').onclick=async()=>{await api('/admin/exit',{method:'POST'});VIEW='a-clientes';await boot()};
