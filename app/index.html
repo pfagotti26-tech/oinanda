@@ -1639,6 +1639,16 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 @media(min-width:861px) and (max-width:1100px){.nz-fab{bottom:20px}}
 @media(max-width:700px){.nz-hd2{flex-wrap:wrap;gap:12px}.nz-hd2>div{flex:1 1 calc(100% - 72px)}.nz-hd2 h1{font-size:22px}.nz-hd2 .nz-st{order:3;width:100%}}
 .nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}.nz.nzpp .nz-l .nz-hd2{margin-bottom:6px}
+@media(min-width:1101px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 440px!important;gap:22px!important}.nz.nzpp .nz-r{order:-1}
+ .nz.nzpp .nz-hd2{gap:12px;align-items:center;flex-wrap:wrap}.nz.nzpp .nz-rg{width:46px;height:46px}.nz.nzpp .nz-rg i{width:36px;height:36px;font-size:12.5px}
+ .nz.nzpp .nz-hd2>div{flex:1 1 150px}.nz.nzpp .nz-hd2 h1{font-size:19px}.nz.nzpp .nz-hd2 p{font-size:12.5px;margin-top:1px}.nz.nzpp .nz-exl{font-size:12px;display:block}
+ .nz.nzpp .nz-hd2 .nz-st{padding:5px 11px;border-radius:99px;gap:6px}.nz.nzpp .nz-hd2 .nz-st small,.nz.nzpp .nz-hd2 .nz-chg{display:none}.nz.nzpp .nz-hd2 .nz-st b{font-size:12.5px}
+ .nz.nzpp .nz-tm,.nz.nzpp .nz-sft small{display:none}.nz.nzpp .nz-sh{padding:12px 14px;gap:10px}.nz.nzpp .nz-sh b{font-size:14px}.nz.nzpp .nz-sh small{font-size:12px}
+ .nz.nzpp .nz-sb{padding:2px 14px 16px 54px!important}.nz.nzpp .nz-steps{gap:8px}
+ .nz.nzpp .ob-m{font-size:14.5px;max-width:72%}.nz.nzpp .nz-msgs{padding:18px 22px}}
+@media(min-width:1600px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 480px!important}}
+.nz-lk{display:flex;flex-wrap:wrap;gap:6px 16px;padding:12px 4px 4px}.nz-lk button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;padding:2px 0}.nz-lk button:hover{color:var(--c2)}.nz-lk svg{width:15px;height:15px}
+.nz-lk .nz-lkg{color:var(--c2)}.nz-lkg b{background:var(--c);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}.nz.nzpp .nz-ls{display:none}.nz.nzpp .nz-gap{margin-top:10px}
 .page:has(.nz.nzpp){max-width:1480px}
 @media(min-width:1301px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 460px;gap:22px}}@media(min-width:1600px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 520px}}
 .nz-vz{max-width:760px;display:grid;gap:14px}.nz.nzpp .nz-sh{grid-template-columns:30px minmax(0,1fr) auto!important}.nz-vz .nz-hd2{margin-bottom:0}
@@ -8222,7 +8232,7 @@ const VIEWS={
     const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
   const nf=n=>Number(n||0).toLocaleString('pt-BR');
   const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
-  let NEWQ=null;const TRYQ={negocio:'O que vocês fazem?',precos:'Quanto custa?',limites:'Quero falar com uma pessoa'};
+  let NEWQ=null,GAPO=false;const TRYQ={negocio:'O que vocês fazem?',precos:'Quanto custa?',limites:'Quero falar com uma pessoa'};
   const nxt=id=>{const i=STEPS.findIndex(x=>x[0]===id);return STEPS.slice(i+1).find(x=>!stepOk(x[0]))||STEPS.find(x=>!stepOk(x[0])&&x[0]!==id)||null};
   const stepSum=x=>{if(x[0]==='ligar')return stepOk('ligar')?modeOf(V.default_mode)[1]:x[2];const S=SEC.find(y=>y[0]===x[0]);return stepOk(x[0])?summary(S):x[2]};
   const IC2={voz:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',apr:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/>'};
@@ -8239,17 +8249,15 @@ const VIEWS={
     <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Preparar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
     <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
     <div class="nz-hd2"><span class="nz-rg ${d===total?'done':''}" style="--p:${Math.round(100*d/total)}"><i>${d===total?'✓':d+'/'+total}</i></span><div><h1>${d===total?'A Nanda está pronta':'Prepare a Nanda'}</h1>
-      <p>${d===total?'Ela já sabe o básico. Teste com perguntas reais e ajuste o que quiser.':`Falta${left===1?'':'m'} ${left} ${left===1?'passo':'passos'}, uns ${left} ${left===1?'minuto':'minutos'}, para ela atender seus clientes.`}${d<total&&Object.keys(ex).length?` <button type="button" class="nz-exl" id="aiEx">Sem tempo? Preencher com um exemplo</button>`:''}</p></div>
+      <p>${d===total?'Tudo pronto. Teste e ajuste o que quiser.':`Falta${left===1?'':'m'} ${left} ${left===1?'passo':'passos'} · uns ${left} min`}${d<total&&Object.keys(ex).length?` <button type="button" class="nz-exl" id="aiEx">Sem tempo? Preencher com um exemplo</button>`:''}</p></div>
      <button type="button" class="nz-st" id="nzStB" title="Mudar como ela atende"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span><i class="nz-chg">mudar</i></button></div>
     ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
 
      <div class="nz-steps">${STEPS.map((x,i)=>{const ok=stepOk(x[0]),isO=open===x[0],n=nxt(x[0]);return `<section class="nz-s ${isO?'open now':''} ${!ok&&!isO?'next':''}" data-s="${x[0]}">
       <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${stepSum(x)}</small></span>${isO?(ok?'<span></span>':'<span class="nz-tm">1 min</span>'):ok?'<span class="nz-edt">Editar</span>':'<span></span>'}</button>
       ${isO?`<div class="nz-sb">${body(x[0])}<div class="nz-sft"><button type="button" class="btn p" data-go="${x[0]}">${x[0]==='ligar'?'Ligar a Nanda':n?'Salvar e continuar →':'Salvar'}</button>${x[0]!=='ligar'&&n?`<small>Próximo: <b>${n[1]}</b></small>`:''}<span class="sp"></span>${x[0]!=='ligar'&&!ok?'<button type="button" class="nz-skip" data-skip>Pular</button>':''}</div></div>`:''}</section>`}).join('')}</div>
-     <div class="nz-xt"><h4>Quando quiser</h4>
-      <button type="button" class="nz-xr" data-xv="voz"><span class="ic">${svg(IC2.voz)}</span><span><b>Voz e jeito de falar</b><small>${esc(V.name||'Nanda')} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]} · responder áudio com áudio</small></span><em>Abrir ›</em></button>
-      <button type="button" class="nz-xr" data-apr><span class="ic">${svg(IC2.apr)}</span><span><b>O que ela aprendeu</b><small>${G.length?(G.length===1?'1 pergunta que ela não soube responder':G.length+' perguntas que ela não soube responder'):'Respostas que você corrigiu no teste'}</small></span><em>${G.length?'Responder ›':'Ver ›'}</em></button>
-     ${G.length?`<div class="nz-gap"><div class="nz-gh"><span class="nz-gi">?</span><div><b>${G.length===1?'1 pergunta que ela não soube responder':G.length+' perguntas que ela não soube responder'}</b><span>Vieram de clientes de verdade. Responda aqui e ela passa a saber: a resposta entra em Dúvidas.</span></div></div>
+     <div class="nz-xt"><div class="nz-lk"><button type="button" data-xv="voz">${svg(IC2.voz)}Voz e jeito de falar</button><button type="button" data-apr>${svg(IC2.apr)}O que ela aprendeu</button>${G.length?`<button type="button" class="nz-lkg" id="nzGo">${G.length===1?'1 pergunta sem resposta':G.length+' perguntas sem resposta'}<b>${G.length}</b></button>`:''}</div>
+     ${G.length?`<div class="nz-gap" id="nzGap" ${GAPO?'':'hidden'}><div class="nz-gh"><span class="nz-gi">?</span><div><b>${G.length===1?'1 pergunta que ela não soube responder':G.length+' perguntas que ela não soube responder'}</b><span>Vieram de clientes de verdade. Responda aqui e ela passa a saber: a resposta entra em Dúvidas.</span></div></div>
       ${G.slice(0,GN).map(g=>`<div class="nz-gq" data-g="${g.id}"><div class="nz-gqt"><b>${esc(g.q)}</b><small>${g.count===1?'1 cliente perguntou':g.count+' clientes perguntaram'} · última vez ${(a=>a==='agora'?'agora há pouco':'há '+a)(agoShort(g.last_at))}${g.last_contact?' ('+esc(g.last_contact.split(' ')[0])+')':''}</small></div>
        <div class="nz-gqa"><input data-gin placeholder="Escreva a resposta" maxlength="600" aria-label="Resposta para: ${esc(g.q)}"><button type="button" class="btn sm p" data-ga>Ensinar</button><button type="button" class="lnk" data-gd title="Ela continua chamando o time quando perguntarem isso">Deixar com o time</button></div></div>`).join('')}
       ${G.length>GN?`<button type="button" class="lnk nz-gm" id="nzGm">Ver mais ${G.length-GN}</button>`:''}</div>`:''}
@@ -8300,6 +8308,7 @@ const VIEWS={
      const n=nxt(id);open=n?n[0]:null;draw();CFX.loaded=false;cfxDraw();const el=open&&document.querySelector(`.nz-s[data-s="${open}"]`);if(el)el.scrollIntoView({block:'center',behavior:'smooth'});else scrollTo({top:0,behavior:'smooth'})});
    document.querySelectorAll('[data-skip]').forEach(b=>b.onclick=async()=>{if(dirty())await save(true);const n=nxt(open);open=n?n[0]:null;draw()});
    document.querySelectorAll('[data-xv]').forEach(b=>b.onclick=()=>{NZV.tab='voz';go('nanda')});
+   if($('#nzGo'))$('#nzGo').onclick=()=>{GAPO=!GAPO;$('#nzGap').hidden=!GAPO;if(GAPO)$('#nzGap').scrollIntoView({block:'nearest',behavior:'smooth'})};
    {const qa=$('#nzQa');if(qa){const grow=t=>{t.style.height='';t.style.height=Math.min(160,t.scrollHeight+2)+'px'};qa.querySelectorAll('[data-fa]').forEach(grow);
      const bindR=r=>{r.querySelectorAll('input,textarea').forEach(x=>{x.removeAttribute('name');x.oninput=e=>{e.stopPropagation();if(x.tagName==='TEXTAREA')grow(x);faqSync()}});r.querySelector('[data-fx]').onclick=()=>{r.remove();if(!qa.children.length)qa.insertAdjacentHTML('beforeend',faqRow(['','']))&&0;faqSync();qa.querySelectorAll('.nz-qr').forEach(bindR)}};
      qa.querySelectorAll('.nz-qr').forEach(bindR);
