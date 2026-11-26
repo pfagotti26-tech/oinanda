@@ -31,6 +31,12 @@ TONES = {'proximo': 'próximo, simpático e direto, como uma boa atendente de Wh
 async def settings_for(company_id):
     s = await db.ai_settings.find_one({'company_id': company_id}, {'_id': 0}) or {}
     s = {**DEFAULTS, **s, 'company_id': company_id}
+    pu = s.get('pause_until')
+    if pu is not None and pu.tzinfo is None: from datetime import timezone; pu = pu.replace(tzinfo=timezone.utc)
+    if s.get('pause_on') and pu and pu <= now():  # a pausa com hora para acabar terminou: ela volta sozinha
+        await db.ai_settings.update_one({'company_id': company_id}, {'$unset': {'pause_on': '', 'pause_until': '', 'pause_by': ''}})
+        s.pop('pause_on', None); s.pop('pause_until', None); s.pop('pause_by', None); pu = None
+    s['paused'] = bool(s.get('pause_on')); s['pause_until'] = pu
     s['taught'] = bool((s['about'] or s['offer'] or s['knowledge']).strip())
     return s
 
@@ -457,13 +463,15 @@ async def auto_reply(company_id, contact_id, msg_id):
         contact = await db.contacts.find_one({'id': contact_id}, {'_id': 0})
         if not contact: return
         s = await settings_for(company_id)
+        if s['paused']: s = {**s, 'default_mode': 'off'}  # pausada pelo time: não responde sozinha em nenhuma conversa
         cover = bool(contact.get('needs_human') or contact.get('ai_paused') == 'handoff')
+        if s['paused']: cover = False
         if cover:
             if (contact.get('ai_prev') or s['default_mode']) != 'auto': return  # antes do repasse ela não respondia sozinha: segue assim
             await asyncio.sleep(max(0.0, cover_delay() - debounce()))
             contact = await db.contacts.find_one({'id': contact_id}, {'_id': 0})
             if not contact or not (contact.get('needs_human') or contact.get('ai_paused') == 'handoff'): return
-        mode = 'auto' if cover else (contact.get('ai_mode') or s['default_mode'])
+        mode = 'auto' if cover else ('off' if s['paused'] else (contact.get('ai_mode') or s['default_mode']))
         if mode == 'auto':
             from billing import has, ai_allowed
             co = await db.companies.find_one({'id': company_id}, {'_id': 0}) or {}
@@ -472,7 +480,7 @@ async def auto_reply(company_id, contact_id, msg_id):
                 month = now().strftime('%Y-%m')
                 if has(co, 'auto') and co.get('ai_limit_noted') != month:
                     await db.companies.update_one({'id': company_id}, {'$set': {'ai_limit_noted': month}})
-                    await note(company_id, contact_id, 'Os atendimentos da Nanda deste mês acabaram. Ela segue sugerindo as respostas para o time. Para ela voltar a atender sozinha, adicione um pacote em Empresa › Assinatura.')
+                    await note(company_id, contact_id, 'Os atendimentos da Nanda deste mês acabaram. Ela segue sugerindo as respostas para o time. Para ela voltar a atender sozinha, adicione um pacote em Configurações › Plano e cobrança.')
         # o horário da Meta vem em segundos; a ordem real é a de chegada no servidor
         last = (await db.messages.find({'contact_id': contact_id, 'dir': 'in'}, {'_id': 0}).sort('received_at', -1).to_list(1) or [None])[0]
         if not last or last['id'] != msg_id: return  # chegou mensagem mais nova: a resposta sai na vez dela
@@ -588,6 +596,31 @@ async def put_settings(body: SettingsIn, request: Request, user=Depends(managers
         await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': changes}, upsert=True)
         await audit(request, user, 'Ajustou a Nanda (IA)', ', '.join(changes))
     return await get_settings(user)
+
+class PauseIn(BaseModel):
+    until: Literal['1h', 'tomorrow', 'off']
+
+@router.post('/ai/pause')
+async def pause(body: PauseIn, request: Request, user=Depends(current_user)):
+    """Botão de emergência: qualquer pessoa do time para a Nanda de responder sozinha. Com hora marcada, ela volta sozinha."""
+    from datetime import timedelta, time as dtime
+    from agenda import tz_of
+    until = None
+    if body.until == '1h': until = now() + timedelta(hours=1)
+    elif body.until == 'tomorrow':
+        tz = tz_of(user['company']); d = now().astimezone(tz).date() + timedelta(days=1)
+        until = datetime.combine(d, dtime(9), tz).astimezone(now().tzinfo)
+    await db.ai_settings.update_one({'company_id': user['company_id']}, {'$set': {'pause_on': True, 'pause_until': until, 'pause_by': user['name']}}, upsert=True)
+    await audit(request, user, 'Pausou a Nanda (IA)', {'1h': 'por 1 hora', 'tomorrow': 'até amanhã às 9h', 'off': 'até alguém ligar de novo'}[body.until])
+    s = await settings_for(user['company_id'])
+    return {'paused': s['paused'], 'pause_until': s['pause_until'], 'default_mode': s['default_mode']}
+
+@router.post('/ai/resume')
+async def resume_ai(request: Request, user=Depends(current_user)):
+    await db.ai_settings.update_one({'company_id': user['company_id']}, {'$unset': {'pause_on': '', 'pause_until': '', 'pause_by': ''}})
+    await audit(request, user, 'Ligou a Nanda (IA) de novo')
+    s = await settings_for(user['company_id'])
+    return {'paused': False, 'pause_until': None, 'default_mode': s['default_mode']}
 
 class TestIn(BaseModel):
     messages: List[dict] = Field(min_length=1, max_length=30)
@@ -858,7 +891,7 @@ async def suggest(contact_id: str, cached: bool = False, user=Depends(current_us
         if c.get('sug_for') == last and c.get('sug'): return c['sug']
         if not key_ok(): return {'reply': '', 'handoff': False, 'reason': '', 'book': None}
     from billing import ai_allowed
-    if not await ai_allowed(user['company'], 'sug'): raise HTTPException(402, 'As sugestões da Nanda deste mês acabaram. Mude de plano em Empresa › Assinatura para continuar.')
+    if not await ai_allowed(user['company'], 'sug'): raise HTTPException(402, 'As sugestões da Nanda deste mês acabaram. Mude de plano em Configurações › Plano e cobrança para continuar.')
     d, usage = await think(user['company_id'], c)
     await track(user['company_id'], usage, 'suggestions')
     if d.get('marcos'): await suggest_marcos(user['company_id'], c, d['marcos'])

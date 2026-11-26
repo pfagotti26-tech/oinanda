@@ -49,7 +49,7 @@ def problem_of(status=None, quality=None, can_send=None, errors=None):
     if (can_send or '').upper() == 'LIMITED':
         why = why_pt(errors)
         return 'limited', 'A Meta limitou o envio deste número', (why[0].upper() + why[1:] + '. ' if why else '') + 'Respostas para quem chamou continuam saindo. Veja o motivo no Gerenciador do WhatsApp em business.facebook.com.'
-    if st == 'DISCONNECTED': return 'disconnected', 'O número foi desconectado na Meta', 'As mensagens deixaram de chegar. Reconecte em Empresa › WhatsApp. Se usa o app junto, abra o WhatsApp Business no celular.'
+    if st == 'DISCONNECTED': return 'disconnected', 'O número foi desconectado na Meta', 'As mensagens deixaram de chegar. Reconecte em Configurações › WhatsApp. Se usa o app junto, abra o WhatsApp Business no celular.'
     return None
 
 async def raise_alert(n, kind, title, detail, source):

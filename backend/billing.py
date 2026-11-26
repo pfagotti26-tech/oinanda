@@ -114,7 +114,7 @@ def require(user, feature):
         st = limits(user['company'])['state']
         if st == 'readonly': raise HTTPException(402, 'Sua conta está só para leitura. Assine um plano para voltar a usar.')
         need = next(PLANS[k]['name'] for k in ('essencial', 'profissional', 'equipe') if feature in PLANS[k]['features'])
-        raise HTTPException(402, f'{FEATURES.get(feature, feature)} faz parte do plano {need}. Mude de plano em Empresa › Assinatura.')
+        raise HTTPException(402, f'{FEATURES.get(feature, feature)} faz parte do plano {need}. Mude de plano em Configurações › Plano e cobrança.')
 
 def month(): return now().strftime('%Y-%m')
 
@@ -187,14 +187,14 @@ async def users_used(company_id): return await db.users.count_documents({'compan
 def require_live(user, what='conectar o WhatsApp'):
     """Modo demonstração: explora tudo, mas para atender de verdade precisa ativar os 14 dias grátis."""
     if limits(user['company'])['state'] == 'demo':
-        raise HTTPException(402, f'Para {what}, ative seus 14 dias grátis em Empresa › Assinatura. Hoje não é cobrado nada.')
+        raise HTTPException(402, f'Para {what}, ative seus 14 dias grátis em Configurações › Plano e cobrança. Hoje não é cobrado nada.')
 
 async def check_seat(user):
     lim = limits(user['company'])
     if lim['state'] == 'readonly': raise HTTPException(402, 'Sua conta está só para leitura. Assine um plano para voltar a usar.')
     require_live(user, 'chamar o seu time')
     if await users_used(user['company_id']) >= lim['users']:
-        raise HTTPException(402, f'Seu plano permite {lim["users"]} {"pessoa" if lim["users"] == 1 else "pessoas"}. Adicione usuários ou mude de plano em Empresa › Assinatura.')
+        raise HTTPException(402, f'Seu plano permite {lim["users"]} {"pessoa" if lim["users"] == 1 else "pessoas"}. Adicione usuários ou mude de plano em Configurações › Plano e cobrança.')
 
 # só leitura: o que ainda funciona sem assinatura
 READONLY_OK = ('/api/auth/', '/api/billing', '/api/me/', '/api/push/', '/api/wa/webhook', '/api/admin', '/api/l/')

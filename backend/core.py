@@ -76,7 +76,7 @@ async def current_user(request: Request):
         raise HTTPException(403, 'Defina sua senha pessoal para continuar.')
     from billing import blocked
     if not user['is_admin'] and blocked(company, request.method, request.url.path):
-        raise HTTPException(402, 'Seu teste grátis terminou e a conta está só para leitura. Assine um plano em Empresa › Assinatura para voltar a usar.')
+        raise HTTPException(402, 'Seu teste grátis terminou e a conta está só para leitura. Assine um plano em Configurações › Plano e cobrança para voltar a usar.')
     user['company'] = company
     user['session_hash'] = session['token_hash']
     return user

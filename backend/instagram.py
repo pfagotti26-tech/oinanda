@@ -494,7 +494,7 @@ async def send(company_id, contact, message, human, ch='instagram'):
     a = await account_of(company_id)
     nome = 'Instagram' if ch == 'instagram' else 'Messenger'
     if not a or a.get('status') != 'connected': raise HTTPException(400, f'O {nome} da empresa não está conectado.')
-    if ch == 'messenger' and not page_ready(a): raise HTTPException(400, 'O Messenger precisa da conexão pela Página do Facebook. Reconecte em Empresa › Instagram.')
+    if ch == 'messenger' and not page_ready(a): raise HTTPException(400, 'O Messenger precisa da conexão pela Página do Facebook. Reconecte em Configurações › Instagram.')
     normal, hum = window(contact)
     body = {'recipient': {'id': contact[CID[ch]]}, 'message': message}
     if not normal:

@@ -381,7 +381,10 @@ async def me(user=Depends(current_user)):
     if lim['state'] != 'trial': trial_left = None
     import core as _core
     mf = {'on': bool(user.get('mfa_on')), 'ok': bool(user.get('mfa')), 'need': _core.ADMIN_MFA} if user['is_admin'] else None
-    return {'mfa': mf, 'user': out({k: v for k, v in user.items() if k not in ('company', 'mfa_on', 'mfa', 'mfa_at')}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'sub_cancelled': (c.get('billing') or {}).get('status') == 'cancelled', 'roles': ROLES, 'access': lim}
+    import ai as _ai
+    s = await _ai.settings_for(c['id'])
+    nz = {'name': s['name'], 'mode': s['default_mode'], 'paused': s['paused'], 'pause_until': s['pause_until'], 'pause_by': s.get('pause_by') or '', 'taught': s['taught']}
+    return {'nanda': nz, 'mfa': mf, 'user': out({k: v for k, v in user.items() if k not in ('company', 'mfa_on', 'mfa', 'mfa_at')}), 'company': c, 'trial_days_left': trial_left, 'card_trial': card_trial(c), 'sub_cancelled': (c.get('billing') or {}).get('status') == 'cancelled', 'roles': ROLES, 'access': lim}
 
 @app.post('/api/auth/password')
 async def change_password(body: PasswordChange, request: Request, response: Response, user=Depends(current_user)):

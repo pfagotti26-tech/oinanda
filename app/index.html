@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--c:#E8603F;--c2:#C44A2C;--soft:#FBE6DE;--tint:#FEF5F1;--ink:#17212B;--ink2:#4B5968;--ink3:#8593A1;--line:#EEE4DC;--bg:#FBF8F5;--ok:#0A5C50;--oksoft:#DDF4EC;--warn:#7A5600;--warnsoft:#FBF0D6;--bad:#9E2B1E;--badsoft:#FBE6E3}
+:root{--c:#E8603F;--c2:#C44A2C;--soft:#FBE6DE;--tint:#FEF5F1;--ink:#17212B;--ink2:#4B5968;--ink3:#6B7785;--line:#EEE4DC;--bg:#FBF8F5;--ok:#0A5C50;--oksoft:#DDF4EC;--warn:#7A5600;--warnsoft:#FBF0D6;--bad:#9E2B1E;--badsoft:#FBE6E3}
 *{box-sizing:border-box;margin:0;padding:0}
 b,strong{font-weight:600}
 body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -550,6 +550,60 @@ td>.sure,tr+.sure{margin:4px}
  .page{padding-bottom:96px}.page.wide{padding-bottom:0}
  .app:has(.cv.chat) .bnav,.app:has(.side.open) .bnav,.app:has(.ov.inpage) .bnav{display:none}
  .side.open .gsr{margin-top:10px}}
+/* menu novo: Buscar como item, Nanda com pausa, Configurações embaixo */
+.side .nav.gsb kbd{margin-left:auto;font:inherit;font-size:10.5px;font-weight:600;color:#8794A0;white-space:nowrap;opacity:0;transition:opacity .15s}.side .nav.gsb:hover kbd,.side .nav.gsb:focus-visible kbd{opacity:1}
+.side .snav{margin-top:6px}
+.nqw{position:relative;margin-top:10px}
+.side button.nav.nq{background:linear-gradient(90deg,rgba(232,96,63,.2),rgba(232,96,63,.05));color:#fff;padding-right:36px}.side button.nav.nq svg{color:#FF9A7A;opacity:1}.side button.nav.nq.on{box-shadow:inset 0 0 0 1.5px rgba(255,154,122,.55)}
+.nqs{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;white-space:nowrap;color:#9AA7B4}.nqs i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.nqs.ok{color:#7EE0B8}.nqs.cp{color:#F5C77E}.nqs.p{color:#FF9A7A}.nqs.off{color:#8A96A3}
+.nqc{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:8px;color:#9AA7B4;display:grid;place-items:center}.nqc:hover{background:rgba(255,255,255,.12);color:#fff}.nqc svg{width:14px;height:14px}
+.side .nq.pz .nqi{display:none}.app.mini .side button.nav.nq.pz{box-shadow:inset 0 0 0 1.5px #FF9A7A}.nqi{font-style:normal}
+.app.mini .nqs,.app.mini .nqc,.app.mini .side .nav.gsb kbd{display:none}.app.mini .side button.nav.nq{padding-right:0}
+.nqp{position:fixed;width:284px;background:#fff;color:var(--ink);border-radius:16px;box-shadow:0 18px 50px rgba(23,33,43,.3);padding:12px;z-index:80;animation:nzIn .14s ease-out}
+@keyframes nzIn{from{opacity:0;transform:translateY(4px)}}
+.nqp>b{display:block;font-size:14px;padding:2px 8px}.nqp>small{display:block;font-size:12.5px;color:var(--ink3);padding:2px 8px 8px;line-height:1.45}
+.nqp button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 8px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--ink)}.nqp button:hover{background:var(--bg)}.nqp button.hi{background:var(--tint)}
+.nqp button svg{width:16px;height:16px;color:var(--ink2);flex:none}.nqp button.dg,.nqp button.dg svg{color:var(--bad)}.nql{height:1px;background:var(--line);margin:6px 4px}
+.nqp.sheet{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));width:auto;padding:14px}
+.msr{display:none}
+/* busca no meio da tela */
+.gpal-bg{position:fixed;inset:0;background:rgba(23,33,43,.4);backdrop-filter:blur(2px);z-index:90;display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px}
+.gpal{width:min(620px,100%);max-height:76vh;background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(23,33,43,.3);overflow:hidden;display:flex;flex-direction:column;animation:nzIn .14s ease-out}
+.gpin{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}.gpin svg{width:20px;height:20px;color:var(--ink3);flex:none}
+.gpin input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:16px;color:var(--ink);background:none}
+.gpx{font-size:11px;font-weight:600;color:var(--ink3);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.gpal .gres{padding:6px 8px 8px;overflow:auto;min-height:0;display:block}
+.gpal .gres h6{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:10px 10px 4px}
+.gpal .gi{color:var(--ink);gap:11px;padding:8px 10px}.gpal .gi:hover{background:var(--bg);color:var(--ink)}.gpal .gi.on{background:var(--tint);color:var(--ink)}
+.gpal .gi>svg{width:30px;height:30px;padding:7px;border-radius:9px;background:#F5F0EB;color:var(--ink2)}.gpal .gav{width:30px;height:30px;font-size:11.5px}
+.gpal .gi b{font-weight:600;font-size:14px}.gpal .gi small{font-size:12px;color:var(--ink3)}.gpal .gi em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:var(--c2);white-space:nowrap}
+.gpal mark{background:#FDE3D8;color:inherit;border-radius:3px;padding:0 1px}.gpal .gno{color:var(--ink3);padding:18px 12px}
+.gpf{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink3)}.gpf kbd{font:inherit;font-weight:700;color:var(--ink2)}
+/* Configurações */
+.cg-hd{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}.cg-hd h1{font-size:26px;letter-spacing:-.03em}.cg-hd p{color:var(--ink2);margin-top:2px}
+.cg-k{margin-left:auto;font-size:12.5px;color:var(--ink3)}.cg-k kbd{font:inherit;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:6px;padding:1px 6px;color:var(--ink2)}
+.cg-ok{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ok);background:var(--oksoft);border-radius:99px;padding:3px 10px;margin-top:8px}.cg-ok svg{width:14px;height:14px}
+.cg-who{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:16px}.cg-who svg{width:16px;height:16px;color:var(--ink3);flex:none}
+.cg-todo{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cg-ring{width:40px;height:40px;border-radius:50%;background:conic-gradient(var(--ok) calc(var(--p)*1%),#EFE8E2 0);display:grid;place-items:center;flex:none}.cg-ring i{width:31px;height:31px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;color:var(--ok)}
+.cg-tt b{display:block;font-size:14px}.cg-tt small{font-size:12px;color:var(--ink3)}
+.cg-tk{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}.cg-tk button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:700;font-size:13px;background:var(--bg);color:var(--ink)}.cg-tk button:hover{border-color:var(--c)}.cg-tk span{color:var(--c2)}
+.cg-g{columns:3 290px;column-gap:14px}
+.cg-c{break-inside:avoid;display:block;margin-bottom:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 16px 8px}
+.cg-c.nq{border-color:#F6CBBB;background:linear-gradient(180deg,#FFF8F5,#fff 64px)}.cg-c.nq .cg-i{background:var(--soft);color:var(--c2)}
+.cg-ch{display:flex;gap:11px;align-items:center;margin-bottom:6px}.cg-i{width:36px;height:36px;border-radius:11px;background:#F5F0EB;color:var(--ink2);display:grid;place-items:center;flex:none}.cg-i svg{width:18px;height:18px}
+.cg-ch b{font-size:15px;display:block}.cg-ch small{display:block;font-size:12px;color:var(--ink3)}
+.cg-it{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 6px;border-top:1px solid #F4EEE9;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink)}.cg-it:hover{background:var(--bg)}
+.cg-l{flex:1;min-width:0}.cg-s{font-size:12px;font-weight:600;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58%}
+.cg-s.ok::before,.cg-s.off::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:0}.cg-s.ok::before{background:#22B07D}.cg-s.off::before{background:#CFC6BE}.cg-s.ok{color:var(--ink2)}.cg-s.go{color:var(--c2);font-weight:800}
+.cg-ch2{width:15px;height:15px;color:#C9BFB6;flex:none}
+@media(max-width:860px){
+ .sbar .msr{display:grid;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.08);color:#fff;place-items:center;flex:none}.sbar .msr svg{width:19px;height:19px}
+ .side.open .nav.gsb{display:none}
+ .gpal-bg{padding:0;align-items:stretch}.gpal{max-height:none;height:100%;border-radius:0;width:100%}.gpf{display:none}
+ .cg-hd h1{font-size:22px}.cg-k{display:none}.cg-tk{margin-left:0;width:100%}.cg-tk button{flex:1;justify-content:space-between}}
+
 
 .cvchip{display:flex;align-items:center;gap:8px;margin:8px 12px;padding:6px 6px 6px 12px;background:var(--ink);color:#fff;border-radius:999px;font-size:12.5px;font-weight:500}.cvchip span{flex:1}.cvchip b{opacity:.7;margin-left:4px}
 .cvchip button{color:#fff;width:24px;height:24px;border-radius:50%;font-size:16px}.cvchip button:hover{background:rgba(255,255,255,.15)}
@@ -3237,7 +3291,7 @@ function forgotView(email){
     const b=f.querySelector('button');b.disabled=true;b.textContent='Mandando...';
     try{await api('/auth/forgot',{method:'POST',body:{email:em.value.trim()}});
       authCard(`<h1>Confira seu e-mail</h1><div class="done">Se <b>${esc(em.value.trim())}</b> tiver conta no Oi Nanda, o link para criar uma senha nova chega em alguns minutos. Ele vale por 30 minutos.</div>
-       <p class="l" style="margin-top:14px">Não chegou? Olhe a caixa de spam ou promoções. Se trabalha numa equipe, o dono da conta também consegue mandar um link novo em <b>Equipe</b>.</p>
+       <p class="l" style="margin-top:14px">Não chegou? Olhe a caixa de spam ou promoções. Se trabalha numa equipe, o dono da conta também consegue mandar um link novo em <b>Configurações › Pessoas e permissões</b>.</p>
        <div class="sw"><a id="bk">← Voltar para o login</a></div>`);$('#bk').onclick=()=>authView('login',em.value.trim())}
     catch(e){b.disabled=false;b.textContent='Mandar link';$('#e').textContent=e.message}}}
 async function resetView(token){
@@ -4004,7 +4058,7 @@ async function ativarView(){
         <div><i></i><span><b>Hoje</b> · você cadastra o cartão e usa tudo liberado</span><em>R$ 0,00</em></div>
         <div class="ob-tg"><i></i><span><b>${obDay(d(11))}</b> · te avisamos por WhatsApp e e-mail que o teste está acabando</span><span></span></div>
         <div class="ob-tr"><i></i><span><b>${obDay(d(14))}</b> · primeira mensalidade, se você não cancelar</span><em>${obMoney(p.price)}</em></div></div>
-        <p class="hint" style="margin-top:6px">Cancele em Empresa › Assinatura a qualquer momento antes de ${obDay(d(14))} e nada é cobrado.</p></div>`
+        <p class="hint" style="margin-top:6px">Cancele em Configurações › Plano e cobrança a qualquer momento antes de ${obDay(d(14))} e nada é cobrado.</p></div>`
       :`<div class="ob-card"><h3 style="margin:0">Seu plano</h3><p class="sub" style="font-size:14px">A cobrança é mensal, no cartão, e você cancela quando quiser. Conversas, contatos e o que a Nanda aprendeu continuam guardados.</p></div>`}
       <div class="ob-card ob-sum">
        <div class="row"><span>Plano ${esc(p.name)} · mensal</span><b>${obMoney(p.price)}/mês</b></div>
@@ -4031,7 +4085,7 @@ async function ativarView(){
 /* ---------- casca ---------- */
 const modOn=k=>k==='metas'?(((ME.company.modules||{}).metas!==false)||gamOn()):((ME.company.modules||{})[k]!==false);
 const chOn=k=>!!((ME.company&&ME.company.channels||{})[k]);
-const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['jornada','Jornada'],['empresa','Empresa'],['atividade','Atividade'],['ajuda','Central de ajuda']];
+const NAV=[['inicio','Início'],['conversas','Conversas'],['nanda','Nanda (IA)'],['funil','Funil'],['agenda','Agenda'],['vendas','Vendas'],['clientes','Clientes'],['metas','Metas'],['automacoes','Automações'],['relatorios','Relatórios'],['equipe','Equipe'],['jornada','Jornada'],['empresa','Empresa'],['atividade','Atividade'],['config','Configurações'],['ajuda','Central de ajuda']];
 const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversas:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
   nanda:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
   funil:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',
@@ -4043,6 +4097,7 @@ const NI={inicio:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',conversa
   jornada:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>',
   more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',dot:'<circle cx="12" cy="12" r="3"/>',
   'a-visao':'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>','a-jornada':'<path d="M3 5h18l-7 8v6l-4-2v-4z"/>','a-alertas':'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>','a-financeiro':'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/>','a-avisos':'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2H4.500zM10 20h4"/>','a-clientes':'<path d="M4 21V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v16"/>','a-atividade':'<path d="M8 6h13M8 12h13M8 18h13"/>','a-erros':'<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'};
+NI.config='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>';NI.buscar='<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>';
 NI.ajuda='<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.8h.01"/>';
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
 const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','metas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
@@ -4080,24 +4135,128 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Ensinar a Nanda','nanda',()=>go('nanda'),m],
   ['Conectar WhatsApp','empresa',()=>{EM.tab='whatsapp';return go('empresa')},m],
   ['Meu status e avisos','',()=>meModal()]].filter(a=>a[3]!==false&&(a[1]!=='metas'||modOn('metas')))}
-function gSearchInit(){
-  const q=$('#gQ'),res=$('#gRes'),nav=$('#snav');let sel=0,items=[],t=null,n=0;
-  const close=()=>{res.hidden=true;nav.hidden=false;res.innerHTML='';q.value='';items=[]};
-  const pick=i=>{const it=items[i];if(!it)return;close();q.blur();document.querySelector('.side').classList.remove('open');it.run()};
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gOpen')){e.preventDefault();gPal()}});
+/* menu do dia a dia; o resto mora em Configurações */
+const DAILY=['inicio','conversas','funil','agenda','clientes','vendas','metas','relatorios'];
+const CFG_VIEWS=['empresa','equipe','automacoes','atividade','jornada','avisos-conta','assinatura'];
+/* Nanda no menu: estado e pausa de um toque */
+const nzHm=d=>new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+function nzUntil(n){if(!n.pause_until)return 'até alguém ligar de novo';const d=new Date(n.pause_until),t=new Date();const tm=new Date(t);tm.setDate(t.getDate()+1);
+  return d.toDateString()===t.toDateString()?'até '+nzHm(d):d.toDateString()===tm.toDateString()?'até amanhã, '+nzHm(d):'até '+d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+', '+nzHm(d)}
+function nzState(){const n=ME.nanda||{};if(n.paused)return ['p','pausada'];return {auto:['ok','ligada'],copilot:['cp','copiloto'],off:['off','desligada']}[n.mode]||['cp','copiloto']}
+function nzChip(){const n=ME.nanda||{},st=nzState(),mgr=['owner','manager'].includes(ME.user.role);
+  return `<div class="nqw" id="nzW"><button type="button" class="nav nq ${n.paused?'pz':''}" ${mgr?'data-v="nanda"':''} id="nzB" title="${mgr?'Ensinar e ajustar a Nanda':'Pausar ou ligar a Nanda'}">${NI.nanda}<span class="lb">${esc(n.name||'Nanda')}<em class="nqi"> (IA)</em></span><small class="nqs ${st[0]}"><i></i>${st[1]}</small></button><button type="button" class="nqc" id="nzC" title="Pausar ou ligar a Nanda" aria-label="Pausar ou ligar a Nanda">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</button></div>`}
+function nzBind(){const mgr=['owner','manager'].includes(ME.user.role);$('#nzC').onclick=e=>{e.stopPropagation();nzPop()};if(!mgr)$('#nzB').onclick=()=>nzPop()}
+function nzRedraw(){const w=$('#nzW');if(!w)return;const on=w.querySelector('.nq.on');w.outerHTML=nzChip();if(on)$('#nzB').classList.add('on');nzBind();
+  document.querySelectorAll('[data-v="nanda"]').forEach(b=>b.onclick=()=>go('nanda'))}
+function nzPop(){if($('#nzP')){$('#nzP').remove();return}const n=ME.nanda||{},mgr=['owner','manager'].includes(ME.user.role),a=$('#nzW');
+  const I={p:'<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>',m:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',o:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5"/>',play:'<path d="M7 5v14l12-7z"/>',s:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/>'};
+  const head=n.paused?[`${esc(n.name||'Nanda')} está pausada`,`${nzUntil(n)[0].toUpperCase()+nzUntil(n).slice(1)}${n.pause_by?' · pausada por '+esc(n.pause_by.split(' ')[0]):''}. Ninguém recebe resposta dela agora.`]
+    :n.mode==='off'?[`${esc(n.name||'Nanda')} está desligada`,'Não responde nem sugere. Para ligar, ajuste como ela atende.']
+    :n.mode==='auto'?[`${esc(n.name||'Nanda')} está respondendo sozinha`,'Pause se precisar assumir todas as conversas.']:[`${esc(n.name||'Nanda')} está em copiloto`,'Sugere as respostas e o time envia. Pausar também para as conversas em que ela responde sozinha.'];
+  const opts=n.paused?`<button data-nz="resume" class="hi">${svg(I.play)}Ligar agora</button>`:n.mode==='off'?'':`<button data-nz="1h" class="hi">${svg(I.p)}Pausar por 1 hora</button><button data-nz="tomorrow">${svg(I.m)}Pausar até amanhã, 9h</button><button data-nz="off" class="dg">${svg(I.o)}Pausar até alguém ligar</button>`;
+  const p=document.createElement('div');p.className='nqp';p.id='nzP';p.setAttribute('role','dialog');
+  p.innerHTML=`<b>${head[0]}</b><small>${head[1]}</small>${opts}${mgr?`${opts?'<div class="nql"></div>':''}<button data-nz="cfg">${svg(I.s)}Ensinar e ajustar a ${esc(n.name||'Nanda')}</button>`:''}`;
+  document.body.append(p);const r=a.getBoundingClientRect();
+  if(innerWidth>860){p.style.left=(r.right+10)+'px';p.style.top=Math.max(12,Math.min(r.top-8,innerHeight-p.offsetHeight-12))+'px'}else p.classList.add('sheet');
+  const close=()=>{p.remove();document.removeEventListener('mousedown',out);document.removeEventListener('keydown',esck)};
+  const out=e=>{if(!p.contains(e.target)&&!a.contains(e.target))close()},esck=e=>{if(e.key==='Escape')close()};
+  setTimeout(()=>{document.addEventListener('mousedown',out);document.addEventListener('keydown',esck)},0);
+  p.querySelectorAll('[data-nz]').forEach(b=>b.onclick=async()=>{const k=b.dataset.nz;if(k==='cfg'){close();document.querySelector('.side').classList.remove('open');return go('nanda')}
+    b.disabled=true;try{const r=await api(k==='resume'?'/ai/resume':'/ai/pause',{method:'POST',body:k==='resume'?{}:{until:k}});ME.nanda={...ME.nanda,...r,pause_by:k==='resume'?'':ME.user.name};close();nzRedraw();
+      toast(k==='resume'?`${ME.nanda.name||'Nanda'} ligada de novo.`:`${ME.nanda.name||'Nanda'} pausada ${nzUntil(ME.nanda)}. As conversas ficam com o time.`);if(VIEW==='config')VIEWS.config()}catch(e){b.disabled=false;toast(e.message)}})}
+/* busca: janela no meio da tela (Ctrl K) */
+const GREC={get(){try{return JSON.parse(localStorage.getItem('grec')||'[]')}catch(e){return []}},add(x){try{const v=this.get().filter(y=>y.k!==x.k);v.unshift(x);localStorage.setItem('grec',JSON.stringify(v.slice(0,4)))}catch(e){}}};
+function gPal(){if($('#gPal'))return $('#gQ').focus();document.querySelector('.side')?.classList.remove('open');
+  const o=document.createElement('div');o.className='gpal-bg';o.id='gPal';
+  o.innerHTML=`<div class="gpal" role="dialog" aria-label="Buscar"><div class="gpin">${NI.buscar}<input id="gQ" placeholder="Buscar cliente, tela, ajuste ou ação…" autocomplete="off" aria-label="Buscar"><button type="button" class="gpx" id="gX">${innerWidth<=860?'Fechar':'Esc'}</button></div><div class="gres" id="gRes"></div>
+    <div class="gpf"><span><kbd>↑ ↓</kbd> escolher</span><span><kbd>Enter</kbd> abrir</span><span><kbd>Esc</kbd> fechar</span></div></div>`;
+  document.body.append(o);document.body.classList.add('gpal-on');
+  const q=$('#gQ'),res=$('#gRes');let sel=0,items=[],t=null,n=0;
+  const close=()=>{o.remove();document.body.classList.remove('gpal-on');removeEventListener('keydown',kd,true)};
+  const lbl=Object.fromEntries([...NAV,...ADMIN_NAV].map(x=>[x[0],x[1]]));
+  const viewOk=v=>!!document.querySelector(`.side [data-v="${v}"]`)||v==='config';
+  const recRun=x=>x.t==='c'?(()=>{CV.open=x.id;CV.filter='all';return go('conversas')}):x.t==='v'?(()=>go(x.v)):(()=>{const it=cfgFlat().find(y=>y.k===x.cf);return it?it.run():go('config')});
+  const recIc=x=>x.t==='c'?`<span class="gav" style="background:${avc(x.l)}">${initials(x.l)}</span>`:x.t==='v'?NI[x.v]||NI.dot:NI.config;
+  const pick=i=>{const it=items[i];if(!it)return;close();if(it.rec)GREC.add(it.rec);it.run()};
   const draw=()=>{const grp={};items.forEach((it,i)=>{(grp[it.g]=grp[it.g]||[]).push([it,i])});
-    res.innerHTML=items.length?Object.entries(grp).map(([g,xs])=>`<h6>${g}</h6>${xs.map(([it,i])=>`<button class="gi ${i===sel?'on':''}" data-gi="${i}">${it.ic||''}<span><b>${esc(it.l)}</b>${it.s?`<small>${esc(it.s)}</small>`:''}</span></button>`).join('')}`).join(''):'<p class="gno">Nada encontrado.</p>';
-    res.querySelectorAll('[data-gi]').forEach(b=>b.onmousedown=e=>{e.preventDefault();pick(+b.dataset.gi)})};
-  const run=async()=>{const v=q.value.trim(),k=nrm(v);if(!k){close();return}const my=++n;
-    const lbl=Object.fromEntries([...NAV,...ADMIN_NAV].map(x=>[x[0],x[1]]));
-    const pages=[...document.querySelectorAll('#snav [data-v]')].map(b=>b.dataset.v).filter(x=>nrm(lbl[x]).includes(k)).map(x=>({g:'Ir para',l:lbl[x],ic:NI[x],run:()=>go(x)}));
-    const acts=gActions().filter(a=>nrm(a[0]).includes(k)||k.split(' ').every(w=>nrm(a[0]).includes(w))).map(a=>({g:'Ações',l:a[0],ic:NI[a[1]]||NI.dot,run:a[2]}));
-    items=[...acts,...pages];sel=0;nav.hidden=true;res.hidden=false;draw();
+    res.innerHTML=items.length?Object.entries(grp).map(([g,xs])=>`<h6>${g}</h6>${xs.map(([it,i])=>`<button type="button" class="gi ${i===sel?'on':''}" data-gi="${i}">${it.ic||''}<span><b>${it.hl||esc(it.l)}</b>${it.s?`<small>${esc(it.s)}</small>`:''}</span>${i===sel&&it.k?`<em>${it.k}</em>`:''}</button>`).join('')}`).join(''):'<p class="gno">Nada encontrado. Tente o nome do cliente ou uma palavra como "horário".</p>';
+    res.querySelectorAll('[data-gi]').forEach(b=>{b.onmousedown=e=>{e.preventDefault();pick(+b.dataset.gi)};b.onmousemove=()=>{if(sel!==+b.dataset.gi){sel=+b.dataset.gi;draw()}}});
+    res.querySelector('.gi.on')?.scrollIntoView({block:'nearest'})};
+  const mark=(l,v)=>{const i=nrm(l).indexOf(nrm(v));return i<0||!v?esc(l):esc(l.slice(0,i))+'<mark>'+esc(l.slice(i,i+v.length))+'</mark>'+esc(l.slice(i+v.length))};
+  const empty=()=>{const a=gActions();const top=['Registrar venda','Agendar horário','Conversas esperando resposta'].map(l=>a.find(x=>x[0]===l)).filter(Boolean);
+    items=[...top.map(x=>({g:'Fazer agora',l:x[0],ic:NI[x[1]]||NI.dot,run:x[2]})),...GREC.get().map(x=>({g:'Vistos por último',l:x.l,s:x.s,ic:recIc(x),run:recRun(x),rec:x}))];sel=0;draw()};
+  const run=async()=>{const v=q.value.trim(),k=nrm(v);if(!k)return empty();const my=++n;
+    const has=l=>k.length<3?nrm(l).split(/[^a-z0-9]+/).some(w=>w.startsWith(k)):nrm(l).includes(k)||k.split(' ').every(w=>nrm(l).includes(w));
+    const pages=[...DAILY,'nanda','config','ajuda'].filter(x=>viewOk(x)&&has(lbl[x]||'')).map(x=>({g:'Ir para',l:lbl[x],hl:mark(lbl[x],v),ic:NI[x],run:()=>go(x),rec:{k:'v:'+x,t:'v',v:x,l:lbl[x]}}));
+    const cfg=cfgFlat().filter(x=>has(x.l+' '+x.kw)).slice(0,5).map(x=>({g:'Configurações',l:x.l,hl:mark(x.l,v),s:x.grp,ic:NI.config,run:x.run,rec:{k:'cf:'+x.k,t:'f',cf:x.k,l:x.l,s:'Configurações'}}));
+    const acts=gActions().filter(a=>has(a[0])).map(a=>({g:'Ações',l:a[0],hl:mark(a[0],v),ic:NI[a[1]]||NI.dot,run:a[2]}));
+    items=[...acts,...cfg,...pages];sel=0;draw();
     if(v.length>=2){clearTimeout(t);t=setTimeout(async()=>{let cs=[];try{cs=await api('/conversations?q='+encodeURIComponent(v))}catch(e){}if(my!==n)return;
-      items=[...cs.slice(0,6).map(c=>({g:'Clientes',l:c.name,s:contactSub(c),ic:`<span class="gav" style="background:${avc(c.name)}">${initials(c.name)}</span>`,run:()=>{CV.open=c.id;CV.filter='all';return go('conversas')}})),...acts,...pages];draw()},220)}};
-  q.oninput=run;q.onfocus=()=>{if(q.value)run()};q.onblur=()=>setTimeout(()=>{if(document.activeElement!==q)close()},150);
-  q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(items.length-1,sel+1);draw()}else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(0,sel-1);draw()}else if(e.key==='Enter'){e.preventDefault();pick(sel)}else if(e.key==='Escape'){close();q.blur()}};
-}
-addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gQ')){e.preventDefault();const sd=document.querySelector('.side');if(innerWidth<=860){sd.classList.add('open')}if(document.querySelector('.app.mini')){document.querySelector('.app').classList.remove('mini')}$('#gQ').focus()}});
+      items=[...cs.slice(0,6).map(c=>({g:'Clientes',l:c.name,hl:mark(c.name,v),s:contactSub(c),k:'Abrir conversa',ic:`<span class="gav" style="background:${avc(c.name)}">${initials(c.name)}</span>`,run:()=>{CV.open=c.id;CV.filter='all';return go('conversas')},rec:{k:'c:'+c.id,t:'c',id:c.id,l:c.name,s:'Conversa'}})),...acts,...cfg,...pages];draw()},220)}};
+  const kd=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};addEventListener('keydown',kd,true);
+  q.oninput=run;$('#gX').onclick=close;o.onmousedown=e=>{if(e.target===o)close()};
+  q.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(items.length-1,sel+1);draw()}else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(0,sel-1);draw()}else if(e.key==='Enter'){e.preventDefault();pick(sel)}};
+  empty();setTimeout(()=>q.focus(),20)}
+/* Configurações: tudo o que se ajusta uma vez, num lugar só */
+function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=['owner','manager'].includes(u.role),n=ME.nanda||{},nm=esc(n.name||'Nanda');
+  const emGo=t=>()=>{EM.tab=t;return go('empresa')};
+  if(!mgr)return [
+    ['me','Você','Seu status, horário e avisos',[['me','Status e avisos',u.away?'Ausente':'Disponível',u.away?'off':'ok',()=>meModal(),'perfil ausente disponivel notificacoes alertas']]],
+    ['msg','Atendimento','O que você usa nas conversas',[['qr','Respostas rápidas',x.qr!=null?x.qr+(x.qr===1?' resposta':' respostas'):'','',()=>qrManager(),'atalho barra texto pronto']]],
+    ['help','Ajuda','Dúvidas sobre o Oi Nanda',[['ajuda','Central de ajuda','','',()=>go('ajuda'),'duvida suporte']]]];
+  const cat=x.cat,tm=x.team;
+  return [
+    ['nanda',nm+' (IA)','O que ela sabe e como ela atende',[
+      ['nz-sabe','O que ela sabe',!n.taught?'Falta ensinar →':cat===0?'Faltam os preços →':cat?cat+(cat===1?' item no catálogo':' itens no catálogo'):'Ensinada',!n.taught||cat===0?'go':'ok',cat===0&&n.taught?()=>{VD.tab='produtos';return go('vendas')}:()=>go('nanda'),'ensinar conhecimento precos servicos ia'],
+      ['nz-modo','Como ela atende',n.paused?'Pausada '+nzUntil(n):{auto:'Responde sozinha',copilot:'Sugere, o time envia',off:'Desligada'}[n.mode]||'',n.paused||n.mode==='off'?'off':'ok',()=>go('nanda'),'modo automatico copiloto pausar desligar tom jeito'],
+      ['nz-apr','O que ela aprendeu','','',()=>{NZV.tab='aprendeu';return go('nanda')},'aprendizado sugestoes']],'nq'],
+    ['store','Seu negócio','Quem você é e quando atende',[
+      ['negocio','Dados do negócio',esc(c.name),'',emGo('negocio'),'nome segmento telefone empresa'],
+      ['horario','Horário e agenda','Serviços e horários','',()=>{AG.tab='config';return go('agenda')},'horario atendimento funcionamento servicos profissionais agenda'],
+      ['plano','Plano e cobrança',esc(PLAN[c.plan]||c.plan||''),'',own?()=>go('assinatura'):emGo('plano'),'assinatura pagamento fatura uso limite']]],
+    ['plug','Canais','Por onde os clientes chegam',[
+      ['whatsapp','WhatsApp',x.wa==null?'':x.wa?'Conectado':'Conectar →',x.wa==null?'':x.wa?'ok':'go',emGo('whatsapp'),'numero conectar meta'],
+      ['instagram','Instagram',x.ig==null?'':x.ig?'@'+esc(x.ig):'Conectar →',x.ig==null?'':x.ig?'ok':'go',emGo('instagram'),'direct comentario insta'],
+      ['canais','Mais canais',['messenger','telegram'].filter(chOn).length?['messenger','telegram'].filter(chOn).map(k=>({messenger:'Messenger',telegram:'Telegram'}[k])).join(', '):'Messenger, Telegram',['messenger','telegram'].some(chOn)?'ok':'off',emGo('canais'),'messenger telegram facebook']]],
+    ['msg','Atendimento','Como as conversas funcionam',[
+      ['qr','Respostas rápidas',x.qr!=null?x.qr+(x.qr===1?' resposta':' respostas'):'','',()=>qrManager(),'atalho barra texto pronto'],
+      ['encerrar','Encerramento e satisfação',x.cl?(x.cl.csat?'Motivos e nota':'Motivos'):'','',()=>closingModal(),'encerrar resolver motivo nota pesquisa satisfacao csat']]],
+    ['team','Time','Quem atende e como divide',[
+      ['equipe','Pessoas e permissões',tm!=null?tm+(tm===1?' pessoa':' pessoas'):'','',()=>go('equipe'),'convidar atendente gestor equipe rodizio horario de trabalho avisos time']]],
+    ['bag','Vendas','Produtos, preços e origens',[
+      ['catalogo','Catálogo',cat!=null?cat+(cat===1?' item':' itens'):'','',()=>{VD.tab='produtos';return go('vendas')},'produtos servicos precos'],
+      ['promocoes','Promoções e cupons','','',()=>{VD.tab='promocoes';return go('vendas')},'desconto cupom oferta'],
+      ['origens','Origens e links','Links e QR Code','',()=>{VD.tab='retorno';return go('vendas')},'link rastreavel qr code anuncio origem'],
+      ['plataformas','Plataformas de venda','Hotmart, Kiwify…','',emGo('vendas'),'hotmart kiwify eduzz checkout pix boleto']]],
+    ['star','Mais recursos','Ligue quando fizer sentido',[
+      ['automacoes','Automações','','',()=>go('automacoes'),'automacao lembrete aniversario renovacao mensagem automatica'],
+      ['metas','Metas e ranking',modOn('metas')?'Ligado':'Desligado',modOn('metas')?'ok':'off',modOn('metas')?()=>go('metas'):emGo('recursos'),'meta ranking desafio premio tv'],
+      ['jornada','Jornada do cliente',modOn('jornada')?'Ligado':'Desligado',modOn('jornada')?'ok':'off',modOn('jornada')?()=>go('jornada'):emGo('recursos'),'marcos jornada']]],
+    ['lock','Segurança e conta','Registros e avisos da conta',[
+      ['atividade','Atividade','Quem fez o quê','',()=>go('atividade'),'registro historico log auditoria'],
+      ...(own?[['avisos','Seus avisos','E-mail e WhatsApp','',()=>go('avisos-conta'),'aviso cobranca fim do teste notificacao']]:[]),
+      ['me','Seu status',u.away?'Ausente':'Disponível',u.away?'off':'ok',()=>meModal(),'perfil ausente disponivel notificacoes']]]]}
+function cfgFlat(){return cfgGroups(CFGD).flatMap(g=>g[3].map(i=>({k:i[0],l:i[1],grp:g[1].replace(/<[^>]+>/g,''),run:i[4],kw:i[5]||''})))}
+let CFGD={};
+const CFG_IC={nanda:NI.nanda,store:'<path d="M3 9l1.5-5h15L21 9M4 9v11h16V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>',plug:'<path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0zM12 17v5"/>',msg:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
+  team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',bag:'<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>'};
+async function cfgView(){const u=ME.user,mgr=['owner','manager'].includes(u.role);
+  const [wn,ig,ai,qr,cl,tm,su]=await Promise.all(mgr?[api('/wa/number').catch(()=>null),api('/ig/status').catch(()=>null),api('/ai/settings').catch(()=>null),api('/quick-replies').catch(()=>null),clCfg(true).catch(()=>null),api('/team').catch(()=>null),suLoad().catch(()=>null)]:[null,null,null,api('/quick-replies').catch(()=>null),null,null,null]);
+  if(ai){ME.nanda={...ME.nanda,taught:ai.taught,mode:ai.default_mode,paused:ai.paused,pause_until:ai.pause_until,pause_by:ai.pause_by||''};nzRedraw()}
+  CFGD={wa:!!wn,ig:ig?(ig.account?ig.account.username||'conectado':''):null,cat:ai&&ai.catalog?ai.catalog.length:null,qr:qr?qr.length:null,cl,team:tm?(Array.isArray(tm)?tm:(tm.members||tm.team||[])).filter(m=>m.active!==false).length||null:null};
+  const G=cfgGroups(CFGD);
+  const core=su&&su.core&&!su.core_ready&&!su.hidden?su.core.filter(s=>!s.done):null;
+  const ring=su&&su.core?`<span class="cg-ring" style="--p:${su.core_pct||0}"><i>${su.core_done}/${su.core_total}</i></span>`:'';
+  $('#page').innerHTML=`<div class="cg"><div class="cg-hd"><div><h1>Configurações</h1><p>${mgr?'Tudo o que você ajusta uma vez e o Oi Nanda segue sozinho.':'Seus ajustes pessoais.'}</p>${mgr&&su&&su.core_ready?`<span class="cg-ok">${svg('<path d="m5 12 5 5 9-10"/>')}Tudo configurado</span>`:''}</div><button type="button" class="cg-k" id="cfK">Procurando algo? <kbd>Ctrl K</kbd></button></div>
+    ${!mgr?`<div class="cg-who">${svg(CFG_IC.lock)}<span>Os ajustes do negócio, da Nanda e do plano ficam com o dono da conta. Precisa mudar algo? Fale com ele.</span></div>`:''}
+    ${core&&core.length?`<div class="cg-todo">${ring}<div class="cg-tt"><b>${core.length===1?'Falta 1 passo':'Faltam '+core.length+' passos'}</b><small>para a Nanda atender direitinho</small></div><div class="cg-tk">${core.slice(0,2).map(s=>`<button type="button" data-su="${esc(s.key)}">${esc(s.title)}<span>→</span></button>`).join('')}</div></div>`:''}
+    <div class="cg-g">${G.map(g=>`<section class="cg-c ${g[4]||''}"><div class="cg-ch"><span class="cg-i">${svg(CFG_IC[g[0]]||CFG_IC.star)}</span><div><b>${g[1]}</b><small>${g[2]}</small></div></div>
+      ${g[3].map(i=>`<button type="button" class="cg-it" data-cf="${i[0]}"><span class="cg-l">${i[1]}</span>${i[2]?`<span class="cg-s ${i[3]}">${i[2]}</span>`:''}${svg('<path d="m9 6 6 6-6 6"/>','cg-ch2')}</button>`).join('')}</section>`).join('')}</div></div>`;
+  const all=G.flatMap(g=>g[3]);
+  document.querySelectorAll('[data-cf]').forEach(b=>b.onclick=()=>{const it=all.find(i=>i[0]===b.dataset.cf);if(it){GREC.add({k:'cf:'+it[0],t:'f',cf:it[0],l:it[1].replace(/<[^>]+>/g,''),s:'Configurações'});it[4]()}});
+  document.querySelectorAll('[data-su]').forEach(b=>b.onclick=()=>{const s=su.steps.find(x=>x.key===b.dataset.su)||su.core.find(x=>x.key===b.dataset.su);if(s)suDo(s)});
+  $('#cfK').onclick=()=>gPal()}
 const ADMIN_NAV=[['a-visao','Visão geral'],['a-jornada','Jornada dos clientes'],['a-financeiro','Financeiro'],['a-clientes','Clientes'],['a-avisos','Avisos aos clientes'],['a-alertas','Avisos para mim'],['a-atividade','Atividade geral'],['a-erros','Erros']];
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin;
@@ -4107,19 +4266,16 @@ function shell(){
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side">
-    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a><span class="cur" id="curV"></span><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-    <div class="co"><b>${esc(c.name)}</b><span>${esc(SEG[c.segment]||'')} · ${esc(PLAN[c.plan]||c.plan)}</span></div><button type="button" class="su-pill" id="suPill" hidden></button>
-    <label class="gsr" title="Buscar (Ctrl K)">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="gQ" placeholder="Buscar ou ir para…" autocomplete="off" aria-label="Buscar cliente, tela ou ação"><kbd>Ctrl K</kbd></label>
-    <div class="gres" id="gRes" hidden></div>
-    <nav class="snav" id="snav">${NAV_GROUPS.map(g=>{const xs=g[1].filter(allowed);if(!xs.length)return '';
-      const k=nrm(g[0]),shut=NAVG.closed(k)&&!xs.includes(VIEW);
-      return `<div class="ng${shut?' shut':''}" data-g="${k}"><h6 role="button" tabindex="0" aria-expanded="${!shut}" title="${shut?'Abrir':'Recolher'} ${esc(g[0])}">${g[0]}${svg('<path d="m6 9 6 6 6-6"/>','cx')}</h6><div class="ngi">${xs.map(v=>navBtn(v,lbl[v])).join('')}</div></div>`}).join('')}
-    ${hiddenX?`<button class="nav nav-x" id="navX" title="Metas e Jornada do cliente">${NI.dot}<span class="lb">+ Mais recursos</span></button>`:''}
+    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a><span class="cur" id="curV"></span><button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+    <button type="button" class="nav gsb" id="gOpen" title="Buscar cliente, tela, ajuste ou ação (Ctrl K)">${NI.buscar}<span class="lb">Buscar</span><kbd>Ctrl K</kbd></button>
+    <button type="button" class="su-pill" id="suPill" hidden></button>
+    <nav class="snav" id="snav">${DAILY.filter(allowed).map(v=>navBtn(v,lbl[v])).join('')}
+    ${nzChip()}
     ${adm?`<h6>Admin Oi Nanda</h6>${ADMIN_NAV.map(n=>navBtn(n[0],n[1])).join('')}`:''}</nav>
     <div class="sp"></div>
-    ${navBtn('ajuda','Central de ajuda')}
+    ${navBtn('config','Configurações')}${navBtn('ajuda','Central de ajuda')}
     <button class="mini-t" id="miniT" title="Recolher ou abrir o menu">${svg('<path d="m15 6-6 6 6 6"/>')}<span class="lb">Recolher menu</span></button>
-    <div class="me"><button class="meb" id="meB" title="Seu status e avisos"><span class="avw"><span class="av">${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${esc(u.name)}</b><span id="meSt">${esc(ME.roles[u.role]||u.role)} · ${u.away?'ausente':'disponível'}</span></span></button><button id="out" class="lb">Sair</button></div>
+    <div class="me"><button class="meb" id="meB" title="Seu status e avisos"><span class="avw"><span class="av">${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span></button><button id="out" class="lb">Sair</button></div>
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
@@ -4128,14 +4284,11 @@ function shell(){
     <div class="page" id="page"></div></main>
     <nav class="bnav" aria-label="Atalhos">${['inicio','conversas','funil','vendas'].filter(allowed).map(v=>`<button data-v="${v}">${NI[v]}<span>${v==='inicio'?'Início':lbl[v]}</span></button>`).join('')}<button id="bMore">${NI.more}<span>Mais</span></button></nav></div>`;
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.onclick=()=>{if(b.dataset.v.startsWith('a-')){AD.open=null;AD.popen=AD.fopen=false;AD.f={}}go(b.dataset.v)});
-  document.querySelectorAll('.ng>h6').forEach(h=>{const g=h.parentNode,hit=()=>{const shut=NAVG.toggle(g.dataset.g);g.classList.toggle('shut',shut);h.setAttribute('aria-expanded',String(!shut));h.title=(shut?'Abrir ':'Recolher ')+h.textContent.trim()};
-    h.onclick=hit;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit()}}});
-  if($('#navX'))$('#navX').onclick=()=>{document.querySelector('.side').classList.remove('open');(EM.tab='recursos',go('empresa')).then(()=>setTimeout(()=>{const x=$('#extras');if(x){x.scrollIntoView({block:'center'});x.classList.add('flash')}},350))};
+  $('#gOpen').onclick=()=>gPal();$('#mSrch').onclick=()=>gPal();nzBind();
   document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('assinatura'));
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>ativarView());document.querySelectorAll('[data-talk]').forEach(b=>b.onclick=()=>comecarView());
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
-  gSearchInit();
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
   $('#meB').onclick=meModal;
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
@@ -4147,7 +4300,7 @@ function shell(){
 let POLL=null;
 const NZV={tab:null};
 function pathFor(v){
-  if(v==='inicio')return '/';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='visao')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
+  if(v==='inicio')return '/';if(v==='config')return '/configuracoes';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='visao')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
   let p='/'+v;
   if(v==='ajuda'&&HP.art)p+='/'+HP.art;
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
@@ -4165,6 +4318,7 @@ function readPath(){
   if(!parts.length)return 'inicio';
   if(parts[0]==='admin'){AD.open=parts[1]==='clientes'?(parts[2]||null):null;if(parts[1]==='avisos')AD.av.tab=['textos','enviados','fila'].includes(parts[2])?parts[2]:'visao';return VIEWS['a-'+(parts[1]||'visao')]?'a-'+(parts[1]||'visao'):'a-visao'}
   const v=parts[0];
+  if(v==='configuracoes')return 'config';
   if(v==='assinatura'||(v==='empresa'&&parts[1]==='assinatura'))return 'assinatura';
   if(v==='empresa'&&parts[1]==='avisos')return 'avisos-conta';
   if(v==='empresa')EM.tab=parts[1]||null;
@@ -4183,7 +4337,7 @@ function syncUrl(replace){
   if(location.pathname!==p)history[replace?'replaceState':'pushState'](null,'',p);
   const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===VIEW);const k=CV.counts?(CV.counts.waiting||0)+(CV.counts.human||0)+(CV.counts.transfers||[]).length:0;document.title=(k?`(${k}) `:'')+(n&&VIEW!=='inicio'?n[1]+' · ':'')+'Oi Nanda'}
 addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
-function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
   if(v!=='inicio')suLoad().then(()=>suPill());
@@ -7111,7 +7265,7 @@ async function vdOrigins(){
      <button data-sg="-1" class="nw">${svg('<path d="M12 5v14M5 12h14"/>')}<b>Outro lugar</b><span>Campanha, parceiro, folheto</span></button></div></div>`:'';
   const auto=[[true,'Links e QR Codes','pelo código no fim da mensagem'],[true,'Anúncios da Meta','os de botão de WhatsApp, com o nome do anúncio'],
     [o.ask_origin,'A Nanda pergunta',o.ask_origin?'quando ainda não se sabe, sem forçar':'desligado'],[true,'O cliente conta','"vi no Instagram", "a Carla me indicou"'],[true,'O time marca','no painel do cliente, quando souber']];
-  $('#vdBody').innerHTML=`${l.phone?'':`<div class="note warnb" style="margin-bottom:12px">Os links abrem o WhatsApp da empresa, e ele ainda não está conectado. <a href="#" id="lkWa">Conectar o WhatsApp ou informar o telefone em Empresa</a>.</div>`}
+  $('#vdBody').innerHTML=`${l.phone?'':`<div class="note warnb" style="margin-bottom:12px">Os links abrem o WhatsApp da empresa, e ele ainda não está conectado. <a href="#" id="lkWa">Conectar o WhatsApp ou informar o telefone em Configurações</a>.</div>`}
    ${hero}
    <div class="vd-g og2 lk-g"><div class="vd-c lk-c"><div class="hd"><h3>Seus links</h3>${l.items.length?`<span class="lk-tot">${pl(tot.c,'clique','cliques')} · ${pl(tot.k,'conversa','conversas')} · <b>${pl(tot.w,'cliente','clientes')}</b></span>`:''}<span class="sp"></span>${l.items.length?'<button class="btn sm p" id="lkNew">+ Novo link</button>':''}</div>
     ${l.items.length?`<div class="lk-th"><span></span><span>Link</span><span>Cliques</span><span>Conversas</span><span>Clientes</span><span></span></div><div class="lk-l">${l.items.map(row).join('')}</div>`:''}${sugH}</div>
@@ -7454,7 +7608,7 @@ async function adAvisos(){
      ${G.map(([t,d,ks])=>{const its=ks.map(by).filter(i=>i&&vis(i)&&(!A.vq||i.name.toLowerCase().includes(A.vq.toLowerCase())));return its.length?`<div class="card"><h2>${t}</h2><p class="sub" style="margin:4px 0 6px">${d}</p>${its.map(row).join('')}</div>`:''}).join('')||'<div class="card"><div class="ad-empty"><b>Nenhum aviso com este filtro.</b><span>Escolha outro filtro ou limpe a busca.</span></div></div>'}</div>
     <div class="ad-col"><div class="card"><h2>Próximos envios</h2><p class="sub" style="margin:4px 0 6px">O que deve sair sozinho nos próximos 7 dias.</p>${up.length?up.slice(0,8).map(u=>`<div class="ad-li"><div><a href="#" data-co="${u.company_id}">${esc(u.company)}</a><small>${esc(u.name)} · ${esc(u.detail)}</small></div><div style="text-align:right;flex:none"><small>${new Date(u.when)<Date.now()?'hoje':adD(u.when)}</small></div></div>`).join('')+(up.length>8?`<small class="m" style="padding-top:8px">e mais ${up.length-8}</small>`:''):'<div class="empty" style="padding:14px 0 4px">Nada previsto para os próximos 7 dias.</div>'}</div>
      <div class="card"><h2>Últimos envios</h2>${log.length?log.map(l=>`<div class="ad-li"><div><a href="#" data-co="${l.company_id}">${esc(l.company||'')}</a><small>${esc(l.name)}</small></div><div style="text-align:right;flex:none"><small>${dt(l.at)}</small><small class="${l.wa||l.email?'':'ad-dn'}">${l.wa&&l.email?'WhatsApp e e-mail':l.wa?'WhatsApp':l.email?'e-mail':'não saiu'}</small></div></div>`).join('')+'<div style="padding-top:10px"><button class="btn sm" data-at="enviados">Ver histórico completo</button></div>':'<div class="empty">Nenhum envio ainda.</div>'}</div>
-     <div class="card"><h2>Bom saber</h2><ul class="av-tips"><li>Cada aviso sai <b>uma vez por situação</b>: ninguém recebe o mesmo lembrete duas vezes.</li><li>Lembretes saem das <b>8h às 20h</b> e no máximo um por dia por cliente. Cobrança e problemas saem na hora.</li><li>Alguns avisos o cliente pode desligar em Empresa › Avisos. Os de cobrança e segurança <b>sempre chegam</b>.</li><li>Contas de teste não recebem avisos automáticos.</li></ul></div></div></div></div>`;
+     <div class="card"><h2>Bom saber</h2><ul class="av-tips"><li>Cada aviso sai <b>uma vez por situação</b>: ninguém recebe o mesmo lembrete duas vezes.</li><li>Lembretes saem das <b>8h às 20h</b> e no máximo um por dia por cliente. Cobrança e problemas saem na hora.</li><li>Alguns avisos o cliente pode desligar em Configurações › Seus avisos. Os de cobrança e segurança <b>sempre chegam</b>.</li><li>Contas de teste não recebem avisos automáticos.</li></ul></div></div></div></div>`;
   tabs();document.querySelectorAll('[data-co]').forEach(a=>a.onclick=e=>{e.preventDefault();adOpen(a.dataset.co)});
   document.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{A.tab='textos';A.key=b.dataset.tx;syncUrl();adAvisos()});
   document.querySelectorAll('[data-av]').forEach(b=>b.onclick=()=>{A.tab='fila';A.open=b.dataset.av;syncUrl();adAvisos()});
@@ -7480,7 +7634,7 @@ async function adAvisos(){
   $('#page').innerHTML=`<div class="ad">${head}
    ${n.email_ready?'':'<div class="ad-tip">O envio de e-mail ainda não está configurado neste servidor. Os avisos ficam registrados, mas não saem.</div>'}
    ${n.wa_ready?'<div class="ad-box" style="flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:240px;font-size:13.5px">Cada texto de WhatsApp precisa da aprovação da Meta antes do primeiro envio.</div><button class="btn sm" id="adWsub">Enviar textos para aprovação</button></div>':''}
-   ${n.wa_ready?'':'<div class="ad-tip">O WhatsApp do Oi Nanda ainda não está conectado. Conecte o número em Empresa, nesta sua conta, e os avisos passam a sair por ele. Até lá, tudo sai só por e-mail.</div>'}
+   ${n.wa_ready?'':'<div class="ad-tip">O WhatsApp do Oi Nanda ainda não está conectado. Conecte o número em Configurações › WhatsApp, nesta sua conta, e os avisos passam a sair por ele. Até lá, tudo sai só por e-mail.</div>'}
    <div class="ad-cols" style="grid-template-columns:330px 1fr"><div class="card" style="padding:10px">${n.items.map(i=>`<div class="ad-nt ${i.key===A.key?'on':''}" data-nk="${i.key}"><div>${esc(i.name)}<small>${esc(i.when)} · ${i.whatsapp?'WhatsApp e e-mail':'só e-mail'}</small></div><label class="ad-sw" title="${i.on?'Ligado':'Desligado'}"><input type="checkbox" data-sw="${i.key}" ${i.on?'checked':''} aria-label="Ligar ou desligar ${esc(i.name)}"><i></i></label></div>`).join('')}</div>
    <div class="card"><div class="ad-bar"><h2>${esc(v.name)}</h2><div class="ad-right">${v.whatsapp?`<div class="ad-tabs"><button class="ad-tab ${A.ed==='wa'?'on':''}" data-ed2="wa">WhatsApp</button><button class="ad-tab ${A.ed==='email'?'on':''}" data-ed2="email">E-mail</button></div>`:''}</div></div>
     <div class="ad-cols even" style="margin-top:14px"><div class="ad-col">
@@ -7582,7 +7736,7 @@ const VIEWS={
      <div class="lk-fs"><span class="lk-fn">2</span><b>A mensagem sai sozinha</b><span>no WhatsApp, com o nome do cliente</span><div class="lk-fv"><span class="lk-bb sm">Oi, Ana! Conseguiu ver minha última mensagem? 😊</span></div></div>${ar}
      <div class="lk-fs"><span class="lk-fn">3</span><b>Você vê o resultado</b><span>quantos responderam e quantos compraram</span><div class="lk-fv"><span class="au-res"><span><b>24</b>enviadas</span><span><b>11</b>responderam</span><span class="ok"><b>4</b>compraram</span></span></div></div></div>
     <div class="pm-facts">${[[IC.moon,'Só das 8h às 21h','Fora disso, espera o próximo horário.'],[IC.chat,'Até 24 h, mensagem normal','Contando da última mensagem do cliente.'],[IC.shield,'Depois, modelo aprovado','A Meta exige. Nós pedimos por você, em um clique.'],['<circle cx="12" cy="12" r="8.5"/><path d="m8 8 8 8"/>','Quem pede para parar, sai','E não recebe mais nenhuma automação.']].map(f=>`<div><i>${svg(f[0].replace(/^<svg[^>]*>|<\/svg>$/g,''))}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
-  $('#auBody').innerHTML=`${d.whatsapp?'':'<div class="note warnb" style="margin-bottom:14px"><b>WhatsApp não conectado.</b> As automações começam a enviar quando o número estiver conectado em Empresa.</div>'}
+  $('#auBody').innerHTML=`${d.whatsapp?'':'<div class="note warnb" style="margin-bottom:14px"><b>WhatsApp não conectado.</b> As automações começam a enviar quando o número estiver conectado em Configurações › WhatsApp.</div>'}
    ${hero}
    ${n?`<div class="au-sec"><h3>Ligadas na sua conta</h3><span class="hint">${d.items.filter(a=>a.active).length} de ${n} ${n===1?'ativa':'ativas'}</span></div><div class="au-grid">${d.items.map(card).join('')}</div>`:''}
    ${rec}
@@ -8193,7 +8347,7 @@ const VIEWS={
 };
 /* aviso no WhatsApp do time: quando a Nanda passa um cliente ou alguém transfere uma conversa */
 function eqWa(n,canManage,team){const t=n.template&&n.template.status,me=(n.me||{}),tm=n.team||{on:0,total:0},mine=me.wa_notify&&me.wa_phone;
-  const st=!n.connected?['grey','WhatsApp da empresa não conectado','Os avisos saem pelo número da empresa. Conecte o WhatsApp em Empresa para ligar.']
+  const st=!n.connected?['grey','WhatsApp da empresa não conectado','Os avisos saem pelo número da empresa. Conecte o WhatsApp em Configurações para ligar.']
    :t==='APPROVED'?['ok','pronto','O modelo de aviso foi aprovado pela Meta. Cada aviso é cobrado pela Meta como mensagem de utilidade (centavos).']
    :t==='PENDING'?['warn','em análise na Meta','O modelo de aviso costuma ser aprovado em minutos. Enquanto isso, só recebe quem mandou mensagem para o número da empresa nas últimas 24 h.']
    :['bad','falta ativar','A Meta exige um modelo aprovado para avisar quem não falou com o número da empresa nas últimas 24 h. É uma vez só, para o time todo.'];
@@ -8235,7 +8389,7 @@ async function meModal(){
     try{const away=f.away.value==='1';
       await api('/me/notify',{method:'PUT',body:{wa_phone:f.wa_phone.value.trim()||null,wa_notify:f.wa_notify.checked}});
       if(away!==!!u.away){await api('/me/status',{method:'PUT',body:{away}});u.away=away}
-      $('#meDot').classList.toggle('off',!!u.away);$('#meSt').textContent=(ME.roles[u.role]||u.role)+' · '+(u.away?'ausente':'disponível');
+      $('#meDot').classList.toggle('off',!!u.away);$('#meSt').textContent=u.name.split(' ')[0]+' · '+(u.away?'ausente':'disponível');
       o.remove();toast(u.away?'Você está ausente. O rodízio vai pular você.':'Salvo.');if(VIEW==='equipe')VIEWS.equipe()}catch(x){$('#meE').textContent=x.message}};
 }
 async function drawTeams(people,canManage){
@@ -9086,7 +9240,7 @@ async function vdCommissions(){const mgr=isMgr();const P=VD.cm||(VD.cm={preset:'
     <div class="cm-sum"><div><small>${mgr?'Comissão a pagar':'Sua comissão'}</small><b>${brlC(d.total_commission)}</b><span>sobre ${brlC(sold)} vendidos${mgr?` por ${d.rows.length} ${d.rows.length===1?'pessoa':'pessoas'}`:''}</span></div>
      ${mgr&&d.without_seller&&d.without_seller.count?`<div class="cm-warn"><b>${brlC(d.without_seller.value)}</b><span>em ${d.without_seller.count} ${d.without_seller.count===1?'venda sem vendedor':'vendas sem vendedor'}. Não entram na comissão.</span><button class="lnk" data-tab2="lista">Ver vendas</button></div>`:''}</div>
     ${d.rows.length?`<div class="card cm-list">${d.rows.map(card).join('')}</div>`
-      :`<div class="card cm-empty"><b>Nenhuma venda com vendedor no período</b><p class="hint">Ao registrar uma venda, escolha quem vendeu (dá para dividir entre duas pessoas). ${mgr?'O percentual de cada pessoa fica em Equipe › Comissão e turno.':''}</p></div>`}
+      :`<div class="card cm-empty"><b>Nenhuma venda com vendedor no período</b><p class="hint">Ao registrar uma venda, escolha quem vendeu (dá para dividir entre duas pessoas). ${mgr?'O percentual de cada pessoa fica em Configurações › Pessoas e permissões › Comissão e turno.':''}</p></div>`}
     ${mgr?`<p class="hint cm-foot">Percentuais em <button class="lnk" data-to="equipe">Equipe › Comissão e turno</button>. Vendas que chegam da Hotmart, Kiwify, Eduzz ou iugu entram com o responsável do card.</p>`:''}</div>`;
   document.querySelectorAll('[data-cmp]').forEach(b=>b.onclick=()=>{P.preset=b.dataset.cmp;vdCommissions()});
   document.querySelectorAll('#vdBody [data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
@@ -9285,6 +9439,7 @@ function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)r
   const tg=hd.querySelector('.tools')||hd,pri=[...tg.children].find(x=>x.classList.contains('btn')&&x.classList.contains('p'));pri?tg.insertBefore(b,pri):tg.appendChild(b)}
 new MutationObserver(()=>hpBadge()).observe(document.body,{childList:true,subtree:true});
 VIEWS.ajuda=hpView;
+VIEWS.config=cfgView;
 VIEW=readPath();swInit();boot();
 </script>
 </body>
