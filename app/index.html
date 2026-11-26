@@ -1607,6 +1607,12 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-pth .nz-clr{margin-left:auto;background:none;border:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer}
 .nz-nw{margin:12px 12px 0;background:var(--tint);border:1px solid #F6CDBD;border-radius:12px;padding:9px 10px 9px 12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:8px}.nz-nw b{color:var(--c2)}.nz-nw button{margin-left:auto;flex:none}
 .nz-fab{display:none}.nz.nzpp #plR{display:none}
+.nz-msgs.empty{align-content:center!important;justify-items:center}.nz-msgs.empty~.nz-chips{display:none}
+.nz-st0{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;max-width:340px;padding:10px 6px}
+.nz-st0i{width:52px;height:52px;border-radius:16px;background:#fff;color:var(--c);display:grid;place-items:center;box-shadow:0 8px 20px -12px rgba(23,33,43,.35)}.nz-st0i svg{width:24px;height:24px}
+.nz-st0>b{font-size:16px;line-height:1.3;color:var(--ink);margin-top:4px}.nz-st0>span{font-size:13px;color:var(--ink2);line-height:1.45}
+.nz-st0q{display:grid;gap:7px;width:100%;margin-top:8px}.nz-st0q button{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1.5px solid #fff;border-radius:12px;padding:11px 14px;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;box-shadow:0 1px 2px rgba(23,33,43,.06)}
+.nz-st0q button:hover{border-color:var(--c)}.nz-st0q i{font-style:normal;color:var(--c);font-weight:800}.nz-st0>small{font-size:12px;color:var(--ink3);margin-top:6px}
 @media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 48px);display:flex;flex-direction:column}
  .nz.nzpp #nzChat{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}.nz.nzpp .nz-msgs{flex:1;height:auto;min-height:0}
  .nz.nzpp .nz-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nz.nzpp .nz-chips button{white-space:nowrap;flex:none}}
@@ -8319,13 +8325,15 @@ const VIEWS={
     if(redo&&r.lesson){s.examples=[...(s.examples||[]).filter(e=>e.q.toLowerCase()!==r.lesson.q.toLowerCase()),r.lesson];const L=$('#nzLs');if(L)L.outerHTML=lessonsH()}
     const gi=hist.findLastIndex(m=>m.dir==='out');if(gi>=0&&hist[gi].gap)FS.edit={i:gi,mode:'texto',texto:'',pedido:''}};
   const drawChat=(typing,keep)=>{const box=$('#plM');if(!box)return;box.innerHTML=hist.length?fxMsgs(hist,V.name||'Nanda',FS.edit)+(typing?'<div class="ob-typing"><i></i><i></i><i></i></div>':'')
-    :`<div class="nz-empty">Escreva como se fosse um cliente ou toque numa pergunta pronta. Se uma resposta não ficar boa, toque em <b>Corrigir resposta</b> embaixo dela.</div>`;
+    :`<div class="nz-st0"><span class="nz-st0i">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 10.5h7M8.5 13.5h4"/>')}</span><b>Converse com a ${esc(V.name||'Nanda')} como se fosse um cliente</b><span>Faça uma pergunta e veja na hora como ela responde. Nada é enviado para ninguém.</span>
+     <div class="nz-st0q">${[...document.querySelectorAll('.nz-chips button')].slice(0,3).map(b=>`<button type="button" data-q="${esc(b.textContent)}">${esc(b.textContent)}<i>→</i></button>`).join('')}</div><small>Resposta não ficou boa? Toque em <b>Corrigir resposta</b> embaixo dela.</small></div>`;
+    box.classList.toggle('empty',!hist.length);
     fxBind(box,{hist,nanda:V.name||'Nanda',state:FS,redraw:()=>drawChat(false,true),done:r=>{takeR(r,true);drawChat(false);bindLs()}});if(!keep)box.scrollTop=box.scrollHeight};
   function playBind(){drawChat(false);bindLs();const ta=$('#plT');
    const send=async t=>{t=(t||'').trim();if(!t)return;FS.edit=null;ta.value='';ta.style.height='';hist.push({dir:'in',text:t});drawChat(true);
     try{if(dirty())await save(true);const r=await api('/ai/test',{method:'POST',body:{messages:hist.filter(m=>m.dir!=='sys').map(m=>({dir:m.dir,text:m.text}))}});takeR(r)}
     catch(e){hist.push({dir:'sys',text:e.message})}drawChat(false)};
-   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
+   $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};$('#plM').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b)send(b.dataset.q)});
    ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
    document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
    $('#plR').onclick=()=>{hist.length=0;FS.edit=null;drawChat(false)};if($('#plR2'))$('#plR2').onclick=()=>$('#plR').click();
