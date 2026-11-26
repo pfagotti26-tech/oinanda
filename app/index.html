@@ -3475,6 +3475,11 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 @media(max-width:860px){.cvfm{position:fixed;left:0;right:0;bottom:0;top:auto!important;width:auto;max-height:82vh;border-radius:20px 20px 0 0;padding:14px 12px calc(16px + env(safe-area-inset-bottom,0px));z-index:60}.cvfm-bg{z-index:59}.cvfm>button{padding:12px 10px;font-size:15px}}
 
 #pnJn .jn-tg{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--ink2);padding:6px 0 2px}#pnJn .jn-tg:hover{color:var(--c2)}#pnJn .jn-tg svg{width:14px;height:14px}#pnJn .jn-list[hidden]{display:none}#pnJn .jn-al{margin-top:6px}
+
+/* lista estreita: filtros quebram linha em vez de sumir; abas encolhem; sino não cobre o painel do cliente */
+.cvx{flex-wrap:wrap;overflow:visible}
+.cv-list.narrow .cvt button{font-size:12px;padding:10px 3px 11px;gap:4px}.cv-list.narrow .cvt button i{min-width:16px;height:16px;font-size:10px}.cv-list.narrow .cvx{gap:5px;padding:2px 10px 8px}.cv-list.narrow .cvx button{padding:5px 9px;font-size:12px}
+@media(min-width:861px){.cv-pn .pn-h{padding-right:60px}}
 </style>
 </head>
 <body>
@@ -8402,6 +8407,7 @@ const VIEWS={
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
   cvSizes();
+  {const L=$('.cv-list');if(L&&window.ResizeObserver)new ResizeObserver(()=>L.classList.toggle('narrow',L.offsetWidth<380)).observe(L)}
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
   fitCv();
   cvTabs();document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
