@@ -3480,6 +3480,54 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .cvx{flex-wrap:wrap;overflow:visible}
 .cv-list.narrow .cvt button{font-size:12px;padding:10px 3px 11px;gap:4px}.cv-list.narrow .cvt button i{min-width:16px;height:16px;font-size:10px}.cv-list.narrow .cvx{gap:5px;padding:2px 10px 8px}.cv-list.narrow .cvx button{padding:5px 9px;font-size:12px}
 @media(min-width:861px){.cv-pn .pn-h{padding-right:60px}}
+
+/* ===== lista e card mais limpos ===== */
+.cv-list .hd{border-bottom:0}
+.cv-list .srch input{padding-right:70px}
+.srch .clr{right:38px}
+.srch .cvfb{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:99px;display:grid;place-items:center;color:var(--ink2);margin:0}
+.srch .cvfb:hover{background:#F3EEE9}.srch .cvfb svg{position:static;transform:none;width:16px;height:16px;color:inherit}
+.srch .cvfb.on{background:var(--ink);color:#fff}.srch .cvfb i{position:absolute;top:-4px;right:-4px;font-style:normal;font-size:10px;font-weight:800;background:var(--c);color:#fff;min-width:16px;height:16px;border-radius:9px;display:grid;place-items:center;border:2px solid #fff}.srch .cvfb i:empty{display:none}
+.cv-list .cvsb{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 14px 4px;font-size:12.5px;color:var(--ink3);flex-wrap:nowrap;overflow:hidden}
+.cv-list .cvsb>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cv-list .cvsb b{color:var(--ink);font-weight:700}.cv-list .cvsb .lnk{flex:none;font-size:12.5px;font-weight:700;color:var(--c2);text-decoration:none}
+.cv-list .cvt,.cv-list.narrow .cvt{display:flex;gap:2px;margin:6px 12px 6px;padding:3px;background:#F4EFEA;border-radius:10px;border:0;overflow:visible}
+.cv-list .cvt button,.cv-list.narrow .cvt button{flex:1 1 0;justify-content:center;padding:5px 4px;font-size:12.5px;font-weight:700;color:var(--ink3);border:0;border-radius:8px;margin:0;gap:4px}
+.cv-list .cvt button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(23,33,43,.12)}
+.cv-list .cvt i,.cv-list .cvt [data-f=need] i,.cv-list.narrow .cvt button i{background:none;color:var(--c2);padding:0;min-width:0;height:auto;font-size:11.5px;font-weight:800}
+.cvf2{padding:6px}.cvf2 .r{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px;border-radius:9px;font-size:14px;font-weight:600;color:var(--ink)}.cvf2 .r:hover{background:#F7F3EF}
+.cvf2 .r em{font-style:normal;color:var(--ink3);font-size:13px;font-weight:600;display:flex;align-items:center;gap:3px;min-width:0}.cvf2 .r em.set{color:var(--c2);font-weight:700}.cvf2 .r svg{width:14px;height:14px;flex:none}
+.cvf2 .r::after,.cvf2 .cvf-bk::after,.cvf2 .cvf-clr::after{display:none!important}
+.cvf2 .cvf-bk{display:flex;align-items:center;gap:6px;padding:6px 6px 8px;font-weight:800;font-size:14px;color:var(--ink)}.cvf2 .cvf-bk svg{width:16px;height:16px;color:var(--ink3)}
+.cvf2 .cvf-clr{font-size:12.5px;font-weight:700;color:var(--ink3);text-decoration:underline;padding:6px 10px}
+.cvf2 .o{display:flex;align-items:center;gap:10px}
+/* linhas da lista */
+.ci.cz{padding:8px 14px;gap:10px}.ci.cz .av{width:32px;height:32px;font-size:11.5px;font-weight:800}
+.ci.cz .chb{width:15px;height:15px;right:-4px;bottom:-4px;border-width:1.5px}.ci.cz .chb svg{width:8px;height:8px}
+.ci.cz .nb{font-size:0;min-width:8px;width:8px;height:8px;padding:0;border-radius:50%}
+.ci.cz .r1 b{font-size:13.5px}.ci.cz .r2{font-size:12.5px}.ci.cz.un .r1 b{font-weight:800}
+.cv.lmin .ci.cz .av{width:34px;height:34px}
+/* card do cliente */
+.cv-pn .pn-hero.cp{padding:16px 16px 8px;border-bottom:0}
+.pn-meta{display:flex;flex-wrap:wrap;gap:5px;padding:0 16px 12px}.pn-meta span{font-size:11.5px;font-weight:600;color:var(--ink2);background:#F6F2EE;border-radius:99px;padding:3px 9px}
+.pn-meta .kp{background:#EAF2FB;color:#1F5C99}.pn-meta .kc{background:#E3F4EC;color:var(--ok)}.pn-meta .ki{background:#FBF0D6;color:var(--warn)}.pn-meta .red{background:#FBE6E3;color:#9E2B1E}.pn-meta .grey{background:#EEF1F4}
+.pn-al{margin:0 12px 12px;padding:10px 12px;border-radius:12px;background:#FFF5EF;border:1px solid #FBE0D2}.pn-al b{display:block;font-size:12.5px;color:#A4441F}.pn-al p{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.4}
+.pn-al-a{display:flex;gap:6px;margin-top:8px}.pn-al-a .btn{border-radius:99px}
+.cv-pn .pn-qa{display:flex;gap:6px;padding:0 12px 12px}.cv-pn .pn-qa button{flex:1;display:flex;gap:6px;align-items:center;justify-content:center;padding:7px 4px;border-radius:10px;font-size:12.5px}.cv-pn .pn-qa svg{width:15px;height:15px;margin:0}
+.cv-pn .pn-s{padding:10px 16px}
+.cv-pn .pn-kv{grid-template-columns:92px minmax(0,1fr);gap:4px 10px}
+.cv-pn .pn-kv>label,.cv-pn .pn-kv>label:not(:first-child){margin:0;font-size:13px;font-weight:500;color:var(--ink3)}
+.cv-pn .pn-kv select{border:0;background-color:transparent;font-weight:700;text-align:right;text-align-last:right;padding:6px 22px 6px 4px;box-shadow:none}.cv-pn .pn-kv select:hover{background-color:#F7F3EF}
+.cv-pn .pn-kv .pn-own{justify-content:flex-end;font-size:13.5px;font-weight:600}
+.cv-pn .pn-kv .pn-val{border:0;justify-content:flex-end;background:none}.cv-pn .pn-kv .pn-val input{text-align:right;font-weight:700;border:0;background:none;padding:6px 4px}.cv-pn .pn-kv .pn-val:hover{background:#F7F3EF;border-radius:8px}
+.cv-pn .pn-d{padding:0 16px}.cv-pn .pn-d>summary{padding:12px 0;margin:0!important}
+.cv-pn .pn-d>summary .lb{font-size:13.5px;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0}
+.cv-pn .pn-d>summary small{font-size:12.5px;color:var(--ink3);font-weight:600;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.cv-pn .pn-d[open]>summary small{display:flex}
+.cv-pn .pn-d[open]{padding-bottom:12px}
+.pn-dots{display:inline-flex;gap:3px}.pn-dots i{width:7px;height:7px;border-radius:50%;background:#E6DED6}.pn-dots i.on{background:#F1C35A}
+#pnJn .pn-sh{display:none}
+.cv-list .cvsb button.lnk{background:none;border:0;color:var(--c2);padding:0;text-decoration:none}
+.cv-pn .pn-kv .pn-val{display:flex;align-items:center;justify-content:flex-end;gap:2px;padding:0 4px}.cv-pn .pn-kv .pn-val input{flex:none;width:76px;min-width:0}.cv-pn .pn-kv .pn-val span{color:var(--ink3);font-weight:600}.pn-all{display:block;margin-top:8px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -5050,54 +5098,56 @@ function cvNorm(){const m={waiting:['need',''],mine:['all','mine'],unassigned:['
 function cvTabs(){cvNorm();document.querySelectorAll('.cvt [data-f]').forEach(x=>{x.classList.toggle('on',x.dataset.f===CV.filter);x.setAttribute('aria-selected',x.dataset.f===CV.filter)});
   const OW={mine:'Minhas',team:'Equipe',unassigned:'Sem dono'},CH={whatsapp:'WhatsApp',instagram:'Instagram'};
   cvChips()}
-/* filtros da lista: Data · Vendedor · Situação · Etapa · Canal. Cada um abre só a sua escolha e aplica no toque. */
+/* filtros da lista: um ícone dentro da busca abre Data · Vendedor · Situação · Etapa · Canal; cada linha abre as suas opções */
 const CVSIT={unread:'Não lidas',waiting:'Esperando resposta',human:'Pediu atendente',nanda:'Nanda atendendo',stale:'Sem resposta há +24h',sold:'Já comprou'};
 const cvD=d=>d.toLocaleDateString('sv-SE'),cvDL=t=>{const [y,m,d]=t.split('-');return d+'/'+m};
-function cvChips(){const el=$('#cvX');if(!el)return;const mgr=['owner','manager'].includes(ME.user.role);
-  const pm=CV.pro?(CV.team||[]).find(t=>t.id===CV.pro):null;
-  const vend=CV.sub==='mine'?'Só as minhas':CV.sub==='unassigned'||CV.pro==='_none'?'Sem dono':CV.sub==='team'?'Minha equipe':pm?pm.name.split(' ')[0]:'';
-  const st=CV.stage&&(STAGES||[]).find(x=>x.id===CV.stage);
-  const chs=CV.chs||new Set();
-  const C=[['d','Data',CV.dl],['v','Vendedor',vend],['s','Situação',CVSIT[CV.sit]||''],...((STAGES||[]).length?[['e','Etapa',st?st.name:'']]:[]),...(chs.size>1||chs.has('instagram')||CV.ch?[['c','Canal',{whatsapp:'WhatsApp',instagram:'Instagram'}[CV.ch]||'']]:[])];
-  const n=C.filter(c=>c[2]).length;
-  el.innerHTML=C.map(c=>`<button type="button" class="${c[2]?'set':''}" data-x="${c[0]}" aria-haspopup="menu">${esc(c[2]||c[1])}${c[2]?`<span data-xx="${c[0]}" role="button" aria-label="Tirar filtro ${c[1]}">${svg('<path d="M6 6l12 12M18 6 6 18"/>')}</span>`:svg('<path d="m6 9 6 6 6-6"/>')}</button>`).join('')+(n>1?'<button type="button" class="clr" data-xx="all">Limpar</button>':'');
-  el.querySelectorAll('[data-x]').forEach(b=>b.onclick=e=>{const x=e.target.closest('[data-xx]');if(x)return;cvXMenu(b)});
-  el.querySelectorAll('[data-xx]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.xx,all=k==='all';
-    if(all||k==='d'){CV.d1=CV.d2=CV.dl=''}if(all||k==='v'){CV.sub='';CV.pro=''}if(all||k==='s')CV.sit='';if(all||k==='e')CV.stage='';if(all||k==='c')CV.ch='';$('#cvFm')?.remove();cvChips();cvList()})}
-function cvXMenu(btn){const k=btn.dataset.x,old=$('#cvFm');if(old){old.remove();if(old.dataset.k===k)return}
-  const m=document.createElement('div');m.id='cvFm';m.className='cvfm';m.dataset.k=k;m.setAttribute('role','menu');
-  const opt=(v,l,on,pre='')=>`<button type="button" role="menuitemradio" aria-checked="${on}" class="${on?'on':''}" data-o="${esc(v)}">${pre}<span>${esc(l)}</span></button>`;
-  const done=()=>{m.remove();cvChips();cvList()},mob=innerWidth<=860;
-  const titles={d:'Data',v:'Vendedor',s:'Situação',e:'Etapa',c:'Canal'};
-  let body='';
-  if(k==='d'){const t=new Date();CV.cm=CV.cm||new Date(t.getFullYear(),t.getMonth(),1);
-    const pres=[['','Qualquer dia'],['hoje','Hoje'],['ontem','Ontem'],['7d','Últimos 7 dias'],['mes','Este mês']];
-    const cal=()=>{const y=CV.cm.getFullYear(),mo=CV.cm.getMonth(),first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate(),td=cvD(t);let g='DSTQQSS'.split('').map(x=>`<i>${x}</i>`).join('')+'<em></em>'.repeat(first);
-      for(let d=1;d<=days;d++){const v=cvD(new Date(y,mo,d));g+=`<button type="button" data-day="${v}" class="${CV.d1===v&&CV.d2===v?'on':''} ${v===td?'td':''}" ${v>td?'disabled':''}>${d}</button>`}
-      return `<div class="cvcal"><div class="cvcal-h"><button type="button" data-cm="-1" aria-label="Mês anterior">‹</button><b>${obCap(CV.cm.toLocaleDateString('pt-BR',{month:'long'}))} ${y}</b><button type="button" data-cm="1" aria-label="Próximo mês" ${y===t.getFullYear()&&mo===t.getMonth()?'disabled':''}>›</button></div><div class="cvcal-g">${g}</div></div>`};
-    body=pres.map(p=>opt(p[0],p[1],(CV.dk||'')===p[0]&&(p[0]||!CV.d1))).join('')+'<hr>'+cal();
-    m.innerHTML=(mob?`<div class="cvfm-t">${titles[k]}</div>`:'')+body;
-    const bind=()=>{m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o,d=new Date(t);CV.dk=v;
-        if(!v){CV.d1=CV.d2=CV.dl=''}else if(v==='hoje'){CV.d1=CV.d2=cvD(d);CV.dl='Hoje'}else if(v==='ontem'){d.setDate(d.getDate()-1);CV.d1=CV.d2=cvD(d);CV.dl='Ontem'}
-        else if(v==='7d'){CV.d2=cvD(d);d.setDate(d.getDate()-6);CV.d1=cvD(d);CV.dl='Últimos 7 dias'}else{CV.d1=cvD(new Date(t.getFullYear(),t.getMonth(),1));CV.d2=cvD(t);CV.dl='Este mês'}done()});
-      m.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{CV.dk='dia';CV.d1=CV.d2=b.dataset.day;CV.dl=cvDL(b.dataset.day);done()});
-      m.querySelectorAll('[data-cm]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.cm=new Date(CV.cm.getFullYear(),CV.cm.getMonth()+ +b.dataset.cm,1);m.querySelector('.cvcal').outerHTML=cal();bind()})};
-    place();bind();return}
+function cvFVals(){const pm=CV.pro?(CV.team||[]).find(t=>t.id===CV.pro):null,st=CV.stage&&(STAGES||[]).find(x=>x.id===CV.stage);
+  return {d:CV.dl,v:CV.sub==='mine'?'Só as minhas':CV.sub==='unassigned'||CV.pro==='_none'?'Sem dono':CV.sub==='team'?'Minha equipe':pm?pm.name.split(' ')[0]:'',s:CVSIT[CV.sit]||'',e:st?st.name:'',c:{whatsapp:'WhatsApp',instagram:'Instagram'}[CV.ch]||''}}
+function cvFClear(){CV.d1=CV.d2=CV.dl=CV.dk='';CV.sub=CV.pro=CV.sit=CV.stage=CV.ch=''}
+function cvChips(){const V=cvFVals(),on=Object.values(V).filter(Boolean),fb=$('#cvFb');
+  if(fb){fb.classList.toggle('on',!!on.length);fb.querySelector('i').textContent=on.length||''}
+  const el=$('#cvSub');if(!el)return;el.hidden=!on.length;
+  el.innerHTML=on.length?`<span>Filtrando: <b>${esc(on.join(' · '))}</b></span><button type="button" class="lnk" id="cvClr">Limpar</button>`:'';
+  if(on.length)$('#cvClr').onclick=()=>{cvFClear();$('#cvFm')?.remove();cvChips();cvList()}}
+function cvXMenu(btn){const old=$('#cvFm');if(old){old.remove();return}
+  const host=btn.closest('.cv-list'),mob=innerWidth<=860,m=document.createElement('div');m.id='cvFm';m.className='cvfm cvf2';m.setAttribute('role','menu');
+  const chv=svg('<path d="m9 6 6 6-6 6"/>'),back=svg('<path d="m15 6-6 6 6 6"/>');
+  const opt=(v,l,on,pre='')=>`<button type="button" role="menuitemradio" aria-checked="${on}" class="o ${on?'on':''}" data-o="${esc(v)}">${pre}<span>${esc(l)}</span></button>`;
   const av=(t,bg)=>`<span class="cvfm-a" style="background:${bg}">${t}</span>`;
-  if(k==='v'){const mgr=['owner','manager'].includes(ME.user.role),tm=(CV.teams||[]).some(t=>t.mine);
-    const cur=CV.pro?'p:'+CV.pro:CV.sub?'s:'+CV.sub:'';
-    body=opt('','Todos',!cur,av('✦','#17212B'))+opt('s:mine','Só as minhas',cur==='s:mine',av(initials(ME.user.name),avc(ME.user.name)))+(tm?opt('s:team','Minha equipe',cur==='s:team',av('◎','#6B7785')):'')+opt('s:unassigned','Sem dono',cur==='s:unassigned',av('–','#9AA5B1'))
-      +(mgr?'<hr>'+(CV.team||[]).filter(t=>t.active!==false&&t.id!==ME.user.id).map(t=>opt('p:'+t.id,t.name,cur==='p:'+t.id,av(initials(t.name),avc(t.name)))).join(''):'')}
-  if(k==='s')body=opt('','Todas',!CV.sit)+Object.entries(CVSIT).map(([v,l])=>opt(v,l,CV.sit===v)).join('');
-  if(k==='e')body=opt('','Todas',!CV.stage)+(STAGES||[]).map((x,i)=>opt(x.id,x.name,CV.stage===x.id,`<i class="cvfm-d" style="background:${stColor(x,i)}"></i>`)).join('');
-  if(k==='c')body=opt('','Todos',!CV.ch)+opt('whatsapp','WhatsApp',CV.ch==='whatsapp')+opt('instagram','Instagram',CV.ch==='instagram');
-  m.innerHTML=(mob?`<div class="cvfm-t">${titles[k]}</div>`:'')+body;place();
-  m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o;
-    if(k==='v'){CV.sub=v.startsWith('s:')?v.slice(2):'';CV.pro=v.startsWith('p:')?v.slice(2):''}else if(k==='s')CV.sit=v;else if(k==='e')CV.stage=v;else CV.ch=v;done()});
-  function place(){const host=btn.closest('.cv-list');host.appendChild(m);
-    if(mob){const sc=document.createElement('div');sc.className='cvfm-bg';host.appendChild(sc);sc.onclick=()=>{m.remove();sc.remove()};new MutationObserver((r,o)=>{if(!m.isConnected){sc.remove();o.disconnect()}}).observe(host,{childList:true});return}
-    const r=btn.getBoundingClientRect(),pr=host.getBoundingClientRect();m.style.top=(r.bottom-pr.top+6)+'px';m.style.left=Math.max(8,Math.min(r.left-pr.left,pr.width-m.offsetWidth-8))+'px';
-    setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.contains(e.target)&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}}
+  const T={d:'Data',v:'Vendedor',s:'Situação',e:'Etapa',c:'Canal'};
+  const apply=()=>{cvChips();cvList();view('root')};
+  function view(k){
+    if(k==='root'){const V=cvFVals(),chs=CV.chs||new Set();
+      const ks=['d','v','s',...((STAGES||[]).length?['e']:[]),...(chs.size>1||chs.has('instagram')||CV.ch?['c']:[])];
+      const any=Object.values(V).some(Boolean);
+      m.innerHTML=(mob?'<div class="cvfm-t">Filtrar conversas</div>':'')+ks.map(x=>`<button type="button" class="r" data-k="${x}"><span>${T[x]}</span><em class="${V[x]?'set':''}">${esc(V[x]||(x==='s'||x==='e'?'Todas':x==='d'?'Qualquer dia':'Todos'))}${chv}</em></button>`).join('')+(any?'<hr><button type="button" class="cvf-clr" id="cvFClr">Limpar filtros</button>':'');
+      m.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>view(b.dataset.k));
+      const cl=m.querySelector('#cvFClr');if(cl)cl.onclick=()=>{cvFClear();apply()};return}
+    const hd=`<button type="button" class="cvf-bk" data-bk>${back}${T[k]}</button>`;let body='';
+    if(k==='d'){const t=new Date();CV.cm=CV.cm||new Date(t.getFullYear(),t.getMonth(),1);
+      const cal=()=>{const y=CV.cm.getFullYear(),mo=CV.cm.getMonth(),first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate(),td=cvD(t);let g='DSTQQSS'.split('').map(x=>`<i>${x}</i>`).join('')+'<em></em>'.repeat(first);
+        for(let d=1;d<=days;d++){const v=cvD(new Date(y,mo,d));g+=`<button type="button" data-day="${v}" class="${CV.d1===v&&CV.d2===v?'on':''} ${v===td?'td':''}" ${v>td?'disabled':''}>${d}</button>`}
+        return `<div class="cvcal"><div class="cvcal-h"><button type="button" data-cm="-1" aria-label="Mês anterior">‹</button><b>${obCap(CV.cm.toLocaleDateString('pt-BR',{month:'long'}))} ${y}</b><button type="button" data-cm="1" aria-label="Próximo mês" ${y===t.getFullYear()&&mo===t.getMonth()?'disabled':''}>›</button></div><div class="cvcal-g">${g}</div></div>`};
+      m.innerHTML=hd+[['','Qualquer dia'],['hoje','Hoje'],['ontem','Ontem'],['7d','Últimos 7 dias'],['mes','Este mês']].map(p=>opt(p[0],p[1],(CV.dk||'')===p[0]&&(p[0]||!CV.d1))).join('')+'<hr>'+cal();
+      const bind=()=>{m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o,d=new Date(t);CV.dk=v;
+          if(!v){CV.d1=CV.d2=CV.dl=''}else if(v==='hoje'){CV.d1=CV.d2=cvD(d);CV.dl='Hoje'}else if(v==='ontem'){d.setDate(d.getDate()-1);CV.d1=CV.d2=cvD(d);CV.dl='Ontem'}
+          else if(v==='7d'){CV.d2=cvD(d);d.setDate(d.getDate()-6);CV.d1=cvD(d);CV.dl='Últimos 7 dias'}else{CV.d1=cvD(new Date(t.getFullYear(),t.getMonth(),1));CV.d2=cvD(t);CV.dl='Este mês'}apply()});
+        m.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{CV.dk='dia';CV.d1=CV.d2=b.dataset.day;CV.dl=cvDL(b.dataset.day);apply()});
+        m.querySelectorAll('[data-cm]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.cm=new Date(CV.cm.getFullYear(),CV.cm.getMonth()+ +b.dataset.cm,1);m.querySelector('.cvcal').outerHTML=cal();bind()});
+        m.querySelector('[data-bk]').onclick=()=>view('root')};bind();return}
+    if(k==='v'){const mgr=['owner','manager'].includes(ME.user.role),tm=(CV.teams||[]).some(t=>t.mine),cur=CV.pro?'p:'+CV.pro:CV.sub?'s:'+CV.sub:'',others=(CV.team||[]).filter(t=>t.active!==false&&t.id!==ME.user.id);
+      body=opt('','Todos',!cur,av('✦','#17212B'))+opt('s:mine','Só as minhas',cur==='s:mine',av(initials(ME.user.name),avc(ME.user.name)))+(tm?opt('s:team','Minha equipe',cur==='s:team',av('◎','#6B7785')):'')+opt('s:unassigned','Sem dono',cur==='s:unassigned',av('–','#9AA5B1'))
+        +(mgr&&others.length?'<hr>'+others.map(t=>opt('p:'+t.id,t.name,cur==='p:'+t.id,av(initials(t.name),avc(t.name)))).join(''):'')}
+    if(k==='s')body=opt('','Todas',!CV.sit)+Object.entries(CVSIT).map(([v,l])=>opt(v,l,CV.sit===v)).join('');
+    if(k==='e')body=opt('','Todas',!CV.stage)+(STAGES||[]).map((x,i)=>opt(x.id,x.name,CV.stage===x.id,`<i class="cvfm-d" style="background:${stColor(x,i)}"></i>`)).join('');
+    if(k==='c')body=opt('','Todos',!CV.ch)+opt('whatsapp','WhatsApp',CV.ch==='whatsapp')+opt('instagram','Instagram',CV.ch==='instagram');
+    m.innerHTML=hd+body;m.querySelector('[data-bk]').onclick=()=>view('root');
+    m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o;
+      if(k==='v'){CV.sub=v.startsWith('s:')?v.slice(2):'';CV.pro=v.startsWith('p:')?v.slice(2):''}else if(k==='s')CV.sit=v;else if(k==='e')CV.stage=v;else CV.ch=v;apply()})}
+  host.appendChild(m);view('root');
+  if(mob){const sc=document.createElement('div');sc.className='cvfm-bg';host.appendChild(sc);sc.onclick=()=>m.remove();new MutationObserver((r,o)=>{if(!m.isConnected){sc.remove();o.disconnect()}}).observe(host,{childList:true});return}
+  const r=btn.closest('.srch').getBoundingClientRect(),pr=host.getBoundingClientRect();m.style.top=(r.bottom-pr.top+6)+'px';m.style.left=(r.left-pr.left)+'px';m.style.width=Math.max(260,Math.min(300,r.width))+'px';
+  setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.isConnected){document.removeEventListener('pointerdown',f,true);return}if(!m.contains(e.target)&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}
 function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in',tr=c.assigned_to===ME.user.id&&c.transfer_seen===false;
   const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="cz-nz">✦ Nanda:</em> ':!c.last_by||c.last_by===ME.user.name?'<em>Você:</em> ':`<em>${esc(c.last_by.split(' ')[0])}:</em> `;
   const wm=waitMin(c),old=w&&w!=='off'&&wm>=1440;
@@ -5108,7 +5158,7 @@ function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir
   const tags=`${c.internal?'<span class="cz-h nc">fora da base</span>':''}${c.needs_human?`<span class="cz-h ${c.handoff_urgent?'urg':''}">${c.handoff_urgent?'🚨 urgente':'🙋 pediu atendente'}</span>`:''}${tr?`<span class="cz-h tr">↪ de ${esc((c.transfer_by||'').split(' ')[0])}</span>`:''}${showSt?`<span class="cz-st" style="--sc:${stColor(sx.s,sx.i)}">${esc(sx.s.name)}</span>`:''}${c.team_id&&TMN(c.team_id)?`<span class="cz-st" style="--sc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:''}${c.assigned_name?`<span class="cz-ow">${c.assigned_to===ME.user.id?'com você':'com '+esc(c.assigned_name.split(' ')[0])}</span>`:''}`;
   const canRes=c.waiting||c.needs_human;
   return `<button class="ci cz ${CV.open===c.id?'on':''} ${un?'un':''}" data-c="${c.id}" title="${esc(c.name)}${w&&w!=='off'?' · esperando resposta há '+waitTxt(c):''}">
-    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
+    <span class="avw ${w?'w-'+w:''}"><span class="av" style="background:${avc(c.name)}24;color:${avc(c.name)}">${initials(c.name)}</span>${CHI[c.channel]?`<i class="chb ${CHI[c.channel][0]}" title="${CHI[c.channel][1]}">${chIcon(c.channel)}</i>`:''}${w&&w!=='off'?`<em class="wtm">${waitShort(c)}</em>`:''}</span>
     <span class="cb"><span class="r1"><b>${esc(dispName(c.name))}</b></span>
      <span class="r2">${pv}</span>${tags?`<span class="r3">${tags}</span>`:''}</span>
     <span class="cz-rt">${rt}${un?`<span class="nb">${c.unread}</span>`:''}</span>${canRes?`<span class="cz-qa" role="button" tabindex="-1" data-qr="${c.id}" title="Marcar como resolvida (sai da fila)">${IC.check}Resolver</span>`:''}</button>`}
@@ -5571,31 +5621,31 @@ async function cvPanel(c){
     ${RI('<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-4-4L4 16z"/>','Detalhes do cliente','det')}</div>
    <div class="pn-h"><b>Cliente</b><button class="ib" id="pnX" aria-label="Minimizar painel" title="Minimizar painel">${svg('<path d="m9 6 6 6-6 6"/>')}</button></div>
    <div class="pn-hero cp"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><div class="tx"><b>${esc(c.name)}</b><span>${esc(contactSub(c))}</span>
-    <div class="pn-tags"><span class="bd2">desde ${day(c.created_at)}</span>${c.ad?'<span class="bd2">veio de anúncio</span>':''}${c.opt_out?'<span class="bd2 red">não quer automáticas</span>':''}</div></div>
+    </div>
     ${c.wa_id?`<div class="pn-hb"><button type="button" class="ib" id="pnCopy" title="Copiar telefone" aria-label="Copiar telefone">${svg('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>')}</button><a class="ib" href="https://wa.me/${esc(c.wa_id)}" target="_blank" rel="noopener" title="Abrir no WhatsApp do celular" aria-label="Abrir no WhatsApp do celular">${WAI}</a></div>`:''}</div>
-   <div class="pn-kp"><div><small>Situação</small><b>${c.internal?'<span class="ks grey">Fora da base</span>':`<span class="ks ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>`}</b></div><div><small>Compras</small><b>${c.sales_count?c.sales_count+' · '+brl(c.value):'—'}</b></div><div><small>Última msg</small><b>${c.last_at?'há '+agoShort(c.last_at):'—'}</b></div></div>
-   <div class="pn-qa"><button type="button" data-qa="sale">${svg('<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>')}Registrar venda</button><button type="button" data-qa="book">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}Agendar</button><button type="button" data-qa="note">${svg('<path d="M4 20h4L18.5 9.5a2.100 2.100 0 0 0-4-4L4 16z"/>')}Anotar</button></div>
-   ${c.transfer_by&&c.transfer_reason?`<div class="pn-s pn-tr"><label>Transferida por ${esc(c.transfer_by)} · ${ago(c.transfer_at)}</label><p>${esc(c.transfer_reason)}</p></div>`:''}
+   <div class="pn-meta">${c.internal?'<span class="grey">Fora da base</span>':`<span class="k ${KIND[kindOf(c)][1]}">${KIND[kindOf(c)][0]}</span>`}${c.sales_count?`<span>${c.sales_count} ${c.sales_count===1?'compra':'compras'} · ${brl(c.value)}</span>`:''}<span>Desde ${day(c.created_at)}</span>${c.last_at?`<span>Última msg há ${agoShort(c.last_at)}</span>`:''}${c.ad?'<span>Veio de anúncio</span>':''}${c.opt_out?'<span class="red">Não quer automáticas</span>':''}</div>
+   <div class="pn-qa"><button type="button" data-qa="sale">${svg('<path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/>')}Venda</button><button type="button" data-qa="book">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}Agendar</button><button type="button" data-qa="note">${svg('<path d="M4 20h4L18.5 9.5a2.100 2.100 0 0 0-4-4L4 16z"/>')}Anotar</button></div>
+   ${!c.needs_human&&c.transfer_by&&c.transfer_reason?`<div class="pn-al"><b>${c.needs_human?'🙋 Pediu uma pessoa':'↪ '+esc(c.transfer_by)+' passou para '+(c.assigned_to===ME.user.id?'você':'o time')}${c.needs_human_at||c.transfer_at?' · há '+agoShort(c.needs_human_at||c.transfer_at):''}</b>${c.handoff_reason||c.transfer_reason?`<p>${esc(c.handoff_reason||c.transfer_reason)}</p>`:''}<div class="pn-al-a">${c.assigned_to!==ME.user.id?'<button type="button" class="btn sm p" id="pnAlMe">Assumir</button>':''}<button type="button" class="btn sm" id="pnAlTr">Passar para…</button></div></div>`:''}
    <div class="pn-s"><div class="pn-kv"><label>Etapa</label><select id="pnSt" style="--sc:${sx?stColor(sx.s,sx.i):'#ccc'}">${(STAGES||[]).map(s=>`<option value="${s.id}" ${(c.stage||STAGES[0].id)===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div><div class="pn-kv">
     <label>Responsável</label>${mgr?`<select id="pnAs" class="pn-as"><option value="">Sem dono</option>${(CV.team||[]).filter(t=>t.active).map(t=>`<option value="${t.id}" ${t.id===c.assigned_to?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`
       :`<div class="pn-own">${c.assigned_to===ME.user.id?'Você':esc(c.assigned_name||'Ninguém ainda')}${c.assigned_to!==ME.user.id?'<button class="lnk" id="pnMine">assumir</button>':''}</div>`}
     ${c.sales_count?'':`<label>Previsto ${ii('previsto')}</label><div class="pn-val"><span>R$</span><input id="pnVal" type="text" inputmode="decimal" autocomplete="off" value="${c.value?fmtIn(c.value):''}" placeholder="valor em negociação"></div>`}</div></div>
-   <details class="pn-s pn-d" data-pd="org"><summary><span class="lb">Origem e equipe</span><small>${c.origin?esc(orgName(c.origin)):c.ad?'Anúncio (Meta)':'não sabemos'}${c.team_id&&TMN(c.team_id)?' · '+esc(TMN(c.team_id).name):''}</small></summary><div class="pn-kv"><label>Origem ${ii('origem')}</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda entendeu na conversa',cliente:'que o cliente contou na mensagem',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div>
+   <details class="pn-s pn-d" data-pd="org"><summary><span class="lb">Origem</span><small>${c.origin?esc(orgName(c.origin)):c.ad?'Anúncio (Meta)':'não sabemos'}${c.team_id&&TMN(c.team_id)?' · '+esc(TMN(c.team_id).name):''}</small></summary><div class="pn-kv"><label>Origem ${ii('origem')}</label><div class="pn-own"><span class="pn-or" title="${c.origin_by?'Origem '+({anuncio:'automática pelo anúncio',link:'pelo link rastreável',nanda:'que a Nanda entendeu na conversa',cliente:'que o cliente contou na mensagem',time:'informada pelo time'}[c.origin_by]||''):''}">${c.origin?esc(orgName(c.origin))+(c.origin_detail?` <span class="hint">· ${esc(c.origin_detail)}</span>`:'')+(c.referred_by_name&&c.origin==='indicacao'&&c.referred_by_name!==c.origin_detail?` <span class="hint">· ${esc(c.referred_by_name)}</span>`:''):c.ad?'Anúncio (Meta)':'<span class="hint">Não sabemos</span>'}</span><button class="lnk" id="pnOr">${c.origin?'editar':'marcar'}</button></div>
     <label>Equipe</label><div class="pn-own">${c.team_id&&TMN(c.team_id)?`<span class="tmp lg" style="--tc:${TMN(c.team_id).color}">${esc(TMN(c.team_id).name)}</span>`:'<span class="hint">Nenhuma</span>'}<button class="lnk" id="pnTr">transferir</button></div></div></details>
-   ${modOn('jornada')?`<div class="pn-s" id="pnJn"><div class="pn-sh"><label>Jornada ${ii('jornada')}</label><button class="lnk" id="pnJnAll">ver tudo</button></div><div class="jn-b"><span class="hint">Carregando...</span></div></div>`:''}
+   ${modOn('jornada')?`<details class="pn-s pn-d" data-pd="jn" id="pnJn"><summary><span class="lb">Jornada</span><small id="pnJnS"></small></summary><div class="jn-b"><span class="hint">Carregando...</span></div><button class="lnk pn-all" id="pnJnAll">Ver a jornada completa</button></details>`:''}
    ${c.sales_count?`<div class="pn-s"><div class="pn-sh"><label>Carteira</label><button class="lnk" id="pnSale2">+ venda</button></div><div id="pnWal" class="pn-wal"><span class="hint">Carregando...</span></div>
      <details class="pn-hist"><summary>Histórico de compras (${c.sales_count})</summary><div id="pnBuys" class="pn-buys"></div></details></div>`:''}
-   <details class="pn-s pn-d" data-pd="ap" ${ap.length?'open':''}><summary><span class="lb">Próximos horários ${ii('horarios')}</span><small>${ap.length||'nenhum'}</small></summary><div class="pn-sh" style="margin:-4px 0 6px"><span></span><button type="button" class="lnk" id="pnBook">+ agendar</button></div>
+   <details class="pn-s pn-d" data-pd="ap"><summary><span class="lb">Horários</span><small>${ap.length?ap.length+(ap.length===1?' marcado':' marcados'):'nenhum'}</small></summary><div class="pn-sh" style="margin:-4px 0 6px"><span></span><button type="button" class="lnk" id="pnBook">+ agendar</button></div>
     ${ap.length?ap.map(a=>{const d=new Date(a.start);return `<div class="pn-ap ${a.status}"><b>${WEEKD[(d.getDay()+6)%7]} ${a.start.slice(8,10)}/${a.start.slice(5,7)} · ${a.start.slice(11,16)}</b><span>${esc(a.service_name)} · ${esc(a.status_label||'')}</span></div>`}).join(''):'<p class="hint">Nenhum horário marcado.</p>'}</details>
-   <details class="pn-s pn-d" data-pd="tg" ${(c.tags||[]).length?'open':''}><summary><span class="lb">Etiquetas ${ii('etiquetas')}</span><small>${(c.tags||[]).length||'nenhuma'}</small></summary><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></details>
-   <details class="pn-s pn-d" data-pd="nt" id="pnNd" ${c.notes?'open':''}><summary><span class="lb">Anotações ${ii('anotacoes')}</span><span class="hint" id="pnNs"></span><small>${c.notes?'':'vazio'}</small></summary><textarea id="pnN" rows="4" placeholder="O que o time precisa saber sobre ${esc(c.name.split(' ')[0])}">${esc(c.notes||'')}</textarea></details>
+   <details class="pn-s pn-d" data-pd="tg"><summary><span class="lb">Etiquetas</span><small>${(c.tags||[]).length?esc((c.tags||[]).slice(0,2).join(', '))+((c.tags||[]).length>2?' +'+((c.tags||[]).length-2):''):'+ adicionar'}</small></summary><div class="pn-tg" id="pnTg">${(c.tags||[]).map(t=>`<span class="tag">${esc(t)}<button data-tx="${esc(t)}" aria-label="Tirar ${esc(t)}">×</button></span>`).join('')}<input id="pnTgI" placeholder="+ etiqueta" maxlength="24"></div></details>
+   <details class="pn-s pn-d" data-pd="nt" id="pnNd"><summary><span class="lb">Anotações</span><span class="hint" id="pnNs"></span><small>${c.notes?(()=>{const n=c.notes.split('\n').filter(x=>x.trim()).length;return n+(n===1?' nota':' notas')})():'nenhuma'}</small></summary><textarea id="pnN" rows="4" placeholder="O que o time precisa saber sobre ${esc(c.name.split(' ')[0])}">${esc(c.notes||'')}</textarea></details>
    <div class="pn-s"><button class="btn sm" id="pnDet" style="width:100%;justify-content:center">Abrir a ficha completa</button></div>`;
   const patch=async(body,msg)=>{try{await api('/contacts/'+c.id,{method:'PATCH',body});if(msg)toast(msg);CV.sig='';cvChat(false);cvList()}catch(e){toast(e.message)}};
   $('#pnX').onclick=()=>{if(innerWidth<1200){$('.cv').classList.remove('pn-open');return}$('#cvPan')?.click()};
   $('#pnExp').onclick=()=>$('#cvPan')?.click();
   if($('#pnCopy'))$('#pnCopy').onclick=async()=>{try{await navigator.clipboard.writeText(fmtPhone(c.wa_id));toast('Telefone copiado.')}catch(e){toast(fmtPhone(c.wa_id))}};
   let PD={};try{PD=JSON.parse(localStorage.getItem('oinanda.pnd')||'{}')}catch(e){}
-  p.querySelectorAll('details[data-pd]').forEach(d=>{const k=d.dataset.pd;if(k in PD&&!(k==='nt'&&c.notes))d.open=!!PD[k];d.ontoggle=()=>{PD[k]=d.open;try{localStorage.setItem('oinanda.pnd',JSON.stringify(PD))}catch(e){}}});
+  p.querySelectorAll('details[data-pd]').forEach(d=>{const k=d.dataset.pd;if(k in PD)d.open=!!PD[k];d.ontoggle=()=>{PD[k]=d.open;try{localStorage.setItem('oinanda.pnd',JSON.stringify(PD))}catch(e){}}});
   p.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{const k=b.dataset.qa;if(k==='sale')return pnSaleGo();if(k==='book')return $('#pnBook')?.click();
     const d=$('#pnNd');if(d){d.open=true;d.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>$('#pnN')?.focus({preventScroll:true}),150)}});
   p.querySelectorAll('[data-rail]').forEach(b=>b.onclick=()=>{const k=b.dataset.rail;
@@ -5622,6 +5672,8 @@ async function cvPanel(c){
   $('#pnOr').onclick=()=>originEdit(c,()=>{CV.pnFor=null;CV.sig='';cvChat(true)});
   $('#pnBook').onclick=()=>bookModal({contact:{id:c.id,name:c.name}},()=>{CV.pnFor=null;cvChat(true)});
   $('#pnTr').onclick=()=>transferModal(c);
+  if($('#pnAlTr'))$('#pnAlTr').onclick=()=>transferModal(c);
+  if($('#pnAlMe'))$('#pnAlMe').onclick=async()=>{try{await api('/conversations/'+c.id+'/assign',{method:'POST',body:{user_id:ME.user.id}});toast('A conversa agora é sua.');CV.sig='';cvList();cvChat(true)}catch(e){toast(e.message)}};
   $('#pnDet').onclick=()=>ctProfile(c.id);
   if($('#pnJnAll')){$('#pnJnAll').onclick=()=>contactDrawer(c.id,()=>{CV.pnFor=null;cvChat(true);cvList()},'jornada');pnJourney(c)}
   const tags=[...(c.tags||[])];
@@ -8401,8 +8453,8 @@ const VIEWS={
  async conversas(){
   const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[]),orgLoad().catch(()=>null)]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
-    <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome ou telefone" title="Busca por nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvx" id="cvX" role="toolbar" aria-label="Filtros"></div><div class="cvt" role="tablist">${[['need','Precisa de você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Com a Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div><div class="cvsb" id="cvSub" hidden></div>
+    <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome ou telefone" title="Busca por nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button><button type="button" class="cvfb" id="cvFb" title="Filtrar" aria-label="Filtrar conversas" aria-haspopup="menu">${svg('<path d="M4 6h16M7 12h10M10 18h4"/>')}<i></i></button></label>
+    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvsb" id="cvSub" hidden></div><div class="cvt" role="tablist">${[['need','Para você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
@@ -8410,7 +8462,7 @@ const VIEWS={
   {const L=$('.cv-list');if(L&&window.ResizeObserver)new ResizeObserver(()=>L.classList.toggle('narrow',L.offsetWidth<380)).observe(L)}
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
   fitCv();
-  cvTabs();document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
+  cvTabs();$('#cvFb').onclick=e=>{e.preventDefault();cvXMenu(e.currentTarget)};document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
   $('#cvQ').oninput=e=>{CV.q=e.target.value;$('#cvQX').classList.toggle('hide',!CV.q);clearTimeout(CV.qt);CV.qt=setTimeout(cvList,200)};
   $('#cvQX').onclick=()=>{CV.q='';$('#cvQ').value='';$('#cvQX').classList.add('hide');cvList()};
   await Promise.all([cvList(),cvCounts()]);if(CV.open)await cvChat(true);else cvEmpty();
@@ -9114,6 +9166,7 @@ function jnBindSug(root,reload){root.querySelectorAll('[data-js]').forEach(b=>b.
 async function pnJourney(c){const box=$('#pnJn');if(!box)return;
   let m,j;try{[m,j]=await Promise.all([api('/contacts/'+c.id+'/milestones'),api('/contacts/'+c.id+'/journey?limit=60')])}catch(e){box.querySelector('.jn-b').innerHTML=`<p class="hint">${esc(e.message)}</p>`;return}
   if(!$('#pnJn')||CV.pnFor!==c.id)return;
+  {const ms=m.milestones||[],dn=ms.filter(x=>x.count).length,sm=$('#pnJnS');if(sm)sm.innerHTML=ms.length?`<span class="pn-dots">${ms.map(x=>`<i class="${x.count?'on':''}"></i>`).join('')}</span>${dn} de ${ms.length}`:''}
   // o mesmo fato registrado duas vezes (ex.: "transferiu para Vendas" e "passou a conversa para o time", mesmo motivo) aparece uma vez só
   const why=e=>(e.detail||(e.title||'').split(' · ').slice(1).join(' · ')).trim(),seen=[];
   const recent=j.items.filter(e=>e.cat!=='conversa'||!e.day).filter(e=>!e.undone).filter(e=>{const w=why(e);if(w&&seen.some(x=>why(x)===w&&Math.abs(new Date(x.at)-new Date(e.at))<180000))return false;seen.push(e);return true}).slice(0,4);
