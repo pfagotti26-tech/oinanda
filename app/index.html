@@ -2501,8 +2501,8 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ks.grey{background:#EEF1F4;color:var(--ink3)}
 .cv-nc{display:flex;align-items:center;gap:12px;margin:10px 16px 0;padding:10px 14px;border-radius:14px;background:#F2F5FA;border:1px solid #DCE4EF}.cv-nc>span{font-size:20px}
 .cv-nc p{flex:1;min-width:0;font-size:12.5px;color:var(--ink2);margin:0}.cv-nc p b{display:block;font-size:13.5px;color:var(--ink)}.cv-nc.on{background:#F4F4F4;border-color:var(--line)}
-.cv-ab{display:flex;align-items:center;gap:10px;width:calc(100% - 16px);margin:8px;padding:10px 12px;border-radius:14px;background:#F2F5FA;border:1px solid #DCE4EF;text-align:left}
-.cv-ab>span:first-child{font-size:18px}.cv-ab>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}.cv-ab b{font-size:13px}.cv-ab small{font-size:11.5px;color:var(--ink3)}.cv-ab i{font-style:normal;font-weight:700;font-size:12.5px;color:#2F6FB5;white-space:nowrap}
+.cv-ab{display:flex;align-items:center;gap:8px;width:calc(100% - 24px);margin:2px 12px 6px;padding:6px 10px;border-radius:10px;background:#F2F5FA;border:1px solid #DCE4EF;text-align:left}
+.cv-ab>span:first-child{font-size:14px}.cv-ab>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}.cv-ab b{font-size:12.5px;font-weight:600;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cv-ab small{font-size:11.5px;color:var(--ink3)}.cv-ab i{font-style:normal;font-weight:700;font-size:12.5px;color:#2F6FB5;white-space:nowrap}
 .cz-h.nc{background:#EEF1F4;color:var(--ink2)}
 .ar-l{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;max-height:52vh;overflow:auto;margin:12px 0}
 .ar-r{display:flex!important;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-weight:500}.ar-r:last-child{border:0}.ar-r input{width:auto!important;flex:none}
@@ -5183,7 +5183,7 @@ async function cvList(){cvNorm();
     el.insertAdjacentHTML('afterbegin',`<div class="cvchip"><span>${esc(lab)} <b>${CV.list.length}</b></span><button id="cvChX" aria-label="Tirar filtro">×</button></div>`);$('#cvChX').onclick=()=>{CV.origin='';CV.kind='';cvList()}}
   el.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{const q=e.target.closest('[data-qr]');if(q){e.stopPropagation();return cvQuickRes(q.dataset.qr)}openConv(b.dataset.c)});
   const auto=CV.list.filter(c=>c.maybe_auto);
-  if(auto.length&&['owner','manager'].includes(ME.user.role)){el.insertAdjacentHTML('afterbegin',`<button class="cv-ab" id="cvAb"><span>🤖</span><span><b>${auto.length===1?'1 conversa parece':auto.length+' conversas parecem'} mensagem automática</b><small>De robôs de outros perfis, não de prospects. Revise e tire da base.</small></span><i>Revisar ›</i></button>`);$('#cvAb').onclick=()=>autoReview(auto)}
+  if(auto.length&&['owner','manager'].includes(ME.user.role)){el.insertAdjacentHTML('afterbegin',`<button class="cv-ab" id="cvAb" title="Parecem mensagens automáticas de robôs de outros perfis, não de prospects. Revise e tire da base."><span>🤖</span><span><b>${auto.length===1?'1 parece robô':auto.length+' parecem robô'}</b></span><i>Revisar ›</i></button>`);$('#cvAb').onclick=()=>autoReview(auto)}
 }
 function autoReview(list){const sel=new Set(list.map(c=>c.id));
   const o=overlay(`<div class="modal ar"><div class="row"><h2 style="font-size:20px">Mensagens automáticas de outros perfis</h2><button class="x">×</button></div>
