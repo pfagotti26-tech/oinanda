@@ -1607,7 +1607,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-pth .nz-clr{margin-left:auto;background:none;border:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer}
 .nz-nw{margin:12px 12px 0;background:var(--tint);border:1px solid #F6CDBD;border-radius:12px;padding:9px 10px 9px 12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:8px}.nz-nw b{color:var(--c2)}.nz-nw button{margin-left:auto;flex:none}
 .nz-fab{display:none}.nz.nzpp #plR{display:none}
-@media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 24px);display:flex;flex-direction:column}
+@media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 48px);display:flex;flex-direction:column}
  .nz.nzpp #nzChat{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}.nz.nzpp .nz-msgs{flex:1;height:auto;min-height:0}
  .nz.nzpp .nz-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nz.nzpp .nz-chips button{white-space:nowrap;flex:none}}
 @media(max-width:1100px){.nz.nzpp .nz-mt{display:none}.nz.nzpp .nz-pth .nz-pbk{display:inline-flex}
@@ -1616,7 +1616,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .nz-grid.mt-r~.nz-fab{display:none}}
 @media(min-width:861px) and (max-width:1100px){.nz-fab{bottom:20px}}
 @media(max-width:700px){.nz-hd2{flex-wrap:wrap;gap:12px}.nz-hd2>div{flex:1 1 calc(100% - 72px)}.nz-hd2 h1{font-size:22px}.nz-hd2 .nz-st{order:3;width:100%}}
-.nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}
+.nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}.nz.nzpp .nz-l .nz-hd2{margin-bottom:6px}
 .page:has(.nz.nzpp){max-width:1480px}
 @media(min-width:1301px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 460px;gap:22px}}@media(min-width:1600px){.nz.nzpp .nz-grid{grid-template-columns:minmax(0,1fr) 520px}}
 .nz-vz{max-width:760px;display:grid;gap:14px}.nz.nzpp .nz-sh{grid-template-columns:30px minmax(0,1fr) auto!important}.nz-vz .nz-hd2{margin-bottom:0}
@@ -8208,12 +8208,13 @@ const VIEWS={
    $('#nzOk').onclick=()=>save();$('#nzUndo').onclick=()=>{Object.assign(V,JSON.parse(saved));drawVoz()};nzVoice()};
   const draw=()=>{if(NZV.tab==='voz')return drawVoz();const d=done(),m=modeOf(V.default_mode),left=total-d;
    $('#page').innerHTML=`<div class="nz nzpp">
+    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Preparar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
+    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
     <div class="nz-hd2"><span class="nz-rg ${d===total?'done':''}" style="--p:${Math.round(100*d/total)}"><i>${d===total?'✓':d+'/'+total}</i></span><div><h1>${d===total?'A Nanda está pronta':'Prepare a Nanda'}</h1>
       <p>${d===total?'Ela já sabe o básico. Teste com perguntas reais e ajuste o que quiser.':`Falta${left===1?'':'m'} ${left} ${left===1?'passo':'passos'}, uns ${left} ${left===1?'minuto':'minutos'}, para ela atender seus clientes.`}${d<total&&Object.keys(ex).length?` <button type="button" class="nz-exl" id="aiEx">Sem tempo? Preencher com um exemplo</button>`:''}</p></div>
      <button type="button" class="nz-st" id="nzStB" title="Mudar como ela atende"><span class="nz-dot ${V.default_mode}"></span><span><b>${m[1]}</b><small>${usage}</small></span><i class="nz-chg">mudar</i></button></div>
-    <div class="nz-mt" role="tablist"><button type="button" class="${MT==='l'?'on':''}" data-mt="l">1. Preparar</button><button type="button" class="${MT==='r'?'on':''}" data-mt="r">2. Testar conversa</button></div>
     ${s.key_configured?'':'<div class="nz-warn"><b>A IA ainda não está ligada no servidor.</b> Pode preparar tudo agora: ela começa a responder assim que for ligada.</div>'}
-    <div class="nz-grid mt-${MT}"><form id="aiF" class="nz-l" novalidate>
+
      <div class="nz-steps">${STEPS.map((x,i)=>{const ok=stepOk(x[0]),isO=open===x[0],n=nxt(x[0]);return `<section class="nz-s ${isO?'open now':''} ${!ok&&!isO?'next':''}" data-s="${x[0]}">
       <button type="button" class="nz-sh" aria-expanded="${isO}"><em class="${ok?'ok':''}" data-n="${i+1}">${ok?'✓':i+1}</em><span><b>${x[1]}</b><small class="${ok?'':'miss'}">${stepSum(x)}</small></span>${isO?(ok?'<span></span>':'<span class="nz-tm">1 min</span>'):ok?'<span class="nz-edt">Editar</span>':'<span></span>'}</button>
       ${isO?`<div class="nz-sb">${body(x[0])}<div class="nz-sft"><button type="button" class="btn p" data-go="${x[0]}">${x[0]==='ligar'?'Ligar a Nanda':n?'Salvar e continuar →':'Salvar'}</button>${x[0]!=='ligar'&&n?`<small>Próximo: <b>${n[1]}</b></small>`:''}<span class="sp"></span>${x[0]!=='ligar'&&!ok?'<button type="button" class="nz-skip" data-skip>Pular</button>':''}</div></div>`:''}</section>`}).join('')}</div>
