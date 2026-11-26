@@ -3528,6 +3528,9 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 #pnJn .pn-sh{display:none}
 .cv-list .cvsb button.lnk{background:none;border:0;color:var(--c2);padding:0;text-decoration:none}
 .cv-pn .pn-kv .pn-val{display:flex;align-items:center;justify-content:flex-end;gap:2px;padding:0 4px}.cv-pn .pn-kv .pn-val input{flex:none;width:76px;min-width:0}.cv-pn .pn-kv .pn-val span{color:var(--ink3);font-weight:600}.pn-all{display:block;margin-top:8px;font-size:12.5px}
+
+/* menu recolhido abre por cima ao passar o mouse */
+@media(min-width:861px){.app.pk:not(.cfx){grid-template-columns:76px 1fr}.app.pk:not(.cfx) .side{width:232px;z-index:45;box-shadow:18px 0 40px -18px rgba(23,33,43,.55)}}
 </style>
 </head>
 <body>
@@ -4449,6 +4452,9 @@ const NAVG={get(){try{return JSON.parse(localStorage.getItem('navg')||'[]')}catc
   closed(k){return this.get().includes(k)},
   toggle(k){const v=this.get(),i=v.indexOf(k);i<0?v.push(k):v.splice(i,1);this.set(v);return i<0}};
 const NAVMINI={get(){try{return localStorage.getItem('navmini')==='1'}catch(e){return false}},set(v){try{localStorage.setItem('navmini',v?'1':'0')}catch(e){}}};
+// em Conversas o menu começa recolhido (mais espaço para a conversa); se a pessoa fixar aberto lá, fica guardado só para Conversas
+const NAVCV={get(){try{return localStorage.getItem('navcv')!=='0'}catch(e){return true}},set(v){try{localStorage.setItem('navcv',v?'1':'0')}catch(e){}}};
+const navMiniFor=v=>v==='conversas'?NAVCV.get():NAVMINI.get();
 const nrm=t=>(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Registrar venda','vendas',()=>go('vendas').then(()=>saleModal({onDone:()=>vdView()}))],
@@ -4691,7 +4697,7 @@ function shell(){
   const hiddenX=canManage&&(!modOn('metas')||!modOn('jornada'));
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
-  $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side ${am?'adm':''}">
+  $('#root').innerHTML=`<div class="app ${navMiniFor(VIEW)?'mini':''}"><aside class="side ${am?'adm':''}">
     <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a>${am?'<span class="atag">Admin</span>':''}<button class="mini-t" id="miniT" title="Recolher ou abrir o menu" aria-label="Recolher ou abrir o menu">${svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M15.5 10l-2 2 2 2"/>')}</button><span class="cur" id="curV"></span>${am?'':`<button class="msr bellm" id="bellM" aria-label="Avisos">${svg(BELL_I)}<em class="belln" hidden></em></button>`}<button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
     <button type="button" class="nav gsb" id="gOpen" title="Buscar cliente, tela, ajuste ou ação (Ctrl K)">${NI.buscar}<span class="lb">Buscar</span><kbd>Ctrl K</kbd></button>
     <button type="button" class="su-pill" id="suPill" hidden></button>
@@ -4711,13 +4717,14 @@ function shell(){
   $('#gOpen').onclick=()=>gPal();$('#mSrch').onclick=()=>gPal();nzBind();
   document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('assinatura'));
   document.querySelectorAll('.banner [data-act]').forEach(b=>b.onclick=()=>conectarView());document.querySelectorAll('.banner [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
-  $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
+  $('#miniT').onclick=()=>{const ap=document.querySelector('.app'),pk=ap.classList.contains('pk'),m=pk?false:!ap.classList.contains('mini');ap.classList.remove('pk');(VIEW==='conversas'?NAVCV:NAVMINI).set(m);ap.classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
   if(!am){document.querySelectorAll('#bellB,#bellM').forEach(b=>b.onclick=e=>{e.stopPropagation();bellOpen()});bellPoll();clearInterval(BELL.t);BELL.t=setInterval(()=>{if(!document.hidden)bellPoll()},60000)}
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
   $('#meB').onclick=admSw;
   {const sd=document.querySelector('.side'),ap=document.querySelector('.app');let pt=null;  // em Configurações: o menu principal recolhido abre por cima ao passar o mouse ou clicar no espaço vazio
-   const peek=o=>{if(!ap.classList.contains('cfx')||innerWidth<=860)return;ap.classList.toggle('mini',!o)};
+   // regra geral: com o menu recolhido, passar o mouse abre por cima (sem empurrar a tela) e tirar o mouse recolhe de novo
+   const peek=o=>{if(innerWidth<=860)return;if(o){if(!ap.classList.contains('mini'))return;ap.classList.remove('mini');ap.classList.add('pk')}else{if(!ap.classList.contains('pk'))return;ap.classList.remove('pk');ap.classList.add('mini')}};
    sd.addEventListener('mouseenter',()=>{clearTimeout(pt);pt=setTimeout(()=>peek(true),280)});sd.addEventListener('mouseleave',()=>{clearTimeout(pt);peek(false)});
    sd.addEventListener('click',e=>{if(e.target===sd||e.target.classList.contains('sp')||e.target.id==='snav')peek(true)})}
   $('#mnu').onclick=()=>{const sd=document.querySelector('.side');const o=sd.classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
@@ -4857,7 +4864,7 @@ addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelect
 function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';
   if(ME&&ME.user.is_admin&&!ME.user.impersonated_by&&$('.side')){const want=v.startsWith('a-')||(v==='ajuda'&&$('.side').classList.contains('adm'));if(want!==$('.side').classList.contains('adm')){ADMODE.set(v.startsWith('a-'));VIEW=v;return shell()}}
   VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');if(CFX.pend){CFX.item=CFX.pend;CFX.itemView=v;CFX.pend=null}
-  const ap=document.querySelector('.app'),cx=cfxOn(v);if(ap){ap.classList.toggle('cfx',cx);ap.classList.toggle('mini',cx||NAVMINI.get())}if(!cx){CFX.item=null;CFX.open=null}
+  const ap=document.querySelector('.app'),cx=cfxOn(v);if(ap){ap.classList.toggle('cfx',cx);ap.classList.remove('pk');ap.classList.toggle('mini',cx||navMiniFor(v))}if(!cx){CFX.item=null;CFX.open=null}
   document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',cx?b.dataset.v==='config':b.dataset.v===v||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));cfxDraw();
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
@@ -5077,7 +5084,7 @@ async function metaSignup(es,own){
     {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:WZ.pick==='new'?{setup:{}}:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
 let CV={filter:'need',sub:'',ch:'',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:'',d1:'',d2:'',dl:'',pro:'',sit:'',stage:''};
-try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
+try{CV.panel=localStorage.getItem('oinanda.cvPanel2')==='1';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
 const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 const AVC=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#C2557A','#4F8A5B','#E8603F','#7A6A58'];
 const avc=n=>{let h=0;for(const ch of String(n||''))h=(h*31+ch.charCodeAt(0))%997;return AVC[h%AVC.length]};
@@ -5296,7 +5303,7 @@ async function cvChat(full){
   const t2=$('#cvText');if(t2&&(hadFocus||full)){if(full&&innerWidth<860){}else{t2.focus();try{t2.selectionStart=t2.selectionEnd=caret||t2.value.length}catch(e){}}}
   // ações
   $('#cvBack').onclick=closeConv;
-  $('#cvPan').onclick=()=>{if(innerWidth<1200){$('.cv').classList.toggle('pn-open');return}CV.panel=!CV.panel;try{localStorage.setItem('oinanda.cvPanel',CV.panel?'1':'0')}catch(e){}CV.fitW&&setTimeout(CV.fitW);$('.cv').classList.toggle('nopanel',!CV.panel);$('#cvPan').classList.toggle('on',CV.panel)};
+  $('#cvPan').onclick=()=>{if(innerWidth<1200){$('.cv').classList.toggle('pn-open');return}CV.panel=!CV.panel;try{localStorage.setItem('oinanda.cvPanel2',CV.panel?'1':'0')}catch(e){}CV.fitW&&setTimeout(CV.fitW);$('.cv').classList.toggle('nopanel',!CV.panel);$('#cvPan').classList.toggle('on',CV.panel)};
   if($('#cvMode'))$('#cvMode').onchange=async e=>{try{await api('/conversations/'+CV.open+'/mode',{method:'POST',body:{mode:e.target.value||null}});cvChat(true);cvList()}catch(x){toast(x.message)}};
   if($('#cvMine'))$('#cvMine').onclick=async()=>{try{await api('/conversations/'+CV.open+'/take',{method:'POST'});toast('A conversa agora é sua.');CV.pnFor=null;cvChat(true);cvList();cvCounts()}catch(x){toast(x.message);cvList()}};
   $('#cvTr').onclick=()=>transferModal(c);
