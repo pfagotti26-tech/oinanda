@@ -1601,9 +1601,24 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .nz-xt h4{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:22px 4px 8px}
 .nz-xr{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:8px;font:inherit;color:inherit;cursor:pointer}.nz-xr:hover{border-color:#E6D6CB}
 .nz-xr .ic{width:34px;height:34px;border-radius:10px;background:#F6F1EC;display:grid;place-items:center;color:var(--ink2);flex:none}.nz-xr .ic svg{width:17px;height:17px}.nz-xr b{display:block}.nz-xr small{color:var(--ink3);font-size:12.5px}.nz-xr em{margin-left:auto;font-style:normal;font-weight:700;color:var(--ink2);font-size:13px;white-space:nowrap}
-.nz.nzpp .nz-tabs{display:none}.nz-pth{padding:16px 18px 0}.nz-pth b{display:block;font-size:15px}.nz-pth span{font-size:13px;color:var(--ink2)}
+.nz.nzpp .nz-tabs{display:none}
+.nz-pth{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}.nz-pth .av{width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;font-weight:800;display:grid;place-items:center;flex:none}
+.nz-pth b{display:block;font-size:14.5px}.nz-pth small{display:block;color:var(--ok);font-size:12px;font-weight:600}.nz-pth small::before{content:"● "}.nz-pth .nz-pbk{display:none;background:none;border:0;font:inherit;font-weight:700;color:var(--ink2);cursor:pointer;padding:6px 4px 6px 0}
+.nz-pth .nz-clr{margin-left:auto;background:none;border:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer}
+.nz-nw{margin:12px 12px 0;background:var(--tint);border:1px solid #F6CDBD;border-radius:12px;padding:9px 10px 9px 12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:8px}.nz-nw b{color:var(--c2)}.nz-nw button{margin-left:auto;flex:none}
+.nz-fab{display:none}.nz.nzpp #plR{display:none}
+@media(min-width:1101px){.nz.nzpp .nz-r{top:12px}.nz.nzpp .nz-play{height:calc(100vh - 24px);display:flex;flex-direction:column}
+ .nz.nzpp #nzChat{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}.nz.nzpp .nz-msgs{flex:1;height:auto;min-height:0}
+ .nz.nzpp .nz-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nz.nzpp .nz-chips button{white-space:nowrap;flex:none}}
+@media(max-width:1100px){.nz.nzpp .nz-mt{display:none}.nz.nzpp .nz-pth .nz-pbk{display:inline-flex}
+ .nz-fab{display:flex;position:fixed;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:35;align-items:center;gap:9px;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:10px 18px 10px 10px;font:inherit;font-weight:700;box-shadow:0 12px 30px -8px rgba(23,33,43,.5);cursor:pointer}
+ .nz-fab i{width:28px;height:28px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-style:normal;font-size:13px}.nz-fab em{position:absolute;top:-3px;right:-1px;width:12px;height:12px;border-radius:50%;background:var(--c);border:2px solid #fff}
+ .nz-grid.mt-r~.nz-fab{display:none}}
+@media(min-width:861px) and (max-width:1100px){.nz-fab{bottom:20px}}
+@media(max-width:700px){.nz-hd2{flex-wrap:wrap;gap:12px}.nz-hd2>div{flex:1 1 calc(100% - 72px)}.nz-hd2 h1{font-size:22px}.nz-hd2 .nz-st{order:3;width:100%}}
+.nz.nzpp:has(.nz-grid.mt-r) .nz-hd2{display:none}
 .nz-vz{max-width:760px;display:grid;gap:14px}.nz.nzpp .nz-sh{grid-template-columns:30px minmax(0,1fr) auto!important}.nz-vz .nz-hd2{margin-bottom:0}
-@media(max-width:700px){.nz-qr{grid-template-columns:1fr 28px}.nz-qr textarea{grid-column:1}.nz-qr .nz-qx{grid-row:1/3;grid-column:2}.nz-big{grid-template-columns:1fr}.nz-sb{padding-left:14px!important}}
+@media(max-width:700px){.nz-qr{grid-template-columns:1fr 28px}.nz-qr textarea{grid-column:1}.nz-qr .nz-qx{grid-row:1/3;grid-column:2}.nz-big{grid-template-columns:1fr}.nz-sb{padding-left:14px!important;grid-template-columns:minmax(0,1fr)}}
 .nz-sh{grid-template-columns:30px minmax(0,1fr) 18px!important}
 .nz-sh em{width:30px!important;height:30px!important;border:0!important;background:#F2EEEA;color:var(--ink2);font-size:13px!important}
 .nz-s.open .nz-sh em:not(.ok){background:var(--c);color:#fff}
@@ -8177,6 +8192,7 @@ const VIEWS={
     const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
   const nf=n=>Number(n||0).toLocaleString('pt-BR');
   const usage=ua&&ua.atend&&ua.atend.plan?`<b>${nf(ua.atend.used)}</b> de ${nf(ua.atend.quota)} atendimentos este mês`:`<b>${nf(u.suggestions||0)}</b> sugestões este mês`;
+  let NEWQ=null;const TRYQ={negocio:'O que vocês fazem?',precos:'Quanto custa?',limites:'Quero falar com uma pessoa'};
   const nxt=id=>{const i=STEPS.findIndex(x=>x[0]===id);return STEPS.slice(i+1).find(x=>!stepOk(x[0]))||STEPS.find(x=>!stepOk(x[0])&&x[0]!==id)||null};
   const stepSum=x=>{if(x[0]==='ligar')return stepOk('ligar')?modeOf(V.default_mode)[1]:x[2];const S=SEC.find(y=>y[0]===x[0]);return stepOk(x[0])?summary(S):x[2]};
   const IC2={voz:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',apr:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/>'};
@@ -8211,13 +8227,15 @@ const VIEWS={
      </div>
      <div class="nz-save" id="nzSave" hidden><span>Alterações não salvas</span><button type="button" class="btn sm" id="nzUndo">Descartar</button><button type="button" class="btn sm p" id="nzOk">Salvar</button></div>
     </form>
-    <aside class="nz-r"><div class="nz-play"><div class="nz-pth"><b>${d===total?'Teste com perguntas reais':'Teste enquanto prepara'}</b><span>Pergunte como se fosse um cliente. Não envia nada para ninguém.</span></div><div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
+    <aside class="nz-r"><div class="nz-play"><div class="nz-pth"><button type="button" class="nz-pbk" data-mt="l">‹</button><span class="av">${esc((V.name||'N')[0].toUpperCase())}</span><div><b>Teste a ${esc(V.name||'Nanda')}</b><small>Ao vivo · usa o que você salvou</small></div><button type="button" class="nz-clr" id="plR2">Limpar</button></div>
+     ${NEWQ?`<div class="nz-nw" id="nzNw">✨ <span><b>Ela acabou de aprender.</b> Teste: “${esc(NEWQ)}”</span><button type="button" class="btn sm p" id="nzNwB">Testar</button></div>`:''}<div class="nz-tabs"><button type="button" class="on" data-t="chat">Testar conversa</button><button type="button" data-t="tests">Testes salvos${tests.length?` <span>${tests.length}</span>`:''}</button></div>
       <div id="nzChat"><div class="nz-msgs" id="plM"></div>
        <div class="nz-chips">${[...new Set([...faqRows().map(r=>r[0]).filter(Boolean).slice(-2),...(OB_ASK[ME.company.segment]||OB_ASK.outro)])].slice(0,4).map(q=>`<button type="button">${esc(q)}</button>`).join('')}</div>
        <form class="nz-comp" id="plF"><textarea id="plT" rows="1" placeholder="Escreva como se fosse um cliente..." aria-label="Mensagem de teste"></textarea><button class="btn p" type="submit">Enviar mensagem</button></form>
        <div class="nz-pf"><span class="hint">Não envia nada.</span><button type="button" class="nz-ex" id="plS">Salvar como teste</button><button type="button" class="nz-ex" id="plR">Limpar</button></div></div>
       <div id="nzTests" hidden><div class="nz-th"><p class="hint">Situações que ela precisa acertar sempre. Rode de novo depois de mudar o que ela sabe.</p><button class="btn sm p" id="tsRun" type="button">Rodar todos</button></div><div id="tsL" class="grid" style="gap:8px"></div></div>
      </div></aside></div>
+    <button type="button" class="nz-fab" id="nzFab"><i>${esc((V.name||'N')[0].toUpperCase())}</i>Testar a ${esc(V.name||'Nanda')}${NEWQ?'<em></em>':''}</button>
     </div>`;
    bind()};
   const dirty=()=>JSON.stringify(V)!==saved;
@@ -8245,6 +8263,7 @@ const VIEWS={
      if(id==='ligar'){try{localStorage.setItem('nzlig_'+ME.company.id,'1')}catch(e){}}
      const ok=await save(true);b.disabled=false;if(!ok)return;
      if(id==='ligar'){ME.nanda={...ME.nanda,mode:V.default_mode,taught:true};nzRedraw();toast(V.default_mode==='auto'?'Pronto: a Nanda já atende seus clientes.':'Pronto: a Nanda vai sugerir as respostas para o time.')}else toast('Salvo.');
+     if(id!=='ligar'){const fq=faqRows().map(r=>r[0]).filter(Boolean);NEWQ=id==='duvidas'&&fq.length?fq[fq.length-1]:TRYQ[id]||null}
      const n=nxt(id);open=n?n[0]:null;draw();CFX.loaded=false;cfxDraw();const el=open&&document.querySelector(`.nz-s[data-s="${open}"]`);if(el)el.scrollIntoView({block:'center',behavior:'smooth'});else scrollTo({top:0,behavior:'smooth'})});
    document.querySelectorAll('[data-skip]').forEach(b=>b.onclick=async()=>{if(dirty())await save(true);const n=nxt(open);open=n?n[0]:null;draw()});
    document.querySelectorAll('[data-xv]').forEach(b=>b.onclick=()=>{NZV.tab='voz';go('nanda')});
@@ -8306,7 +8325,9 @@ const VIEWS={
    $('#plF').onsubmit=ev=>{ev.preventDefault();send(ta.value)};
    ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(ta.value)}};ta.oninput=()=>{ta.style.height='';ta.style.height=Math.min(120,ta.scrollHeight)+'px'};
    document.querySelectorAll('.nz-chips button').forEach(b=>b.onclick=()=>send(b.textContent));
-   $('#plR').onclick=()=>{hist.length=0;FS.edit=null;drawChat(false)};
+   $('#plR').onclick=()=>{hist.length=0;FS.edit=null;drawChat(false)};if($('#plR2'))$('#plR2').onclick=()=>$('#plR').click();
+   if($('#nzNwB'))$('#nzNwB').onclick=()=>{const q=NEWQ;NEWQ=null;$('#nzNw').remove();$('#nzFab em')?.remove();send(q)};
+   if($('#nzFab'))$('#nzFab').onclick=()=>{MT='r';$('.nz-grid').className='nz-grid mt-r';scrollTo({top:0})};
    $('#plS').onclick=()=>{const real=hist.filter(m=>m.dir!=='sys');let last=-1;real.forEach((m,i)=>{if(m.dir==='in')last=i});
     if(last<0)return toast('Escreva pelo menos uma mensagem como cliente.');const msgs=real.slice(0,last+1);
     const o=overlay(`<form class="modal" id="tsF"><div class="row"><h2 style="font-size:20px">Salvar como teste</h2><button type="button" class="x">×</button></div>
