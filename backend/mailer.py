@@ -12,6 +12,10 @@ log = logging.getLogger('mailer')
 APP = os.environ.get('APP_PUBLIC_URL', 'https://app.oinanda.com.br').rstrip('/')
 
 def ready(): return bool(os.environ.get('RESEND_API_KEY'))
+def reply_to():
+    """Para onde vão as respostas: o e-mail de atendimento do Oi Nanda (nunca o da agência)."""
+    e = (os.environ.get('MAIL_REPLY_TO') or '').strip()
+    return e if e and 'altaagencydigital' not in e else 'atendimento@oinanda.com'
 def sender(): return os.environ.get('MAIL_FROM') or 'Oi Nanda <nanda@oinanda.com.br>'
 
 SENT = []  # nos testes: o que teria sido enviado
@@ -25,7 +29,7 @@ async def send(to, subject, body_html, text):
         async with httpx.AsyncClient(timeout=15) as c:
             r = await c.post('https://api.resend.com/emails', headers={'Authorization': 'Bearer ' + os.environ['RESEND_API_KEY']},
                              json={'from': sender(), 'to': [to], 'subject': subject, 'html': body_html, 'text': text,
-                                   'reply_to': os.environ.get('MAIL_REPLY_TO') or 'contato@altaagencydigital.com'})
+                                   'reply_to': reply_to()})
         if r.status_code >= 300:
             log.warning('Resend recusou o e-mail "%s" (%s): %s', subject, r.status_code, r.text[:300]); return False
         return True

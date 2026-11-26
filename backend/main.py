@@ -54,7 +54,8 @@ async def lifespan(app):
     await db.sessions.create_index('token_hash', unique=True)
     await db.sessions.create_index('expires_at', expireAfterSeconds=0)
     await db.password_resets.create_index('token_hash', unique=True)
-    await db.agenda_settings.update_many({'hours_set': {'$exists': False}}, {'$set': {'hours_set': True}})  # empresas que já existiam mantêm o aviso
+    await db.agenda_settings.update_many({'hours_set': {'$exists': False}}, {'$set': {'hours_set': True}})
+    await db.settings.update_one({'id': 'platform', 'email': {'$regex': 'altaagencydigital'}}, {'$set': {'email': 'atendimento@oinanda.com'}})  # contato do suporte: o e-mail do Oi Nanda  # empresas que já existiam mantêm o aviso
     await db.password_resets.create_index('expires_at', expireAfterSeconds=86400)
     await db.audit.create_index([('company_id', 1), ('at', -1)])
     await db.audit.create_index('expires_at', expireAfterSeconds=0)

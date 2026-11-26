@@ -227,7 +227,7 @@ async def stats(user=Depends(admin)):
             'errors_day': await db.errors.count_documents({'at': {'$gte': now() - timedelta(days=1)}})}
 
 # ---------- dados do Oi Nanda (a empresa que vende a plataforma) ----------
-PLATFORM_DEFAULT = {'legal_name': 'Fagotti Marketing Direto Ltda', 'cnpj': '40.864.395/0001-95', 'address': '', 'email': 'contato@altaagencydigital.com',
+PLATFORM_DEFAULT = {'legal_name': 'Fagotti Marketing Direto Ltda', 'cnpj': '40.864.395/0001-95', 'address': '', 'email': 'atendimento@oinanda.com',
                     'phone': '', 'site': 'https://oinanda.com.br', 'instagram': '@oinanda.app', 'meta_portfolio': 'Oi Nanda'}
 
 class PlatformIn(BaseModel):
