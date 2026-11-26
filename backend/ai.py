@@ -686,6 +686,28 @@ async def test(body: TestIn, user=Depends(managers)):
     d['example'] = bool(ex)
     return d
 
+REWRITE = {
+    'curto': 'Deixe a mensagem mais curta e direta, do jeito que se escreve no WhatsApp. Mantenha TODOS os valores, horários, datas, nomes e combinados. Não acrescente informação.',
+    'simpatico': 'Deixe a mensagem mais simpática e acolhedora, como uma boa atendente de WhatsApp: pode cumprimentar e usar no máximo um emoji. Mantenha TODOS os valores, horários, datas, nomes e combinados. Não acrescente informação nem promessa.',
+}
+
+class RewriteIn(BaseModel):
+    text: str = Field(min_length=1, max_length=2000)
+    mode: str = Field(pattern='^(pt|curto|simpatico)$')
+
+@router.post('/ai/rewrite')
+async def rewrite(body: RewriteIn, user=Depends(current_user)):
+    """Na caixa de mensagem: corrigir o português, encurtar ou deixar mais simpático o que a pessoa escreveu. Nada é enviado."""
+    if not key_ok(): raise HTTPException(503, 'A Nanda está em manutenção por alguns minutos. Tente de novo daqui a pouco.')
+    t = body.text.strip()
+    if body.mode == 'pt':
+        out, usage = await fix_pt(t)
+    else:
+        out, usage = await llm(REWRITE[body.mode] + '\nEscreva em português do Brasil e devolva só a mensagem, sem aspas e sem comentário.', [{'role': 'user', 'content': t}], max_tokens=600)
+        out = (out or '').strip().strip('"“”').strip() or t
+    if usage: await track(user['company_id'], usage, 'rewrite')
+    return {'text': out, 'changes': word_changes(t, out) if body.mode == 'pt' else []}
+
 TIME_NOTE = 'Não responda isso: avise com gentileza que alguém do time vai continuar a conversa e chame o time.'
 
 FIX_PT = """Você revisa mensagens curtas de WhatsApp em português do Brasil escritas pelo dono de um negócio.

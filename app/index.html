@@ -845,6 +845,23 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
  .side:not(.open)>:not(.sbar){display:none!important}
  .side.open>.co{margin-top:10px}
  .side.open{box-shadow:0 20px 40px -10px rgba(0,0,0,.5)}}
+/* caixa de mensagem v3 */
+.ctabs button{display:inline-flex;align-items:center;gap:6px;font-weight:700}.ctabs button svg{width:15px;height:15px}
+.ctabs button.on{background:none;position:relative}.ctabs button.on::after{content:"";position:absolute;left:8px;right:8px;bottom:-3px;height:2.5px;border-radius:2px;background:var(--c)}
+#cvCmp.isnote .ctabs button.on::after{background:#D9A400}
+.cbox.v2.note{background:#FFF7DB;border-color:#F1D27A}.cbox.v2.note:focus-within{border-color:#D9A400;box-shadow:0 0 0 3px #FFF0BF}.cbox.note textarea{background:transparent!important;border:0!important}
+.btn.snd.nt{background:#2B2B2B;border-color:#2B2B2B;color:#fff;display:inline-flex;align-items:center;gap:6px}.btn.snd.nt svg{width:16px;height:16px}
+.ctool .ib.tl{width:auto;min-width:50px;height:auto;padding:5px 6px;display:grid;justify-items:center;gap:1px}.ctool .ib.tl span{font-size:10.5px;font-weight:700;color:var(--ink3);line-height:1.1}
+.chint{font-size:11.5px;color:var(--ink3);margin-left:auto;margin-right:6px;white-space:nowrap}
+.cai{display:flex;gap:6px;flex-wrap:wrap;padding:2px 6px 6px}.cai button{display:inline-flex;align-items:center;gap:6px;border:1px solid #EAD8CF;background:#fff;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--ink2);cursor:pointer}
+.cai button svg{width:13px;height:13px;color:var(--c)}.cai button:hover{border-color:var(--c);color:var(--c2)}.cai .rw{display:none}.cai.has .rw{display:inline-flex}.cai button.busy{opacity:.55;pointer-events:none}
+.cdiff{display:flex;gap:8px;align-items:center;margin:0 6px 6px;background:var(--oksoft);color:var(--ok);border-radius:10px;padding:7px 10px;font-size:12.5px}.cdiff svg{width:14px;height:14px;flex:none}.cdiff span{flex:1;min-width:0}.cdiff s{color:#9E2B1E}.cdiff button{border:0;background:none;color:var(--ok);font-weight:800;font-size:12.5px;cursor:pointer}
+.emo-p{position:absolute;left:6px;bottom:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 50px -20px rgba(23,33,43,.45);padding:10px;width:310px;max-width:calc(100vw - 32px)}
+.emo-p h6{font-size:10.5px;color:var(--ink3);margin:2px 4px 6px;letter-spacing:.06em;text-transform:uppercase}.emo-g{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-bottom:6px}.emo-g button{border:0;background:none;font-size:20px;padding:4px;border-radius:8px;cursor:pointer}.emo-g button:hover{background:var(--bg)}
+.cctx{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px}.cctx .cx{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #F2D2C4;border-radius:12px;padding:6px 6px 6px 9px;font-size:13px;box-shadow:0 6px 18px -12px rgba(23,33,43,.3)}
+.cctx .cx i{width:24px;height:24px;border-radius:8px;background:var(--tint);color:var(--c2);display:grid;place-items:center}.cctx .cx i svg{width:14px;height:14px}.cctx .cx small{color:var(--ink3);font-weight:600}
+.cctx .go{border:0;background:var(--c);color:#fff;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:800;cursor:pointer}.cctx .no{border:0;background:none;color:var(--ink3);font-size:16px;padding:0 4px;cursor:pointer}
+@media(max-width:860px){.ctool .ib.tl span,.chint,.ctabs .lg{display:none}.ctool .ib.tl{min-width:0;padding:6px}.cai{flex-wrap:nowrap;overflow-x:auto}.cai button{flex:none}.cctx{flex-wrap:nowrap;overflow-x:auto}.cctx .cx{flex:none}.cctx .cx small{display:none}}
 .cbox.v2{flex-direction:column;align-items:stretch;gap:0;border:1px solid #DCD2C9;border-radius:16px;background:#fff;padding:2px 6px 6px}
 .cbox.v2:focus-within{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
 .cbox.v2 textarea,.cbox.v2 textarea:focus{border:0!important;box-shadow:none!important;border-radius:12px;padding:10px 8px 6px;min-height:42px;background:transparent}
@@ -4639,27 +4656,41 @@ function confirmBook(c,ap){  /* depois de agendar: mensagem de confirmação pro
   b&&b.querySelector('[data-to2]')&&(b.querySelector('[data-to2]').onclick=()=>go('automacoes'))}
 function drawComposer(c,w,draft){
   const box=$('#cvCmp');const first=esc(c.name.split(' ')[0]);
-  const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">Mensagem</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">🔒 Nota interna</button>${CV.tab==='msg'?chSel(c):''}${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i>Janela aberta · ${w.txt}</span>`:''}</div>`;
-  if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea><button class="btn p">Salvar nota</button></form>`}
+  const tabs=`<div class="ctabs"><button class="${CV.tab==='msg'?'on':''}" data-ct="msg">${svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')}Responder</button><button class="${CV.tab==='note'?'on':''}" data-ct="note" title="Recado para o time no meio da conversa. O cliente não vê">${svg('<path d="M15 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h6M8 13h8M8 17h5"/>')}<span>Nota<span class="lg"> para o time</span></span></button>${CV.tab==='msg'?chSel(c):''}${CV.tab==='msg'&&w?`<span class="win" id="cvWin" title="Tempo que falta para responder livremente. Depois disso, só com modelo aprovado pela Meta"><i class="${w.cls}"></i><span><span class="lg">Janela aberta · </span>${w.txt}</span></span>`:''}</div>`;
+  box.classList.toggle('isnote',CV.tab==='note');CV.rwPrev=null;
+  if(CV.tab==='note'){box.innerHTML=tabs+`<form class="cbox v2 note" id="cvF"><textarea id="cvText" rows="2" placeholder="Só o time vê. Ex.: ${first} prefere horário de manhã."></textarea>
+    <div class="ctool"><div class="ctl"><button type="button" class="ib tl" id="cvEmoB" title="Emoji" aria-label="Emoji">${svg(EMO_I)}<span>Emoji</span></button></div><span class="chint">Só o time vê</span><button class="btn snd nt" aria-label="Salvar nota">${svg('<path d="M15 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h6"/>')}<span>Salvar nota</span></button></div></form>`}
   else if(!c.window_open){box.innerHTML=tabs+`<div class="wclosed">${c.opt_out?`<b>${first} pediu para não receber mensagens.</b><p>Espere ${first} chamar de novo. Dá para registrar uma nota interna.</p>`:
      CHI[c.channel]?`<b>${c.last_in_at?'Passaram 24 h desde a última mensagem':first+' ainda não mandou mensagem'} ${ii('janela_ig')}</b><p>No ${CHI[c.channel][1]} só dá para escrever quando ${first} chamar. Quando chamar, a conversa abre de novo.</p>`
      :`<b>${c.last_in_at?'Janela de 24 h fechada':first+' ainda não mandou mensagem'} ${ii('janela')}</b><p>Pela regra da Meta, para chamar ${first} agora só com um <b>modelo aprovado</b>. Quando ${first} responder, a conversa abre de novo por 24 h.</p><div id="cvTpl"></div>`}</div>`;
     if($('#cvTpl'))tplPicker(c)}
-  else{const I=(d,t,id,x='')=>`<button type="button" class="ib" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}</button>`;
+  else{const I=(d,t,id,x='',lb)=>`<button type="button" class="ib tl" id="${id}" title="${t}" aria-label="${t}" ${x}>${svg(d)}<span>${lb||t}</span></button>`;
    box.innerHTML=tabs+`${c.human_only?`<div class="wbar off"><i></i><span>Instagram: passou de 24 h desde a última mensagem de ${first}. Até ${fmtD(ymd(new Date(c.window_ends_at)))}, só uma pessoa do time pode responder (a Nanda não).</span></div>`:''}<div id="cvSug"></div><div id="cvLater"></div><div id="cvAtt"></div><form class="cbox v2" id="cvF"><div class="qrw"><textarea id="cvText" rows="1" placeholder="${innerWidth<860?'Mensagem para '+first:'Escreva para '+first+' · / para respostas rápidas'}"></textarea><div class="qrp hide" id="cvQR"></div></div>
-     <div class="ctool"><div class="ctl">${I('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>','Mandar foto, vídeo ou arquivo','cvAttB')}<input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
-      ${I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>','Gravar áudio','cvMic')}
-      ${I('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>','Respostas rápidas','cvQRb')}
-      ${I('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>','Agendar para outro dia','cvLaterB')}
+     <div id="cvDiff"></div>${CV.ai?.key_configured?`<div class="cai" id="cvAI"><button type="button" data-rw="pt" class="rw">${svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>')}Corrigir português</button><button type="button" data-rw="curto" class="rw">${svg('<path d="M4 7h16M4 12h10M4 17h6"/>')}Mais curto</button><button type="button" data-rw="simpatico" class="rw">${svg('<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>')}Mais simpático</button><button type="button" id="cvSugB" title="Pedir uma sugestão agora">${svg('<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/>')}Resposta da Nanda</button></div>`:''}
+     <div class="ctool"><div class="ctl">${I('<path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>','Mandar foto, vídeo ou arquivo','cvAttB','','Anexo')}<input type="file" id="cvFile" class="hide" accept="image/jpeg,image/png,video/mp4,audio/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+      ${I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>','Gravar áudio','cvMic','','Áudio')}
+      ${I(EMO_I,'Emoji','cvEmoB','','Emoji')}
+      ${I('<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>','Respostas rápidas','cvQRb','','Rápidas')}
+      ${I('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>','Agendar para outro dia','cvLaterB','','Depois')}
       ${c.ig_id&&!c.wa_id?`<button type="button" class="ib" id="cvWaB" title="Continuar no WhatsApp" aria-label="Continuar no WhatsApp" style="color:#1FAF54">${WAI.replace('stroke-width="2.2"','stroke-width="2"')}</button>`:''}
-      ${CV.ai?.key_configured?`<span class="csep"></span><button type="button" class="ctg ${CV.sugOff?'':'on'}" id="cvSugT" title="${CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar'}" aria-pressed="${!CV.sugOff}"><i></i>Sugestões</button><button type="button" class="ib" id="cvSugB" title="Pedir uma sugestão agora" aria-label="Pedir sugestão da Nanda">✨</button>`:''}</div>
+      ${CV.ai?.key_configured?`<span class="csep"></span><button type="button" class="ctg ${CV.sugOff?'':'on'}" id="cvSugT" title="${CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar'}" aria-pressed="${!CV.sugOff}"><i></i>Sugestões</button>`:''}</div>
       <button class="btn p snd" aria-label="Enviar"><span>Enviar</span>${svg('<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>')}</button></div></form>`}
   box.querySelectorAll('[data-ch]').forEach(b=>b.onclick=async()=>{if(b.classList.contains('on'))return;try{await api('/conversations/'+c.id+'/channel',{method:'POST',body:{channel:b.dataset.ch}});CV.sig='';cvChat(true)}catch(e){toast(e.message)}});
   if(CV.tab==='msg')waBox(c);
   box.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{CV.drafts=CV.drafts||{};CV.drafts[CV.tab]=$('#cvText')?.value||'';CV.tab=b.dataset.ct;drawComposer(c,w,CV.drafts[CV.tab]||'');$('#cvText')?.focus()});
   const ta=$('#cvText');if(!ta)return;ta.value=draft||'';
   const grow=()=>{ta.style.height='auto';ta.style.height=Math.min(160,ta.scrollHeight)+'px'};grow();
-  ta.oninput=()=>{grow();if(CV.tab==='msg')qrFilter()};
+  const aiSync=()=>{const ai=$('#cvAI');if(ai)ai.classList.toggle('has',ta.value.trim().length>=3)};aiSync();
+  ta.oninput=()=>{grow();aiSync();if(CV.rwPrev!=null){CV.rwPrev=null;if($('#cvDiff'))$('#cvDiff').innerHTML=''}if(CV.tab==='msg')qrFilter()};
+  if($('#cvEmoB'))$('#cvEmoB').onclick=e=>{e.stopPropagation();emoPick(ta,()=>{grow();aiSync()})};
+  box.querySelectorAll('[data-rw]').forEach(b=>b.onclick=async()=>{const t=ta.value.trim();if(t.length<2)return;const lb=b.innerHTML;b.disabled=true;b.classList.add('busy');
+    try{const r=await api('/ai/rewrite',{method:'POST',body:{text:t,mode:b.dataset.rw}});if(r.text===t){toast(b.dataset.rw==='pt'?'O português já está certo.':'Não precisou mudar.');return}
+      CV.rwPrev=t;ta.value=r.text;grow();aiSync();
+      const sm=(r.changes||[]).filter(x=>x[0].split(' ').length<=2&&x[1].split(' ').length<=2),ch=sm.length===(r.changes||[]).length?sm.slice(0,5).map(x=>`<s>${esc(x[0])}</s> ${esc(x[1])}`).join(' · '):'';
+      $('#cvDiff').innerHTML=`<div class="cdiff">${svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>')}<span>${b.dataset.rw==='pt'?(ch?'Corrigido: '+ch:'Português corrigido. Confira antes de enviar.'):b.dataset.rw==='curto'?'Encurtado. Confira antes de enviar.':'Mais simpático. Confira antes de enviar.'}</span><button type="button" id="cvUndo">Desfazer</button></div>`;
+      $('#cvUndo').onclick=()=>{ta.value=CV.rwPrev;CV.rwPrev=null;$('#cvDiff').innerHTML='';grow();aiSync();ta.focus()};ta.focus()}
+    catch(x){toast(x.message)}finally{b.disabled=false;b.classList.remove('busy');b.innerHTML=lb}});
+  if(CV.tab==='msg')cvCtx(c);
   ta.onkeydown=e=>{const p=$('#cvQR');if(p&&!p.classList.contains('hide')){const items=[...p.querySelectorAll('[data-qr]')];let i=items.findIndex(x=>x.classList.contains('on'));
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items.forEach(x=>x.classList.remove('on'));i=e.key==='ArrowDown'?Math.min(items.length-1,i+1):Math.max(0,i-1);items[i]?.classList.add('on');items[i]?.scrollIntoView({block:'nearest'});return}
       if((e.key==='Enter'||e.key==='Tab')&&items[i]){e.preventDefault();items[i].click();return}if(e.key==='Escape'){p.classList.add('hide');return}}
@@ -4676,8 +4707,30 @@ function drawComposer(c,w,draft){
   if($('#cvSugT'))$('#cvSugT').onclick=()=>{CV.sugOff=!CV.sugOff;try{localStorage.setItem('oinanda.sugOff',CV.sugOff?'1':'0')}catch(e){}
     const b=$('#cvSugT');b.classList.toggle('on',!CV.sugOff);b.setAttribute('aria-pressed',String(!CV.sugOff));b.title=CV.sugOff?'Sugestões da Nanda ocultas. Clique para mostrar':'Sugestões da Nanda aparecendo. Clique para ocultar';
     if(CV.sugOff){keepBottom(()=>$('#cvSug').innerHTML='');toast('Sugestões ocultas. O ✨ pede uma quando quiser.')}else{maybeSuggest(c,null,c.ai_mode||CV.ai?.default_mode||'copilot')}};
-  if($('#cvSugB'))$('#cvSugB').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='…';try{showSug(await api('/conversations/'+CV.open+'/suggest',{method:'POST'}),true)}catch(x){toast(x.message)}b.disabled=false;b.textContent='✨'};
+  if($('#cvSugB'))$('#cvSugB').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.classList.add('busy');try{showSug(await api('/conversations/'+CV.open+'/suggest',{method:'POST'}),true)}catch(x){toast(x.message)}b.disabled=false;b.classList.remove('busy')};
 }
+
+// ---------- caixa de mensagem: emoji e atalhos que aparecem quando a conversa pede ----------
+const EMO_I='<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>';
+const EMO=[['Mais usados','😊 🙏 ❤️ 👍 😉 🥰 ✨ 👏 😄 🤩 🙌 💪 😅 🤗 👋 🎉'],['Atendimento','📅 ⏰ 📍 💳 💰 🎁 ✅ 📦 🚚 📞 💬 ⭐ 🔥 💆 💇 🍕']];
+function emoPick(ta,after){$('.emo-p')?.remove();const p=document.createElement('div');p.className='emo-p';
+  p.innerHTML=EMO.map(([t,l])=>`<h6>${t}</h6><div class="emo-g">${l.split(' ').map(e=>`<button type="button">${e}</button>`).join('')}</div>`).join('');
+  const f=$('#cvF');f.style.position='relative';f.appendChild(p);
+  p.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();const i=ta.selectionStart??ta.value.length;ta.value=ta.value.slice(0,i)+b.textContent+ta.value.slice(ta.selectionEnd??i);ta.focus();const k=i+b.textContent.length;ta.setSelectionRange(k,k);after&&after()});
+  setTimeout(()=>document.addEventListener('click',function off(e){if(!p.contains(e.target)){p.remove();document.removeEventListener('click',off)}}),0)}
+const CTX_AG=/\b(hor[aá]rio|agend|marcar|remarcar|amanh[ãa]|hoje|s[aá]bado|domingo|segunda|ter[cç]a|quarta|quinta|sexta|semana que vem|manh[ãa]|tarde|noite|\d{1,2}\s?h(\d{2})?)\b/i;
+const CTX_VD=/\b(pix|cart[aã]o|parcel|pagar|pagamento|boleto|fechar|fechado|quero comprar|vou levar|link de pagamento|manda o link)\b/i;
+function cvCtx(c){const box=$('#cvCmp');box.querySelector('.cctx')?.remove();
+  const last=[...(CV.msgs||[])].reverse().find(m=>m.dir==='in'&&m.text);if(!last)return;
+  CV.ctxOff=CV.ctxOff||{};const t=last.text,out=[];
+  if($('#cvBook')&&CTX_AG.test(t)&&!CV.ctxOff['ag'+last.id])out.push(['ag','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>','Agendar horário','pelo que '+esc(c.name.split(' ')[0])+' pediu','Ver horários']);
+  if(CTX_VD.test(t)&&!CV.ctxOff['vd'+last.id])out.push(['vd','<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/>','Registrar venda','falou em pagamento','Registrar']);
+  if(!out.length)return;
+  const d=document.createElement('div');d.className='cctx';
+  d.innerHTML=out.map(x=>`<span class="cx"><i>${svg(x[1])}</i><b>${x[2]}</b><small>${x[3]}</small><button type="button" class="go" data-cx="${x[0]}">${x[4]}</button><button type="button" class="no" data-cn="${x[0]}" aria-label="Dispensar">×</button></span>`).join('');
+  box.prepend(d);
+  d.querySelectorAll('[data-cx]').forEach(b=>b.onclick=()=>b.dataset.cx==='ag'?$('#cvBook').click():saleModal({contact:{id:c.id,name:c.name},onDone:()=>{CV.pnFor=null;CV.sig='';cvChat(true);cvList()}}));
+  d.querySelectorAll('[data-cn]').forEach(b=>b.onclick=()=>{CV.ctxOff[b.dataset.cn+last.id]=1;b.closest('.cx').remove();if(!d.children.length)d.remove()})}
 
 function transferModal(c){
   const teams=CV.teams||[],people=(CV.team||[]).filter(p=>p.active&&p.id!==ME.user.id);const first=esc(c.name.split(' ')[0]);
