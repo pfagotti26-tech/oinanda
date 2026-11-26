@@ -3455,6 +3455,26 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .cn-need i{width:34px;height:34px;border-radius:10px;background:#F6F1EC;display:grid;place-items:center;flex:none;color:var(--ink2)}.cn-need i svg{width:18px;height:18px}
 .cn-ft{text-align:center;color:var(--ink3);font-size:13px;margin:18px 0 30px}.cn-ft .lnk{font-size:13px}
 @media(max-width:760px){.cn-op,.cn-need>div{grid-template-columns:minmax(0,1fr)}.cn-hero{align-items:flex-start}.cn-hero h1{font-size:21px}.cn-hero h1 br{display:none}}
+
+/* filtros da lista de conversas */
+.cvx{display:flex;gap:6px;padding:2px 12px 10px;overflow-x:auto;scrollbar-width:none;flex:none}.cvx::-webkit-scrollbar{display:none}
+.cvx button{flex:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:99px;padding:5px 10px;font-size:12.5px;font-weight:700;color:var(--ink2);background:#fff;white-space:nowrap}
+.cvx button svg{width:13px;height:13px;opacity:.55}.cvx button:hover{border-color:#D9CCC2;color:var(--ink)}
+.cvx button.set{background:var(--ink);border-color:var(--ink);color:#fff;max-width:170px}.cvx button.set span{display:grid;place-items:center;margin-right:-3px;border-radius:50%;width:16px;height:16px}.cvx button.set span:hover{background:rgba(255,255,255,.18)}.cvx button.set svg{opacity:.85;width:11px;height:11px}
+.cvx .clr{border:0;background:none;color:var(--ink3);text-decoration:underline;padding:5px 2px}
+.cvfm{max-height:min(460px,70vh);overflow:auto;width:260px}
+.cvfm button{justify-content:flex-start;gap:10px}.cvfm button span{flex:1}.cvfm button.on::after{margin-left:auto}
+.cvfm hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
+.cvfm-a{flex:none!important;width:24px;height:24px;border-radius:50%;color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center}
+.cvfm-d{width:9px;height:9px;border-radius:50%;flex:none}
+.cvfm-t{font-weight:800;font-size:15px;padding:4px 10px 6px}
+.cvcal{padding:4px 6px 6px}.cvcal-h{display:flex;align-items:center;justify-content:space-between;padding:2px 0 6px}.cvcal-h b{font-size:13.5px}.cvcal-h button{width:28px;height:28px;padding:0;justify-content:center;font-size:16px;color:var(--ink2)}.cvcal-h button:disabled{opacity:.3}
+.cvcal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.cvcal-g i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--ink3);padding:3px 0}
+.cvcal-g button{justify-content:center;padding:6px 0;font-size:12.5px;font-weight:600;border-radius:8px}.cvcal-g button.td{box-shadow:inset 0 0 0 1px var(--line)}.cvcal-g button.on{background:var(--c);color:#fff;font-weight:800}.cvcal-g button.on::after{display:none}.cvcal-g button:disabled{color:#CFC6BE;cursor:default;background:none}
+.cvfm-bg{position:fixed;inset:0;z-index:39;background:rgba(23,33,43,.4)}
+@media(max-width:860px){.cvfm{position:fixed;left:0;right:0;bottom:0;top:auto!important;width:auto;max-height:82vh;border-radius:20px 20px 0 0;padding:14px 12px calc(16px + env(safe-area-inset-bottom,0px));z-index:60}.cvfm-bg{z-index:59}.cvfm>button{padding:12px 10px;font-size:15px}}
+
+#pnJn .jn-tg{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--ink2);padding:6px 0 2px}#pnJn .jn-tg:hover{color:var(--c2)}#pnJn .jn-tg svg{width:14px;height:14px}#pnJn .jn-list[hidden]{display:none}#pnJn .jn-al{margin-top:6px}
 </style>
 </head>
 <body>
@@ -5003,7 +5023,7 @@ async function metaSignup(es,own){
   FB.login(r=>{if(r.authResponse&&r.authResponse.code){code=r.authResponse.code;finish()}else if(!done){done=true;fail('Conexão cancelada: a janela foi fechada.')}},
     {config_id:es.config_id,response_type:'code',override_default_response_type:true,extras:WZ.pick==='new'?{setup:{}}:{setup:{},featureType:'whatsapp_business_app_onboarding'}});
 }
-let CV={filter:'need',sub:'',ch:'',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:''};
+let CV={filter:'need',sub:'',ch:'',open:null,list:[],q:'',panel:true,tab:'msg',qr:null,sig:'',counts:null,sugFor:{},sugHide:{},pnFor:null,origin:'',kind:'',d1:'',d2:'',dl:'',pro:'',sit:'',stage:''};
 try{CV.panel=localStorage.getItem('oinanda.cvPanel')!=='0';CV.sugOff=localStorage.getItem('oinanda.sugOff')==='1'}catch(e){}
 const hm=v=>{if(!v)return'';const d=new Date(v),t=new Date();return d.toDateString()===t.toDateString()?d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 const AVC=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#C2557A','#4F8A5B','#E8603F','#7A6A58'];
@@ -5024,19 +5044,55 @@ async function cvCounts(){return pollCounts()}
 function cvNorm(){const m={waiting:['need',''],mine:['all','mine'],unassigned:['all','unassigned'],team:['all','team']}[CV.filter];if(m){CV.filter=m[0];CV.sub=m[1]}if(!['need','nanda','all'].includes(CV.filter))CV.filter='need'}
 function cvTabs(){cvNorm();document.querySelectorAll('.cvt [data-f]').forEach(x=>{x.classList.toggle('on',x.dataset.f===CV.filter);x.setAttribute('aria-selected',x.dataset.f===CV.filter)});
   const OW={mine:'Minhas',team:'Equipe',unassigned:'Sem dono'},CH={whatsapp:'WhatsApp',instagram:'Instagram'};
-  const fb=$('#cvFb');if(fb){const n=(CV.sub?1:0)+(CV.ch?1:0);fb.classList.toggle('on',!!n);fb.querySelector('i').textContent=n||''}
-  const el=$('#cvSub');if(!el)return;const act=[CV.sub&&['sub',OW[CV.sub]],CV.ch&&['ch',CH[CV.ch]]].filter(Boolean);
-  el.hidden=!act.length;el.innerHTML=act.map(x=>`<button type="button" data-cx="${x[0]}">${x[1]}<span aria-hidden="true">×</span></button>`).join('')+(act.length>1?'<button type="button" class="clr" data-cx="all">Limpar</button>':'');
-  el.querySelectorAll('[data-cx]').forEach(b=>b.onclick=()=>{const k=b.dataset.cx;if(k!=='ch')CV.sub='';if(k!=='sub')CV.ch='';cvTabs();cvList()})}
-function cvFilterMenu(btn){const old=$('#cvFm');if(old){old.remove();return}
-  const chs=CV.chs||new Set(),team=(CV.teams||[]).some(t=>t.mine);
-  const G=[['De quem',[['','Todas'],['mine','Minhas'],...(team?[['team','Da minha equipe']]:[]),['unassigned','Sem dono']],'sub'],...(chs.size>1||chs.has('instagram')?[['Canal',[['','Todos'],['whatsapp','WhatsApp'],['instagram','Instagram']],'ch']]:[])];
-  const m=document.createElement('div');m.id='cvFm';m.className='cvfm';m.setAttribute('role','menu');
-  m.innerHTML=G.map(g=>`<div class="cvfm-g"><small>${g[0]}</small>${g[1].map(o=>`<button type="button" role="menuitemradio" aria-checked="${CV[g[2]]===o[0]}" class="${CV[g[2]]===o[0]?'on':''}" data-k="${g[2]}" data-v="${o[0]}">${o[1]}</button>`).join('')}</div>`).join('');
-  btn.closest('.cv-list').appendChild(m);
-  const r=btn.getBoundingClientRect(),pr=btn.closest('.cv-list').getBoundingClientRect();m.style.top=(r.bottom-pr.top+6)+'px';m.style.right=Math.max(8,pr.right-r.right)+'px';
-  m.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{CV[b.dataset.k]=b.dataset.v;m.remove();cvTabs();cvList()});
-  setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}
+  cvChips()}
+/* filtros da lista: Data · Vendedor · Situação · Etapa · Canal. Cada um abre só a sua escolha e aplica no toque. */
+const CVSIT={unread:'Não lidas',waiting:'Esperando resposta',human:'Pediu atendente',nanda:'Nanda atendendo',stale:'Sem resposta há +24h',sold:'Já comprou'};
+const cvD=d=>d.toLocaleDateString('sv-SE'),cvDL=t=>{const [y,m,d]=t.split('-');return d+'/'+m};
+function cvChips(){const el=$('#cvX');if(!el)return;const mgr=['owner','manager'].includes(ME.user.role);
+  const pm=CV.pro?(CV.team||[]).find(t=>t.id===CV.pro):null;
+  const vend=CV.sub==='mine'?'Só as minhas':CV.sub==='unassigned'||CV.pro==='_none'?'Sem dono':CV.sub==='team'?'Minha equipe':pm?pm.name.split(' ')[0]:'';
+  const st=CV.stage&&(STAGES||[]).find(x=>x.id===CV.stage);
+  const chs=CV.chs||new Set();
+  const C=[['d','Data',CV.dl],['v','Vendedor',vend],['s','Situação',CVSIT[CV.sit]||''],...((STAGES||[]).length?[['e','Etapa',st?st.name:'']]:[]),...(chs.size>1||chs.has('instagram')||CV.ch?[['c','Canal',{whatsapp:'WhatsApp',instagram:'Instagram'}[CV.ch]||'']]:[])];
+  const n=C.filter(c=>c[2]).length;
+  el.innerHTML=C.map(c=>`<button type="button" class="${c[2]?'set':''}" data-x="${c[0]}" aria-haspopup="menu">${esc(c[2]||c[1])}${c[2]?`<span data-xx="${c[0]}" role="button" aria-label="Tirar filtro ${c[1]}">${svg('<path d="M6 6l12 12M18 6 6 18"/>')}</span>`:svg('<path d="m6 9 6 6 6-6"/>')}</button>`).join('')+(n>1?'<button type="button" class="clr" data-xx="all">Limpar</button>':'');
+  el.querySelectorAll('[data-x]').forEach(b=>b.onclick=e=>{const x=e.target.closest('[data-xx]');if(x)return;cvXMenu(b)});
+  el.querySelectorAll('[data-xx]').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.xx,all=k==='all';
+    if(all||k==='d'){CV.d1=CV.d2=CV.dl=''}if(all||k==='v'){CV.sub='';CV.pro=''}if(all||k==='s')CV.sit='';if(all||k==='e')CV.stage='';if(all||k==='c')CV.ch='';$('#cvFm')?.remove();cvChips();cvList()})}
+function cvXMenu(btn){const k=btn.dataset.x,old=$('#cvFm');if(old){old.remove();if(old.dataset.k===k)return}
+  const m=document.createElement('div');m.id='cvFm';m.className='cvfm';m.dataset.k=k;m.setAttribute('role','menu');
+  const opt=(v,l,on,pre='')=>`<button type="button" role="menuitemradio" aria-checked="${on}" class="${on?'on':''}" data-o="${esc(v)}">${pre}<span>${esc(l)}</span></button>`;
+  const done=()=>{m.remove();cvChips();cvList()},mob=innerWidth<=860;
+  const titles={d:'Data',v:'Vendedor',s:'Situação',e:'Etapa',c:'Canal'};
+  let body='';
+  if(k==='d'){const t=new Date();CV.cm=CV.cm||new Date(t.getFullYear(),t.getMonth(),1);
+    const pres=[['','Qualquer dia'],['hoje','Hoje'],['ontem','Ontem'],['7d','Últimos 7 dias'],['mes','Este mês']];
+    const cal=()=>{const y=CV.cm.getFullYear(),mo=CV.cm.getMonth(),first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate(),td=cvD(t);let g='DSTQQSS'.split('').map(x=>`<i>${x}</i>`).join('')+'<em></em>'.repeat(first);
+      for(let d=1;d<=days;d++){const v=cvD(new Date(y,mo,d));g+=`<button type="button" data-day="${v}" class="${CV.d1===v&&CV.d2===v?'on':''} ${v===td?'td':''}" ${v>td?'disabled':''}>${d}</button>`}
+      return `<div class="cvcal"><div class="cvcal-h"><button type="button" data-cm="-1" aria-label="Mês anterior">‹</button><b>${obCap(CV.cm.toLocaleDateString('pt-BR',{month:'long'}))} ${y}</b><button type="button" data-cm="1" aria-label="Próximo mês" ${y===t.getFullYear()&&mo===t.getMonth()?'disabled':''}>›</button></div><div class="cvcal-g">${g}</div></div>`};
+    body=pres.map(p=>opt(p[0],p[1],(CV.dk||'')===p[0]&&(p[0]||!CV.d1))).join('')+'<hr>'+cal();
+    m.innerHTML=(mob?`<div class="cvfm-t">${titles[k]}</div>`:'')+body;
+    const bind=()=>{m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o,d=new Date(t);CV.dk=v;
+        if(!v){CV.d1=CV.d2=CV.dl=''}else if(v==='hoje'){CV.d1=CV.d2=cvD(d);CV.dl='Hoje'}else if(v==='ontem'){d.setDate(d.getDate()-1);CV.d1=CV.d2=cvD(d);CV.dl='Ontem'}
+        else if(v==='7d'){CV.d2=cvD(d);d.setDate(d.getDate()-6);CV.d1=cvD(d);CV.dl='Últimos 7 dias'}else{CV.d1=cvD(new Date(t.getFullYear(),t.getMonth(),1));CV.d2=cvD(t);CV.dl='Este mês'}done()});
+      m.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{CV.dk='dia';CV.d1=CV.d2=b.dataset.day;CV.dl=cvDL(b.dataset.day);done()});
+      m.querySelectorAll('[data-cm]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.cm=new Date(CV.cm.getFullYear(),CV.cm.getMonth()+ +b.dataset.cm,1);m.querySelector('.cvcal').outerHTML=cal();bind()})};
+    place();bind();return}
+  const av=(t,bg)=>`<span class="cvfm-a" style="background:${bg}">${t}</span>`;
+  if(k==='v'){const mgr=['owner','manager'].includes(ME.user.role),tm=(CV.teams||[]).some(t=>t.mine);
+    const cur=CV.pro?'p:'+CV.pro:CV.sub?'s:'+CV.sub:'';
+    body=opt('','Todos',!cur,av('✦','#17212B'))+opt('s:mine','Só as minhas',cur==='s:mine',av(initials(ME.user.name),avc(ME.user.name)))+(tm?opt('s:team','Minha equipe',cur==='s:team',av('◎','#6B7785')):'')+opt('s:unassigned','Sem dono',cur==='s:unassigned',av('–','#9AA5B1'))
+      +(mgr?'<hr>'+(CV.team||[]).filter(t=>t.active!==false&&t.id!==ME.user.id).map(t=>opt('p:'+t.id,t.name,cur==='p:'+t.id,av(initials(t.name),avc(t.name)))).join(''):'')}
+  if(k==='s')body=opt('','Todas',!CV.sit)+Object.entries(CVSIT).map(([v,l])=>opt(v,l,CV.sit===v)).join('');
+  if(k==='e')body=opt('','Todas',!CV.stage)+(STAGES||[]).map((x,i)=>opt(x.id,x.name,CV.stage===x.id,`<i class="cvfm-d" style="background:${stColor(x,i)}"></i>`)).join('');
+  if(k==='c')body=opt('','Todos',!CV.ch)+opt('whatsapp','WhatsApp',CV.ch==='whatsapp')+opt('instagram','Instagram',CV.ch==='instagram');
+  m.innerHTML=(mob?`<div class="cvfm-t">${titles[k]}</div>`:'')+body;place();
+  m.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const v=b.dataset.o;
+    if(k==='v'){CV.sub=v.startsWith('s:')?v.slice(2):'';CV.pro=v.startsWith('p:')?v.slice(2):''}else if(k==='s')CV.sit=v;else if(k==='e')CV.stage=v;else CV.ch=v;done()});
+  function place(){const host=btn.closest('.cv-list');host.appendChild(m);
+    if(mob){const sc=document.createElement('div');sc.className='cvfm-bg';host.appendChild(sc);sc.onclick=()=>{m.remove();sc.remove()};new MutationObserver((r,o)=>{if(!m.isConnected){sc.remove();o.disconnect()}}).observe(host,{childList:true});return}
+    const r=btn.getBoundingClientRect(),pr=host.getBoundingClientRect();m.style.top=(r.bottom-pr.top+6)+'px';m.style.left=Math.max(8,Math.min(r.left-pr.left,pr.width-m.offsetWidth-8))+'px';
+    setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!m.contains(e.target)&&!btn.contains(e.target)){m.remove();document.removeEventListener('pointerdown',f,true)}},true))}}
 function cvRow(c){const sx=stageOf(c.stage),w=waitCls(c),un=c.unread&&c.last_dir==='in',tr=c.assigned_to===ME.user.id&&c.transfer_seen===false;
   const by=c.last_dir!=='out'?'':/\(IA\)/.test(c.last_by||'')?'<em class="cz-nz">✦ Nanda:</em> ':!c.last_by||c.last_by===ME.user.name?'<em>Você:</em> ':`<em>${esc(c.last_by.split(' ')[0])}:</em> `;
   const wm=waitMin(c),old=w&&w!=='off'&&wm>=1440;
@@ -5055,9 +5111,9 @@ const dispName=n=>{n=String(n||'');const L=n.replace(/[^A-Za-zÀ-ÿ]/g,'');if(L.
   return n.toLowerCase().replace(/(^|[\s'(\-/])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/\b(D[aeo]s?|E|Com|Em|Para)\b/g,w=>w.toLowerCase()).replace(/(^|\s)(\p{L}{1,2})(?=\s|$)/gu,(m,a,w)=>/^(d[aeo]s?|e|em|ao|a|o)$/i.test(w)?m:a+w.toUpperCase()).replace(/^./,x=>x.toUpperCase())};
 const agoShort=v=>{const m=(Date.now()-new Date(v))/6e4;return m<1?'agora':m<60?Math.floor(m)+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+(m<2880?' dia':' dias')};
 async function cvList(){cvNorm();
-  CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.ch?'&ch='+CV.ch:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:''));
+  CV.list=await api('/conversations?filter='+CV.filter+(CV.sub?'&sub='+CV.sub:'')+(CV.ch?'&ch='+CV.ch:'')+(CV.q?'&q='+encodeURIComponent(CV.q):'')+(CV.origin?'&origin='+encodeURIComponent(CV.origin):'')+(CV.kind?'&kind='+CV.kind:'')+(CV.d1?'&d1='+CV.d1+'&d2='+CV.d2:'')+(CV.pro?'&pro='+encodeURIComponent(CV.pro):'')+(CV.sit?'&sit='+CV.sit:'')+(CV.stage?'&stage='+encodeURIComponent(CV.stage):''));
   const el=$('#cvItems');if(!el)return;
-  CV.chs=CV.chs||new Set();CV.list.forEach(c=>CV.chs.add(c.channel||'whatsapp'));
+  CV.chs=CV.chs||new Set();const chn=CV.chs.size;CV.list.forEach(c=>CV.chs.add(c.channel||'whatsapp'));if(CV.chs.size!==chn)cvChips();
   let html='';
   if(CV.filter==='need'&&CV.list.length){const old=(a,b)=>(a||'9')<(b||'9')?-1:1;
     const G=[['Pediram uma pessoa',CV.list.filter(c=>c.needs_human).sort((a,b)=>(b.handoff_urgent?1:0)-(a.handoff_urgent?1:0)||old(a.needs_human_at,b.needs_human_at))],
@@ -5066,7 +5122,7 @@ async function cvList(){cvNorm();
     html=G.filter(g=>g[1].length).map(g=>`<div class="cz-g"><span>${g[0]}</span><b>${g[1].length}</b></div>`+g[1].map(cvRow).join('')).join('')}
   else html=CV.list.map(cvRow).join('');
   const none={need:['Tudo em dia','Ninguém esperando por você agora. Quando um cliente escrever ou a Nanda chamar o time, aparece aqui.'],nanda:['A Nanda não está atendendo sozinha agora',(CV.ai&&CV.ai.default_mode==='auto')?'Quando ela responder um cliente sem precisar do time, a conversa aparece aqui.':'Ela está no modo copiloto: sugere a resposta e você envia. Para ela atender sozinha, mude em Nanda (IA).'],all:['Nenhuma conversa ainda','Quando alguém mandar mensagem no seu WhatsApp, ela aparece aqui.']}[CV.filter];
-  el.innerHTML=html||`<div class="cz-e">${CV.q?'<b>Nada encontrado</b><p>Nenhuma conversa para essa busca nesta aba.</p>':`${CV.filter==='need'?'<span>✓</span>':''}<b>${none[0]}</b><p>${CV.sub||CV.ch?'Nada neste filtro. ':''}${none[1]}</p>`}${CV.filter!=='all'&&(CV.q||CV.sub||CV.ch)?'<button type="button" class="lnk" id="czAll">Procurar em todas</button>':''}</div>`;
+  el.innerHTML=html||`<div class="cz-e">${CV.q?'<b>Nada encontrado</b><p>Nenhuma conversa para essa busca nesta aba.</p>':`${CV.filter==='need'?'<span>✓</span>':''}<b>${none[0]}</b><p>${CV.sub||CV.ch||CV.d1||CV.pro||CV.sit||CV.stage?'Nada com esses filtros. ':''}${none[1]}</p>`}${CV.filter!=='all'&&(CV.q||CV.sub||CV.ch||CV.d1||CV.pro||CV.sit||CV.stage)?'<button type="button" class="lnk" id="czAll">Procurar em todas</button>':''}</div>`;
   if($('#czAll'))$('#czAll').onclick=()=>{CV.filter='all';CV.sub='';CV.ch='';cvTabs();cvList()};
   if(CV.origin||CV.kind){const lab=[CV.kind?{prospect:'Prospects',cliente:'Clientes',inativo:'Clientes inativos'}[CV.kind]:'',CV.origin?'Origem: '+(CV.origin==='_none'?'não sabemos':orgName(CV.origin)):''].filter(Boolean).join(' · ');
     el.insertAdjacentHTML('afterbegin',`<div class="cvchip"><span>${esc(lab)} <b>${CV.list.length}</b></span><button id="cvChX" aria-label="Tirar filtro">×</button></div>`);$('#cvChX').onclick=()=>{CV.origin='';CV.kind='';cvList()}}
@@ -8341,14 +8397,14 @@ const VIEWS={
   const [num,team,st,ai,tms]=await Promise.all([api('/wa/number'),api('/team'),api('/funnel/stages').catch(()=>null),api('/ai/settings').catch(()=>null),api('/teams').catch(()=>[]),orgLoad().catch(()=>null)]);CV.team=team;CV.teams=tms;STAGES=st;CV.ai=ai;CV.tpls=null;CV.qr=null;CV.sig='';CV.pnFor=null;
   $('#page').innerHTML=`<div class="cv ${CV.panel?'':'nopanel'} ${CV.open?'chat':''}"><div class="cv-list"><div class="hd">
     <label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cvQ" placeholder="Buscar nome ou telefone" title="Busca por nome, telefone ou etiqueta" value="${esc(CV.q)}"><button type="button" class="clr ${CV.q?'':'hide'}" id="cvQX" aria-label="Limpar busca">×</button></label>
-    <button type="button" class="cvfb" id="cvFb" title="Filtrar por responsável ou canal" aria-label="Filtrar" aria-haspopup="menu">${svg('<path d="M4 6h16M7 12h10M10 18h4"/>')}<i></i></button><button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvt" role="tablist">${[['need','Precisa de você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Com a Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div><div class="cvsb" id="cvSub" hidden></div>
+    <button class="lmn" id="cvLmin" title="Recolher lista" aria-label="Recolher lista">${svg('<path d="m15 6-6 6 6 6"/>')}</button></div><div class="cvx" id="cvX" role="toolbar" aria-label="Filtros"></div><div class="cvt" role="tablist">${[['need','Precisa de você','Pediram uma pessoa, esperam resposta ou foram transferidas para você'],['nanda','Com a Nanda','Conversas que a Nanda está atendendo sozinha'],['all','Todas','Todas as conversas']].map(f=>`<button role="tab" data-f="${f[0]}" title="${f[2]}">${f[1]}${f[0]==='all'?'':'<i></i>'}</button>`).join('')}</div><div class="cvsb" id="cvSub" hidden></div>
     ${num?'':`<p class="note cvn">WhatsApp ainda não conectado. <a href="#" id="toEmp">Conectar</a></p>`}
     <div class="cv-items" id="cvItems"></div></div>
     <div class="cv-chat" id="cvChat"></div><aside class="cv-pn" id="cvPanel" aria-label="Painel do cliente"></aside><div class="rsz l" data-rz="lw" title="Arraste para ajustar · duplo clique volta ao padrão"></div><div class="rsz r" data-rz="pw" title="Arraste para ajustar · duplo clique volta ao padrão"></div></div>`;
   cvSizes();
   if($('#toEmp'))$('#toEmp').onclick=e=>{e.preventDefault();go('empresa')};
   fitCv();
-  cvTabs();$('#cvFb').onclick=e=>cvFilterMenu(e.currentTarget);document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
+  cvTabs();document.querySelectorAll('.cvt [data-f]').forEach(b=>b.onclick=()=>{CV.filter=b.dataset.f;cvTabs();cvList()});
   $('#cvQ').oninput=e=>{CV.q=e.target.value;$('#cvQX').classList.toggle('hide',!CV.q);clearTimeout(CV.qt);CV.qt=setTimeout(cvList,200)};
   $('#cvQX').onclick=()=>{CV.q='';$('#cvQ').value='';$('#cvQX').classList.add('hide');cvList()};
   await Promise.all([cvList(),cvCounts()]);if(CV.open)await cvChat(true);else cvEmpty();
@@ -9052,9 +9108,16 @@ function jnBindSug(root,reload){root.querySelectorAll('[data-js]').forEach(b=>b.
 async function pnJourney(c){const box=$('#pnJn');if(!box)return;
   let m,j;try{[m,j]=await Promise.all([api('/contacts/'+c.id+'/milestones'),api('/contacts/'+c.id+'/journey?limit=60')])}catch(e){box.querySelector('.jn-b').innerHTML=`<p class="hint">${esc(e.message)}</p>`;return}
   if(!$('#pnJn')||CV.pnFor!==c.id)return;
-  const recent=j.items.filter(e=>e.cat!=='conversa'||!e.day).filter(e=>!e.undone).slice(0,4);
+  // o mesmo fato registrado duas vezes (ex.: "transferiu para Vendas" e "passou a conversa para o time", mesmo motivo) aparece uma vez só
+  const why=e=>(e.detail||(e.title||'').split(' · ').slice(1).join(' · ')).trim(),seen=[];
+  const recent=j.items.filter(e=>e.cat!=='conversa'||!e.day).filter(e=>!e.undone).filter(e=>{const w=why(e);if(w&&seen.some(x=>why(x)===w&&Math.abs(new Date(x.at)-new Date(e.at))<180000))return false;seen.push(e);return true}).slice(0,4);
+  const alert=recent.find(e=>/^alerta/i.test(e.title||'')&&Date.now()-new Date(e.at)<864e5);
+  let open=false;try{open=localStorage.getItem('jnOpen')==='1'}catch(_){}
   box.querySelector('.jn-b').innerHTML=`${jnSug(m.suggestions)}${m.milestones.length?jnMini(m.milestones):''}<div class="jn-mkb"></div>
-   <div class="jn-list">${recent.map(e=>jnRow(e)).join('')||'<p class="hint">Nada registrado ainda.</p>'}</div>`;
+   ${!open&&alert?`<div class="jn-list jn-al">${jnRow(alert)}</div>`:''}
+   ${recent.length?`<button type="button" class="jn-tg" aria-expanded="${open}">${open?'Esconder eventos':'Ver últimos eventos ('+recent.length+')'}${svg(open?'<path d="m6 15 6-6 6 6"/>':'<path d="m6 9 6 6 6-6"/>')}</button>`:''}
+   <div class="jn-list" ${open?'':'hidden'}>${recent.map(e=>jnRow(e)).join('')||'<p class="hint">Nada registrado ainda.</p>'}</div>`;
+  const tg=box.querySelector('.jn-tg');if(tg)tg.onclick=()=>{try{localStorage.setItem('jnOpen',open?'0':'1')}catch(_){}pnJourney(c)};
   const re=()=>pnJourney(c);jnBindSug(box,re);
   box.querySelectorAll('[data-jm]').forEach(b=>b.onclick=()=>jnMarkForm(box.querySelector('.jn-mkb'),m.milestones.find(x=>x.id===b.dataset.jm),c.id,re))}
 async function jnFull(box,id){let JF=box._jf||(box._jf={cats:null});
