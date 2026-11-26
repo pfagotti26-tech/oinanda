@@ -364,7 +364,7 @@ async def get_contact(user, contact_id):
     return c
 
 @router.get('/conversations')
-async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', sub: str = '', ch: str = '', user=Depends(current_user)):
+async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin: str = '', sub: str = '', ch: str = '', d1: str = '', d2: str = '', pro: str = '', sit: str = '', stage: str = '', user=Depends(current_user)):
     from inbox import waiting, needs_you, with_nanda, default_mode, STALE_DAYS
     qq = {'company_id': user['company_id']}
     if filter == 'mine': qq['assigned_to'] = user['id']
@@ -392,6 +392,21 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         ors = [{'name': {'$regex': re.escape(term), '$options': 'i'}}, {'tags': {'$regex': re.escape(term), '$options': 'i'}}]
         if len(digits) >= 3: ors.append({'wa_id': {'$regex': digits}})
         ands.append({'$or': ors})
+    # filtros da lista: dia (teve mensagem no período, no fuso da empresa), vendedor, etapa e situação
+    if d1 or d2:
+        from zoneinfo import ZoneInfo
+        tz = ZoneInfo(user['company'].get('timezone') or 'America/Sao_Paulo')
+        try:
+            a = datetime.fromisoformat(d1 or d2).replace(tzinfo=tz); b = datetime.fromisoformat(d2 or d1).replace(tzinfo=tz) + timedelta(days=1)
+        except ValueError: raise HTTPException(400, 'Data inválida.')
+        ids = await db.messages.distinct('contact_id', {'company_id': user['company_id'], 'at': {'$gte': a.astimezone(timezone.utc), '$lt': b.astimezone(timezone.utc)}})
+        ands.append({'id': {'$in': ids}})
+    if pro and user['role'] in ('owner', 'manager'): qq['assigned_to'] = None if pro == '_none' else pro
+    if stage: qq['stage'] = stage
+    if sit == 'unread': ands.append({'unread': {'$gt': 0}, 'last_dir': 'in'})
+    elif sit == 'human': qq['needs_human'] = True
+    elif sit == 'stale': ands.append({'last_dir': 'in', 'last_in_at': {'$lt': now() - timedelta(hours=24)}})
+    elif sit == 'sold': qq['sales_count'] = {'$gt': 0}
     if ands: qq['$and'] = ands
     if kind == 'prospect': qq['sales_count'] = {'$in': [None, 0]}
     elif kind in ('cliente', 'inativo'): qq['sales_count'] = {'$gt': 0}
@@ -403,6 +418,10 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         days = user['company'].get('inactive_days')
         rows = [r for r in rows if status_of(r, days) == kind]
     if filter == 'waiting': rows = [r for r in rows if waiting(r)]
+    if sit == 'waiting': rows = [r for r in rows if waiting(r)]
+    elif sit == 'nanda':
+        dm0 = await default_mode(user['company_id'])
+        rows = [r for r in rows if with_nanda(r, dm0)]
     elif filter == 'need': rows = [r for r in rows if needs_you(r, user['id'])]
     elif filter == 'nanda':
         dm = await default_mode(user['company_id'])
