@@ -595,6 +595,27 @@ td>.sure,tr+.sure{margin:4px}
 
 
 /* Mensagens automáticas */
+.bellf{display:none}
+@media(min-width:861px){.bellf{display:grid;position:fixed;top:12px;right:16px;z-index:38;width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid var(--line);place-items:center;color:var(--ink2);cursor:pointer;box-shadow:0 4px 12px -8px rgba(23,33,43,.35)}
+ .bellf:hover,.bellf.on{border-color:var(--c);color:var(--c2)}.bellf.on{box-shadow:0 0 0 4px rgba(232,96,63,.12)}.bellf svg{width:19px;height:19px}
+ .page:not(.wide){padding-right:72px}main>.banner{padding-right:84px!important}.app:has(main>.banner) .bellf{top:8px}}
+.belln{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;border-radius:99px;background:var(--c);color:#fff;font-style:normal;font-size:10.5px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}.belln[hidden]{display:none}
+.bellm{position:relative}.bellm .belln{border-color:var(--ink)}
+.bellp{position:fixed;top:60px;right:16px;width:410px;max-height:min(640px,calc(100vh - 80px));display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 30px 60px -20px rgba(23,33,43,.4);z-index:90;overflow:hidden}
+.bellp.sheet{top:auto;bottom:0;left:0;right:0;width:auto;max-height:82vh;border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom)}
+.bp-load{padding:26px;text-align:center;color:var(--ink3)}
+.bp-h{display:flex;align-items:center;gap:10px;padding:15px 16px 0 18px}.bp-h b{font-size:17px}.bp-rd{margin-left:auto;border:0;background:none;font:inherit;font-size:12.5px;font-weight:700;color:var(--c2);cursor:pointer}.bp-x{border:0;background:none;font-size:22px;line-height:1;color:var(--ink3);cursor:pointer;padding:0 2px}.bp-h b+.bp-x{margin-left:auto}
+.bp-tb{display:flex;gap:20px;padding:10px 18px 0;border-bottom:1px solid var(--line)}.bp-tb button{border:0;background:none;font:inherit;padding:0 0 10px;font-weight:700;color:var(--ink3);font-size:13.5px;display:flex;align-items:center;gap:6px;cursor:pointer}.bp-tb button.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink)}
+.bp-tb i{font-style:normal;background:var(--c);color:#fff;border-radius:99px;font-size:10.5px;padding:0 6px}.bp-tb i.g{background:#E4DCD5;color:var(--ink2)}
+.bp-l{overflow-y:auto;flex:1}
+.bp-it{display:flex;gap:12px;width:100%;text-align:left;padding:13px 16px 13px 18px;border:0;border-bottom:1px solid #F4EEE9;background:none;font:inherit;color:inherit;position:relative}.bp-it.go{cursor:pointer}.bp-it.go:hover{background:#FBF8F5}
+.bp-it.nw{background:#FFFBF9}.bp-it.nw::before{content:"";position:absolute;left:7px;top:22px;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.bp-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none}.bp-ic svg{width:17px;height:17px}
+.bp-ic.bad{background:#FBE6E3;color:#9E2B1E}.bp-ic.warn{background:#FFF1D6;color:#9A6400}.bp-ic.hum{background:var(--soft);color:var(--c2)}.bp-ic.blu{background:#E8EEFB;color:#3557B7}.bp-ic.grn{background:#E6F6EE;color:var(--ok)}.bp-ic.org{background:#F3EEE9;color:var(--ink2)}
+.bp-tx{flex:1;min-width:0}.bp-tx b{display:block;font-size:13.5px;line-height:1.35}.bp-tx small{display:block;color:var(--ink2);font-size:12.5px;line-height:1.4;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.bp-tx em{display:inline-block;margin-top:6px;font-style:normal;font-size:12.5px;font-weight:700;color:var(--c2)}
+.bp-it time{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.bp-e{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:34px 30px}.bp-e svg{width:30px;height:30px;color:var(--ok);background:var(--oksoft);border-radius:50%;padding:7px;box-sizing:content-box}.bp-e span{font-size:13px;color:var(--ink2)}
+.bp-f{padding:10px 18px;text-align:center;font-size:12px;color:var(--ink3);border-top:1px solid #F4EEE9}
 .cside{display:none}
 @media(min-width:861px){
  .app.cfx,.app.cfx.mini{grid-template-columns:76px 252px minmax(0,1fr)}
@@ -4512,7 +4533,7 @@ function shell(){
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side ${am?'adm':''}">
-    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a>${am?'<span class="atag">Admin</span>':''}<button class="mini-t" id="miniT" title="Recolher ou abrir o menu" aria-label="Recolher ou abrir o menu">${svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M15.5 10l-2 2 2 2"/>')}</button><span class="cur" id="curV"></span><button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a>${am?'<span class="atag">Admin</span>':''}<button class="mini-t" id="miniT" title="Recolher ou abrir o menu" aria-label="Recolher ou abrir o menu">${svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M15.5 10l-2 2 2 2"/>')}</button><span class="cur" id="curV"></span>${am?'':`<button class="msr bellm" id="bellM" aria-label="Avisos">${svg(BELL_I)}<em class="belln" hidden></em></button>`}<button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
     <button type="button" class="nav gsb" id="gOpen" title="Buscar cliente, tela, ajuste ou ação (Ctrl K)">${NI.buscar}<span class="lb">Buscar</span><kbd>Ctrl K</kbd></button>
     <button type="button" class="su-pill" id="suPill" hidden></button>
     <nav class="snav" id="snav">${am?[['a-visao'],['a-clientes','a-jornada','a-financeiro'],['a-avisos','a-alertas'],['a-atividade','a-erros']].map(g=>g.map(v=>navBtn(v,v==='a-atividade'?'Atividade':ADMIN_NAV.find(x=>x[0]===v)[1])).join('')).join('<div class="sdv"></div>')
@@ -4520,7 +4541,7 @@ function shell(){
     <div class="sp"></div>
     ${am?'':navBtn('config','Configurações')}
     <div class="me sw2"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status, avisos e sair'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span><span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span></button><button id="out" class="lb">Sair</button></div>
-  </aside><aside class="cside" id="cside" aria-label="Configurações"></aside><main>
+  </aside><aside class="cside" id="cside" aria-label="Configurações"></aside><main>${am?'':`<button type="button" class="bellf" id="bellB" aria-label="Avisos" title="Avisos">${svg(BELL_I)}<em class="belln" hidden></em></button>`}
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
     ${ME.access&&ME.access.state==='readonly'&&!u.impersonated_by?`<div class="banner ro">Seu teste grátis terminou. A conta está só para leitura: dá para ver tudo, mas a Nanda e as automações estão paradas e não dá para enviar mensagens.${u.role==='owner'?'<button class="btn sm p" data-sub>Assinar agora</button>':' <span>Peça ao dono da conta para assinar.</span>'}</div>`
      :ME.access&&ME.access.state==='demo'&&!u.impersonated_by?`<div class="banner trial demo"><span class="bn-tx"><b>Modo demonstração.</b><span class="bn-long"> Para a Nanda atender no seu WhatsApp, ative os 14 dias grátis.</span></span><span class="bn-ac">${u.role==='owner'?'<button class="btn sm p" data-act>Ativar 14 dias grátis</button>':''}<button class="lnk" data-talk>Conversar com a Nanda</button></span></div>`
@@ -4533,6 +4554,7 @@ function shell(){
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>ativarView());document.querySelectorAll('[data-talk]').forEach(b=>b.onclick=()=>comecarView());
   $('#miniT').onclick=()=>{const m=!document.querySelector('.app').classList.contains('mini');NAVMINI.set(m);document.querySelector('.app').classList.toggle('mini',m);if(VIEW==='conversas'){fitCv();CV.fitW&&CV.fitW()}};
   $('#bMore').onclick=()=>{const sd=document.querySelector('.side');sd.classList.add('open');$('#mnu').setAttribute('aria-expanded','true');scrollTo({top:0})};
+  if(!am){document.querySelectorAll('#bellB,#bellM').forEach(b=>b.onclick=e=>{e.stopPropagation();bellOpen()});bellPoll();clearInterval(BELL.t);BELL.t=setInterval(()=>{if(!document.hidden)bellPoll()},60000)}
   NOTIF.seen=null;pollCounts();clearInterval(NOTIF.t);NOTIF.t=setInterval(()=>{if(!document.hidden&&VIEW!=='conversas')pollCounts()},20000);
   $('#meB').onclick=admSw;
   {const sd=document.querySelector('.side'),ap=document.querySelector('.app');let pt=null;  // em Configurações: o menu principal recolhido abre por cima ao passar o mouse ou clicar no espaço vazio
@@ -4545,6 +4567,37 @@ function shell(){
   go(VIEW);
   setTimeout(tourAuto,1400);
 }
+/* Sino de avisos: o que pede ação (cliente pediu alguém, transferência, WhatsApp, Nanda sem resposta) e o que só informa */
+const BELL_I='<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>';
+const BELL={t:null,d:null,tab:'me'};
+const BELL_IC={bad:['bad','<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>'],warn:['warn','<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4M12 16.8h.01"/>'],
+  human:['hum','<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L3.5 15a1.5 1.5 0 0 1 2.4-1.8L8 15"/>'],transfer:['blu','<path d="M17 3l4 4-4 4M21 7H9M7 21l-4-4 4-4M3 17h12"/>'],
+  sale:['grn','<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8a3 3 0 0 1 6 0"/>'],cal:['blu','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],news:['org','<path d="M4 4h16v12H5.2L4 17.5z"/><path d="M8 8h8M8 11h5"/>']};
+function bellAgo(at){if(!at)return '';const m=Math.round((Date.now()-new Date(at))/60000);if(m<2)return 'agora';if(m<60)return m+' min';const h=Math.round(m/60);if(h<24)return h+' h';const d=Math.round(h/24);return d===1?'ontem':d+' dias'}
+function bellBadge(n){document.querySelectorAll('.belln').forEach(e=>{e.hidden=!n;e.textContent=n>9?'9+':n})}
+async function bellPoll(){try{BELL.d=await api('/alerts');bellBadge(BELL.d.unread)}catch(e){}}
+function bellGo(to){if(!to)return;if(to.startsWith('conv:')){CV.open=to.slice(5);CV.filter='all';return go('conversas')}
+  if(to.startsWith('empresa:')){EM.tab=to.split(':')[1];return go('empresa')}if(to==='nanda')NZV.tab=null;go(to)}
+async function bellOpen(){if($('#bellP')){$('#bellP').remove();return}
+  const p=document.createElement('div');p.className='bellp';p.id='bellP';p.innerHTML='<div class="bp-load">Carregando avisos…</div>';document.body.append(p);
+  if(innerWidth<=860)p.classList.add('sheet');
+  document.querySelectorAll('#bellB').forEach(b=>b.classList.add('on'));
+  const close=()=>{p.remove();document.querySelectorAll('#bellB').forEach(b=>b.classList.remove('on'));document.removeEventListener('mousedown',out);document.removeEventListener('keydown',ek)};
+  const out=e=>{if(!p.contains(e.target)&&!e.target.closest('#bellB,#bellM'))close()},ek=e=>{if(e.key==='Escape')close()};
+  setTimeout(()=>{document.addEventListener('mousedown',out);document.addEventListener('keydown',ek)},0);
+  try{BELL.d=await api('/alerts')}catch(e){p.innerHTML=`<div class="bp-load">${esc(e.message)}</div>`;return}
+  const d=BELL.d,me=d.items.filter(x=>x.new).length,nw=d.news.filter(x=>x.new).length;if(BELL.tab==='news'&&!d.news.length)BELL.tab='me';if(!me&&nw)BELL.tab='news';
+  const row=x=>{const ic=BELL_IC[x.tone]||BELL_IC.news;return `<${x.to?'button type="button"':'div'} class="bp-it ${x.new?'nw':''} ${x.to?'go':''}" ${x.to?`data-to="${esc(x.to)}"`:''}><span class="bp-ic ${ic[0]}">${svg(ic[1])}</span><span class="bp-tx"><b>${esc(x.title)}</b>${x.sub?`<small>${esc(x.sub)}</small>`:''}${x.cta?`<em>${esc(x.cta)} →</em>`:''}</span><time>${bellAgo(x.at)}</time></${x.to?'button':'div'}>`};
+  const draw=()=>{const L=BELL.tab==='news'?d.news:d.items;
+    p.innerHTML=`<div class="bp-h"><b>Avisos</b>${me+nw?'<button type="button" class="bp-rd" id="bpRd">Marcar tudo como lido</button>':''}<button type="button" class="bp-x" aria-label="Fechar">×</button></div>
+     <div class="bp-tb"><button type="button" class="${BELL.tab==='me'?'on':''}" data-bt="me">Para você${me?`<i>${me}</i>`:''}</button>${d.news.length?`<button type="button" class="${BELL.tab==='news'?'on':''}" data-bt="news">Do Oi Nanda${nw?`<i class="g">${nw}</i>`:''}</button>`:''}</div>
+     <div class="bp-l">${L.length?L.map(row).join(''):`<div class="bp-e">${svg('<path d="m5 12 5 5 9-10"/>')}<b>Tudo em dia</b><span>${BELL.tab==='news'?'Nenhum aviso do Oi Nanda nos últimos 30 dias.':'Quando um cliente pedir alguém ou algo precisar de você, aparece aqui.'}</span></div>`}</div>
+     <div class="bp-f">${BELL.tab==='news'?'Os mesmos avisos que chegam no seu e-mail':'Vendas e horários dos últimos 3 dias'}</div>`;
+    p.querySelector('.bp-x').onclick=close;
+    p.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{BELL.tab=b.dataset.bt;draw()});
+    p.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>{close();bellGo(b.dataset.to)});
+    const rd=p.querySelector('#bpRd');if(rd)rd.onclick=async()=>{try{await api('/alerts/seen',{method:'POST'});d.items.concat(d.news).forEach(x=>x.new=false);bellBadge(0);draw()}catch(e){toast(e.message)}}};
+  draw()}
 let POLL=null;
 const NZV={tab:null};
 function pathFor(v){
