@@ -565,6 +565,14 @@ td>.sure,tr+.sure{margin:4px}
 .admp .ao b{display:block;font-size:13.5px}.admp .ao small{font-size:12px;color:var(--ink3)}.admp .ao>svg{margin-left:auto;width:16px;height:16px;color:var(--c2);flex:none}
 .al2{height:1px;background:var(--line);margin:6px 4px}.admp .ax{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--ink2)}.admp .ax:hover{background:var(--bg)}.admp .ax svg{width:16px;height:16px}
 .admp.sheet{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+/* respiro: recolher como ícone no topo, grupos separados por espaço */
+@media(min-width:861px){.side .sbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side .sbar .logo{margin:0}
+ .side .sbar .mini-t{width:30px;height:30px;padding:0;justify-content:center;border-radius:8px;color:#6F7F8F;margin-right:2px}.side .sbar .mini-t svg{width:17px;height:17px;transition:none}
+ .app.mini .side .sbar{flex-direction:column;gap:10px}.app.mini .side .sbar .mini-t svg{transform:scaleX(-1)}}
+.side .nav.gsb,.side .su-pill{margin-bottom:2px}.side .snav{margin-top:14px;gap:5px}
+.nqw{margin-top:16px}.side .sp{min-height:20px}
+.side .me.sw2{margin-top:10px}
+
 /* "Configurar a conta" no menu: uma linha, do tamanho de um item */
 .side .su-pill{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 6px;padding:7px 10px;border:0;border-radius:9px;background:transparent;color:#B3BEC9;text-align:left}
 .side .su-pill:hover{background:rgba(255,255,255,.06);color:#fff}
@@ -4299,7 +4307,8 @@ function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=[
     ['lock','Segurança e conta','Registros e avisos da conta',[
       ['atividade','Atividade','Quem fez o quê','',()=>go('atividade'),'registro historico log auditoria'],
       ...(own?[['avisos','Seus avisos','E-mail e WhatsApp','',()=>go('avisos-conta'),'aviso cobranca fim do teste notificacao']]:[]),
-      ['me','Seu status',u.away?'Ausente':'Disponível',u.away?'off':'ok',()=>meModal(),'perfil ausente disponivel notificacoes']]]]}
+      ['me','Seu status',u.away?'Ausente':'Disponível',u.away?'off':'ok',()=>meModal(),'perfil ausente disponivel notificacoes'],
+      ['ajuda','Central de ajuda','Guias e suporte','',()=>go('ajuda'),'ajuda duvida suporte tutorial como']]]]}
 function cfgFlat(){return cfgGroups(CFGD).flatMap(g=>g[3].map(i=>({k:i[0],l:i[1],grp:g[1].replace(/<[^>]+>/g,''),run:i[4],kw:i[5]||''})))}
 let CFGD={};
 const CFG_IC={nanda:NI.nanda,store:'<path d="M3 9l1.5-5h15L21 9M4 9v11h16V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>',plug:'<path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0zM12 17v5"/>',msg:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
@@ -4363,13 +4372,13 @@ function admSw(){if($('#admP')){$('#admP').remove();return}const c=ME.company,on
   const adm=ME.user.is_admin&&!ME.user.impersonated_by;
   p.innerHTML=(adm?`<h5>Trocar para</h5><button type="button" class="ao ${on?'':'on'}" data-to="emp"><span class="ai" style="background:var(--c)">${esc(initials(c.name))}</span><span><b>${esc(c.name)}</b><small>Sua empresa</small></span>${on?'':ck}</button>
     <button type="button" class="ao ${on?'on':''}" data-to="adm"><span class="ai" style="background:#5B6BE8">${NI['a-visao']}</span><span><b>Admin da plataforma</b><small>Contas e financeiro</small></span>${on?ck:''}</button>
-    <div class="al2"></div>`:'')+`<button type="button" class="ax" data-to="me">${NI.conversas}Meu status e avisos</button><button type="button" class="ax" data-to="out">${svg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>')}Sair</button>`;
+    <div class="al2"></div>`:'')+`<button type="button" class="ax" data-to="help">${NI.ajuda}Central de ajuda</button><button type="button" class="ax" data-to="me">${NI.conversas}Meu status e avisos</button><button type="button" class="ax" data-to="out">${svg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>')}Sair</button>`;
   document.body.append(p);const r=a.getBoundingClientRect();
   if(innerWidth>860){p.style.left=r.left+'px';p.style.width=Math.max(240,r.width)+'px';p.style.bottom=(innerHeight-r.top+8)+'px'}else p.classList.add('sheet');
   const close=()=>{p.remove();document.removeEventListener('mousedown',out);document.removeEventListener('keydown',ek)},out=e=>{if(!p.contains(e.target)&&!a.contains(e.target))close()},ek=e=>{if(e.key==='Escape')close()};
   setTimeout(()=>{document.addEventListener('mousedown',out);document.addEventListener('keydown',ek)},0);
   p.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>{const t=b.dataset.to;close();
-    if(t==='me')return meModal();if(t==='out')return $('#out').click();
+    if(t==='me')return meModal();if(t==='help'){document.querySelector('.side')?.classList.remove('open');return go('ajuda')}if(t==='out')return $('#out').click();
     ADMODE.set(t==='adm');go(t==='adm'?'a-visao':'inicio')})}
 function shell(){
   const u=ME.user,c=ME.company,adm=u.is_admin,am=admOn();
@@ -4379,14 +4388,13 @@ function shell(){
   const navBtn=(v,l)=>`<button class="nav" data-v="${v}" title="${esc(l)}">${NI[v]||NI.dot}<span class="lb">${l}</span></button>`;
   const lbl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
   $('#root').innerHTML=`<div class="app ${NAVMINI.get()?'mini':''}"><aside class="side ${am?'adm':''}">
-    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a>${am?'<span class="atag">Admin</span>':''}<span class="cur" id="curV"></span><button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+    <div class="sbar"><a class="logo" href="/" data-home title="Ir para o início"><i>oi</i><b>Nanda</b></a>${am?'<span class="atag">Admin</span>':''}<button class="mini-t" id="miniT" title="Recolher ou abrir o menu" aria-label="Recolher ou abrir o menu">${svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M15.5 10l-2 2 2 2"/>')}</button><span class="cur" id="curV"></span><button class="msr" id="mSrch" aria-label="Buscar">${NI.buscar}</button><button class="mnu" id="mnu" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
     <button type="button" class="nav gsb" id="gOpen" title="Buscar cliente, tela, ajuste ou ação (Ctrl K)">${NI.buscar}<span class="lb">Buscar</span><kbd>Ctrl K</kbd></button>
     <button type="button" class="su-pill" id="suPill" hidden></button>
     <nav class="snav" id="snav">${am?[['a-visao'],['a-clientes','a-jornada','a-financeiro'],['a-avisos','a-alertas'],['a-atividade','a-erros']].map(g=>g.map(v=>navBtn(v,v==='a-atividade'?'Atividade':ADMIN_NAV.find(x=>x[0]===v)[1])).join('')).join('<div class="sdv"></div>')
       :DAILY.filter(allowed).map(v=>navBtn(v,lbl[v])).join('')+nzChip()}</nav>
     <div class="sp"></div>
-    ${am?'':navBtn('config','Configurações')}${navBtn('ajuda','Central de ajuda')}
-    <button class="mini-t" id="miniT" title="Recolher ou abrir o menu">${svg('<path d="m15 6-6 6 6 6"/>')}<span class="lb">Recolher menu</span></button>
+    ${am?'':navBtn('config','Configurações')}
     <div class="me sw2"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status, avisos e sair'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span><span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span></button><button id="out" class="lb">Sair</button></div>
   </aside><main>
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
@@ -9238,7 +9246,7 @@ async function homeFirst(d){
   $('#frAll').onclick=()=>suPanel();
   $('#frHide').onclick=async()=>{SU.d=await api('/setup/hide',{method:'POST',body:{hidden:true}});SU.at=Date.now();suTop();suPill();toast('Pronto. Os passos continuam no menu, em Configurar a conta.');VIEWS.inicio()}}
 function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
-  b.innerHTML=`${suRing(d.pct,17,2.6)}<span class="lb"><b>${d.agent?'Primeiros passos':'Configurar conta'}</b></span><em class="lb">${d.pct}%</em>`;b.setAttribute('aria-label',(d.agent?'Primeiros passos':'Configurar a conta')+`: ${d.done} de ${d.total} prontos`);b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
+  b.innerHTML=`${suRing(d.pct,17,2.6)}<span class="lb"><b>${d.agent?'Primeiros passos':'Configurar'}</b></span><em class="lb">${d.pct}%</em>`;b.setAttribute('aria-label',(d.agent?'Primeiros passos':'Configurar a conta')+`: ${d.done} de ${d.total} prontos`);b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
 async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   const after=()=>{suBar()};
   try{
