@@ -11,6 +11,7 @@ class Signup(BaseModel):
     segment: Segment = 'outro'
     phone: str = Field(default='', max_length=30)
     wa_optin: bool = True  # avisos da conta e dicas pelo WhatsApp (caixa já marcada no cadastro; desliga quando quiser)
+    team: Literal['1', '2-4', '5-10', '11+', ''] = ''  # quantas pessoas atendem (ajuda a sugerir o plano)
 class Login(BaseModel):
     email: EmailStr
     password: str = Field(min_length=1, max_length=200)

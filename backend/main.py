@@ -160,6 +160,8 @@ app.include_router(sitelead_router, prefix="/api")
 from owneralerts import router as owneralerts_router
 app.include_router(owneralerts_router, prefix="/api")
 from describe import router as describe_router
+from googleauth import router as googleauth_router
+app.include_router(googleauth_router, prefix="/api")
 app.include_router(describe_router, prefix="/api")
 from closing import router as closing_router
 app.include_router(closing_router, prefix="/api")
@@ -239,30 +241,37 @@ async def health():
     return {'ok': True, 'at': iso()}
 
 # ---------- conta ----------
+async def create_account(request, response, *, name, email, company, segment, phone, wa_optin, team='', password=None, google_sub=None):
+    """Cria a empresa e o dono, já nos 14 dias grátis, e abre a sessão. Usado pelo cadastro com e-mail e com Google."""
+    # conta nova já começa nos 14 dias grátis, sem cartão (o cartão só entra ao assinar). SIGNUP_MODE=demo volta ao modo com cartão no começo.
+    start = {'plan': 'demo'} if os.environ.get('SIGNUP_MODE', 'trial') == 'demo' else {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True}
+    co = {'id': uid(), 'name': company.strip(), 'segment': segment, 'phone': phone.strip(), 'timezone': 'America/Sao_Paulo',
+          **start, 'status': 'active', 'created_at': now(), 'notice_wa': wa_optin, 'team_size': team,
+          'wa_optin': {'on': wa_optin, 'at': now(), 'ip': client_ip(request), 'text': 'Quero receber pelo WhatsApp os avisos da minha conta e dicas para vender mais.'},
+          'modules': {'metas': False, 'jornada': False}, 'channels': {},
+          'terms': {'at': now(), 'ip': client_ip(request), 'version': TERMS_VERSION}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
+    user = {'id': uid(), 'company_id': co['id'], 'name': name.strip(), 'email': email, 'role': 'owner', 'active': True,
+            'password_hash': hash_password(password or secrets.token_urlsafe(32)), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
+    if google_sub: user.update(google_sub=google_sub, no_password=not password)
+    await db.companies.insert_one(co.copy())
+    await db.users.insert_one(user.copy())
+    await audit(request, user, 'Criou a conta da empresa' + (' (com Google)' if google_sub else ''), co['name'], co['id'])
+    log.info('nova empresa: %s (%s)', co['name'], email)
+    await open_session(user, response)
+    import mailer
+    from push import later
+    later(mailer.send_welcome(user, co))
+    return user, co
+
 @app.post('/api/auth/signup')
 async def signup(body: Signup, request: Request, response: Response):
     key = digest('signup:' + client_ip(request))
     doc = await throttle(key, limit=5, minutes=60)
     email = str(body.email).lower()
     if await db.users.find_one({'email': email}): raise HTTPException(409, 'Já existe uma conta com este e-mail. Entre com ele.')
-    # conta nova já começa nos 14 dias grátis, sem cartão (o cartão só entra ao assinar). SIGNUP_MODE=demo volta ao modo com cartão no começo.
-    start = {'plan': 'demo'} if os.environ.get('SIGNUP_MODE', 'trial') == 'demo' else {'plan': 'trial', 'trial_ends_at': now() + timedelta(days=TRIAL_DAYS), 'trial_v2': True}
-    company = {'id': uid(), 'name': body.company.strip(), 'segment': body.segment, 'phone': body.phone.strip(), 'timezone': 'America/Sao_Paulo',
-               **start, 'status': 'active', 'created_at': now(), 'notice_wa': body.wa_optin,
-               'wa_optin': {'on': body.wa_optin, 'at': now(), 'ip': client_ip(request), 'text': 'Quero receber pelo WhatsApp os avisos da minha conta e dicas para vender mais.'},
-               'modules': {'metas': False, 'jornada': False}, 'channels': {},
-               'terms': {'at': now(), 'ip': client_ip(request), 'version': TERMS_VERSION}}  # conta nova começa enxuta; liga em Empresa › Recursos extras e Mais canais
-    user = {'id': uid(), 'company_id': company['id'], 'name': body.name.strip(), 'email': email, 'role': 'owner', 'active': True,
-            'password_hash': hash_password(body.password), 'auth_version': 0, 'created_at': now(), 'last_login_at': now()}
-    await db.companies.insert_one(company.copy())
-    await db.users.insert_one(user.copy())
+    await create_account(request, response, name=body.name, email=email, company=body.company, segment=body.segment, phone=body.phone,
+                         wa_optin=body.wa_optin, team=body.team, password=body.password)
     await strike(key, doc, minutes=60)
-    await audit(request, user, 'Criou a conta da empresa', company['name'], company['id'])
-    log.info('nova empresa: %s (%s)', company['name'], email)
-    await open_session(user, response)
-    import mailer
-    from push import later
-    later(mailer.send_welcome(user, company))
     return {'ok': True}
 
 @app.get('/api/auth/email-check')

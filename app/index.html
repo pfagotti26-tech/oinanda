@@ -2256,6 +2256,20 @@ button.nz-st{cursor:pointer;font:inherit;color:inherit;text-align:left}button.nz
 .ob-a .ob-ar{background:radial-gradient(120% 80% at 80% 0%,#FFE1D4 0%,#FDF0E9 45%,#FBF8F5 100%);display:grid;place-items:center;padding:40px;position:relative;overflow:hidden}
 .ob-g2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
 .ob-a form{margin-top:24px;display:grid;gap:14px}.ob-a form .ob-g2{gap:14px}.ob-a .field input,.ob-a .field select{border-radius:12px;padding:12px 14px}
+/* cadastro em 3 telas */
+.sg{display:grid;gap:0}.sg-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:4px 0 22px}.sg-bar i{height:5px;border-radius:9px;background:#EEE8E3}.sg-bar i.on{background:var(--c)}
+.sg h1{font-size:28px;letter-spacing:-.03em;line-height:1.15}.sg .sub{margin:6px 0 20px}
+.btn.sg-g{width:100%;justify-content:center;gap:12px;font-size:15.5px;padding:14px;background:#fff;border:1.5px solid var(--line);text-decoration:none;color:var(--ink);display:flex;align-items:center}.btn.sg-g svg{width:20px;height:20px}.btn.sg-g:hover{border-color:#CFC3B8}
+.sg-or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:13px;font-weight:600;margin:16px 0}.sg-or::before,.sg-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.sg-who{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:18px;font-size:13.5px}.sg-who small{display:block;color:var(--ink3);font-size:12px}.sg-av{width:32px;height:32px;border-radius:50%;background:#4285F4;color:#fff;display:grid;place-items:center;font-weight:800}
+.sg-lb{display:block;font-size:13.5px;font-weight:700;margin:4px 0 8px}
+.sg-segs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:6px}.sg-sg{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 6px;display:grid;justify-items:center;gap:5px;font:inherit;font-weight:700;font-size:12.5px;color:var(--ink2);text-align:center;cursor:pointer;line-height:1.25}
+.sg-sg span{font-size:21px;line-height:1}.sg-sg.on{border-color:var(--c);background:var(--tint);color:var(--c2);box-shadow:0 0 0 3px var(--tint)}
+.sg-ph{display:flex;gap:8px}.sg-ph span{display:flex;align-items:center;border:1.5px solid #E3D9D0;border-radius:12px;padding:0 12px;font-weight:700;font-size:14px;flex:none;background:#fff}.sg-ph input{flex:1;min-width:0}
+.sg-team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}.sg-team button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 4px;font:inherit;font-weight:700;font-size:14px;color:var(--ink2);cursor:pointer}.sg-team button.on{border-color:var(--c);background:var(--tint);color:var(--c2)}
+.sg-acts{display:flex;gap:8px;margin-top:6px}.sg-acts .btn.p{flex:1}.sg-bk{width:54px;flex:none;justify-content:center}
+.auth .btn.sg-g{margin-bottom:0}
+@media(max-width:860px){.sg-segs{grid-template-columns:repeat(2,minmax(0,1fr))}.sg-sg{grid-template-columns:auto 1fr;justify-items:start;align-items:center;text-align:left;padding:11px 12px}.sg-sg span{font-size:19px}.sg-team{grid-template-columns:repeat(2,minmax(0,1fr))}.sg h1{font-size:24px}}
 .ob-ck{display:flex;gap:11px;align-items:flex-start;background:var(--tint);border:1px solid #F6DCD1;border-radius:14px;padding:12px 14px;margin:2px 0 2px;font-size:13.5px;color:var(--ink2);cursor:pointer;line-height:1.45}
 .ob-ck input{width:19px;height:19px;accent-color:var(--c);flex:none;margin:1px 0 0}.ob-ck b{color:var(--ink)}
 .ob-trust{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font-size:13px;color:var(--ink2)}.ob-trust span:before{content:'✓ ';color:var(--ok);font-weight:800}
@@ -3194,6 +3208,7 @@ function authView(mode,email){
    <a class="logo" href="https://oinanda.com.br/" title="Ir para o site do Oi Nanda"><i>oi</i><b>Nanda</b></a>
    <h1>${signup?'Crie sua conta':'Entrar'}</h1>
    <p class="l">Acesse o painel da sua empresa.</p>
+   <div id="gBox"></div>
    <form id="f" novalidate>
     ${signup?`<div class="field"><label>Seu nome</label><input name="name" required minlength="2" autocomplete="name"></div>
     <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2" autocomplete="organization"></div>
@@ -3208,6 +3223,8 @@ function authView(mode,email){
    ${signup?'<div class="sw" style="font-size:12px">Ao criar a conta você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</div>':''}
   </div></div>`;
   eyes($('#f'));
+  {const q=new URLSearchParams(location.search),ge=q.get('gerr');if(ge){history.replaceState(null,'',location.pathname);$('#e').textContent=GERR[ge]||'Não deu para entrar com o Google. Tente de novo.';if(q.get('email'))$('#f [name=email]').value=q.get('email')}}
+  gReady().then(on=>{if(on&&$('#gBox'))$('#gBox').innerHTML=`<a class="btn sg-g" href="/api/auth/google?mode=login">${GG}Entrar com Google</a><div class="sg-or">ou com e-mail e senha</div>`});
   const go=(m,em)=>{history.replaceState(null,'',m==='signup'?'/cadastro':'/');authView(m,em)};
   document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go,$('#f [name=email]').value));
   if($('#fgt'))$('#fgt').onclick=()=>forgotView($('#f [name=email]').value.trim());
@@ -3395,26 +3412,42 @@ const obMoney=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2
 const obDay=d=>new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
 const obHour=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
-function signupView(email){
-  history.replaceState(null,'','/cadastro');
-  $('#root').innerHTML=`<div class="ob ob-a"><div class="ob-al">
-   <div class="ob-top">${obLogo}${obSteps(1)}</div>
-   <h1>Crie sua conta e veja a Nanda atendendo o seu negócio</h1>
-   <p class="sub">Leva 1 minuto. Você conversa com ela antes de escolher qualquer plano.</p>
-   <form id="f" novalidate>
-    <div class="ob-g2"><div class="field"><label>Seu nome</label><input name="name" required minlength="2" autocomplete="name"></div>
-     <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2" autocomplete="organization"></div></div>
-    <div class="field"><label>Qual é o seu ramo?</label><select name="segment" required><option value="" disabled selected>Escolha o seu ramo</option>${Object.entries(SEG).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><small class="fh">A Nanda já vem ajustada para ele. Dá para mudar depois.</small></div>
-    <div class="ob-g2"><div class="field"><label>Seu WhatsApp</label><input name="phone" type="tel" inputmode="tel" required minlength="10" placeholder="(11) 99999-0000" autocomplete="tel"></div>
-     <div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(email||'')}"><div class="fe" id="eE"></div></div></div>
-    <div class="field"><label>Crie uma senha</label><input name="password" type="password" required minlength="8" autocomplete="new-password"><small class="fh" id="pwH">Mínimo de 8 caracteres.</small></div>
-    <label class="ob-ck"><input type="checkbox" name="wa_optin" checked><span><b>Quero receber pelo WhatsApp</b> os avisos da minha conta e dicas para vender mais. Dá para desligar quando quiser.</span></label>
-    <div class="err" id="e"></div>
-    <button class="btn p big" type="submit">Criar conta e conhecer a Nanda</button>
-   </form>
-   <div class="ob-trust"><span>14 dias grátis</span><span>Cancele quando quiser</span><span>Seus dados ficam com você</span></div>
-   <p class="ob-small">Já tem conta? <a data-go="login" href="/">Entrar</a> · Ao criar a conta você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</p>
-  </div>
+const GG='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+let GREADY=null;const gReady=async()=>{if(GREADY===null){try{GREADY=(await api('/auth/google/ready')).on}catch(e){GREADY=false}}return GREADY};
+const GERR={off:'O acesso com Google ainda não está disponível. Use o e-mail e a senha.',cancel:'Você cancelou o acesso com o Google.',expired:'O acesso com o Google demorou demais. Tente de novo.',
+  email:'Essa conta do Google não tem o e-mail confirmado. Use outra conta ou o e-mail e a senha.',inactive:'Esse acesso foi desativado. Fale com o dono da conta.',
+  mfa:'Este acesso usa senha e código do aplicativo autenticador. Entre com o e-mail e a senha.',other:'Esse e-mail já está ligado a outra conta do Google. Entre com o e-mail e a senha.'};
+const SG={step:1,email:'',password:'',name:'',company:'',segment:'',phone:'',team:'',wa_optin:true,g:null,gname:'',gemail:''};
+const SG_SEG=[['clinica','💆','Clínica e estética'],['salao','💇','Salão e barbearia'],['studio','🧘','Studio e academia'],['imobiliaria','🏠','Imobiliária'],['restaurante','🍕','Restaurante e delivery'],
+  ['loja','🛍️','Loja'],['servicos','🧰','Serviços'],['escola','🎓','Escola e cursos'],['lancamento','🚀','Infoprodutos'],['outro','✨','Outro']];
+async function signupView(email){
+  const qs=new URLSearchParams(location.search),g=qs.get('g'),ge=qs.get('gerr');history.replaceState(null,'','/cadastro');
+  if(email)SG.email=email;
+  if(g){try{const p=await api('/auth/google/pending?g='+encodeURIComponent(g));Object.assign(SG,{g,gname:p.name,gemail:p.email,name:SG.name||p.name,step:2})}catch(e){SG.g=null;SG.err=e.message}}
+  if(ge)SG.err=GERR[ge]||'Não deu para entrar com o Google. Tente de novo.';
+  const gOn=await gReady();
+  const bar=`<div class="sg-bar">${[1,2,3].map(i=>`<i class="${i<=SG.step?'on':''}"></i>`).join('')}</div>`;
+  const who=SG.g?`<div class="sg-who"><span class="sg-av">${esc((SG.gname||'?')[0].toUpperCase())}</span><div><b>${esc(SG.gname)}</b><small>${esc(SG.gemail)} · pelo Google</small></div></div>`:'';
+  let body='';
+  if(SG.step===1)body=`<h1>Crie sua conta grátis</h1><p class="sub">14 dias para ver a Nanda atendendo o seu negócio. Sem cartão.</p>
+    ${gOn?`<a class="btn sg-g" href="/api/auth/google?mode=signup">${GG}Continuar com Google</a><div class="sg-or">ou use seu e-mail</div>`:''}
+    <form id="f" novalidate><div class="field"><label>E-mail</label><input name="email" type="email" required autocomplete="email" value="${esc(SG.email)}" placeholder="voce@seunegocio.com.br"><div class="fe" id="eE"></div></div>
+     <div class="field"><label>Crie uma senha</label><input name="password" type="password" required minlength="8" autocomplete="new-password" value="${esc(SG.password)}" placeholder="Mínimo de 8 caracteres"><small class="fh" id="pwH"></small></div>
+     <div class="err" id="e">${esc(SG.err||'')}</div><button class="btn p big" type="submit">Continuar</button></form>`;
+  if(SG.step===2)body=`${who}<h1>Conte sobre o seu negócio</h1><p class="sub">A Nanda já chega preparada para o seu ramo.</p>
+    <form id="f" novalidate>${SG.g?'':`<div class="field"><label>Seu nome</label><input name="name" required minlength="2" autocomplete="name" value="${esc(SG.name)}"></div>`}
+     <div class="field"><label>Nome do negócio</label><input name="company" required minlength="2" autocomplete="organization" value="${esc(SG.company)}" placeholder="Ex.: Clínica Bella"></div>
+     <label class="sg-lb">Qual é o seu ramo?</label><div class="sg-segs">${SG_SEG.filter(x=>SEG[x[0]]).map(x=>`<button type="button" class="sg-sg ${SG.segment===x[0]?'on':''}" data-sg="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join('')}</div>
+     <div class="err" id="e">${esc(SG.err||'')}</div><div class="sg-acts"><button type="button" class="btn sg-bk" id="bk" aria-label="Voltar">←</button><button class="btn p big" type="submit">Continuar</button></div></form>`;
+  if(SG.step===3)body=`${who}<h1>Última coisa</h1><p class="sub">Para a gente te ajudar a configurar, se você quiser.</p>
+    <form id="f" novalidate><div class="field"><label>Seu WhatsApp</label><div class="sg-ph"><span>🇧🇷 +55</span><input name="phone" type="tel" inputmode="tel" required minlength="10" placeholder="(11) 99999-0000" autocomplete="tel" value="${esc(SG.phone)}"></div></div>
+     <label class="sg-lb">Quantas pessoas atendem com você?</label><div class="sg-team">${[['1','Só eu'],['2-4','2 a 4'],['5-10','5 a 10'],['11+','11 ou mais']].map(x=>`<button type="button" class="${SG.team===x[0]?'on':''}" data-tm="${x[0]}">${x[1]}</button>`).join('')}</div>
+     <label class="ob-ck"><input type="checkbox" name="wa_optin" ${SG.wa_optin?'checked':''}><span><b>Quero receber pelo WhatsApp</b> os avisos da minha conta e dicas para vender mais. Dá para desligar quando quiser.</span></label>
+     <div class="err" id="e">${esc(SG.err||'')}</div><div class="sg-acts"><button type="button" class="btn sg-bk" id="bk" aria-label="Voltar">←</button><button class="btn p big" type="submit">Entrar no Oi Nanda →</button></div></form>`;
+  SG.err='';
+  $('#root').innerHTML=`<div class="ob ob-a"><div class="ob-al"><div class="ob-top">${obLogo}</div><div class="sg">${bar}${body}
+   <div class="ob-trust"><span>14 dias grátis</span><span>Sem cartão</span><span>Cancele quando quiser</span></div>
+   <p class="ob-small">Já tem conta? <a data-go="login" href="/">Entrar</a> · Ao continuar você aceita os <a href="https://oinanda.com.br/termos/" target="_blank">Termos</a> e a <a href="https://oinanda.com.br/privacidade/" target="_blank">Política de Privacidade</a>.</p></div></div>
   <div class="ob-ar" aria-hidden="true">
    <div class="ob-float" style="top:16%;left:9%"><i>⚡</i>Responde em segundos</div>
    <div class="ob-float" style="bottom:20%;right:8%"><i>📅</i>Marca direto na sua agenda</div>
@@ -3425,27 +3458,35 @@ function signupView(email){
      <div class="ob-m out" style="animation-delay:.9s"><b>Nanda</b>Oi, Carla! Fazemos sim 😊 A limpeza de pele sai R$ 180 e leva uns 60 minutos. Quer que eu veja um horário pra você?<small>23:41</small></div>
      <div class="ob-m in" style="animation-delay:1.6s">Quero! Sábado de manhã dá?<small>23:42</small></div>
      <div class="ob-m out" style="animation-delay:2.3s"><b>Nanda</b>Sábado às 10h está livre. Posso confirmar no seu nome?<small>23:42</small></div>
-    </div></div>
-  </div></div>`;
-  eyes($('#f'));
-  const f=$('#f'),em=f.email,pw=f.password,h=$('#pwH');let taken=false;
-  document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();history.replaceState(null,'','/');authView('login',em.value.trim())});
+    </div></div></div></div>`;
+  const f=$('#f'),re=()=>signupView();
+  document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();history.replaceState(null,'','/');authView('login',SG.email)});
+  if($('#bk'))$('#bk').onclick=()=>{if(SG.step===2&&SG.g){SG.g=null;SG.step=1}else SG.step--;re()};
   const fieldErr=(i,msg)=>{i.classList.toggle('bad',!!msg);const fe=i.closest('.field').querySelector('.fe');if(fe)fe.innerHTML=msg||''};
-  em.onblur=async()=>{const v=em.value.trim();taken=false;if(!v||!em.checkValidity()){fieldErr(em,v?'Confira o e-mail: falta algo como nome@empresa.com.br.':'');return}
-    try{const r=await api('/auth/email-check?email='+encodeURIComponent(v));taken=r.exists;fieldErr(em,r.exists?'Este e-mail já tem conta. <a id="goLogin">Entrar com ele</a>':'');
-      if(r.exists)$('#goLogin').onclick=()=>{history.replaceState(null,'','/');authView('login',v)}}catch(e){}};
-  em.oninput=()=>{if(em.classList.contains('bad')){taken=false;fieldErr(em,'')}};
-  pw.oninput=()=>{const v=pw.value,sc=(v.length>=8)+(v.length>=12)+(/[A-Z]/.test(v)&&/[a-z]/.test(v))+/\d/.test(v)+/[^A-Za-z0-9]/.test(v);
-    h.className='fh '+(v.length<8?'':sc>=4?'ok':sc>=3?'mid':'low');h.textContent=v.length<8?`Mínimo de 8 caracteres${v?` (faltam ${8-v.length})`:''}.`:sc>=4?'Senha forte.':sc>=3?'Senha boa.':'Senha fraca. Use mais caracteres, números ou símbolos.'};
-  f.onsubmit=async ev=>{ev.preventDefault();$('#e').textContent='';const b=f.querySelector('button[type=submit]');
-    const bad=[...f.querySelectorAll('input:not([type=checkbox]),select')].find(i=>!i.checkValidity());
-    if(bad){bad.focus();$('#e').textContent={segment:'Escolha o seu ramo.',password:'A senha precisa ter pelo menos 8 caracteres.',email:'Confira o e-mail.',phone:'Confira o WhatsApp: DDD + número.'}[bad.name]||'Preencha o campo em destaque.';bad.classList.add('bad');bad.addEventListener('input',()=>bad.classList.remove('bad'),{once:true});return}
-    if(taken){em.focus();return}
-    b.disabled=true;b.textContent='Criando sua conta...';
-    const body={...Object.fromEntries(new FormData(f)),wa_optin:f.wa_optin.checked};
-    try{await api('/auth/signup',{method:'POST',body});await refresh();comecarView()}
-    catch(e){b.disabled=false;b.textContent='Criar conta e conhecer a Nanda';if(e.status===409){taken=true;fieldErr(em,'Este e-mail já tem conta. <a id="goLogin">Entrar com ele</a>');$('#goLogin').onclick=()=>{history.replaceState(null,'','/');authView('login',em.value.trim())};em.focus()}else $('#e').textContent=e.message}};
-  f.name.focus();
+  if(SG.step===1){const em=f.email,pw=f.password,h=$('#pwH');eyes(f);
+    em.onblur=async()=>{const v=em.value.trim();if(!v||!em.checkValidity())return fieldErr(em,v?'Confira o e-mail: falta algo como nome@empresa.com.br.':'');
+      try{const r=await api('/auth/email-check?email='+encodeURIComponent(v));fieldErr(em,r.exists?'Este e-mail já tem conta. <a id="goLogin">Entrar com ele</a>':'');if(r.exists)$('#goLogin').onclick=()=>{history.replaceState(null,'','/');authView('login',v)}}catch(e){}};
+    pw.oninput=()=>{const v=pw.value,sc=(v.length>=8)+(v.length>=12)+(/[A-Z]/.test(v)&&/[a-z]/.test(v))+/\d/.test(v)+/[^A-Za-z0-9]/.test(v);
+      h.className='fh '+(v.length<8?'':sc>=4?'ok':sc>=3?'mid':'low');h.textContent=!v?'':v.length<8?`Faltam ${8-v.length} caracteres.`:sc>=4?'Senha forte.':sc>=3?'Senha boa.':'Senha fraca. Use mais caracteres, números ou símbolos.'};
+    f.onsubmit=async ev=>{ev.preventDefault();$('#e').textContent='';
+      if(!em.checkValidity()){em.focus();return $('#e').textContent='Confira o e-mail.'}if(pw.value.length<8){pw.focus();return $('#e').textContent='A senha precisa ter pelo menos 8 caracteres.'}
+      try{const r=await api('/auth/email-check?email='+encodeURIComponent(em.value.trim()));if(r.exists){fieldErr(em,'Este e-mail já tem conta. <a id="goLogin">Entrar com ele</a>');$('#goLogin').onclick=()=>{history.replaceState(null,'','/');authView('login',em.value.trim())};return}}catch(e){}
+      Object.assign(SG,{email:em.value.trim(),password:pw.value,step:2});re()};
+    (SG.email?pw:em).focus()}
+  if(SG.step===2){document.querySelectorAll('[data-sg]').forEach(b=>b.onclick=()=>{SG.segment=b.dataset.sg;document.querySelectorAll('[data-sg]').forEach(x=>x.classList.toggle('on',x===b))});
+    f.onsubmit=ev=>{ev.preventDefault();if(f.name){SG.name=f.name.value.trim()}SG.company=f.company.value.trim();
+      if(!SG.g&&SG.name.length<2){f.name.focus();return $('#e').textContent='Escreva o seu nome.'}if(SG.company.length<2){f.company.focus();return $('#e').textContent='Escreva o nome do negócio.'}
+      if(!SG.segment)return $('#e').textContent='Toque no seu ramo. Se não achar, escolha Outro.';SG.step=3;re()};
+    (f.name&&!SG.name?f.name:f.company).focus()}
+  if(SG.step===3){document.querySelectorAll('[data-tm]').forEach(b=>b.onclick=()=>{SG.team=b.dataset.tm;document.querySelectorAll('[data-tm]').forEach(x=>x.classList.toggle('on',x===b))});
+    f.onsubmit=async ev=>{ev.preventDefault();$('#e').textContent='';SG.phone=f.phone.value.trim();SG.wa_optin=f.wa_optin.checked;
+      if(SG.phone.replace(/\D/g,'').length<10){f.phone.focus();return $('#e').textContent='Confira o WhatsApp: DDD + número.'}
+      const b=f.querySelector('button[type=submit]');b.disabled=true;b.textContent='Criando sua conta...';
+      const body={name:SG.name,company:SG.company,segment:SG.segment,phone:SG.phone,team:SG.team,wa_optin:SG.wa_optin};
+      try{if(SG.g)await api('/auth/google/signup',{method:'POST',body:{...body,g:SG.g}});else await api('/auth/signup',{method:'POST',body:{...body,email:SG.email,password:SG.password}});
+        Object.assign(SG,{step:1,password:'',g:null});history.replaceState(null,'','/');VIEW='inicio';await boot()}
+      catch(e){b.disabled=false;b.textContent='Entrar no Oi Nanda →';if(e.status===409){SG.step=1;SG.err=e.message;re()}else if(e.status===410){SG.g=null;SG.step=1;SG.err=e.message;re()}else $('#e').textContent=e.message}};
+    f.phone.focus()}
 }
 
 // horário em dias e horas (sem digitar): vira texto natural para a Nanda e para a prévia
