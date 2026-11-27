@@ -49,6 +49,14 @@ class PromoIn(BaseModel):
     requires_coupon: bool = False
     stackable: bool = False
     nanda_offers: bool = True
+    inactive_days: Optional[int] = Field(default=None, ge=1, le=3650)   # "quem sumiu": dias sem comprar (vazio = o da empresa)
+    bought_ids: List[str] = Field(default_factory=list, max_length=100)  # "já comprou": algum destes itens
+    bought_cats: List[str] = Field(default_factory=list, max_length=30)  # ... ou alguma destas categorias
+    bought_days: Optional[int] = Field(default=None, ge=1, le=3650)      # ... nos últimos X dias (vazio = alguma vez)
+    tags: List[str] = Field(default_factory=list, max_length=30)         # "tem a etiqueta"
+    tags_mode: Literal['any', 'all'] = 'any'
+    notify_days: Optional[int] = Field(default=None, ge=1, le=30)        # avisar X dias antes de acabar
+    code: Optional[str] = Field(default=None, max_length=20)             # cupom para divulgar, criado junto com a promoção
 
 def check_promo(b: PromoIn):
     if b.kind == 'percent' and not 0 < b.value <= 100: raise HTTPException(400, 'O percentual precisa ser entre 1 e 100.')
@@ -71,7 +79,11 @@ def rule_text(p, names=None):
     t = f'{v} {what}'
     cond = []
     if p.get('first_purchase'): cond.append('só na primeira compra')
-    if p.get('only_inactive'): cond.append('para quem não compra há um tempo')
+    if p.get('only_inactive'): cond.append(f'para quem não compra há mais de {p["inactive_days"]} dias' if p.get('inactive_days') else 'para quem não compra há um tempo')
+    if p.get('bought_ids') or p.get('bought_cats'):
+        what = [(names or {}).get(i, '?') for i in p.get('bought_ids') or []] + list(p.get('bought_cats') or [])
+        cond.append('para quem já comprou ' + ' ou '.join(what) + (f' nos últimos {p["bought_days"]} dias' if p.get('bought_days') else ''))
+    if p.get('tags'): cond.append('para quem tem a etiqueta ' + (' e ' if p.get('tags_mode') == 'all' else ' ou ').join(p['tags']))
     if p.get('min_total'): cond.append(f'em compras a partir de {brl(p["min_total"])}')
     if p.get('weekdays'): cond.append('às ' + ', '.join(WEEK[d] for d in sorted(p['weekdays'])))
     if p.get('hour_from'): cond.append(f'das {p["hour_from"]} às {p["hour_to"]}')
@@ -133,13 +145,30 @@ async def why_not(p, company, contact, items, coupon_ok, skip_sale=None):
     if p.get('first_purchase') and sales: return 'só vale na primeira compra'
     if p.get('only_inactive'):
         from origins import status_of
-        if status_of(contact, company.get('inactive_days') or 90) != 'inativo': return 'só vale para cliente inativo'
+        if status_of(contact, p.get('inactive_days') or company.get('inactive_days') or 90) != 'inativo': return 'só vale para quem está há um tempo sem comprar'
+    if (p.get('bought_ids') or p.get('bought_cats')) and not await bought(p, contact['id'], skip_sale): return 'só vale para quem já comprou ' + ('o item escolhido' if p.get('bought_ids') else 'na categoria escolhida')
+    if p.get('tags'):
+        have = set(contact.get('tags') or [])
+        if (p.get('tags_mode') == 'all' and not set(p['tags']) <= have) or (p.get('tags_mode') != 'all' and not have & set(p['tags'])): return 'só vale para clientes com a etiqueta ' + ', '.join(p['tags'])
     if p.get('min_total') and sum(max(0, it['qty'] * it['price'] - (it.get('discount') or 0)) for it in items) < p['min_total']: return f'compra mínima de {brl(p["min_total"])}'
     if p.get('origins'):
         o = contact.get('origin') or ('anuncio' if contact.get('ad') else None)
         if o not in p['origins']: return 'não vale para a origem deste cliente'
     if p.get('max_per_contact') and await uses_of(p['id'], contact['id'], skip_sale) >= p['max_per_contact']: return 'o cliente já usou o máximo de vezes'
     return None
+
+def bought_query(p, company_id):
+    ors = []
+    if p.get('bought_ids'): ors.append({'items.product_id': {'$in': p['bought_ids']}})
+    if p.get('bought_cats'): ors.append({'items.category': {'$in': p['bought_cats']}})
+    q = {'company_id': company_id, 'status': 'ok', '$or': ors}
+    if p.get('bought_days'): q['date'] = {'$gte': now() - timedelta(days=p['bought_days'])}
+    return q
+
+async def bought(p, contact_id, skip_sale=None):
+    q = bought_query(p, p['company_id']); q['contact_id'] = contact_id
+    if skip_sale: q['id'] = {'$ne': skip_sale}
+    return bool(await db.sales.find_one(q, {'_id': 0, 'id': 1}))
 
 async def find_coupon(company_id, code, contact_id=None, skip_sale=None):
     """Devolve (cupom, motivo se não vale)."""
@@ -176,6 +205,7 @@ async def price(company, contact, items, promo_ids=None, coupon=None, skip_sale=
                       'discount': d, 'reason': reason, 'auto': not p.get('requires_coupon')})
         if not reason and (p['id'] in chosen or (auto and not p.get('requires_coupon') and promo_ids is None)): ok.append((p, coupon_ok))
     # não cumulativas: fica só a que dá mais desconto (cupom tem prioridade) junto com as cumulativas
+    if company.get('promo_stack') == 'sum': ok = [(dict(p, stackable=True), c) for p, c in ok]
     solo = [x for x in ok if not x[0].get('stackable')]
     if len(solo) > 1:
         best = max(solo, key=lambda x: (x[1], promo_discount(x[0], items)[0]))
@@ -231,15 +261,29 @@ async def list_promos(user=Depends(current_user)):
         p['uses'] = st.get('uses', 0)
         out.append({**p, 'state': state_of(p, company), 'rule': rule_text(p, names), 'discount_given': round(st.get('discount', 0), 2),
                     'revenue': round(st.get('revenue', 0), 2), 'clients': len(st.get('clients', ())),
-                    'coupons': await db.coupons.count_documents({'promo_id': p['id']})})
-    return {'items': out, 'max_discount_pct': company.get('max_discount_pct')}
+                    'coupons': await db.coupons.count_documents({'promo_id': p['id']}),
+                    'public_code': ((await db.coupons.find_one({'promo_id': p['id'], 'contact_id': None, 'active': True}, {'_id': 0, 'code': 1}, sort=[('created_at', 1)])) or {}).get('code'),
+                    'ends_in': (datetime.strptime(p['ends'], '%Y-%m-%d').date() - now().astimezone(agenda.tz_of(company)).date()).days if p.get('ends') else None})
+    return {'items': out, 'max_discount_pct': company.get('max_discount_pct'), 'promo_stack': company.get('promo_stack') or 'best', 'nanda_promos': company.get('nanda_promos', True)}
+
+async def _check_code(company_id, body, pid=None):
+    """Cupom digitado junto com a promoção: devolve o código a criar (ou None se não precisa / já existe nesta promoção)."""
+    if not body.requires_coupon or not (body.code or '').strip(): return None
+    code = body.code.strip().upper()
+    if not CODE_OK.match(code): raise HTTPException(400, 'O cupom usa de 3 a 20 letras ou números, sem espaço (ex.: BLACK20).')
+    ex = await db.coupons.find_one({'company_id': company_id, 'code': code}, {'_id': 0, 'promo_id': 1})
+    if ex and ex['promo_id'] == pid: return None
+    if ex: raise HTTPException(409, 'Já existe outro cupom com esse código.')
+    return code
 
 @router.post('/promos')
 async def add_promo(body: PromoIn, request: Request, user=Depends(managers)):
     check_promo(body)
     if await db.promos.count_documents({'company_id': user['company_id']}) >= 200: raise HTTPException(400, 'Limite de 200 promoções.')
-    p = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'name': body.name.strip(), 'created_at': now(), 'by': user['name']}
+    code = await _check_code(user['company_id'], body)
+    p = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(exclude={'code'}), 'name': body.name.strip(), 'created_at': now(), 'by': user['name']}
     await db.promos.insert_one(p.copy())
+    if code: await make_coupon(user['company_id'], p['id'], code, CouponIn(code=code, one_per_contact=False, public=True), None, user['name'])
     await audit(request, user, 'Criou promoção', p['name'])
     p.pop('_id', None)
     return p
@@ -249,8 +293,10 @@ async def edit_promo(pid: str, body: PromoIn, request: Request, user=Depends(man
     p = await db.promos.find_one({'id': pid, 'company_id': user['company_id']}, {'_id': 0})
     if not p: raise HTTPException(404, 'Promoção não encontrada.')
     check_promo(body)
-    upd = {**body.model_dump(), 'name': body.name.strip(), 'updated_at': now()}
+    code = await _check_code(user['company_id'], body, pid)
+    upd = {**body.model_dump(exclude={'code'}), 'name': body.name.strip(), 'updated_at': now()}
     await db.promos.update_one({'id': pid}, {'$set': upd})
+    if code: await make_coupon(user['company_id'], pid, code, CouponIn(code=code, one_per_contact=False, public=True), None, user['name'])
     await audit(request, user, 'Editou promoção', upd['name'])
     return {**p, **upd}
 
@@ -267,11 +313,52 @@ async def del_promo(pid: str, request: Request, user=Depends(managers)):
 
 class LimitIn(BaseModel):
     max_discount_pct: Optional[float] = Field(default=None, ge=0, le=100)
+    promo_stack: Optional[Literal['best', 'sum']] = None
+    nanda_promos: Optional[bool] = None
 
 @router.put('/promos-settings')
 async def set_limit(body: LimitIn, user=Depends(managers)):
-    await db.companies.update_one({'id': user['company_id']}, {'$set': {'max_discount_pct': body.max_discount_pct}})
-    return {'max_discount_pct': body.max_discount_pct}
+    upd = {'max_discount_pct': body.max_discount_pct}
+    if body.promo_stack: upd['promo_stack'] = body.promo_stack
+    if body.nanda_promos is not None: upd['nanda_promos'] = body.nanda_promos
+    await db.companies.update_one({'id': user['company_id']}, {'$set': upd})
+    return upd
+
+class AudIn(BaseModel):
+    first_purchase: bool = False
+    only_inactive: bool = False
+    inactive_days: Optional[int] = Field(default=None, ge=1, le=3650)
+    bought_ids: List[str] = Field(default_factory=list, max_length=100)
+    bought_cats: List[str] = Field(default_factory=list, max_length=30)
+    bought_days: Optional[int] = Field(default=None, ge=1, le=3650)
+    tags: List[str] = Field(default_factory=list, max_length=30)
+    tags_mode: Literal['any', 'all'] = 'any'
+    origins: List[str] = Field(default_factory=list, max_length=30)
+
+@router.get('/promos/tags')
+async def tags(user=Depends(managers)):
+    cnt = {}
+    for c in await db.contacts.find({'company_id': user['company_id'], 'tags.0': {'$exists': True}}, {'_id': 0, 'tags': 1}).to_list(50000):
+        for t in c.get('tags') or []: cnt[t] = cnt.get(t, 0) + 1
+    return [t for t, _ in sorted(cnt.items(), key=lambda x: -x[1])[:40]]
+
+@router.post('/promos/audience')
+async def audience(body: AudIn, user=Depends(managers)):
+    """Quantos clientes cumprem as condições de "para quem" hoje (sem olhar itens, valor mínimo nem limites)."""
+    from origins import status_of
+    company = user['company']
+    q = {'company_id': user['company_id'], 'internal': {'$ne': True}}
+    if body.first_purchase: q['sales_count'] = {'$in': [0, None]}
+    if body.tags: q['tags'] = {'$all': body.tags} if body.tags_mode == 'all' else {'$in': body.tags}
+    cs = await db.contacts.find(q, {'_id': 0, 'id': 1, 'name': 1, 'sales_count': 1, 'last_sale_at': 1, 'origin': 1, 'ad': 1}).to_list(50000)
+    if body.only_inactive:
+        days = body.inactive_days or company.get('inactive_days') or 90
+        cs = [c for c in cs if status_of(c, days) == 'inativo']
+    if body.origins: cs = [c for c in cs if (c.get('origin') or ('anuncio' if c.get('ad') else None)) in body.origins]
+    if body.bought_ids or body.bought_cats:
+        who = {s['contact_id'] for s in await db.sales.find(bought_query(body.model_dump(), user['company_id']), {'_id': 0, 'contact_id': 1}).to_list(100000)}
+        cs = [c for c in cs if c['id'] in who]
+    return {'count': len(cs), 'sample': [c['name'] for c in cs[:4] if c.get('name')]}
 
 # ---------- cupons ----------
 class CouponIn(BaseModel):
@@ -341,7 +428,8 @@ async def del_coupon(cid: str, user=Depends(managers)):
 WORD = re.compile(r'\b[A-Za-z0-9]{3,20}\b')
 
 async def nanda_block(company, contact, last_text=''):
-    promos = [p for p in await db.promos.find({'company_id': company['id'], 'active': True, 'nanda_offers': {'$ne': False}}, {'_id': 0}).to_list(200)]
+    if company.get('nanda_promos') is False: promos = []
+    else: promos = [p for p in await db.promos.find({'company_id': company['id'], 'active': True, 'nanda_offers': {'$ne': False}}, {'_id': 0}).to_list(200)]
     names = {p['id']: p['name'] for p in await db.products.find({'company_id': company['id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(1000)}
     live = []
     for p in promos:
