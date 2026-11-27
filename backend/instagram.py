@@ -326,6 +326,20 @@ async def refresh_tokens():
     for p in await db.ig_pending.find({'gave_up': {'$ne': True}, 'created_at': {'$gt': now() - timedelta(minutes=30)}}, {'_id': 0}).to_list(100):
         await pending_try(p)
     await db.ig_accounts.update_many({'status': 'connected', 'expires_at': {'$ne': None, '$lt': now()}}, {'$set': {'status': 'expired'}})
+    await resubscribe_all()
+
+SUBS_V = 2  # sobe quando a lista de avisos assinados muda: as contas já ligadas passam a receber os novos sozinhas
+async def resubscribe_all():
+    for a in await db.ig_accounts.find({'status': 'connected', 'subs_v': {'$ne': SUBS_V}}, {'_id': 0}).to_list(500):
+        try:
+            tok = decrypt(a['token_enc'])
+            if a.get('mode') == 'page' and a.get('page_id'):
+                for f in PAGE_FIELDS:
+                    try: await ig('POST', f'/{a["page_id"]}/subscribed_apps', tok, {'subscribed_fields': f}); break
+                    except HTTPException: continue
+            else: await subscribe_ig(a['ig_id'], tok)
+            await db.ig_accounts.update_one({'company_id': a['company_id']}, {'$set': {'subs_v': SUBS_V}})
+        except Exception: log.exception('instagram: falha ao atualizar os avisos de %s', a.get('username'))
 
 async def revoked(a, e):
     if getattr(e, 'revoked', False):
