@@ -20,6 +20,7 @@ from inbox import router as inbox_router
 from teams import router as teams_router
 from notify import router as notify_router
 from sales import router as sales_router
+from catalog_import import router as catalog_import_router
 from origins import router as origins_router
 from home import router as home_router
 from promos import router as promos_router
@@ -148,6 +149,7 @@ app.include_router(inbox_router, prefix='/api')
 app.include_router(teams_router, prefix='/api')
 app.include_router(notify_router, prefix="/api")
 app.include_router(sales_router, prefix="/api")
+app.include_router(catalog_import_router, prefix="/api")
 app.include_router(origins_router, prefix="/api")
 from voice import router as voice_router
 app.include_router(voice_router, prefix="/api")
