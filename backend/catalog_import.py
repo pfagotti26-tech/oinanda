@@ -78,6 +78,9 @@ def parse(rows, mapping):
         it['duration_days'] = d if it['kind'] == 'plano' else None
         if it['kind'] == 'plano' and not it['duration_days']: it['duration_days'] = 30; it['problems'].append('plano sem validade: ficou 30 dias')
         it['active'] = _active(get(r, 'active')) if 'active' in col else True
+        filled = lambda k: k in col and str(get(r, k) or '').strip() != ''
+        it['fields'] = ['name'] + [k for k in ('code', 'category', 'active') if filled(k)] + (['price'] if filled('price') and it['price'] is not None else []) \
+            + (['kind'] if filled('kind') or (filled('duration') and d) else []) + (['duration_days'] if filled('duration') and d else [])
         if len(name) < 2: it['error'] = 'nome muito curto'
         key = it['code'].lower() or _n(name)
         if key in seen: it['error'] = 'repetido na planilha (fica a primeira linha)'
@@ -93,14 +96,24 @@ async def _match(cid, items):
         p = (by_code.get(it['code'].lower()) if it['code'] else None) or by_name.get(_n(it['name']))
         it['match'] = p['id'] if p else None
         if p and p.get('service_id'): it['error'] = it.get('error') or 'serviço da Agenda: mude o preço por lá'
+        it['changes'] = []
+        if p and not it.get('error'):
+            for k in it.get('fields') or []:
+                if k == 'kind' and it['kind'] == 'plano' and p.get('kind') != 'plano' and 'duration_days' not in it['fields']: it['duration_days'] = p.get('duration_days') or 30
+                old, new = p.get(k), it.get(k)
+                if k == 'code' and (old or '') == (new or ''): continue
+                if k == 'name' and old == new: continue
+                if old != new and not (old in (None, '') and new in (None, '')): it['changes'].append({'f': k, 'old': old, 'new': new})
+            if it['kind'] != 'plano' and p.get('kind') == 'plano' and 'kind' in it['fields']: it['changes'].append({'f': 'duration_days', 'old': p.get('duration_days'), 'new': None}); it['duration_days'] = None
     return ex
 
 def _summary(items, total_now, mode):
     new = [i for i in items if not i.get('error') and not i['match']]
-    upd = [i for i in items if not i.get('error') and i['match']]
+    upd = [i for i in items if not i.get('error') and i['match'] and i.get('changes')]
+    same = [i for i in items if not i.get('error') and i['match'] and not i.get('changes')]
     bad = [i for i in items if i.get('error')]
     over = max(0, total_now + len(new) - LIMIT)
-    return {'new': len(new), 'update': len(upd) if mode == 'update' else 0, 'skip': len(upd) if mode == 'skip' else 0, 'errors': len(bad), 'over': over}
+    return {'new': len(new), 'update': len(upd) if mode == 'update' else 0, 'skip': len(upd) if mode == 'skip' else 0, 'same': len(same), 'errors': len(bad), 'over': over}
 
 @router.get('/catalog/import/template.xlsx')
 async def template(user=Depends(managers)):
@@ -126,6 +139,32 @@ async def template(user=Depends(managers)):
     return StreamingResponse(buf, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                              headers={'Content-Disposition': 'attachment; filename="modelo-catalogo-oi-nanda.xlsx"'})
 
+@router.get('/catalog/export.xlsx')
+async def export(user=Depends(managers)):
+    """O catálogo atual no mesmo formato do modelo: baixa, muda (preço, nome, categoria) e importa de volta."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill
+    ps = await db.products.find({'company_id': user['company_id']}, {'_id': 0}).sort([('category', 1), ('name', 1)]).to_list(None)
+    wb = Workbook(); ws = wb.active; ws.title = 'Catálogo'
+    ws.append(['Nome', 'Código', 'Categoria', 'Tipo', 'Preço', 'Validade (dias)', 'Ativo'])
+    KN = {'produto': 'Produto', 'servico': 'Serviço', 'plano': 'Plano'}
+    for p in ps:
+        if p.get('service_id'): continue  # serviços da Agenda mudam pela Agenda
+        ws.append([p['name'], p.get('code') or '', p.get('category') or '', KN.get(p.get('kind'), 'Serviço'), p.get('price'), p.get('duration_days') or '', 'Sim' if p.get('active', True) else 'Não'])
+    for c in ws[1]: c.font = Font(bold=True, color='FFFFFF'); c.fill = PatternFill('solid', fgColor='E8603C')
+    for col, w in zip('ABCDEFG', (32, 12, 16, 12, 12, 16, 8)): ws.column_dimensions[col].width = w
+    for row in ws.iter_rows(min_row=2, min_col=5, max_col=5):
+        for c in row: c.number_format = '#,##0.00'
+    buf = io.BytesIO(); wb.save(buf); buf.seek(0)
+    return StreamingResponse(buf, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                             headers={'Content-Disposition': 'attachment; filename="catalogo-oi-nanda.xlsx"'})
+
+@router.get('/catalog/imports')
+async def history(user=Depends(managers)):
+    from datetime import timedelta
+    js = await db.catalog_imports.find({'company_id': user['company_id'], 'at': {'$gte': now() - timedelta(days=30)}}, {'_id': 0}).sort('at', -1).to_list(5)
+    return [{'id': j['id'], 'file': j['file'], 'at': j['at'], 'by': j.get('by'), 'created': len(j['created']), 'updated': len(j['before']), 'undone': j.get('undone', False)} for j in js]
+
 @router.post('/catalog/import/preview')
 async def preview(file: UploadFile = File(...), mapping: str = Form(''), mode: str = Form('update'), user=Depends(managers)):
     head, rows = read_file(file.filename, await file.read())
@@ -145,6 +184,7 @@ class Item(BaseModel):
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
     duration_days: Optional[int] = Field(default=None, ge=1, le=3650)
     active: bool = True
+    fields: List[str] = Field(default_factory=lambda: ['name', 'code', 'category', 'kind', 'price', 'duration_days', 'active'], max_length=10)
 
 class RunIn(BaseModel):
     items: List[Item] = Field(min_length=1, max_length=LIMIT * 2)
@@ -164,10 +204,10 @@ async def run(body: RunIn, request: Request, user=Depends(managers)):
         if it.get('error'): continue
         data = {k: it[k] for k in ('name', 'code', 'category', 'kind', 'price', 'duration_days', 'active')}
         if it['match']:
-            if body.mode == 'skip': continue
+            if body.mode == 'skip' or not it['changes']: continue
             old = next(p for p in ex if p['id'] == it['match'])
             before.append({k: old.get(k) for k in ('id', 'name', 'code', 'category', 'kind', 'price', 'duration_days', 'active')})
-            await db.products.update_one({'id': it['match']}, {'$set': data})
+            await db.products.update_one({'id': it['match']}, {'$set': {c['f']: c['new'] for c in it['changes']}})
         else:
             p = {'id': uid(), 'company_id': cid, **data, 'next_ids': [], 'recurring': False, 'created_at': t, 'import_id': jid}
             await db.products.insert_one(p); created.append(p['id'])
