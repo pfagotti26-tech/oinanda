@@ -161,6 +161,26 @@ def test_direct(monkeypatch):
         post(c, dm('906', 'Quanto custa o plano anual?', mid='w4'))
         assert not [p for m, pth, _, p in calls if pth.endswith('/messages') and p and p['recipient'] == {'id': '906'}] and len(inbound) == n0 + 1  # já chegou perguntando: vai para a Nanda
         assert c.get('/api/ig/rules').json()['welcome']['on'] is True
+        # avisos extras: lido, reação e de onde veio (anúncio ou link com código)
+        k = c.portal.call(lambda: db.contacts.find_one({'ig_id': '905'}, {'_id': 0}))
+        outs = c.portal.call(lambda: db.messages.find({'contact_id': k['id'], 'dir': 'out'}, {'_id': 0}).sort('at', -1).to_list(10))
+        ev = lambda body: {'object': 'instagram', 'entry': [{'id': '17841400000000001', 'time': 1, 'messaging': [{'sender': {'id': '905'}, 'recipient': {'id': '17841400000000001'}, 'timestamp': int(time.time() * 1000), **body}]}]}
+        post(c, ev({'read': {'mid': outs[0]['wa_msg_id']}}))
+        st = c.portal.call(lambda: db.messages.find({'contact_id': k['id'], 'dir': 'out'}, {'_id': 0, 'status': 1}).to_list(10))
+        assert st and all(x['status'] == 'read' for x in st)
+        mine = c.portal.call(lambda: db.messages.find_one({'contact_id': k['id'], 'dir': 'in'}, {'_id': 0}))
+        post(c, ev({'reaction': {'mid': mine['wa_msg_id'], 'action': 'react', 'reaction': 'love', 'emoji': '❤️'}}))
+        assert c.portal.call(lambda: db.messages.find_one({'wa_msg_id': mine['wa_msg_id']}, {'_id': 0}))['reaction'] == '❤️'
+        n1 = len(inbound)
+        post(c, ev({'referral': {'ref': 'bio-black', 'source': 'SHORTLINK', 'type': 'OPEN_THREAD'}}))
+        k = c.portal.call(lambda: db.contacts.find_one({'ig_id': '905'}, {'_id': 0}))
+        assert k['last_ref']['ref'] == 'bio-black' and len(inbound) == n1
+        x = dm('907', 'Vi o anúncio', mid='ad1'); x['entry'][0]['messaging'][0]['message']['referral'] = {'source': 'ADS', 'ad_id': '123', 'ads_context_data': {'ad_title': 'Black Friday 30%'}}; post(c, x)
+        k = c.portal.call(lambda: db.contacts.find_one({'ig_id': '907'}, {'_id': 0}))
+        assert k['origin'] == 'anuncio' and k['origin_detail'] == 'Black Friday 30%' and k['ad_id'] == '123'
+        # outro app com a conversa (standby): registra, mas a Nanda não responde
+        n2 = len(inbound); x = dm('908', 'oi pela caixa da Meta', mid='sb1'); x['entry'][0]['standby'] = x['entry'][0].pop('messaging'); post(c, x)
+        assert c.portal.call(lambda: db.messages.find_one({'wa_msg_id': 'sb1'}, {'_id': 0})) and len(inbound) == n2
 
 def test_meta_demora_a_liberar_a_conta(monkeypatch):
     """A Meta autoriza, mas só libera a conta depois: o Oi Nanda guarda e conecta sozinho na próxima tentativa."""
