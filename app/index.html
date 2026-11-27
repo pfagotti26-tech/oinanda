@@ -3352,6 +3352,13 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .pr-new{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:0;border-radius:0 0 18px 18px;font:inherit;cursor:pointer;text-align:left}.pr-new:hover{background:#FFF8F4}.pr-new span{width:38px;height:38px;border-radius:50%;border:1.5px dashed #E8B9A9;color:var(--c);display:grid;place-items:center}.pr-new span svg{width:17px;height:17px}.pr-new b{font-size:14px;color:var(--c2)}.pr-new small{font-size:12.5px;color:var(--ink3)}
 @media(max-width:860px){.pr{grid-template-columns:38px minmax(0,1fr) auto;grid-template-areas:"a n c" "a r r";row-gap:6px}.pr .av{grid-area:a;align-self:start}.pr-n{grid-area:n}.pc-a{grid-area:c}.pr-r,.pr-i,.pr-w{grid-area:r}.pr-r{display:flex;gap:6px;flex-wrap:wrap}.pr-i,.pr-w{display:none}.pr-new small{display:none}}
 /* equipes */
+.tq2 .tq-now{display:flex;gap:12px;align-items:flex-start;background:#FBF8F5;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:16px}.tq-now>span svg{width:20px;height:20px;color:var(--ink3)}.tq-now b{display:block;font-size:14px}.tq-now small{font-size:12.5px;color:var(--ink2)}
+.tq-tp2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tq-t2{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 16px;font:inherit;text-align:left;cursor:pointer;transition:.15s}.tq-t2:hover{border-color:var(--c);background:#FFFAF7}.tq-t2.rec{border-color:#F0B9A5}
+.tq-t2>b{font-size:14.5px}.tq-t2>small{font-size:12.5px;color:var(--ink2)}.tq-rec{position:absolute;top:-9px;right:12px;font-style:normal;font-size:11px;font-weight:800;background:var(--c);color:#fff;border-radius:99px;padding:2px 9px}
+.tq-fl{display:flex;align-items:center;gap:6px;margin:10px 0 4px;width:100%}.tq-nd{font-style:normal;font-size:11.5px;font-weight:700;border-radius:99px;padding:4px 9px;white-space:nowrap}.tq-nd.c{background:#EEF1F4;color:var(--ink2)}.tq-nd.n{background:var(--tint);color:var(--c2)}.tq-ar{font-style:normal;color:var(--ink3);font-size:12px}
+.tq-br{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}.tq-tm{display:flex;flex-direction:column;border-left:3px solid var(--tc);background:#FBF8F5;border-radius:8px;padding:4px 9px}.tq-tm b{font-size:12.5px}.tq-tm small{font-size:11px;color:var(--ink3)}
+.tq-use{margin-top:auto;padding-top:8px;font-size:12.5px;font-weight:700;color:var(--c2)}.tq-ft{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}.tq-ft .hint{font-size:12px}
+@media (max-width:860px){.tq-tp2{grid-template-columns:1fr}}
 .tq-lock,.tq-start{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px}
 .tq-lock{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.tq-lock>span{width:40px;height:40px;border-radius:12px;background:var(--bg);color:var(--ink2);display:grid;place-items:center;flex:none}.tq-lock>span svg{width:20px;height:20px}.tq-lock>div{flex:1;min-width:220px;display:flex;flex-direction:column}.tq-lock b{font-size:14.5px}.tq-lock small{font-size:12.5px;color:var(--ink2)}
 .tq-sh{display:flex;flex-direction:column;margin-bottom:12px}.tq-sh b{font-size:15px}.tq-sh small{font-size:12.5px;color:var(--ink2)}
@@ -9626,9 +9633,16 @@ async function drawTeams(people,canManage){
   const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
   if($('#tmNew'))$('#tmNew').onclick=()=>teamModal(null,people,stages);
   if(!teams.length){
-    box.innerHTML=`<div class="tq-start"><div class="tq-sh"><b>Quer dividir o atendimento por equipes?</b><small>${act.length<3?'Com poucas pessoas, normalmente não precisa: todo mundo vê todas as conversas. ':''}Escolha um modelo e diga quem fica em cada equipe.</small></div>
-      <div class="tq-tp">${TQ_TPL.map((t,i)=>`<button type="button" class="tq-t" data-tq="${i}"><b>${t[0]}</b><small>${t[1]}</small><span>${t[2].map(x=>`<i>${x[0]}</i>`).join('')}</span></button>`).join('')}</div></div>`;
-    box.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>canManage?teamSetup(TQ_TPL[+b.dataset.tq],act):toast('Só o dono ou um gestor monta as equipes.'));return}
+    const rec=act.length<=3?0:act.length<=6?1:3,how=o=>o.distribution==='roundrobin'?'rodízio':o.topics?'troca, cancelamento…':'fila';
+    const COL=['#E8603C','#4A6FB5','#2E8B7A'];
+    box.innerHTML=`<div class="tq-start tq2"><div class="tq-now"><span>${svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>')}</span><div><b>Hoje, sem equipes</b><small>Todo mundo vê todas as conversas. Com ${act.length<=3?'até 3 pessoas isso costuma bastar':'mais gente, dividir evita que dois respondam o mesmo cliente ou que ninguém responda'}.</small></div></div>
+      <div class="tq-sh"><b>Como você quer dividir?</b><small>Escolha um modelo. Depois é só marcar quem fica em cada equipe, e dá para mudar quando quiser.</small></div>
+      <div class="tq-tp2">${TQ_TPL.map((t,i)=>`<button type="button" class="tq-t2 ${i===rec?'rec':''}" data-tq="${i}">${i===rec?`<em class="tq-rec">indicado para ${act.length} ${act.length===1?'pessoa':'pessoas'}</em>`:''}<b>${t[0]}</b><small>${t[1]}</small>
+        <span class="tq-fl"><i class="tq-nd c">Cliente</i><i class="tq-ar">→</i><i class="tq-nd n">Nanda</i><i class="tq-ar">→</i><span class="tq-br">${t[2].map((x,k)=>`<span class="tq-tm" style="--tc:${COL[k]}"><b>${x[0]}</b><small>${x[1].handoff_default?'recebe da Nanda · ':''}${how(x[1])}</small></span>`).join('')}</span></span>
+        <span class="tq-use">Usar este modelo →</span></button>`).join('')}</div>
+      <div class="tq-ft">${canManage?'<button type="button" class="lnk" id="tqZero">Prefiro montar do zero</button>':''}<span class="hint">Rodízio: cada conversa nova vai para a próxima pessoa. Fila: quem estiver livre pega.</span></div></div>`;
+    box.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>canManage?teamSetup(TQ_TPL[+b.dataset.tq],act):toast('Só o dono ou um gestor monta as equipes.'));
+    if($('#tqZero'))$('#tqZero').onclick=()=>teamModal(null,people,stages);return}
   const empty=t=>!(t.member_ids||[]).some(id=>PL[id]&&PL[id].active);
   const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
   const nm=x=>x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
