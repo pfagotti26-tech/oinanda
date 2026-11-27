@@ -603,6 +603,10 @@ async def loop():
             from instagram import refresh_tokens
             await refresh_tokens()
         except Exception: log.exception('falha ao renovar o acesso do Instagram')
+        try:
+            from capi import tick as capi_tick
+            await capi_tick()
+        except Exception: log.exception('falha ao avisar vendas para a Meta')
         try: await sync_pending()
         except Exception: log.exception('falha ao conferir os modelos na Meta')
         try:
