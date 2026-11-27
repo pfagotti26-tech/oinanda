@@ -3352,6 +3352,14 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .pr-new{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:0;border-radius:0 0 18px 18px;font:inherit;cursor:pointer;text-align:left}.pr-new:hover{background:#FFF8F4}.pr-new span{width:38px;height:38px;border-radius:50%;border:1.5px dashed #E8B9A9;color:var(--c);display:grid;place-items:center}.pr-new span svg{width:17px;height:17px}.pr-new b{font-size:14px;color:var(--c2)}.pr-new small{font-size:12.5px;color:var(--ink3)}
 @media(max-width:860px){.pr{grid-template-columns:38px minmax(0,1fr) auto;grid-template-areas:"a n c" "a r r";row-gap:6px}.pr .av{grid-area:a;align-self:start}.pr-n{grid-area:n}.pc-a{grid-area:c}.pr-r,.pr-i,.pr-w{grid-area:r}.pr-r{display:flex;gap:6px;flex-wrap:wrap}.pr-i,.pr-w{display:none}.pr-new small{display:none}}
 /* equipes */
+.tq3 .tq-now{display:flex;gap:12px;align-items:flex-start;background:#FBF8F5;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.tq-qs{display:flex;flex-direction:column;gap:8px}.tq-q2{display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;flex-wrap:wrap}.tq-q2>div:first-child{flex:1;min-width:240px}.tq-q2 b{display:block;font-size:14px}.tq-q2 small{font-size:12.5px;color:var(--ink3)}
+.tq-res{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}.tq-flow{display:flex;align-items:flex-start;gap:8px;margin-top:8px}.tq-src{display:flex;align-items:center;gap:6px;padding-top:12px;flex:none}
+.tq-cols{flex:1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;min-width:0}.tq-col{border:1px solid var(--line);border-top:4px solid var(--tc);border-radius:12px;background:#fff;padding:10px 12px}.tq-col>b{font-size:14px}.tq-col>small{display:block;font-size:12px;color:var(--ink3);margin:2px 0 8px;line-height:1.4}
+.tq-ppl{display:flex;flex-wrap:wrap;gap:6px}.tq-pp{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:3px 10px 3px 3px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink3);background:#fff;cursor:pointer;opacity:.75}.tq-pp .av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9.5px;display:grid;place-items:center;font-weight:700;filter:grayscale(1)}
+.tq-pp.on{opacity:1;color:var(--ink);border-color:var(--tc,var(--c));background:#FBF8F5}.tq-pp.on .av{filter:none}
+.tq-go{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}.tq-go .hint{font-size:12px}
+@media (max-width:980px){.tq-flow{flex-direction:column}.tq-cols{grid-template-columns:1fr}}
 .tq2 .tq-now{display:flex;gap:12px;align-items:flex-start;background:#FBF8F5;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:16px}.tq-now>span svg{width:20px;height:20px;color:var(--ink3)}.tq-now b{display:block;font-size:14px}.tq-now small{font-size:12.5px;color:var(--ink2)}
 .tq-tp2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tq-t2{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 16px;font:inherit;text-align:left;cursor:pointer;transition:.15s}.tq-t2:hover{border-color:var(--c);background:#FFFAF7}.tq-t2.rec{border-color:#F0B9A5}
 .tq-t2>b{font-size:14.5px}.tq-t2>small{font-size:12.5px;color:var(--ink2)}.tq-rec{position:absolute;top:-9px;right:12px;font-style:normal;font-size:11px;font-weight:800;background:var(--c);color:#fff;border-radius:99px;padding:2px 9px}
@@ -9633,16 +9641,24 @@ async function drawTeams(people,canManage){
   const [teams,stages]=await Promise.all([api('/teams'),api('/funnel/stages').catch(()=>[])]);
   if($('#tmNew'))$('#tmNew').onclick=()=>teamModal(null,people,stages);
   if(!teams.length){
-    const rec=act.length<=3?0:act.length<=6?1:3,how=o=>o.distribution==='roundrobin'?'rodízio':o.topics?'troca, cancelamento…':'fila';
+    const ST=drawTeams.st||(drawTeams.st={q1:act.length>3,q2:false,m:{}});
     const COL=['#E8603C','#4A6FB5','#2E8B7A'];
-    box.innerHTML=`<div class="tq-start tq2"><div class="tq-now"><span>${svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>')}</span><div><b>Hoje, sem equipes</b><small>Todo mundo vê todas as conversas. Com ${act.length<=3?'até 3 pessoas isso costuma bastar':'mais gente, dividir evita que dois respondam o mesmo cliente ou que ninguém responda'}.</small></div></div>
-      <div class="tq-sh"><b>Como você quer dividir?</b><small>Escolha um modelo. Depois é só marcar quem fica em cada equipe, e dá para mudar quando quiser.</small></div>
-      <div class="tq-tp2">${TQ_TPL.map((t,i)=>`<button type="button" class="tq-t2 ${i===rec?'rec':''}" data-tq="${i}">${i===rec?`<em class="tq-rec">indicado para ${act.length} ${act.length===1?'pessoa':'pessoas'}</em>`:''}<b>${t[0]}</b><small>${t[1]}</small>
-        <span class="tq-fl"><i class="tq-nd c">Cliente</i><i class="tq-ar">→</i><i class="tq-nd n">Nanda</i><i class="tq-ar">→</i><span class="tq-br">${t[2].map((x,k)=>`<span class="tq-tm" style="--tc:${COL[k]}"><b>${x[0]}</b><small>${x[1].handoff_default?'recebe da Nanda · ':''}${how(x[1])}</small></span>`).join('')}</span></span>
-        <span class="tq-use">Usar este modelo →</span></button>`).join('')}</div>
-      <div class="tq-ft">${canManage?'<button type="button" class="lnk" id="tqZero">Prefiro montar do zero</button>':''}<span class="hint">Rodízio: cada conversa nova vai para a próxima pessoa. Fila: quem estiver livre pega.</span></div></div>`;
-    box.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>canManage?teamSetup(TQ_TPL[+b.dataset.tq],act):toast('Só o dono ou um gestor monta as equipes.'));
-    if($('#tqZero'))$('#tqZero').onclick=()=>teamModal(null,people,stages);return}
+    const draw=()=>{const tpl=TQ_TPL[(ST.q1?1:0)+(ST.q2?2:0)],T=tpl[2];
+      T.forEach((x,k)=>{if(!ST.m[x[0]])ST.m[x[0]]=new Set(T.length===1?act.map(p=>p.id):[])});
+      const how=o=>o.distribution==='roundrobin'?'Divide por rodízio: cada conversa nova vai para a próxima pessoa':o.topics?'Recebe quando o cliente fala em troca, cancelamento, reclamação ou problema':'Fila: quem estiver livre pega';
+      const miss=T.filter(x=>!ST.m[x[0]].size);
+      box.innerHTML=`<div class="tq-start tq3"><div class="tq-now"><span>${svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>')}</span><div><b>Hoje, sem equipes</b><small>Todo mundo vê todas as conversas. Responda as duas perguntas e veja como fica.</small></div></div>
+        <div class="tq-qs">${[['q1','Alguém faz o primeiro atendimento e passa o cliente para quem fecha a venda?','Ex.: uma recepcionista ou SDR que qualifica e passa para o vendedor.'],['q2','Tem alguém só para troca, cancelamento e reclamação?','Assim o suporte não se mistura com quem está vendendo.']].map(q=>`<div class="tq-q2"><div><b>${q[1]}</b><small>${q[2]}</small></div><div class="seg">${[['1','Sim'],['0','Não']].map(v=>`<button type="button" class="${(ST[q[0]]?'1':'0')===v[0]?'on':''}" data-yn="${q[0]}:${v[0]}">${v[1]}</button>`).join('')}</div></div>`).join('')}</div>
+        <div class="tq-res"><span class="sm-lb">Fica assim · ${esc(tpl[0])}</span>
+         <div class="tq-flow"><div class="tq-src"><i class="tq-nd c">Cliente</i><i class="tq-ar">→</i><i class="tq-nd n">Nanda</i><i class="tq-ar">→</i></div>
+          <div class="tq-cols" style="--n:${T.length}">${T.map((x,k)=>`<div class="tq-col" style="--tc:${COL[k]}"><b>${x[0]}</b><small>${x[1].handoff_default?'Recebe os clientes que a Nanda passa para o time. ':''}${how(x[1])}.</small>
+            <div class="tq-ppl">${act.map(p=>{const on=ST.m[x[0]].has(p.id);return `<button type="button" class="tq-pp ${on?'on':''}" data-pp2="${esc(x[0])}:${p.id}" title="${on?'Tirar':'Colocar'} ${esc(p.name)}"><span class="av" style="background:${avc(p.name)}">${initials(p.name)}</span>${esc(p.name.split(' ')[0])}${on?' ✓':''}</button>`}).join('')}</div></div>`).join('')}</div></div>
+         <div class="tq-go">${canManage?`<button type="button" class="btn p" id="tqGo2" ${miss.length?'disabled':''}>${miss.length?`Toque em quem fica em ${miss.map(x=>x[0]).join(' e ')}`:`Criar ${T.length===1?'a equipe':'as '+T.length+' equipes'}`}</button><button type="button" class="lnk" id="tqZero">Prefiro montar do zero</button>`:'<span class="hint">Só o dono ou um gestor monta as equipes.</span>'}<span class="hint">Uma pessoa pode ficar em mais de uma. Dá para mudar tudo depois.</span><span class="err" id="tqE2"></span></div></div></div>`;
+      box.querySelectorAll('[data-yn]').forEach(b=>b.onclick=()=>{const [k,v]=b.dataset.yn.split(':');ST[k]=v==='1';draw()});
+      box.querySelectorAll('[data-pp2]').forEach(b=>b.onclick=()=>{if(!canManage)return;const [t,id]=b.dataset.pp2.split(':');const m=ST.m[t];m.has(id)?m.delete(id):m.add(id);draw()});
+      if($('#tqZero'))$('#tqZero').onclick=()=>teamModal(null,people,stages);
+      if($('#tqGo2'))$('#tqGo2').onclick=async()=>{const b=$('#tqGo2');b.disabled=true;try{for(const x of T)await api('/teams',{method:'POST',body:{name:x[0],...x[1],member_ids:[...ST.m[x[0]]]}});drawTeams.st=null;toast(T.length===1?'Equipe criada.':'Equipes criadas.');VIEWS.equipe()}catch(e){$('#tqE2').textContent=e.message;b.disabled=false}}};
+    draw();return}
   const empty=t=>!(t.member_ids||[]).some(id=>PL[id]&&PL[id].active);
   const SN=Object.fromEntries(stages.map(s=>[s.id,s.name]));
   const nm=x=>x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
