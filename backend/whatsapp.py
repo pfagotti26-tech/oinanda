@@ -25,7 +25,7 @@ PUBLIC_URL = os.environ.get('APP_PUBLIC_URL', 'https://app.oinanda.com.br').rstr
 WINDOW = timedelta(hours=24)
 ON_INBOUND = None  # a Nanda se pendura aqui (ai.py) para responder mensagens novas
 ON_HUMAN_SEND = None  # e aqui, para sair de cena quando alguém do time responde
-STOP = re.compile(r'^\s*(parar|pare|sair|stop|descadastrar|n[aã]o quero (mais )?receber( mensagens?)?)\s*[.!]*\s*$', re.I)
+STOP = re.compile(r'^\s*(parar|pare|sair|stop|descadastrar|parar promo[çc][õo]es|parar mensagens|n[aã]o quero (mais )?receber( mensagens?)?)\s*[.!]*\s*$', re.I)
 
 def ad_of(m):
     """Clique em anúncio de 'mandar mensagem': a Meta manda junto de qual anúncio veio."""

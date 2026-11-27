@@ -353,6 +353,10 @@ async def system_for(s, company, contact=None):
                 extra += 'PODE FAZER SENTIDO OFERECER (só quando combinar com a conversa, sem empurrar; preço só se estiver no conhecimento): ' + '; '.join(
                     ('renovação de ' if o['why'] == 'renovar' else 'voltar com ' if o['why'] == 'voltar' else '') + o['name'] for o in offs) + '\n'
     except Exception: log.exception('falha ao montar as promoções')
+    try:  # respondeu a uma campanha: a Nanda sabe o que foi oferecido e qual é o objetivo
+        from campaigns import nanda_block as camp_block
+        if contact: extra += await camp_block(company, contact)
+    except Exception: log.exception('falha ao montar a campanha')
     try:  # de onde a pessoa veio (link, anúncio, plataforma de venda): a Nanda cita no começo para a conversa não parecer genérica
         if contact: extra += await origin_hint(company, contact)
     except Exception: log.exception('falha ao montar a origem')

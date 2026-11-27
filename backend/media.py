@@ -75,6 +75,19 @@ async def upload(phone_number_id, token, data, mime, filename):
         raise HTTPException(400, 'A Meta recusou o arquivo: ' + ((d.get('error') or {}).get('message') or f'erro {r.status_code}'))
     return d['id']
 
+async def meta_upload_handle(token, data, mime):
+    """Imagem de exemplo para a Meta aprovar um modelo com imagem: upload retomável do app (devolve o "handle")."""
+    app_id = os.environ.get('META_APP_ID')
+    if not app_id: raise HTTPException(400, 'Imagem em modelo ainda não está liberada no servidor (falta o META_APP_ID).')
+    async with httpx.AsyncClient(timeout=90) as c:
+        r = await c.post(f'{GRAPH}/{app_id}/uploads', params={'file_length': len(data), 'file_type': mime, 'access_token': token})
+        sid = (r.json() if r.content else {}).get('id')
+        if r.status_code >= 400 or not sid: raise HTTPException(400, 'A Meta não aceitou a imagem de exemplo.')
+        r = await c.post(f'{GRAPH}/{sid}', headers={'Authorization': 'OAuth ' + token, 'file_offset': '0'}, content=data)
+        h = (r.json() if r.content else {}).get('h')
+    if r.status_code >= 400 or not h: raise HTTPException(400, 'A Meta não aceitou a imagem de exemplo.')
+    return h
+
 def transcribe_ready(): return bool(os.environ.get('TRANSCRIBE_API_KEY'))
 
 async def transcribe(data, mime, filename):
