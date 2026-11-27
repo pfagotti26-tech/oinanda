@@ -381,9 +381,9 @@ async def auto_template(aid: str, request: Request, user=Depends(managers)):
 
 @router.get('/automations/runs')
 async def runs(limit: int = 60, user=Depends(managers)):
-    rows = await db.automation_runs.find({'company_id': user['company_id']}, {'_id': 0}).sort('at', -1).to_list(min(limit, 300))
+    rows = await db.automation_runs.find({'company_id': user['company_id']}, {'_id': 0}).sort('at', -1).to_list(min(limit, 1000))
     ids = list({r['contact_id'] for r in rows})
-    names = {c['id']: c['name'] for c in await db.contacts.find({'id': {'$in': ids}}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
+    names = {c['id']: c['name'] for c in await db.contacts.find({'id': {'$in': ids}}, {'_id': 0, 'id': 1, 'name': 1}).to_list(2000)}
     for r in rows: r['contact_name'] = names.get(r['contact_id'])
     return rows
 

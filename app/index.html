@@ -610,6 +610,21 @@ td>.sure,tr+.sure{margin:4px}
 
 
 /* Automações em linhas */
+.hx-why{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}.hx-wh{flex-basis:100%;display:flex;align-items:baseline;gap:8px;margin-bottom:2px}.hx-wh b{font-size:14px}.hx-wh small{font-size:12.5px;color:var(--ink3)}
+.hx-wr{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#FBF8F5;border-radius:99px;padding:5px 6px 5px 12px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}.hx-wr b{background:#fff;border-radius:99px;padding:1px 8px;font-size:12px;color:var(--ink)}.hx-wr:hover,.hx-wr.on{border-color:var(--c);color:var(--ink)}.hx-wr.on{background:#FFF8F4}
+.hx-fix{flex-basis:100%;display:flex;align-items:center;gap:8px;margin:6px 0 0;font-size:12.5px;color:var(--ink2)}.hx-fix svg{width:15px;height:15px;color:var(--ink3);flex:none}.hx-fix .lnk{font-size:12.5px}
+.hx-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.hx-q{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:0 12px;height:38px;flex:1;min-width:180px;max-width:280px}.hx-q svg{width:16px;height:16px;color:var(--ink3)}.hx-q input{border:0;outline:0;font:inherit;font-size:13.5px;flex:1;min-width:0;background:none}
+.hx-sel{height:38px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:13px;padding:0 10px;color:var(--ink)}
+.hx-st{margin:0 0 0 auto}.hx-st em{font-style:normal;opacity:.6;margin-left:2px}
+.hx-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2);background:#FFF8F4;border:1px solid #F6D9CC;border-radius:99px;padding:3px 4px 3px 12px;margin-bottom:12px}.hx-chip button{border:0;background:none;font-size:16px;line-height:1;color:var(--ink3);cursor:pointer;padding:0 6px}
+.hx-d{padding:10px 16px 6px;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);background:#FBF8F5;border-bottom:1px solid var(--line)}.hx-d:not(:first-child){border-top:1px solid var(--line)}
+.hx-r{display:flex;align-items:center;gap:12px;width:100%;padding:9px 16px;border:0;background:#fff;font:inherit;color:inherit;text-align:left;cursor:pointer}.hx-r+.hx-r{border-top:1px solid #F4EEE9}.hx-r:hover{background:#FDFBF9}
+.hx-r .av{width:32px;height:32px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:800;flex:none}
+.hx-t{flex:1;min-width:0}.hx-t b{display:block;font-size:13.5px}.hx-t small{display:block;font-size:12.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hx-t em{font-style:normal}
+.hx-s{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink3);white-space:nowrap;width:110px}.hx-s i{width:7px;height:7px;border-radius:50%;background:#C9C2BB}.hx-s.ok{color:var(--ok)}.hx-s.ok i{background:#16A34A}.hx-s.bad{color:#B42318}.hx-s.bad i{background:#D92D20}.hx-s.warn i{background:#F59E0B}
+.hx-r time{font-size:12px;color:var(--ink3);width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.hx-more{display:block;margin:-10px auto 0}
+@media(max-width:760px){.hx-q{max-width:none;flex-basis:100%}.hx-sel{flex:1 1 40%;min-width:0}.hx-st{margin:0}.hx-s{width:auto}.hx-s{font-size:0;gap:0}}
 .ax-rk{font-style:normal;font-size:11px;font-weight:700;color:var(--c2);background:var(--soft);border-radius:99px;padding:1px 8px;margin-left:8px;vertical-align:1px}
 .ax-gs{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 12px}.ax-gs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}.ax-gs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .ax-st{width:auto;margin-left:12px}
@@ -6475,14 +6490,40 @@ function drawTpls(tpls){
   document.querySelectorAll('[data-tdel]').forEach(b=>b.onclick=async()=>{if(!await sure('Apagar este modelo? Ele também sai da Meta.'))return;try{await api('/templates/'+b.dataset.tdel,{method:'DELETE'});CV.tpls=null;VIEWS.automacoes()}catch(e){toast(e.message)}});
 }
 async function drawRuns(){
-  const rows=await api('/automations/runs?limit=300');AU.rf=AU.rf||'all';
-  const lab={sent:['ok','enviada'],skipped:['grey','não enviada'],error:['bad','erro'],sending:['warn','enviando']};
-  const c=k=>rows.filter(r=>k==='all'||r.status===k).length;const xs=rows.filter(r=>AU.rf==='all'||r.status===AU.rf);
-  $('#auBody').innerHTML=`<div class="vd-c">${rows.length?`<div class="hd"><div class="fz-seg">${[['all','Todos'],['sent','Enviadas'],['skipped','Não enviadas'],['error','Com erro']].filter(f=>f[0]==='all'||c(f[0])).map(f=>`<button class="${AU.rf===f[0]?'on':''}" data-rf="${f[0]}">${f[1]} <em>${c(f[0])}</em></button>`).join('')}</div><span class="sp"></span><span class="hint">últimos 300 envios</span></div>
-    <div class="au-hl">${xs.map(r=>{const l=lab[r.status]||['grey',r.status];return `<div class="au-hr" data-oc="${r.contact_id}" tabindex="0" role="button"><span class="pill ${l[0]}">${l[1]}</span><div><b>${esc(r.contact_name||'Cliente')}</b><span>${esc(r.automation)}${r.detail?` · <em>${esc(r.detail)}</em>`:''}</span></div><small>${dt(r.at)}</small><span class="lk-go">${svg('<path d="m9 6 6 6-6 6"/>')}</span></div>`}).join('')}</div>`
-   :'<div class="cb-empty"><b>Nenhum envio ainda</b><p>Cada mensagem que uma automação mandar aparece aqui: para quem, quando e se foi entregue. Quando não der para enviar (por exemplo, fora das 24 h sem modelo aprovado), o motivo aparece também.</p></div>'}</div>`;
-  document.querySelectorAll('[data-rf]').forEach(b=>b.onclick=()=>{AU.rf=b.dataset.rf;drawRuns()});
-  document.querySelectorAll('.au-hr[data-oc]').forEach(b=>{const g=()=>ctProfile(b.dataset.oc);b.onclick=g;b.onkeydown=e=>{if(e.key==='Enter')g()}});
+  if(!AU.runs)AU.runs=await api('/automations/runs?limit=1000');const rows=AU.runs;
+  const F=AU.hf||(AU.hf={st:AU.rf==='skipped'?'skipped':'all',au:'',why:'',q:'',per:'30',n:40});AU.rf=null;
+  const lab={sent:['ok','Enviada'],skipped:['grey','Não enviada'],error:['bad','Erro'],sending:['warn','Enviando']};
+  const sinceD=F.per==='all'?null:new Date(Date.now()-(+F.per)*864e5);
+  const base=rows.filter(r=>(!sinceD||new Date(r.at)>=sinceD)&&(!F.au||r.automation===F.au)&&(!F.q||(r.contact_name||'').toLowerCase().includes(F.q.toLowerCase())));
+  const why=r=>{const d=r.detail||'';return /modelo/i.test(d)?'Sem modelo aprovado pela Meta':/instagram/i.test(d)?'Instagram: passou das 24 h':/parar|opt/i.test(d)?'Cliente pediu para parar':/fora do hor|8h|21h/i.test(d)?'Fora do horário de envio':d?d.charAt(0).toUpperCase()+d.slice(1).split(':')[0]:'Outro motivo'};
+  const xs=base.filter(r=>(F.st==='all'||r.status===F.st)&&(!F.why||why(r)===F.why));
+  const cnt=k=>base.filter(r=>k==='all'||r.status===k).length;
+  const auts=[...new Set(rows.map(r=>r.automation))].sort();
+  const reasons={};base.filter(r=>r.status==='skipped').forEach(r=>{const k=why(r);reasons[k]=(reasons[k]||0)+1});
+  const R=Object.entries(reasons).sort((a,b)=>b[1]-a[1]);
+  const dk=v=>{const d=new Date(v),t=new Date();const y=new Date();y.setDate(t.getDate()-1);return d.toDateString()===t.toDateString()?'Hoje':d.toDateString()===y.toDateString()?'Ontem':`${WEEKD[(d.getDay()+6)%7]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`};
+  const hm=v=>new Date(v).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  let last='';const shown=xs.slice(0,F.n);
+  const list=shown.map(r=>{const l=lab[r.status]||['grey',r.status],k=dk(r.at),h=k!==last?`<div class="hx-d">${k}</div>`:'';last=k;const nm=r.contact_name||'Cliente';
+    return `${h}<button type="button" class="hx-r" data-oc="${r.contact_id}"><span class="av" style="background:${avc(nm)}">${initials(nm)}</span><span class="hx-t"><b>${esc(nm)}</b><small>${esc(r.automation)}${r.status!=='sent'&&r.detail?` · <em>${esc(r.detail)}</em>`:''}</small></span><span class="hx-s ${l[0]}"><i></i>${l[1]}</span><time>${hm(r.at)}</time></button>`}).join('');
+  $('#auBody').innerHTML=rows.length?`
+   ${R.length&&F.st!=='sent'?`<div class="hx-why"><div class="hx-wh"><b>Por que ${cnt('skipped')===1?'1 não foi enviada':cnt('skipped')+' não foram enviadas'}</b><small>Clique para ver só essas.</small></div>${R.slice(0,4).map(([k,v])=>`<button type="button" class="hx-wr ${F.why===k?'on':''}" data-why="${esc(k)}"><span>${esc(k)}</span><b>${v}</b></button>`).join('')}${R.some(([k])=>/modelo/i.test(k))?`<p class="hx-fix">${svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>')}<span>"Sem modelo aprovado" se resolve pedindo a aprovação da Meta na própria automação. <button type="button" class="lnk" data-gol>Ver automações</button></span></p>`:''}</div>`:''}
+   <div class="hx-bar"><label class="hx-q">${svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')}<input id="hxQ" placeholder="Buscar cliente" value="${esc(F.q)}"></label>
+    <select id="hxA" class="hx-sel"><option value="">Todas as automações</option>${auts.map(a=>`<option ${F.au===a?'selected':''}>${esc(a)}</option>`).join('')}</select>
+    <select id="hxP" class="hx-sel">${[['7','Últimos 7 dias'],['30','Últimos 30 dias'],['all','Tudo']].map(p=>`<option value="${p[0]}" ${F.per===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select>
+    <div class="ax-gs hx-st">${[['all','Todas'],['sent','Enviadas'],['skipped','Não enviadas'],['error','Com erro']].filter(f=>f[0]==='all'||cnt(f[0])||F.st===f[0]).map(f=>`<button class="${F.st===f[0]?'on':''}" data-st="${f[0]}">${f[1]} <em>${cnt(f[0])}</em></button>`).join('')}</div></div>
+   ${F.why?`<div class="hx-chip">Motivo: <b>${esc(F.why)}</b><button type="button" data-why="${esc(F.why)}" aria-label="Tirar filtro">×</button></div>`:''}
+   ${xs.length?`<div class="ax-l hx-l">${list}</div>${xs.length>F.n?`<button type="button" class="btn sm hx-more" id="hxM">Mostrar mais ${Math.min(40,xs.length-F.n)} de ${xs.length-F.n}</button>`:''}`:'<div class="cb-empty"><b>Nada com esses filtros</b><p>Tente outro período ou limpe a busca.</p></div>'}`
+   :'<div class="vd-c"><div class="cb-empty"><b>Nenhum envio ainda</b><p>Cada mensagem que uma automação mandar aparece aqui: para quem, quando e se foi entregue. Quando não der para enviar, o motivo aparece também.</p></div></div>';
+  const re=()=>{F.n=40;drawRuns()};
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{F.st=b.dataset.st;if(F.st!=='skipped')F.why='';re()});
+  document.querySelectorAll('[data-why]').forEach(b=>b.onclick=()=>{F.why=F.why===b.dataset.why?'':b.dataset.why;if(F.why)F.st='skipped';re()});
+  if($('#hxA'))$('#hxA').onchange=e=>{F.au=e.target.value;re()};
+  if($('#hxP'))$('#hxP').onchange=e=>{F.per=e.target.value;re()};
+  if($('#hxQ')){let t;$('#hxQ').oninput=e=>{clearTimeout(t);t=setTimeout(()=>{F.q=e.target.value;re();const q=$('#hxQ');q.focus();q.setSelectionRange(q.value.length,q.value.length)},250)}}
+  if($('#hxM'))$('#hxM').onclick=()=>{F.n+=40;drawRuns()};
+  if($('[data-gol]'))$('[data-gol]').onclick=()=>{AU.tab='lista';syncUrl();VIEWS.automacoes()};
+  document.querySelectorAll('.hx-r[data-oc]').forEach(b=>b.onclick=()=>ctProfile(b.dataset.oc));
 }
 const STAGE_COLORS=['#5B7DB1','#8E6CC9','#2F9AA0','#D99A1E','#E8603F','#C2557A','#4F8A5B','#7A6A58'];
 const stColor=(s,i)=>s.kind==='won'?'#0A5C50':s.kind==='lost'?'#A7B1BB':STAGE_COLORS[i%STAGE_COLORS.length];
@@ -8925,7 +8966,7 @@ const VIEWS={
    <nav class="utabs">${[['lista',`Automações${n?` <em class="ut-n">${n}</em>`:''}`],['hist','Histórico'],['modelos','Modelos da Meta']].map(t=>`<button class="${AU.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</nav><div id="auBody"></div>`;
   document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{AU.tab=b.dataset.tab;syncUrl();VIEWS.automacoes()});
   if(AU.tab==='modelos')return drawTpls(tpls);
-  if(AU.tab==='hist')return drawRuns();
+  if(AU.tab==='hist'){AU.runs=null;return drawRuns()}
   $('#auNew').onclick=()=>autoModal(null,d,tpls);
   const T=Object.fromEntries(tpls.map(t=>[t.id,t]));const recs=d.recipes.filter(r=>!r.added);
   const cfgA=AG.cfg||await api('/agenda/settings').catch(()=>null);const tm=new Date();tm.setDate(tm.getDate()+1);
@@ -8977,7 +9018,7 @@ const VIEWS={
   const hw=$('#auBody .au-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('auHow',hw.open?'0':'1')}catch(e){}};
   document.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{AU.grp=b.dataset.gs;reload()});
   document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{AU.open=AU.open===b.dataset.op?null:b.dataset.op;reload()});
-  document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{AU.tab='hist';AU.rf='skipped';syncUrl();reload()});
+  document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{AU.tab='hist';AU.hf=null;AU.rf='skipped';syncUrl();reload()});
   // ao ligar uma ideia pronta, já pede a aprovação da Meta quando ela vai cair fora das 24 h
   const addRec=async k=>{const r=d.recipes.find(x=>x.key===k),a=await api('/automations',{method:'POST',body:{recipe:k}});
     if(d.whatsapp&&r&&!(r.trigger==='no_reply'&&r.hours<24)){try{await api('/automations/'+a.id+'/template',{method:'POST'});return 1}catch(e){}}return 0};
