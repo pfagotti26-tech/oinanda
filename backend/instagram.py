@@ -330,6 +330,12 @@ async def verify(request: Request):
         return Response(q.get('hub.challenge', ''), media_type='text/plain')
     raise HTTPException(403, 'Token de verificação inválido.')
 
+async def on_flow(a, contact, msg, text):
+    import igrules
+    try: return await igrules.on_message(a, await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact, msg, text)
+    except Exception:
+        log.exception('falha na automação do instagram'); return False
+
 @router.post('/ig/webhook')
 async def webhook(request: Request):
     raw = await request.body()
@@ -450,6 +456,7 @@ async def ingest(a, m, ch='instagram'):
     if url and kind != 'text':
         from media import schedule
         schedule(doc['id'])  # baixa (e transcreve) antes de chamar a Nanda
+    elif ch == 'instagram' and await on_flow(a, contact, msg, text): pass  # botão do link ou boas-vindas já respondeu
     elif whatsapp.ON_INBOUND: whatsapp.ON_INBOUND(cid, contact['id'], doc['id'])
     from push import later, on_inbound as push_inbound
     later(push_inbound(cid, contact['id'], text))
@@ -474,7 +481,7 @@ async def on_comment(a, v):
     first = (contact.get('name') or '').lstrip('@').split(' ')[0]
     dm = rule['dm'].replace('{primeiro_nome}', first).replace('{nome}', contact.get('name') or '').replace('Oi !', 'Oi!').replace('Oi , ', 'Oi, ')
     try:
-        r = await ig('POST', msg_path(a), tok, payload={'recipient': {'comment_id': cmt}, 'message': {'text': dm}})
+        r, dm = await igrules.private_reply(a, cmt, rule, contact, dm)
         rp = igrules.reply_of(rule)
         if rp:
             try: await ig('POST', f'/{cmt}/replies', tok, {'message': rp})
