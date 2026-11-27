@@ -3406,6 +3406,7 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .sm-dl{font-size:12.5px;font-weight:700}.sm-dsw{display:flex;align-items:center;gap:6px}.sm-du button{padding:4px 9px;font-size:12px}.sm-it2 .t{margin-left:auto;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
 .sm-pays{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
 .sm-parc[hidden]{display:none!important}
+.inl .sm-ct{flex-wrap:wrap}.inl .sm-ct .lnk{margin-left:0}.inl .sm-ctn{flex-basis:calc(100% - 50px)}.inl .sm-ct .lnk:first-of-type{margin-left:44px}
 .inl .sm-mb{display:none!important}.inl .sm3 .sm-act{display:flex!important}
 .inl .sm-pays{display:flex;flex-wrap:wrap;gap:6px}.inl .sm-pay{padding:7px 11px;border-radius:99px;font-size:12.5px}.inl .sm-pay svg{width:15px;height:15px}
 .inl .sm3 .sm-sec,.inl .sm-sec{padding:14px 16px;gap:8px}
@@ -6587,7 +6588,7 @@ function vdFormOpen(){try{localStorage.setItem('vdFormOff','0')}catch(e){}vdForm
 async function vdList(){
   VD.st=VD.st||'open';
   if(!$('#vdF')){$('#vdBody').innerHTML=`<div id="vdF"></div><div class="vd-lh"><h3>Vendas registradas</h3><span>clique numa venda para ver, editar ou cancelar</span></div><div class="vd-bar" id="vdBar"></div><div id="vdL"><div class="empty">Carregando...</div></div>`;vdFormDraw()}
-  vdBar(()=>vdList(),true);
+  await vdOptions();vdBar(()=>vdList(),true);
   const r=await api('/sales?'+vdQs({q:VD.q,status:VD.st})+(VD.imp?'&imported=hide':''));const it=r.items;const anyImp=VD.imp||it.some(x=>x.imported);
   const okc=it.filter(x=>x.status!=='cancelled'),tot=okc.reduce((a,x)=>a+x.total,0),pend=it.filter(x=>x.status==='pending').length;
   const sellers=x=>(x.sellers||[]).map(y=>esc(y.name.split(' ')[0])+(x.sellers.length>1?` <span class="hint">${num(y.pct)}%</span>`:'')).join(' + ')||'<span class="hint">sem vendedor</span>';
