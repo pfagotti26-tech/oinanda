@@ -3332,7 +3332,11 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .eq-st li>i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12.5px;background:var(--bg);color:var(--ink3);flex:none}.eq-st li>i svg{width:15px;height:15px}
 .eq-st li.ok{background:transparent;border-color:transparent;padding:4px 12px}.eq-st li.ok>i{background:var(--oksoft);color:var(--ok)}.eq-st li.ok b{color:var(--ink3);font-weight:600}.eq-st li.nx{border-color:var(--c);box-shadow:0 6px 18px rgba(233,90,58,.08)}.eq-st li.nx>i{background:var(--c);color:#fff}
 .eq-st li>span{flex:1;min-width:0;display:flex;flex-direction:column}.eq-st li b{font-size:14px}.eq-st li small{font-size:12.5px;color:var(--ink2)}.eq-st li em{font-style:normal;font-size:12px;font-weight:700;color:var(--ok)}
-.eq-st li.eq-wa-in{display:block;padding:0;border:0;background:none}.eq-st li.eq-wa-in .eq-wa{margin:0}
+.eq-wa-out{margin-bottom:18px}.eq-wa-out .eq-wa{margin:0}
+.eq-rail{display:none}
+@media (min-width:1480px){#page:has(.eq-lay){max-width:1400px}.eq-lay{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px;align-items:start}.eq-top{display:none}.eq-rail{display:block;position:sticky;top:16px}
+ .eq-rail .eq-st{margin:0;padding:16px}.eq-rail .eq-sth{flex-direction:column;align-items:stretch;gap:8px}.eq-rail .eq-sth b{font-size:16px}.eq-rail .eq-pg{width:100%}
+ .eq-rail .eq-st li{flex-wrap:wrap;align-items:flex-start}.eq-rail .eq-st li>span{flex:1 1 calc(100% - 44px)}.eq-rail .eq-st li .btn{margin-left:40px}.eq-rail .eq-st li.ok{padding:4px 6px}.eq-rail .eq-st li.ok em{display:none}}
 .eq-done{display:flex;align-items:center;gap:8px;background:#F2FBF5;border:1px solid #CDE8D6;border-radius:14px;padding:10px 14px;margin-bottom:18px;font-size:13.5px;color:var(--ink2)}.eq-done svg{width:18px;height:18px;color:var(--ok)}.eq-done b{color:var(--ink)}
 .eq-sh{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.eq-sh h3{margin:0;font-size:17px}.eq-sh h3 em{font-style:normal;font-size:12px;font-weight:800;color:var(--ink3);background:var(--bg);border-radius:99px;padding:1px 8px;margin-left:4px;vertical-align:2px}.eq-who{margin-left:auto;font-size:13px;font-weight:700}
 .pc-me{font-size:10.5px!important;font-weight:800!important;background:var(--bg);color:var(--ink3)!important;border-radius:99px;padding:1px 7px;margin-left:4px;vertical-align:2px}
@@ -9412,17 +9416,20 @@ const VIEWS={
   const nd=STP.filter(x=>x[3]).length,nxt=STP.find(x=>!x[3]);let stOpen=(()=>{try{return localStorage.getItem('eqSt')!=='0'}catch(e){return true}})();
   const stepsH=nd===STP.length?`<div class="eq-done">${svg('<path d="M20 6 9 17l-5-5"/>')}<b>Equipe configurada.</b><span>Tudo pronto para o time atender.</span></div>`
    :`<section class="eq-st"><div class="eq-sth"><div><span class="eq-eb">Monte sua equipe · ${nd} de ${STP.length}</span><b>${esc(nxt[1])}</b></div><div class="eq-pg"><i style="width:${Math.round(100*nd/STP.length)}%"></i></div></div>
-     <ol>${STP.map((x,i)=>`<li class="${x[3]?'ok':x===nxt?'nx':''}"><i>${x[3]?svg('<path d="M20 6 9 17l-5-5"/>'):i+1}</i><span><b>${x[1]}</b>${x[3]?'':`<small>${x[2]}</small>`}</span>${x[3]?'<em>feito</em>':`<button type="button" class="btn sm ${x===nxt?'p':''}" data-stp="${x[5]}">${x[4]}</button>`}</li>${x[0]==='avisos'&&!x[3]&&nt?`<li class="eq-wa-in" id="eqWaBox" style="display:none">${eqWa(nt,canManage,team)}</li>`:''}`).join('')}</ol></section>`;
+     <ol>${STP.map((x,i)=>`<li class="${x[3]?'ok':x===nxt?'nx':''}"><i>${x[3]?svg('<path d="M20 6 9 17l-5-5"/>'):i+1}</i><span><b>${x[1]}</b>${x[3]?'':`<small>${x[2]}</small>`}</span>${x[3]?'<em>feito</em>':`<button type="button" class="btn sm ${x===nxt?'p':''}" data-stp="${x[5]}">${x[4]}</button>`}</li>`).join('')}</ol></section>`;
+  const waStep=STP.find(x=>x[0]==='avisos'),waBox=canManage&&waStep&&!waStep[3]&&nt?`<div class="eq-wa-out" id="eqWaBox" style="display:none">${eqWa(nt,canManage,team)}</div>`:'';
+  const rail=canManage&&nd<STP.length;
   const shown=people.filter(x=>EF==='all'||(EF==='acesso'?!!x.m:!!(x.p&&x.p.active!==false)));
   $('#page').innerHTML=`<div class="fz-hd eq-hd"><div class="agt"><h1>Equipe</h1><p>Quem atende seus clientes: nas conversas do WhatsApp e Instagram, na agenda, ou nos dois.</p></div><span class="sp"></span>${canManage?`<button class="btn p" id="eqInv">${svg('<path d="M12 5v14M5 12h14"/>')}<span>Adicionar pessoa</span></button>`:''}</div>
    <div id="invOut"></div>
-   ${canManage?stepsH:''}
+   ${canManage&&!rail?stepsH:''}
+   <div class="${rail?'eq-lay':''}"><div class="eq-main">${rail?`<div class="eq-top">${stepsH}</div>`:''}${waBox}
    <div class="eq-sh"><h3>Pessoas <em>${people.length}</em></h3>${people.length>3?`<div class="seg" id="eqF">${[['all','Todos'],['acesso','Atendem conversas'],['agenda','Atendem na agenda']].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>`:''}<button type="button" class="lnk eq-who" id="eqWho">Quem vê o quê?</button></div>
    <div class="pc-bar" style="display:none"><div class="seg" id="eqF">${[['all','Todos',people.length],['acesso','Usam o sistema',team.length],['agenda','Atendem na agenda',PROS.filter(p=>p.active!==false).length]].map(x=>`<button type="button" data-ef="${x[0]}" class="${EF===x[0]?'on':''}">${x[1]} <em>${x[2]}</em></button>`).join('')}</div></div>
    <div class="pr-l0">${shown.map(card).join('')}${canManage?`<button type="button" class="pr-new" id="eqNew"><span>${svg('<path d="M12 5v14M5 12h14"/>')}</span><b>Adicionar pessoa</b><small>nas conversas, na agenda ou nos dois</small></button>`:''}</div>
    <div id="eqHow" style="display:none;margin-top:14px">${hero}</div>
    <div class="eq-sh" style="margin-top:28px"><h3>Equipes de conversa</h3>${ii('eq_tm')}<span class="hint">Como as conversas do WhatsApp e Instagram são divididas.</span><span style="margin-left:auto;display:flex;gap:8px;align-items:center"><button type="button" class="lnk tq-tg2" id="tmTg" hidden></button>${canManage?'<button class="btn sm" id="tmNew">+ Nova equipe</button>':''}</span></div>
-   <div id="tmL"></div>`;
+   <div id="tmL"></div></div>${rail?`<aside class="eq-rail">${stepsH}</aside>`:''}</div>`;
   drawTeams(team,canManage);
   if($('#eqWaMe'))$('#eqWaMe').onclick=()=>meModal();
   if($('#eqWaTpl'))$('#eqWaTpl').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{await api('/notify/template',{method:'POST'});toast('Modelo enviado para a Meta. A aprovação costuma sair em minutos.');VIEWS.equipe()}catch(x){toast(x.message);b.disabled=false}};
