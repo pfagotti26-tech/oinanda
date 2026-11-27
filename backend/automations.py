@@ -38,9 +38,18 @@ TRIGGERS = {'stage_enter': 'Entrou na etapa', 'no_reply': 'Sem resposta do clien
 GRACE = timedelta(hours=24)  # depois do momento certo, ainda tenta por 24 h (ex.: servidor reiniciando, fora do horário)
 QUIET = (8, 21)
 VARS = {'primeiro_nome': 'Ana', 'nome': 'Ana Souza', 'empresa': 'Studio Forma', 'servico': 'Aula experimental', 'profissional': 'Léo', 'data': '12/11', 'hora': '09:00',
-        'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10', 'link_pagamento': 'https://pay.hotmart.com/X1', 'valor': 'R$ 997,00'}
+        'produto': 'Plano trimestral', 'vencimento': '20/11', 'cupom': 'VOLTA10', 'link_pagamento': 'https://pay.hotmart.com/X1', 'valor': 'R$ 997,00', 'tempo_sem_vir': '3 meses'}
 
 # ---------- variáveis ----------
+def since_txt(d):
+    """Há quanto tempo, do jeito que se fala: "2 semanas", "3 meses", "1 ano"."""
+    days = max(0, d.days)
+    if days < 14: return f'{max(1, days)} dia' + ('s' if days != 1 else '')
+    if days < 60: return f'{days // 7} semanas'
+    if days < 365: return f'{days // 30} meses'
+    y = days // 365
+    return f'{y} ano' + ('s' if y > 1 else '')
+
 def render(text, ctx):
     return re.sub(r'\{(\w+)\}', lambda m: str(ctx.get(m.group(1), m.group(0))), text or '')
 
@@ -51,12 +60,18 @@ async def context(company, contact, appt=None):
         appt = up[0] if up else None
     name = (contact.get('name') or '').strip()
     first = name.split(' ')[0] if name and not name.isdigit() else ''
-    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'profissional': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': '', 'link_pagamento': '', 'valor': ''}
+    ctx = {'primeiro_nome': first or 'tudo bem', 'nome': name if first else '', 'empresa': company['name'], 'servico': '', 'profissional': '', 'data': '', 'hora': '', 'produto': '', 'vencimento': '', 'cupom': '', 'link_pagamento': '', 'valor': '', 'tempo_sem_vir': ''}
     hs = [x for x in contact.get('holdings') or [] if x.get('expires_at')]
     if hs:  # o item que vence primeiro (ou o que venceu por último)
         fut = [x for x in hs if aware(x['expires_at']) >= now()]
         x = min(fut, key=lambda y: aware(y['expires_at'])) if fut else max(hs, key=lambda y: aware(y['expires_at']))
         ctx.update(produto=x['name'], vencimento=f"{aware(x['expires_at']).astimezone(tz):%d/%m}")
+    last = aware(contact.get('last_sale_at'))
+    try:
+        la = await db.appointments.find_one({'company_id': company['id'], 'contact_id': contact['id'], 'status': {'$in': ['done', 'confirmed', 'scheduled']}, 'start': {'$lt': now()}}, {'_id': 0, 'start': 1}, sort=[('start', -1)])
+        if la and (not last or aware(la['start']) > last): last = aware(la['start'])
+    except Exception: pass
+    if last: ctx['tempo_sem_vir'] = since_txt(now() - last)
     if appt and appt.get('_extra'): ctx.update(appt['_extra']); appt = None
     if appt:
         t = aware(appt['start']).astimezone(tz)
@@ -122,7 +137,8 @@ class TemplateIn(BaseModel):
 
 OPT_OUT_FOOTER = 'Responda SAIR para não receber mais promoções'
 
-async def create_template(company_id, label, body, category, quick=None):
+async def create_template(company_id, label, body, category, quick=None, image=None):
+    """image: (bytes, mime) para a imagem no topo da mensagem. A Meta aprova com essa imagem de exemplo; no envio, cada campanha manda a sua."""
     text, params = to_meta(body)
     n = await number_of(company_id)
     slug = re.sub(r'[^a-z0-9]+', '_', label.lower().encode('ascii', 'ignore').decode()).strip('_')[:40] or 'modelo'
@@ -130,12 +146,17 @@ async def create_template(company_id, label, body, category, quick=None):
     comp = {'type': 'BODY', 'text': text}
     if params: comp['example'] = {'body_text': [[VARS[p] for p in params]]}
     comps = [comp]
-    footer = OPT_OUT_FOOTER if category == 'MARKETING' else None  # promoção sempre ensina a sair: menos bloqueio, número mais saudável
+    if image:
+        import media
+        handle = await media.meta_upload_handle(decrypt(n['token_enc']), image[0], image[1])
+        comps.insert(0, {'type': 'HEADER', 'format': 'IMAGE', 'example': {'header_handle': [handle]}})
+    stop_btn = any('parar' in (q or '').lower() for q in quick or [])
+    footer = OPT_OUT_FOOTER if category == 'MARKETING' and not stop_btn else None  # promoção sempre ensina a sair: menos bloqueio, número mais saudável
     if footer: comps.append({'type': 'FOOTER', 'text': footer})
     if quick: comps.append({'type': 'BUTTONS', 'buttons': [{'type': 'QUICK_REPLY', 'text': q[:25]} for q in quick[:3]]})
     res = await whatsapp.graph('POST', f'/{n["waba_id"]}/message_templates', decrypt(n['token_enc']),
                                {'name': name, 'language': 'pt_BR', 'category': category, 'components': comps})
-    t = {'id': uid(), 'company_id': company_id, 'name': name, 'language': 'pt_BR', 'label': label.strip(), 'body': body.strip(), 'params': params, 'footer': footer,
+    t = {'id': uid(), 'company_id': company_id, 'name': name, 'language': 'pt_BR', 'label': label.strip(), 'body': body.strip(), 'params': params, 'footer': footer, 'header': 'IMAGE' if image else None, 'buttons': list(quick or [])[:3],
          'category': res.get('category') or category, 'status': res.get('status') or 'PENDING', 'meta_id': res.get('id'), 'created_at': now()}
     await db.templates.insert_one(t.copy())
     return tpl_out(t)
@@ -159,13 +180,18 @@ async def del_template(tid: str, request: Request, user=Depends(managers)):
     await audit(request, user, 'Apagou modelo', t['label'])
     return {'ok': True}
 
-async def send_template(company_id, contact, t, ctx, by_name, by_id=None, values=None):
+async def send_template(company_id, contact, t, ctx, by_name, by_id=None, values=None, header_media=None):
     n = await number_of(company_id)
     vals = values or [str(ctx.get(p) or '-') for p in t.get('params') or []]
     if not contact.get('wa_id'): raise HTTPException(400, 'Este contato não tem WhatsApp.')
     payload = {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'template',
                'template': {'name': t['name'], 'language': {'code': t.get('language') or 'pt_BR'}}}
-    if vals: payload['template']['components'] = [{'type': 'body', 'parameters': [{'type': 'text', 'text': v} for v in vals]}]
+    comps = []
+    if t.get('header') == 'IMAGE':
+        if not header_media: raise HTTPException(400, 'Este modelo tem imagem: escolha a imagem da campanha.')
+        comps.append({'type': 'header', 'parameters': [{'type': 'image', 'image': {'id': header_media}}]})
+    if vals: comps.append({'type': 'body', 'parameters': [{'type': 'text', 'text': v} for v in vals]})
+    if comps: payload['template']['components'] = comps
     res = await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', decrypt(n['token_enc']), payload)
     body = t.get('body') or ''
     text = render(body, ctx) if not t.get('external') else re.sub(r'\{(\d+)\}', lambda m: vals[int(m.group(1)) - 1] if int(m.group(1)) <= len(vals) else m.group(0), body)
