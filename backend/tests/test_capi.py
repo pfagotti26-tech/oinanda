@@ -1,6 +1,6 @@
 """Devolver vendas para a Meta: venda de quem veio de anúncio vira Purchase, uma vez só."""
 import os, asyncio
-os.environ.update(MONGO_URL='mock', IG_APP_ID='111', IG_APP_SECRET='igsecreto', IG_CONFIG_ID='777')
+os.environ.update(MONGO_URL='mock', CAPI_OPEN='1', IG_APP_ID='111', IG_APP_SECRET='igsecreto', IG_CONFIG_ID='777')
 from cryptography.fernet import Fernet
 os.environ.setdefault('SECRET_KEY', Fernet.generate_key().decode())
 from fastapi.testclient import TestClient
@@ -62,3 +62,11 @@ def test_devolve_vendas(monkeypatch):
         s = asyncio.run(db.sales.find_one({'id': 'snew'}))['capi']
         assert s['status'] == 'failed' and s['tries'] == 1
         assert 'sem permissão' in c.get('/api/capi').json()['last_error']
+
+def test_so_admin_ate_liberar(monkeypatch):
+    monkeypatch.setenv('CAPI_OPEN', '0')
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona X', 'email': 'dx@x.com', 'password': 'senha-forte-1', 'company': 'Loja X', 'segment': 'loja'})
+        d = c.get('/api/capi').json()
+        assert d['available'] is False
+        r = c.put('/api/capi', json={'on': True}); assert r.status_code == 400 and 'liberando' in r.json()['detail']

@@ -10,7 +10,7 @@ de verdade e passa a mostrar o anúncio para gente parecida, em vez de quem só 
 - A Meta não tira repetidos, então cada venda e cada lead vai uma vez só (marcado no próprio registro).
 - O ciclo das automações chama tick() a cada minuto; vale para venda registrada à mão, por checkout ou aprovada depois.
 """
-import logging
+import logging, os
 from datetime import timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -22,6 +22,14 @@ router = APIRouter()
 log = logging.getLogger('oinanda.capi')
 WINDOW = timedelta(days=7)      # venda mais velha que isso a Meta não atribui mais ao anúncio
 TRIES = 3
+
+async def allowed(cid):
+    """Até a Meta aprovar as permissões (whatsapp_business_manage_events, page_events, instagram_manage_events), só a
+    empresa do admin da plataforma usa. CAPI_OPEN=1 libera para todos; CAPI_COMPANIES libera empresas avulsas."""
+    if os.environ.get('CAPI_OPEN') == '1': return True
+    if cid in {x.strip() for x in os.environ.get('CAPI_COMPANIES', '').split(',') if x.strip()}: return True
+    from core import ADMIN_EMAIL
+    return bool(ADMIN_EMAIL) and bool(await db.users.find_one({'company_id': cid, 'email': ADMIN_EMAIL}, {'_id': 1}))
 
 def _err(e): return str(getattr(e, 'detail', e))[:300]
 
@@ -113,7 +121,8 @@ async def run_company(company):
 
 async def tick():
     async for co in db.companies.find({'capi.on': True}, {'_id': 0, 'id': 1, 'capi': 1}):
-        try: await run_company(co)
+        try:
+            if await allowed(co['id']): await run_company(co)
         except Exception: log.exception('falha ao avisar a Meta (%s)', co['id'])
 
 # ---------- tela ----------
@@ -138,7 +147,7 @@ async def get_capi(user=Depends(current_user)):
     ch = {'whatsapp': {'connected': bool(wa), 'ready': ready('whatsapp', wa, ig)},
           'instagram': {'connected': bool(ig), 'ready': ready('instagram', wa, ig)},
           'messenger': {'connected': bool(ig), 'ready': ready('messenger', wa, ig) and bool(((user['company'].get('channels')) or {}).get('messenger'))}}
-    return {'on': bool(cfg.get('on')), 'ql_stage': cfg.get('ql_stage'), 'stages': stages, 'channels': ch,
+    return {'available': await allowed(cid), 'on': bool(cfg.get('on')), 'ql_stage': cfg.get('ql_stage'), 'stages': stages, 'channels': ch,
             'stats': {'sent': len(sent), 'value': round(sum(r.get('total') or 0 for r in sent), 2), 'failed': len(failed), 'qualified': ql},
             'last_sent': last, 'last_error': cfg.get('last_error') if failed else None}
 
@@ -146,6 +155,7 @@ async def get_capi(user=Depends(current_user)):
 async def put_capi(body: CapiIn, request: Request, user=Depends(managers)):
     cid = user['company_id']
     wa, ig = await ctx(cid)
+    if body.on and not await allowed(cid): raise HTTPException(400, 'A Meta ainda está liberando esse recurso para o Oi Nanda. Avisamos quando estiver pronto.')
     if body.on and not (wa or ig): raise HTTPException(400, 'Conecte o WhatsApp ou o Instagram primeiro.')
     if body.ql_stage:
         from funnel import stages_for
