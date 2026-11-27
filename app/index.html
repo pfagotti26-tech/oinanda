@@ -1343,7 +1343,7 @@ ul.li{padding-left:18px;font-size:13.5px;color:var(--ink2)}
 .mt-st2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:28px;align-items:start;margin-top:14px}
 .mt-stp{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px 32px}
 .mt-h{font-size:24px;letter-spacing:-.4px;margin:6px 0 6px}.mt-p{margin:0;color:var(--ink3);font-size:14px;line-height:1.5;max-width:520px}
-.mt-pk{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0 0}
+.mt-pk{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0 0}.mt-pk button{min-width:0}.mt-pk button b{white-space:normal;overflow-wrap:anywhere}
 .mt-pk button{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:20px 20px 18px;font:inherit;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.mt-pk button:hover{border-color:var(--c);box-shadow:0 8px 24px rgba(232,96,63,.10);transform:translateY(-1px)}
 .mt-ic{width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--c2);font-weight:800;font-size:16px;display:grid;place-items:center;flex:none}.mt-tx{display:flex;flex-direction:column;gap:3px}.mt-tx b{font-size:15.5px;white-space:nowrap}.mt-tx small{font-size:13px;color:var(--ink3)}
 .mt-pk em{position:static;align-self:flex-start;margin-top:-4px;white-space:nowrap;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--tint);color:var(--c2);border-radius:99px;padding:3px 9px}
@@ -4519,7 +4519,7 @@ NI.config='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8
 NI.campanhas='<path d="M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z"/><path d="M17 9.5a3.5 3.5 0 0 1 0 5M19.5 7a7 7 0 0 1 0 10"/>';
 NI.ajuda='<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.6c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.8h.01"/>';
 for(const k in NI)NI[k]=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NI[k]}</svg>`;
-const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','campanhas','metas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
+const NAV_GROUPS=[['Atendimento',['inicio','conversas','funil','agenda']],['Vendas',['vendas','clientes','campanhas','automacoes','relatorios']],['Configurar',['nanda','jornada','equipe','empresa','atividade']]];
 const NAVG={get(){try{return JSON.parse(localStorage.getItem('navg')||'[]')}catch(e){return []}},
   set(v){try{localStorage.setItem('navg',JSON.stringify(v))}catch(e){}},
   closed(k){return this.get().includes(k)},
@@ -4559,7 +4559,8 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Meu status e avisos','',()=>meModal()]].filter(a=>a[3]!==false&&(a[1]!=='metas'||modOn('metas')))}
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gOpen')){e.preventDefault();gPal()}});
 /* menu do dia a dia; o resto mora em Configurações */
-const DAILY=['inicio','conversas','funil','agenda','clientes','campanhas','vendas','metas','relatorios'];
+const DAILY=['inicio','conversas','funil','agenda','clientes','campanhas','vendas','relatorios'];
+const mtTabOk=()=>modOn('metas')&&(isMgr()||gamOn());
 const CFG_VIEWS=['msgauto','empresa','equipe','automacoes','atividade','jornada','avisos-conta','assinatura'];
 /* Nanda no menu: estado e pausa de um toque */
 const nzHm=d=>new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
@@ -4597,7 +4598,7 @@ function gPal(){if($('#gPal'))return $('#gQ').focus();document.querySelector('.s
   const q=$('#gQ'),res=$('#gRes');let sel=0,items=[],t=null,n=0;
   const close=()=>{o.remove();document.body.classList.remove('gpal-on');removeEventListener('keydown',kd,true)};
   const lbl=Object.fromEntries([...NAV,...ADMIN_NAV].map(x=>[x[0],x[1]]));
-  const viewOk=v=>!!document.querySelector(`.side [data-v="${v}"]`)||v==='config';
+  const viewOk=v=>!!document.querySelector(`.side [data-v="${v}"]`)||v==='config'||(v==='metas'&&mtTabOk());
   const recRun=x=>x.t==='c'?(()=>{CV.open=x.id;CV.filter='all';return go('conversas')}):x.t==='v'?(()=>go(x.v)):(()=>{const it=cfgFlat().find(y=>y.k===x.cf);return it?it.run():go('config')});
   const recIc=x=>x.t==='c'?`<span class="gav" style="background:${avc(x.l)}">${initials(x.l)}</span>`:x.t==='v'?NI[x.v]||NI.dot:NI.config;
   const pick=i=>{const it=items[i];if(!it)return;close();if(it.rec)GREC.add(it.rec);it.run()};
@@ -4908,7 +4909,7 @@ function pathFor(v){
   if(v==='empresa'&&EM.tab)p+='/'+EM.tab;
   if(v==='clientes'&&CL.tab&&CL.tab!=='seg')p+='/'+({camp:'campanhas',ren:'renovacao'}[CL.tab]);
   if(v==='funil'&&FN.pipe==='posvenda')p+='/pos-venda';
-  if(v==='metas'&&MT.tab!=='painel')p+='/'+MT.tab;
+  if(v==='metas')p='/vendas/metas'+(MT.tab!=='painel'?'/'+MT.tab:'');
   if(v==='nanda'&&NZV.tab==='aprendeu')p+='/aprendeu';
   if(v==='nanda'&&NZV.tab==='voz')p+='/voz';
   return p}
@@ -4925,6 +4926,7 @@ function readPath(){
   if(v==='ajuda')HP.art=parts[1]||null;
   if(v==='agenda')AG.tab=parts[1]==='configurar'?'config':'semana';
   if(v==='automacoes')AU.tab={modelos:'modelos',historico:'hist'}[parts[1]]||'lista';
+  if(v==='vendas'&&parts[1]==='metas'){MT.tab=['metas','desafios','premios','config'].includes(parts[2])?parts[2]:'painel';return 'metas'}
   if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno','comissoes'].includes(parts[1])?parts[1]:'relatorio';
   if(v==='clientes'&&parts[1]==='campanhas'){CP.sub=null;return 'campanhas'}
   if(v==='campanhas'){CP.sub=parts[1]||null;if(CP.sub==='nova'&&!CP.draft)CP.sub=null}
@@ -4940,9 +4942,9 @@ function syncUrl(replace){
 addEventListener('popstate',()=>{if(!ME||!$('#page'))return;document.querySelectorAll('.ov').forEach(o=>o.remove());go(readPath(),true)});
 function go(v,fromHistory){if(!TOUR.on)$('#trPill')?.remove();if(ME&&!['owner','manager'].includes(ME.user.role)&&['atividade','nanda','automacoes','relatorios','jornada','empresa','campanhas'].includes(v))v='inicio';if(ME&&['metas','jornada'].includes(v)&&!modOn(v))v='inicio';if(ME&&!ME.user.is_admin&&v.startsWith('a-'))v='inicio';
   if(ME&&ME.user.is_admin&&!ME.user.impersonated_by&&$('.side')){const want=v.startsWith('a-')||(v==='ajuda'&&$('.side').classList.contains('adm'));if(want!==$('.side').classList.contains('adm')){ADMODE.set(v.startsWith('a-'));VIEW=v;return shell()}}
-  VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===v);$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');if(CFX.pend){CFX.item=CFX.pend;CFX.itemView=v;CFX.pend=null}
+  VIEW=v;syncUrl(fromHistory);const sd=document.querySelector('.side');if(sd){sd.classList.remove('open');$('#mnu').setAttribute('aria-expanded','false');const n=[...NAV,...ADMIN_NAV].find(x=>x[0]===(v==='metas'?'vendas':v));$('#curV').textContent=n?n[1]:''}clearInterval(POLL);$('#page').classList.toggle('wide',v==='conversas');$('#page').classList.remove('emsec');$('#page').classList.toggle('board',v==='funil'||v==='agenda');if(CFX.pend){CFX.item=CFX.pend;CFX.itemView=v;CFX.pend=null}
   const ap=document.querySelector('.app'),cx=cfxOn(v);if(ap){ap.classList.toggle('cfx',cx);ap.classList.remove('pk');ap.classList.toggle('mini',cx||navMiniFor(v))}if(!cx){CFX.item=null;CFX.open=null}
-  document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',cx?b.dataset.v==='config':b.dataset.v===v||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));cfxDraw();
+  document.querySelectorAll('.side [data-v],.bnav [data-v]').forEach(b=>b.classList.toggle('on',cx?b.dataset.v==='config':b.dataset.v===v||(b.dataset.v==='vendas'&&v==='metas')||(b.dataset.v==='config'&&CFG_VIEWS.includes(v))));cfxDraw();
   const g=document.querySelector(`.side .ng.shut [data-v="${v}"]`)?.closest('.ng');  // entrou numa área recolhida: abre e deixa aberta
   if(g){g.classList.remove('shut');NAVG.toggle(g.dataset.g);g.querySelector('h6')?.setAttribute('aria-expanded','true')}
   if(v!=='inicio')suLoad().then(()=>suPill());
@@ -6439,16 +6441,21 @@ async function vdViews(onChange){
     VD.p={preset:'30d',start:'',end:'',group:'seller',seller:'',team:'',product:'',category:'',payment:'',source:'',kind:'',promo:'',metric:'value',chart:'bars',...v.params};onChange();toast(`Visão "${v.name}" aplicada.`)};
 }
 
+function vdTabs(cur){const mgr=isMgr();
+  const tabs=[['relatorio','Resumo'],...(mtTabOk()?[['metas','Metas']]:[]),['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])];
+  return `<nav class="utabs" role="tablist">${tabs.map(t=>{const on=cur===t[0];return `<button role="tab" aria-selected="${on}" class="${on?'on':''}" data-tab="${t[0]}">${t[1]}</button>`}).join('')}</nav>`}
+function vdTabsBind(){document.querySelectorAll('.utabs [data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();return vdView()}go('vendas')});
+  $('.utabs .on')?.scrollIntoView({block:'nearest',inline:'center'})}
 async function vdView(){
   const mgr=isMgr();
-  const tabs=[['relatorio','Resumo'],['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])];
   const orgT=VD.tab==='retorno'||VD.tab==='origens';
   $('#page').innerHTML=`<div class="fz-hd vd-hd2"><div class="agt"><h1>Vendas</h1><p>${mgr?'O que foi vendido, por quem e de onde vieram os clientes.':'Suas vendas e os seus números.'}</p></div><span class="sp"></span>
     <button class="btn sm" id="vdExp" title="Baixar as vendas do período em planilha">${svg('<path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/>')}<span class="hm-m">Exportar</span></button><button class="btn sm p" id="vdNew">+<span class="hm-m"> Registrar venda</span></button></div>
-   <nav class="utabs" role="tablist">${tabs.map(t=>{const on=VD.tab===t[0]||(t[0]==='retorno'&&orgT);return `<button role="tab" aria-selected="${on}" class="${on?'on':''}" data-tab="${t[0]}">${t[1]}</button>`}).join('')}</nav>
+   ${vdTabs(orgT?'retorno':VD.tab)}
    ${orgT&&mgr?`<div class="vd-sub"><div class="fz-seg" role="tablist"><button class="${VD.tab==='retorno'?'on':''}" data-tab="retorno">Resultado por canal</button><button class="${VD.tab==='origens'?'on':''}" data-tab="origens">Links e QR Codes</button></div><span>${VD.tab==='retorno'?'Quantos contatos e vendas cada canal trouxe, e quanto voltou do que foi investido.':'Um link ou QR Code para cada lugar onde você divulga.'}</span></div>`:''}
    <div id="vdBody"><div class="empty">Carregando...</div></div>`;
-  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab;syncUrl();vdView()});
+  vdTabsBind();
+  document.querySelectorAll('.vd-sub [data-tab]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab;syncUrl();vdView()});
   $('#vdNew').onclick=()=>saleModal({onDone:()=>vdView()});
   $('#vdExp').onclick=()=>{location.href='/api/sales/export?'+vdQs()};
   $('#vdExp').style.display=['relatorio','lista'].includes(VD.tab)?'':'none';
@@ -7531,15 +7538,18 @@ function funnelCard(f){const st=f.steps,w=f.weakest;const per={week:'semana',mon
   return `<div class="gl-c fn-c"><div class="gl-h"><div><b>${esc(f.owner_name||'Empresa')}</b><span>Funil do ${per}${f.days_left?` · ${f.days_left} dias restantes`:''}</span></div>${w?`<span class="pill ${w.pct>=100?'ok':w.pct>=80?'warn':'bad'}">${w.pct>=100?'tudo no alvo':'atenção em '+{rate_attend:'comparecimento',rate_close:'fechamento'}[w.metric]}</span>`:''}</div>
    <div class="fn-row">${st.map(box).join('')}</div></div>`}
 function mtHead(){const mgr=isMgr(),g=ME.company.gamify||{};
-  const tabs=gamOn()?[['painel','Painel'],...(mgr&&g.goals?[['metas','Metas']]:[]),['desafios','Desafios'],...(g.awards?[['premios','Prêmios']]:[])]:[];
-  return `<div class="fhd"><div><h1>Metas</h1><p class="sub">Quanto falta para bater a meta da empresa, de cada equipe e de cada pessoa.</p></div><div class="tools">${gamOn()?'<button class="btn sm" id="mtTv" style="white-space:nowrap">'+svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')+' Modo TV</button>':''}
-    ${mgr?`<button class="btn sm ${MT.tab==='config'?'on':''}" id="mtCfg" title="Configurar metas, prêmios e ranking" aria-label="Configurar" style="white-space:nowrap">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 10h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/>')}<span class="mt-cfl"> Configurar</span></button>`:''}</div></div>
-   ${tabs.length&&MT.tab!=='config'?`<nav class="utabs">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</nav>`:''}`}
+  const tabs=gamOn()?[['painel','Painel'],...(mgr&&g.goals?[['metas','Gerenciar']]:[]),['desafios','Desafios'],...(g.awards?[['premios','Prêmios']]:[])]:[];
+  const tip={painel:'Quanto falta para bater a meta da empresa, de cada equipe e de cada pessoa.',metas:'Criar, editar e dividir as metas entre equipes e pessoas.',desafios:'Desafios curtos para animar o time.',premios:'O que cada um ganha ao bater a meta.',config:'Como as metas, o ranking e os prêmios funcionam.'}[MT.tab]||'';
+  return `<div class="fz-hd vd-hd2"><div class="agt"><h1>Vendas</h1><p>${mgr?'O que foi vendido, por quem e de onde vieram os clientes.':'Suas vendas e os seus números.'}</p></div><span class="sp"></span>
+    ${gamOn()?`<button class="btn sm" id="mtTv" title="Ranking e metas na TV da loja">${svg('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>')}<span class="hm-m"> Modo TV</span></button>`:''}
+    ${mgr?`<button class="btn sm ${MT.tab==='config'?'on':''}" id="mtCfg" title="Configurar metas, prêmios e ranking" aria-label="Configurar">${svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 10h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/>')}<span class="hm-m"> Configurar</span></button>`:''}</div>
+   ${vdTabs('metas')}
+   ${tabs.length||MT.tab==='config'?`<div class="vd-sub">${tabs.length?`<div class="fz-seg" role="tablist">${tabs.map(t=>`<button class="${MT.tab===t[0]?'on':''}" data-mtt="${t[0]}">${t[1]}</button>`).join('')}</div>`:''}<span>${tip}</span></div>`:''}`}
 async function mtView(){
   const mgr=isMgr(),g=ME.company.gamify||{};
   if(MT.tab==='metas'&&!g.goals)MT.tab='painel';if(MT.tab==='premios'&&!g.awards)MT.tab='painel';
   $('#page').innerHTML=mtHead()+'<div id="mtB"><div class="empty">Carregando...</div></div>';
-  document.querySelectorAll('[data-mtt]').forEach(b=>b.onclick=()=>{MT.tab=b.dataset.mtt;syncUrl();mtView()});
+  vdTabsBind();document.querySelectorAll('[data-mtt]').forEach(b=>b.onclick=()=>{MT.tab=b.dataset.mtt;syncUrl();mtView()});
   if($('#mtTv'))$('#mtTv').onclick=mtTv;
   if($('#mtCfg'))$('#mtCfg').onclick=()=>{MT.tab=MT.tab==='config'?'painel':'config';syncUrl();mtView()};
   if(MT.tab==='config'&&mgr)return mtConfig();
