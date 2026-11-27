@@ -563,7 +563,7 @@ td>.sure,tr+.sure{margin:4px}
  .bnav button svg{width:22px;height:22px}.bnav button.on{color:var(--c2)}.bnav button.on svg{color:var(--c)}
  .bnav .nb{position:absolute;top:2px;left:calc(50% + 6px);background:var(--c);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
  .page{padding-bottom:96px}.page.wide{padding-bottom:0}
- .app:has(.cv.chat) .bnav,.app:has(.side.open) .bnav,.app:has(.ov.inpage) .bnav{display:none}
+ .app:has(.cv.chat) .bnav,.app:has(.side.open) .bnav,.app:has(.ov.inpage:not(.inl)) .bnav{display:none}
  .side.open .gsr{margin-top:10px}}
 /* admin: troca de modo pelo cartão de baixo */
 .side.adm{background:#151C2B}.side.adm button.nav.on svg{color:#A9B4FF}
@@ -857,6 +857,10 @@ body.tv .app{display:none}.tvw{position:fixed;inset:0;background:#17212B;color:#
 .ls-card .t{display:flex;justify-content:space-between;gap:10px;font-size:14.5px}.ls-card .i{font-size:13px;color:var(--ink)}.ls-card .m{font-size:12px;color:var(--ink3)}.ls-card.cx{opacity:.55}
 /* formulário de venda e de promoção */
 .ov.inpage:has(.sm2),.ov.inpage:has(.pf2){max-width:1120px}
+.ov.inpage.inl{max-width:none;margin:0 0 18px}.ov.inpage.inl .modal{padding:20px 22px}.ov.inpage.inl .fm-hd h2{font-size:18px}.vd-fx{margin-left:auto;align-self:flex-start;font-size:13px}
+.vd-fc{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:1.5px dashed #E6CFC4;border-radius:16px;padding:14px 18px;margin:0 0 18px;text-align:left;font-family:inherit;cursor:pointer;transition:.15s}.vd-fc:hover{border-color:var(--c);background:#FFF9F6}
+.vd-fc i{width:34px;height:34px;border-radius:10px;background:var(--c);color:#fff;display:grid;place-items:center;flex:none}.vd-fc i svg{width:18px;height:18px}.vd-fc b{display:block;font-size:14.5px}.vd-fc small{color:var(--ink3);font-size:12.5px}.vd-fc em{margin-left:auto;font-style:normal;color:var(--c2);font-weight:600;font-size:13px;white-space:nowrap}
+.vd-lh{display:flex;align-items:baseline;gap:10px;margin:4px 0 10px}.vd-lh h3{font-size:16px;margin:0}.vd-lh span{font-size:12.5px;color:var(--ink3)}@media (max-width:860px){.vd-lh span{display:none}}
 .sm2,.pf2{container-type:inline-size;gap:14px}
 .fm-hd{display:flex;align-items:center;gap:10px}.fm-hd h2{font-size:22px;letter-spacing:-.4px;margin:0}
 #smQ{width:100%;border:1px solid #DCD2C9;border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;outline:0}#smQ:focus{border-color:var(--c)}
@@ -3401,6 +3405,11 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .sm-mn{display:flex;align-items:center;gap:4px;border:1px solid #DCD2C9;border-radius:10px;padding:0 10px;background:#fff;width:130px}.sm-mn span{font-size:12.5px;color:var(--ink3);font-weight:700;white-space:nowrap}.sm-mn input{border:0!important;box-shadow:none!important;outline:0;padding:8px 0;font:inherit;font-size:14px;width:100%;min-width:0;background:none}.sm-mn:focus-within,.sm-r1 .in:focus{border-color:var(--c);outline:0}.sm-mn.ds{width:130px;background:#FFF8F0}
 .sm-dl{font-size:12.5px;font-weight:700}.sm-dsw{display:flex;align-items:center;gap:6px}.sm-du button{padding:4px 9px;font-size:12px}.sm-it2 .t{margin-left:auto;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
 .sm-pays{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.sm-parc[hidden]{display:none!important}
+.inl .sm-mb{display:none!important}.inl .sm3 .sm-act{display:flex!important}
+.inl .sm-pays{display:flex;flex-wrap:wrap;gap:6px}.inl .sm-pay{padding:7px 11px;border-radius:99px;font-size:12.5px}.inl .sm-pay svg{width:15px;height:15px}
+.inl .sm3 .sm-sec,.inl .sm-sec{padding:14px 16px;gap:8px}
+@media (min-width:1180px){.inl .sm-main{display:block;columns:2;column-gap:12px}.inl .sm-main>.sm-sec,.inl .sm-main>details{break-inside:avoid;margin-bottom:12px}.inl .sm-grid{grid-template-columns:minmax(0,1fr) 300px}}
 .sm-pay{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;text-align:left}.sm-pay svg{width:18px;height:18px;flex:none;color:var(--ink3)}.sm-pay:hover{border-color:#E8B9A9}.sm-pay.on{border-color:var(--c);background:var(--tint);color:var(--ink)}.sm-pay.on svg{color:var(--c)}
 .sm-dt{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.sm-dt>span{font-size:13px;font-weight:700;color:var(--ink2)}.sm-dt input[type=date]{display:none;border:1px solid #DCD2C9;border-radius:10px;padding:7px 10px;font:inherit}.sm-dt input.show{display:block}
 .sm-sl2{display:flex;align-items:center;gap:8px}.sm-sl2 select{flex:1;min-width:0;border:1px solid #DCD2C9;border-radius:10px;padding:9px 10px;font:inherit;font-weight:600;background:#fff}
@@ -6137,6 +6146,9 @@ async function drawAgCfg(){
 }
 const brl=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 /* telas de edição abrem dentro da página (sem janela por cima), com "Voltar" */
+function inlineOv(host,html){const o=document.createElement('div');o.className='ov inpage inl';o.innerHTML=html;host.innerHTML='';host.append(o);o.remove=()=>{};
+  const hd=o.querySelector('.fm-hd');if(hd&&!o.querySelector('#smF .pill')){const b=document.createElement('button');b.type='button';b.className='lnk vd-fx';b.textContent='Recolher';b.onclick=()=>{try{localStorage.setItem('vdFormOff','1')}catch(e){}vdFormDraw()};hd.append(b)}
+  return o}
 function overlay(html){
   const o=document.createElement('div');o.className='ov inpage';
   o.innerHTML='<button type="button" class="ov-back">'+svg('<path d="m15 6-6 6 6 6"/>')+'Voltar</button>'+html;
@@ -6471,7 +6483,7 @@ async function vdView(){
    <div id="vdBody"><div class="empty">Carregando...</div></div>`;
   vdTabsBind();
   document.querySelectorAll('.vd-sub [data-tab]').forEach(b=>b.onclick=()=>{VD.tab=b.dataset.tab;syncUrl();vdView()});
-  $('#vdNew').onclick=()=>saleModal({onDone:()=>vdView()});
+  $('#vdNew').onclick=()=>VD.tab==='lista'&&$('#vdF')?vdFormOpen():saleModal({onDone:()=>vdView()});
   $('#vdExp').onclick=()=>{location.href='/api/sales/export?'+vdQs()};
   $('#vdExp').style.display=['relatorio','lista'].includes(VD.tab)?'':'none';
   $('.utabs .on')?.scrollIntoView({block:'nearest',inline:'center'});
@@ -6566,9 +6578,15 @@ async function vdReport(){
   $('#vdR').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>saleModal({sale:ls.items.find(x=>x.id===b.dataset.s),onDone:vdReport}));
 }
 
+function vdFormOff(){try{const v=localStorage.getItem('vdFormOff');return v==='1'||(v==null&&innerWidth<=860)}catch(e){return innerWidth<=860}}
+function vdFormDraw(){const h=$('#vdF');if(!h)return;
+  if(vdFormOff()){h.innerHTML=`<button type="button" class="vd-fc" id="vdFo"><i>${svg('<path d="M12 5v14M5 12h14"/>')}</i><span><b>Registrar uma venda</b><small>Cliente, o que vendeu, pagamento e quem vendeu, aqui mesmo.</small></span><em>Abrir formulário</em></button>`;
+    $('#vdFo').onclick=()=>vdFormOpen();return}
+  saleModal({host:h,onDone:()=>{const f=$('#vdF');if(f)f.innerHTML='';vdFormDraw();vdList()}})}
+function vdFormOpen(){try{localStorage.setItem('vdFormOff','0')}catch(e){}vdFormDraw();setTimeout(()=>{const h=$('#vdF');if(h){h.scrollIntoView({behavior:'smooth',block:'start'});const i=h.querySelector('input:not([type=hidden])');i&&i.focus({preventScroll:true})}},250)}
 async function vdList(){
   VD.st=VD.st||'open';
-  $('#vdBody').innerHTML=`<div class="vd-bar" id="vdBar"></div><div id="vdL"><div class="empty">Carregando...</div></div>`;
+  if(!$('#vdF')){$('#vdBody').innerHTML=`<div id="vdF"></div><div class="vd-lh"><h3>Vendas registradas</h3><span>clique numa venda para ver, editar ou cancelar</span></div><div class="vd-bar" id="vdBar"></div><div id="vdL"><div class="empty">Carregando...</div></div>`;vdFormDraw()}
   vdBar(()=>vdList(),true);
   const r=await api('/sales?'+vdQs({q:VD.q,status:VD.st})+(VD.imp?'&imported=hide':''));const it=r.items;const anyImp=VD.imp||it.some(x=>x.imported);
   const okc=it.filter(x=>x.status!=='cancelled'),tot=okc.reduce((a,x)=>a+x.total,0),pend=it.filter(x=>x.status==='pending').length;
@@ -6581,7 +6599,7 @@ async function vdList(){
       <td class="its">${x.items.map(i=>`${num(i.qty)}× ${esc(i.name)}`).join(', ')}</td><td>${sellers(x)}</td><td>${esc(x.payment_label||'—')}</td><td class="n"><b>${brl2(x.total)}</b>${x.discount?`<small>− ${brl2(x.discount)}</small>`:''}</td></tr>`).join('')}</tbody></table></div>
     <div class="ls-cards">${it.map(x=>`<button class="ls-card ${x.status==='cancelled'?'cx':''}" data-s="${x.id}"><span class="t"><b>${esc(x.contact_name||'')}</b><b>${brl2(x.total)}</b></span>
       <span class="i">${x.items.map(i=>`${num(i.qty)}× ${esc(i.name)}`).join(', ')}</span><span class="m">${fmtD(ymd(new Date(x.date)))} · ${sellers(x)}${x.payment_label?' · '+esc(x.payment_label):''}</span>${tags(x)?`<span class="tgs">${tags(x)}</span>`:''}</button>`).join('')}</div>`
-    :`<div class="aempty"><div><b>${VD.st==='pending'?'Nenhuma venda esperando aprovação':VD.st==='cancelled'?'Nenhuma venda cancelada':'Nenhuma venda com esses filtros'}</b><p>${VD.st==='open'?'Mude o período, tire filtros ou registre uma venda.':'Tudo em dia por aqui.'}</p></div></div>`}`;
+    :`<div class="aempty"><div><b>${VD.st==='pending'?'Nenhuma venda esperando aprovação':VD.st==='cancelled'?'Nenhuma venda cancelada':FKEYS.some(k=>VD.p[k])||VD.q?'Nenhuma venda com esses filtros':'Nenhuma venda neste período'}</b><p>${VD.st==='open'?(FKEYS.some(k=>VD.p[k])||VD.q?'Tire os filtros ou mude o período.':'Registre a venda no formulário acima e ela aparece aqui na hora.'):'Tudo em dia por aqui.'}</p></div></div>`}`;
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{VD.st=b.dataset.st;vdList()});
   if($('#vdImp'))$('#vdImp').onchange=e=>{VD.imp=e.target.checked;vdList()};
   $('#vdL').querySelectorAll('[data-s]').forEach(b=>{const go=()=>saleModal({sale:it.find(x=>x.id===b.dataset.s),onDone:vdList});b.onclick=go;b.onkeydown=e=>{if(e.key==='Enter')go()}});
@@ -6745,7 +6763,7 @@ async function saleModal(opt){
   const today=ymd(new Date()),yest=ymd(new Date(Date.now()-864e5));let date=sale?ymd(new Date(sale.date)):today;
   const ctCard=c=>`<div class="sm-ct"><span class="av" style="background:${avc(c.name)}">${initials(c.name)}</span><span class="sm-ctn"><b>${esc(c.name)}</b>${c.wa_id?`<small>${esc(fmtPhone(c.wa_id))}</small>`:''}</span>${VIEW!=='conversas'?`<button type="button" class="lnk" data-oc="${c.id}">abrir conversa</button>`:''}${!sale&&!opt.contact?'<button type="button" class="lnk" id="smCh">trocar</button>':''}</div>`;
   const st=sale?(sale.status==='pending'?'<span class="pill warn">aguardando aprovação</span>':sale.status==='cancelled'?'<span class="pill grey">cancelada</span>':''):'';
-  const o=overlay(`<form class="modal sm2 sm3" id="smF"><div class="fm-hd"><div><h2>${sale?(ro?'Venda':'Editar venda'):'Registrar venda'}</h2>${sale?'':'<p class="sm-sub">Entra no relatório, na comissão de quem vendeu e marca o contato como cliente.</p>'}</div>${st}<button type="button" class="x" aria-label="Fechar">×</button></div>
+  const o=(opt.host?h=>inlineOv(opt.host,h):overlay)(`<form class="modal sm2 sm3" id="smF"><div class="fm-hd"><div><h2>${sale?(ro?'Venda':'Editar venda'):'Registrar venda'}</h2>${sale?'':'<p class="sm-sub">Entra no relatório, na comissão de quem vendeu e marca o contato como cliente.</p>'}</div>${st}<button type="button" class="x" aria-label="Fechar">×</button></div>
     ${opt.moved?'<p class="note" style="margin:0">Card movido para a etapa de venda. Registre o que foi vendido para entrar no relatório.</p>':''}
     ${sale&&sale.status==='cancelled'?'<p class="note warnb" style="margin:0">Venda cancelada. Não conta nos relatórios.</p>':''}
     ${sale&&sale.status==='pending'?`<p class="note warnb" style="margin:0">O desconto manual passou do limite. ${isMgr()?'Confira e aprove para entrar nos relatórios.':'Ela entra nos relatórios depois que o gestor aprovar.'}</p>`:''}
@@ -6888,12 +6906,13 @@ async function saleModal(opt){
     try{const r=await api(sale?'/sales/'+sale.id:'/sales',{method:sale?'PUT':'POST',body});VD.opts=null;
       if(sale||r.status==='pending'){o.remove();toast(r.status==='pending'?'Venda registrada. Vai para aprovação do gestor por causa do desconto.':'Venda atualizada.');opt.onDone&&opt.onDone();return}
       const tv=final(),fn=contact.name.split(' ')[0];
+      if(opt.host){toast(`Venda registrada: ${brl2(tv)} de ${contact.name}.`);opt.onDone&&opt.onDone();return}
       f.innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>Venda registrada!</h2><p><b>${brl2(tv)}</b> de ${esc(contact.name)}. ${esc(fn)} já aparece como cliente e a venda entrou no relatório.</p>
         <div class="sm-okb"><button type="button" class="btn p" id="smOn">Registrar outra venda</button>${VIEW!=='conversas'?`<button type="button" class="btn" id="smOc">Abrir conversa com ${esc(fn)}</button>`:''}<button type="button" class="btn" id="smCpy">Copiar comprovante</button><button type="button" class="lnk" id="smOx">Fechar</button></div></div>`;
       const done=()=>{opt.onDone&&opt.onDone()};
       const rc=[`*${ME.company.name}*`,`Comprovante de compra · ${(date===today?new Date():new Date(date+'T12:00')).toLocaleDateString('pt-BR')}`,'',...body.items.map(i=>`${num(i.qty)}× ${i.name} — ${brl2(Math.max(0,i.qty*i.price-i.discount))}`),...(EV&&EV.discount?[`Promoções: − ${brl2(EV.discount)}`]:[]),`*Total: ${brl2(tv)}*`,(PAYS.find(x=>x.id===pay)||{}).name?`Pagamento: ${PAYS.find(x=>x.id===pay).name}${pay==='cartao_credito'&&parc>1?` em ${parc}x de ${brl2(tv/parc)}`:''}`:'','',`Obrigado pela compra, ${fn}! 😊`].filter((x,k,a)=>x!==''||a[k-1]!=='').join('\n');
       $('#smCpy').onclick=async()=>{try{await navigator.clipboard.writeText(rc);$('#smCpy').textContent='Copiado ✓'}catch(e){toast('Não consegui copiar.')}};
-      $('#smOn').onclick=()=>{o.remove();saleModal({onDone:opt.onDone})};if($('#smOc'))$('#smOc').onclick=()=>{o.remove();CV.open=contact.id;CV.filter='all';go('conversas')};$('#smOx').onclick=()=>{o.remove();done()};
+      $('#smOn').onclick=()=>{o.remove();saleModal({onDone:opt.onDone,host:opt.host})};if($('#smOc'))$('#smOc').onclick=()=>{o.remove();CV.open=contact.id;CV.filter='all';go('conversas')};$('#smOx').onclick=()=>{o.remove();done()};
       o.querySelector('.x')&&o.querySelector('.x').addEventListener('click',done)}catch(x){b.disabled=false;$('#smE').textContent=x.message}};
 }
 
