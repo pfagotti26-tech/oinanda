@@ -31,6 +31,7 @@ def test_direct(monkeypatch):
         if path.endswith('/messages'): return {'recipient_id': 'x', 'message_id': 'out' + str(len(calls))}
         if path == '/17841400000000001': return {'name': 'Alta Creators', 'profile_picture_url': 'x'}
         if path.startswith('/9'): return {'name': 'Bia Souza', 'username': 'bia.souza'}
+        if path == '/p20': return {'timestamp': '2099-01-01T00:00:00+0000', 'caption': 'Post novo'}
         return {'success': True}
     monkeypatch.setattr(instagram, 'ig', fake_ig)
     monkeypatch.setattr(whatsapp, 'ON_INBOUND', lambda cid, kid, mid: inbound.append(mid))
@@ -103,6 +104,26 @@ def test_direct(monkeypatch):
         cm2 = json.loads(json.dumps(cm)); cm2['entry'][0]['changes'][0]['value'].update(id='c2', text='que lindo')
         post(c, cm2)
         assert len([p for m, pth, _, p in calls if pth.endswith('/messages') and p and 'comment_id' in p['recipient']]) == 1
+        # várias automações: a do post escolhido vale antes da de todos os posts; "o próximo post" se prende ao primeiro post novo
+        L = c.get('/api/ig/rules').json()
+        assert len(L['items']) == 1 and L['items'][0]['words'] == ['quero'] and L['items'][0]['stats']['sent'] == 1  # a regra antiga virou automação
+        assert c.post('/api/ig/rules', json={'scope': 'post', 'words': ['quero'], 'dm': 'Aqui o link da Black'}).status_code == 400  # falta o post
+        rp = c.post('/api/ig/rules', json={'name': 'Black', 'scope': 'post', 'media_id': 'p9', 'words': ['Quero', 'link'], 'dm': 'Aqui o link da Black', 'replies': ['A', 'B']}).json()
+        nx = c.post('/api/ig/rules', json={'name': 'Lançamento', 'scope': 'next', 'words': ['eu quero'], 'dm': 'Lista de espera'}).json()
+        def com(i, text, media):
+            x = json.loads(json.dumps(cm)); x['entry'][0]['changes'][0]['value'].update(id=i, text=text, media={'id': media}); post(c, x)
+            return [p for m, pth, _, p in calls if pth.endswith('/messages') and p and p['recipient'] == {'comment_id': i}]
+        assert com('c3', 'quero!', 'p9')[0]['message']['text'] == 'Aqui o link da Black'
+        assert [q for _, pth, q, _ in calls if pth == '/c3/replies'][0]['message'] in ('A', 'B')
+        assert com('c4', 'quero', 'p1')[0]['message']['text'].startswith('Oi ')
+        assert com('c5', 'link', 'p1') == []
+        assert com('c6', 'eu quero', 'p20')[0]['message']['text'] == 'Lista de espera'
+        assert c.get('/api/ig/rules').json()['items'][2]['media_id'] == 'p20'
+        assert c.patch(f"/api/ig/rules/{rp['id']}", json={'active': False}).status_code == 200
+        assert com('c7', 'link', 'p9') == []
+        st = {r['name']: r['stats'] for r in c.get('/api/ig/rules').json()['items']}
+        assert st['Black']['sent'] == 1 and st['Lançamento']['sent'] == 1
+        assert c.delete(f"/api/ig/rules/{nx['id']}").status_code == 200 and len(c.get('/api/ig/rules').json()['items']) == 2
 
 def test_meta_demora_a_liberar_a_conta(monkeypatch):
     """A Meta autoriza, mas só libera a conta depois: o Oi Nanda guarda e conecta sozinho na próxima tentativa."""

@@ -459,27 +459,34 @@ def word_hit(words, text):
     return any(' ' + w + ' ' in t for w in words)
 
 async def on_comment(a, v):
-    """Comentou a palavra-chave num post ou anúncio: manda a mensagem no Direct (uma vez por comentário)."""
-    words = a.get('comment_words') or []
+    """Comentou a palavra de uma automação: manda o Direct (uma vez por comentário) e, se tiver, responde no post."""
+    import igrules
     frm = v.get('from') or {}
-    if not words or not a.get('comment_dm') or str(frm.get('id')) == a['ig_id']: return
-    if not word_hit(words, v.get('text')): return
+    if str(frm.get('id')) == a['ig_id']: return
+    await igrules.migrate(a['company_id'])
+    rule = await igrules.pick(a, str((v.get('media') or {}).get('id') or ''), v.get('text'))
+    if not rule: return
     cmt = str(v.get('id') or '')
     if not cmt or await db.ig_comments.find_one({'comment_id': cmt}): return
-    await db.ig_comments.insert_one({'comment_id': cmt, 'company_id': a['company_id'], 'at': now()})
+    await db.ig_comments.insert_one({'comment_id': cmt, 'company_id': a['company_id'], 'rule_id': rule['id'], 'status': 'sending', 'at': now()})
     tok = decrypt(a['token_enc'])
     contact, _ = await upsert(a, str(frm.get('id')), frm.get('username'), 'instagram_comentario')
     first = (contact.get('name') or '').lstrip('@').split(' ')[0]
-    dm = a['comment_dm'].replace('{primeiro_nome}', first).replace('{nome}', contact.get('name') or '')
+    dm = rule['dm'].replace('{primeiro_nome}', first).replace('{nome}', contact.get('name') or '').replace('Oi !', 'Oi!').replace('Oi , ', 'Oi, ')
     try:
         r = await ig('POST', msg_path(a), tok, payload={'recipient': {'comment_id': cmt}, 'message': {'text': dm}})
-        if a.get('comment_reply'): await ig('POST', f'/{cmt}/replies', tok, {'message': a['comment_reply']})
+        rp = igrules.reply_of(rule)
+        if rp:
+            try: await ig('POST', f'/{cmt}/replies', tok, {'message': rp})
+            except HTTPException: pass  # a resposta pública é extra: o Direct já foi
     except HTTPException as e:
+        await db.ig_comments.update_one({'comment_id': cmt}, {'$set': {'status': 'failed', 'contact_id': contact['id'], 'detail': str(e.detail)[:200]}})
         await note(a['company_id'], contact['id'], f'Comentou "{(v.get("text") or "")[:80]}", mas o Instagram não deixou mandar o Direct: {e.detail}')
         return
-    await note(a['company_id'], contact['id'], f'Comentou "{(v.get("text") or "")[:80]}" num post · a mensagem automática foi para o Direct')
+    await db.ig_comments.update_one({'comment_id': cmt}, {'$set': {'status': 'sent', 'contact_id': contact['id']}})
+    await note(a['company_id'], contact['id'], f'Comentou "{(v.get("text") or "")[:80]}" num post · a automação "{rule["name"]}" mandou a mensagem no Direct')
     await db.messages.insert_one({'id': uid(), 'company_id': a['company_id'], 'contact_id': contact['id'], 'channel': 'instagram', 'dir': 'out', 'type': 'text', 'text': dm,
-                                  'wa_msg_id': r.get('message_id'), 'status': 'sent', 'by': 'Automação · comentário', 'by_id': None, 'at': now()})
+                                  'wa_msg_id': r.get('message_id'), 'status': 'sent', 'by': 'Automação · ' + rule['name'], 'by_id': None, 'at': now()})
     await db.contacts.update_one({'id': contact['id']}, {'$set': {'last_at': now(), 'last_text': dm[:200], 'last_dir': 'out'}})
 
 # ---------- enviar ----------
