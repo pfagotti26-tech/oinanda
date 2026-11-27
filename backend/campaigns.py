@@ -524,12 +524,12 @@ def presets_for(segment):
         ('recentes', 'Compraram nos últimos 90 dias', 'Base quente', [{'field': 'last_purchase', 'op': 'less', 'value': 90}]),
     ]
     extra = {
-        'salao': [('volta30', 'Sem vir há mais de 30 dias', 'Hora de voltar', [{'field': 'last_purchase', 'op': 'more', 'value': 30}])],
-        'clinica': [('volta60', 'Sem vir há mais de 60 dias', 'Retorno ou manutenção', [{'field': 'last_purchase', 'op': 'more', 'value': 60}])],
-        'studio': [('sumidos', 'Alunos sem vir há 30 dias', 'Antes de cancelar', [{'field': 'last_purchase', 'op': 'more', 'value': 30}])],
-        'escola': [('sumidos', 'Alunos sem vir há 30 dias', 'Antes de cancelar', [{'field': 'last_purchase', 'op': 'more', 'value': 30}])],
-        'loja': [('recompra', 'Compraram há mais de 45 dias', 'Recompra', [{'field': 'last_purchase', 'op': 'more', 'value': 45}])],
-        'restaurante': [('volta15', 'Pediram há mais de 15 dias', 'Saudade', [{'field': 'last_purchase', 'op': 'more', 'value': 15}])],
+        'salao': [('volta30', 'Sem vir há mais de 30 dias', 'Hora de voltar', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 30}])],
+        'clinica': [('volta60', 'Sem vir há mais de 60 dias', 'Retorno ou manutenção', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 60}])],
+        'studio': [('sumidos', 'Alunos sem vir há 30 dias', 'Antes de cancelar', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 30}])],
+        'escola': [('sumidos', 'Alunos sem vir há 30 dias', 'Antes de cancelar', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 30}])],
+        'loja': [('recompra', 'Compraram há mais de 45 dias', 'Recompra', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 45}])],
+        'restaurante': [('volta15', 'Pediram há mais de 15 dias', 'Saudade', [{'field': 'purchases', 'op': 'gte', 'value': 1}, {'field': 'last_purchase', 'op': 'more', 'value': 15}])],
     }.get(segment, [])
     return extra + base
 
