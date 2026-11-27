@@ -35,6 +35,7 @@ from push import router as push_router
 from billing import router as billing_router
 from roi import router as roi_router
 from instagram import router as ig_router
+from igrules import router as igrules_router
 import automations, asyncio, os
 from schemas import Signup, Login, PasswordChange, Invite, MemberUpdate, CompanyUpdate, AdminCompanyUpdate
 
@@ -183,6 +184,7 @@ app.include_router(push_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 app.include_router(roi_router, prefix="/api")
 app.include_router(ig_router, prefix="/api")
+app.include_router(igrules_router, prefix="/api")
 from channels import router as channels_router
 app.include_router(channels_router, prefix="/api")
 from telegram import router as telegram_router
