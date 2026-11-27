@@ -616,13 +616,21 @@ td>.sure,tr+.sure{margin:4px}
 .ma-op em{position:absolute;top:12px;right:12px;font-style:normal;font-size:11px;font-weight:800;color:#fff;background:var(--c);border-radius:99px;padding:2px 9px}.ma-op .ma-ii{margin-bottom:4px}.ma-op b{font-size:14px}.ma-op small{font-size:12.5px;color:var(--ink2);line-height:1.45}.ma-op u{text-decoration:none;font-weight:700;color:var(--ink)}
 .ma-ft{margin:12px 0 0;font-size:12.5px;color:var(--ink3);line-height:1.5}.ma-ft b{color:var(--ink)}.ma-ft .lnk{font-size:12.5px}
 .ma-now{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink3)}.ma-now i{width:8px;height:8px;border-radius:50%;background:#C9C2BB;flex:none}.ma-now.ok{color:var(--ok)}.ma-now.ok i{background:#16A34A;box-shadow:0 0 0 3px #DCFCE7}.ma-now.wait{color:#9A6400}.ma-now.wait i{background:#F59E0B;box-shadow:0 0 0 3px #FEF3C7}
-@media(max-width:760px){.ma-rg{grid-template-columns:1fr}}
+@media(max-width:760px){.ma-rg{grid-template-columns:1fr}.ma-why{display:none}}
+.ma-rule{padding:0;margin-bottom:22px;overflow:hidden}.ma-rh{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:12px 16px;font:inherit;font-size:13.5px;color:var(--ink2);text-align:left;cursor:pointer}.ma-rh b{color:var(--ink)}.ma-rh:hover{background:#FBF8F5}
+.ma-why{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--c2);white-space:nowrap}.ma-why svg{width:14px;height:14px;transition:transform .2s}.ma-rule.op .ma-why svg{transform:rotate(180deg)}
+.ma-rb{padding:0 16px 16px}
+.ma-tg{display:flex;align-items:center;gap:12px;flex:1;min-width:0;background:none;border:0;padding:0;font:inherit;text-align:left;cursor:pointer;color:inherit}.ma-tt .ma-now{margin-top:2px}
+.ma-cv{color:var(--ink3);display:grid;place-items:center;margin-left:auto;padding:0 8px}.ma-cv svg{width:16px;height:16px;transition:transform .2s}.ma-it.op .ma-cv svg{transform:rotate(180deg)}
+.ma-it:hover{background:#FDFBF9}.ma-wh{font-size:12.5px;color:var(--ink3)}
+
 .ma{max-width:860px}.ma-ph{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}.ma-ph h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}.ma-ph p{margin:0;color:var(--ink2);font-size:14px;max-width:560px}.ma-ph .mx-ok{margin-left:auto}
 .ma-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}.ma-info>div{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}.ma-info b{display:block;font-size:13.5px}.ma-info small{display:block;font-size:12.5px;color:var(--ink3);line-height:1.45;margin-top:1px}
 .ma-ii{width:32px;height:32px;border-radius:50%;background:#E6F6EE;color:var(--ok);display:grid;place-items:center;flex:none}.ma-ii svg{width:16px;height:16px}.ma-nz{background:var(--soft);color:var(--c2)}.ma-ii>svg,.ma-nz svg{width:16px!important;height:16px!important}
 .ma-bub .mx-v{margin:0 1px;padding:0 5px;border-radius:6px;font-size:12.5px;vertical-align:1px}.ma-pv .ma-bub,.ma-it:not(.on) .ma-pv .ma-bub{background:#DCF8C6;color:#17212B}
 .ma-sec{position:relative;padding-left:40px;padding-bottom:18px}.ma-sec:not(:last-child)::before{content:"";position:absolute;left:13px;top:30px;bottom:0;border-left:2px dotted #E4D8CF}
 .ma-sh{display:flex;align-items:center;gap:10px;margin:0 0 10px -40px}.ma-sh i{width:28px;height:28px;border-radius:50%;background:#fff;border:1.5px solid var(--line);font-style:normal;font-size:12.5px;font-weight:800;color:var(--ink2);display:grid;place-items:center}.ma-sh h3{margin:0;font-size:15px}
+.ma-sec{padding:0 0 18px}.ma-sec::before,.ma-sec:not(:last-child)::before{display:none}.ma-sh{margin:0 0 8px 2px}.ma-sh i{display:none}.ma-sh h3{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}.ma-bd{margin-left:50px}
 .ma-items{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .ma-it{padding:14px 16px}.ma-it+.ma-it{border-top:1px solid var(--line)}
 .ma-hd{display:flex;align-items:center;gap:12px}.ma-ic{width:38px;height:38px;border-radius:50%;background:#F3EEE9;color:var(--ink3);display:grid;place-items:center;flex:none}.ma-ic svg{width:18px;height:18px}.ma-it.on .ma-ic{background:var(--soft);color:var(--c2)}
@@ -4873,7 +4881,7 @@ async function cfgView(){const u=ME.user,mgr=['owner','manager'].includes(u.role
 /* Mensagens automáticas: boas-vindas, fora do horário, ao encerrar e assinatura */
 const AM_VN={primeiro_nome:'nome do cliente',nome:'nome completo',empresa:'nome do negócio',abertura:'quando volta'};
 async function amView(){if(!isMgr())return go('config');
-  const d=await api('/automsg');const st={edit:null,saved:false};
+  const d=await api('/automsg');const st={edit:null,saved:false,open:null,rule:false};
   const n=ME.nanda||{},nzAuto=n.mode==='auto'&&!n.paused,nm=esc(n.name||'Nanda');
   const fx=t=>t.replace(/\{primeiro_nome\}/g,'Maria').replace(/\{nome\}/g,'Maria Souza').replace(/\{empresa\}/g,ME.company.name).replace(/\{abertura\}/g,d.next_open||'amanhã às 9h');
   const chipT=t=>esc(t).replace(/\{(primeiro_nome|nome|empresa|abertura)\}/g,(m,k)=>`<span class="mx-v">${AM_VN[k].replace(' do cliente','').replace('nome do negócio','negócio')}</span>`);
@@ -4883,11 +4891,11 @@ async function amView(){if(!isMgr())return go('config');
       <div class="ma-pv"><span>O cliente recebe assim</span><div class="ma-bub" id="mxPv">${esc(fx(d[k].text))}</div></div></div>`
     :`<button type="button" class="ma-bb" data-ed="${k}" title="Editar a mensagem"><span class="ma-bub">${chipT(d[k].text)}</span><span class="mx-e">${pen}Editar texto</span></button>`;
   const IC={welcome:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',away:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',bye:'<path d="m5 12 5 5 9-10"/>',sign:'<path d="M4 20h4L19 9l-4-4L4 16z"/>'};
-  const it=(k,t,when,body,notes)=>{const on=k==='sign'?d.sign:d[k].on;return `<div class="ma-it ${on?'on':''}"><div class="ma-hd"><span class="ma-ic">${svg(IC[k])}</span><div class="ma-tt"><b>${t}</b><small>${when}</small></div><label class="sw" title="${on?'Desligar':'Ligar'}"><input type="checkbox" data-tg="${k}" ${on?'checked':''}><i></i></label></div>
-      <div class="ma-bd">${now(k,on)}${body}${notes||''}</div></div>`};
-  const now=(k,on)=>{let c,t;if(!on){c='off';t='Desligada: não sai.'}
-    else if(k==='welcome'||k==='away'){if(nzAuto){c='wait';t=`Agora não sai: a ${nm} está respondendo sozinha e faz isso por ela.`}else if(k==='away'&&!d.hours){c='wait';t='Agora não sai: falta o horário de atendimento.'}else{c='ok';t=k==='welcome'?'Saindo: todo cliente novo recebe esta mensagem.':'Saindo: quem chamar com a loja fechada recebe esta mensagem.'}}
-    else{c='ok';t=k==='sign'?'Saindo: em toda mensagem que alguém do time manda.':'Saindo: sempre que alguém encerra uma conversa.'}
+  const it=(k,t,when,body,notes)=>{const on=k==='sign'?d.sign:d[k].on,op=st.open===k||st.edit===k;return `<div class="ma-it ${on?'on':''} ${op?'op':''}"><div class="ma-hd"><button type="button" class="ma-tg" data-op="${k}" aria-expanded="${op}"><span class="ma-ic">${svg(IC[k])}</span><span class="ma-tt"><b>${t}</b>${now(k,on)}</span><span class="ma-cv">${svg('<path d="m6 9 6 6 6-6"/>')}</span></button><label class="sw" title="${on?'Desligar':'Ligar'}"><input type="checkbox" data-tg="${k}" ${on?'checked':''}><i></i></label></div>
+      ${op?`<div class="ma-bd"><small class="ma-wh">${when}</small>${body}${notes||''}</div>`:''}</div>`};
+  const now=(k,on)=>{let c,t;if(!on){c='off';t='Desligada'}
+    else if(k==='welcome'||k==='away'){if(nzAuto){c='wait';t=`Não sai agora: a ${nm} faz isso`}else if(k==='away'&&!d.hours){c='wait';t='Não sai agora: falta o horário'}else{c='ok';t='Saindo'}}
+    else{c='ok';t='Saindo'}
     return `<span class="ma-now ${c}"><i></i>${t}</span>`};
   const sec=(n,t,inner)=>`<div class="ma-sec"><div class="ma-sh"><i>${n}</i><h3>${t}</h3></div><div class="ma-items">${inner}</div></div>`;
   const first=esc(ME.user.name.split(' ')[0]);
@@ -4895,21 +4903,21 @@ async function amView(){if(!isMgr())return go('config');
     $('#page').innerHTML=`<div class="mx"><button type="button" class="mx-bk" id="mxBk">${svg('<path d="m15 6-6 6 6 6"/>')}Configurações</button>
      <div class="mx-two"><nav class="mx-sub" aria-label="Atendimento"><h6>Atendimento</h6><button type="button" data-o="qr">Respostas rápidas</button><button type="button" class="on">Mensagens automáticas</button><button type="button" data-o="cl">Encerramento e satisfação</button></nav>
      <section class="ma"><div class="ma-ph"><div><h1>Mensagens automáticas</h1><p>Mensagens prontas que saem sozinhas em momentos certos da conversa. Ligue as que quiser e ajuste o texto.</p></div>${st.saved?`<span class="mx-ok">${svg('<path d="m5 12 5 5 9-10"/>')}Salvo</span>`:''}</div>
-      <div class="ma-rule"><h3>Quem recebe o cliente quando ele chama?</h3>
-       <div class="ma-rg"><div class="ma-op ${nzAuto?'cur':''}">${nzAuto?'<em>Agora</em>':''}<span class="ma-ii ma-nz">${svg(NI.nanda)}</span><b>A ${nm} responde sozinha</b><small>Ela mesma dá as boas-vindas e avisa o horário. As mensagens do passo 1 <u>não saem</u>.</small></div>
-        <div class="ma-op ${nzAuto?'':'cur'}">${nzAuto?'':'<em>Agora</em>'}<span class="ma-ii">${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}</span><b>A ${nm} só sugere ou está pausada</b><small>Ninguém responderia na hora, então as mensagens do passo 1 <u>saem sozinhas</u>.</small></div></div>
-       <p class="ma-ft">Hoje a ${nm} está <b>${nzAuto?'respondendo sozinha':n.paused||n.mode==='off'?'pausada':'só sugerindo respostas'}</b>. <button type="button" class="lnk" data-nz>Mudar</button> · Os passos 2 e 3 dependem só do time e valem sempre. Tudo sai pelo canal em que o cliente escreveu: WhatsApp, Instagram ou Messenger.</p></div>
+      <div class="ma-rule ${st.rule?'op':''}"><button type="button" class="ma-rh" data-rule><span class="ma-ii ma-nz">${svg(NI.nanda)}</span><span>${nzAuto?`A ${nm} está respondendo sozinha, então <b>ela mesma recebe o cliente</b>.`:`A ${nm} não está respondendo sozinha, então <b>estas mensagens recebem o cliente</b>.`}</span><span class="ma-why">Como funciona ${svg('<path d="m6 9 6 6 6-6"/>')}</span></button>
+       ${st.rule?`<div class="ma-rb"><div class="ma-rg"><div class="ma-op ${nzAuto?'cur':''}">${nzAuto?'<em>Agora</em>':''}<b>${nm} responde sozinha</b><small>Ela dá as boas-vindas e avisa o horário. Boas-vindas e Fora do horário <u>não saem</u>.</small></div>
+        <div class="ma-op ${nzAuto?'':'cur'}">${nzAuto?'':'<em>Agora</em>'}<b>${nm} só sugere ou está pausada</b><small>Ninguém responderia na hora, então Boas-vindas e Fora do horário <u>saem</u>.</small></div></div>
+       <p class="ma-ft">Assinatura e Agradecimento dependem só do time e valem sempre. Tudo sai pelo canal em que o cliente escreveu: WhatsApp, Instagram ou Messenger. <button type="button" class="lnk" data-nz>Mudar o modo da ${nm}</button></p></div>`:''}</div>
       ${sec(1,'Quando o cliente chama',
         it('welcome','Boas-vindas','Na primeira mensagem de um cliente novo, dentro do horário.',msg('welcome'))+
         it('away','Fora do horário','Quando alguém chama com a loja fechada. No máximo uma vez a cada 12 h por cliente.',msg('away'),d.hours?`<div class="ma-nt">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}<span>Seu horário: ${esc(d.hours)}. <button type="button" class="lnk" data-hr>Alterar</button></span></div>`:`<div class="ma-nt wn">${svg('<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>')}<span>Sem horário de atendimento, este aviso não sai. <button type="button" class="lnk" data-hr>Definir horário</button></span></div>`))}
       ${sec(2,'Enquanto alguém atende',it('sign','Assinar com o nome de quem atende','Cada mensagem do time sai com o nome de quem escreveu. A Nanda não assina.',`<div class="ma-bb st"><span class="ma-bub"><em>${first}:</em> Oi, tudo bem? Já te ajudo com o pedido.</span></div>`))}
       ${sec(3,'Quando a conversa termina',it('bye','Agradecimento','Quando alguém do time marca a conversa como resolvida.',msg('bye'),`<div class="ma-nt">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}<span>Se a pesquisa de satisfação estiver ligada, ela vai no lugar desta mensagem. <button type="button" class="lnk" data-o="cl">Ver pesquisa</button></span></div>`))}
      </section></div></div>`;
-    $('#mxBk').onclick=()=>go('config');document.querySelectorAll('[data-nz]').forEach(b=>b.onclick=()=>go('nanda'));
+    $('#mxBk').onclick=()=>go('config');document.querySelectorAll('[data-nz]').forEach(b=>b.onclick=()=>go('nanda'));document.querySelectorAll('[data-rule]').forEach(b=>b.onclick=()=>{st.rule=!st.rule;draw()});document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{const k=b.dataset.op;st.open=st.open===k?null:k;if(st.edit&&st.edit!==st.open)st.edit=null;draw()});
     document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>b.dataset.o==='qr'?qrManager():closingModal());
     document.querySelectorAll('[data-hr]').forEach(b=>b.onclick=()=>{AG.tab='config';go('agenda')});
     document.querySelectorAll('[data-tg]').forEach(x=>x.onchange=async()=>{const k=x.dataset.tg;x.disabled=true;
-      try{Object.assign(d,await api('/automsg',{method:'PUT',body:k==='sign'?{sign:x.checked}:{[k]:{on:x.checked}}}));st.saved=true;if(!x.checked&&st.edit===k)st.edit=null;draw()}catch(e){x.checked=!x.checked;x.disabled=false;toast(e.message)}});
+      try{Object.assign(d,await api('/automsg',{method:'PUT',body:k==='sign'?{sign:x.checked}:{[k]:{on:x.checked}}}));st.saved=true;if(!x.checked&&st.edit===k)st.edit=null;if(x.checked)st.open=k;draw()}catch(e){x.checked=!x.checked;x.disabled=false;toast(e.message)}});
     document.querySelectorAll('[data-ed]').forEach(b=>{b.onclick=()=>{st.edit=b.dataset.ed;draw();const t=$('#mxT');t.focus();t.setSelectionRange(t.value.length,t.value.length)}});
     const t=$('#mxT');if(t){const pv=()=>{$('#mxPv').textContent=fx(t.value)};t.oninput=pv;
       document.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>{const a=t.selectionStart,z=t.selectionEnd,v=b.dataset.ins;t.value=t.value.slice(0,a)+v+t.value.slice(z);t.focus();t.setSelectionRange(a+v.length,a+v.length);pv()});
