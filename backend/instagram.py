@@ -353,9 +353,9 @@ async def verify(request: Request):
         return Response(q.get('hub.challenge', ''), media_type='text/plain')
     raise HTTPException(403, 'Token de verificação inválido.')
 
-async def on_flow(a, contact, msg, text):
+async def on_flow(a, contact, msg, text, ch='instagram'):
     import igrules
-    try: return await igrules.on_message(a, await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact, msg, text)
+    try: return await igrules.on_message(a, await db.contacts.find_one({'id': contact['id']}, {'_id': 0}) or contact, msg, text, ch)
     except Exception:
         log.exception('falha na automação do instagram'); return False
 
@@ -485,7 +485,7 @@ async def ingest(a, m, ch='instagram', quiet=False):
         from media import schedule
         schedule(doc['id'])  # baixa (e transcreve) antes de chamar a Nanda
     elif quiet: pass  # outro app tem a conversa: a Nanda não responde por cima
-    elif ch == 'instagram' and await on_flow(a, contact, msg, text): pass  # botão do link ou boas-vindas já respondeu
+    elif await on_flow(a, contact, msg, text, ch): pass  # botão do link ou boas-vindas já respondeu
     elif whatsapp.ON_INBOUND: whatsapp.ON_INBOUND(cid, contact['id'], doc['id'])
     from push import later, on_inbound as push_inbound
     later(push_inbound(cid, contact['id'], text))
