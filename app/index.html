@@ -9655,7 +9655,6 @@ const VIEWS={
     if(k==='wa'){const w=$('#eqWaBox');if(w){w.style.display=w.style.display==='none'?'':'none';if(w.style.display==='')w.scrollIntoView({block:'nearest',behavior:'smooth'})}}});
   document.querySelectorAll('[data-ef]').forEach(b=>b.onclick=()=>{VIEWS._eqf=b.dataset.ef;VIEWS.equipe()});
   document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{const [k,id]=b.dataset.ed.split(':');personModal(k==='m'?{team,member:team.find(x=>x.id===id),onDone:()=>VIEWS.equipe()}:{team,pro:PROS.find(x=>x.id===id),onDone:()=>VIEWS.equipe()})});
-  document.addEventListener('click',e=>{if(!e.target.closest('.pc-mn'))document.querySelectorAll('.pc-mn[open]').forEach(d=>d.open=false)},{once:true});
   if($('#eqInv'))$('#eqInv').onclick=addP;
   if(false){let role='agent';
     const o=overlay(`<div class="modal eq-m"><div class="row"><h2 style="font-size:20px">Convidar pessoa</h2><button class="x">×</button></div>
@@ -10995,6 +10994,9 @@ function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)r
   const tg=hd.querySelector('.tools')||hd,pri=[...tg.children].find(x=>x.classList.contains('btn')&&x.classList.contains('p'));pri?tg.insertBefore(b,pri):tg.appendChild(b)}
 new MutationObserver(()=>hpBadge()).observe(document.body,{childList:true,subtree:true});
 VIEWS.ajuda=hpView;
+/* menus de três pontinhos: fecham ao clicar fora, ao escolher uma opção, ao abrir outro ou com Esc */
+document.addEventListener('click',e=>{const m=e.target.closest('.pc-mn');document.querySelectorAll('.pc-mn[open]').forEach(d=>{if(d!==m||e.target.closest('.pc-mn>div button'))d.open=false})},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.pc-mn[open]').forEach(d=>d.open=false)});
 VIEWS.config=cfgView;VIEWS.msgauto=amView;
 VIEW=readPath();swInit();boot();
 </script>
