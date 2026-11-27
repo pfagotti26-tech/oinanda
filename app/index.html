@@ -6503,7 +6503,7 @@ function vdFirst(){
   $('#vdBar').hidden=true;if($('#vdExp'))$('#vdExp').style.display='none';
   const W=[['p','<path d="M12 5v14M5 12h14"/>','Registrar agora','Cliente, o que comprou e o valor. Leva menos de um minuto.','Registrar venda','new'],
     ['','<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>','Direto na conversa','Ao fechar no WhatsApp, abra o card do cliente e toque em Registrar venda.','Abrir conversas','conversas'],
-    ['','<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/>','Pelo Funil','Arraste o card do cliente até a etapa de venda e a venda fica registrada.','Abrir o funil','funil']];
+    ['','<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/>','Pelo Funil','Arraste o card do cliente até a etapa de venda e preencha o que ele comprou na janela que abre.','Abrir o funil','funil']];
   const ex={value:4850,count:12,ticket:404,new:7};
   $('#vdR').innerHTML=`<div class="vd-fs"><span class="eq-eb">Comece por aqui</span><h2>Sua primeira venda aparece aqui</h2><p>Faturamento, ticket médio, quem vendeu mais e de onde vieram os clientes. Escolha o jeito mais fácil para você registrar:</p>
     <div class="w3">${W.map(w=>`<button type="button" class="w ${w[0]}" data-w="${w[5]}"><i>${svg(w[1])}</i><b>${w[2]}</b><span>${w[3]}</span><em>${w[4]} →</em></button>`).join('')}</div>
