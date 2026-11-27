@@ -25,6 +25,7 @@ from fastapi.responses import RedirectResponse, Response
 from pydantic import BaseModel, Field
 from core import db, now, uid, audit, current_user, owners, managers
 from whatsapp import aware, encrypt, decrypt, note, WINDOW
+import metaev
 
 router = APIRouter()
 log = logging.getLogger('oinanda.ig')
@@ -33,6 +34,12 @@ GRAPH = 'https://graph.facebook.com/' + VER
 # Responder de 24 h a 7 dias (tag HUMAN_AGENT) só depois que a Meta aprovar o recurso "Human Agent": ligue com IG_HUMAN_AGENT=1
 def human_window(): return timedelta(days=7) if os.environ.get("IG_HUMAN_AGENT") == "1" else WINDOW
 FIELDS = 'messages,messaging_postbacks,messaging_seen,comments'
+FIELDS_PLUS = FIELDS + ',message_reactions,messaging_referral'
+
+async def subscribe_ig(ig_id, tok):
+    """Assina os avisos da conta; se a Meta recusar os extras (reação, origem), fica com os básicos."""
+    try: await ig('POST', f'/{ig_id}/subscribed_apps', tok, {'subscribed_fields': FIELDS_PLUS})
+    except HTTPException: await ig('POST', f'/{ig_id}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
 
 def ready(): return bool(os.environ.get('IG_APP_ID') and os.environ.get('IG_APP_SECRET') and os.environ.get('IG_CONFIG_ID'))
 def app_url(request=None):
@@ -64,7 +71,8 @@ async def status(user=Depends(current_user)):
     pend = None if a else await db.ig_pending.find_one({'company_id': user['company_id']}, {'_id': 0, 'gave_up': 1, 'reason': 1, 'created_at': 1})
     return {'ready': ready(), 'account': {k: a.get(k) for k in ('username', 'name', 'picture', 'connected_at', 'expires_at', 'comment_words', 'comment_dm', 'comment_reply', 'status')} if a else None,
             'pending': ({'gave_up': bool(pend.get('gave_up')), 'reason': pend.get('reason')} if pend else None),
-            'page': {'ready': page_ready(a), 'name': (a or {}).get('page_name')} if a else None,
+            'page': {'ready': page_ready(a), 'name': (a or {}).get('page_name'),
+                     'last_in': ((await db.messages.find({'company_id': user['company_id'], 'channel': 'messenger', 'dir': 'in'}, {'_id': 0, 'at': 1}).sort('at', -1).to_list(1)) or [{}])[0].get('at')} if a else None,
             'redirect_uri': redirect_uri(), 'webhook': app_url() + '/api/ig/webhook'}
 
 @router.get('/ig/connect')
@@ -106,7 +114,8 @@ async def callback(request: Request, code: str = '', state: str = '', error: str
         log.warning('falha ao conectar instagram: %s', e.detail)
         return RedirectResponse(back + '?ig=erro')
 
-PAGE_FIELDS = ('messages,messaging_postbacks,message_reactions', 'messages,messaging_postbacks', 'messages')
+PAGE_FIELDS = ('messages,messaging_postbacks,message_reactions,message_reads,message_deliveries,messaging_referrals,message_echoes,messaging_handovers,standby',
+               'messages,messaging_postbacks,message_reactions', 'messages,messaging_postbacks', 'messages')
 
 async def via_page(company_id, user_id, tok):
     """Conexão pelo login do Facebook: o Instagram do cliente fica ligado a uma Página, e o Oi Nanda fala com ele usando o
@@ -172,7 +181,7 @@ async def finish(company_id, user_id, tok, biz, exp):
     if await db.ig_accounts.find_one({'ig_id': str(acc['id']), 'company_id': {'$ne': company_id}}):
         log.info('instagram: @%s já está em outra empresa', acc.get('username'))
         return 'outra_empresa'
-    await ig('POST', f'/{acc["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS})
+    await subscribe_ig(acc['id'], tok)
     await db.ig_accounts.update_one({'company_id': company_id}, {'$set': {
         'company_id': company_id, 'ig_id': str(acc['id']), 'username': acc.get('username'), 'name': acc.get('name'), 'picture': acc.get('profile_picture_url'),
         'business_id': biz, 'config_id': os.environ['IG_CONFIG_ID'], 'token_enc': encrypt(tok), 'expires_at': exp,
@@ -254,7 +263,7 @@ async def probe(body: ProbeIn, user=Depends(owners)):
     log.info('instagram: teste pela conta %s: %s', body.ig_id, 'ok' if 'id' in out else out.get('erro'))
     if 'id' not in out: return {'ok': False, 'detail': out.get('erro')}
     try:
-        await ig('POST', f'/{out["id"]}/subscribed_apps', tok, {'subscribed_fields': FIELDS}); sub = 'ok'
+        await subscribe_ig(out['id'], tok); sub = 'ok'
     except HTTPException as e: sub = e.detail
     log.info('instagram: assinatura dos avisos da conta %s: %s', out['id'], sub)
     if sub != 'ok': return {'ok': False, 'account': {k: out.get(k) for k in ('id', 'username')}, 'detail': sub}
@@ -317,6 +326,20 @@ async def refresh_tokens():
     for p in await db.ig_pending.find({'gave_up': {'$ne': True}, 'created_at': {'$gt': now() - timedelta(minutes=30)}}, {'_id': 0}).to_list(100):
         await pending_try(p)
     await db.ig_accounts.update_many({'status': 'connected', 'expires_at': {'$ne': None, '$lt': now()}}, {'$set': {'status': 'expired'}})
+    await resubscribe_all()
+
+SUBS_V = 2  # sobe quando a lista de avisos assinados muda: as contas já ligadas passam a receber os novos sozinhas
+async def resubscribe_all():
+    for a in await db.ig_accounts.find({'status': 'connected', 'subs_v': {'$ne': SUBS_V}}, {'_id': 0}).to_list(500):
+        try:
+            tok = decrypt(a['token_enc'])
+            if a.get('mode') == 'page' and a.get('page_id'):
+                for f in PAGE_FIELDS:
+                    try: await ig('POST', f'/{a["page_id"]}/subscribed_apps', tok, {'subscribed_fields': f}); break
+                    except HTTPException: continue
+            else: await subscribe_ig(a['ig_id'], tok)
+            await db.ig_accounts.update_one({'company_id': a['company_id']}, {'$set': {'subs_v': SUBS_V}})
+        except Exception: log.exception('instagram: falha ao atualizar os avisos de %s', a.get('username'))
 
 async def revoked(a, e):
     if getattr(e, 'revoked', False):
@@ -353,9 +376,13 @@ async def webhook(request: Request):
             if not a: continue
             if page:  # Messenger: mesma página, só entra se a empresa ligou o canal
                 if not await messenger_on(a['company_id']): continue
-                for m in e.get('messaging') or []: await ingest(a, m, 'messenger')
+                for m in e.get('messaging') or []:
+                    if not await metaev.dispatch(a, m, 'messenger'): await ingest(a, m, 'messenger')
+                for m in e.get('standby') or []: await ingest(a, m, 'messenger', quiet=True)  # outro app (ex.: caixa da Meta) cuida da conversa: só registra
                 continue
-            for m in e.get('messaging') or []: await ingest(a, m)
+            for m in e.get('messaging') or []:
+                if not await metaev.dispatch(a, m): await ingest(a, m)
+            for m in e.get('standby') or []: await ingest(a, m, quiet=True)
             for ch in e.get('changes') or []:
                 if ch.get('field') == 'comments': await on_comment(a, ch.get('value') or {})
         except Exception: log.exception('falha no webhook da meta')
@@ -404,7 +431,7 @@ async def upsert(a, sid, username=None, source='instagram', ch='instagram'):
     except Exception: log.exception('falha ao marcar a origem de %s', ch)
     return c, True
 
-async def ingest(a, m, ch='instagram'):
+async def ingest(a, m, ch='instagram', quiet=False):
     cid = a['company_id']
     msg = m.get('message') or {}
     if not msg or msg.get('is_deleted'): return
@@ -416,6 +443,7 @@ async def ingest(a, m, ch='instagram'):
     at = datetime.fromtimestamp(int(m.get('timestamp') or 0) / 1000, tz=timezone.utc) if m.get('timestamp') else now()
     if now() - at < timedelta(seconds=60): at = now()
     contact, _ = await upsert(a, igsid, ch=ch, source=ch)
+    if not echo and (msg.get('referral') or m.get('referral')): await metaev.on_referral(a, contact, msg.get('referral') or m.get('referral'), ch)
     att = (msg.get('attachments') or [{}])[0] if msg.get('attachments') else None
     t = (att or {}).get('type')
     text = msg.get('text') or LABEL.get(t, '📎 Anexo' if att else '')
@@ -456,6 +484,7 @@ async def ingest(a, m, ch='instagram'):
     if url and kind != 'text':
         from media import schedule
         schedule(doc['id'])  # baixa (e transcreve) antes de chamar a Nanda
+    elif quiet: pass  # outro app tem a conversa: a Nanda não responde por cima
     elif ch == 'instagram' and await on_flow(a, contact, msg, text): pass  # botão do link ou boas-vindas já respondeu
     elif whatsapp.ON_INBOUND: whatsapp.ON_INBOUND(cid, contact['id'], doc['id'])
     from push import later, on_inbound as push_inbound
