@@ -3414,8 +3414,15 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .inl .sm-r2{flex-wrap:wrap;row-gap:4px}.inl .sm-qt button{width:28px;height:34px}.inl .sm-qt input{width:34px}.inl .sm-mn{width:92px;padding:0 8px}.inl .sm-r2{gap:6px}.inl .sm-it2 .t{order:4;font-size:14px}.inl .sm-dl{order:5;flex-basis:100%;font-size:12px;text-align:left}
 .inl .sm-it2{background:#FFFCFA;padding:10px 12px}.inl .sm-it2:only-child .t{display:none}.inl .sm-it2:only-child .sm-dl{flex-basis:auto}
 .inl .sm-chip.av1{border:0;background:none;padding:0;color:var(--c2);font-weight:600;font-size:13px}
-.inl .sm-sticky{background:#FBF8F5}.inl .sm3 .sm-act{display:flex!important}
-.inl .sm-pays{display:flex;flex-wrap:wrap;gap:6px}.inl .sm-pay{padding:7px 11px;border-radius:99px;font-size:12.5px}.inl .sm-pay svg{width:15px;height:15px}
+.inl .sm-sticky{background:#FBF8F5}
+.inl .sm-rgp{display:flex;flex-direction:column;align-items:stretch;gap:0;margin-top:2px}.inl .sm-lb{margin:4px 0 2px}
+.inl .sm-rgp .sm-rp{border:0;border-radius:8px;background:none;padding:5px 6px;gap:9px;font-size:13.5px;width:100%}.inl .sm-rgp .sm-rp:hover{background:#FBF5F1}.inl .sm-rgp .sm-rp .av{width:24px;height:24px}.inl .sm-rgp .sm-rp em{margin-left:auto}
+.inl .sm-rgp .sm-rp.nw{color:var(--c2);margin-top:2px}.inl .sm-rgp .sm-rp.nw .av{background:none;border:1.5px dashed #E6BFAF}
+.inl #smCl{display:flex;flex-direction:column;gap:0;border:1px solid #F1E9E2;border-radius:12px;overflow:hidden;background:#fff}
+.inl #smCl .sm-chip{border:0;border-radius:0;justify-content:flex-start;width:100%;padding:8px 12px;font-size:13.5px;text-align:left;background:#fff}.inl #smCl .sm-chip+.sm-chip{border-top:1px solid #F4EDE7}.inl #smCl .sm-chip:hover{background:#FBF5F1}.inl #smCl .sm-chip.on{background:var(--tint)}
+.inl #smCl .sm-chip em{margin-left:auto;order:3;white-space:nowrap}.inl #smCl .sm-chip .sm-cn{order:2;margin-left:6px}
+.inl .sm-pays{display:grid;grid-template-columns:1fr 1fr;gap:6px}.inl .sm-pay{border-radius:10px;padding:8px 10px;font-size:13px;white-space:nowrap}.inl .sm3 .sm-act{display:flex!important}
+.inl .sm-pay svg{width:15px;height:15px}
 .inl .sm3 .sm-sec,.inl .sm-sec{padding:14px 16px;gap:8px}
 @media (min-width:1180px){.inl .sm-main{display:block;columns:2;column-gap:12px}.inl .sm-main>.sm-sec,.inl .sm-main>details{break-inside:avoid;margin-bottom:12px}.inl .sm-grid{grid-template-columns:minmax(0,1fr) 300px}}
 .sm-pay{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;font:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;text-align:left}.sm-pay svg{width:18px;height:18px;flex:none;color:var(--ink3)}.sm-pay:hover{border-color:#E8B9A9}.sm-pay.on{border-color:var(--c);background:var(--tint);color:var(--ink)}.sm-pay.on svg{color:var(--c)}
@@ -6784,7 +6791,7 @@ async function saleModal(opt){
       <div class="sm-items" id="smI"></div>${ro?'':'<button type="button" class="sm-add" id="smAI">+ Outro item</button>'}
       <datalist id="smCat">${active.map(p=>`<option value="${esc(p.name)}">${p.price!=null?brl2(p.price):''}${p.category?' · '+esc(p.category):''}</option>`).join('')}</datalist></section>
      <section class="sm-sec"><h3><i>3</i>Pagamento</h3><input type="hidden" name="payment" value="${esc(pay)}">
-      <div class="sm-pays" id="smPay">${PAYS.map(p=>`<button type="button" class="sm-pay ${pay===p.id?'on':''}" data-py="${p.id}" ${ro?'disabled':''}>${svg(PIC[p.id]||PIC.outro)}<span>${esc(p.name)}</span></button>`).join('')}</div>
+      <div class="sm-pays" id="smPay">${PAYS.map(p=>`<button type="button" class="sm-pay ${pay===p.id?'on':''}" data-py="${p.id}" ${ro?'disabled':''}>${svg(PIC[p.id]||PIC.outro)}<span>${esc({cartao_credito:'Crédito',cartao_debito:'Débito'}[p.id]||p.name)}</span></button>`).join('')}</div>
       <div class="sm-parc" id="smPc" ${pay==='cartao_credito'?'':'hidden'}><span>Parcelas</span><div class="seg">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<button type="button" data-pc="${n}" class="${n===parc?'on':''}" ${ro?'disabled':''}>${n===1?'À vista':n+'x'}</button>`).join('')}</div></div>
       <div class="sm-dt"><span>Quando foi</span><div class="seg" id="smDs"><button type="button" data-d="${today}">Hoje</button><button type="button" data-d="${yest}">Ontem</button><button type="button" data-d="x">Outra data</button></div><input type="date" name="date" value="${date}" max="${today}" ${ro?'disabled':''}></div>
       <div id="smNw">${notesOpen?'':`<button type="button" class="lnk" id="smNo">+ Observação</button>`}<div class="field" ${notesOpen?'':'style="display:none"'}><label>Observação</label><input name="notes" maxlength="1000" value="${esc(sale?sale.notes||'':'')}" ${ro?'disabled':''} placeholder="Ex.: parcelado em 3x, entrega dia 15"></div></div></section>
