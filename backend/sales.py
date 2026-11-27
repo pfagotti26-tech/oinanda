@@ -25,6 +25,7 @@ MGR = ('owner', 'manager')
 class ProductIn(BaseModel):
     name: str = Field(min_length=2, max_length=80)
     category: str = Field(default='', max_length=40)
+    code: str = Field(default='', max_length=30)                         # código interno / SKU, opcional
     price: Optional[float] = Field(default=None, ge=0, le=10_000_000)
     kind: Literal['produto', 'servico', 'plano'] = 'servico'
     active: bool = True
@@ -52,7 +53,7 @@ async def products(user=Depends(current_user)):
 async def add_product(body: ProductIn, request: Request, user=Depends(managers)):
     if await db.products.count_documents({'company_id': user['company_id']}) >= 1000: raise HTTPException(400, 'Limite de 1000 itens no catálogo.')
     if await db.products.find_one({'company_id': user['company_id'], 'name': body.name.strip()}): raise HTTPException(409, 'Já existe um item com esse nome.')
-    p = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'created_at': now()}
+    p = {'id': uid(), 'company_id': user['company_id'], **body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'code': body.code.strip(), 'created_at': now()}
     await db.products.insert_one(p.copy())
     await audit(request, user, 'Cadastrou no catálogo', p['name'])
     p.pop('_id', None)
@@ -62,7 +63,7 @@ async def add_product(body: ProductIn, request: Request, user=Depends(managers))
 async def edit_product(pid: str, body: ProductIn, request: Request, user=Depends(managers)):
     p = await db.products.find_one({'id': pid, 'company_id': user['company_id']}, {'_id': 0})
     if not p: raise HTTPException(404, 'Item não encontrado.')
-    upd = {**body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'next_ids': [i for i in body.next_ids if i != pid]}
+    upd = {**body.model_dump(), 'name': body.name.strip(), 'category': body.category.strip(), 'code': body.code.strip(), 'next_ids': [i for i in body.next_ids if i != pid]}
     await db.products.update_one({'id': pid}, {'$set': upd})
     if p.get('duration_days') != body.duration_days or p.get('name') != upd['name'] or bool(p.get('recurring')) != body.recurring:
         from wallet import recompute_product
