@@ -21,6 +21,8 @@ def dm(sender, text=None, mid=None, echo=False, att=None, ig_id='178414000000000
     s, r = ({'id': ig_id}, {'id': sender}) if echo else ({'id': sender}, {'id': ig_id})
     return {'object': 'instagram', 'entry': [{'id': ig_id, 'time': 1, 'messaging': [{'sender': s, 'recipient': r, 'timestamp': int(time.time() * 1000), 'message': m}]}]}
 
+FOLLOW = {'v': False}
+
 def test_direct(monkeypatch):
     calls, inbound = [], []
     async def fake_ig(method, path, token=None, params=None, data=None, payload=None, base=None):
@@ -30,6 +32,7 @@ def test_direct(monkeypatch):
         if path == '/me/assigned_instagram_accounts': return {'data': [{'id': '17841400000000001', 'username': 'alta_creators', 'name': 'Alta Creators'}]}
         if path.endswith('/messages'): return {'recipient_id': 'x', 'message_id': 'out' + str(len(calls))}
         if path == '/17841400000000001': return {'name': 'Alta Creators', 'profile_picture_url': 'x'}
+        if params and 'is_user_follow_business' in str(params.get('fields', '')): return {'is_user_follow_business': FOLLOW['v']}
         if path.startswith('/9'): return {'name': 'Bia Souza', 'username': 'bia.souza'}
         if path == '/p20': return {'timestamp': '2099-01-01T00:00:00+0000', 'caption': 'Post novo'}
         return {'success': True}
@@ -124,6 +127,40 @@ def test_direct(monkeypatch):
         st = {r['name']: r['stats'] for r in c.get('/api/ig/rules').json()['items']}
         assert st['Black']['sent'] == 1 and st['Lançamento']['sent'] == 1
         assert c.delete(f"/api/ig/rules/{nx['id']}").status_code == 200 and len(c.get('/api/ig/rules').json()['items']) == 2
+        # botão com link e "seguir para liberar"
+        assert c.post('/api/ig/rules', json={'name': 'Lk', 'words': ['oferta'], 'dm': 'Oi!', 'link_url': 'sem ponto'}).status_code == 400
+        lk = c.post('/api/ig/rules', json={'name': 'Oferta', 'words': ['oferta'], 'dm': 'Oi! Vou te mandar a oferta', 'link_url': 'loja.com.br/black', 'link_label': 'Ver oferta', 'follow_gate': True}).json()
+        assert lk['link_url'] == 'https://loja.com.br/black'
+        pr = com('c8', 'oferta', 'p1')[0]['message']
+        assert pr['quick_replies'][0]['payload'] == 'igr:' + lk['id'] and pr['quick_replies'][0]['title'] == 'Ver oferta'
+        def tap(sender, title, payload, mid):
+            x = dm(sender, title, mid=mid); x['entry'][0]['messaging'][0]['message']['quick_reply'] = {'payload': payload}; post(c, x)
+            return [p for m, pth, _, p in calls if pth.endswith('/messages') and p and p['recipient'] == {'id': sender}]
+        n0 = len(inbound)
+        sent = tap('903', 'Ver oferta', 'igr:' + lk['id'], 'q1')
+        assert 'segue' in sent[-1]['message']['text'] and sent[-1]['message']['quick_replies'][0]['title'] == 'Já segui' and len(inbound) == n0  # a Nanda não respondeu por cima
+        FOLLOW['v'] = True
+        sent = tap('903', 'Já segui', 'igr:' + lk['id'], 'q2')
+        btn = sent[-1]['message']['attachment']['payload']['buttons'][0]
+        assert btn['title'] == 'Ver oferta' and '/api/ig/l/' in btn['url']
+        r = c.get(btn['url'].split('://', 1)[1].split('/', 1)[1].join(['/', '']), follow_redirects=False)
+        assert r.status_code == 302 and r.headers['location'] == 'https://loja.com.br/black'
+        st = {x['name']: x['stats'] for x in c.get('/api/ig/rules').json()['items']}
+        assert st['Oferta']['clicked'] == 1 and st['Oferta']['sent'] == 1
+        # boas-vindas com botões: só quando a pessoa chega com um oi
+        assert c.put('/api/ig/welcome', json={'on': True, 'text': 'Oi {primeiro_nome}! Como posso ajudar?', 'buttons': [{'title': 'Ver preços', 'kind': 'reply', 'reply': ''}]}).status_code == 400
+        assert c.put('/api/ig/welcome', json={'on': True, 'text': 'Oi {primeiro_nome}! Como posso ajudar?', 'buttons': [{'title': 'Ver preços', 'kind': 'reply', 'reply': 'A partir de R$ 99 😊'}, {'title': 'Falar com alguém', 'kind': 'human'}]}).status_code == 200
+        n0 = len(inbound)
+        post(c, dm('905', 'Oi!', mid='w1'))
+        w = [p for m, pth, _, p in calls if pth.endswith('/messages') and p and p['recipient'] == {'id': '905'}]
+        assert w and [q['payload'] for q in w[-1]['message']['quick_replies']] == ['igw:0', 'igw:1'] and len(inbound) == n0
+        assert tap('905', 'Ver preços', 'igw:0', 'w2')[-1]['message']['text'] == 'A partir de R$ 99 😊'
+        tap('905', 'Falar com alguém', 'igw:1', 'w3')
+        k = c.portal.call(lambda: db.contacts.find_one({'ig_id': '905'}, {'_id': 0}))
+        assert k['needs_human'] is True
+        post(c, dm('906', 'Quanto custa o plano anual?', mid='w4'))
+        assert not [p for m, pth, _, p in calls if pth.endswith('/messages') and p and p['recipient'] == {'id': '906'}] and len(inbound) == n0 + 1  # já chegou perguntando: vai para a Nanda
+        assert c.get('/api/ig/rules').json()['welcome']['on'] is True
 
 def test_meta_demora_a_liberar_a_conta(monkeypatch):
     """A Meta autoriza, mas só libera a conta depois: o Oi Nanda guarda e conecta sozinho na próxima tentativa."""

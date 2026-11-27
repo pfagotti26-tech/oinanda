@@ -74,6 +74,7 @@ async def lifespan(app):
     await db.ig_accounts.create_index('company_id', unique=True)
     await db.ig_accounts.create_index('ig_id')
     await db.ig_comments.create_index('comment_id', unique=True)
+    await db.ig_links.create_index('token', unique=True)
     await db.contacts.create_index([('company_id', 1), ('last_at', -1)])
     await db.messages.create_index([('contact_id', 1), ('at', -1)])
     await db.messages.create_index('wa_msg_id', sparse=True)
