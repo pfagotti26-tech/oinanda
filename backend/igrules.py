@@ -192,13 +192,35 @@ class WelcomeIn(BaseModel):
     buttons: List[WelcomeBtn] = Field(default_factory=list, max_length=4)
 
 WELCOME_TXT = 'Oi {primeiro_nome}! Que bom te ver por aqui 😊 Como posso te ajudar?'
-def welcome_of(a):
-    w = (a or {}).get('welcome') or {}
+WKEY = {'instagram': 'welcome', 'messenger': 'mg_welcome'}
+CHN = {'instagram': 'Instagram', 'messenger': 'Messenger'}
+def welcome_of(a, ch='instagram'):
+    w = (a or {}).get(WKEY[ch]) or {}
     return {'on': bool(w.get('on')), 'text': w.get('text') or WELCOME_TXT,
             'buttons': w.get('buttons') or [{'title': 'Ver preços', 'kind': 'reply', 'reply': ''}, {'title': 'Falar no WhatsApp', 'kind': 'whatsapp', 'reply': ''}, {'title': 'Falar com alguém', 'kind': 'human', 'reply': ''}]}
 
 @router.put('/ig/welcome')
 async def put_welcome(body: WelcomeIn, request: Request, user=Depends(managers)):
+    return await save_welcome(body, request, user, 'instagram')
+
+@router.put('/mg/welcome')
+async def put_mg_welcome(body: WelcomeIn, request: Request, user=Depends(managers)):
+    return await save_welcome(body, request, user, 'messenger')
+
+@router.get('/mg/summary')
+async def mg_summary(user=Depends(current_user)):
+    """Página do Messenger: conversas, vendas e boas-vindas dos últimos 30 dias."""
+    cid = user['company_id']
+    a = await db.ig_accounts.find_one({'company_id': cid}, {'_id': 0, 'mg_welcome': 1}) or {}
+    since = now() - timedelta(days=30)
+    ids = await db.messages.distinct('contact_id', {'company_id': cid, 'channel': 'messenger', 'dir': 'in', 'at': {'$gte': since}})
+    allc = [c['id'] for c in await db.contacts.find({'company_id': cid, 'channel': 'messenger'}, {'_id': 0, 'id': 1}).to_list(20000)]
+    sales = await db.sales.find({'company_id': cid, 'contact_id': {'$in': allc}, 'status': 'ok', 'date': {'$gte': since.strftime('%Y-%m-%d')}}, {'_id': 0, 'total': 1}).to_list(5000) if allc else []
+    wel = await db.contacts.count_documents({'company_id': cid, 'channel': 'messenger', 'ig_welcomed': {'$gte': since}})
+    return {'summary': {'talks': len(ids), 'sales': len(sales), 'revenue': round(sum(x['total'] for x in sales), 2), 'welcomed': wel},
+            'welcome': welcome_of(a, 'messenger')}
+
+async def save_welcome(body, request, user, ch):
     cid = user['company_id']
     if not await db.ig_accounts.find_one({'company_id': cid}, {'_id': 1}): raise HTTPException(400, 'Conecte o Instagram primeiro.')
     btns = []
@@ -210,8 +232,8 @@ async def put_welcome(body: WelcomeIn, request: Request, user=Depends(managers))
         btns.append({'title': t, 'kind': b.kind, 'reply': b.reply.strip()})
     if body.on and not body.text.strip(): raise HTTPException(400, 'Escreva a mensagem de boas-vindas.')
     w = {'on': body.on, 'text': body.text.strip() or WELCOME_TXT, 'buttons': btns}
-    await db.ig_accounts.update_one({'company_id': cid}, {'$set': {'welcome': w}})
-    await audit(request, user, 'Alterou as boas-vindas do Instagram', 'ligada' if body.on else 'desligada')
+    await db.ig_accounts.update_one({'company_id': cid}, {'$set': {WKEY[ch]: w}})
+    await audit(request, user, 'Alterou as boas-vindas do ' + CHN[ch], 'ligada' if body.on else 'desligada')
     return w
 
 def first_of(contact):
@@ -221,11 +243,12 @@ def first_of(contact):
 def fill(t, contact):
     return t.replace('{primeiro_nome}', first_of(contact)).replace('{nome}', contact.get('name') or '').replace('Oi !', 'Oi!').replace('Oi , ', 'Oi, ')
 
-async def out(a, contact, message, by, text_for_log):
-    """Manda no Direct (dentro da janela) e registra na conversa."""
+async def out(a, contact, message, by, text_for_log, ch='instagram'):
+    """Manda no Direct ou no Messenger (dentro da janela) e registra na conversa."""
     from instagram import ig, msg_path
-    r = await ig('POST', msg_path(a), decrypt(a['token_enc']), payload={'recipient': {'id': contact['ig_id']}, 'message': message})
-    await db.messages.insert_one({'id': uid(), 'company_id': a['company_id'], 'contact_id': contact['id'], 'channel': 'instagram', 'dir': 'out', 'type': 'text',
+    rid = contact['fb_id'] if ch == 'messenger' else contact['ig_id']
+    r = await ig('POST', msg_path(a, ch), decrypt(a['token_enc']), payload={'recipient': {'id': rid}, 'message': message})
+    await db.messages.insert_one({'id': uid(), 'company_id': a['company_id'], 'contact_id': contact['id'], 'channel': ch, 'dir': 'out', 'type': 'text',
                                   'text': text_for_log, 'wa_msg_id': r.get('message_id'), 'status': 'sent', 'by': by, 'by_id': None, 'at': now()})
     await db.contacts.update_one({'id': contact['id']}, {'$set': {'last_at': now(), 'last_text': text_for_log[:200], 'last_dir': 'out'}})
     return r
@@ -275,38 +298,38 @@ async def wa_link(company_id):
     d = re.sub(r'\D', '', n.get('display_phone') or '')
     return f'https://wa.me/{d}' if d else ''
 
-async def on_message(a, contact, msg, text):
+async def on_message(a, contact, msg, text, ch='instagram'):
     """Chamado em cada mensagem nova do Direct. Devolve True quando a automação já respondeu (a Nanda não responde por cima)."""
     from whatsapp import note
     pl = ((msg.get('quick_reply') or {}).get('payload') or '')
     try:
-        if pl.startswith('igr:') or (contact.get('ig_wait') and now() - aware(contact['ig_wait']['at']) < WAIT and not pl):
+        if ch == 'instagram' and (pl.startswith('igr:') or (contact.get('ig_wait') and now() - aware(contact['ig_wait']['at']) < WAIT and not pl)):
             rid = pl[4:] if pl else contact['ig_wait']['rule_id']
             rule = await db.ig_rules.find_one({'id': rid, 'company_id': a['company_id']}, {'_id': 0})
             if rule and rule.get('link_url'):
                 await send_link(a, contact, rule)
                 return True
         if pl.startswith('igw:'):
-            w = welcome_of(a); i = int(pl[4:] or -1)
+            w = welcome_of(a, ch); i = int(pl[4:] or -1)
             b = w['buttons'][i] if 0 <= i < len(w['buttons']) else None
             if not b: return False
-            if b['kind'] == 'reply': await out(a, contact, {'text': fill(b['reply'], contact)}, 'Boas-vindas do Instagram', fill(b['reply'], contact)); return True
+            if b['kind'] == 'reply': await out(a, contact, {'text': fill(b['reply'], contact)}, 'Boas-vindas do '+CHN[ch], fill(b['reply'], contact), ch); return True
             if b['kind'] == 'whatsapp':
                 link = await wa_link(a['company_id'])
                 if link:
                     t = f'É só tocar aqui que a conversa continua no WhatsApp 👉 {link}'
-                    await out(a, contact, {'text': t}, 'Boas-vindas do Instagram', t); return True
+                    await out(a, contact, {'text': t}, 'Boas-vindas do '+CHN[ch], t, ch); return True
                 return False
             if b['kind'] == 'human':
                 t = b['reply'] or 'Combinado! Já chamei alguém do time para falar com você 😊'
-                await out(a, contact, {'text': fill(t, contact)}, 'Boas-vindas do Instagram', fill(t, contact))
-                await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'pediu uma pessoa nas boas-vindas do Instagram'}})
+                await out(a, contact, {'text': fill(t, contact)}, 'Boas-vindas do '+CHN[ch], fill(t, contact), ch)
+                await db.contacts.update_one({'id': contact['id']}, {'$set': {'needs_human': True, 'needs_human_at': now(), 'handoff_reason': 'pediu uma pessoa nas boas-vindas do ' + CHN[ch]}})
                 try:
                     from ai import route
-                    await route(a['company_id'], contact, 'pediu uma pessoa nas boas-vindas do Instagram')
+                    await route(a['company_id'], contact, 'pediu uma pessoa nas boas-vindas do ' + CHN[ch])
                 except Exception: log.exception('falha ao chamar o time')
                 return True
-        w = welcome_of(a)
+        w = welcome_of(a, ch)
         if w['on'] and not contact.get('ig_welcomed') and GREET.match((text or '').strip()):
             prior = await db.messages.count_documents({'contact_id': contact['id']})
             if prior <= 1:  # é a primeira conversa: chegou só com um oi
@@ -314,10 +337,10 @@ async def on_message(a, contact, msg, text):
                 t = fill(w['text'], contact)
                 m = {'text': t}
                 if w['buttons']: m['quick_replies'] = [{'content_type': 'text', 'title': b['title'][:20], 'payload': f'igw:{i}'} for i, b in enumerate(w['buttons'])]
-                await out(a, contact, m, 'Boas-vindas do Instagram', t + (' · ' + ' | '.join(b['title'] for b in w['buttons']) if w['buttons'] else ''))
+                await out(a, contact, m, 'Boas-vindas do '+CHN[ch], t + (' · ' + ' | '.join(b['title'] for b in w['buttons']) if w['buttons'] else ''), ch)
                 return True
     except HTTPException as e:
-        await note(a['company_id'], contact['id'], f'A automação do Instagram não conseguiu responder: {e.detail}')
+        await note(a['company_id'], contact['id'], f'A automação do {CHN[ch]} não conseguiu responder: {e.detail}')
     return False
 
 @router.get('/ig/l/{token}')
