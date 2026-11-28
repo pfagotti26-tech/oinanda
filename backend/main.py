@@ -67,6 +67,9 @@ async def lifespan(app):
     await db.login_limits.create_index('expires_at', expireAfterSeconds=0)
     await db.wa_numbers.create_index('company_id', unique=True)
     await db.wa_numbers.create_index('phone_number_id', unique=True)
+    async for co in db.companies.find({'stages': {'$elemMatch': {'name': 'Fechou', 'kind': 'won'}}}, {'_id': 0, 'id': 1, 'stages': 1}):  # nome do mercado: "Vendido"
+        st = [{**x, 'name': 'Vendido'} if x.get('name') == 'Fechou' and x.get('kind') == 'won' else x for x in co['stages']]
+        await db.companies.update_one({'id': co['id']}, {'$set': {'stages': st}})
     try:
         from whatsapp import backfill_lines
         await backfill_lines()  # troca de número: marca quem já falou com o número atual

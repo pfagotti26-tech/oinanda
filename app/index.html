@@ -4520,7 +4520,7 @@ function tourSteps(stg){const u=ME.user,mgr=['owner','manager'].includes(u.role)
     body:`Em <b>Relatórios</b> estão as conversas, o tempo de resposta, as vendas e quanto a ${nanda} atendeu sozinha. Dá para acompanhar pelo celular.`,scene:'rel'}]:[]),
    {id:'fim',view:'inicio',t:H[8],ch:'Conquista',title:'Você conheceu o Oi Nanda 🎉',body:'',scene:'fim'}];
   const op=(stg||[]).filter(x=>x.kind==='open').map(x=>x.name),won=((stg||[]).find(x=>x.kind==='won')||{}).name;
-  const cols=[op[0]||'Novo contato',op[1]||'Negociando',won||'Fechou'];
+  const cols=[op[0]||'Novo contato',op[1]||'Negociando',won||'Vendido'];
   return S.map(x=>({...x,N,brl,cols}))}
 function tourScene(x){const nanda=esc((CV.ai&&CV.ai.name)||'Nanda'),N=x.N,it=esc(N.item),cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
   const b=(d,t,k='')=>`<div class="tsb ${d} ${k}">${d==='out'?`<b>${nanda}</b>`:''}${t}</div>`;
