@@ -3880,6 +3880,16 @@ li.ok .su-gi,.su-g.ok .su-gi{background:var(--oksoft);color:var(--ok)}li.now .su
 .cp2-ins{padding:16px}.cp2-ins p{font-size:13px;color:var(--ink2);line-height:1.5;margin:8px 0}.cp2-mini{margin-top:12px}.cp2-mini>small{display:block;color:var(--ink3);font-size:12px;font-weight:700;margin-bottom:6px}.cp2-mini .cp2-wa{min-height:0}.cp2-mini .cp2-wa p{background:#fff;border-radius:8px;padding:8px 10px;font-size:12.5px;margin-top:6px}
 @media(max-width:1000px){.cp2-wz{grid-template-columns:minmax(0,1fr)}.cp2-ph{position:static}.cp2-kp{grid-template-columns:repeat(2,minmax(0,1fr))}.cp2-goal{grid-template-columns:repeat(2,minmax(0,1fr))}.cp2-fn{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.cp2-fn>div:nth-child(3){border:0}.cp2-row2{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.cp2-two,.cp2-when{grid-template-columns:minmax(0,1fr)}.cp2-fl .fr{grid-template-columns:minmax(0,1fr) 40px}.cp2-fl .fr>i{display:none}.cp2-fl .fr>span:nth-child(3){grid-column:1}.cp2-fl .fr>.sw{grid-row:1/3;grid-column:2}.cp2-rows>div{grid-template-columns:minmax(0,1fr) auto}.cp2-rows>div>span:first-child{grid-column:1/3}.cp2-drop{flex-wrap:wrap}.cp2-chosen{flex-wrap:wrap}.cp2-chosen img{width:100%;height:auto;aspect-ratio:1125/590}}
+
+/* menu v2: página atual inconfundível, mouse sutil, grupos por espaço */
+.side button.nav:hover{background:rgba(255,255,255,.035)!important;color:#fff}
+.side button.nav.on{background:rgba(255,255,255,.1)!important;color:#fff;font-weight:600;box-shadow:inset 3px 0 0 #FF7A55}
+.side button.nav.on svg{color:#FF9A7A;opacity:1}
+.side .sdv.sdg{height:1px;background:rgba(255,255,255,.06);margin:8px 10px}
+.app.mini .side .sdv.sdg{margin:8px 12px}
+.side .nqc{opacity:0;transition:opacity .15s}.side .nqw:hover .nqc,.side .nqc:focus-visible{opacity:1}
+.side .avw.suring::after{content:"";position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(#FF7A55 var(--su),rgba(255,255,255,.12) 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%);mask:radial-gradient(circle,transparent 62%,#000 63%)}
+.side .avw{position:relative}
 </style>
 </head>
 <body>
@@ -4836,7 +4846,8 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Meu status e avisos','',()=>meModal()]].filter(a=>a[3]!==false&&(a[1]!=='metas'||modOn('metas')))}
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&$('#gOpen')){e.preventDefault();gPal()}});
 /* menu do dia a dia; o resto mora em Configurações */
-const DAILY=['inicio','conversas','funil','agenda','clientes','campanhas','vendas','relatorios'];
+const DAILY=['inicio','conversas','agenda','funil','clientes','vendas','campanhas','relatorios'];
+const DAILY_G=[['inicio','conversas','agenda'],['funil','clientes','vendas'],['campanhas','relatorios']];  // dia a dia · vender · crescer (grupos sem título, separados por espaço)
 const mtTabOk=()=>modOn('metas')&&(isMgr()||gamOn());
 const CFG_VIEWS=['msgauto','empresa','equipe','automacoes','atividade','jornada','avisos-conta','assinatura'];
 /* Nanda no menu: estado e pausa de um toque */
@@ -5068,9 +5079,9 @@ function shell(){
     <button type="button" class="nav gsb" id="gOpen" title="Buscar cliente, tela, ajuste ou ação (Ctrl K)">${NI.buscar}<span class="lb">Buscar</span><kbd>Ctrl K</kbd></button>
     <button type="button" class="su-pill" id="suPill" hidden></button>
     <nav class="snav" id="snav">${am?[['a-visao'],['a-clientes','a-jornada','a-financeiro'],['a-avisos','a-alertas'],['a-atividade','a-erros']].map(g=>g.map(v=>navBtn(v,v==='a-atividade'?'Atividade':ADMIN_NAV.find(x=>x[0]===v)[1])).join('')).join('<div class="sdv"></div>')
-      :DAILY.filter(allowed).map(v=>navBtn(v,lbl[v])).join('')+nzChip()}</nav>
+      :DAILY_G.map(g=>g.filter(allowed).map(v=>navBtn(v,lbl[v])).join('')).filter(Boolean).join('<div class="sdv sdg"></div>')+'<div class="sdv sdg"></div>'+nzChip()}</nav>
     <div class="sp"></div>
-    ${am?'':navBtn('config','Configurações')}
+    ${am?'':navBtn('ajuda','Ajuda')+navBtn('config','Configurações')}
     <div class="me sw2"><button class="meb" id="meB" title="${adm&&!u.impersonated_by?'Trocar entre a empresa e o admin':'Seu status, avisos e sair'}"><span class="avw"><span class="av" ${am?'style="background:#5B6BE8"':''}>${initials(u.name)}</span><i class="${u.away?'off':''}" id="meDot"></i></span><span class="lb" style="min-width:0"><b>${am?'Admin':esc(c.name)}</b><span id="meSt">${esc(u.name.split(' ')[0])} · ${u.away?'ausente':'disponível'}</span></span><span class="lb mud">${svg('<path d="m8 10 4-4 4 4M8 14l4 4 4-4"/>')}</span></button><button id="out" class="lb">Sair</button></div>
   </aside><aside class="cside" id="cside" aria-label="Configurações"></aside><main>${am?'':`<button type="button" class="bellf" id="bellB" aria-label="Avisos" title="Avisos">${svg(BELL_I)}<em class="belln" hidden></em></button>`}
     ${u.impersonated_by?`<div class="banner imp">Você está dentro da conta de ${esc(c.name)} como suporte. Tudo o que fizer fica registrado com o seu nome.<button class="btn sm" id="exit">Voltar ao admin</button></div>`:''}
@@ -10803,7 +10814,7 @@ async function conectarView(mode){CN_T=Date.now();if(mode!=='self')history.pushS
     if($('#cnNone'))$('#cnNone').onclick=()=>{const o=overlay(`<form class="modal" id="cnF"><div class="row"><h2 style="font-size:20px">Qual horário fica bom?</h2><button type="button" class="x">×</button></div><p class="hint">A gente combina com você por e-mail.</p><div class="field"><label>Dias e horários que funcionam</label><input name="note" maxlength="300" placeholder="Ex.: terça ou quinta depois das 18h" required></div><div class="row"><button class="btn p">Pedir horário</button></div></form>`,true);
       o.querySelector('#cnF').onsubmit=async ev=>{ev.preventDefault();try{const r=await api('/onboard',{method:'POST',body:{note:new FormData(ev.target).get('note')}});ob.requested=r.requested;o.remove();draw();toast('Pedido enviado. A gente te chama por e-mail.')}catch(x){toast(x.message)}}}};
   draw()}
-function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
+function suPill(){const b=$('#suPill'),d=SU.d;if(!b||!d)return;const aw=document.querySelector('.side .avw');if(aw){const show=d.pct<100;aw.classList.toggle("suring",show);aw.style.setProperty('--su',(show?d.pct:0)+'%');aw.title=show?`Configuração da conta: ${d.pct}% pronta`:''}b.hidden=true;return;if(d.pct>=100||(d.core&&!d.core_ready&&!d.hidden&&$('#trialBn'))){b.hidden=true;return}b.hidden=false;
   b.innerHTML=`${suRing(d.pct,17,2.6)}<span class="lb"><b>${d.agent?'Primeiros passos':'Configurar'}</b></span><em class="lb">${d.pct}%</em>`;b.setAttribute('aria-label',(d.agent?'Primeiros passos':'Configurar a conta')+`: ${d.done} de ${d.total} prontos`);b.title='Ver o que falta configurar';b.onclick=()=>suPanel()}
 async function suDo(s){$('.su-dw-bg')?.remove();SU.cur=s.key;
   const after=()=>{suBar()};
