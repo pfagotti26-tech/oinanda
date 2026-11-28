@@ -640,6 +640,12 @@ td>.sure,tr+.sure{margin:4px}
 .igx-sh2{margin-top:30px}
 .cp2-tabs{margin:0 0 18px}
 @media(min-width:861px){.app.vx .cp2-tabs,.app.vx .cp2-nw{display:none}}
+.rp-pd{position:relative}.rp-pd summary{list-style:none;display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px 7px 14px;cursor:pointer;font-size:13.5px}.rp-pd summary::-webkit-details-marker{display:none}.rp-pd summary svg{width:15px;height:15px;color:var(--ink3)}.rp-pd summary b{font-weight:700}.rp-pd summary span{color:var(--ink3);font-size:12.5px}
+.rp-pd>div{position:absolute;left:0;top:42px;z-index:20;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 30px rgba(23,33,43,.12);padding:6px;display:flex;flex-direction:column;min-width:200px}.rp-pd>div button{text-align:left;padding:8px 10px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--ink2)}.rp-pd>div button:hover{background:#FBF6F2}.rp-pd>div button.on{color:var(--c2);background:var(--tint)}
+.rp-joff{text-align:center;padding:34px 24px}.rp-joff h3{margin:10px 0 6px}.rp-joff p{color:var(--ink2);max-width:520px;margin:0 auto 16px;font-size:14px;line-height:1.5}.rp-ji{width:48px;height:48px;border-radius:50%;background:var(--soft);color:var(--c2);display:inline-grid;place-items:center}.rp-ji svg{width:22px;height:22px}
+@media(min-width:861px){.app.vx .rp-tabs{display:none}}
+.h2-stl{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:#FFFBF2;padding:12px 20px;border-radius:0 0 22px 22px;font:inherit;cursor:pointer;color:inherit}.h2-stl:hover{background:#FFF6E3}.h2-stl i{width:30px;height:30px;border-radius:50%;background:#FDECC8;color:#9A6400;display:grid;place-items:center;flex:none}.h2-stl i svg{width:14px;height:14px}.h2-stl span{flex:1;min-width:0}.h2-stl b{display:block;font-size:13.5px}.h2-stl small{display:block;font-size:12px;color:var(--ink3)}.h2-stl em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--c2);white-space:nowrap}
+@media(max-width:860px){.h2-stl{padding:12px 16px}.h2-stl em{display:none}}
 .adx-how{display:flex;align-items:stretch;gap:10px;margin:0 0 16px}.adx-how>div{flex:1;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}.adx-how span{width:34px;height:34px;border-radius:50%;background:var(--soft);color:var(--c2);display:grid;place-items:center;flex:none}.adx-how span svg{width:17px;height:17px}.adx-how p{margin:0;font-size:13px;line-height:1.4;color:var(--ink2)}.adx-how em{font-style:normal;font-weight:800;color:var(--ink);margin-right:6px}.adx-ar{align-self:center;font-style:normal;color:var(--ink3)}
 .adx-ed{padding-top:4px}.adx-q{margin:0 0 8px;font-size:12.5px;font-weight:800;color:var(--ink2)}.adx-op{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;max-width:620px;cursor:pointer}.adx-op.on{cursor:default}.adx-op>i{width:18px;height:18px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px}.adx-op>i svg{width:11px;height:11px}.adx-op input{accent-color:var(--c);margin-top:3px}.adx-op b{display:block;font-size:13.5px}.adx-op small{display:block;font-size:12px;color:var(--ink3);line-height:1.45}
 .adx-sel{display:block;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:13px;background:#fff;max-width:280px}
@@ -5116,7 +5122,8 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
   const isToday=v=>{if(!v)return false;const d=new Date(v);return d.toDateString()===tz.toDateString()};
   const nzFeed=cvs.filter(c=>c.last_dir==='out'&&/\(IA\)$/.test(c.last_by||'')),nzToday=nzFeed.filter(c=>isToday(c.last_at)).length;
   const N=(sm&&sm.nanda)||{},nf=x=>Number(x||0).toLocaleString('pt-BR');
-  const wa=(td||[]).find(x=>x.k==='wa_alert');
+  const wa=(td||[]).find(x=>x.k==='wa_alert'),stl=(td||[]).find(x=>x.k==='stale');
+  const stLine=stl?`<button type="button" class="h2-stl" id="h2Stale"><i>${svg('<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>')}</i><span><b>${esc(stl.title)}</b><small>${esc(stl.sub)}</small></span><em>Ver no funil →</em></button>`:'';
   const apps=(ap||[]).filter(a=>a.status!=='canceled').sort((a,b)=>a.start<b.start?-1:1),lim=Date.now()-30*6e4,up=apps.filter(a=>new Date(a.start)>=lim);
   const hm=d=>{d=new Date(d);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
   const gl=board&&board.goals?board.goals.find(g=>g.scope==='company'&&g.metric==='revenue'&&g.value!=null):null;
@@ -5126,15 +5133,15 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
   const sub=Q.length?`<b>${Q.length} ${Q.length===1?'cliente espera':'clientes esperam'} você.</b>${nzToday?` A ${nm} cuidou de outros ${nzToday} hoje.`:''}`:`Ninguém esperando você agora.${nzToday?` A ${nm} cuidou de ${nzToday} ${nzToday===1?'cliente':'clientes'} hoje.`:''}`;
   const row=(r,i)=>{const t=tagOf(r),m=mins(r);return `<div class="h2-q ${i===0?'top':''}" data-q="${r.id}"><span class="av" style="background:${avc(r.name||'?')}">${initials(r.name||'?')}</span>
     <div class="h2-qt"><b>${esc(r.name||'Cliente')}</b>${t?`<span class="h2-tag ${t[0]}">${t[1]}</span>`:''}<small>${t&&t[0]==='t'&&r.transfer_reason?esc(r.transfer_reason):esc((r.last_text||'').slice(0,120))?'“'+esc((r.last_text||'').slice(0,120))+'”':''}</small></div>
-    <span class="h2-w ${late(r)?'late':''}">${tm(m)}<small>${late(r)?'atrasada':'esperando'}</small></span>${i===0?'':`<button type="button" class="btn sm" data-open="${r.id}">Responder</button>`}
+    <span class="h2-w ${late(r)||m>=1440?'late':''}" ${m>=1440?'title="No WhatsApp, só com modelo aprovado pela Meta. No Instagram, só se a pessoa escrever de novo."':''}>${tm(m)}<small>${m>=1440?'janela fechou':late(r)?'atrasada':'esperando'}</small></span>${i===0?'':`<button type="button" class="btn sm" data-open="${r.id}">Responder</button>`}
     ${i===0?`<div class="h2-sg" id="h2Sg"><i>✨</i><div><small>A ${nm} sugere responder</small><p id="h2SgT" class="h2-ld">Pensando numa resposta…</p></div></div><div class="h2-sga" id="h2SgA"><button type="button" class="btn sm p" id="h2Send" disabled>Enviar sugestão</button><button type="button" class="btn sm" id="h2Edit" disabled>Editar e enviar</button><button type="button" class="lnk" data-open="${r.id}">Abrir conversa</button></div>`:''}</div>`};
   $('#page').innerHTML=`<div class="h2">
    ${wa?`<div class="h2-alert"><span class="h2-ai">${I('<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>')}</span><div><b>${esc(wa.title)}</b><small>${esc(wa.sub)}</small></div><button type="button" class="btn" id="h2Fix">Resolver agora</button></div>`:''}
    <div class="h2-hi"><small>${esc(dia)}</small><h1>${hi}, ${first}</h1><p>${sub}</p></div>
    <div id="inPush"></div>
    <div class="h2-g"><section class="card h2-c"><div class="h2-ch"><h2>Esperando você</h2>${Q.length?`<span class="h2-n">${Q.length}</span>`:''}<button type="button" class="lnk" data-to="conversas">Ver todas as conversas →</button></div>
-     ${Q.length?Q.slice(0,5).map(row).join('')+`<div class="h2-more">${Q.length>5?`E mais ${Q.length-5}. <button type="button" class="lnk" data-to="conversas">Ver todos</button>`:`Depois ${Q.length===1?'desse':Q.length===2?'desses dois':'desses'}, ninguém está esperando. <b>A ${nm} cuida do resto.</b>`}</div>`
-      :`<div class="h2-ok"><span>${I('<path d="m5 12 5 5 9-10"/>')}</span><b>Tudo em dia</b><small>Quando um cliente pedir alguém ou esperar resposta, aparece aqui.</small></div>`}</section>
+     ${Q.length?Q.slice(0,5).map(row).join('')+`<div class="h2-more">${Q.length>5?`E mais ${Q.length-5}. <button type="button" class="lnk" data-to="conversas">Ver todos</button>`:`Depois ${Q.length===1?'desse':Q.length===2?'desses dois':'desses'}, ninguém está esperando. <b>A ${nm} cuida do resto.</b>`}</div>${stLine}`
+      :`<div class="h2-ok"><span>${I('<path d="m5 12 5 5 9-10"/>')}</span><b>Tudo em dia</b><small>Quando um cliente pedir alguém ou esperar resposta, aparece aqui.</small></div>${stLine}`}</section>
     <section class="card h2-nz"><div class="h2-nh"><span class="h2-na">N<i class="${paused||mode==='off'?'off':mode==='copilot'?'cp':''}"></i></span><div><b>A ${nm}</b><small class="${paused||mode==='off'?'off':mode==='copilot'?'cp':''}">${paused?'Pausada':mode==='auto'?'Atendendo sozinha':mode==='copilot'?'Em copiloto: sugere e o time envia':'Desligada'}</small></div><button type="button" class="lnk" data-to="nanda">Ajustar</button></div>
      <div class="h2-lb">Este mês</div><div class="h2-ks"><div><b>${nf(N.people)}</b><span>clientes atendidos</span></div><div><b>${nf(N.after_hours)}</b><span>respostas fora do horário</span></div><div><b>${nf(N.appts)}</b><span>horários marcados</span></div></div>
      ${nzFeed.length?`<div class="h2-lb">Últimas conversas dela</div>${nzFeed.slice(0,gp?2:3).map(c=>`<button type="button" class="h2-lc" data-cv="${c.id}"><span class="av" style="background:${avc(c.name||'?')}">${initials(c.name||'?')}</span><span><b>${esc(c.name||'Cliente')}</b><small>${esc((c.last_text||'').slice(0,80))}</small></span><time>${hm(c.last_at)}</time></button>`).join('')}`:`<p class="h2-e">As conversas que ela atender aparecem aqui.</p>`}
@@ -5148,6 +5155,7 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
   document.querySelectorAll('#page [data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
   document.querySelectorAll('#page [data-open],#page [data-cv]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.filter='all';CV.kind='';CV.origin='';CV.open=b.dataset.open||b.dataset.cv;go('conversas')});
   if($('#h2Fix'))$('#h2Fix').onclick=()=>{EM.tab='whatsapp';go('empresa')};
+  if($('#h2Stale'))$('#h2Stale').onclick=()=>{FN.f='stale';go('funil')};
   pushNudge&&pushNudge();
   const top=Q[0];if(!top)return;
   const hide=()=>{$('#h2Sg')?.remove();$('#h2SgA')?.remove();const r=document.querySelector('.h2-q.top');if(r&&!r.querySelector('[data-open].btn')){r.insertAdjacentHTML('beforeend',`<button type="button" class="btn sm p h2-rb" data-open="${top.id}">Responder</button>`);r.querySelector('.h2-rb').onclick=()=>{CV.filter='all';CV.open=top.id;go('conversas')}}};
@@ -6848,9 +6856,9 @@ function vdHead(t){const x=VD_SEC[t]||VD_SEC.relatorio,mgr=isMgr();const ttl=t==
   return `<div class="agt"><span class="vd-eb">Vendas</span><h1>${ttl}</h1><p>${!mgr&&t==='relatorio'?'Suas vendas e os seus números.':x[1]}</p></div>`}
 const SX_IC={relatorio:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',metas:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',lista:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',comissoes:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2a3.2 3.2 0 0 1-3-1.6M12 6v2m0 8v2"/>',
   produtos:'<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>',promocoes:'<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>',retorno:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>'};
-const SXV=['vendas','metas','campanhas'];
+const SXV=['vendas','metas','campanhas','relatorios'];
 function sxOn(v){return !!ME&&!admOn()&&SXV.includes(v)&&!cfxOn(v)}
-function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);
+function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);if(VIEW==='relatorios')return rpSide(el);
   const cur=VIEW==='metas'?'metas':(VD.tab==='origens'?'retorno':VD.tab);
   const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])]]];
   el.innerHTML=`<div class="cx-t">Vendas</div><button type="button" class="btn p sm sx-new" id="sxNew">+ Registrar venda</button>`+G.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${cur===t[0]?'on':''}" data-sx="${t[0]}">${svg(SX_IC[t[0]]||SX_IC.relatorio)}${t[1]}</button>`).join('')).join('');
@@ -8911,6 +8919,11 @@ async function cpView(){
 const cpBar=c=>{const t=c.sent||0;if(!t)return '<small class="hint">—</small>';const p=x=>Math.round(100*(x||0)/t);
   return `<div class="cp2-bar"><i style="width:${p(c.read)}%"></i></div><small>${p(c.read)}% · ${p(c.replied)}% · ${p((c.goal==='agendar'||c.goal==='voltar')?c.booked:c.bought)}%</small>`};
 const CP_IT=[['Para quem já é cliente',[['wa','No WhatsApp','<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.7z"/>'],['promo','Promoções e cupons','<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>']]],['Para trazer gente nova',[['ads','Anúncios','<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>']]]];
+// Relatórios também usa o segundo menu à esquerda
+function rpSide(el){const J=RP.tab==='jornada';
+  const it=(k,t,ic,on)=>`<button type="button" class="cx-s only ${on?'on':''}" data-rpt="${k}">${svg(ic)}${t}</button>`;
+  el.innerHTML=`<div class="cx-t">Relatórios</div>`+it('geral','Atendimento e vendas','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',!J)+it('jornada','Jornada do cliente','<circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3m4 0h3"/><circle cx="12" cy="12" r="2"/>',J);
+  el.querySelectorAll('[data-rpt]').forEach(b=>b.onclick=()=>{RP.tab=b.dataset.rpt;sxDraw();VIEWS.relatorios()})}
 // Campanhas usa o segundo menu à esquerda (como Vendas e Configurações); no celular vira as abas de cima
 function cpSide(el){
   el.innerHTML=`<div class="cx-t">Campanhas</div><button type="button" class="btn p sm sx-new" id="cpSNew">+ Nova campanha</button>`+CP_IT.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${CP.tab===t[0]&&!CP.sub?'on':''}" data-cpt="${t[0]}">${svg(t[2])}${t[1]}</button>`).join('')).join('');
@@ -9207,19 +9220,21 @@ const VIEWS={
  },
  async relatorios(){
   const [rs,re]=rpRange();const PRE=[['7','7 dias'],['30','30 dias'],['90','90 dias'],['mes','Este mês'],['mesp','Mês passado'],['custom','Personalizado']];
-  const jr=RP.tab==='jornada'&&modOn('jornada');const nf=Object.entries(RP.f).filter(([k,v])=>v&&(!jr||k==='owner'||k==='team')).length;
-  $('#page').innerHTML=`<div class="fhd rp-hd"><div><h1>Relatórios</h1><p class="sub">Como estão as vendas e o atendimento do ${esc(ME.company.name)}.</p></div></div>
-   ${modOn('jornada')?`<nav class="utabs"><button class="${RP.tab!=='jornada'?'on':''}" data-rpt="geral">Atendimento e vendas</button><button class="${RP.tab==='jornada'?'on':''}" data-rpt="jornada">Jornada</button></nav>`:''}
-   <div class="rp-bar"><div class="fz-seg rp-pre" role="tablist">${PRE.map(p=>`<button class="${RP.pre===p[0]?'on':''}" data-pre="${p[0]}">${p[1]}</button>`).join('')}</div>
-    <span class="rp-per">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}${rpFmt(rs)} a ${rpFmt(re)}</span>
-    <button class="btn sm rp-ftb ${nf?'on':''}" id="rpFt">${svg('<path d="M3 5h18l-7 8v6l-4 2v-8z"/>')}Filtros${nf?` <em>${nf}</em>`:''}</button></div>
+  const jr=RP.tab==='jornada'&&modOn('jornada'),jOff=RP.tab==='jornada'&&!modOn('jornada');const nf=Object.entries(RP.f).filter(([k,v])=>v&&(!jr||k==='owner'||k==='team')).length;
+  $('#page').innerHTML=`<div class="fhd rp-hd"><div><span class="vd-eb">Relatórios</span><h1>${RP.tab==='jornada'?'Jornada do cliente':'Atendimento e vendas'}</h1><p class="sub">${RP.tab==='jornada'?'Por quais marcos seus clientes passam e onde eles travam.':'Como estão as vendas e o atendimento do '+esc(ME.company.name)+'.'}</p></div></div>
+   <nav class="utabs rp-tabs"><button class="${RP.tab!=='jornada'?'on':''}" data-rpt="geral">Atendimento e vendas</button><button class="${RP.tab==='jornada'?'on':''}" data-rpt="jornada">Jornada do cliente</button></nav>
+   ${jOff?'':`<div class="rp-bar"><details class="rp-pd"><summary>${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<b>${(PRE.find(p=>p[0]===RP.pre)||PRE[1])[1].replace(/^(\d+) dias$/,'Últimos $1 dias')}</b><span>${rpFmt(rs)} a ${rpFmt(re)}</span>${svg('<path d="m6 9 6 6 6-6"/>')}</summary><div>${PRE.map(p=>`<button type="button" class="${RP.pre===p[0]?'on':''}" data-pre="${p[0]}">${p[1].replace(/^(\d+) dias$/,'Últimos $1 dias')}</button>`).join('')}</div></details>
+    <button class="btn sm rp-ftb ${nf?'on':''}" id="rpFt">${svg('<path d="M3 5h18l-7 8v6l-4 2v-8z"/>')}Filtros${nf?` <em>${nf}</em>`:''}</button></div>`}
    <div class="rp-cus ${RP.pre==='custom'?'':'hide'}"><label>De <input type="date" id="rpS" value="${RP.start||rs}" max="${ymd(new Date())}"></label><label>Até <input type="date" id="rpE" value="${RP.end||re}" max="${ymd(new Date())}"></label><button class="btn sm p" id="rpAp">Aplicar</button><span class="hint">A comparação usa o mesmo número de dias logo antes.</span></div>
    <div class="rp-fb ${RP.ftOpen||nf?'':'hide'}" id="rpFb"></div>
    <div id="rpBody"><div class="empty">Carregando...</div></div>`;
-  document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{RP.pre=b.dataset.pre;if(RP.pre==='custom'&&!RP.start){RP.start=rs;RP.end=re}rpSave();VIEWS.relatorios()});
+  document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{b.closest('details')?.removeAttribute('open');RP.pre=b.dataset.pre;if(RP.pre==='custom'&&!RP.start){RP.start=rs;RP.end=re}rpSave();VIEWS.relatorios()});
+  if(jOff){$('#rpBody').innerHTML=`<div class="card rp-joff"><span class="rp-ji">${svg('<circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3m4 0h3"/><circle cx="12" cy="12" r="2"/>')}</span><h3>Jornada do cliente</h3><p>Mostra por quais marcos seus clientes passam, como "fez a aula", "pediu orçamento", "comprou de novo", e onde eles travam. A Nanda marca sozinha pelas conversas.</p>${isMgr()?'<button class="btn p" id="rpJOn">Ligar a jornada</button>':'<p class="hint">Peça para o gestor ligar em Configurações.</p>'}</div>`;
+    document.querySelectorAll('[data-rpt]').forEach(b=>b.onclick=()=>{RP.tab=b.dataset.rpt;sxDraw();VIEWS.relatorios()});
+    if($('#rpJOn'))$('#rpJOn').onclick=async e=>{e.target.disabled=true;try{const r=await api('/company/modules',{method:'PUT',body:{jornada:true}});ME.company.modules=r.modules;toast('Jornada ligada. Agora é só criar os marcos.');go('jornada')}catch(x){toast(x.message);e.target.disabled=false}};return}
   $('#rpAp').onclick=()=>{const a=$('#rpS').value,b=$('#rpE').value;if(!a||!b)return toast('Escolha as duas datas.');RP.start=a<=b?a:b;RP.end=a<=b?b:a;rpSave();VIEWS.relatorios()};
   $('#rpFt').onclick=()=>{RP.ftOpen=!RP.ftOpen;$('#rpFb').classList.toggle('hide',!RP.ftOpen&&!nf)};
-  document.querySelectorAll('[data-rpt]').forEach(b=>b.onclick=()=>{RP.tab=b.dataset.rpt;VIEWS.relatorios()});
+  document.querySelectorAll('[data-rpt]').forEach(b=>b.onclick=()=>{RP.tab=b.dataset.rpt;sxDraw();VIEWS.relatorios()});
   const drawF=o=>{const sel=(k,lab,opts)=>`<label class="rp-sel ${RP.f[k]?'on':''}"><span>${lab}</span><select data-f="${k}"><option value="">${k==='origin'||k==='team'?'Todas':'Todos'}</option>${opts.map(x=>`<option value="${esc(x[0])}" ${RP.f[k]===x[0]?'selected':''}>${esc(x[1])}</option>`).join('')}</select></label>`;
     const fb=$('#rpFb');fb.innerHTML=(jr?'':sel('channel','Canal',[['whatsapp','WhatsApp'],['instagram','Instagram']])+sel('origin','Origem',(o.origins||[]).concat(RP.f.origin&&!(o.origins||[]).includes(RP.f.origin)?[RP.f.origin]:[]).map(x=>[x,x])))
      +sel('owner','Responsável',[['_none','Sem responsável'],...(o.owners||[]).map(u=>[u.id,u.name])])+((o.teams||[]).length?sel('team','Equipe',o.teams.map(t=>[t.id,t.name])):'')
@@ -9249,12 +9264,12 @@ const VIEWS={
   const idle=r.people.filter(p=>p.active&&!p.messages&&!p.won&&!p.passed);const un=r.unassigned||{};
   const AL={bad:'red',warn:'amber',info:'blue'};
   const hOpen=(()=>{try{return localStorage.getItem('rpHow')==='1'}catch(e){return false}})();
-  const hero=`<details class="lk-hero rp-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}</span><div><b>O retrato das suas vendas, em 1 minuto</b><span>Comece pelo que precisa de ação agora. Depois veja se está vendendo mais que antes, de onde vem quem compra e quem do time vende.</span></div><em class="lk-ht">Como ler</em></summary>
-    <div class="pm-facts cb-steps">${[['1','Resolva o que está pendente','"O que fazer agora" mostra clientes esperando e negociações paradas. Clique para ir direto a eles.'],['2','Compare com o período anterior','As setas mostram se você melhorou em relação aos '+RP.days+' dias antes. Verde é bom.'],['3','Veja onde perde gente','O funil mostra em que etapa as pessoas param. É ali que vale melhorar a conversa.'],['4','Invista no que traz cliente','"De onde vieram" mostra que lugar gera venda, não só contato. Use links rastreáveis para saber mais.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
+  const hero=`<details class="lk-hero rp-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}</span><div><b>O retrato das suas vendas, em 1 minuto</b><span>Veja se está vendendo mais que antes, de onde vem quem compra e quem do time vende.</span></div><em class="lk-ht">Como ler</em></summary>
+    <div class="pm-facts cb-steps">${[['1','Veja os destaques','"Destaques do período" aponta onde mais se perde e quem responde mais rápido. O que precisa ser resolvido hoje fica no Início.'],['2','Compare com o período anterior','As setas mostram se você melhorou em relação aos '+RP.days+' dias antes. Verde é bom.'],['3','Veja onde perde gente','O funil mostra em que etapa as pessoas param. É ali que vale melhorar a conversa.'],['4','Invista no que traz cliente','"De onde vieram" mostra que lugar gera venda, não só contato. Use links rastreáveis para saber mais.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
   const noPrev=!pv.new_contacts&&!pv.won;
   const OI={ad:[IC.chat,'ad'],link:[svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),'ln'],instagram:[IGI,'ig'],whatsapp:[WAI,'wa'],manual:[svg('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'),'ot'],other:[svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>'),'ot']};
   $('#rpBody').innerHTML=hero+`
-   ${r.alerts&&r.alerts.length?`<div class="alerts"><b class="at">O que fazer agora</b>${r.alerts.map((a,i)=>`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span><span class="tx">${esc(a.text)}${a.sub?`<small>${esc(a.sub)}</small>`:''}</span><span class="go">›</span></button>`).join('')}</div>`:'<div class="alerts ok"><b class="at">O que fazer agora</b><p class="hint">Nada pendente: ninguém esperando resposta e nenhuma negociação parada.</p></div>'}
+   ${(r.alerts||[]).some(a=>a.kind==='info')?`<div class="alerts"><b class="at">Destaques do período</b>${r.alerts.map((a,i)=>a.kind!=='info'?'':`<button class="al ${AL[a.kind]||''}" data-al="${i}"><span class="dot"></span><span class="tx">${esc(a.text)}${a.sub?`<small>${esc(a.sub)}</small>`:''}</span>${a.to!=='relatorios'?'<span class="go">›</span>':''}</button>`).join('')}</div>`:''}
    <div class="kpis">
     ${kpi('Vendas'+ii('rp_vendas'),t.won_value?brl(t.won_value):String(t.won),t.won_value?`${t.won} ${t.won===1?'cliente comprou':'clientes compraram'}`:'',delta(t.won_value||t.won,pv.won_value||pv.won),!t.won?'Mova o card para a etapa de venda e informe o valor.':'')}
     ${kpi('Conversão'+ii('rp_conv'),t.conversion!=null?pct(t.conversion)+'%':'—',t.conversion!=null?`${t.converted??t.won} de ${t.new_contacts} ${t.new_contacts===1?'contato novo comprou':'contatos novos compraram'}`:'',delta(t.conversion,pv.conversion,false,true),t.conversion==null?'Aparece quando chegarem contatos novos.':'')}
@@ -9643,7 +9658,7 @@ const VIEWS={
   const ser=(rp&&rp.series)||[];const mx=Math.max(1,...ser.map(x=>x.value||x.won||0));
   const bars=ser.some(x=>x.value||x.won)?`<div class="hn-bars" aria-hidden="true">${ser.slice(-30).map(x=>`<i class="${x.value||x.won?'':'z'}" style="height:${x.value||x.won?Math.max(8,Math.round(100*(x.value||x.won||0)/mx)):3}%" title="${esc(x.date)}: ${x.value?brl(x.value):(x.won||0)+' vendas'}"></i>`).join('')}</div>`:'';
   const stepRow=(x,i)=>`<div class="hn-st ${x[4]?'ok':x===next?'nx':''}"><i>${x[4]?'✓':i+2}</i><span><b>${x[1]}</b><em>${x[2]}</em></span>${x[4]||x===next?'':`<button class="btn sm" data-st="${i}">${x[5]}</button>`}</div>`;
-  const tdIc={wa_alert:'⚠',gaps:'?',tpl_bad:'!',tpl_late:'⏳',alert:'🔔',auto:'⚡'};
+  const tdIc={wa_alert:'⚠',gaps:'?',tpl_bad:'!',tpl_late:'⏳',alert:'🔔',auto:'⚡',closed:'⌛',stale:'⏸'};
   $('#page').innerHTML=`<div class="hn">
    <header class="hn-top ${num?'live':''}"><div class="hn-hl"><span class="hn-date">${esc(dia)}</span><h1>${hi}, ${first}</h1>
      <p class="hn-sub">${!num?(!mgr?'Quando os clientes chamarem, as conversas aparecem aqui.':ready?'Tudo pronto para a Nanda atender.':'Falta pouco para a Nanda atender os seus clientes.'):sm&&(sm.waiting+sm.needs_human)?`${sm.waiting+sm.needs_human} ${sm.waiting+sm.needs_human===1?'cliente quer':'clientes querem'} falar com você agora.`:'Ninguém esperando. Bom momento para olhar a agenda e as vendas.'}</p>
@@ -9678,7 +9693,7 @@ const VIEWS={
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>steps[+b.dataset.st][6]());
   document.querySelectorAll('#page [data-to]').forEach(b=>b.onclick=()=>{if(b.dataset.to==='ajuda')HP.art=null;go(b.dataset.to)});
   document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>b.dataset.q==='venda'?saleModal({onDone:()=>VIEWS.inicio()}):go('agenda').then(()=>bookModal({},()=>VIEWS.agenda())));
-  document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{const x=td[+b.dataset.td];if(x.to==='conversas'){CV.filter='all';CV.kind='';CV.origin='';CV.open=null}go(x.to)});
+  document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{const x=td[+b.dataset.td];if(x.to==='conversas'){CV.filter=x.filter||'all';CV.kind='';CV.origin='';CV.open=null}if(x.to==='funil')FN.f=x.filter||'all';go(x.to)});
   inicioMeta();suHome();
  },
  async equipe(){
@@ -11126,8 +11141,8 @@ function hpBadge(){if(!ME||VIEW==='ajuda')return;const id=HP_VIEW[VIEW];if(!id)r
 new MutationObserver(()=>hpBadge()).observe(document.body,{childList:true,subtree:true});
 VIEWS.ajuda=hpView;
 /* menus de três pontinhos: fecham ao clicar fora, ao escolher uma opção, ao abrir outro ou com Esc */
-document.addEventListener('click',e=>{const m=e.target.closest('.pc-mn');document.querySelectorAll('.pc-mn[open]').forEach(d=>{if(d!==m||e.target.closest('.pc-mn>div button'))d.open=false})},true);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.pc-mn[open]').forEach(d=>d.open=false)});
+document.addEventListener('click',e=>{const m=e.target.closest('.pc-mn,.rp-pd');document.querySelectorAll('.pc-mn[open],.rp-pd[open]').forEach(d=>{if(d!==m||e.target.closest('.pc-mn>div button,.rp-pd>div button'))d.open=false})},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.pc-mn[open],.rp-pd[open]').forEach(d=>d.open=false)});
 VIEWS.config=cfgView;VIEWS.msgauto=amView;
 VIEW=readPath();swInit();boot();
 </script>

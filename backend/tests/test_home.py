@@ -48,3 +48,21 @@ def test_conta_oficial_do_instagram_fora_da_base(monkeypatch):
     with TestClient(app, base_url='https://testserver') as tc:
         c, _ = tc.portal.call(instagram.upsert, {'company_id': 'co-ig', 'token_enc': ''}, '999')
     assert c['internal'] is True
+
+
+def test_janela_fechada_e_negociacao_parada_no_inicio():
+    with TestClient(app, base_url='https://testserver') as c:
+        c.post('/api/auth/signup', json={'name': 'Dona J', 'email': 'dj@x.com', 'password': 'senha-forte-1', 'company': 'Studio J', 'segment': 'studio'})
+        cid = c.get('/api/auth/me').json()['company']['id']
+        st = c.get('/api/funnel/stages').json()
+        st = st.get('stages', st) if isinstance(st, dict) else st
+        async def seed():
+            old = now() - timedelta(days=2)
+            await db.contacts.insert_one({'id': uid(), 'company_id': cid, 'name': 'Sem resposta', 'wa_id': '5511900000001', 'channel': 'whatsapp',
+                                          'last_dir': 'in', 'last_in_at': old, 'last_at': old, 'created_at': old, 'stage': st[0]['id']})
+            await db.contacts.insert_one({'id': uid(), 'company_id': cid, 'name': 'Parada', 'wa_id': '5511900000002', 'channel': 'whatsapp',
+                                          'last_dir': 'out', 'last_at': now() - timedelta(days=5), 'created_at': old, 'stage': st[1]['id']})
+        c.portal.call(seed)
+        td = {x['k']: x for x in c.get('/api/home/todo').json()}
+        assert td['closed']['n'] == 1 and td['closed']['filter'] == 'waiting' and td['closed']['tone'] == 'bad'
+        assert td['stale']['n'] == 1 and td['stale']['to'] == 'funil'
