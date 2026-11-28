@@ -49,5 +49,24 @@ async def todo(user=Depends(managers)):
         out.append({'k': 'auto', 'tone': 'info', 'n': auto, 'to': 'conversas', 'cta': 'Revisar',
                     'title': f'{auto} {plural(auto, "conversa parece", "conversas parecem")} mensagem automática de outro perfil',
                     'sub': 'Tire da base para não contar como cliente esperando nem atrapalhar os relatórios.'})
+    # cliente sem resposta com a janela de 24 h fechada, e negociação parada (antes ficavam em Relatórios)
+    from inbox import waiting as _is_waiting
+    from channels import view, window_of
+    closed = 0
+    for c in await db.contacts.find({'company_id': cid, 'last_dir': 'in', 'last_in_at': {'$lte': now() - timedelta(hours=1)}, 'needs_human': {'$ne': True}}, {'_id': 0}).to_list(5000):
+        if not _is_waiting(c): continue
+        v = view(c); w = window_of(v.get('channel') or 'whatsapp'); li = aware(v.get('last_in_at'))
+        if w and li and now() - li >= w: closed += 1
+    if closed:
+        out.append({'k': 'closed', 'tone': 'bad', 'n': closed, 'to': 'conversas', 'filter': 'waiting', 'cta': 'Ver',
+                    'title': f'{closed} {plural(closed, "cliente ficou", "clientes ficaram")} sem resposta e a janela de 24 h fechou',
+                    'sub': 'No WhatsApp, só com modelo aprovado pela Meta. No Instagram, só se a pessoa escrever de novo.'})
+    from funnel import stages_for
+    open_ids = [x['id'] for x in await stages_for(user['company']) if x['kind'] == 'open']
+    stale = await db.contacts.count_documents({'company_id': cid, 'stage': {'$in': open_ids[1:]}, 'last_at': {'$lte': now() - timedelta(days=3)}}) if len(open_ids) > 1 else 0
+    if stale:
+        out.append({'k': 'stale', 'tone': 'warn', 'n': stale, 'to': 'funil', 'filter': 'stale', 'cta': 'Ver',
+                    'title': f'{stale} {plural(stale, "negociação parada", "negociações paradas")} há 3 dias ou mais',
+                    'sub': 'Já passaram da primeira etapa do funil e ninguém falou com elas.'})
     order = {'bad': 0, 'warn': 1, 'info': 2}
     return sorted(out, key=lambda x: order[x['tone']])
