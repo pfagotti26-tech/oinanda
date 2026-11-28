@@ -24,8 +24,10 @@ def test_comissao_regras():
         rl = c.get('/api/commission/rules').json()
         assert {p['id']: p.get('commission_pct') for p in rl['people']}[f['id']] == 30 and next(i for i in rl['items'] if i['id'] == sh['id'])['commission']['mode'] == 'fixed'
         ct = c.post('/api/contacts', json={'name': 'Marina', 'phone': '11911110000'}).json()
-        from datetime import date
-        d = lambda n: (date.today() - timedelta(days=n)).isoformat()
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        hoje = datetime.now(ZoneInfo('America/Sao_Paulo')).date()  # o "hoje" da empresa, não o do servidor (UTC)
+        d = lambda n: (hoje - timedelta(days=n)).isoformat()
         S = lambda items, sellers, dd: c.post('/api/sales', json={'contact_id': ct['id'], 'date': dd, 'items': items, 'payment': 'pix', 'sellers': sellers}).json()
         S([{'product_id': corte['id'], 'name': 'Corte', 'qty': 1, 'price': 100}], [{'user_id': f['id'], 'pct': 100}], d(0))                       # 30% de 100 = 30
         S([{'product_id': prog['id'], 'name': 'Progressiva', 'qty': 1, 'price': 400, 'discount': 40}], [{'user_id': f['id'], 'pct': 100}], d(0))  # 40% de 360 = 144
