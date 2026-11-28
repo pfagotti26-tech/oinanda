@@ -66,7 +66,7 @@ NICHES = {
     },
     'clinica': {
         'label': 'Clínica de estética, odonto ou saúde', 'short': 'Clínica',
-        'stages': [('Novo contato', 'open'), ('Avaliação marcada', 'open'), ('Avaliou', 'open'), ('Orçamento enviado', 'open'), ('Fechou', 'won'), ('Perdido', 'lost')],
+        'stages': [('Novo contato', 'open'), ('Avaliação marcada', 'open'), ('Avaliou', 'open'), ('Orçamento enviado', 'open'), ('Vendido', 'won'), ('Perdido', 'lost')],
         'service': ('Avaliação', 30, 1),
         'ai': {'about': 'Clínica de estética facial e corporal.',
                'offer': 'Avaliação gratuita para harmonização.\nPix ou cartão em até 6x.\nPacote de 4 sessões tem 10% de desconto.',
@@ -125,7 +125,7 @@ NICHES = {
     },
     'servicos': {
         'label': 'Serviços profissionais (contabilidade, advocacia, consultoria)', 'short': 'Serviços profissionais',
-        'stages': [('Novo contato', 'open'), ('Reunião marcada', 'open'), ('Proposta enviada', 'open'), ('Fechou', 'won'), ('Perdido', 'lost')],
+        'stages': [('Novo contato', 'open'), ('Reunião marcada', 'open'), ('Proposta enviada', 'open'), ('Vendido', 'won'), ('Perdido', 'lost')],
         'service': ('Reunião inicial', 45, 1),
         'ai': {'about': 'Escritório de contabilidade para pequenas empresas e MEI.', 'offer': 'Primeira conversa sem custo.\nMensalidade no boleto ou Pix.',
                'goal': 'Entender a necessidade e marcar a reunião.', 'qualify': 'Já tem empresa aberta?\nQual o ramo?\nQuantos funcionários?',
@@ -166,7 +166,7 @@ NICHES = {
     },
     'outro': {
         'label': 'Outro tipo de negócio', 'short': 'Outro',
-        'stages': [('Novo contato', 'open'), ('Em conversa', 'open'), ('Proposta enviada', 'open'), ('Fechou', 'won'), ('Perdido', 'lost')],
+        'stages': [('Novo contato', 'open'), ('Em conversa', 'open'), ('Proposta enviada', 'open'), ('Vendido', 'won'), ('Perdido', 'lost')],
         'service': ('Atendimento', 60, 1),
         'ai': {'about': 'O que é o negócio, onde fica e para quem atende.', 'offer': 'O que vende e quanto custa.',
                'goal': 'Tirar dúvidas e levar ao próximo passo (agendar, orçamento ou compra).', 'qualify': '', 'rules': '', 'faq': ''},
