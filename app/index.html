@@ -7750,6 +7750,7 @@ async function clView(){
   $('#page').innerHTML=clHead(cn)+how+kp+`
    <label class="cl-pick"><span>Público</span><select id="clPick">${(()=>{const ov2=ov||{},o=(v,t,sel)=>`<option value="${v}" ${sel?'selected':''}>${esc(t)}</option>`,cs=JSON.stringify(CL.rules);
       return `<optgroup label="Sua base">${[['total','Todos',ov2.total],['prospect','Prospects',ov2.prospect],['cliente','Clientes',ov2.cliente],...(ov2.inactive_days?[['inativo','Inativos',ov2.inativo]]:[]),['due30','Vencem em 30 dias',ov2.due30]].map(x=>o('q:'+x[0],x[1]+(x[2]!=null?' ('+x[2]+')':''),!CL.seg&&JSON.stringify(CLQ[x[0]])===cs)).join('')}</optgroup>`
+       +((ov2.origins||[]).length?`<optgroup label="De onde vieram">${ov2.origins.map(x=>o('o:'+x.id,(x.paid?x.name.replace(/\s*\(Meta\)/,'')+' (pago)':x.name)+' ('+x.count+')',cs===JSON.stringify([{field:'origin',op:'is',value:x.id}]))).join('')}</optgroup>`:'')
        +(segs.length?`<optgroup label="Salvos">${segs.map(x=>o('s:'+x.id,x.name,CL.seg===x.id)).join('')}</optgroup>`:'')
        +`<optgroup label="Públicos prontos">${tpl.map((x,i)=>o('t:'+i,x[0],!CL.seg&&JSON.stringify(x[2])===cs)).join('')}</optgroup>`+(cn.custom?o('','Público personalizado',true):'')})()}</select></label>
    <div class="cb-tool ${CL.rules.length?'':'none'}"><button class="btn sm cb-ftb ${CL.ftOpen||(CL.rules.length&&cn.custom)?'on':''}" id="clFt">${svg('<path d="M3 5h18l-7 8v6l-4 2v-8z"/>')}${CL.rules.length?`Condições <em>${CL.rules.length}</em>`:'Montar público'}</button>${CL.rules.length&&cn.custom?'<span class="hint">Público montado com condições. Salve para usar de novo.</span>':''}</div>
@@ -7761,7 +7762,7 @@ async function clView(){
      <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">${CL.rules.length?'Mais uma condição':'Adicionar condição'}</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
    <div id="clRes"></div>`;
   clTabs();sxDraw();
-  $('#clPick').onchange=e=>{const [k,v]=e.target.value.split(':');if(!k)return;if(k==='q')set(CLQ[v]);else if(k==='t')set(tpl[+v][2]);else{const x=segs.find(y=>y.id===v);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()}};
+  $('#clPick').onchange=e=>{const [k,v]=e.target.value.split(':');if(!k)return;if(k==='q')set(CLQ[v]);else if(k==='t')set(tpl[+v][2]);else if(k==='o')set([{field:'origin',op:'is',value:v}]);else{const x=segs.find(y=>y.id===v);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()}};
   $('#clFt').onclick=()=>{CL.ftOpen=!$('.cb-f').classList.contains('op');$('.cb-f').classList.toggle('op',CL.ftOpen);$('#clFt').classList.toggle('on',CL.ftOpen)};
   const hw=$('#page .cb-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('clHow',hw.open?'0':'1')}catch(e){}};
   const set=r=>{CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;clView()};
@@ -7850,6 +7851,7 @@ function clCur(){const cur=JSON.stringify(CL.rules);
   if(CL.seg){const x=(CL.segs||[]).find(y=>y.id===CL.seg);if(x)return {t:x.name,s:'Público salvo. A lista se atualiza sozinha.'}}
   const Q={total:['Todos','Quem já falou com você ou foi importado.'],prospect:['Prospects','Ainda não compraram.'],cliente:['Clientes','Já compraram.'],inativo:['Inativos','Clientes sem comprar há um tempo.'],due30:['Vencem em 30 dias','Hora de oferecer a renovação.'],subs:['Assinaturas ativas',''],subsLost:['Assinaturas canceladas',''],agenda:['Só na agenda','Nunca falaram com a empresa.']};
   for(const k in CLQ)if(JSON.stringify(CLQ[k])===cur&&Q[k])return {t:Q[k][0],s:Q[k][1],k};
+  if(CL.rules.length===1&&CL.rules[0].field==='origin'&&CL.rules[0].op==='is'){const o=((CL.ov||{}).origins||[]).find(x=>x.id===CL.rules[0].value);if(o)return {t:'Vieram de '+(o.paid?o.name.replace(/\s*\(Meta\)/,'')+' (pago)':o.name),s:o.paid?'Chegaram por anúncio pago da Meta.':o.id==='_none'?'Ainda não sabemos de onde vieram. A Nanda pergunta na conversa.':'Origem marcada pelo link rastreável, pela Nanda ou pelo time.'}}
   const tp=(CL.tpl||[]).find(x=>JSON.stringify(x[2])===cur);if(tp)return {t:CL_SH[tp[0]]||(tp[0].startsWith('Não compraram depois')?'Não voltaram':tp[0]),s:tp[0].startsWith('Não compraram depois')?tp[0]+' · '+tp[1]:tp[1]};
   return {t:'Público personalizado',s:'As condições abaixo valem juntas.',custom:true}}
 function clHead(cn){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...(mgr?[['ren','Renovação e upsell']]:[])];cn=cn||{t:'Clientes',s:''};
@@ -8956,11 +8958,13 @@ function clSide(el){const mgr=isMgr(),ov=CL.ov||{},cur=JSON.stringify(CL.rules),
    <div class="cx-g">Sua base</div>${it('data-cq="total"','Todos',on(CLQ.total),ov.total)}${it('data-cq="prospect"','Prospects',on(CLQ.prospect),ov.prospect)}${it('data-cq="cliente"','Clientes',on(CLQ.cliente),ov.cliente)}${ov.inactive_days?it('data-cq="inativo"','Inativos',on(CLQ.inativo),ov.inativo):''}
    <div class="cx-g">Vender de novo</div>${it('data-cq="due30"','Vencem em 30 dias',on(CLQ.due30),ov.due30)}${T.filter(x=>!x.fe).map(x=>it(`data-ct="${x.i}"`,x.t,on(x.x[2]))).join('')}
    ${T.some(x=>x.fe)?`<div class="cx-g">Fechar a 1ª venda</div>${T.filter(x=>x.fe).map(x=>it(`data-ct="${x.i}"`,x.t,on(x.x[2]))).join('')}`:''}
+   ${(ov.origins||[]).length?`<div class="cx-g">De onde vieram</div>${ov.origins.map(o=>it(`data-co="${esc(o.id)}"`,o.paid?o.name.replace(/\s*\(Meta\)/,'')+' (pago)':o.name,!ren&&!CL.seg&&cur===JSON.stringify([{field:'origin',op:'is',value:o.id}]),o.count)).join('')}`:''}
    ${(CL.segs||[]).length?`<div class="cx-g">Salvos por você</div>${CL.segs.map(x=>it(`data-cs="${x.id}"`,x.name,!ren&&CL.seg===x.id,x.count)).join('')}`:''}
    <div class="cl-sf">${mgr?`<button type="button" class="cl-sl ${ren?'on':''}" data-cren>${svg('<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/>')}Renovação e upsell</button><button type="button" class="cl-sl" id="clSImp">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}Importar planilha</button>`:''}</div>`;
   const set=r=>{CL.tab='seg';CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;CL.ftOpen=false;syncUrl();clView()};
   el.querySelectorAll('[data-cq]').forEach(b=>b.onclick=()=>set(CLQ[b.dataset.cq]));
   el.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>set(CL.tpl[+b.dataset.ct][2]));
+  el.querySelectorAll('[data-co]').forEach(b=>b.onclick=()=>set([{field:'origin',op:'is',value:b.dataset.co}]));
   el.querySelectorAll('[data-cs]').forEach(b=>b.onclick=()=>{const x=CL.segs.find(y=>y.id===b.dataset.cs);CL.tab='seg';CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;CL.ftOpen=false;syncUrl();clView()});
   const rn=el.querySelector('[data-cren]');if(rn)rn.onclick=()=>{CL.tab='ren';syncUrl();clView()};
   $('#clSNew').onclick=()=>{CL.tab='seg';CL.rules=[];CL.seg=null;CL.ftOpen=true;syncUrl();clView()};
