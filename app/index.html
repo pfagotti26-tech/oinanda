@@ -640,6 +640,16 @@ td>.sure,tr+.sure{margin:4px}
 .igx-sh2{margin-top:30px}
 .cp2-tabs{margin:0 0 18px}
 @media(min-width:861px){.app.vx .cp2-tabs,.app.vx .cp2-nw{display:none}}
+.cside .sx-new svg{width:15px;height:15px;flex:none}.cside .sx-new{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+@media(min-width:861px){.app.vx .cb-ag{display:none}}
+.cl-mn summary{border:1px solid var(--line);background:#fff;height:32px;width:36px}.cl-mn>div{min-width:230px}.cl-mn>div button{text-align:left;padding:8px 10px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--ink2);background:none;border:0;cursor:pointer}.cl-mn>div button:hover{background:#FBF6F2}
+.cl-pick{display:none}
+@media(max-width:860px){.cl-pick{display:flex;flex-direction:column;gap:4px;margin:0 0 12px}.cl-pick span{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}.cl-pick select{border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;font-weight:700;background:#fff}
+ .cb-how,.cb-kp,.cb-sub,.cb-ag,.cb-ch{display:none!important}.cb-tool.cb-tool{display:flex;align-items:center;gap:10px;margin:0 0 12px}.cb-f{display:none}.cb-f.op{display:block}.cb-ftb{display:inline-flex;align-items:center;gap:6px}.cb-ftb svg{width:14px;height:14px}.cb-ftb em{font-style:normal;background:var(--c);color:#fff;border-radius:999px;font-size:11px;padding:0 6px}.cb-tool .hint{display:none}}
+.cl-si span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-si em{font-style:normal;font-size:12px;font-weight:700;color:var(--ink3);margin-left:auto}.cl-si.on em{color:var(--c2)}
+.cl-h1,.cl-sm,.cb-tool{display:none}
+@media(min-width:861px){.app.vx .cl-h1,.app.vx .cl-sm{display:block}.app.vx .cl-h1m,.app.vx .cl-smm,.app.vx .cl-tabs,.app.vx .cb-how,.app.vx .cb-kp,.app.vx .cb-sub,.app.vx .cb-ch,.app.vx #clImp{display:none}
+ .app.vx .cb-tool{display:flex;align-items:center;gap:10px;margin:0 0 12px}.app.vx .cb-f{display:none}.app.vx .cb-f.op{display:block}.app.vx .cb-ftb.on{border-color:var(--c);color:var(--c2)}.cb-ftb{display:inline-flex;align-items:center;gap:6px}.cb-ftb svg{width:14px;height:14px}.cb-ftb em{font-style:normal;background:var(--c);color:#fff;border-radius:999px;font-size:11px;padding:0 6px}}
 .rp-pd{position:relative}.rp-pd summary{list-style:none;display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px 7px 14px;cursor:pointer;font-size:13.5px}.rp-pd summary::-webkit-details-marker{display:none}.rp-pd summary svg{width:15px;height:15px;color:var(--ink3)}.rp-pd summary b{font-weight:700}.rp-pd summary span{color:var(--ink3);font-size:12.5px}
 .rp-pd>div{position:absolute;left:0;top:42px;z-index:20;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 30px rgba(23,33,43,.12);padding:6px;display:flex;flex-direction:column;min-width:200px}.rp-pd>div button{text-align:left;padding:8px 10px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--ink2)}.rp-pd>div button:hover{background:#FBF6F2}.rp-pd>div button.on{color:var(--c2);background:var(--tint)}
 .rp-joff{text-align:center;padding:34px 24px}.rp-joff h3{margin:10px 0 6px}.rp-joff p{color:var(--ink2);max-width:520px;margin:0 auto 16px;font-size:14px;line-height:1.5}.rp-ji{width:48px;height:48px;border-radius:50%;background:var(--soft);color:var(--c2);display:inline-grid;place-items:center}.rp-ji svg{width:22px;height:22px}
@@ -6856,9 +6866,9 @@ function vdHead(t){const x=VD_SEC[t]||VD_SEC.relatorio,mgr=isMgr();const ttl=t==
   return `<div class="agt"><span class="vd-eb">Vendas</span><h1>${ttl}</h1><p>${!mgr&&t==='relatorio'?'Suas vendas e os seus números.':x[1]}</p></div>`}
 const SX_IC={relatorio:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',metas:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',lista:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',comissoes:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2a3.2 3.2 0 0 1-3-1.6M12 6v2m0 8v2"/>',
   produtos:'<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>',promocoes:'<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>',retorno:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>'};
-const SXV=['vendas','metas','campanhas','relatorios'];
+const SXV=['vendas','metas','campanhas','relatorios','clientes'];
 function sxOn(v){return !!ME&&!admOn()&&SXV.includes(v)&&!cfxOn(v)}
-function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);if(VIEW==='relatorios')return rpSide(el);
+function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);if(VIEW==='relatorios')return rpSide(el);if(VIEW==='clientes')return clSide(el);
   const cur=VIEW==='metas'?'metas':(VD.tab==='origens'?'retorno':VD.tab);
   const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])]]];
   el.innerHTML=`<div class="cx-t">Vendas</div><button type="button" class="btn p sm sx-new" id="sxNew">+ Registrar venda</button>`+G.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${cur===t[0]?'on':''}" data-sx="${t[0]}">${svg(SX_IC[t[0]]||SX_IC.relatorio)}${t[1]}</button>`).join('')).join('');
@@ -7721,7 +7731,7 @@ async function clView(){
   CL.q=CL.q||'';
   const [ps,org,st,tms,team,pr,segs,jst,ov]=await Promise.all([api('/products'),orgLoad(),api('/funnel/stages').catch(()=>[]),api('/teams').catch(()=>[]),api('/team'),api('/promos').catch(()=>({items:[]})),api('/segments').catch(()=>[]),api('/journey/settings').catch(()=>({milestones:[]})),api('/segments/overview').catch(()=>null)]);
   const D=CL.data={ms:jst.milestones.filter(m=>m.active!==false).map(m=>({id:m.id,name:m.name})),products:ps,categories:[...new Set(ps.map(p=>p.category).filter(Boolean))],origins:[...org.origins,{id:'_none',name:'Não sabemos'}],stages:st,teams:tms,users:team.filter(u=>u.active),promos:pr.items||[],segs};
-  const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);
+  const tpl=clTemplates(D),cur=JSON.stringify(CL.rules);CL.ov=ov;CL.tpl=tpl;CL.segs=segs;
   const IK={total:'cl_base',prospect:'cl_prospect',cliente:'cl_cliente',inativo:'cl_inativo',due30:'cl_due',agenda:'cl_agenda'};
   const tile=(k,l,v,sub,ic)=>`<button class="cb-t ${!CL.seg&&JSON.stringify(CLQ[k])===cur?'on':''} ${k}" data-qk="${k}"><span class="cb-ti">${svg(ic)}</span><span class="cb-tl">${l}<span class="ii" role="button" tabindex="0" data-info="${IK[k]}" aria-label="O que é ${l}?">i</span></span><b>${num(v)}</b><small>${sub}</small></button>`;
   const kp=ov?`<div class="cb-kp">${tile('total',ov.imported?'Na sua base':'Conversaram',ov.total,ov.imported?`conversaram ou importados`:'já falaram com você','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}
@@ -7735,15 +7745,23 @@ async function clView(){
   const hOpen=howOpen('clHow');
   const how=`<details class="lk-hero cb-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.4 5.5"/>')}</span><div><b>Sua base de clientes, para vender de novo</b><span>Quem já falou com você, quem comprou e quem pode comprar mais. Escolha um grupo e aja com ele de uma vez.</span></div><em class="lk-ht">Como usar</em></summary>
     <div class="pm-facts cb-steps">${[['1','Escolha o público','Clique num número do topo ou num público pronto. Ex.: quem vence nos próximos 30 dias.'],['2','Veja quem é','A lista mostra cada pessoa, o que comprou e quando vence. Busque por nome ou telefone.'],['3','Aja de uma vez','Envie uma campanha no WhatsApp, crie oportunidades para o time chamar ou coloque uma etiqueta.'],['4','Salve o que usa sempre','O público salvo se atualiza sozinho. Volte nele todo mês.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
-  $('#page').innerHTML=clHead()+how+kp+`
-   <div class="vd-c cb-f"><div class="cb-fh"><div><h3>${segName?esc(segName):'Quem você quer ver'}${ii('cl_pub')}</h3><span class="hint">${CL.rules.length?'Todas as condições precisam valer. A lista se atualiza sozinha.':'Escolha um público pronto ou monte o seu com condições.'}</span></div>
+  const cn=clCur();
+  $('#page').innerHTML=clHead(cn)+how+kp+`
+   <label class="cl-pick"><span>Público</span><select id="clPick">${(()=>{const ov2=ov||{},o=(v,t,sel)=>`<option value="${v}" ${sel?'selected':''}>${esc(t)}</option>`,cs=JSON.stringify(CL.rules);
+      return `<optgroup label="Sua base">${[['total','Todos',ov2.total],['prospect','Prospects',ov2.prospect],['cliente','Clientes',ov2.cliente],...(ov2.inactive_days?[['inativo','Inativos',ov2.inativo]]:[]),['due30','Vencem em 30 dias',ov2.due30]].map(x=>o('q:'+x[0],x[1]+(x[2]!=null?' ('+x[2]+')':''),!CL.seg&&JSON.stringify(CLQ[x[0]])===cs)).join('')}</optgroup>`
+       +(segs.length?`<optgroup label="Salvos">${segs.map(x=>o('s:'+x.id,x.name,CL.seg===x.id)).join('')}</optgroup>`:'')
+       +`<optgroup label="Públicos prontos">${tpl.map((x,i)=>o('t:'+i,x[0],!CL.seg&&JSON.stringify(x[2])===cs)).join('')}</optgroup>`+(cn.custom?o('','Público personalizado',true):'')})()}</select></label>
+   <div class="cb-tool"><button class="btn sm cb-ftb ${CL.ftOpen||(CL.rules.length&&cn.custom)?'on':''}" id="clFt">${svg('<path d="M3 5h18l-7 8v6l-4 2v-8z"/>')}${CL.rules.length?`Condições <em>${CL.rules.length}</em>`:'Montar público'}</button>${CL.rules.length&&cn.custom?'<span class="hint">Público montado com condições. Salve para usar de novo.</span>':''}</div>
+   <div class="vd-c cb-f ${CL.ftOpen||(CL.rules.length&&cn.custom)?'op':''}"><div class="cb-fh"><div><h3>${segName?esc(segName):'Quem você quer ver'}${ii('cl_pub')}</h3><span class="hint">${CL.rules.length?'Todas as condições precisam valer. A lista se atualiza sozinha.':'Escolha um público pronto ou monte o seu com condições.'}</span></div>
       <span class="sp"></span>${CL.rules.length?'<button class="btn sm" id="clClr">Limpar</button>':''}</div>
      ${segs.length?`<div class="cb-ch"><span class="cb-cl">Salvos</span>${segs.map(x=>`<span class="cb-c sv ${CL.seg===x.id?'on':''}"><button data-sg="${x.id}">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${esc(x.name)}<em>${x.count??''}</em></button>${CL.seg===x.id?`<button class="cb-x" data-sd="${x.id}" aria-label="Apagar ${esc(x.name)}" title="Apagar">×</button>`:''}</span>`).join('')}</div>`:''}
      <div class="cb-ch"><span class="cb-cl">Prontos</span>${tpl.map((x,i)=>`<span class="cb-c ${!CL.seg&&JSON.stringify(x[2])===cur?'on':''}"><button data-tp="${i}" title="${esc(x[1])}">${esc(x[0])}</button></span>`).join('')}</div>
      <div id="clR" class="cl-rules"></div>
      <label class="fb-sel cl-add">${svg('<path d="M12 5v14M5 12h14"/>')}<select id="clAdd" aria-label="Adicionar condição"><option value="">${CL.rules.length?'Mais uma condição':'Adicionar condição'}</option>${CLF.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></label></div>
    <div id="clRes"></div>`;
-  clTabs();
+  clTabs();sxDraw();
+  $('#clPick').onchange=e=>{const [k,v]=e.target.value.split(':');if(!k)return;if(k==='q')set(CLQ[v]);else if(k==='t')set(tpl[+v][2]);else{const x=segs.find(y=>y.id===v);CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;clView()}};
+  $('#clFt').onclick=()=>{CL.ftOpen=!$('.cb-f').classList.contains('op');$('.cb-f').classList.toggle('op',CL.ftOpen);$('#clFt').classList.toggle('on',CL.ftOpen)};
   const hw=$('#page .cb-how');if(hw)hw.querySelector('summary').onclick=()=>{try{localStorage.setItem('clHow',hw.open?'0':'1')}catch(e){}};
   const set=r=>{CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;clView()};
   document.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>set(CLQ[b.dataset.qk]));
@@ -7790,8 +7808,8 @@ async function clRun(more){const box=$('#clRes');if(!box)return;const my=++CL.n;
   const kd=c=>{const k=CLK[c.kind]||['—','grey'];return `<span class="pill ${k[1]}">${k[0]}</span>`};
   box.innerHTML=`<div class="cb-sum"><div class="cb-n"><b>${num(r.count)}</b><span>${r.count===1?'pessoa':'pessoas'} neste público</span></div>
      <div class="cb-br">${brk}${r.spent?`<span class="cb-k">${brl(r.spent)} gastos${ii('cl_spent')}</span>`:''}<span class="cb-k wa" title="Têm WhatsApp e não pediram para sair">${svg('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z"/>')}${num(r.reachable)} recebem campanha${ii('cl_reach')}</span></div>
-     <div class="cl-act">${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button><span class="cb-bi"><button class="btn sm" id="clOpp">Criar oportunidades</button>${ii('cl_opp')}</span>`:''}
-      <button class="btn sm" id="clTag">Etiquetar</button>${ME.user.role==='owner'?`<button class="btn sm" id="clExp" title="Só o dono da conta pode baixar a base">${svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>')}Excel</button>${ii('cl_excel')}`:''}${CL.rules.length?`<button class="btn sm ${mgr?'':'p'}" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}</div></div>
+     <div class="cl-act">${CL.rules.length?`<button class="btn sm" id="clSave">${svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>')}${CL.seg?'Salvar alterações':'Salvar público'}</button>`:''}${mgr?`<button class="btn sm p" id="clCamp">${svg('<path d="M4 10v4l11 5V5L4 10z"/>')}Enviar campanha</button>`:''}
+      <details class="pc-mn cl-mn"><summary aria-label="Mais ações">⋯</summary><div>${mgr?'<button type="button" id="clOpp">Criar oportunidades para o time</button>':''}<button type="button" id="clTag">Colocar etiqueta</button>${ME.user.role==='owner'?'<button type="button" id="clExp">Baixar em Excel</button>':''}</div></details></div></div>
    <div class="vd-c cb-tb"><div class="cb-sr"><label class="cb-q">${svg('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>')}<input id="clQ" type="search" placeholder="Buscar por nome, telefone ou @" value="${esc(CL.q||'')}" autocomplete="off"></label>${CL.q?`<span class="hint">${num(r.found)} ${r.found===1?'encontrado':'encontrados'}</span>`:''}
      <label class="cb-so"><span>Ordenar</span><select id="clSo">${[['recent','Último contato'],['spent','Quem mais gastou'],['expiry','Vence primeiro'],['name','Nome']].map(o=>`<option value="${o[0]}" ${clSort()===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label></div>
    ${r.items.length?`<div class="cb-lh ${hasExp?'x':''}"><span>Pessoa</span><span>Situação${ii('situacao')}</span><span>Compras${ii('cl_tem')}</span>${hasExp?`<span>Vence${ii('cl_vence')}</span>`:''}<span>Último contato</span><span></span></div>
@@ -7827,9 +7845,15 @@ async function clRun(more){const box=$('#clRes');if(!box)return;const my=++CL.n;
 
 /* pós-venda, campanhas e renovação */
 const OPK={renovacao:['Renovação','kc'],upsell:['Próximo produto','kp'],reativacao:['Reativação','ki']};
-function clHead(){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...(mgr?[['ren','Renovação e upsell']]:[])];
-  return `<div class="fhd"><div><h1>Clientes</h1><p class="sub">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div>${mgr?`<button class="btn" id="clImp" title="Traga clientes e prospects de uma planilha do Excel ou CSV">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<span>Importar planilha</span></button>`:''}</div>
-   <nav class="utabs">${tabs.map(t=>`<button class="${(CL.tab||'seg')===t[0]?'on':''}" data-clt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
+function clCur(){const cur=JSON.stringify(CL.rules);
+  if(CL.seg){const x=(CL.segs||[]).find(y=>y.id===CL.seg);if(x)return {t:x.name,s:'Público salvo. A lista se atualiza sozinha.'}}
+  const Q={total:['Todos','Quem já falou com você ou foi importado.'],prospect:['Prospects','Ainda não compraram.'],cliente:['Clientes','Já compraram.'],inativo:['Inativos','Clientes sem comprar há um tempo.'],due30:['Vencem em 30 dias','Hora de oferecer a renovação.'],subs:['Assinaturas ativas',''],subsLost:['Assinaturas canceladas',''],agenda:['Só na agenda','Nunca falaram com a empresa.']};
+  for(const k in CLQ)if(JSON.stringify(CLQ[k])===cur&&Q[k])return {t:Q[k][0],s:Q[k][1],k};
+  const tp=(CL.tpl||[]).find(x=>JSON.stringify(x[2])===cur);if(tp)return {t:tp[0],s:tp[1]};
+  return {t:'Público personalizado',s:'As condições abaixo valem juntas.',custom:true}}
+function clHead(cn){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...(mgr?[['ren','Renovação e upsell']]:[])];cn=cn||{t:'Clientes',s:''};
+  return `<div class="fhd"><div><span class="vd-eb">Clientes</span><h1 class="cl-h1">${esc(cn.t)}</h1><h1 class="cl-h1m">Clientes</h1><p class="sub cl-sm">${esc(cn.s||'')}</p><p class="sub cl-smm">Quem tem o quê, quem vai vencer e quem pode comprar mais. E o que fazer com cada público.</p></div>${mgr?`<button class="btn" id="clImp" title="Traga clientes e prospects de uma planilha do Excel ou CSV">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<span>Importar planilha</span></button>`:''}</div>
+   <nav class="utabs cl-tabs">${tabs.map(t=>`<button class="${(CL.tab||'seg')===t[0]?'on':''}" data-clt="${t[0]}">${t[1]}</button>`).join('')}</nav>`}
 
 /* importar clientes e prospects de uma planilha: enviar -> conferir -> pronto */
 async function importWizard(){
@@ -8029,7 +8053,7 @@ async function clCamps(){
 }
 async function clRen(){
   CL.rp=CL.rp||'90d';
-  $('#page').innerHTML=clHead()+`<div class="ls-top"><label class="fb-sel">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<select id="rnP">${[['30d','Últimos 30 dias'],['90d','Últimos 90 dias'],['ano','Este ano']].map(p=>`<option value="${p[0]}" ${CL.rp===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></label></div><div id="rnB"><div class="empty">Carregando...</div></div>`;clTabs();
+  $('#page').innerHTML=clHead({t:'Renovação e upsell',s:'Quem vence, quem já venceu e quem pode comprar o próximo item.'})+`<div class="ls-top"><label class="fb-sel">${svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<select id="rnP">${[['30d','Últimos 30 dias'],['90d','Últimos 90 dias'],['ano','Este ano']].map(p=>`<option value="${p[0]}" ${CL.rp===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></label></div><div id="rnB"><div class="empty">Carregando...</div></div>`;clTabs();
   $('#rnP').onchange=e=>{CL.rp=e.target.value;clRen()};
   const [s,e]=vdRange({preset:CL.rp==='ano'?'ano':CL.rp});const r=await api(`/reports/retention?start=${s}&end=${e}`);
   const kpi=(l,v,sub)=>`<div class="kpi"><span class="l">${l}</span><b>${v}</b><div class="s"><span>${sub||''}</span></div></div>`;
@@ -8919,6 +8943,22 @@ async function cpView(){
 const cpBar=c=>{const t=c.sent||0;if(!t)return '<small class="hint">—</small>';const p=x=>Math.round(100*(x||0)/t);
   return `<div class="cp2-bar"><i style="width:${p(c.read)}%"></i></div><small>${p(c.read)}% · ${p(c.replied)}% · ${p((c.goal==='agendar'||c.goal==='voltar')?c.booked:c.bought)}%</small>`};
 const CP_IT=[['Para quem já é cliente',[['wa','No WhatsApp','<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.7z"/>'],['promo','Promoções e cupons','<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>']]],['Para trazer gente nova',[['ads','Anúncios','<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>']]]];
+// Clientes: os públicos viram o menu à esquerda (base, prontos, salvos) e a página fica só com a lista
+function clSide(el){const mgr=isMgr(),ov=CL.ov||{},cur=JSON.stringify(CL.rules),ren=CL.tab==='ren';
+  const on=r=>!ren&&!CL.seg&&JSON.stringify(r)===cur;
+  const it=(attr,t,ic,act,n)=>`<button type="button" class="cx-s only cl-si ${act?'on':''}" ${attr}>${svg(ic)}<span>${esc(t)}</span>${n!=null&&n!==''?`<em>${num(n)}</em>`:''}</button>`;
+  const P='<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>',DOT='<circle cx="12" cy="12" r="3"/>';
+  el.innerHTML=`<div class="cx-t">Clientes</div>${mgr?`<button type="button" class="btn sm sx-new" id="clSImp">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}Importar planilha</button>`:''}
+   <div class="cx-g">Sua base</div>${it('data-cq="total"','Todos','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M16 4.5a3.5 3.5 0 0 1 0 7"/>',on(CLQ.total),ov.total)}${it('data-cq="prospect"','Prospects',P,on(CLQ.prospect),ov.prospect)}${it('data-cq="cliente"','Clientes','<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>',on(CLQ.cliente),ov.cliente)}${ov.inactive_days?it('data-cq="inativo"','Inativos','<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',on(CLQ.inativo),ov.inativo):''}${it('data-cq="due30"','Vencem em 30 dias','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',on(CLQ.due30),ov.due30)}
+   ${(CL.segs||[]).length?`<div class="cx-g">Salvos</div>${CL.segs.map(x=>it(`data-cs="${x.id}"`,x.name,'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',!ren&&CL.seg===x.id,x.count)).join('')}`:''}
+   <div class="cx-g">Públicos prontos</div>${(CL.tpl||[]).map((x,i)=>it(`data-ct="${i}"`,x[0],DOT,on(x[2]))).join('')}
+   ${mgr?`<div class="cx-g">Pós-venda</div>${it('data-cren','Renovação e upsell','<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/>',ren)}`:''}`;
+  const set=r=>{CL.tab='seg';CL.rules=JSON.parse(JSON.stringify(r));CL.seg=null;CL.ftOpen=false;syncUrl();clView()};
+  el.querySelectorAll('[data-cq]').forEach(b=>b.onclick=()=>set(CLQ[b.dataset.cq]));
+  el.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>set(CL.tpl[+b.dataset.ct][2]));
+  el.querySelectorAll('[data-cs]').forEach(b=>b.onclick=()=>{const x=CL.segs.find(y=>y.id===b.dataset.cs);CL.tab='seg';CL.rules=JSON.parse(JSON.stringify(x.rules));CL.seg=x.id;CL.ftOpen=false;syncUrl();clView()});
+  const rn=el.querySelector('[data-cren]');if(rn)rn.onclick=()=>{CL.tab='ren';syncUrl();clView()};
+  if($('#clSImp'))$('#clSImp').onclick=()=>importWizard()}
 // Relatórios também usa o segundo menu à esquerda
 function rpSide(el){const J=RP.tab==='jornada';
   const it=(k,t,ic,on)=>`<button type="button" class="cx-s only ${on?'on':''}" data-rpt="${k}">${svg(ic)}${t}</button>`;
