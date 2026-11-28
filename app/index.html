@@ -639,6 +639,7 @@ td>.sure,tr+.sure{margin:4px}
 @media(max-width:860px){.igx-kp{grid-template-columns:1fr}.igx-kp div+div{border-left:0;border-top:1px solid var(--line)}.igx-tg{flex-wrap:wrap;row-gap:4px}.igx-t{flex:1 1 calc(100% - 80px)}.igx-tg .igx-s{width:100%;order:3;padding-left:50px}.igx-cv{order:2}.igx-acc{flex-wrap:wrap}.igx-acc .igx-an{flex:1;min-width:0}.igx-acc>.igx-s{order:3;width:100%;padding-left:52px}.igx-n{display:none}.igx-ed{padding-left:16px}.igx-st{grid-template-columns:1fr;gap:6px}.igx-dm{grid-template-columns:1fr}}
 .igx-sh2{margin-top:30px}
 .cp2-tabs{margin:0 0 18px}
+@media(min-width:861px){.app.vx .cp2-tabs,.app.vx .cp2-nw{display:none}}
 .adx-how{display:flex;align-items:stretch;gap:10px;margin:0 0 16px}.adx-how>div{flex:1;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}.adx-how span{width:34px;height:34px;border-radius:50%;background:var(--soft);color:var(--c2);display:grid;place-items:center;flex:none}.adx-how span svg{width:17px;height:17px}.adx-how p{margin:0;font-size:13px;line-height:1.4;color:var(--ink2)}.adx-how em{font-style:normal;font-weight:800;color:var(--ink);margin-right:6px}.adx-ar{align-self:center;font-style:normal;color:var(--ink3)}
 .adx-ed{padding-top:4px}.adx-q{margin:0 0 8px;font-size:12.5px;font-weight:800;color:var(--ink2)}.adx-op{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;max-width:620px;cursor:pointer}.adx-op.on{cursor:default}.adx-op>i{width:18px;height:18px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px}.adx-op>i svg{width:11px;height:11px}.adx-op input{accent-color:var(--c);margin-top:3px}.adx-op b{display:block;font-size:13.5px}.adx-op small{display:block;font-size:12px;color:var(--ink3);line-height:1.45}
 .adx-sel{display:block;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:13px;background:#fff;max-width:280px}
@@ -4779,8 +4780,8 @@ const nrm=t=>(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase
 function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Registrar venda','vendas',()=>go('vendas').then(()=>saleModal({onDone:()=>vdView()}))],
   ['Ver vendas aguardando aprovação','vendas',()=>{VD.tab='lista';VD.st='pending';return go('vendas')},m],
-  ['Nova promoção','vendas',()=>{VD.tab='promocoes';return go('vendas').then(()=>promoModal(null))},m],
-  ['Criar cupom','vendas',()=>{VD.tab='promocoes';return go('vendas')},m],
+  ['Nova promoção','campanhas',()=>{CP.tab='promo';CP.sub=null;return go('campanhas').then(()=>promoModal(null))},m],
+  ['Criar cupom','campanhas',()=>{CP.tab='promo';CP.sub=null;return go('campanhas')},m],
   ['Novo link rastreável / QR Code','vendas',()=>{VD.tab='origens';return go('vendas').then(async()=>linkModal(null,await orgLoad()))},m],
   ['Catálogo de produtos e serviços','vendas',()=>{VD.tab='produtos';return go('vendas')}],
   ['Quem vence nos próximos 15 dias','clientes',()=>{CL.rules=[{field:'expires_in',op:'is',value:15}];CL.seg=null;return go('clientes')}],
@@ -4898,7 +4899,7 @@ function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=[
       ['equipe','Pessoas e permissões',tm!=null?tm+(tm===1?' pessoa':' pessoas'):'','',()=>go('equipe'),'convidar atendente gestor equipe rodizio horario de trabalho avisos time']]],
     ['bag','Vendas','Produtos, preços e origens',[
       ['catalogo','Catálogo',cat!=null?cat+(cat===1?' item':' itens'):'','',()=>{VD.tab='produtos';return go('vendas')},'produtos servicos precos'],
-      ['promocoes','Promoções e cupons','','',()=>{VD.tab='promocoes';return go('vendas')},'desconto cupom oferta'],
+      ['promocoes','Promoções e cupons','','',()=>{CP.tab='promo';CP.sub=null;return go('campanhas')},'desconto cupom oferta'],
       ['origens','Origens e links','Links e QR Code','',()=>{VD.tab='retorno';return go('vendas')},'link rastreavel qr code anuncio origem'],
       ['plataformas','Plataformas de venda','Hotmart, Kiwify…','',emGo('vendas'),'hotmart kiwify eduzz checkout pix boleto'],
       ['anuncios','Anúncios',(c.capi||{}).on?'Meta ligada':'Meta, Google, TikTok',(c.capi||{}).on?'ok':'',()=>{CP.sub=null;CP.tab='ads';return go('campanhas')},'anuncio meta ads facebook ads google ads tiktok ads conversao api de conversoes pixel trafego pago campanha']]],
@@ -5163,7 +5164,7 @@ function pathFor(v){
   if(v==='inicio')return '/';if(v==='config')return '/configuracoes';if(v==='msgauto')return '/configuracoes/mensagens';if(v==='avisos-conta')return '/empresa/avisos';if(v==='a-clientes'&&AD.open)return '/admin/clientes/'+AD.open;if(v==='a-avisos'&&AD.av.tab!=='visao')return '/admin/avisos/'+AD.av.tab;if(v.startsWith('a-'))return '/admin/'+v.slice(2);
   let p='/'+v;
   if(v==='ajuda'&&HP.art)p+='/'+HP.art;
-  if(v==='campanhas'&&CP.sub)p+='/'+CP.sub;
+  if(v==='campanhas'&&CP.sub)p+='/'+CP.sub;else if(v==='campanhas'&&CP.tab!=='wa')p+='/'+({ads:'anuncios',promo:'promocoes'}[CP.tab]||'');
   if(v==='conversas'&&CV.open)p+='/'+CV.open;
   if(v==='agenda'&&AG.tab==='config')p+='/configurar';
   if(v==='automacoes'&&AU.tab!=='lista')p+='/'+({modelos:'modelos',hist:'historico'}[AU.tab]||'');
@@ -5191,7 +5192,7 @@ function readPath(){
   if(v==='vendas'&&parts[1]==='metas'){MT.tab=['metas','desafios','premios','config'].includes(parts[2])?parts[2]:'painel';return 'metas'}
   if(v==='vendas')VD.tab=['lista','produtos','promocoes','origens','retorno','comissoes'].includes(parts[1])?parts[1]:'relatorio';
   if(v==='clientes'&&parts[1]==='campanhas'){CP.sub=null;return 'campanhas'}
-  if(v==='campanhas'){CP.sub=parts[1]||null;if(CP.sub==='nova'&&!CP.draft)CP.sub=null}
+  if(v==='campanhas'){const t={anuncios:'ads',promocoes:'promo'}[parts[1]];CP.tab=t||'wa';CP.sub=t?null:(parts[1]||null);if(CP.sub==='nova'&&!CP.draft)CP.sub=null}
   if(v==='clientes')CL.tab={renovacao:'ren'}[parts[1]]||'seg';
   if(v==='funil')FN.pipe=parts[1]==='pos-venda'?'posvenda':'vendas';
   if(v==='metas')MT.tab=['metas','desafios','premios','config'].includes(parts[1])?parts[1]:'painel';
@@ -6847,20 +6848,21 @@ function vdHead(t){const x=VD_SEC[t]||VD_SEC.relatorio,mgr=isMgr();const ttl=t==
   return `<div class="agt"><span class="vd-eb">Vendas</span><h1>${ttl}</h1><p>${!mgr&&t==='relatorio'?'Suas vendas e os seus números.':x[1]}</p></div>`}
 const SX_IC={relatorio:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',metas:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',lista:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',comissoes:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2a3.2 3.2 0 0 1-3-1.6M12 6v2m0 8v2"/>',
   produtos:'<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>',promocoes:'<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>',retorno:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>'};
-const SXV=['vendas','metas'];
+const SXV=['vendas','metas','campanhas'];
 function sxOn(v){return !!ME&&!admOn()&&SXV.includes(v)&&!cfxOn(v)}
-function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();
+function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);
   const cur=VIEW==='metas'?'metas':(VD.tab==='origens'?'retorno':VD.tab);
-  const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])]]];
+  const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])]]];
   el.innerHTML=`<div class="cx-t">Vendas</div><button type="button" class="btn p sm sx-new" id="sxNew">+ Registrar venda</button>`+G.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${cur===t[0]?'on':''}" data-sx="${t[0]}">${svg(SX_IC[t[0]]||SX_IC.relatorio)}${t[1]}</button>`).join('')).join('');
   el.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{const t=b.dataset.sx;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();sxDraw();return vdView()}go('vendas')});
   $('#sxNew').onclick=()=>{if(VIEW==='vendas'&&VD.tab==='lista'&&$('#vdF'))return vdFormOpen();VD.tab='lista';try{localStorage.setItem('vdFormOff','0')}catch(e){}if(VIEW==='vendas'){syncUrl();sxDraw();vdView().then(()=>vdFormOpen())}else go('vendas').then(()=>vdFormOpen())}}
 function vdTabs(cur){const mgr=isMgr();
-  const tabs=[['relatorio','Resumo'],...(mtTabOk()?[['metas','Metas']]:[]),['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],['promocoes','Promoções'],...(mgr?[['retorno','Origens']]:[])];
+  const tabs=[['relatorio','Resumo'],...(mtTabOk()?[['metas','Metas']]:[]),['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])];
   return `<nav class="utabs vd-tabs" role="tablist">${tabs.map(t=>{const on=cur===t[0];return `<button role="tab" aria-selected="${on}" class="${on?'on':''}" data-tab="${t[0]}">${t[1]}</button>`}).join('')}</nav>`}
 function vdTabsBind(){document.querySelectorAll('.utabs [data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();return vdView()}go('vendas')});
   $('.utabs .on')?.scrollIntoView({block:'nearest',inline:'center'})}
 async function vdView(){
+  if(VD.tab==='promocoes'){CP.tab='promo';CP.sub=null;return go('campanhas')}  // Promoções mudou para Campanhas
   const mgr=isMgr();
   const orgT=VD.tab==='retorno'||VD.tab==='origens';
   $('#page').innerHTML=`<div class="fz-hd vd-hd2">${vdHead(VD.tab)}<span class="sp"></span>
@@ -7563,7 +7565,7 @@ async function couponsModal(p){
   $('#cpF').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
     const body=mode==='one'?{code:f.code.value.trim().toUpperCase(),expires:f.expires.value||null,max_uses:f.mu.value?Number(f.mu.value):null,one_per_contact:true,public:f.public.checked}
       :{count:Number(f.count.value),prefix:f.prefix.value.trim(),expires:f.expires.value||null,one_per_contact:true,public:false};
-    try{const r=await api('/promos/'+p.id+'/coupons',{method:'POST',body});toast(r.length===1?'Cupom '+r[0].code+' criado.':r.length+' cupons criados.');drawF();load();if(VD.tab==='promocoes')vdPromos()}catch(e){$('#cpE').textContent=e.message}};
+    try{const r=await api('/promos/'+p.id+'/coupons',{method:'POST',body});toast(r.length===1?'Cupom '+r[0].code+' criado.':r.length+' cupons criados.');drawF();load();if($('#vdBody')&&VIEW==='campanhas'&&CP.tab==='promo')vdPromos()}catch(e){$('#cpE').textContent=e.message}};
 }
 
 /* ficha do cliente: quem é, o que comprou, tudo o que aconteceu e o botão para falar com ele */
@@ -8908,18 +8910,28 @@ async function cpView(){
   return cpList()}
 const cpBar=c=>{const t=c.sent||0;if(!t)return '<small class="hint">—</small>';const p=x=>Math.round(100*(x||0)/t);
   return `<div class="cp2-bar"><i style="width:${p(c.read)}%"></i></div><small>${p(c.read)}% · ${p(c.replied)}% · ${p((c.goal==='agendar'||c.goal==='voltar')?c.booked:c.bought)}%</small>`};
-const cpTabs=()=>`<div class="seg cp2-tabs" role="tablist"><button type="button" class="${CP.tab!=='ads'?'on':''}" data-cpt="wa">No WhatsApp</button><button type="button" class="${CP.tab==='ads'?'on':''}" data-cpt="ads">Anúncios</button></div>`;
-const cpTabBind=()=>document.querySelectorAll('[data-cpt]').forEach(b=>b.onclick=()=>{if(CP.tab===b.dataset.cpt)return;CP.tab=b.dataset.cpt;cpList()});
+const CP_IT=[['Para quem já é cliente',[['wa','No WhatsApp','<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.7z"/>'],['promo','Promoções e cupons','<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/>']]],['Para trazer gente nova',[['ads','Anúncios','<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>']]]];
+// Campanhas usa o segundo menu à esquerda (como Vendas e Configurações); no celular vira as abas de cima
+function cpSide(el){
+  el.innerHTML=`<div class="cx-t">Campanhas</div><button type="button" class="btn p sm sx-new" id="cpSNew">+ Nova campanha</button>`+CP_IT.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${CP.tab===t[0]&&!CP.sub?'on':''}" data-cpt="${t[0]}">${svg(t[2])}${t[1]}</button>`).join('')).join('');
+  $('#cpSNew').onclick=()=>cpNew();cpTabBind()}
+const cpTabs=()=>`<div class="seg cp2-tabs" role="tablist">${CP_IT.flatMap(g=>g[1]).map(t=>`<button type="button" class="${CP.tab===t[0]?'on':''}" data-cpt="${t[0]}">${t[0]==='promo'?'Promoções':t[1]}</button>`).join('')}</div>`;
+const cpTabBind=()=>document.querySelectorAll('[data-cpt]').forEach(b=>b.onclick=()=>{CP.tab=b.dataset.cpt;CP.sub=null;syncUrl();sxDraw();cpList()});
+const cpHead=(t,sub,btn)=>`<div class="fhd"><div><span class="vd-eb">Campanhas</span><h1>${t}</h1><p class="sub">${sub}</p></div>${btn||''}</div>${cpTabs()}`;
+async function cpPromo(){
+  $('#page').innerHTML=`<div class="cp2">${cpHead('Promoções e cupons','Descontos e cupons que entram certos na venda. A Nanda oferece as que estão valendo.')}<div id="vdBody"><div class="empty">Carregando...</div></div></div>`;
+  cpTabBind();await vdOptions();return vdPromos()}
 async function cpAds(){
-  $('#page').innerHTML=`<div class="cp2"><div class="fhd"><div><h1>Campanhas</h1><p class="sub">Ligue seus anúncios ao Oi Nanda e eles passam a trazer mais gente que compra.</p></div></div>${cpTabs()}<div class="igx" id="adc"></div></div>`;
+  $('#page').innerHTML=`<div class="cp2">${cpHead('Anúncios','Ligue seus anúncios ao Oi Nanda e eles passam a trazer mais gente que compra.')}<div class="igx" id="adc"></div></div>`;
   cpTabBind();renderAds()}
 async function cpList(){
   if(CP.tab==='ads')return cpAds();
+  if(CP.tab==='promo')return cpPromo();
   const [cs,h]=await Promise.all([api('/campaigns'),api('/meta/health').catch(()=>null)]);
   const since=Date.now()-30*864e5,rec=cs.filter(c=>new Date(c.created_at)>since);
   const rev=rec.reduce((a,c)=>a+(c.revenue||0),0),cost=rec.reduce((a,c)=>a+(c.cost_real??c.cost_est??0),0),snt=rec.reduce((a,c)=>a+(c.sent||0),0),rep=rec.reduce((a,c)=>a+(c.replied||0),0);
   const q=h?({GREEN:['Ótima','ok'],YELLOW:['Atenção','wa'],RED:['Ruim','bad']}[h.quality]||['Sem nota ainda','gr']):['—','gr'];
-  $('#page').innerHTML=`<div class="cp2"><div class="fhd"><div><h1>Campanhas</h1><p class="sub">Mande uma mensagem para um grupo de clientes. A Nanda responde quem responder.</p></div><button class="btn p" id="cpNew">+ Nova campanha</button></div>${cpTabs()}
+  $('#page').innerHTML=`<div class="cp2">${cpHead('No WhatsApp','Mande uma mensagem para um grupo de clientes. A Nanda responde quem responder.','<button class="btn p cp2-nw" id="cpNew">+ Nova campanha</button>')}
    ${cs.length?`<div class="cp2-kp"><div class="card"><small>Faturado com campanhas · 30 dias</small><b class="okn">${brl(rev)}</b><em>${cost&&rev?`${Math.max(1,Math.round(rev/cost))}× o que custou`:'nos 30 dias depois do envio'}</em></div>
      <div class="card"><small>Custo do disparo na Meta · 30 dias</small><b>${brl2(cost)}</b><em>${num(snt)} mensagens</em></div>
      <div class="card"><small>Responderam</small><b>${snt?Math.round(100*rep/snt):0}%</b><em>${num(rep)} pessoas</em></div>
