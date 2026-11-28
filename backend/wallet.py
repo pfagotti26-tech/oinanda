@@ -328,7 +328,14 @@ async def overview(user=Depends(current_user)):
     products = await products_map(user['company_id'])
     subs = [x for c in rows for x in c.get('holdings') or [] if x.get('recurring') and state_of(x) != 'vencido']
     gone = sum(1 for c in rows for x in c.get('holdings') or [] if x.get('cancelled_at') and t - timedelta(days=30) <= aware(x['cancelled_at']) <= t)
-    return {'total': len(rows), **k, 'due30': due, 'expired30': lost, 'subs': len(subs), 'mrr': round(sum(monthly(products.get(x.get('product_id')) or {}) for x in subs), 2), 'subs_lost30': gone, 'inactive_days': days, 'agenda': agenda, 'imported': sum(1 for c in rows if c.get('source') == 'importado')}
+    from origins import origins_of
+    names = {o['id']: o['name'] for o in await origins_of(user['company'])}
+    oc = {}
+    for c in rows:
+        o = c.get('origin') or ('anuncio' if c.get('ad') else '_none'); oc[o] = oc.get(o, 0) + 1
+    orgs = sorted([{'id': o, 'name': names.get(o, 'Não sabemos' if o == '_none' else o), 'count': n, 'paid': o == 'anuncio'} for o, n in oc.items()],
+                  key=lambda x: (x['id'] == '_none', not x['paid'], -x['count']))
+    return {'origins': orgs, 'total': len(rows), **k, 'due30': due, 'expired30': lost, 'subs': len(subs), 'mrr': round(sum(monthly(products.get(x.get('product_id')) or {}) for x in subs), 2), 'subs_lost30': gone, 'inactive_days': days, 'agenda': agenda, 'imported': sum(1 for c in rows if c.get('source') == 'importado')}
 
 @router.get('/segments/fields')
 async def fields(user=Depends(current_user)):
