@@ -210,6 +210,7 @@ async def ingest(value):
             if ad: contact['ad'] = ad
             await db.contacts.insert_one(contact.copy())
         upd = {'wa_id': wa_id} if contact.get('wa_id') != wa_id else {}  # guarda o número do jeito que a Meta manda
+        if contact.get('wa_line') != pnid: upd['wa_line'] = pnid  # com qual número da empresa ele conversou por último
         if ad and not contact.get('ad'): upd['ad'] = ad
         if STOP.match(text or '') and not contact.get('opt_out'):
             upd['opt_out'] = True; upd['opt_out_at'] = at
@@ -259,7 +260,7 @@ async def sample(field, value):
 
 async def company_of(value):
     pnid = (value.get('metadata') or {}).get('phone_number_id')
-    n = await db.wa_numbers.find_one({'phone_number_id': pnid}, {'_id': 0, 'company_id': 1, 'display_phone': 1})
+    n = await db.wa_numbers.find_one({'phone_number_id': pnid}, {'_id': 0, 'company_id': 1, 'display_phone': 1, 'phone_number_id': 1})
     return n
 
 async def upsert_contact(cid, wa_id, name=None, source='whatsapp'):
@@ -273,7 +274,7 @@ async def upsert_contact(cid, wa_id, name=None, source='whatsapp'):
     except Exception: return await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
     return c
 
-async def store(cid, contact, m, direction, by=None, imported=False):
+async def store(cid, contact, m, direction, by=None, imported=False, line=None):
     if m.get('id') and await db.messages.find_one({'wa_msg_id': m['id']}): return False
     at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
     text = text_of(m)
@@ -287,6 +288,7 @@ async def store(cid, contact, m, direction, by=None, imported=False):
     if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir=direction)
     if direction == 'in' and (not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at'))): upd['last_in_at'] = at
     if direction == 'in' and contact.get('ig_id') and (not aware(contact.get('wa_last_in_at')) or at >= aware(contact.get('wa_last_in_at'))): upd['wa_last_in_at'] = at
+    if line and contact.get('wa_line') != line: upd['wa_line'] = line
     if upd:
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd}); contact.update(upd)
     return True
@@ -298,7 +300,7 @@ async def ingest_echoes(value):
     for m in value.get('message_echoes') or []:
         if not m.get('to'): continue
         c = await upsert_contact(n['company_id'], m['to'])
-        if await store(n['company_id'], c, m, 'out', by='Celular') and ON_HUMAN_SEND:
+        if await store(n['company_id'], c, m, 'out', by='Celular', line=n.get('phone_number_id')) and ON_HUMAN_SEND:
             await ON_HUMAN_SEND({'company_id': n['company_id'], 'name': 'Alguém pelo celular', 'id': None}, c)
 
 async def ingest_history(value):
@@ -313,7 +315,7 @@ async def ingest_history(value):
             c = await upsert_contact(n['company_id'], wa_id, source='historico')
             for m in sorted(th.get('messages') or [], key=lambda x: int(x.get('timestamp', 0))):
                 outgoing = m.get('from') != wa_id or (biz and m.get('from') == biz)
-                await store(n['company_id'], c, m, 'out' if outgoing else 'in', by='Celular' if outgoing else None, imported=True)
+                await store(n['company_id'], c, m, 'out' if outgoing else 'in', by='Celular' if outgoing else None, imported=True, line=n.get('phone_number_id'))
 
 async def ingest_contacts(value):
     n = await company_of(value)
@@ -435,6 +437,7 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
     names = {u['id']: u['name'] for u in await db.users.find({'company_id': user['company_id']}, {'_id': 0, 'id': 1, 'name': 1}).to_list(500)}
     from channels import window_of
     from inbox import looks_auto
+    cur = await current_line(user['company_id'])
     cand = [r['id'] for r in rows if not r.get('internal') and not r.get('bot_ok') and not r.get('sales_count')]
     by = {}
     for m in await db.messages.find({'company_id': user['company_id'], 'contact_id': {'$in': cand}, 'dir': {'$in': ['in', 'out']}}, {'_id': 0, 'contact_id': 1, 'dir': 1, 'text': 1, 'type': 1, 'by_id': 1}).to_list(30000):
@@ -445,6 +448,8 @@ async def conversations(filter: str = 'all', q: str = '', kind: str = '', origin
         li = aware(r.get('last_in_at'))
         w = window_of(r.get('channel'))
         r['window_open'] = True if w is None else bool(li and now() - li < w)  # Telegram e e-mail não têm janela
+        r['old_line'] = old_line(r, cur)
+        if r['old_line']: r['window_open'] = False  # a janela de 24 h é por número: com o número novo ela ainda não abriu
     return rows
 
 @router.get('/conversations/{contact_id}')
@@ -461,6 +466,8 @@ async def conversation(contact_id: str, user=Depends(current_user)):
     w = window_of(c.get('channel'))
     c['window_open'] = True if w is None else bool(li and now() - li < w)
     c['window_ends_at'] = (li + w) if (li and w) else None
+    c['old_line'] = old_line(raw, await current_line(user['company_id']))
+    if c['old_line']: c['window_open'], c['window_ends_at'] = False, None
     if c.get('channel') in ('instagram', 'messenger'):  # da Meta: de 24 h a 7 dias só uma pessoa do time responde
         from instagram import human_window
         c['human_only'] = bool(li and WINDOW <= now() - li < human_window())
@@ -504,16 +511,36 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
     number = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
     if not number: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
     if not contact.get('wa_id'): raise HTTPException(400, 'Este cliente não tem WhatsApp salvo.')
+    if old_line(contact, number['phone_number_id']): raise HTTPException(400, 'Este cliente conversou com o número anterior da empresa. Pelo número novo, a Meta só deixa chamar com um modelo aprovado até ele responder.')
     res = await graph('POST', f'/{number["phone_number_id"]}/messages', decrypt(number['token_enc']),
                       {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'text', 'text': {'body': text}})
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'text', 'text': text,
            'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
     await db.messages.insert_one(msg.copy())
-    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out', 'last_by': by_name}
+    upd = {'last_at': msg['at'], 'last_text': text[:200], 'last_dir': 'out', 'last_by': by_name, 'wa_line': number['phone_number_id']}
     if assign_to and not contact.get('assigned_to'): upd['assigned_to'] = assign_to
     await db.contacts.update_one({'id': contact['id']}, {'$set': upd})
     msg.pop('_id', None)
     return msg
+
+# ---------- troca de número: quem ainda só conhece o número anterior ----------
+async def current_line(cid):
+    n = await db.wa_numbers.find_one({'company_id': cid}, {'_id': 0, 'phone_number_id': 1})
+    return (n or {}).get('phone_number_id')
+
+def old_line(c, cur):
+    """Cliente que conversou pelo WhatsApp com um número anterior da empresa e ainda não falou com o atual."""
+    return bool(cur and c.get('wa_id') and c.get('channel') in (None, 'whatsapp') and c.get('last_at') and c.get('wa_line') != cur)
+
+async def backfill_lines():
+    """Uma vez por número: quem já trocou mensagem com o número atual desde a conexão fica marcado com ele."""
+    from bson import ObjectId
+    async for n in db.wa_numbers.find({'lines_ok': {'$exists': False}}, {'_id': 0, 'company_id': 1, 'phone_number_id': 1, 'connected_at': 1}):
+        if n.get('connected_at'):
+            since = ObjectId.from_datetime(aware(n['connected_at']))
+            ids = await db.messages.distinct('contact_id', {'company_id': n['company_id'], '_id': {'$gte': since}, 'dir': {'$in': ['in', 'out']}})
+            if ids: await db.contacts.update_many({'company_id': n['company_id'], 'id': {'$in': ids}, 'wa_line': {'$exists': False}, 'wa_id': {'$type': 'string'}}, {'$set': {'wa_line': n['phone_number_id']}})
+        await db.wa_numbers.update_one({'phone_number_id': n['phone_number_id']}, {'$set': {'lines_ok': True}})
 
 async def note(company_id, contact_id, text):
     """Aviso do sistema dentro da conversa (não vai para o cliente)."""

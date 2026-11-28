@@ -67,6 +67,10 @@ async def lifespan(app):
     await db.login_limits.create_index('expires_at', expireAfterSeconds=0)
     await db.wa_numbers.create_index('company_id', unique=True)
     await db.wa_numbers.create_index('phone_number_id', unique=True)
+    try:
+        from whatsapp import backfill_lines
+        await backfill_lines()  # troca de número: marca quem já falou com o número atual
+    except Exception: logging.getLogger('oinanda').exception('falha ao marcar o número das conversas')
     info = await db.contacts.index_information()  # contato do Instagram não tem WhatsApp: o índice único vale só para quem tem
     if 'company_id_1_wa_id_1' in info and not info['company_id_1_wa_id_1'].get('partialFilterExpression'):
         await db.contacts.drop_index('company_id_1_wa_id_1')
