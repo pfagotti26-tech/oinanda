@@ -3943,7 +3943,7 @@ const INFO={
  cl_prospect:['Prospects','Quem conversou com você e ainda não comprou nada. É o público para ofertas de primeira compra.'],
  cl_cliente:['Clientes','Quem já tem pelo menos uma venda registrada. Vira cliente sozinho quando você registra a venda.'],
  cl_inativo:['Inativos','Clientes que não compram há mais tempo que o prazo definido em Vendas › Origens. Bom público para "volta pra gente".'],
- cl_due:['Vencem em 30 dias','Clientes com um item que tem validade (plano, pacote, mensalidade) terminando nos próximos 30 dias. A validade vem do cadastro do item no Catálogo. É a hora de oferecer a renovação.'],
+ cl_due:['Vencem em 30 dias','Clientes com um item que tem validade (plano, pacote, mensalidade) terminando nos próximos 30 dias. A validade vem do cadastro do item em Produtos e serviços. É a hora de oferecer a renovação.'],
  cl_pub:['Público','Um grupo de pessoas que você escolhe pelos números do topo, por um pronto ou montando condições. Ao salvar, ele se atualiza sozinho: quem passa a se encaixar entra, quem deixa de se encaixar sai.'],
  cl_reach:['Recebem campanha','Quem tem WhatsApp e não pediu para sair. Contatos do Instagram não recebem campanha, porque ela sai pelo WhatsApp oficial.'],
  cl_spent:['Gastos','A soma das vendas registradas dessas pessoas no Oi Nanda.'],
@@ -4822,7 +4822,7 @@ function gActions(){const m=['owner','manager'].includes(ME.user.role);return [
   ['Nova promoção','campanhas',()=>{CP.tab='promo';CP.sub=null;return go('campanhas').then(()=>promoModal(null))},m],
   ['Criar cupom','campanhas',()=>{CP.tab='promo';CP.sub=null;return go('campanhas')},m],
   ['Novo link rastreável / QR Code','vendas',()=>{VD.tab='origens';return go('vendas').then(async()=>linkModal(null,await orgLoad()))},m],
-  ['Catálogo de produtos e serviços','vendas',()=>{VD.tab='produtos';return go('vendas')}],
+  ['Produtos e serviços','vendas',()=>{VD.tab='produtos';return go('vendas')}],
   ['Quem vence nos próximos 15 dias','clientes',()=>{CL.rules=[{field:'expires_in',op:'is',value:15}];CL.seg=null;return go('clientes')}],
   ['Quem venceu e não renovou','clientes',()=>{CL.rules=[{field:'expired_within',op:'is',value:30}];CL.seg=null;return go('clientes')}],
   ['Montar segmento de clientes','clientes',()=>{CL.tab='seg';return go('clientes')}],
@@ -4919,7 +4919,7 @@ function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=[
   const cat=x.cat,tm=x.team;
   return [
     ['nanda',nm+' (IA)','O que ela sabe e como ela atende',[
-      ['nz-sabe','Preparar a Nanda',!n.taught?'Falta ensinar →':cat===0?'Faltam os preços →':cat?cat+(cat===1?' item no catálogo':' itens no catálogo'):'Ensinada',!n.taught||cat===0?'go':'ok',()=>{NZV.tab=null;return go('nanda')},'ensinar conhecimento precos servicos ia passo a passo'],
+      ['nz-sabe','Preparar a Nanda',!n.taught?'Falta ensinar →':cat===0?'Faltam os preços →':cat?cat+(cat===1?' produto ou serviço':' produtos e serviços'):'Ensinada',!n.taught||cat===0?'go':'ok',()=>{NZV.tab=null;return go('nanda')},'ensinar conhecimento precos servicos ia passo a passo'],
       ['nz-modo','Voz e jeito de falar',n.paused?'Pausada '+nzUntil(n):{auto:'Responde sozinha',copilot:'Sugere, o time envia',off:'Desligada'}[n.mode]||'',n.paused||n.mode==='off'?'off':'ok',()=>{NZV.tab='voz';return go('nanda')},'modo automatico copiloto pausar desligar tom jeito'],
       ['nz-apr','O que ela aprendeu','','',()=>{NZV.tab='aprendeu';return go('nanda')},'aprendizado sugestoes']],'nq'],
     ['store','Seu negócio','Quem você é e quando atende',[
@@ -4938,7 +4938,7 @@ function cfgGroups(x={}){const u=ME.user,c=ME.company,own=u.role==='owner',mgr=[
     ['team','Time','Quem atende e como divide',[
       ['equipe','Pessoas e permissões',tm!=null?tm+(tm===1?' pessoa':' pessoas'):'','',()=>go('equipe'),'convidar atendente gestor equipe rodizio horario de trabalho avisos time']]],
     ['bag','Vendas','Produtos, preços e origens',[
-      ['catalogo','Catálogo',cat!=null?cat+(cat===1?' item':' itens'):'','',()=>{VD.tab='produtos';return go('vendas')},'produtos servicos precos'],
+      ['catalogo','Produtos e serviços',cat!=null?cat+(cat===1?' item':' itens'):'','',()=>{VD.tab='produtos';return go('vendas')},'produtos servicos precos'],
       ['promocoes','Promoções e cupons','','',()=>{CP.tab='promo';CP.sub=null;return go('campanhas')},'desconto cupom oferta'],
       ['origens','Origens e links','Links e QR Code','',()=>{VD.tab='retorno';return go('vendas')},'link rastreavel qr code anuncio origem'],
       ['plataformas','Plataformas de venda','Hotmart, Kiwify…','',emGo('vendas'),'hotmart kiwify eduzz checkout pix boleto'],
@@ -5147,7 +5147,8 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
   const u=ME.user,first=esc(u.name.split(' ')[0]),tz=new Date(),h=tz.getHours(),hi=h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const dia=(x=>x[0].toUpperCase()+x.slice(1))(tz.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}));
   const nm=esc((ai&&ai.name)||'Nanda'),mode=(ai&&ai.default_mode)||'copilot',paused=ai&&ai.paused;
-  const [need,gaps,board]=await Promise.all([api('/conversations?filter=need').then(r=>r.items||r||[]).catch(()=>[]),mgr?api('/ai/gaps').catch(()=>[]):[],mgr&&gamOn()?api('/goals/board').catch(()=>null):null]);
+  const [need,gaps,board,prods]=await Promise.all([api('/conversations?filter=need').then(r=>r.items||r||[]).catch(()=>[]),mgr?api('/ai/gaps').catch(()=>[]):[],mgr&&gamOn()?api('/goals/board').catch(()=>null):null,mgr?api('/products').catch(()=>null):null]);
+  const noCat=Array.isArray(prods)&&!prods.some(p=>p.active!==false&&Number(p.price)>0);
   const mins=r=>{const w=r.wait_from||r.last_in_at||r.transfer_at;return w?Math.max(0,Math.round((Date.now()-new Date(w))/6e4)):0};
   const tagOf=r=>r.needs_human?['h','pediu uma pessoa']:(r.assigned_to===u.id&&r.transfer_seen===false)?['t','passou para você']:null;
   const Q=need.slice().sort((a,b)=>(!!b.needs_human-!!a.needs_human)||(mins(b)-mins(a)));
@@ -5179,6 +5180,7 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
     <section class="card h2-nz"><div class="h2-nh"><span class="h2-na">N<i class="${paused||mode==='off'?'off':mode==='copilot'?'cp':''}"></i></span><div><b>A ${nm}</b><small class="${paused||mode==='off'?'off':mode==='copilot'?'cp':''}">${paused?'Pausada':mode==='auto'?'Atendendo sozinha':mode==='copilot'?'Em copiloto: sugere e o time envia':'Desligada'}</small></div><button type="button" class="lnk" data-to="nanda">Ajustar</button></div>
      <div class="h2-lb">Este mês</div><div class="h2-ks"><div><b>${nf(N.people)}</b><span>clientes atendidos</span></div><div><b>${nf(N.after_hours)}</b><span>respostas fora do horário</span></div><div><b>${nf(N.appts)}</b><span>horários marcados</span></div></div>
      ${nzFeed.length?`<div class="h2-lb">Últimas conversas dela</div>${nzFeed.slice(0,gp?2:3).map(c=>`<button type="button" class="h2-lc" data-cv="${c.id}"><span class="av" style="background:${avc(c.name||'?')}">${initials(c.name||'?')}</span><span><b>${esc(c.name||'Cliente')}</b><small>${esc((c.last_text||'').slice(0,80))}</small></span><time>${hm(c.last_at)}</time></button>`).join('')}`:`<p class="h2-e">As conversas que ela atender aparecem aqui.</p>`}
+     ${noCat?`<div class="h2-ins"><div><small>Ela ainda não sabe seus preços</small><p>Nenhum produto ou serviço com preço. Sem isso, a ${nm} não responde quanto custa.</p></div><button type="button" class="btn sm p" id="h2Cat">Cadastrar preços</button></div>`:''}
      ${gp?`<div class="h2-ins"><div><small>Ela não soube responder</small><p>“${esc(gp.q)}”${gp.count>1?` · ${gp.count} clientes perguntaram`:''}</p></div><button type="button" class="btn sm" data-to="nanda">Ensinar</button></div>`:''}</section></div>
    <div class="h2-g h2-g2"><section class="card h2-c"><div class="h2-ch"><h2>Seu dia</h2><button type="button" class="lnk" data-to="agenda">Abrir agenda →</button></div>
      ${up.length?`<div class="h2-tl">${up.slice(0,4).map((a,i)=>{const st=new Date(a.start),now_=st<=new Date()&&new Date(a.end||st)>=new Date();return `<button type="button" class="h2-sl ${now_||(!i&&st-Date.now()<36e5)?'now':''}" data-to="agenda"><time>${hm(a.start)}${now_?'<em> · agora</em>':''}</time><b>${esc(a.service_name||'Horário')}</b><small>${esc((a.contact_name||'').split(' ')[0])}${a.pro_name?' · com '+esc(a.pro_name.split(' ')[0]):/\(IA\)$/.test(a.by||'')?' · marcou a '+nm:''}</small></button>`}).join('')}</div>`
@@ -5188,6 +5190,7 @@ async function homeV2({mgr,td,ap,rp,sm,ai,cvs}){
       :`<span class="h2-big">${cur?brl(cur):'R$ 0'}</span><span class="h2-of">nos últimos 30 dias</span><p>${dlt!=null?`<b class="${dlt>=0?'up':'dn'}">${dlt>=0?'↑':'↓'} ${Math.abs(dlt)}%</b> vs 30 dias antes · `:''}${rp&&rp.totals&&rp.totals.won!=null?nf(rp.totals.won)+(rp.totals.won===1?' venda':' vendas'):''}</p>${mgr&&modOn('metas')?`<button type="button" class="lnk" data-to="metas">Definir uma meta do mês</button>`:''}`}</div></section></div></div>`;
   document.querySelectorAll('#page [data-to]').forEach(b=>b.onclick=()=>go(b.dataset.to));
   document.querySelectorAll('#page [data-open],#page [data-cv]').forEach(b=>b.onclick=e=>{e.stopPropagation();CV.filter='all';CV.kind='';CV.origin='';CV.open=b.dataset.open||b.dataset.cv;go('conversas')});
+  if($('#h2Cat'))$('#h2Cat').onclick=()=>{VD.tab='produtos';go('vendas')};
   if($('#h2Fix'))$('#h2Fix').onclick=()=>{EM.tab='whatsapp';go('empresa')};
   if($('#h2Stale'))$('#h2Stale').onclick=()=>{FN.f='stale';go('funil')};
   pushNudge&&pushNudge();
@@ -6885,7 +6888,7 @@ async function vdViews(onChange){
 }
 
 const VD_SEC={relatorio:['Resumo','Quanto entrou, ticket médio e quem vendeu mais.'],metas:['Metas','Quanto falta para bater a meta da empresa, de cada equipe e de cada pessoa.'],lista:['Vendas','Registre uma venda e veja todas as que já entraram.'],
-  comissoes:['Comissões','Quanto cada pessoa ganha pelo que vendeu.'],produtos:['Catálogo','O que você vende e quanto custa. A Nanda e as vendas usam os mesmos itens.'],promocoes:['Promoções','Descontos e cupons que entram certos na venda.'],retorno:['Origens','De onde vieram os clientes e quanto voltou do que foi investido.'],origens:['Origens','De onde vieram os clientes e quanto voltou do que foi investido.']};
+  comissoes:['Comissões','Quanto cada pessoa ganha pelo que vendeu.'],produtos:['Produtos e serviços','O que você vende e quanto custa. A Nanda e as vendas usam os mesmos itens.'],promocoes:['Promoções','Descontos e cupons que entram certos na venda.'],retorno:['Origens','De onde vieram os clientes e quanto voltou do que foi investido.'],origens:['Origens','De onde vieram os clientes e quanto voltou do que foi investido.']};
 function vdHead(t){const x=VD_SEC[t]||VD_SEC.relatorio,mgr=isMgr();const ttl=t==='comissoes'&&!mgr?'Minha comissão':x[0];
   return `<div class="agt"><span class="vd-eb">Vendas</span><h1>${ttl}</h1><p>${!mgr&&t==='relatorio'?'Suas vendas e os seus números.':x[1]}</p></div>`}
 const SX_IC={relatorio:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',metas:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',lista:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',comissoes:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2a3.2 3.2 0 0 1-3-1.6M12 6v2m0 8v2"/>',
@@ -6894,12 +6897,12 @@ const SXV=['vendas','metas','campanhas','relatorios'];
 function sxOn(v){return !!ME&&!admOn()&&SXV.includes(v)&&!cfxOn(v)}
 function sxDraw(){const el=$('#cside');if(!el||!document.querySelector('.app.vx'))return;const mgr=isMgr();if(VIEW==='campanhas')return cpSide(el);if(VIEW==='relatorios')return rpSide(el);if(VIEW==='clientes')return clSide(el);
   const cur=VIEW==='metas'?'metas':(VD.tab==='origens'?'retorno':VD.tab);
-  const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])]]];
+  const G=[['Acompanhar',[['relatorio','Resumo'],['lista','Vendas'],...(mtTabOk()?[['metas','Metas']]:[]),['comissoes',mgr?'Comissões':'Minha comissão']]],['O que você vende',[['produtos','Produtos e serviços'],...(mgr?[['retorno','Origens']]:[])]]];
   el.innerHTML=`<div class="cx-t">Vendas</div><button type="button" class="btn p sm sx-new" id="sxNew">+ Registrar venda</button>`+G.map(g=>`<div class="cx-g">${g[0]}</div>`+g[1].map(t=>`<button type="button" class="cx-s only ${cur===t[0]?'on':''}" data-sx="${t[0]}">${svg(SX_IC[t[0]]||SX_IC.relatorio)}${t[1]}</button>`).join('')).join('');
   el.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{const t=b.dataset.sx;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();sxDraw();return vdView()}go('vendas')});
   $('#sxNew').onclick=()=>{if(VIEW==='vendas'&&VD.tab==='lista'&&$('#vdF'))return vdFormOpen();VD.tab='lista';try{localStorage.setItem('vdFormOff','0')}catch(e){}if(VIEW==='vendas'){syncUrl();sxDraw();vdView().then(()=>vdFormOpen())}else go('vendas').then(()=>vdFormOpen())}}
 function vdTabs(cur){const mgr=isMgr();
-  const tabs=[['relatorio','Resumo'],...(mtTabOk()?[['metas','Metas']]:[]),['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Catálogo'],...(mgr?[['retorno','Origens']]:[])];
+  const tabs=[['relatorio','Resumo'],...(mtTabOk()?[['metas','Metas']]:[]),['lista','Vendas'],['comissoes',mgr?'Comissões':'Minha comissão'],['produtos','Produtos'],...(mgr?[['retorno','Origens']]:[])];
   return `<nav class="utabs vd-tabs" role="tablist">${tabs.map(t=>{const on=cur===t[0];return `<button role="tab" aria-selected="${on}" class="${on?'on':''}" data-tab="${t[0]}">${t[1]}</button>`}).join('')}</nav>`}
 function vdTabsBind(){document.querySelectorAll('.utabs [data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();return vdView()}go('vendas')});
   $('.utabs .on')?.scrollIntoView({block:'nearest',inline:'center'})}
@@ -7078,7 +7081,7 @@ function catImport(){
     const go=o.querySelector('#ciGo');go.onclick=async()=>{go.disabled=true;go.textContent='Importando...';
       try{const j=await api('/catalog/import',{method:'POST',body:{items:ok.map(({name,code,category,kind,price,duration_days,active,fields})=>({name,code,category,kind,price,duration_days,active,fields})),mode:st.mode,file:r.file}});done(j)}
       catch(e){o.querySelector('#ciE').textContent=e.message;go.disabled=false;go.textContent=`Importar ${n} itens`}}};
-  const done=j=>{VD.opts=null;B().innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>Catálogo importado</h2>
+  const done=j=>{VD.opts=null;B().innerHTML=`<div class="sm-ok"><div class="sm-okc"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg></div><h2>Produtos e serviços importados</h2>
      <p><b>${j.created}</b> ${j.created===1?'item novo':'itens novos'}${j.updated?` e <b>${j.updated}</b> ${j.updated===1?'atualizado':'atualizados'}`:''}. Já aparecem na venda e a Nanda já usa os preços.</p>
      <div class="row" style="justify-content:center;gap:10px;margin-top:14px"><button type="button" class="btn p" id="ciOk">Ver o catálogo</button><button type="button" class="btn" id="ciUn">Desfazer importação</button></div></div>`;
     o.querySelector('#ciOk').onclick=()=>{o.remove();vdProducts()};
@@ -7095,7 +7098,7 @@ async function vdProducts(){
   const hero=`<details class="lk-hero ci-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.5"/>')}</span><div><b>Cadastre uma vez, use em todo o sistema</b><span>O que você vende e quanto custa. A Nanda, as vendas, os clientes e as automações usam os mesmos itens.</span></div><em class="lk-ht">Onde é usado</em></summary>
     <div class="pm-facts cb-steps">${[['1','Na venda','Você escolhe o item e o preço já vem. Dá para vender algo fora do catálogo também.'],['2','Na Nanda','Ela informa o preço quando o cliente pergunta. Item sem preço ela não informa: chama o time.'],['3','Em Clientes','Plano com validade mostra quando vence e quem pode renovar.'],['4','Nas automações','Lembrete de renovação e oferta do próximo item depois da compra.']].map(f=>`<div><i>${f[0]}</i><b>${f[1]}</b><span>${f[2]}</span></div>`).join('')}</div></details>`;
   const kp=all.length?`<div class="eq-kp ci-kp"><div><b>${all.filter(p=>p.active!==false).length}</b><span>itens ativos</span></div><div><b>${pl}</b><span>${pl===1?'plano com validade':'planos com validade'}</span></div><div><b>${all.filter(p=>p.service_id).length}</b><span>da Agenda</span></div><div class="${nop?'warn':''}"><b>${nop}</b><span>sem preço${nop?' · a Nanda não informa':''}</span></div></div>`:'';
-  $('#vdBody').innerHTML=hero+kp+`<div class="vd-c"><div class="hd"><h3>Catálogo</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item fora do catálogo também.</span><span class="sp"></span>${mgr?`<button class="btn sm" id="pdImp" title="Cadastrar muitos itens de uma vez, de uma planilha Excel ou CSV">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<span class="hm-m"> Importar planilha</span></button><button class="btn sm p" id="pdNew">+ Novo item</button>`:''}</div>${fl}
+  $('#vdBody').innerHTML=hero+kp+`<div class="vd-c"><div class="hd"><h3>Produtos e serviços</h3><span class="hint">Os serviços da Agenda entram aqui sozinhos. Na venda dá para usar um item que não está na lista também.</span><span class="sp"></span>${mgr?`<button class="btn sm" id="pdImp" title="Cadastrar muitos itens de uma vez, de uma planilha Excel ou CSV">${svg('<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}<span class="hm-m"> Importar planilha</span></button><button class="btn sm p" id="pdNew">+ Novo item</button>`:''}</div>${fl}
    ${ps.length?`<div style="overflow-x:auto"><table class="vtb"><thead><tr><th>Item</th><th>Categoria</th><th class="hm">Validade</th><th class="hm">Oferecer depois</th><th class="n">Preço</th><th></th></tr></thead><tbody>
    ${ps.map(p=>`<tr class="${mgr?'ck':''} ${p.active?'':'cx'}" data-p="${p.id}"><td>${p.code?`<small class="sm-cd">${esc(p.code)}</small> `:''}<b>${esc(p.name)}</b>${p.service_id?' <span class="sx">agenda</span>':''}${p.kind==='plano'?' <span class="sx">plano</span>':p.kind==='produto'?' <span class="sx">produto</span>':''}</td><td>${p.category?esc(p.category):'<span class="hint">—</span>'}</td><td class="hm">${p.recurring?'a cada '+durTxt(p.duration_days||30).replace(/^1 /,'')+' <span class="sx">renova sozinho</span>':durTxt(p.duration_days)}</td><td class="hm">${(p.next_ids||[]).map(i=>(ps.find(y=>y.id===i)||{}).name).filter(Boolean).map(n=>`<span class="sx">${esc(n)}</span>`).join(' ')||'<span class="hint">—</span>'}</td><td class="n">${p.price!=null?brl2(p.price):p.service_id?'<span class="hint">varia</span>':'<span class="pill warn" title="A Nanda não informa preço deste item: chama o time">sem preço</span>'}</td><td class="n">${p.active?'':'<span class="hint">fora da venda</span>'}</td></tr>`).join('')}</tbody></table></div>`
    :`<div class="empty">Nenhum item ainda.${mgr?' Cadastre um por um ou <button type="button" class="lnk" id="pdImp2">importe tudo de uma planilha</button>.':''}</div>`}</div>`;
@@ -7118,7 +7121,7 @@ Object.assign(INFO,{
   ci_cat:['Categoria','Junta itens parecidos, como “Planos” ou “Cabelo”. Serve para filtrar o catálogo e ver nos relatórios qual grupo vende mais. É opcional.'],
   ci_price:['Preço','O valor que já vem preenchido na hora de registrar a venda (dá para mudar em cada venda). Se o preço muda a cada cliente, escolha “Varia”.'],
   ci_val:['Validade','Quanto tempo o plano ou pacote vale depois da compra. Perto de vencer, o cliente aparece em “Renovar” e a Nanda pode lembrar ele.'],
-  cl_mrr:['Assinaturas ativas','Quem tem um plano marcado no Catálogo como “Assinatura que renova sozinha” e não cancelou. O valor por mês soma o preço de cada plano dividido pelo período (um anual de R$ 1.200 conta R$ 100 por mês). Quando alguém cancelar o cartão, abra o cliente e marque “cancelou” no plano: ele sai daqui e entra em “cancelaram”.'],
+  cl_mrr:['Assinaturas ativas','Quem tem um plano marcado em Produtos e serviços como “Assinatura que renova sozinha” e não cancelou. O valor por mês soma o preço de cada plano dividido pelo período (um anual de R$ 1.200 conta R$ 100 por mês). Quando alguém cancelar o cartão, abra o cliente e marque “cancelou” no plano: ele sai daqui e entra em “cancelaram”.'],
   ci_rec:['Assinatura que renova sozinha','Para cobrança automática (cartão recorrente, débito). O cliente continua ativo sem você registrar a renovação todo mês, não recebe aviso de vencimento e não entra em “Renovar”.'],
   ci_next:['Oferecer depois','O próximo passo natural para quem comprou este item. Aparece como sugestão de venda na carteira do cliente. Ex.: Módulo 1 → Módulo 2.'],
   ci_on:['Disponível para vender','Desligado, o item some da lista na hora de vender. As vendas antigas continuam nos relatórios.']});
@@ -7889,7 +7892,7 @@ function clHead(cn){const mgr=isMgr();const tabs=[['seg','Base e públicos'],...
 /* importar clientes e prospects de uma planilha: enviar -> conferir -> pronto */
 async function importWizard(){
   const F={name:'Nome',phone:'Telefone',email:'E-mail',product:'Produto ou plano',date:'Data da compra',value:'Valor',expires:'Vencimento',tags:'Etiquetas',origin:'Origem',notes:'Observação'};
-  const FH={name:'Ex.: Ana Souza',phone:'Obrigatório. Com DDD, em qualquer formato',email:'Ex.: ana@email.com',product:'O que comprou. Se o nome for igual ao do Catálogo, já pega a validade',date:'Quando comprou. Ex.: 05/11/2026',value:'Ex.: 280,00',expires:'Quando vence, se for diferente do Catálogo',tags:'Separe por vírgula. Ex.: pilates, manhã',origin:'Ex.: Instagram, Indicação',notes:'Qualquer coisa útil para o time'};
+  const FH={name:'Ex.: Ana Souza',phone:'Obrigatório. Com DDD, em qualquer formato',email:'Ex.: ana@email.com',product:'O que comprou. Se o nome for igual ao de Produtos e serviços, já pega a validade',date:'Quando comprou. Ex.: 05/11/2026',value:'Ex.: 280,00',expires:'Quando vence, se for diferente do cadastro em Produtos e serviços',tags:'Separe por vírgula. Ex.: pilates, manhã',origin:'Ex.: Instagram, Indicação',notes:'Qualquer coisa útil para o time'};
   let J=null,map={},chk=null,consent=false,tm=null,dirty=false;
   const o=overlay(`<div class="modal iw"><div class="row"><h2 style="font-size:20px">Importar clientes de uma planilha</h2><button class="x">×</button></div><div class="iw-st" id="iwSt"></div><div id="iwB"></div></div>`,true);
   const B=()=>o.querySelector('#iwB');
@@ -7925,7 +7928,7 @@ async function importWizard(){
     try{chk=await api('/import/'+J.id+'/check',{method:'POST',body:{mapping:map}})}catch(e){box.innerHTML=`<p class="err">${esc(e.message)}</p>`;return}
     const c=chk;box.innerHTML=`<div class="iw-k"><div><b>${num(c.people)}</b><span>${c.people===1?'pessoa':'pessoas'}</span></div><div><b>${num(c.new)}</b><span>${c.new===1?'nova':'novas'}</span></div><div><b>${num(c.existing)}</b><span>já no Oi Nanda<br><small>os dados são juntados</small></span></div><div class="ok"><b>${num(c.clients)}</b><span>${c.clients===1?'cliente':'clientes'}<br><small>${num(c.buys)} ${c.buys===1?'compra':'compras'}${c.value?' · '+brl(c.value):''}</small></span></div><div><b>${num(c.prospects)}</b><span>${c.prospects===1?'prospect':'prospects'}<br><small>sem compra</small></span></div></div>
       ${c.with_expiry?`<p class="note ok">📅 <b>${num(c.with_expiry)} ${c.with_expiry===1?'compra tem':'compras têm'} vencimento.</b> Essas pessoas já aparecem em "Vence nos próximos 30 dias" e nas automações de renovação.</p>`:''}
-      ${c.unknown_count?`<p class="note">🏷️ <b>${num(c.unknown_count)} ${c.unknown_count===1?'produto não está':'produtos não estão'} no Catálogo:</b> ${c.unknown_products.slice(0,6).map(esc).join(', ')}${c.unknown_count>6?'...':''}. Entram como item avulso, sem validade. Se quiser lembrete de renovação, cadastre no Catálogo com o mesmo nome antes de importar.</p>`:''}
+      ${c.unknown_count?`<p class="note">🏷️ <b>${num(c.unknown_count)} ${c.unknown_count===1?'produto não está':'produtos não estão'} em Produtos e serviços:</b> ${c.unknown_products.slice(0,6).map(esc).join(', ')}${c.unknown_count>6?'...':''}. Entram como item avulso, sem validade. Se quiser lembrete de renovação, cadastre em Produtos e serviços com o mesmo nome antes de importar.</p>`:''}
       ${c.error_count?`<details class="iw-err"><summary>⚠️ <b>${num(c.error_count)} ${c.error_count===1?'linha não vai entrar':'linhas não vão entrar'}</b> · ver quais</summary><ul>${c.errors.map(e=>`<li>Linha ${e.row}${e.name?' · '+esc(e.name):''}: ${esc(e.why)}</li>`).join('')}</ul>${c.error_count>c.errors.length?`<p class="hint">Mostrando as primeiras ${c.errors.length}.</p>`:''}<p class="hint">As outras linhas entram normalmente. Baixe as linhas com problema, corrija e importe só esse arquivo depois.</p></details>`:''}
       ${c.warn_count?`<details class="iw-err w"><summary>ℹ️ <b>${num(c.warn_count)} ${c.warn_count===1?'aviso':'avisos'}</b> · entram com ajuste</summary><ul>${c.warns.map(e=>`<li>Linha ${e.row}${e.name?' · '+esc(e.name):''}: ${esc(e.why)}</li>`).join('')}</ul>${c.warn_count>c.warns.length?`<p class="hint">Mostrando os primeiros ${c.warns.length}.</p>`:''}</details>`:''}
       ${c.error_count||c.warn_count?`<button type="button" class="btn sm iw-dl" id="iwPb">${svg('<path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>')}Baixar as ${num(c.error_count+c.warn_count)} linhas com problema (.xlsx)</button>`:''}
@@ -9264,7 +9267,7 @@ const VIEWS={
   const gl=[G.venda,G.pos,G.agenda].map(g=>({g,items:recs.filter(r=>gOf(r.trigger)===g)})).filter(x=>x.items.length);
   if(AU.grp==='rec'&&!d.pack.some(k=>d.recipes.find(r=>r.key===k&&!r.added)))AU.grp=null;if(AU.grp!=='rec'&&!gl.some(x=>x.g[0]===AU.grp)&&gl.length)AU.grp=gl[0].g[0];
   const cur=gl.find(x=>x.g[0]===AU.grp)||gl[0];
-  const need=g=>g==='agenda'&&!d.uses_agenda?'Funciona quando você marca horários na Agenda.':g==='pos'&&!d.has_validity?'Renovação precisa de itens com validade no Catálogo (ex.: plano de 30 dias). "Próximo passo" funciona com qualquer compra.':'';
+  const need=g=>g==='agenda'&&!d.uses_agenda?'Funciona quando você marca horários na Agenda.':g==='pos'&&!d.has_validity?'Renovação precisa de itens com validade em Produtos e serviços (ex.: plano de 30 dias). "Próximo passo" funciona com qualquer compra.':'';
   const hOpen=howOpen('auHow',!n);
   const ar=`<i class="lk-ar">${svg('<path d="M5 12h14M13 6l6 6-6 6"/>')}</i>`;
   const hero=`<details class="lk-hero au-how" ${hOpen?'open':''}><summary><span class="lk-hi">${svg('<path d="M13 3 5 14h6l-1 7 8-11h-6l1-7z"/>')}</span><div><b>Você escolhe o momento e a mensagem sai sozinha</b></div><em class="lk-ht">Como funciona</em></summary>
@@ -9457,7 +9460,7 @@ const VIEWS={
   const SEC=[
    ['jeito','Como ela atende','💬',[],()=>true],
    ['negocio','O seu negócio','🏪',[['about','Sobre o negócio','O que é, onde fica e para quem atende.',3],['goal','Objetivo da conversa','O próximo passo que ela busca: agendar, mandar orçamento, levar ao link de compra.',1]],v=>v.about&&v.goal],
-   ['precos','Preços e condições','🏷️',[['offer','Condições de pagamento e pacotes','Parcelamento, pacotes, descontos. Os valores ficam no Catálogo.',3]],v=>cat.length||v.offer],
+   ['precos','Preços e condições','🏷️',[['offer','Condições de pagamento e pacotes','Parcelamento, pacotes, descontos. Os valores ficam em Produtos e serviços.',3]],v=>cat.length||v.offer],
    ['duvidas','Dúvidas e perguntas','❓',[['faq','Perguntas frequentes','Pagamento, endereço, estacionamento, prazos, o que levar...',4],['qualify','O que ela pergunta ao cliente','Uma por linha. Ela pergunta aos poucos, só o que ainda não sabe.',3]],v=>v.faq],
    ['limites','Limites e quando chamar o time','🛟',[['rules','O que ela nunca faz ou promete','Uma regra por linha.',3],['handoff','Assuntos que ela não trata','',2]],v=>v.rules||v.handoff]];
   if(s.knowledge)SEC.push(['outras','Outras informações','📎',[['knowledge','Texto que você já tinha ensinado','Pode ir distribuindo nas seções acima.',6]],v=>true]);
@@ -9501,7 +9504,7 @@ const VIEWS={
     ${k==='about'?'<div class="nz-wzb" id="wzBox"></div>':''}
     ${chipsFor(k)?`<div class="nz-qc">${chipsFor(k).filter(c=>!V[k].toLowerCase().includes(c.toLowerCase())).map(c=>`<button type="button" data-qc="${k}">+ ${esc(c)}</button>`).join('')}</div>`:''}
     ${r===1?`<input id="nz_${k}" name="${k}" value="${esc(V[k])}" maxlength="1000" placeholder="${esc(ex[k]||'')}">`:`<textarea id="nz_${k}" name="${k}" rows="${r}" placeholder="${esc(ex[k]||'')}">${esc(V[k])}</textarea>`}<span class="hint">${h}</span></div>`;
-  const catH=()=>`<div class="nz-cat"><div class="nz-fl"><label>O que vende e quanto custa</label><button type="button" class="nz-ex" id="aiCat">${cat.length?'Editar no Catálogo':'Cadastrar no Catálogo'}</button></div>
+  const catH=()=>`<div class="nz-cat"><div class="nz-fl"><label>O que vende e quanto custa</label><button type="button" class="nz-ex" id="aiCat">${cat.length?`Ver os ${cat.length} itens`:'Cadastrar produtos e serviços'}</button></div>
     ${cat.length?`<ul>${cat.slice(0,8).map(p=>`<li><span>${esc(p.name)}</span><b>${p.price!=null?brl(p.price):'<i>sem preço</i>'}</b></li>`).join('')}</ul>${cat.length>8?`<p class="hint">e mais ${cat.length-8} itens</p>`:''}`
     :'<p>Ainda vazio. Cadastre serviços e preços uma vez só: a Nanda usa os mesmos valores das vendas.</p>'}<span class="hint">Item sem preço ela não informa: chama o time.</span></div>`;
   const body=id=>{if(id==='jeito')return `<div class="nz-modes">${MODES.map(m=>{const lock=m[0]==='auto'&&ME.access&&!(ME.access.features||[]).includes('auto');return `<label class="${V.default_mode===m[0]?'on':''} ${lock?'lock':''}"><input type="radio" name="default_mode" value="${m[0]}" ${V.default_mode===m[0]?'checked':''} ${lock?'disabled':''}><i>${m[3]}</i><b>${m[1]}</b><span>${lock?'Faz parte do plano Profissional.':m[2]}</span></label>`}).join('')}</div>
@@ -9515,7 +9518,7 @@ const VIEWS={
     if(id==='duvidas')return (sw?`<div class="nz-sw" data-sw="${id}"><span>✨ <b>Prefere que a gente escreva?</b> Responda algumas perguntas rápidas.</span><button type="button" class="btn sm" data-swb="${id}">Começar</button></div><div class="nz-wzb" id="swBox_${id}"></div>`:'')+faqH()+fieldH(S[3][1]);
     return (sw?`<div class="nz-sw" data-sw="${id}"><span>✨ <b>Responda algumas perguntas</b> e a gente escreve esta parte para você.</span><button type="button" class="btn sm" data-swb="${id}">Começar</button></div><div class="nz-wzb" id="swBox_${id}"></div>`:'')+(id==='precos'?catH():'')+S[3].map(fieldH).join('')};
   const summary=x=>{if(x[0]==='jeito')return `${esc(V.name||'Nanda')} · ${modeOf(V.default_mode)[1]} · ${(TONES.find(t=>t[0]===V.tone)||TONES[0])[1]}`;
-    if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'item':'itens'} no Catálogo${V.offer?' · condições preenchidas':''}`;
+    if(x[0]==='precos'&&cat.length)return `${cat.length} ${cat.length===1?'produto ou serviço':'produtos e serviços'}${V.offer?' · condições preenchidas':''}`;
     if(x[0]==='limites'&&V.handoff.trim()&&!V.rules.trim()){const ls=hoLines();return 'Passa para o time: '+esc(ls.slice(0,3).join(', '))+(ls.length>3?' e mais '+(ls.length-3):'')}
     const t=x[3].map(f=>V[f[0]]).find(v=>v&&v.trim());return t?esc(t.replace(/\s+/g,' ').slice(0,70))+(t.length>70?'…':''):'Falta preencher'};
   const nf=n=>Number(n||0).toLocaleString('pt-BR');
