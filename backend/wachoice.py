@@ -11,7 +11,7 @@ Os ids que voltam do WhatsApp dizem o que fazer: ap_ok:<id>, ap_re:<id>, slot:<s
 import re, logging
 from datetime import datetime, timedelta
 from core import db, now, uid
-from whatsapp import graph, decrypt, note, aware, WINDOW
+from whatsapp import graph, decrypt, note, aware, WINDOW, has_wa, wa_to
 
 log = logging.getLogger('wachoice')
 CONFIRM_BTN, RESCHED_BTN = 'Confirmo', 'Preciso remarcar'
@@ -21,7 +21,7 @@ def in_window(contact):
     from channels import view
     c = view(contact)
     li = aware(c.get('last_in_at'))
-    return (c.get('channel') or 'whatsapp') == 'whatsapp' and c.get('wa_id') and li and now() - li < WINDOW
+    return (c.get('channel') or 'whatsapp') == 'whatsapp' and has_wa(c) and li and now() - li < WINDOW
 
 async def send_choices(company_id, contact, body, by_name, buttons=None, rows=None, list_label='Ver horários'):
     """Mensagem com botões (até 3) ou lista (até 10). Fora do WhatsApp/janela, manda o texto com as opções escritas."""
@@ -37,7 +37,7 @@ async def send_choices(company_id, contact, body, by_name, buttons=None, rows=No
         inter = {'type': 'list', 'body': {'text': body[:1024]},
                  'action': {'button': list_label[:20], 'sections': [{'title': 'Horários livres', 'rows': [{'id': i[:200], 'title': t[:24]} for i, t in rows[:10]]}]}}
     res = await graph('POST', f'/{n["phone_number_id"]}/messages', decrypt(n['token_enc']),
-                      {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'interactive', 'interactive': inter})
+                      {'messaging_product': 'whatsapp', **wa_to(contact), 'type': 'interactive', 'interactive': inter})
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'interactive', 'text': body,
            'choices': [{'id': i, 'title': t} for i, t in (buttons or rows or [])], 'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'),
            'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}

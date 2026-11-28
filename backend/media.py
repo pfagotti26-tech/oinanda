@@ -212,7 +212,7 @@ async def send_media(contact_id: str, file: UploadFile = File(...), caption: str
     cap = caption.strip()[:1024]
     if cap and kind in ('image', 'video', 'document'): body['caption'] = cap
     if kind == 'document': body['filename'] = fname
-    res = await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', token, {'messaging_product': 'whatsapp', 'to': c['wa_id'], 'type': kind, kind: body})
+    res = await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', token, {'messaging_product': 'whatsapp', **whatsapp.wa_to(c), 'type': kind, kind: body})
     who = user.get('impersonated_by') or user['name']
     text = cap or LABEL[kind]
     msg = {'id': uid(), 'company_id': user['company_id'], 'contact_id': c['id'], 'dir': 'out', 'type': kind, 'text': text, 'mime': mime, 'media_id': media_id,

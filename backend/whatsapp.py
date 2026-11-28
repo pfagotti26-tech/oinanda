@@ -185,6 +185,33 @@ def text_of(m):
     if t == 'reaction': return 'Reagiu ' + (m.get('reaction') or {}).get('emoji', '')
     return f'[{t}]'
 
+# ---------- quem é o cliente: telefone e/ou BSUID (nome de usuário do WhatsApp, 2026) ----------
+def has_wa(c): return bool((c or {}).get('wa_id') or (c or {}).get('wa_uid'))
+
+def wa_to(c):
+    """Destino na Meta: o telefone quando a gente tem; senão o BSUID (cliente que escondeu o número com nome de usuário)."""
+    if c.get('wa_id'): return {'to': c['wa_id']}
+    if c.get('wa_uid'): return {'recipient_type': 'individual', 'recipient': c['wa_uid']}
+    raise HTTPException(400, 'Este cliente não tem WhatsApp salvo.')
+
+async def find_wa(cid, wa_id=None, wa_uid=None):
+    from channels import variants
+    c = await db.contacts.find_one({'company_id': cid, 'wa_id': {'$in': variants(wa_id)}}, {'_id': 0}) if wa_id else None
+    if not c and wa_uid: c = await db.contacts.find_one({'company_id': cid, 'wa_uid': wa_uid}, {'_id': 0})
+    return c
+
+async def on_system(cid, m):
+    """O cliente trocou de número ou de BSUID: a ficha acompanha, sem virar outra pessoa."""
+    sy = m.get('system') or {}
+    old, new, wa = sy.get('previous_user_id'), sy.get('user_id'), sy.get('wa_id')
+    c = await find_wa(cid, m.get('from'), old)
+    if not c: return
+    upd = {}
+    if new: upd['wa_uid'] = new
+    if wa and wa != c.get('wa_id') and not await db.contacts.find_one({'company_id': cid, 'wa_id': wa, 'id': {'$ne': c['id']}}): upd['wa_id'] = wa
+    if upd: await db.contacts.update_one({'id': c['id']}, {'$set': upd})
+    if sy.get('type') == 'user_changed_number' and wa: await note(cid, c['id'], f'O cliente trocou o número do WhatsApp para {wa}. A conversa continua aqui.')
+
 async def ingest(value):
     pnid = (value.get('metadata') or {}).get('phone_number_id')
     number = await db.wa_numbers.find_one({'phone_number_id': pnid}, {'_id': 0, 'company_id': 1})
@@ -193,23 +220,33 @@ async def ingest(value):
     cid = number['company_id']
     if value.get('messages'):  # mensagem chegando = recebimento funcionando
         await db.wa_numbers.update_one({'phone_number_id': pnid}, {'$set': {'webhook': 'ok', 'last_in_at': now()}})
-    names = {c.get('wa_id'): (c.get('profile') or {}).get('name') for c in value.get('contacts') or []}
+    people = value.get('contacts') or []
     for m in value.get('messages') or []:
         if await db.messages.find_one({'wa_msg_id': m.get('id')}): continue
-        wa_id = m.get('from')
+        if m.get('type') == 'system':
+            await on_system(cid, m); continue
+        wa_id, wa_uid = m.get('from'), m.get('from_user_id')
+        if not wa_id and not wa_uid: continue
+        who = next((p for p in people if (wa_id and p.get('wa_id') == wa_id) or (wa_uid and p.get('user_id') == wa_uid)), {})
+        pname, uname = (who.get('profile') or {}).get('name'), (who.get('profile') or {}).get('username')
+        names = {wa_id: pname} if wa_id else {}
         at = datetime.fromtimestamp(int(m.get('timestamp', 0)) or now().timestamp(), tz=timezone.utc)
         if now() - at < timedelta(seconds=60): at = now()  # a Meta manda em segundos; a hora de chegada mantém a ordem certa
         text = text_of(m)
         from channels import variants, claim_from_instagram, on_inbound_set
-        contact = await db.contacts.find_one({'company_id': cid, 'wa_id': {'$in': variants(wa_id)}}, {'_id': 0})
-        if not contact: contact = await claim_from_instagram(cid, wa_id, text)
+        contact = await find_wa(cid, wa_id, wa_uid)
+        if not contact and wa_id: contact = await claim_from_instagram(cid, wa_id, text)
         ad = ad_of(m)
         if not contact:
-            contact = {'id': uid(), 'company_id': cid, 'wa_id': wa_id, 'name': names.get(wa_id) or wa_id, 'assigned_to': None,
+            contact = {'id': uid(), 'company_id': cid, 'name': pname or ('@' + uname if uname else None) or wa_id or 'Cliente do WhatsApp', 'assigned_to': None,
                        'unread': 0, 'created_at': at, 'source': 'anuncio' if ad else 'whatsapp'}
+            if wa_id: contact['wa_id'] = wa_id
+            if wa_uid: contact['wa_uid'] = wa_uid
             if ad: contact['ad'] = ad
             await db.contacts.insert_one(contact.copy())
-        upd = {'wa_id': wa_id} if contact.get('wa_id') != wa_id else {}  # guarda o número do jeito que a Meta manda
+        upd = {'wa_id': wa_id} if wa_id and contact.get('wa_id') != wa_id else {}  # guarda o número do jeito que a Meta manda
+        if wa_uid and contact.get('wa_uid') != wa_uid: upd['wa_uid'] = wa_uid
+        if uname and contact.get('wa_username') != uname: upd['wa_username'] = uname
         if contact.get('wa_line') != pnid: upd['wa_line'] = pnid  # com qual número da empresa ele conversou por último
         if ad and not contact.get('ad'): upd['ad'] = ad
         if STOP.match(text or '') and not contact.get('opt_out'):
@@ -218,7 +255,7 @@ async def ingest(value):
         if not aware(contact.get('last_in_at')) or at >= aware(contact.get('last_in_at')): upd['last_in_at'] = at
         if not aware(contact.get('wa_last_in_at')) or at >= aware(contact.get('wa_last_in_at')): upd.update(on_inbound_set(contact, 'whatsapp', at))
         if not aware(contact.get('last_at')) or at >= aware(contact.get('last_at')): upd.update(last_at=at, last_text=text[:200], last_dir='in')
-        if names.get(wa_id) and (contact.get('channel') != 'instagram' or not contact.get('name') or contact['name'].startswith('@')): upd['name'] = names[wa_id]
+        if pname and (contact.get('channel') != 'instagram' or not contact.get('name') or contact['name'].startswith('@') or contact['name'] == 'Cliente do WhatsApp'): upd['name'] = pname
         await db.contacts.update_one({'id': contact['id']}, {'$set': upd, '$inc': {'unread': 1}})
         try:
             from origins import on_inbound as origin_hook
@@ -264,14 +301,16 @@ async def company_of(value):
     return n
 
 async def upsert_contact(cid, wa_id, name=None, source='whatsapp'):
-    from channels import variants
-    c = await db.contacts.find_one({'company_id': cid, 'wa_id': {'$in': variants(wa_id)}}, {'_id': 0})
+    """wa_id pode ser telefone ou BSUID (tem ponto: 'BR.123...')."""
+    is_uid = bool(wa_id) and '.' in str(wa_id)
+    c = await find_wa(cid, None if is_uid else wa_id, wa_id if is_uid else None)
     if c:
-        if name and (not c.get('name') or c['name'] == wa_id): await db.contacts.update_one({'id': c['id']}, {'$set': {'name': name}}); c['name'] = name
+        if name and (not c.get('name') or c['name'] in (wa_id, 'Cliente do WhatsApp')): await db.contacts.update_one({'id': c['id']}, {'$set': {'name': name}}); c['name'] = name
         return c
-    c = {'id': uid(), 'company_id': cid, 'wa_id': wa_id, 'name': name or wa_id, 'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
+    c = {'id': uid(), 'company_id': cid, ('wa_uid' if is_uid else 'wa_id'): wa_id, 'name': name or ('Cliente do WhatsApp' if is_uid else wa_id),
+         'assigned_to': None, 'unread': 0, 'created_at': now(), 'source': source}
     try: await db.contacts.insert_one(c.copy())
-    except Exception: return await db.contacts.find_one({'company_id': cid, 'wa_id': wa_id}, {'_id': 0})
+    except Exception: return await find_wa(cid, None if is_uid else wa_id, wa_id if is_uid else None)
     return c
 
 async def store(cid, contact, m, direction, by=None, imported=False, line=None):
@@ -298,8 +337,9 @@ async def ingest_echoes(value):
     n = await company_of(value)
     if not n: return
     for m in value.get('message_echoes') or []:
-        if not m.get('to'): continue
-        c = await upsert_contact(n['company_id'], m['to'])
+        to = m.get('to') or m.get('to_user_id') or m.get('recipient_user_id')
+        if not to: continue
+        c = await upsert_contact(n['company_id'], to)
         if await store(n['company_id'], c, m, 'out', by='Celular', line=n.get('phone_number_id')) and ON_HUMAN_SEND:
             await ON_HUMAN_SEND({'company_id': n['company_id'], 'name': 'Alguém pelo celular', 'id': None}, c)
 
@@ -510,10 +550,10 @@ async def deliver(company_id, contact, text, by_id, by_name, assign_to=None):
         raise HTTPException(400, 'Passaram 24 horas desde a última mensagem do cliente. A Meta só permite responder com um modelo aprovado (chega na etapa de campanhas).')
     number = await db.wa_numbers.find_one({'company_id': company_id}, {'_id': 0})
     if not number: raise HTTPException(400, 'Conecte o WhatsApp da empresa primeiro.')
-    if not contact.get('wa_id'): raise HTTPException(400, 'Este cliente não tem WhatsApp salvo.')
+    if not has_wa(contact): raise HTTPException(400, 'Este cliente não tem WhatsApp salvo.')
     if old_line(contact, number['phone_number_id']): raise HTTPException(400, 'Este cliente conversou com o número anterior da empresa. Pelo número novo, a Meta só deixa chamar com um modelo aprovado até ele responder.')
     res = await graph('POST', f'/{number["phone_number_id"]}/messages', decrypt(number['token_enc']),
-                      {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'text', 'text': {'body': text}})
+                      {'messaging_product': 'whatsapp', **wa_to(contact), 'type': 'text', 'text': {'body': text}})
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': contact['id'], 'dir': 'out', 'type': 'text', 'text': text,
            'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': by_id, 'by': by_name, 'at': now()}
     await db.messages.insert_one(msg.copy())
@@ -530,7 +570,7 @@ async def current_line(cid):
 
 def old_line(c, cur):
     """Cliente que conversou pelo WhatsApp com um número anterior da empresa e ainda não falou com o atual."""
-    return bool(cur and c.get('wa_id') and c.get('channel') in (None, 'whatsapp') and c.get('last_at') and c.get('wa_line') != cur)
+    return bool(cur and has_wa(c) and c.get('channel') in (None, 'whatsapp') and c.get('last_at') and c.get('wa_line') != cur)
 
 async def backfill_lines():
     """Uma vez por número: quem já trocou mensagem com o número atual desde a conexão fica marcado com ele."""
