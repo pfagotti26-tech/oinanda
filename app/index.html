@@ -6862,7 +6862,7 @@ function vdTabs(cur){const mgr=isMgr();
 function vdTabsBind(){document.querySelectorAll('.utabs [data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;if(t==='metas'){MT.tab='painel';return go('metas')}VD.tab=t;if(VIEW==='vendas'){syncUrl();return vdView()}go('vendas')});
   $('.utabs .on')?.scrollIntoView({block:'nearest',inline:'center'})}
 async function vdView(){
-  if(VD.tab==='promocoes'){CP.tab='promo';CP.sub=null;return go('campanhas')}  // Promoções mudou para Campanhas
+  if(VD.tab==='promocoes'){VD.tab='relatorio';CP.tab='promo';CP.sub=null;return go('campanhas')}  // link antigo de Promoções: vai para Campanhas e não prende Vendas
   const mgr=isMgr();
   const orgT=VD.tab==='retorno'||VD.tab==='origens';
   $('#page').innerHTML=`<div class="fz-hd vd-hd2">${vdHead(VD.tab)}<span class="sp"></span>
