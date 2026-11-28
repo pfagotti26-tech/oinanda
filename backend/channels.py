@@ -67,7 +67,10 @@ DEFAULT = 'whatsapp'
 
 def label(ch): return (CH.get(ch) or {}).get('label') or ch
 def window_of(ch): return CH.get(ch or DEFAULT, CH[DEFAULT])['window']  # sem canal na ficha = WhatsApp
-def id_of(c, ch): return (c or {}).get(CH[ch]['id']) if ch in CH else None
+def id_of(c, ch):
+    if ch not in CH: return None
+    v = (c or {}).get(CH[ch]['id'])
+    return v or ((c or {}).get('wa_uid') if ch == 'whatsapp' else None)  # WhatsApp sem telefone: nome de usuário (BSUID)
 def has(c, ch): return bool(id_of(c, ch))
 def channels_of(c): return [ch for ch in CH if has(c, ch)]
 

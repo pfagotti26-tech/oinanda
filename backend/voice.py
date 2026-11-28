@@ -132,10 +132,11 @@ WHY = {}  # motivo de a resposta não ter saído em áudio, por mensagem do clie
 
 async def _voice(company_id, contact, text, by_name, trigger_id):
     from channels import view
+    import whatsapp
     if not ready() or not trigger_id: return None
     c = view(contact)
     ch = c.get('channel') or 'whatsapp'
-    if ch == 'whatsapp' and not c.get('wa_id'): return None
+    if ch == 'whatsapp' and not whatsapp.has_wa(c): return None
     if ch not in ('whatsapp', 'instagram', 'messenger'): return None
     s = await db.ai_settings.find_one({'company_id': company_id}, {'_id': 0, 'voice_reply': 1, 'voice_id': 1}) or {}
     if not s.get('voice_reply'): return None
@@ -154,7 +155,7 @@ async def _voice(company_id, contact, text, by_name, trigger_id):
     if not n: return None
     token = whatsapp.decrypt(n['token_enc'])
     media_id = await media.upload(n['phone_number_id'], token, data, mime, 'audio.ogg')
-    res = await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', token, {'messaging_product': 'whatsapp', 'to': c['wa_id'], 'type': 'audio', 'audio': {'id': media_id}})
+    res = await whatsapp.graph('POST', f'/{n["phone_number_id"]}/messages', token, {'messaging_product': 'whatsapp', **whatsapp.wa_to(c), 'type': 'audio', 'audio': {'id': media_id}})
     msg = {'id': uid(), 'company_id': company_id, 'contact_id': c['id'], 'dir': 'out', 'type': 'audio', 'voice': True, 'tts': True, 'text': text, 'mime': mime,
            'media_id': media_id, 'size': len(data), 'wa_msg_id': ((res.get('messages') or [{}])[0]).get('id'), 'status': 'sent', 'by_id': None, 'by': by_name, 'at': now()}
     p = media.path_for(msg); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); msg['file'] = p.name

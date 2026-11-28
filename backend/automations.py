@@ -183,8 +183,8 @@ async def del_template(tid: str, request: Request, user=Depends(managers)):
 async def send_template(company_id, contact, t, ctx, by_name, by_id=None, values=None, header_media=None):
     n = await number_of(company_id)
     vals = values or [str(ctx.get(p) or '-') for p in t.get('params') or []]
-    if not contact.get('wa_id'): raise HTTPException(400, 'Este contato não tem WhatsApp.')
-    payload = {'messaging_product': 'whatsapp', 'to': contact['wa_id'], 'type': 'template',
+    if not whatsapp.has_wa(contact): raise HTTPException(400, 'Este contato não tem WhatsApp.')
+    payload = {'messaging_product': 'whatsapp', **whatsapp.wa_to(contact), 'type': 'template',
                'template': {'name': t['name'], 'language': {'code': t.get('language') or 'pt_BR'}}}
     comps = []
     if t.get('header') == 'IMAGE':

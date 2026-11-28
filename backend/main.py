@@ -79,6 +79,7 @@ async def lifespan(app):
         await db.contacts.drop_index('company_id_1_wa_id_1')
     await db.contacts.create_index([('company_id', 1), ('wa_id', 1)], unique=True, partialFilterExpression={'wa_id': {'$type': 'string'}})
     await db.contacts.create_index([('company_id', 1), ('ig_id', 1)], unique=True, partialFilterExpression={'ig_id': {'$type': 'string'}})
+    await db.contacts.create_index([('company_id', 1), ('wa_uid', 1)], unique=True, partialFilterExpression={'wa_uid': {'$type': 'string'}})
     await db.ig_accounts.create_index('company_id', unique=True)
     await db.ig_accounts.create_index('ig_id')
     await db.ig_comments.create_index('comment_id', unique=True)
